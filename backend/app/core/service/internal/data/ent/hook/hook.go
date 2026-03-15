@@ -32,6 +32,18 @@ func (f ApiAuditLogFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value,
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ApiAuditLogMutation", m)
 }
 
+// The ApplicationFunc type is an adapter to allow the use of ordinary
+// function as Application mutator.
+type ApplicationFunc func(context.Context, *ent.ApplicationMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f ApplicationFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.ApplicationMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ApplicationMutation", m)
+}
+
 // The DataAccessAuditLogFunc type is an adapter to allow the use of ordinary
 // function as DataAccessAuditLog mutator.
 type DataAccessAuditLogFunc func(context.Context, *ent.DataAccessAuditLogMutation) (ent.Value, error)
@@ -102,6 +114,18 @@ func (f FileFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error)
 		return f(ctx, mv)
 	}
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.FileMutation", m)
+}
+
+// The IDMappingFunc type is an adapter to allow the use of ordinary
+// function as IDMapping mutator.
+type IDMappingFunc func(context.Context, *ent.IDMappingMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f IDMappingFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.IDMappingMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.IDMappingMutation", m)
 }
 
 // The InternalMessageFunc type is an adapter to allow the use of ordinary
@@ -308,6 +332,42 @@ func (f PositionFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, er
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.PositionMutation", m)
 }
 
+// The RiskRuleFunc type is an adapter to allow the use of ordinary
+// function as RiskRule mutator.
+type RiskRuleFunc func(context.Context, *ent.RiskRuleMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f RiskRuleFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.RiskRuleMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.RiskRuleMutation", m)
+}
+
+// The RiskRuleConditionFunc type is an adapter to allow the use of ordinary
+// function as RiskRuleCondition mutator.
+type RiskRuleConditionFunc func(context.Context, *ent.RiskRuleConditionMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f RiskRuleConditionFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.RiskRuleConditionMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.RiskRuleConditionMutation", m)
+}
+
+// The RiskRuleVersionFunc type is an adapter to allow the use of ordinary
+// function as RiskRuleVersion mutator.
+type RiskRuleVersionFunc func(context.Context, *ent.RiskRuleVersionMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f RiskRuleVersionFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.RiskRuleVersionMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.RiskRuleVersionMutation", m)
+}
+
 // The RoleFunc type is an adapter to allow the use of ordinary
 // function as Role mutator.
 type RoleFunc func(context.Context, *ent.RoleMutation) (ent.Value, error)
@@ -342,6 +402,30 @@ func (f RolePermissionFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Val
 		return f(ctx, mv)
 	}
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.RolePermissionMutation", m)
+}
+
+// The TagDefinitionFunc type is an adapter to allow the use of ordinary
+// function as TagDefinition mutator.
+type TagDefinitionFunc func(context.Context, *ent.TagDefinitionMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f TagDefinitionFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.TagDefinitionMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.TagDefinitionMutation", m)
+}
+
+// The TagValueFunc type is an adapter to allow the use of ordinary
+// function as TagValue mutator.
+type TagValueFunc func(context.Context, *ent.TagValueMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f TagValueFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.TagValueMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.TagValueMutation", m)
 }
 
 // The TaskFunc type is an adapter to allow the use of ordinary
@@ -426,6 +510,30 @@ func (f UserRoleFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, er
 		return f(ctx, mv)
 	}
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.UserRoleMutation", m)
+}
+
+// The UserTagFunc type is an adapter to allow the use of ordinary
+// function as UserTag mutator.
+type UserTagFunc func(context.Context, *ent.UserTagMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f UserTagFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.UserTagMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.UserTagMutation", m)
+}
+
+// The WebhookFunc type is an adapter to allow the use of ordinary
+// function as Webhook mutator.
+type WebhookFunc func(context.Context, *ent.WebhookMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f WebhookFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.WebhookMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.WebhookMutation", m)
 }
 
 // Condition is a hook condition function.

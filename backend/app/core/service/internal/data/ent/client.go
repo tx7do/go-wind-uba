@@ -13,12 +13,14 @@ import (
 
 	"go-wind-uba/app/core/service/internal/data/ent/api"
 	"go-wind-uba/app/core/service/internal/data/ent/apiauditlog"
+	"go-wind-uba/app/core/service/internal/data/ent/application"
 	"go-wind-uba/app/core/service/internal/data/ent/dataaccessauditlog"
 	"go-wind-uba/app/core/service/internal/data/ent/dictentry"
 	"go-wind-uba/app/core/service/internal/data/ent/dictentryi18n"
 	"go-wind-uba/app/core/service/internal/data/ent/dicttype"
 	"go-wind-uba/app/core/service/internal/data/ent/dicttypei18n"
 	"go-wind-uba/app/core/service/internal/data/ent/file"
+	"go-wind-uba/app/core/service/internal/data/ent/idmapping"
 	"go-wind-uba/app/core/service/internal/data/ent/internalmessage"
 	"go-wind-uba/app/core/service/internal/data/ent/internalmessagecategory"
 	"go-wind-uba/app/core/service/internal/data/ent/internalmessagerecipient"
@@ -36,9 +38,14 @@ import (
 	"go-wind-uba/app/core/service/internal/data/ent/permissionpolicy"
 	"go-wind-uba/app/core/service/internal/data/ent/policyevaluationlog"
 	"go-wind-uba/app/core/service/internal/data/ent/position"
+	"go-wind-uba/app/core/service/internal/data/ent/riskrule"
+	"go-wind-uba/app/core/service/internal/data/ent/riskrulecondition"
+	"go-wind-uba/app/core/service/internal/data/ent/riskruleversion"
 	"go-wind-uba/app/core/service/internal/data/ent/role"
 	"go-wind-uba/app/core/service/internal/data/ent/rolemetadata"
 	"go-wind-uba/app/core/service/internal/data/ent/rolepermission"
+	"go-wind-uba/app/core/service/internal/data/ent/tagdefinition"
+	"go-wind-uba/app/core/service/internal/data/ent/tagvalue"
 	"go-wind-uba/app/core/service/internal/data/ent/task"
 	"go-wind-uba/app/core/service/internal/data/ent/tenant"
 	"go-wind-uba/app/core/service/internal/data/ent/user"
@@ -46,6 +53,8 @@ import (
 	"go-wind-uba/app/core/service/internal/data/ent/userorgunit"
 	"go-wind-uba/app/core/service/internal/data/ent/userposition"
 	"go-wind-uba/app/core/service/internal/data/ent/userrole"
+	"go-wind-uba/app/core/service/internal/data/ent/usertag"
+	"go-wind-uba/app/core/service/internal/data/ent/webhook"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
@@ -62,6 +71,8 @@ type Client struct {
 	Api *APIClient
 	// ApiAuditLog is the client for interacting with the ApiAuditLog builders.
 	ApiAuditLog *ApiAuditLogClient
+	// Application is the client for interacting with the Application builders.
+	Application *ApplicationClient
 	// DataAccessAuditLog is the client for interacting with the DataAccessAuditLog builders.
 	DataAccessAuditLog *DataAccessAuditLogClient
 	// DictEntry is the client for interacting with the DictEntry builders.
@@ -74,6 +85,8 @@ type Client struct {
 	DictTypeI18n *DictTypeI18nClient
 	// File is the client for interacting with the File builders.
 	File *FileClient
+	// IDMapping is the client for interacting with the IDMapping builders.
+	IDMapping *IDMappingClient
 	// InternalMessage is the client for interacting with the InternalMessage builders.
 	InternalMessage *InternalMessageClient
 	// InternalMessageCategory is the client for interacting with the InternalMessageCategory builders.
@@ -108,12 +121,22 @@ type Client struct {
 	PolicyEvaluationLog *PolicyEvaluationLogClient
 	// Position is the client for interacting with the Position builders.
 	Position *PositionClient
+	// RiskRule is the client for interacting with the RiskRule builders.
+	RiskRule *RiskRuleClient
+	// RiskRuleCondition is the client for interacting with the RiskRuleCondition builders.
+	RiskRuleCondition *RiskRuleConditionClient
+	// RiskRuleVersion is the client for interacting with the RiskRuleVersion builders.
+	RiskRuleVersion *RiskRuleVersionClient
 	// Role is the client for interacting with the Role builders.
 	Role *RoleClient
 	// RoleMetadata is the client for interacting with the RoleMetadata builders.
 	RoleMetadata *RoleMetadataClient
 	// RolePermission is the client for interacting with the RolePermission builders.
 	RolePermission *RolePermissionClient
+	// TagDefinition is the client for interacting with the TagDefinition builders.
+	TagDefinition *TagDefinitionClient
+	// TagValue is the client for interacting with the TagValue builders.
+	TagValue *TagValueClient
 	// Task is the client for interacting with the Task builders.
 	Task *TaskClient
 	// Tenant is the client for interacting with the Tenant builders.
@@ -128,6 +151,10 @@ type Client struct {
 	UserPosition *UserPositionClient
 	// UserRole is the client for interacting with the UserRole builders.
 	UserRole *UserRoleClient
+	// UserTag is the client for interacting with the UserTag builders.
+	UserTag *UserTagClient
+	// Webhook is the client for interacting with the Webhook builders.
+	Webhook *WebhookClient
 }
 
 // NewClient creates a new client configured with the given options.
@@ -141,12 +168,14 @@ func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.Api = NewAPIClient(c.config)
 	c.ApiAuditLog = NewApiAuditLogClient(c.config)
+	c.Application = NewApplicationClient(c.config)
 	c.DataAccessAuditLog = NewDataAccessAuditLogClient(c.config)
 	c.DictEntry = NewDictEntryClient(c.config)
 	c.DictEntryI18n = NewDictEntryI18nClient(c.config)
 	c.DictType = NewDictTypeClient(c.config)
 	c.DictTypeI18n = NewDictTypeI18nClient(c.config)
 	c.File = NewFileClient(c.config)
+	c.IDMapping = NewIDMappingClient(c.config)
 	c.InternalMessage = NewInternalMessageClient(c.config)
 	c.InternalMessageCategory = NewInternalMessageCategoryClient(c.config)
 	c.InternalMessageRecipient = NewInternalMessageRecipientClient(c.config)
@@ -164,9 +193,14 @@ func (c *Client) init() {
 	c.PermissionPolicy = NewPermissionPolicyClient(c.config)
 	c.PolicyEvaluationLog = NewPolicyEvaluationLogClient(c.config)
 	c.Position = NewPositionClient(c.config)
+	c.RiskRule = NewRiskRuleClient(c.config)
+	c.RiskRuleCondition = NewRiskRuleConditionClient(c.config)
+	c.RiskRuleVersion = NewRiskRuleVersionClient(c.config)
 	c.Role = NewRoleClient(c.config)
 	c.RoleMetadata = NewRoleMetadataClient(c.config)
 	c.RolePermission = NewRolePermissionClient(c.config)
+	c.TagDefinition = NewTagDefinitionClient(c.config)
+	c.TagValue = NewTagValueClient(c.config)
 	c.Task = NewTaskClient(c.config)
 	c.Tenant = NewTenantClient(c.config)
 	c.User = NewUserClient(c.config)
@@ -174,6 +208,8 @@ func (c *Client) init() {
 	c.UserOrgUnit = NewUserOrgUnitClient(c.config)
 	c.UserPosition = NewUserPositionClient(c.config)
 	c.UserRole = NewUserRoleClient(c.config)
+	c.UserTag = NewUserTagClient(c.config)
+	c.Webhook = NewWebhookClient(c.config)
 }
 
 type (
@@ -268,12 +304,14 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		config:                   cfg,
 		Api:                      NewAPIClient(cfg),
 		ApiAuditLog:              NewApiAuditLogClient(cfg),
+		Application:              NewApplicationClient(cfg),
 		DataAccessAuditLog:       NewDataAccessAuditLogClient(cfg),
 		DictEntry:                NewDictEntryClient(cfg),
 		DictEntryI18n:            NewDictEntryI18nClient(cfg),
 		DictType:                 NewDictTypeClient(cfg),
 		DictTypeI18n:             NewDictTypeI18nClient(cfg),
 		File:                     NewFileClient(cfg),
+		IDMapping:                NewIDMappingClient(cfg),
 		InternalMessage:          NewInternalMessageClient(cfg),
 		InternalMessageCategory:  NewInternalMessageCategoryClient(cfg),
 		InternalMessageRecipient: NewInternalMessageRecipientClient(cfg),
@@ -291,9 +329,14 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		PermissionPolicy:         NewPermissionPolicyClient(cfg),
 		PolicyEvaluationLog:      NewPolicyEvaluationLogClient(cfg),
 		Position:                 NewPositionClient(cfg),
+		RiskRule:                 NewRiskRuleClient(cfg),
+		RiskRuleCondition:        NewRiskRuleConditionClient(cfg),
+		RiskRuleVersion:          NewRiskRuleVersionClient(cfg),
 		Role:                     NewRoleClient(cfg),
 		RoleMetadata:             NewRoleMetadataClient(cfg),
 		RolePermission:           NewRolePermissionClient(cfg),
+		TagDefinition:            NewTagDefinitionClient(cfg),
+		TagValue:                 NewTagValueClient(cfg),
 		Task:                     NewTaskClient(cfg),
 		Tenant:                   NewTenantClient(cfg),
 		User:                     NewUserClient(cfg),
@@ -301,6 +344,8 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		UserOrgUnit:              NewUserOrgUnitClient(cfg),
 		UserPosition:             NewUserPositionClient(cfg),
 		UserRole:                 NewUserRoleClient(cfg),
+		UserTag:                  NewUserTagClient(cfg),
+		Webhook:                  NewWebhookClient(cfg),
 	}, nil
 }
 
@@ -322,12 +367,14 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		config:                   cfg,
 		Api:                      NewAPIClient(cfg),
 		ApiAuditLog:              NewApiAuditLogClient(cfg),
+		Application:              NewApplicationClient(cfg),
 		DataAccessAuditLog:       NewDataAccessAuditLogClient(cfg),
 		DictEntry:                NewDictEntryClient(cfg),
 		DictEntryI18n:            NewDictEntryI18nClient(cfg),
 		DictType:                 NewDictTypeClient(cfg),
 		DictTypeI18n:             NewDictTypeI18nClient(cfg),
 		File:                     NewFileClient(cfg),
+		IDMapping:                NewIDMappingClient(cfg),
 		InternalMessage:          NewInternalMessageClient(cfg),
 		InternalMessageCategory:  NewInternalMessageCategoryClient(cfg),
 		InternalMessageRecipient: NewInternalMessageRecipientClient(cfg),
@@ -345,9 +392,14 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		PermissionPolicy:         NewPermissionPolicyClient(cfg),
 		PolicyEvaluationLog:      NewPolicyEvaluationLogClient(cfg),
 		Position:                 NewPositionClient(cfg),
+		RiskRule:                 NewRiskRuleClient(cfg),
+		RiskRuleCondition:        NewRiskRuleConditionClient(cfg),
+		RiskRuleVersion:          NewRiskRuleVersionClient(cfg),
 		Role:                     NewRoleClient(cfg),
 		RoleMetadata:             NewRoleMetadataClient(cfg),
 		RolePermission:           NewRolePermissionClient(cfg),
+		TagDefinition:            NewTagDefinitionClient(cfg),
+		TagValue:                 NewTagValueClient(cfg),
 		Task:                     NewTaskClient(cfg),
 		Tenant:                   NewTenantClient(cfg),
 		User:                     NewUserClient(cfg),
@@ -355,6 +407,8 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		UserOrgUnit:              NewUserOrgUnitClient(cfg),
 		UserPosition:             NewUserPositionClient(cfg),
 		UserRole:                 NewUserRoleClient(cfg),
+		UserTag:                  NewUserTagClient(cfg),
+		Webhook:                  NewWebhookClient(cfg),
 	}, nil
 }
 
@@ -384,14 +438,16 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
-		c.Api, c.ApiAuditLog, c.DataAccessAuditLog, c.DictEntry, c.DictEntryI18n,
-		c.DictType, c.DictTypeI18n, c.File, c.InternalMessage,
-		c.InternalMessageCategory, c.InternalMessageRecipient, c.Language,
-		c.LoginAuditLog, c.LoginPolicy, c.Menu, c.OperationAuditLog, c.OrgUnit,
-		c.Permission, c.PermissionApi, c.PermissionAuditLog, c.PermissionGroup,
-		c.PermissionMenu, c.PermissionPolicy, c.PolicyEvaluationLog, c.Position,
-		c.Role, c.RoleMetadata, c.RolePermission, c.Task, c.Tenant, c.User,
-		c.UserCredential, c.UserOrgUnit, c.UserPosition, c.UserRole,
+		c.Api, c.ApiAuditLog, c.Application, c.DataAccessAuditLog, c.DictEntry,
+		c.DictEntryI18n, c.DictType, c.DictTypeI18n, c.File, c.IDMapping,
+		c.InternalMessage, c.InternalMessageCategory, c.InternalMessageRecipient,
+		c.Language, c.LoginAuditLog, c.LoginPolicy, c.Menu, c.OperationAuditLog,
+		c.OrgUnit, c.Permission, c.PermissionApi, c.PermissionAuditLog,
+		c.PermissionGroup, c.PermissionMenu, c.PermissionPolicy, c.PolicyEvaluationLog,
+		c.Position, c.RiskRule, c.RiskRuleCondition, c.RiskRuleVersion, c.Role,
+		c.RoleMetadata, c.RolePermission, c.TagDefinition, c.TagValue, c.Task,
+		c.Tenant, c.User, c.UserCredential, c.UserOrgUnit, c.UserPosition, c.UserRole,
+		c.UserTag, c.Webhook,
 	} {
 		n.Use(hooks...)
 	}
@@ -401,14 +457,16 @@ func (c *Client) Use(hooks ...Hook) {
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
-		c.Api, c.ApiAuditLog, c.DataAccessAuditLog, c.DictEntry, c.DictEntryI18n,
-		c.DictType, c.DictTypeI18n, c.File, c.InternalMessage,
-		c.InternalMessageCategory, c.InternalMessageRecipient, c.Language,
-		c.LoginAuditLog, c.LoginPolicy, c.Menu, c.OperationAuditLog, c.OrgUnit,
-		c.Permission, c.PermissionApi, c.PermissionAuditLog, c.PermissionGroup,
-		c.PermissionMenu, c.PermissionPolicy, c.PolicyEvaluationLog, c.Position,
-		c.Role, c.RoleMetadata, c.RolePermission, c.Task, c.Tenant, c.User,
-		c.UserCredential, c.UserOrgUnit, c.UserPosition, c.UserRole,
+		c.Api, c.ApiAuditLog, c.Application, c.DataAccessAuditLog, c.DictEntry,
+		c.DictEntryI18n, c.DictType, c.DictTypeI18n, c.File, c.IDMapping,
+		c.InternalMessage, c.InternalMessageCategory, c.InternalMessageRecipient,
+		c.Language, c.LoginAuditLog, c.LoginPolicy, c.Menu, c.OperationAuditLog,
+		c.OrgUnit, c.Permission, c.PermissionApi, c.PermissionAuditLog,
+		c.PermissionGroup, c.PermissionMenu, c.PermissionPolicy, c.PolicyEvaluationLog,
+		c.Position, c.RiskRule, c.RiskRuleCondition, c.RiskRuleVersion, c.Role,
+		c.RoleMetadata, c.RolePermission, c.TagDefinition, c.TagValue, c.Task,
+		c.Tenant, c.User, c.UserCredential, c.UserOrgUnit, c.UserPosition, c.UserRole,
+		c.UserTag, c.Webhook,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -421,6 +479,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.Api.mutate(ctx, m)
 	case *ApiAuditLogMutation:
 		return c.ApiAuditLog.mutate(ctx, m)
+	case *ApplicationMutation:
+		return c.Application.mutate(ctx, m)
 	case *DataAccessAuditLogMutation:
 		return c.DataAccessAuditLog.mutate(ctx, m)
 	case *DictEntryMutation:
@@ -433,6 +493,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.DictTypeI18n.mutate(ctx, m)
 	case *FileMutation:
 		return c.File.mutate(ctx, m)
+	case *IDMappingMutation:
+		return c.IDMapping.mutate(ctx, m)
 	case *InternalMessageMutation:
 		return c.InternalMessage.mutate(ctx, m)
 	case *InternalMessageCategoryMutation:
@@ -467,12 +529,22 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.PolicyEvaluationLog.mutate(ctx, m)
 	case *PositionMutation:
 		return c.Position.mutate(ctx, m)
+	case *RiskRuleMutation:
+		return c.RiskRule.mutate(ctx, m)
+	case *RiskRuleConditionMutation:
+		return c.RiskRuleCondition.mutate(ctx, m)
+	case *RiskRuleVersionMutation:
+		return c.RiskRuleVersion.mutate(ctx, m)
 	case *RoleMutation:
 		return c.Role.mutate(ctx, m)
 	case *RoleMetadataMutation:
 		return c.RoleMetadata.mutate(ctx, m)
 	case *RolePermissionMutation:
 		return c.RolePermission.mutate(ctx, m)
+	case *TagDefinitionMutation:
+		return c.TagDefinition.mutate(ctx, m)
+	case *TagValueMutation:
+		return c.TagValue.mutate(ctx, m)
 	case *TaskMutation:
 		return c.Task.mutate(ctx, m)
 	case *TenantMutation:
@@ -487,6 +559,10 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.UserPosition.mutate(ctx, m)
 	case *UserRoleMutation:
 		return c.UserRole.mutate(ctx, m)
+	case *UserTagMutation:
+		return c.UserTag.mutate(ctx, m)
+	case *WebhookMutation:
+		return c.Webhook.mutate(ctx, m)
 	default:
 		return nil, fmt.Errorf("ent: unknown mutation type %T", m)
 	}
@@ -756,6 +832,140 @@ func (c *ApiAuditLogClient) mutate(ctx context.Context, m *ApiAuditLogMutation) 
 		return (&ApiAuditLogDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown ApiAuditLog mutation op: %q", m.Op())
+	}
+}
+
+// ApplicationClient is a client for the Application schema.
+type ApplicationClient struct {
+	config
+}
+
+// NewApplicationClient returns a client for the Application from the given config.
+func NewApplicationClient(c config) *ApplicationClient {
+	return &ApplicationClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `application.Hooks(f(g(h())))`.
+func (c *ApplicationClient) Use(hooks ...Hook) {
+	c.hooks.Application = append(c.hooks.Application, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `application.Intercept(f(g(h())))`.
+func (c *ApplicationClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Application = append(c.inters.Application, interceptors...)
+}
+
+// Create returns a builder for creating a Application entity.
+func (c *ApplicationClient) Create() *ApplicationCreate {
+	mutation := newApplicationMutation(c.config, OpCreate)
+	return &ApplicationCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Application entities.
+func (c *ApplicationClient) CreateBulk(builders ...*ApplicationCreate) *ApplicationCreateBulk {
+	return &ApplicationCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *ApplicationClient) MapCreateBulk(slice any, setFunc func(*ApplicationCreate, int)) *ApplicationCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &ApplicationCreateBulk{err: fmt.Errorf("calling to ApplicationClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*ApplicationCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &ApplicationCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Application.
+func (c *ApplicationClient) Update() *ApplicationUpdate {
+	mutation := newApplicationMutation(c.config, OpUpdate)
+	return &ApplicationUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *ApplicationClient) UpdateOne(_m *Application) *ApplicationUpdateOne {
+	mutation := newApplicationMutation(c.config, OpUpdateOne, withApplication(_m))
+	return &ApplicationUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *ApplicationClient) UpdateOneID(id uint32) *ApplicationUpdateOne {
+	mutation := newApplicationMutation(c.config, OpUpdateOne, withApplicationID(id))
+	return &ApplicationUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Application.
+func (c *ApplicationClient) Delete() *ApplicationDelete {
+	mutation := newApplicationMutation(c.config, OpDelete)
+	return &ApplicationDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *ApplicationClient) DeleteOne(_m *Application) *ApplicationDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *ApplicationClient) DeleteOneID(id uint32) *ApplicationDeleteOne {
+	builder := c.Delete().Where(application.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &ApplicationDeleteOne{builder}
+}
+
+// Query returns a query builder for Application.
+func (c *ApplicationClient) Query() *ApplicationQuery {
+	return &ApplicationQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeApplication},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a Application entity by its id.
+func (c *ApplicationClient) Get(ctx context.Context, id uint32) (*Application, error) {
+	return c.Query().Where(application.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *ApplicationClient) GetX(ctx context.Context, id uint32) *Application {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *ApplicationClient) Hooks() []Hook {
+	hooks := c.hooks.Application
+	return append(hooks[:len(hooks):len(hooks)], application.Hooks[:]...)
+}
+
+// Interceptors returns the client interceptors.
+func (c *ApplicationClient) Interceptors() []Interceptor {
+	return c.inters.Application
+}
+
+func (c *ApplicationClient) mutate(ctx context.Context, m *ApplicationMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&ApplicationCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&ApplicationUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&ApplicationUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&ApplicationDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown Application mutation op: %q", m.Op())
 	}
 }
 
@@ -1656,6 +1866,140 @@ func (c *FileClient) mutate(ctx context.Context, m *FileMutation) (Value, error)
 		return (&FileDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown File mutation op: %q", m.Op())
+	}
+}
+
+// IDMappingClient is a client for the IDMapping schema.
+type IDMappingClient struct {
+	config
+}
+
+// NewIDMappingClient returns a client for the IDMapping from the given config.
+func NewIDMappingClient(c config) *IDMappingClient {
+	return &IDMappingClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `idmapping.Hooks(f(g(h())))`.
+func (c *IDMappingClient) Use(hooks ...Hook) {
+	c.hooks.IDMapping = append(c.hooks.IDMapping, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `idmapping.Intercept(f(g(h())))`.
+func (c *IDMappingClient) Intercept(interceptors ...Interceptor) {
+	c.inters.IDMapping = append(c.inters.IDMapping, interceptors...)
+}
+
+// Create returns a builder for creating a IDMapping entity.
+func (c *IDMappingClient) Create() *IDMappingCreate {
+	mutation := newIDMappingMutation(c.config, OpCreate)
+	return &IDMappingCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of IDMapping entities.
+func (c *IDMappingClient) CreateBulk(builders ...*IDMappingCreate) *IDMappingCreateBulk {
+	return &IDMappingCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *IDMappingClient) MapCreateBulk(slice any, setFunc func(*IDMappingCreate, int)) *IDMappingCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &IDMappingCreateBulk{err: fmt.Errorf("calling to IDMappingClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*IDMappingCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &IDMappingCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for IDMapping.
+func (c *IDMappingClient) Update() *IDMappingUpdate {
+	mutation := newIDMappingMutation(c.config, OpUpdate)
+	return &IDMappingUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *IDMappingClient) UpdateOne(_m *IDMapping) *IDMappingUpdateOne {
+	mutation := newIDMappingMutation(c.config, OpUpdateOne, withIDMapping(_m))
+	return &IDMappingUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *IDMappingClient) UpdateOneID(id uint32) *IDMappingUpdateOne {
+	mutation := newIDMappingMutation(c.config, OpUpdateOne, withIDMappingID(id))
+	return &IDMappingUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for IDMapping.
+func (c *IDMappingClient) Delete() *IDMappingDelete {
+	mutation := newIDMappingMutation(c.config, OpDelete)
+	return &IDMappingDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *IDMappingClient) DeleteOne(_m *IDMapping) *IDMappingDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *IDMappingClient) DeleteOneID(id uint32) *IDMappingDeleteOne {
+	builder := c.Delete().Where(idmapping.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &IDMappingDeleteOne{builder}
+}
+
+// Query returns a query builder for IDMapping.
+func (c *IDMappingClient) Query() *IDMappingQuery {
+	return &IDMappingQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeIDMapping},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a IDMapping entity by its id.
+func (c *IDMappingClient) Get(ctx context.Context, id uint32) (*IDMapping, error) {
+	return c.Query().Where(idmapping.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *IDMappingClient) GetX(ctx context.Context, id uint32) *IDMapping {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *IDMappingClient) Hooks() []Hook {
+	hooks := c.hooks.IDMapping
+	return append(hooks[:len(hooks):len(hooks)], idmapping.Hooks[:]...)
+}
+
+// Interceptors returns the client interceptors.
+func (c *IDMappingClient) Interceptors() []Interceptor {
+	return c.inters.IDMapping
+}
+
+func (c *IDMappingClient) mutate(ctx context.Context, m *IDMappingMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&IDMappingCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&IDMappingUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&IDMappingUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&IDMappingDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown IDMapping mutation op: %q", m.Op())
 	}
 }
 
@@ -4026,6 +4370,408 @@ func (c *PositionClient) mutate(ctx context.Context, m *PositionMutation) (Value
 	}
 }
 
+// RiskRuleClient is a client for the RiskRule schema.
+type RiskRuleClient struct {
+	config
+}
+
+// NewRiskRuleClient returns a client for the RiskRule from the given config.
+func NewRiskRuleClient(c config) *RiskRuleClient {
+	return &RiskRuleClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `riskrule.Hooks(f(g(h())))`.
+func (c *RiskRuleClient) Use(hooks ...Hook) {
+	c.hooks.RiskRule = append(c.hooks.RiskRule, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `riskrule.Intercept(f(g(h())))`.
+func (c *RiskRuleClient) Intercept(interceptors ...Interceptor) {
+	c.inters.RiskRule = append(c.inters.RiskRule, interceptors...)
+}
+
+// Create returns a builder for creating a RiskRule entity.
+func (c *RiskRuleClient) Create() *RiskRuleCreate {
+	mutation := newRiskRuleMutation(c.config, OpCreate)
+	return &RiskRuleCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of RiskRule entities.
+func (c *RiskRuleClient) CreateBulk(builders ...*RiskRuleCreate) *RiskRuleCreateBulk {
+	return &RiskRuleCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *RiskRuleClient) MapCreateBulk(slice any, setFunc func(*RiskRuleCreate, int)) *RiskRuleCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &RiskRuleCreateBulk{err: fmt.Errorf("calling to RiskRuleClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*RiskRuleCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &RiskRuleCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for RiskRule.
+func (c *RiskRuleClient) Update() *RiskRuleUpdate {
+	mutation := newRiskRuleMutation(c.config, OpUpdate)
+	return &RiskRuleUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *RiskRuleClient) UpdateOne(_m *RiskRule) *RiskRuleUpdateOne {
+	mutation := newRiskRuleMutation(c.config, OpUpdateOne, withRiskRule(_m))
+	return &RiskRuleUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *RiskRuleClient) UpdateOneID(id uint32) *RiskRuleUpdateOne {
+	mutation := newRiskRuleMutation(c.config, OpUpdateOne, withRiskRuleID(id))
+	return &RiskRuleUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for RiskRule.
+func (c *RiskRuleClient) Delete() *RiskRuleDelete {
+	mutation := newRiskRuleMutation(c.config, OpDelete)
+	return &RiskRuleDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *RiskRuleClient) DeleteOne(_m *RiskRule) *RiskRuleDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *RiskRuleClient) DeleteOneID(id uint32) *RiskRuleDeleteOne {
+	builder := c.Delete().Where(riskrule.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &RiskRuleDeleteOne{builder}
+}
+
+// Query returns a query builder for RiskRule.
+func (c *RiskRuleClient) Query() *RiskRuleQuery {
+	return &RiskRuleQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeRiskRule},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a RiskRule entity by its id.
+func (c *RiskRuleClient) Get(ctx context.Context, id uint32) (*RiskRule, error) {
+	return c.Query().Where(riskrule.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *RiskRuleClient) GetX(ctx context.Context, id uint32) *RiskRule {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *RiskRuleClient) Hooks() []Hook {
+	hooks := c.hooks.RiskRule
+	return append(hooks[:len(hooks):len(hooks)], riskrule.Hooks[:]...)
+}
+
+// Interceptors returns the client interceptors.
+func (c *RiskRuleClient) Interceptors() []Interceptor {
+	return c.inters.RiskRule
+}
+
+func (c *RiskRuleClient) mutate(ctx context.Context, m *RiskRuleMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&RiskRuleCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&RiskRuleUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&RiskRuleUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&RiskRuleDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown RiskRule mutation op: %q", m.Op())
+	}
+}
+
+// RiskRuleConditionClient is a client for the RiskRuleCondition schema.
+type RiskRuleConditionClient struct {
+	config
+}
+
+// NewRiskRuleConditionClient returns a client for the RiskRuleCondition from the given config.
+func NewRiskRuleConditionClient(c config) *RiskRuleConditionClient {
+	return &RiskRuleConditionClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `riskrulecondition.Hooks(f(g(h())))`.
+func (c *RiskRuleConditionClient) Use(hooks ...Hook) {
+	c.hooks.RiskRuleCondition = append(c.hooks.RiskRuleCondition, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `riskrulecondition.Intercept(f(g(h())))`.
+func (c *RiskRuleConditionClient) Intercept(interceptors ...Interceptor) {
+	c.inters.RiskRuleCondition = append(c.inters.RiskRuleCondition, interceptors...)
+}
+
+// Create returns a builder for creating a RiskRuleCondition entity.
+func (c *RiskRuleConditionClient) Create() *RiskRuleConditionCreate {
+	mutation := newRiskRuleConditionMutation(c.config, OpCreate)
+	return &RiskRuleConditionCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of RiskRuleCondition entities.
+func (c *RiskRuleConditionClient) CreateBulk(builders ...*RiskRuleConditionCreate) *RiskRuleConditionCreateBulk {
+	return &RiskRuleConditionCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *RiskRuleConditionClient) MapCreateBulk(slice any, setFunc func(*RiskRuleConditionCreate, int)) *RiskRuleConditionCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &RiskRuleConditionCreateBulk{err: fmt.Errorf("calling to RiskRuleConditionClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*RiskRuleConditionCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &RiskRuleConditionCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for RiskRuleCondition.
+func (c *RiskRuleConditionClient) Update() *RiskRuleConditionUpdate {
+	mutation := newRiskRuleConditionMutation(c.config, OpUpdate)
+	return &RiskRuleConditionUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *RiskRuleConditionClient) UpdateOne(_m *RiskRuleCondition) *RiskRuleConditionUpdateOne {
+	mutation := newRiskRuleConditionMutation(c.config, OpUpdateOne, withRiskRuleCondition(_m))
+	return &RiskRuleConditionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *RiskRuleConditionClient) UpdateOneID(id uint32) *RiskRuleConditionUpdateOne {
+	mutation := newRiskRuleConditionMutation(c.config, OpUpdateOne, withRiskRuleConditionID(id))
+	return &RiskRuleConditionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for RiskRuleCondition.
+func (c *RiskRuleConditionClient) Delete() *RiskRuleConditionDelete {
+	mutation := newRiskRuleConditionMutation(c.config, OpDelete)
+	return &RiskRuleConditionDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *RiskRuleConditionClient) DeleteOne(_m *RiskRuleCondition) *RiskRuleConditionDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *RiskRuleConditionClient) DeleteOneID(id uint32) *RiskRuleConditionDeleteOne {
+	builder := c.Delete().Where(riskrulecondition.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &RiskRuleConditionDeleteOne{builder}
+}
+
+// Query returns a query builder for RiskRuleCondition.
+func (c *RiskRuleConditionClient) Query() *RiskRuleConditionQuery {
+	return &RiskRuleConditionQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeRiskRuleCondition},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a RiskRuleCondition entity by its id.
+func (c *RiskRuleConditionClient) Get(ctx context.Context, id uint32) (*RiskRuleCondition, error) {
+	return c.Query().Where(riskrulecondition.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *RiskRuleConditionClient) GetX(ctx context.Context, id uint32) *RiskRuleCondition {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *RiskRuleConditionClient) Hooks() []Hook {
+	hooks := c.hooks.RiskRuleCondition
+	return append(hooks[:len(hooks):len(hooks)], riskrulecondition.Hooks[:]...)
+}
+
+// Interceptors returns the client interceptors.
+func (c *RiskRuleConditionClient) Interceptors() []Interceptor {
+	return c.inters.RiskRuleCondition
+}
+
+func (c *RiskRuleConditionClient) mutate(ctx context.Context, m *RiskRuleConditionMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&RiskRuleConditionCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&RiskRuleConditionUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&RiskRuleConditionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&RiskRuleConditionDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown RiskRuleCondition mutation op: %q", m.Op())
+	}
+}
+
+// RiskRuleVersionClient is a client for the RiskRuleVersion schema.
+type RiskRuleVersionClient struct {
+	config
+}
+
+// NewRiskRuleVersionClient returns a client for the RiskRuleVersion from the given config.
+func NewRiskRuleVersionClient(c config) *RiskRuleVersionClient {
+	return &RiskRuleVersionClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `riskruleversion.Hooks(f(g(h())))`.
+func (c *RiskRuleVersionClient) Use(hooks ...Hook) {
+	c.hooks.RiskRuleVersion = append(c.hooks.RiskRuleVersion, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `riskruleversion.Intercept(f(g(h())))`.
+func (c *RiskRuleVersionClient) Intercept(interceptors ...Interceptor) {
+	c.inters.RiskRuleVersion = append(c.inters.RiskRuleVersion, interceptors...)
+}
+
+// Create returns a builder for creating a RiskRuleVersion entity.
+func (c *RiskRuleVersionClient) Create() *RiskRuleVersionCreate {
+	mutation := newRiskRuleVersionMutation(c.config, OpCreate)
+	return &RiskRuleVersionCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of RiskRuleVersion entities.
+func (c *RiskRuleVersionClient) CreateBulk(builders ...*RiskRuleVersionCreate) *RiskRuleVersionCreateBulk {
+	return &RiskRuleVersionCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *RiskRuleVersionClient) MapCreateBulk(slice any, setFunc func(*RiskRuleVersionCreate, int)) *RiskRuleVersionCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &RiskRuleVersionCreateBulk{err: fmt.Errorf("calling to RiskRuleVersionClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*RiskRuleVersionCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &RiskRuleVersionCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for RiskRuleVersion.
+func (c *RiskRuleVersionClient) Update() *RiskRuleVersionUpdate {
+	mutation := newRiskRuleVersionMutation(c.config, OpUpdate)
+	return &RiskRuleVersionUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *RiskRuleVersionClient) UpdateOne(_m *RiskRuleVersion) *RiskRuleVersionUpdateOne {
+	mutation := newRiskRuleVersionMutation(c.config, OpUpdateOne, withRiskRuleVersion(_m))
+	return &RiskRuleVersionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *RiskRuleVersionClient) UpdateOneID(id uint32) *RiskRuleVersionUpdateOne {
+	mutation := newRiskRuleVersionMutation(c.config, OpUpdateOne, withRiskRuleVersionID(id))
+	return &RiskRuleVersionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for RiskRuleVersion.
+func (c *RiskRuleVersionClient) Delete() *RiskRuleVersionDelete {
+	mutation := newRiskRuleVersionMutation(c.config, OpDelete)
+	return &RiskRuleVersionDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *RiskRuleVersionClient) DeleteOne(_m *RiskRuleVersion) *RiskRuleVersionDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *RiskRuleVersionClient) DeleteOneID(id uint32) *RiskRuleVersionDeleteOne {
+	builder := c.Delete().Where(riskruleversion.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &RiskRuleVersionDeleteOne{builder}
+}
+
+// Query returns a query builder for RiskRuleVersion.
+func (c *RiskRuleVersionClient) Query() *RiskRuleVersionQuery {
+	return &RiskRuleVersionQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeRiskRuleVersion},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a RiskRuleVersion entity by its id.
+func (c *RiskRuleVersionClient) Get(ctx context.Context, id uint32) (*RiskRuleVersion, error) {
+	return c.Query().Where(riskruleversion.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *RiskRuleVersionClient) GetX(ctx context.Context, id uint32) *RiskRuleVersion {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *RiskRuleVersionClient) Hooks() []Hook {
+	hooks := c.hooks.RiskRuleVersion
+	return append(hooks[:len(hooks):len(hooks)], riskruleversion.Hooks[:]...)
+}
+
+// Interceptors returns the client interceptors.
+func (c *RiskRuleVersionClient) Interceptors() []Interceptor {
+	return c.inters.RiskRuleVersion
+}
+
+func (c *RiskRuleVersionClient) mutate(ctx context.Context, m *RiskRuleVersionMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&RiskRuleVersionCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&RiskRuleVersionUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&RiskRuleVersionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&RiskRuleVersionDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown RiskRuleVersion mutation op: %q", m.Op())
+	}
+}
+
 // RoleClient is a client for the Role schema.
 type RoleClient struct {
 	config
@@ -4425,6 +5171,274 @@ func (c *RolePermissionClient) mutate(ctx context.Context, m *RolePermissionMuta
 		return (&RolePermissionDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown RolePermission mutation op: %q", m.Op())
+	}
+}
+
+// TagDefinitionClient is a client for the TagDefinition schema.
+type TagDefinitionClient struct {
+	config
+}
+
+// NewTagDefinitionClient returns a client for the TagDefinition from the given config.
+func NewTagDefinitionClient(c config) *TagDefinitionClient {
+	return &TagDefinitionClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `tagdefinition.Hooks(f(g(h())))`.
+func (c *TagDefinitionClient) Use(hooks ...Hook) {
+	c.hooks.TagDefinition = append(c.hooks.TagDefinition, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `tagdefinition.Intercept(f(g(h())))`.
+func (c *TagDefinitionClient) Intercept(interceptors ...Interceptor) {
+	c.inters.TagDefinition = append(c.inters.TagDefinition, interceptors...)
+}
+
+// Create returns a builder for creating a TagDefinition entity.
+func (c *TagDefinitionClient) Create() *TagDefinitionCreate {
+	mutation := newTagDefinitionMutation(c.config, OpCreate)
+	return &TagDefinitionCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of TagDefinition entities.
+func (c *TagDefinitionClient) CreateBulk(builders ...*TagDefinitionCreate) *TagDefinitionCreateBulk {
+	return &TagDefinitionCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *TagDefinitionClient) MapCreateBulk(slice any, setFunc func(*TagDefinitionCreate, int)) *TagDefinitionCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &TagDefinitionCreateBulk{err: fmt.Errorf("calling to TagDefinitionClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*TagDefinitionCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &TagDefinitionCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for TagDefinition.
+func (c *TagDefinitionClient) Update() *TagDefinitionUpdate {
+	mutation := newTagDefinitionMutation(c.config, OpUpdate)
+	return &TagDefinitionUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *TagDefinitionClient) UpdateOne(_m *TagDefinition) *TagDefinitionUpdateOne {
+	mutation := newTagDefinitionMutation(c.config, OpUpdateOne, withTagDefinition(_m))
+	return &TagDefinitionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *TagDefinitionClient) UpdateOneID(id uint32) *TagDefinitionUpdateOne {
+	mutation := newTagDefinitionMutation(c.config, OpUpdateOne, withTagDefinitionID(id))
+	return &TagDefinitionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for TagDefinition.
+func (c *TagDefinitionClient) Delete() *TagDefinitionDelete {
+	mutation := newTagDefinitionMutation(c.config, OpDelete)
+	return &TagDefinitionDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *TagDefinitionClient) DeleteOne(_m *TagDefinition) *TagDefinitionDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *TagDefinitionClient) DeleteOneID(id uint32) *TagDefinitionDeleteOne {
+	builder := c.Delete().Where(tagdefinition.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &TagDefinitionDeleteOne{builder}
+}
+
+// Query returns a query builder for TagDefinition.
+func (c *TagDefinitionClient) Query() *TagDefinitionQuery {
+	return &TagDefinitionQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeTagDefinition},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a TagDefinition entity by its id.
+func (c *TagDefinitionClient) Get(ctx context.Context, id uint32) (*TagDefinition, error) {
+	return c.Query().Where(tagdefinition.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *TagDefinitionClient) GetX(ctx context.Context, id uint32) *TagDefinition {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *TagDefinitionClient) Hooks() []Hook {
+	hooks := c.hooks.TagDefinition
+	return append(hooks[:len(hooks):len(hooks)], tagdefinition.Hooks[:]...)
+}
+
+// Interceptors returns the client interceptors.
+func (c *TagDefinitionClient) Interceptors() []Interceptor {
+	return c.inters.TagDefinition
+}
+
+func (c *TagDefinitionClient) mutate(ctx context.Context, m *TagDefinitionMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&TagDefinitionCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&TagDefinitionUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&TagDefinitionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&TagDefinitionDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown TagDefinition mutation op: %q", m.Op())
+	}
+}
+
+// TagValueClient is a client for the TagValue schema.
+type TagValueClient struct {
+	config
+}
+
+// NewTagValueClient returns a client for the TagValue from the given config.
+func NewTagValueClient(c config) *TagValueClient {
+	return &TagValueClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `tagvalue.Hooks(f(g(h())))`.
+func (c *TagValueClient) Use(hooks ...Hook) {
+	c.hooks.TagValue = append(c.hooks.TagValue, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `tagvalue.Intercept(f(g(h())))`.
+func (c *TagValueClient) Intercept(interceptors ...Interceptor) {
+	c.inters.TagValue = append(c.inters.TagValue, interceptors...)
+}
+
+// Create returns a builder for creating a TagValue entity.
+func (c *TagValueClient) Create() *TagValueCreate {
+	mutation := newTagValueMutation(c.config, OpCreate)
+	return &TagValueCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of TagValue entities.
+func (c *TagValueClient) CreateBulk(builders ...*TagValueCreate) *TagValueCreateBulk {
+	return &TagValueCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *TagValueClient) MapCreateBulk(slice any, setFunc func(*TagValueCreate, int)) *TagValueCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &TagValueCreateBulk{err: fmt.Errorf("calling to TagValueClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*TagValueCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &TagValueCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for TagValue.
+func (c *TagValueClient) Update() *TagValueUpdate {
+	mutation := newTagValueMutation(c.config, OpUpdate)
+	return &TagValueUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *TagValueClient) UpdateOne(_m *TagValue) *TagValueUpdateOne {
+	mutation := newTagValueMutation(c.config, OpUpdateOne, withTagValue(_m))
+	return &TagValueUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *TagValueClient) UpdateOneID(id uint32) *TagValueUpdateOne {
+	mutation := newTagValueMutation(c.config, OpUpdateOne, withTagValueID(id))
+	return &TagValueUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for TagValue.
+func (c *TagValueClient) Delete() *TagValueDelete {
+	mutation := newTagValueMutation(c.config, OpDelete)
+	return &TagValueDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *TagValueClient) DeleteOne(_m *TagValue) *TagValueDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *TagValueClient) DeleteOneID(id uint32) *TagValueDeleteOne {
+	builder := c.Delete().Where(tagvalue.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &TagValueDeleteOne{builder}
+}
+
+// Query returns a query builder for TagValue.
+func (c *TagValueClient) Query() *TagValueQuery {
+	return &TagValueQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeTagValue},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a TagValue entity by its id.
+func (c *TagValueClient) Get(ctx context.Context, id uint32) (*TagValue, error) {
+	return c.Query().Where(tagvalue.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *TagValueClient) GetX(ctx context.Context, id uint32) *TagValue {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *TagValueClient) Hooks() []Hook {
+	hooks := c.hooks.TagValue
+	return append(hooks[:len(hooks):len(hooks)], tagvalue.Hooks[:]...)
+}
+
+// Interceptors returns the client interceptors.
+func (c *TagValueClient) Interceptors() []Interceptor {
+	return c.inters.TagValue
+}
+
+func (c *TagValueClient) mutate(ctx context.Context, m *TagValueMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&TagValueCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&TagValueUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&TagValueUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&TagValueDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown TagValue mutation op: %q", m.Op())
 	}
 }
 
@@ -5365,24 +6379,296 @@ func (c *UserRoleClient) mutate(ctx context.Context, m *UserRoleMutation) (Value
 	}
 }
 
+// UserTagClient is a client for the UserTag schema.
+type UserTagClient struct {
+	config
+}
+
+// NewUserTagClient returns a client for the UserTag from the given config.
+func NewUserTagClient(c config) *UserTagClient {
+	return &UserTagClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `usertag.Hooks(f(g(h())))`.
+func (c *UserTagClient) Use(hooks ...Hook) {
+	c.hooks.UserTag = append(c.hooks.UserTag, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `usertag.Intercept(f(g(h())))`.
+func (c *UserTagClient) Intercept(interceptors ...Interceptor) {
+	c.inters.UserTag = append(c.inters.UserTag, interceptors...)
+}
+
+// Create returns a builder for creating a UserTag entity.
+func (c *UserTagClient) Create() *UserTagCreate {
+	mutation := newUserTagMutation(c.config, OpCreate)
+	return &UserTagCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of UserTag entities.
+func (c *UserTagClient) CreateBulk(builders ...*UserTagCreate) *UserTagCreateBulk {
+	return &UserTagCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *UserTagClient) MapCreateBulk(slice any, setFunc func(*UserTagCreate, int)) *UserTagCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &UserTagCreateBulk{err: fmt.Errorf("calling to UserTagClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*UserTagCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &UserTagCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for UserTag.
+func (c *UserTagClient) Update() *UserTagUpdate {
+	mutation := newUserTagMutation(c.config, OpUpdate)
+	return &UserTagUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *UserTagClient) UpdateOne(_m *UserTag) *UserTagUpdateOne {
+	mutation := newUserTagMutation(c.config, OpUpdateOne, withUserTag(_m))
+	return &UserTagUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *UserTagClient) UpdateOneID(id uint32) *UserTagUpdateOne {
+	mutation := newUserTagMutation(c.config, OpUpdateOne, withUserTagID(id))
+	return &UserTagUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for UserTag.
+func (c *UserTagClient) Delete() *UserTagDelete {
+	mutation := newUserTagMutation(c.config, OpDelete)
+	return &UserTagDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *UserTagClient) DeleteOne(_m *UserTag) *UserTagDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *UserTagClient) DeleteOneID(id uint32) *UserTagDeleteOne {
+	builder := c.Delete().Where(usertag.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &UserTagDeleteOne{builder}
+}
+
+// Query returns a query builder for UserTag.
+func (c *UserTagClient) Query() *UserTagQuery {
+	return &UserTagQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeUserTag},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a UserTag entity by its id.
+func (c *UserTagClient) Get(ctx context.Context, id uint32) (*UserTag, error) {
+	return c.Query().Where(usertag.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *UserTagClient) GetX(ctx context.Context, id uint32) *UserTag {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *UserTagClient) Hooks() []Hook {
+	hooks := c.hooks.UserTag
+	return append(hooks[:len(hooks):len(hooks)], usertag.Hooks[:]...)
+}
+
+// Interceptors returns the client interceptors.
+func (c *UserTagClient) Interceptors() []Interceptor {
+	return c.inters.UserTag
+}
+
+func (c *UserTagClient) mutate(ctx context.Context, m *UserTagMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&UserTagCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&UserTagUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&UserTagUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&UserTagDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown UserTag mutation op: %q", m.Op())
+	}
+}
+
+// WebhookClient is a client for the Webhook schema.
+type WebhookClient struct {
+	config
+}
+
+// NewWebhookClient returns a client for the Webhook from the given config.
+func NewWebhookClient(c config) *WebhookClient {
+	return &WebhookClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `webhook.Hooks(f(g(h())))`.
+func (c *WebhookClient) Use(hooks ...Hook) {
+	c.hooks.Webhook = append(c.hooks.Webhook, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `webhook.Intercept(f(g(h())))`.
+func (c *WebhookClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Webhook = append(c.inters.Webhook, interceptors...)
+}
+
+// Create returns a builder for creating a Webhook entity.
+func (c *WebhookClient) Create() *WebhookCreate {
+	mutation := newWebhookMutation(c.config, OpCreate)
+	return &WebhookCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Webhook entities.
+func (c *WebhookClient) CreateBulk(builders ...*WebhookCreate) *WebhookCreateBulk {
+	return &WebhookCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *WebhookClient) MapCreateBulk(slice any, setFunc func(*WebhookCreate, int)) *WebhookCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &WebhookCreateBulk{err: fmt.Errorf("calling to WebhookClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*WebhookCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &WebhookCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Webhook.
+func (c *WebhookClient) Update() *WebhookUpdate {
+	mutation := newWebhookMutation(c.config, OpUpdate)
+	return &WebhookUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *WebhookClient) UpdateOne(_m *Webhook) *WebhookUpdateOne {
+	mutation := newWebhookMutation(c.config, OpUpdateOne, withWebhook(_m))
+	return &WebhookUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *WebhookClient) UpdateOneID(id uint32) *WebhookUpdateOne {
+	mutation := newWebhookMutation(c.config, OpUpdateOne, withWebhookID(id))
+	return &WebhookUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Webhook.
+func (c *WebhookClient) Delete() *WebhookDelete {
+	mutation := newWebhookMutation(c.config, OpDelete)
+	return &WebhookDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *WebhookClient) DeleteOne(_m *Webhook) *WebhookDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *WebhookClient) DeleteOneID(id uint32) *WebhookDeleteOne {
+	builder := c.Delete().Where(webhook.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &WebhookDeleteOne{builder}
+}
+
+// Query returns a query builder for Webhook.
+func (c *WebhookClient) Query() *WebhookQuery {
+	return &WebhookQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeWebhook},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a Webhook entity by its id.
+func (c *WebhookClient) Get(ctx context.Context, id uint32) (*Webhook, error) {
+	return c.Query().Where(webhook.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *WebhookClient) GetX(ctx context.Context, id uint32) *Webhook {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *WebhookClient) Hooks() []Hook {
+	hooks := c.hooks.Webhook
+	return append(hooks[:len(hooks):len(hooks)], webhook.Hooks[:]...)
+}
+
+// Interceptors returns the client interceptors.
+func (c *WebhookClient) Interceptors() []Interceptor {
+	return c.inters.Webhook
+}
+
+func (c *WebhookClient) mutate(ctx context.Context, m *WebhookMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&WebhookCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&WebhookUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&WebhookUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&WebhookDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown Webhook mutation op: %q", m.Op())
+	}
+}
+
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		Api, ApiAuditLog, DataAccessAuditLog, DictEntry, DictEntryI18n, DictType,
-		DictTypeI18n, File, InternalMessage, InternalMessageCategory,
-		InternalMessageRecipient, Language, LoginAuditLog, LoginPolicy, Menu,
-		OperationAuditLog, OrgUnit, Permission, PermissionApi, PermissionAuditLog,
-		PermissionGroup, PermissionMenu, PermissionPolicy, PolicyEvaluationLog,
-		Position, Role, RoleMetadata, RolePermission, Task, Tenant, User,
-		UserCredential, UserOrgUnit, UserPosition, UserRole []ent.Hook
+		Api, ApiAuditLog, Application, DataAccessAuditLog, DictEntry, DictEntryI18n,
+		DictType, DictTypeI18n, File, IDMapping, InternalMessage,
+		InternalMessageCategory, InternalMessageRecipient, Language, LoginAuditLog,
+		LoginPolicy, Menu, OperationAuditLog, OrgUnit, Permission, PermissionApi,
+		PermissionAuditLog, PermissionGroup, PermissionMenu, PermissionPolicy,
+		PolicyEvaluationLog, Position, RiskRule, RiskRuleCondition, RiskRuleVersion,
+		Role, RoleMetadata, RolePermission, TagDefinition, TagValue, Task, Tenant,
+		User, UserCredential, UserOrgUnit, UserPosition, UserRole, UserTag,
+		Webhook []ent.Hook
 	}
 	inters struct {
-		Api, ApiAuditLog, DataAccessAuditLog, DictEntry, DictEntryI18n, DictType,
-		DictTypeI18n, File, InternalMessage, InternalMessageCategory,
-		InternalMessageRecipient, Language, LoginAuditLog, LoginPolicy, Menu,
-		OperationAuditLog, OrgUnit, Permission, PermissionApi, PermissionAuditLog,
-		PermissionGroup, PermissionMenu, PermissionPolicy, PolicyEvaluationLog,
-		Position, Role, RoleMetadata, RolePermission, Task, Tenant, User,
-		UserCredential, UserOrgUnit, UserPosition, UserRole []ent.Interceptor
+		Api, ApiAuditLog, Application, DataAccessAuditLog, DictEntry, DictEntryI18n,
+		DictType, DictTypeI18n, File, IDMapping, InternalMessage,
+		InternalMessageCategory, InternalMessageRecipient, Language, LoginAuditLog,
+		LoginPolicy, Menu, OperationAuditLog, OrgUnit, Permission, PermissionApi,
+		PermissionAuditLog, PermissionGroup, PermissionMenu, PermissionPolicy,
+		PolicyEvaluationLog, Position, RiskRule, RiskRuleCondition, RiskRuleVersion,
+		Role, RoleMetadata, RolePermission, TagDefinition, TagValue, Task, Tenant,
+		User, UserCredential, UserOrgUnit, UserPosition, UserRole, UserTag,
+		Webhook []ent.Interceptor
 	}
 )

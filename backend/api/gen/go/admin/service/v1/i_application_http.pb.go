@@ -94,7 +94,7 @@ func _ApplicationService_GetApplication0_HTTP_Handler(srv ApplicationServiceHTTP
 func _ApplicationService_CreateApplication0_HTTP_Handler(srv ApplicationServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in v11.CreateApplicationRequest
-		if err := ctx.Bind(&in.App); err != nil {
+		if err := ctx.Bind(&in.Data); err != nil {
 			return err
 		}
 		if err := ctx.BindQuery(&in); err != nil {
@@ -116,7 +116,7 @@ func _ApplicationService_CreateApplication0_HTTP_Handler(srv ApplicationServiceH
 func _ApplicationService_UpdateApplication0_HTTP_Handler(srv ApplicationServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in v11.UpdateApplicationRequest
-		if err := ctx.Bind(&in.App); err != nil {
+		if err := ctx.Bind(&in.Data); err != nil {
 			return err
 		}
 		if err := ctx.BindQuery(&in); err != nil {
@@ -188,7 +188,7 @@ func (c *ApplicationServiceHTTPClientImpl) CreateApplication(ctx context.Context
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationApplicationServiceCreateApplication))
 	opts = append(opts, http.PathTemplate(pattern))
-	err := c.cc.Invoke(ctx, "POST", path, in.App, &out, opts...)
+	err := c.cc.Invoke(ctx, "POST", path, in.Data, &out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -244,7 +244,7 @@ func (c *ApplicationServiceHTTPClientImpl) UpdateApplication(ctx context.Context
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationApplicationServiceUpdateApplication))
 	opts = append(opts, http.PathTemplate(pattern))
-	err := c.cc.Invoke(ctx, "PUT", path, in.App, &out, opts...)
+	err := c.cc.Invoke(ctx, "PUT", path, in.Data, &out, opts...)
 	if err != nil {
 		return nil, err
 	}

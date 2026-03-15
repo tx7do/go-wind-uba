@@ -1,0 +1,73 @@
+﻿syntax = "proto3";
+
+package uba.service.v1;
+
+// 风险等级（用于标识事件或用户的风险级别）
+enum RiskLevel {
+  // 未指定风险等级
+  RISK_LEVEL_UNSPECIFIED = 0;
+
+  // 正常风险
+  RISK_LEVEL_NORMAL = 1;
+  // 可疑风险
+  RISK_LEVEL_SUSPICIOUS = 2;
+  // 高风险
+  RISK_LEVEL_HIGH = 3;
+  // 危急风险
+  RISK_LEVEL_CRITICAL = 4;
+}
+
+// 事件分类（用于标识事件所属的业务类型）
+enum EventCategory {
+  // 未指定事件分类
+  EVENT_CATEGORY_UNSPECIFIED = 0;
+
+  // 认证相关事件
+  EVENT_CATEGORY_AUTH = 1;
+  // 支付相关事件
+  EVENT_CATEGORY_PAY = 2;
+  // 游戏相关事件
+  EVENT_CATEGORY_GAME = 3;
+  // 内容相关事件
+  EVENT_CATEGORY_CONTENT = 4;
+  // 安全相关事件
+  EVENT_CATEGORY_SECURITY = 5;
+  // 系统相关事件
+  EVENT_CATEGORY_SYSTEM = 6;
+}
+
+// 平台类型（用于标识应用或事件发生的平台）
+enum Platform {
+  // 未指定平台类型
+  PLATFORM_UNSPECIFIED = 0;
+
+  // Web 平台
+  PLATFORM_WEB = 1;
+  // iOS 平台
+  PLATFORM_IOS = 2;
+  // Android 平台
+  PLATFORM_ANDROID = 3;
+  // Windows 平台
+  PLATFORM_WINDOWS = 4;
+  // macOS 平台
+  PLATFORM_MACOS = 5;
+  // Linux 平台
+  PLATFORM_LINUX = 6;
+  // 小程序平台
+  PLATFORM_MINI_PROGRAM = 7;
+}
+
+// 操作结果（用于标识操作的执行结果状态）
+enum OpResult {
+  // 未指定操作结果
+  OP_RESULT_UNSPECIFIED = 0;
+
+  // 操作成功
+  OP_RESULT_SUCCESS = 1;
+  // 操作失败
+  OP_RESULT_FAILED = 2;
+  // 操作超时
+  OP_RESULT_TIMEOUT = 3;
+  // 操作部分成功
+  OP_RESULT_PARTIAL = 4;
+}

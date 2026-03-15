@@ -16,6 +16,8 @@ type Tx struct {
 	Api *APIClient
 	// ApiAuditLog is the client for interacting with the ApiAuditLog builders.
 	ApiAuditLog *ApiAuditLogClient
+	// Application is the client for interacting with the Application builders.
+	Application *ApplicationClient
 	// DataAccessAuditLog is the client for interacting with the DataAccessAuditLog builders.
 	DataAccessAuditLog *DataAccessAuditLogClient
 	// DictEntry is the client for interacting with the DictEntry builders.
@@ -28,6 +30,8 @@ type Tx struct {
 	DictTypeI18n *DictTypeI18nClient
 	// File is the client for interacting with the File builders.
 	File *FileClient
+	// IDMapping is the client for interacting with the IDMapping builders.
+	IDMapping *IDMappingClient
 	// InternalMessage is the client for interacting with the InternalMessage builders.
 	InternalMessage *InternalMessageClient
 	// InternalMessageCategory is the client for interacting with the InternalMessageCategory builders.
@@ -62,12 +66,22 @@ type Tx struct {
 	PolicyEvaluationLog *PolicyEvaluationLogClient
 	// Position is the client for interacting with the Position builders.
 	Position *PositionClient
+	// RiskRule is the client for interacting with the RiskRule builders.
+	RiskRule *RiskRuleClient
+	// RiskRuleCondition is the client for interacting with the RiskRuleCondition builders.
+	RiskRuleCondition *RiskRuleConditionClient
+	// RiskRuleVersion is the client for interacting with the RiskRuleVersion builders.
+	RiskRuleVersion *RiskRuleVersionClient
 	// Role is the client for interacting with the Role builders.
 	Role *RoleClient
 	// RoleMetadata is the client for interacting with the RoleMetadata builders.
 	RoleMetadata *RoleMetadataClient
 	// RolePermission is the client for interacting with the RolePermission builders.
 	RolePermission *RolePermissionClient
+	// TagDefinition is the client for interacting with the TagDefinition builders.
+	TagDefinition *TagDefinitionClient
+	// TagValue is the client for interacting with the TagValue builders.
+	TagValue *TagValueClient
 	// Task is the client for interacting with the Task builders.
 	Task *TaskClient
 	// Tenant is the client for interacting with the Tenant builders.
@@ -82,6 +96,10 @@ type Tx struct {
 	UserPosition *UserPositionClient
 	// UserRole is the client for interacting with the UserRole builders.
 	UserRole *UserRoleClient
+	// UserTag is the client for interacting with the UserTag builders.
+	UserTag *UserTagClient
+	// Webhook is the client for interacting with the Webhook builders.
+	Webhook *WebhookClient
 
 	// lazily loaded.
 	client     *Client
@@ -215,12 +233,14 @@ func (tx *Tx) Client() *Client {
 func (tx *Tx) init() {
 	tx.Api = NewAPIClient(tx.config)
 	tx.ApiAuditLog = NewApiAuditLogClient(tx.config)
+	tx.Application = NewApplicationClient(tx.config)
 	tx.DataAccessAuditLog = NewDataAccessAuditLogClient(tx.config)
 	tx.DictEntry = NewDictEntryClient(tx.config)
 	tx.DictEntryI18n = NewDictEntryI18nClient(tx.config)
 	tx.DictType = NewDictTypeClient(tx.config)
 	tx.DictTypeI18n = NewDictTypeI18nClient(tx.config)
 	tx.File = NewFileClient(tx.config)
+	tx.IDMapping = NewIDMappingClient(tx.config)
 	tx.InternalMessage = NewInternalMessageClient(tx.config)
 	tx.InternalMessageCategory = NewInternalMessageCategoryClient(tx.config)
 	tx.InternalMessageRecipient = NewInternalMessageRecipientClient(tx.config)
@@ -238,9 +258,14 @@ func (tx *Tx) init() {
 	tx.PermissionPolicy = NewPermissionPolicyClient(tx.config)
 	tx.PolicyEvaluationLog = NewPolicyEvaluationLogClient(tx.config)
 	tx.Position = NewPositionClient(tx.config)
+	tx.RiskRule = NewRiskRuleClient(tx.config)
+	tx.RiskRuleCondition = NewRiskRuleConditionClient(tx.config)
+	tx.RiskRuleVersion = NewRiskRuleVersionClient(tx.config)
 	tx.Role = NewRoleClient(tx.config)
 	tx.RoleMetadata = NewRoleMetadataClient(tx.config)
 	tx.RolePermission = NewRolePermissionClient(tx.config)
+	tx.TagDefinition = NewTagDefinitionClient(tx.config)
+	tx.TagValue = NewTagValueClient(tx.config)
 	tx.Task = NewTaskClient(tx.config)
 	tx.Tenant = NewTenantClient(tx.config)
 	tx.User = NewUserClient(tx.config)
@@ -248,6 +273,8 @@ func (tx *Tx) init() {
 	tx.UserOrgUnit = NewUserOrgUnitClient(tx.config)
 	tx.UserPosition = NewUserPositionClient(tx.config)
 	tx.UserRole = NewUserRoleClient(tx.config)
+	tx.UserTag = NewUserTagClient(tx.config)
+	tx.Webhook = NewWebhookClient(tx.config)
 }
 
 // txDriver wraps the given dialect.Tx with a nop dialect.Driver implementation.

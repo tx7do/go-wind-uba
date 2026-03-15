@@ -10,6 +10,7 @@ import (
 	"github.com/go-kratos/kratos/v2"
 	"github.com/tx7do/kratos-bootstrap/bootstrap"
 	"go-wind-uba/app/core/service/internal/data"
+	"go-wind-uba/app/core/service/internal/data/client"
 	"go-wind-uba/app/core/service/internal/server"
 	"go-wind-uba/app/core/service/internal/service"
 )
@@ -25,13 +26,13 @@ import (
 func initApp(context *bootstrap.Context) (*kratos.App, func(), error) {
 	v := server.NewGrpcMiddleware(context)
 	authenticatorOption := data.NewAuthenticatorConfig(context)
-	client, cleanup, err := data.NewRedisClient(context)
+	redisClient, cleanup, err := client.NewRedisClient(context)
 	if err != nil {
 		return nil, nil, err
 	}
-	userTokenCache := data.NewUserTokenCache(context, client)
+	userTokenCache := data.NewUserTokenCache(context, redisClient)
 	authenticator := data.NewAuthenticator(context, authenticatorOption, userTokenCache)
-	entClient, cleanup2, err := data.NewEntClient(context)
+	entClient, cleanup2, err := client.NewEntClient(context)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
@@ -55,7 +56,7 @@ func initApp(context *bootstrap.Context) (*kratos.App, func(), error) {
 	taskRepo := data.NewTaskRepo(context, entClient)
 	taskService := service.NewTaskService(context, taskRepo, userRepo)
 	fileRepo := data.NewFileRepo(context, entClient)
-	minIOClient := data.NewMinIoClient(context)
+	minIOClient := client.NewMinIoClient(context)
 	fileService := service.NewFileService(context, fileRepo, minIOClient)
 	dictTypeI18nRepo := data.NewDictTypeI18nRepo(context, entClient)
 	dictTypeRepo := data.NewDictTypeRepo(context, entClient, dictTypeI18nRepo)

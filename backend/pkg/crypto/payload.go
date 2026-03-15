@@ -14,7 +14,7 @@ const (
 
 // EncryptPayload encrypts the entire payload and returns a map with encrypted data
 // This is used to store encrypted configuration in Redis/Asynq
-func EncryptPayload(payload map[string]interface{}) (map[string]interface{}, error) {
+func EncryptPayload(payload map[string]any) (map[string]any, error) {
 	// Marshal the payload to JSON
 	jsonData, err := json.Marshal(payload)
 	if err != nil {
@@ -28,7 +28,7 @@ func EncryptPayload(payload map[string]interface{}) (map[string]interface{}, err
 	}
 
 	// Return a map with encrypted config and metadata
-	result := map[string]interface{}{
+	result := map[string]any{
 		EncryptedConfigKey: encrypted,
 		IsEncryptedKey:     true,
 	}
@@ -46,7 +46,7 @@ func EncryptPayload(payload map[string]interface{}) (map[string]interface{}, err
 
 // DecryptPayload decrypts the payload if it contains encrypted configuration
 // Returns the decrypted payload map
-func DecryptPayload(payload map[string]interface{}) (map[string]interface{}, error) {
+func DecryptPayload(payload map[string]any) (map[string]any, error) {
 	// Check if payload is encrypted
 	isEncrypted, ok := payload[IsEncryptedKey].(bool)
 	if !ok || !isEncrypted {
@@ -67,7 +67,7 @@ func DecryptPayload(payload map[string]interface{}) (map[string]interface{}, err
 	}
 
 	// Unmarshal back to map
-	var result map[string]interface{}
+	var result map[string]any
 	if err := json.Unmarshal([]byte(decrypted), &result); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal decrypted payload: %w", err)
 	}
@@ -76,7 +76,7 @@ func DecryptPayload(payload map[string]interface{}) (map[string]interface{}, err
 }
 
 // MustEncryptPayload encrypts payload and panics on error (useful for testing)
-func MustEncryptPayload(payload map[string]interface{}) map[string]interface{} {
+func MustEncryptPayload(payload map[string]any) map[string]any {
 	encrypted, err := EncryptPayload(payload)
 	if err != nil {
 		panic(err)
@@ -85,7 +85,7 @@ func MustEncryptPayload(payload map[string]interface{}) map[string]interface{} {
 }
 
 // MustDecryptPayload decrypts payload and panics on error (useful for testing)
-func MustDecryptPayload(payload map[string]interface{}) map[string]interface{} {
+func MustDecryptPayload(payload map[string]any) map[string]any {
 	decrypted, err := DecryptPayload(payload)
 	if err != nil {
 		panic(err)
@@ -94,7 +94,7 @@ func MustDecryptPayload(payload map[string]interface{}) map[string]interface{} {
 }
 
 // HasEncryptedPayload checks if the payload contains encrypted configuration
-func HasEncryptedPayload(payload map[string]interface{}) bool {
+func HasEncryptedPayload(payload map[string]any) bool {
 	isEncrypted, ok := payload[IsEncryptedKey].(bool)
 	return ok && isEncrypted
 }

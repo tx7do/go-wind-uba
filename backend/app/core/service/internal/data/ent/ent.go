@@ -8,12 +8,14 @@ import (
 	"fmt"
 	"go-wind-uba/app/core/service/internal/data/ent/api"
 	"go-wind-uba/app/core/service/internal/data/ent/apiauditlog"
+	"go-wind-uba/app/core/service/internal/data/ent/application"
 	"go-wind-uba/app/core/service/internal/data/ent/dataaccessauditlog"
 	"go-wind-uba/app/core/service/internal/data/ent/dictentry"
 	"go-wind-uba/app/core/service/internal/data/ent/dictentryi18n"
 	"go-wind-uba/app/core/service/internal/data/ent/dicttype"
 	"go-wind-uba/app/core/service/internal/data/ent/dicttypei18n"
 	"go-wind-uba/app/core/service/internal/data/ent/file"
+	"go-wind-uba/app/core/service/internal/data/ent/idmapping"
 	"go-wind-uba/app/core/service/internal/data/ent/internalmessage"
 	"go-wind-uba/app/core/service/internal/data/ent/internalmessagecategory"
 	"go-wind-uba/app/core/service/internal/data/ent/internalmessagerecipient"
@@ -31,9 +33,14 @@ import (
 	"go-wind-uba/app/core/service/internal/data/ent/permissionpolicy"
 	"go-wind-uba/app/core/service/internal/data/ent/policyevaluationlog"
 	"go-wind-uba/app/core/service/internal/data/ent/position"
+	"go-wind-uba/app/core/service/internal/data/ent/riskrule"
+	"go-wind-uba/app/core/service/internal/data/ent/riskrulecondition"
+	"go-wind-uba/app/core/service/internal/data/ent/riskruleversion"
 	"go-wind-uba/app/core/service/internal/data/ent/role"
 	"go-wind-uba/app/core/service/internal/data/ent/rolemetadata"
 	"go-wind-uba/app/core/service/internal/data/ent/rolepermission"
+	"go-wind-uba/app/core/service/internal/data/ent/tagdefinition"
+	"go-wind-uba/app/core/service/internal/data/ent/tagvalue"
 	"go-wind-uba/app/core/service/internal/data/ent/task"
 	"go-wind-uba/app/core/service/internal/data/ent/tenant"
 	"go-wind-uba/app/core/service/internal/data/ent/user"
@@ -41,6 +48,8 @@ import (
 	"go-wind-uba/app/core/service/internal/data/ent/userorgunit"
 	"go-wind-uba/app/core/service/internal/data/ent/userposition"
 	"go-wind-uba/app/core/service/internal/data/ent/userrole"
+	"go-wind-uba/app/core/service/internal/data/ent/usertag"
+	"go-wind-uba/app/core/service/internal/data/ent/webhook"
 	"reflect"
 	"sync"
 
@@ -109,12 +118,14 @@ func checkColumn(t, c string) error {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
 			api.Table:                      api.ValidColumn,
 			apiauditlog.Table:              apiauditlog.ValidColumn,
+			application.Table:              application.ValidColumn,
 			dataaccessauditlog.Table:       dataaccessauditlog.ValidColumn,
 			dictentry.Table:                dictentry.ValidColumn,
 			dictentryi18n.Table:            dictentryi18n.ValidColumn,
 			dicttype.Table:                 dicttype.ValidColumn,
 			dicttypei18n.Table:             dicttypei18n.ValidColumn,
 			file.Table:                     file.ValidColumn,
+			idmapping.Table:                idmapping.ValidColumn,
 			internalmessage.Table:          internalmessage.ValidColumn,
 			internalmessagecategory.Table:  internalmessagecategory.ValidColumn,
 			internalmessagerecipient.Table: internalmessagerecipient.ValidColumn,
@@ -132,9 +143,14 @@ func checkColumn(t, c string) error {
 			permissionpolicy.Table:         permissionpolicy.ValidColumn,
 			policyevaluationlog.Table:      policyevaluationlog.ValidColumn,
 			position.Table:                 position.ValidColumn,
+			riskrule.Table:                 riskrule.ValidColumn,
+			riskrulecondition.Table:        riskrulecondition.ValidColumn,
+			riskruleversion.Table:          riskruleversion.ValidColumn,
 			role.Table:                     role.ValidColumn,
 			rolemetadata.Table:             rolemetadata.ValidColumn,
 			rolepermission.Table:           rolepermission.ValidColumn,
+			tagdefinition.Table:            tagdefinition.ValidColumn,
+			tagvalue.Table:                 tagvalue.ValidColumn,
 			task.Table:                     task.ValidColumn,
 			tenant.Table:                   tenant.ValidColumn,
 			user.Table:                     user.ValidColumn,
@@ -142,6 +158,8 @@ func checkColumn(t, c string) error {
 			userorgunit.Table:              userorgunit.ValidColumn,
 			userposition.Table:             userposition.ValidColumn,
 			userrole.Table:                 userrole.ValidColumn,
+			usertag.Table:                  usertag.ValidColumn,
+			webhook.Table:                  webhook.ValidColumn,
 		})
 	})
 	return columnCheck(t, c)

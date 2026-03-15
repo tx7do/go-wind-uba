@@ -30,7 +30,7 @@ service ApplicationService {
   rpc CreateApplication (uba.service.v1.CreateApplicationRequest) returns (uba.service.v1.Application) {
     option (google.api.http) = {
       post: "/admin/v1/apps"
-      body: "app"
+      body: "data"
     };
   }
 
@@ -38,7 +38,7 @@ service ApplicationService {
   rpc UpdateApplication (uba.service.v1.UpdateApplicationRequest) returns (uba.service.v1.Application) {
     option (google.api.http) = {
       put: "/admin/v1/apps/{id}"
-      body: "app"
+      body: "data"
     };
   }
 

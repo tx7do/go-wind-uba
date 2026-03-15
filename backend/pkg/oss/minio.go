@@ -180,32 +180,6 @@ func (c *MinIOClient) ListFile(ctx context.Context, req *storageV1.ListOssFileRe
 	return resp, nil
 }
 
-// ListFileForUEditor 获取文件夹下面的文件列表
-func (c *MinIOClient) ListFileForUEditor(ctx context.Context, bucketName string, folder string) (*storageV1.UEditorResponse, error) {
-	resp := &storageV1.UEditorResponse{
-		State: trans.Ptr("SUCCESS"),
-		List:  make([]*storageV1.UEditorResponse_Item, 0),
-	}
-	for object := range c.mc.ListObjects(ctx,
-		bucketName,
-		minio.ListObjectsOptions{
-			Prefix:    folder,
-			Recursive: true,
-		},
-	) {
-		//fmt.Printf("%+v\n", object)
-		resp.List = append(resp.List, &storageV1.UEditorResponse_Item{
-			Url:   "/" + bucketName + "/" + folder + object.Key,
-			Mtime: object.LastModified.Unix(),
-		})
-	}
-
-	resp.Start = trans.Ptr(int32(0))
-	resp.Total = trans.Ptr(uint64(len(resp.List)))
-
-	return resp, nil
-}
-
 // DeleteFile 删除一个文件
 func (c *MinIOClient) DeleteFile(ctx context.Context, bucketName, objectName string) error {
 	if bucketName == "" {

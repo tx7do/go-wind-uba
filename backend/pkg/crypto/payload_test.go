@@ -11,11 +11,11 @@ func TestEncryptDecryptPayload(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		payload map[string]interface{}
+		payload map[string]any
 	}{
 		{
 			name: "email configuration",
-			payload: map[string]interface{}{
+			payload: map[string]any{
 				"host":     "imap.gmail.com",
 				"port":     993,
 				"username": "user@example.com",
@@ -25,7 +25,7 @@ func TestEncryptDecryptPayload(t *testing.T) {
 		},
 		{
 			name: "api credentials",
-			payload: map[string]interface{}{
+			payload: map[string]any{
 				"api_url":    "https://api.example.com",
 				"api_key":    "sk-1234567890abcdef",
 				"api_secret": "very-secret-key",
@@ -33,19 +33,19 @@ func TestEncryptDecryptPayload(t *testing.T) {
 		},
 		{
 			name: "mixed types",
-			payload: map[string]interface{}{
+			payload: map[string]any{
 				"string":  "value",
 				"number":  42,
 				"float":   3.14,
 				"boolean": true,
-				"nested": map[string]interface{}{
+				"nested": map[string]any{
 					"key": "value",
 				},
 			},
 		},
 		{
 			name: "with task metadata",
-			payload: map[string]interface{}{
+			payload: map[string]any{
 				"task_id":   123,
 				"task_type": "email_processor",
 				"username":  "admin",
@@ -104,7 +104,7 @@ func TestEncryptDecryptPayload(t *testing.T) {
 
 func TestDecryptPayload_Unencrypted(t *testing.T) {
 	// Test backward compatibility with unencrypted payloads
-	payload := map[string]interface{}{
+	payload := map[string]any{
 		"host":     "imap.gmail.com",
 		"username": "user",
 		"password": "pass",
@@ -130,12 +130,12 @@ func TestDecryptPayload_Unencrypted(t *testing.T) {
 func TestHasEncryptedPayload(t *testing.T) {
 	tests := []struct {
 		name    string
-		payload map[string]interface{}
+		payload map[string]any
 		want    bool
 	}{
 		{
 			name: "encrypted payload",
-			payload: map[string]interface{}{
+			payload: map[string]any{
 				IsEncryptedKey:     true,
 				EncryptedConfigKey: "enc:data",
 			},
@@ -143,7 +143,7 @@ func TestHasEncryptedPayload(t *testing.T) {
 		},
 		{
 			name: "unencrypted payload",
-			payload: map[string]interface{}{
+			payload: map[string]any{
 				"host":     "imap.gmail.com",
 				"username": "user",
 			},
@@ -151,7 +151,7 @@ func TestHasEncryptedPayload(t *testing.T) {
 		},
 		{
 			name:    "empty payload",
-			payload: map[string]interface{}{},
+			payload: map[string]any{},
 			want:    false,
 		},
 	}
@@ -168,7 +168,7 @@ func TestHasEncryptedPayload(t *testing.T) {
 func TestEncryptPayload_PreservesMetadata(t *testing.T) {
 	InitGlobalEncryptor("test-key", true)
 
-	payload := map[string]interface{}{
+	payload := map[string]any{
 		"task_id":   uint32(123),
 		"task_type": "email_processor",
 		"username":  "admin",
@@ -224,9 +224,9 @@ func compareValues(expected, actual interface{}) bool {
 		if f, ok := actual.(float64); ok {
 			return float64(e) == f
 		}
-	case map[string]interface{}:
+	case map[string]any:
 		// Handle nested maps
-		a, ok := actual.(map[string]interface{})
+		a, ok := actual.(map[string]any)
 		if !ok {
 			return false
 		}
@@ -248,7 +248,7 @@ func compareValues(expected, actual interface{}) bool {
 func BenchmarkEncryptPayload(b *testing.B) {
 	InitGlobalEncryptor("benchmark-key", true)
 
-	payload := map[string]interface{}{
+	payload := map[string]any{
 		"host":     "imap.gmail.com",
 		"port":     993,
 		"username": "user@example.com",
@@ -265,7 +265,7 @@ func BenchmarkEncryptPayload(b *testing.B) {
 func BenchmarkDecryptPayload(b *testing.B) {
 	InitGlobalEncryptor("benchmark-key", true)
 
-	payload := map[string]interface{}{
+	payload := map[string]any{
 		"host":     "imap.gmail.com",
 		"port":     993,
 		"username": "user@example.com",

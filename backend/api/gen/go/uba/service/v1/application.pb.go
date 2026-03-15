@@ -12,6 +12,7 @@ import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
+	fieldmaskpb "google.golang.org/protobuf/types/known/fieldmaskpb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	reflect "reflect"
 	sync "sync"
@@ -25,21 +26,77 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// 应用
+type Application_Status int32
+
+const (
+	Application_STATUS_UNSPECIFIED Application_Status = 0
+	Application_ON                 Application_Status = 1
+	Application_OFF                Application_Status = 2
+)
+
+// Enum value maps for Application_Status.
+var (
+	Application_Status_name = map[int32]string{
+		0: "STATUS_UNSPECIFIED",
+		1: "ON",
+		2: "OFF",
+	}
+	Application_Status_value = map[string]int32{
+		"STATUS_UNSPECIFIED": 0,
+		"ON":                 1,
+		"OFF":                2,
+	}
+)
+
+func (x Application_Status) Enum() *Application_Status {
+	p := new(Application_Status)
+	*p = x
+	return p
+}
+
+func (x Application_Status) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (Application_Status) Descriptor() protoreflect.EnumDescriptor {
+	return file_uba_service_v1_application_proto_enumTypes[0].Descriptor()
+}
+
+func (Application_Status) Type() protoreflect.EnumType {
+	return &file_uba_service_v1_application_proto_enumTypes[0]
+}
+
+func (x Application_Status) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use Application_Status.Descriptor instead.
+func (Application_Status) EnumDescriptor() ([]byte, []int) {
+	return file_uba_service_v1_application_proto_rawDescGZIP(), []int{0, 0}
+}
+
+// UBA应用
 type Application struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            uint32                 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`                     // ID
-	Name          *string                `protobuf:"bytes,2,opt,name=name,proto3,oneof" json:"name,omitempty"`            // 应用名称
-	AppId         *string                `protobuf:"bytes,3,opt,name=appId,proto3,oneof" json:"appId,omitempty"`          // 应用ID
-	AppKey        *string                `protobuf:"bytes,4,opt,name=appKey,proto3,oneof" json:"appKey,omitempty"`        // 应用密钥
-	Status        *string                `protobuf:"bytes,5,opt,name=status,proto3,oneof" json:"status,omitempty"`        // 应用账号状态
-	CreatorId     *uint32                `protobuf:"varint,6,opt,name=creatorId,proto3,oneof" json:"creatorId,omitempty"` // 创建者ID
-	OwnerId       *uint32                `protobuf:"varint,7,opt,name=ownerId,proto3,oneof" json:"ownerId,omitempty"`     // 拥有者ID
-	Remark        *string                `protobuf:"bytes,8,opt,name=remark,proto3,oneof" json:"remark,omitempty"`        // 个人描述
-	KeepMonth     *uint32                `protobuf:"varint,9,opt,name=keepMonth,proto3,oneof" json:"keepMonth,omitempty"` // 数据保存多少个月
-	CreateTime    *timestamppb.Timestamp `protobuf:"bytes,30,opt,name=create_time,json=createTime,proto3,oneof" json:"create_time,omitempty"`
-	UpdateTime    *timestamppb.Timestamp `protobuf:"bytes,31,opt,name=update_time,json=updateTime,proto3,oneof" json:"update_time,omitempty"`
-	DeleteTime    *timestamppb.Timestamp `protobuf:"bytes,32,opt,name=delete_time,json=deleteTime,proto3,oneof" json:"delete_time,omitempty"`
+	Id            uint32                 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`                                                      // ID
+	Name          *string                `protobuf:"bytes,2,opt,name=name,proto3,oneof" json:"name,omitempty"`                                             // UBA应用名称
+	AppId         *string                `protobuf:"bytes,3,opt,name=app_id,json=appId,proto3,oneof" json:"app_id,omitempty"`                              // UBA应用唯一标识（上报时使用）
+	AppKey        *string                `protobuf:"bytes,4,opt,name=app_key,json=appKey,proto3,oneof" json:"app_key,omitempty"`                           // 密钥（签名/鉴权）
+	AppSecret     *string                `protobuf:"bytes,5,opt,name=app_secret,json=appSecret,proto3,oneof" json:"app_secret,omitempty"`                  // 密钥
+	Type          *Platform              `protobuf:"varint,6,opt,name=type,proto3,enum=uba.service.v1.Platform,oneof" json:"type,omitempty"`               // 应用类型
+	Status        *Application_Status    `protobuf:"varint,7,opt,name=status,proto3,enum=uba.service.v1.Application_Status,oneof" json:"status,omitempty"` // 应用状态
+	Remark        *string                `protobuf:"bytes,8,opt,name=remark,proto3,oneof" json:"remark,omitempty"`                                         // 备注信息
+	Desensitize   *bool                  `protobuf:"varint,9,opt,name=desensitize,proto3,oneof" json:"desensitize,omitempty"`                              // 是否开启脱敏
+	TenantId      *uint32                `protobuf:"varint,10,opt,name=tenant_id,json=tenantId,proto3,oneof" json:"tenant_id,omitempty"`                   // 租户ID
+	TenantName    *string                `protobuf:"bytes,11,opt,name=tenant_name,json=tenantName,proto3,oneof" json:"tenant_name,omitempty"`              // 租户名称
+	WebhookUrl    *string                `protobuf:"bytes,12,opt,name=webhook_url,json=webhookUrl,proto3,oneof" json:"webhook_url,omitempty"`              // 事件回调 URL
+	WebhookSecret *string                `protobuf:"bytes,13,opt,name=webhook_secret,json=webhookSecret,proto3,oneof" json:"webhook_secret,omitempty"`     // 回调签名密钥
+	CreatedBy     *uint32                `protobuf:"varint,100,opt,name=created_by,json=createdBy,proto3,oneof" json:"created_by,omitempty"`               // 创建者用户ID
+	UpdatedBy     *uint32                `protobuf:"varint,101,opt,name=updated_by,json=updatedBy,proto3,oneof" json:"updated_by,omitempty"`               // 更新者用户ID
+	DeletedBy     *uint32                `protobuf:"varint,102,opt,name=deleted_by,json=deletedBy,proto3,oneof" json:"deleted_by,omitempty"`               // 删除者用户ID
+	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,200,opt,name=created_at,json=createdAt,proto3,oneof" json:"created_at,omitempty"`                // 创建时间
+	UpdatedAt     *timestamppb.Timestamp `protobuf:"bytes,201,opt,name=updated_at,json=updatedAt,proto3,oneof" json:"updated_at,omitempty"`                // 更新时间
+	DeletedAt     *timestamppb.Timestamp `protobuf:"bytes,202,opt,name=deleted_at,json=deletedAt,proto3,oneof" json:"deleted_at,omitempty"`                // 删除时间
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -102,25 +159,25 @@ func (x *Application) GetAppKey() string {
 	return ""
 }
 
-func (x *Application) GetStatus() string {
-	if x != nil && x.Status != nil {
-		return *x.Status
+func (x *Application) GetAppSecret() string {
+	if x != nil && x.AppSecret != nil {
+		return *x.AppSecret
 	}
 	return ""
 }
 
-func (x *Application) GetCreatorId() uint32 {
-	if x != nil && x.CreatorId != nil {
-		return *x.CreatorId
+func (x *Application) GetType() Platform {
+	if x != nil && x.Type != nil {
+		return *x.Type
 	}
-	return 0
+	return Platform_PLATFORM_UNSPECIFIED
 }
 
-func (x *Application) GetOwnerId() uint32 {
-	if x != nil && x.OwnerId != nil {
-		return *x.OwnerId
+func (x *Application) GetStatus() Application_Status {
+	if x != nil && x.Status != nil {
+		return *x.Status
 	}
-	return 0
+	return Application_STATUS_UNSPECIFIED
 }
 
 func (x *Application) GetRemark() string {
@@ -130,39 +187,87 @@ func (x *Application) GetRemark() string {
 	return ""
 }
 
-func (x *Application) GetKeepMonth() uint32 {
-	if x != nil && x.KeepMonth != nil {
-		return *x.KeepMonth
+func (x *Application) GetDesensitize() bool {
+	if x != nil && x.Desensitize != nil {
+		return *x.Desensitize
+	}
+	return false
+}
+
+func (x *Application) GetTenantId() uint32 {
+	if x != nil && x.TenantId != nil {
+		return *x.TenantId
 	}
 	return 0
 }
 
-func (x *Application) GetCreateTime() *timestamppb.Timestamp {
+func (x *Application) GetTenantName() string {
+	if x != nil && x.TenantName != nil {
+		return *x.TenantName
+	}
+	return ""
+}
+
+func (x *Application) GetWebhookUrl() string {
+	if x != nil && x.WebhookUrl != nil {
+		return *x.WebhookUrl
+	}
+	return ""
+}
+
+func (x *Application) GetWebhookSecret() string {
+	if x != nil && x.WebhookSecret != nil {
+		return *x.WebhookSecret
+	}
+	return ""
+}
+
+func (x *Application) GetCreatedBy() uint32 {
+	if x != nil && x.CreatedBy != nil {
+		return *x.CreatedBy
+	}
+	return 0
+}
+
+func (x *Application) GetUpdatedBy() uint32 {
+	if x != nil && x.UpdatedBy != nil {
+		return *x.UpdatedBy
+	}
+	return 0
+}
+
+func (x *Application) GetDeletedBy() uint32 {
+	if x != nil && x.DeletedBy != nil {
+		return *x.DeletedBy
+	}
+	return 0
+}
+
+func (x *Application) GetCreatedAt() *timestamppb.Timestamp {
 	if x != nil {
-		return x.CreateTime
+		return x.CreatedAt
 	}
 	return nil
 }
 
-func (x *Application) GetUpdateTime() *timestamppb.Timestamp {
+func (x *Application) GetUpdatedAt() *timestamppb.Timestamp {
 	if x != nil {
-		return x.UpdateTime
+		return x.UpdatedAt
 	}
 	return nil
 }
 
-func (x *Application) GetDeleteTime() *timestamppb.Timestamp {
+func (x *Application) GetDeletedAt() *timestamppb.Timestamp {
 	if x != nil {
-		return x.DeleteTime
+		return x.DeletedAt
 	}
 	return nil
 }
 
-// 获取应用列表 - 答复
+// 获取UBA应用列表 - 答复
 type ListApplicationResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Items         []*Application         `protobuf:"bytes,1,rep,name=items,proto3" json:"items,omitempty"`
-	Total         int32                  `protobuf:"varint,2,opt,name=total,proto3" json:"total,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -204,17 +309,14 @@ func (x *ListApplicationResponse) GetItems() []*Application {
 	return nil
 }
 
-func (x *ListApplicationResponse) GetTotal() int32 {
-	if x != nil {
-		return x.Total
-	}
-	return 0
-}
-
-// 获取应用数据 - 请求
+// 获取UBA应用数据 - 请求
 type GetApplicationRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            uint32                 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Types that are valid to be assigned to QueryBy:
+	//
+	//	*GetApplicationRequest_Id
+	QueryBy       isGetApplicationRequest_QueryBy `protobuf_oneof:"query_by"`
+	ViewMask      *fieldmaskpb.FieldMask          `protobuf:"bytes,100,opt,name=view_mask,json=viewMask,proto3,oneof" json:"view_mask,omitempty"` // 视图字段过滤器，用于控制返回的字段
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -249,18 +351,43 @@ func (*GetApplicationRequest) Descriptor() ([]byte, []int) {
 	return file_uba_service_v1_application_proto_rawDescGZIP(), []int{2}
 }
 
+func (x *GetApplicationRequest) GetQueryBy() isGetApplicationRequest_QueryBy {
+	if x != nil {
+		return x.QueryBy
+	}
+	return nil
+}
+
 func (x *GetApplicationRequest) GetId() uint32 {
 	if x != nil {
-		return x.Id
+		if x, ok := x.QueryBy.(*GetApplicationRequest_Id); ok {
+			return x.Id
+		}
 	}
 	return 0
 }
 
-// 创建应用 - 请求
+func (x *GetApplicationRequest) GetViewMask() *fieldmaskpb.FieldMask {
+	if x != nil {
+		return x.ViewMask
+	}
+	return nil
+}
+
+type isGetApplicationRequest_QueryBy interface {
+	isGetApplicationRequest_QueryBy()
+}
+
+type GetApplicationRequest_Id struct {
+	Id uint32 `protobuf:"varint,1,opt,name=id,proto3,oneof"` // ID
+}
+
+func (*GetApplicationRequest_Id) isGetApplicationRequest_QueryBy() {}
+
+// 创建UBA应用 - 请求
 type CreateApplicationRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	App           *Application           `protobuf:"bytes,1,opt,name=app,proto3" json:"app,omitempty"`
-	OperatorId    uint32                 `protobuf:"varint,2,opt,name=operatorId,proto3" json:"operatorId,omitempty"`
+	Data          *Application           `protobuf:"bytes,1,opt,name=data,proto3" json:"data,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -295,26 +422,20 @@ func (*CreateApplicationRequest) Descriptor() ([]byte, []int) {
 	return file_uba_service_v1_application_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *CreateApplicationRequest) GetApp() *Application {
+func (x *CreateApplicationRequest) GetData() *Application {
 	if x != nil {
-		return x.App
+		return x.Data
 	}
 	return nil
 }
 
-func (x *CreateApplicationRequest) GetOperatorId() uint32 {
-	if x != nil {
-		return x.OperatorId
-	}
-	return 0
-}
-
-// 更新应用 - 请求
+// 更新UBA应用 - 请求
 type UpdateApplicationRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            uint32                 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	App           *Application           `protobuf:"bytes,2,opt,name=app,proto3" json:"app,omitempty"`
-	OperatorId    uint32                 `protobuf:"varint,3,opt,name=operatorId,proto3" json:"operatorId,omitempty"`
+	Data          *Application           `protobuf:"bytes,2,opt,name=data,proto3" json:"data,omitempty"`                                            // 数据
+	UpdateMask    *fieldmaskpb.FieldMask `protobuf:"bytes,3,opt,name=update_mask,json=updateMask,proto3" json:"update_mask,omitempty"`              // 要更新的字段列表
+	AllowMissing  *bool                  `protobuf:"varint,4,opt,name=allow_missing,json=allowMissing,proto3,oneof" json:"allow_missing,omitempty"` // 如果设置为true的时候，资源不存在则会新增(插入)，并且在这种情况下`updateMask`字段将会被忽略。
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -356,25 +477,35 @@ func (x *UpdateApplicationRequest) GetId() uint32 {
 	return 0
 }
 
-func (x *UpdateApplicationRequest) GetApp() *Application {
+func (x *UpdateApplicationRequest) GetData() *Application {
 	if x != nil {
-		return x.App
+		return x.Data
 	}
 	return nil
 }
 
-func (x *UpdateApplicationRequest) GetOperatorId() uint32 {
+func (x *UpdateApplicationRequest) GetUpdateMask() *fieldmaskpb.FieldMask {
 	if x != nil {
-		return x.OperatorId
+		return x.UpdateMask
 	}
-	return 0
+	return nil
 }
 
-// 删除应用 - 请求
+func (x *UpdateApplicationRequest) GetAllowMissing() bool {
+	if x != nil && x.AllowMissing != nil {
+		return *x.AllowMissing
+	}
+	return false
+}
+
+// 删除UBA应用 - 请求
 type DeleteApplicationRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            uint32                 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	OperatorId    uint32                 `protobuf:"varint,2,opt,name=operatorId,proto3" json:"operatorId,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Types that are valid to be assigned to QueryBy:
+	//
+	//	*DeleteApplicationRequest_Id
+	QueryBy       isDeleteApplicationRequest_QueryBy `protobuf_oneof:"query_by"`
+	DeletedBy     *uint32                            `protobuf:"varint,100,opt,name=deleted_by,json=deletedBy,proto3,oneof" json:"deleted_by,omitempty"` // 删除者用户ID
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -409,130 +540,132 @@ func (*DeleteApplicationRequest) Descriptor() ([]byte, []int) {
 	return file_uba_service_v1_application_proto_rawDescGZIP(), []int{5}
 }
 
+func (x *DeleteApplicationRequest) GetQueryBy() isDeleteApplicationRequest_QueryBy {
+	if x != nil {
+		return x.QueryBy
+	}
+	return nil
+}
+
 func (x *DeleteApplicationRequest) GetId() uint32 {
 	if x != nil {
-		return x.Id
-	}
-	return 0
-}
-
-func (x *DeleteApplicationRequest) GetOperatorId() uint32 {
-	if x != nil {
-		return x.OperatorId
-	}
-	return 0
-}
-
-type GetApplicationByAppIdRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	AppId         string                 `protobuf:"bytes,1,opt,name=appId,proto3" json:"appId,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *GetApplicationByAppIdRequest) Reset() {
-	*x = GetApplicationByAppIdRequest{}
-	mi := &file_uba_service_v1_application_proto_msgTypes[6]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *GetApplicationByAppIdRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GetApplicationByAppIdRequest) ProtoMessage() {}
-
-func (x *GetApplicationByAppIdRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_application_proto_msgTypes[6]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
+		if x, ok := x.QueryBy.(*DeleteApplicationRequest_Id); ok {
+			return x.Id
 		}
-		return ms
 	}
-	return mi.MessageOf(x)
+	return 0
 }
 
-// Deprecated: Use GetApplicationByAppIdRequest.ProtoReflect.Descriptor instead.
-func (*GetApplicationByAppIdRequest) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_application_proto_rawDescGZIP(), []int{6}
+func (x *DeleteApplicationRequest) GetDeletedBy() uint32 {
+	if x != nil && x.DeletedBy != nil {
+		return *x.DeletedBy
+	}
+	return 0
 }
 
-func (x *GetApplicationByAppIdRequest) GetAppId() string {
-	if x != nil {
-		return x.AppId
-	}
-	return ""
+type isDeleteApplicationRequest_QueryBy interface {
+	isDeleteApplicationRequest_QueryBy()
 }
+
+type DeleteApplicationRequest_Id struct {
+	Id uint32 `protobuf:"varint,1,opt,name=id,proto3,oneof"` // ID
+}
+
+func (*DeleteApplicationRequest_Id) isDeleteApplicationRequest_QueryBy() {}
 
 var File_uba_service_v1_application_proto protoreflect.FileDescriptor
 
 const file_uba_service_v1_application_proto_rawDesc = "" +
 	"\n" +
-	" uba/service/v1/application.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1epagination/v1/pagination.proto\"\xa5\x06\n" +
+	" uba/service/v1/application.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a google/protobuf/field_mask.proto\x1a\x1epagination/v1/pagination.proto\x1a\x1buba/service/v1/common.proto\"\xfd\v\n" +
 	"\vApplication\x12\x18\n" +
-	"\x02id\x18\x01 \x01(\rB\b\xbaG\x05\x92\x02\x02IDR\x02id\x12+\n" +
-	"\x04name\x18\x02 \x01(\tB\x12\xbaG\x0f\x92\x02\f应用名称H\x00R\x04name\x88\x01\x01\x12)\n" +
-	"\x05appId\x18\x03 \x01(\tB\x0e\xbaG\v\x92\x02\b应用IDH\x01R\x05appId\x88\x01\x01\x12/\n" +
-	"\x06appKey\x18\x04 \x01(\tB\x12\xbaG\x0f\x92\x02\f应用密钥H\x02R\x06appKey\x88\x01\x01\x12E\n" +
-	"\x06status\x18\x05 \x01(\tB(\xbaG%\xc2\x01\x04\x12\x02ON\xc2\x01\x05\x12\x03OFF\x8a\x02\x04\x1a\x02ON\x92\x02\f应用状态H\x03R\x06status\x88\x01\x01\x124\n" +
-	"\tcreatorId\x18\x06 \x01(\rB\x11\xbaG\x0e\x92\x02\v创建者IDH\x04R\tcreatorId\x88\x01\x01\x120\n" +
-	"\aownerId\x18\a \x01(\rB\x11\xbaG\x0e\x92\x02\v拥有者IDH\x05R\aownerId\x88\x01\x01\x12/\n" +
-	"\x06remark\x18\b \x01(\tB\x12\xbaG\x0f\x92\x02\f个人描述H\x06R\x06remark\x88\x01\x01\x12A\n" +
-	"\tkeepMonth\x18\t \x01(\rB\x1e\xbaG\x1b\x92\x02\x18数据保存多少个月H\aR\tkeepMonth\x88\x01\x01\x12@\n" +
-	"\vcreate_time\x18\x1e \x01(\v2\x1a.google.protobuf.TimestampH\bR\n" +
-	"createTime\x88\x01\x01\x12@\n" +
-	"\vupdate_time\x18\x1f \x01(\v2\x1a.google.protobuf.TimestampH\tR\n" +
-	"updateTime\x88\x01\x01\x12@\n" +
-	"\vdelete_time\x18  \x01(\v2\x1a.google.protobuf.TimestampH\n" +
+	"\x02id\x18\x01 \x01(\rB\b\xbaG\x05\x92\x02\x02IDR\x02id\x12.\n" +
+	"\x04name\x18\x02 \x01(\tB\x15\xbaG\x12\x92\x02\x0fUBA应用名称H\x00R\x04name\x88\x01\x01\x12L\n" +
+	"\x06app_id\x18\x03 \x01(\tB0\xbaG-\x92\x02*UBA应用唯一标识（上报时使用）H\x01R\x05appId\x88\x01\x01\x12=\n" +
+	"\aapp_key\x18\x04 \x01(\tB\x1f\xbaG\x1c\x92\x02\x19密钥（签名/鉴权）H\x02R\x06appKey\x88\x01\x01\x120\n" +
+	"\n" +
+	"app_secret\x18\x05 \x01(\tB\f\xbaG\t\x92\x02\x06密钥H\x03R\tappSecret\x88\x01\x01\x12E\n" +
+	"\x04type\x18\x06 \x01(\x0e2\x18.uba.service.v1.PlatformB\x12\xbaG\x0f\x92\x02\f应用类型H\x04R\x04type\x88\x01\x01\x12Z\n" +
+	"\x06status\x18\a \x01(\x0e2\".uba.service.v1.Application.StatusB\x19\xbaG\x16\x8a\x02\x04\x1a\x02ON\x92\x02\f应用状态H\x05R\x06status\x88\x01\x01\x12/\n" +
+	"\x06remark\x18\b \x01(\tB\x12\xbaG\x0f\x92\x02\f备注信息H\x06R\x06remark\x88\x01\x01\x12?\n" +
+	"\vdesensitize\x18\t \x01(\bB\x18\xbaG\x15\x92\x02\x12是否开启脱敏H\aR\vdesensitize\x88\x01\x01\x120\n" +
+	"\ttenant_id\x18\n" +
+	" \x01(\rB\x0e\xbaG\v\x92\x02\b租户IDH\bR\btenantId\x88\x01\x01\x128\n" +
+	"\vtenant_name\x18\v \x01(\tB\x12\xbaG\x0f\x92\x02\f租户名称H\tR\n" +
+	"tenantName\x88\x01\x01\x12<\n" +
+	"\vwebhook_url\x18\f \x01(\tB\x16\xbaG\x13\x92\x02\x10事件回调 URLH\n" +
 	"R\n" +
-	"deleteTime\x88\x01\x01B\a\n" +
-	"\x05_nameB\b\n" +
-	"\x06_appIdB\t\n" +
-	"\a_appKeyB\t\n" +
-	"\a_statusB\f\n" +
+	"webhookUrl\x88\x01\x01\x12D\n" +
+	"\x0ewebhook_secret\x18\r \x01(\tB\x18\xbaG\x15\x92\x02\x12回调签名密钥H\vR\rwebhookSecret\x88\x01\x01\x12;\n" +
 	"\n" +
-	"_creatorIdB\n" +
+	"created_by\x18d \x01(\rB\x17\xbaG\x14\x92\x02\x11创建者用户IDH\fR\tcreatedBy\x88\x01\x01\x12;\n" +
 	"\n" +
-	"\b_ownerIdB\t\n" +
-	"\a_remarkB\f\n" +
+	"updated_by\x18e \x01(\rB\x17\xbaG\x14\x92\x02\x11更新者用户IDH\rR\tupdatedBy\x88\x01\x01\x12;\n" +
 	"\n" +
-	"_keepMonthB\x0e\n" +
-	"\f_create_timeB\x0e\n" +
-	"\f_update_timeB\x0e\n" +
-	"\f_delete_time\"b\n" +
+	"deleted_by\x18f \x01(\rB\x17\xbaG\x14\x92\x02\x11删除者用户IDH\x0eR\tdeletedBy\x88\x01\x01\x12S\n" +
+	"\n" +
+	"created_at\x18\xc8\x01 \x01(\v2\x1a.google.protobuf.TimestampB\x12\xbaG\x0f\x92\x02\f创建时间H\x0fR\tcreatedAt\x88\x01\x01\x12S\n" +
+	"\n" +
+	"updated_at\x18\xc9\x01 \x01(\v2\x1a.google.protobuf.TimestampB\x12\xbaG\x0f\x92\x02\f更新时间H\x10R\tupdatedAt\x88\x01\x01\x12S\n" +
+	"\n" +
+	"deleted_at\x18\xca\x01 \x01(\v2\x1a.google.protobuf.TimestampB\x12\xbaG\x0f\x92\x02\f删除时间H\x11R\tdeletedAt\x88\x01\x01\"1\n" +
+	"\x06Status\x12\x16\n" +
+	"\x12STATUS_UNSPECIFIED\x10\x00\x12\x06\n" +
+	"\x02ON\x10\x01\x12\a\n" +
+	"\x03OFF\x10\x02B\a\n" +
+	"\x05_nameB\t\n" +
+	"\a_app_idB\n" +
+	"\n" +
+	"\b_app_keyB\r\n" +
+	"\v_app_secretB\a\n" +
+	"\x05_typeB\t\n" +
+	"\a_statusB\t\n" +
+	"\a_remarkB\x0e\n" +
+	"\f_desensitizeB\f\n" +
+	"\n" +
+	"_tenant_idB\x0e\n" +
+	"\f_tenant_nameB\x0e\n" +
+	"\f_webhook_urlB\x11\n" +
+	"\x0f_webhook_secretB\r\n" +
+	"\v_created_byB\r\n" +
+	"\v_updated_byB\r\n" +
+	"\v_deleted_byB\r\n" +
+	"\v_created_atB\r\n" +
+	"\v_updated_atB\r\n" +
+	"\v_deleted_at\"L\n" +
 	"\x17ListApplicationResponse\x121\n" +
-	"\x05items\x18\x01 \x03(\v2\x1b.uba.service.v1.ApplicationR\x05items\x12\x14\n" +
-	"\x05total\x18\x02 \x01(\x05R\x05total\"'\n" +
-	"\x15GetApplicationRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\rR\x02id\"i\n" +
-	"\x18CreateApplicationRequest\x12-\n" +
-	"\x03app\x18\x01 \x01(\v2\x1b.uba.service.v1.ApplicationR\x03app\x12\x1e\n" +
+	"\x05items\x18\x01 \x03(\v2\x1b.uba.service.v1.ApplicationR\x05items\"\xc8\x01\n" +
+	"\x15GetApplicationRequest\x12\x1c\n" +
+	"\x02id\x18\x01 \x01(\rB\n" +
+	"\xbaG\a\x18\x01\x92\x02\x02IDH\x00R\x02id\x12w\n" +
+	"\tview_mask\x18d \x01(\v2\x1a.google.protobuf.FieldMaskB9\xbaG6\x92\x023视图字段过滤器，用于控制返回的字段H\x01R\bviewMask\x88\x01\x01B\n" +
 	"\n" +
-	"operatorId\x18\x02 \x01(\rR\n" +
-	"operatorId\"y\n" +
+	"\bquery_byB\f\n" +
+	"\n" +
+	"_view_mask\"K\n" +
+	"\x18CreateApplicationRequest\x12/\n" +
+	"\x04data\x18\x01 \x01(\v2\x1b.uba.service.v1.ApplicationR\x04data\"\xa7\x03\n" +
 	"\x18UpdateApplicationRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\rR\x02id\x12-\n" +
-	"\x03app\x18\x02 \x01(\v2\x1b.uba.service.v1.ApplicationR\x03app\x12\x1e\n" +
+	"\x02id\x18\x01 \x01(\rR\x02id\x12=\n" +
+	"\x04data\x18\x02 \x01(\v2\x1b.uba.service.v1.ApplicationB\f\xbaG\t\x92\x02\x06数据R\x04data\x12s\n" +
+	"\vupdate_mask\x18\x03 \x01(\v2\x1a.google.protobuf.FieldMaskB6\xbaG3:\x16\x12\x14id,realname,username\x92\x02\x18要更新的字段列表R\n" +
+	"updateMask\x12\xb4\x01\n" +
+	"\rallow_missing\x18\x04 \x01(\bB\x89\x01\xbaG\x85\x01\x92\x02\x81\x01如果设置为true的时候，资源不存在则会新增(插入)，并且在这种情况下`updateMask`字段将会被忽略。H\x00R\fallowMissing\x88\x01\x01B\x10\n" +
+	"\x0e_allow_missing\"\x90\x01\n" +
+	"\x18DeleteApplicationRequest\x12\x1c\n" +
+	"\x02id\x18\x01 \x01(\rB\n" +
+	"\xbaG\a\x18\x01\x92\x02\x02IDH\x00R\x02id\x12;\n" +
 	"\n" +
-	"operatorId\x18\x03 \x01(\rR\n" +
-	"operatorId\"J\n" +
-	"\x18DeleteApplicationRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\rR\x02id\x12\x1e\n" +
+	"deleted_by\x18d \x01(\rB\x17\xbaG\x14\x92\x02\x11删除者用户IDH\x01R\tdeletedBy\x88\x01\x01B\n" +
 	"\n" +
-	"operatorId\x18\x02 \x01(\rR\n" +
-	"operatorId\"4\n" +
-	"\x1cGetApplicationByAppIdRequest\x12\x14\n" +
-	"\x05appId\x18\x01 \x01(\tR\x05appId2\xc0\x04\n" +
-	"\x12ApplicationService\x12W\n" +
-	"\x0fListApplication\x12\x19.pagination.PagingRequest\x1a'.uba.service.v1.ListApplicationResponse\"\x00\x12V\n" +
-	"\x0eGetApplication\x12%.uba.service.v1.GetApplicationRequest\x1a\x1b.uba.service.v1.Application\"\x00\x12\\\n" +
-	"\x11CreateApplication\x12(.uba.service.v1.CreateApplicationRequest\x1a\x1b.uba.service.v1.Application\"\x00\x12\\\n" +
-	"\x11UpdateApplication\x12(.uba.service.v1.UpdateApplicationRequest\x1a\x1b.uba.service.v1.Application\"\x00\x12W\n" +
-	"\x11DeleteApplication\x12(.uba.service.v1.DeleteApplicationRequest\x1a\x16.google.protobuf.Empty\"\x00\x12d\n" +
-	"\x15GetApplicationByAppId\x12,.uba.service.v1.GetApplicationByAppIdRequest\x1a\x1b.uba.service.v1.Application\"\x00B\xb1\x01\n" +
+	"\bquery_byB\r\n" +
+	"\v_deleted_by2\xa3\x03\n" +
+	"\x12ApplicationService\x12L\n" +
+	"\x04List\x12\x19.pagination.PagingRequest\x1a'.uba.service.v1.ListApplicationResponse\"\x00\x12K\n" +
+	"\x03Get\x12%.uba.service.v1.GetApplicationRequest\x1a\x1b.uba.service.v1.Application\"\x00\x12Q\n" +
+	"\x06Create\x12(.uba.service.v1.CreateApplicationRequest\x1a\x1b.uba.service.v1.Application\"\x00\x12Q\n" +
+	"\x06Update\x12(.uba.service.v1.UpdateApplicationRequest\x1a\x1b.uba.service.v1.Application\"\x00\x12L\n" +
+	"\x06Delete\x12(.uba.service.v1.DeleteApplicationRequest\x1a\x16.google.protobuf.Empty\"\x00B\xb1\x01\n" +
 	"\x12com.uba.service.v1B\x10ApplicationProtoP\x01Z/go-wind-uba/api/gen/go/uba/service/v1;servicev1\xa2\x02\x03USX\xaa\x02\x0eUba.Service.V1\xca\x02\x0eUba\\Service\\V1\xe2\x02\x1aUba\\Service\\V1\\GPBMetadata\xea\x02\x10Uba::Service::V1b\x06proto3"
 
 var (
@@ -547,43 +680,48 @@ func file_uba_service_v1_application_proto_rawDescGZIP() []byte {
 	return file_uba_service_v1_application_proto_rawDescData
 }
 
-var file_uba_service_v1_application_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_uba_service_v1_application_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_uba_service_v1_application_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_uba_service_v1_application_proto_goTypes = []any{
-	(*Application)(nil),                  // 0: uba.service.v1.Application
-	(*ListApplicationResponse)(nil),      // 1: uba.service.v1.ListApplicationResponse
-	(*GetApplicationRequest)(nil),        // 2: uba.service.v1.GetApplicationRequest
-	(*CreateApplicationRequest)(nil),     // 3: uba.service.v1.CreateApplicationRequest
-	(*UpdateApplicationRequest)(nil),     // 4: uba.service.v1.UpdateApplicationRequest
-	(*DeleteApplicationRequest)(nil),     // 5: uba.service.v1.DeleteApplicationRequest
-	(*GetApplicationByAppIdRequest)(nil), // 6: uba.service.v1.GetApplicationByAppIdRequest
-	(*timestamppb.Timestamp)(nil),        // 7: google.protobuf.Timestamp
-	(*v1.PagingRequest)(nil),             // 8: pagination.PagingRequest
-	(*emptypb.Empty)(nil),                // 9: google.protobuf.Empty
+	(Application_Status)(0),          // 0: uba.service.v1.Application.Status
+	(*Application)(nil),              // 1: uba.service.v1.Application
+	(*ListApplicationResponse)(nil),  // 2: uba.service.v1.ListApplicationResponse
+	(*GetApplicationRequest)(nil),    // 3: uba.service.v1.GetApplicationRequest
+	(*CreateApplicationRequest)(nil), // 4: uba.service.v1.CreateApplicationRequest
+	(*UpdateApplicationRequest)(nil), // 5: uba.service.v1.UpdateApplicationRequest
+	(*DeleteApplicationRequest)(nil), // 6: uba.service.v1.DeleteApplicationRequest
+	(Platform)(0),                    // 7: uba.service.v1.Platform
+	(*timestamppb.Timestamp)(nil),    // 8: google.protobuf.Timestamp
+	(*fieldmaskpb.FieldMask)(nil),    // 9: google.protobuf.FieldMask
+	(*v1.PagingRequest)(nil),         // 10: pagination.PagingRequest
+	(*emptypb.Empty)(nil),            // 11: google.protobuf.Empty
 }
 var file_uba_service_v1_application_proto_depIdxs = []int32{
-	7,  // 0: uba.service.v1.Application.create_time:type_name -> google.protobuf.Timestamp
-	7,  // 1: uba.service.v1.Application.update_time:type_name -> google.protobuf.Timestamp
-	7,  // 2: uba.service.v1.Application.delete_time:type_name -> google.protobuf.Timestamp
-	0,  // 3: uba.service.v1.ListApplicationResponse.items:type_name -> uba.service.v1.Application
-	0,  // 4: uba.service.v1.CreateApplicationRequest.app:type_name -> uba.service.v1.Application
-	0,  // 5: uba.service.v1.UpdateApplicationRequest.app:type_name -> uba.service.v1.Application
-	8,  // 6: uba.service.v1.ApplicationService.ListApplication:input_type -> pagination.PagingRequest
-	2,  // 7: uba.service.v1.ApplicationService.GetApplication:input_type -> uba.service.v1.GetApplicationRequest
-	3,  // 8: uba.service.v1.ApplicationService.CreateApplication:input_type -> uba.service.v1.CreateApplicationRequest
-	4,  // 9: uba.service.v1.ApplicationService.UpdateApplication:input_type -> uba.service.v1.UpdateApplicationRequest
-	5,  // 10: uba.service.v1.ApplicationService.DeleteApplication:input_type -> uba.service.v1.DeleteApplicationRequest
-	6,  // 11: uba.service.v1.ApplicationService.GetApplicationByAppId:input_type -> uba.service.v1.GetApplicationByAppIdRequest
-	1,  // 12: uba.service.v1.ApplicationService.ListApplication:output_type -> uba.service.v1.ListApplicationResponse
-	0,  // 13: uba.service.v1.ApplicationService.GetApplication:output_type -> uba.service.v1.Application
-	0,  // 14: uba.service.v1.ApplicationService.CreateApplication:output_type -> uba.service.v1.Application
-	0,  // 15: uba.service.v1.ApplicationService.UpdateApplication:output_type -> uba.service.v1.Application
-	9,  // 16: uba.service.v1.ApplicationService.DeleteApplication:output_type -> google.protobuf.Empty
-	0,  // 17: uba.service.v1.ApplicationService.GetApplicationByAppId:output_type -> uba.service.v1.Application
-	12, // [12:18] is the sub-list for method output_type
-	6,  // [6:12] is the sub-list for method input_type
-	6,  // [6:6] is the sub-list for extension type_name
-	6,  // [6:6] is the sub-list for extension extendee
-	0,  // [0:6] is the sub-list for field type_name
+	7,  // 0: uba.service.v1.Application.type:type_name -> uba.service.v1.Platform
+	0,  // 1: uba.service.v1.Application.status:type_name -> uba.service.v1.Application.Status
+	8,  // 2: uba.service.v1.Application.created_at:type_name -> google.protobuf.Timestamp
+	8,  // 3: uba.service.v1.Application.updated_at:type_name -> google.protobuf.Timestamp
+	8,  // 4: uba.service.v1.Application.deleted_at:type_name -> google.protobuf.Timestamp
+	1,  // 5: uba.service.v1.ListApplicationResponse.items:type_name -> uba.service.v1.Application
+	9,  // 6: uba.service.v1.GetApplicationRequest.view_mask:type_name -> google.protobuf.FieldMask
+	1,  // 7: uba.service.v1.CreateApplicationRequest.data:type_name -> uba.service.v1.Application
+	1,  // 8: uba.service.v1.UpdateApplicationRequest.data:type_name -> uba.service.v1.Application
+	9,  // 9: uba.service.v1.UpdateApplicationRequest.update_mask:type_name -> google.protobuf.FieldMask
+	10, // 10: uba.service.v1.ApplicationService.List:input_type -> pagination.PagingRequest
+	3,  // 11: uba.service.v1.ApplicationService.Get:input_type -> uba.service.v1.GetApplicationRequest
+	4,  // 12: uba.service.v1.ApplicationService.Create:input_type -> uba.service.v1.CreateApplicationRequest
+	5,  // 13: uba.service.v1.ApplicationService.Update:input_type -> uba.service.v1.UpdateApplicationRequest
+	6,  // 14: uba.service.v1.ApplicationService.Delete:input_type -> uba.service.v1.DeleteApplicationRequest
+	2,  // 15: uba.service.v1.ApplicationService.List:output_type -> uba.service.v1.ListApplicationResponse
+	1,  // 16: uba.service.v1.ApplicationService.Get:output_type -> uba.service.v1.Application
+	1,  // 17: uba.service.v1.ApplicationService.Create:output_type -> uba.service.v1.Application
+	1,  // 18: uba.service.v1.ApplicationService.Update:output_type -> uba.service.v1.Application
+	11, // 19: uba.service.v1.ApplicationService.Delete:output_type -> google.protobuf.Empty
+	15, // [15:20] is the sub-list for method output_type
+	10, // [10:15] is the sub-list for method input_type
+	10, // [10:10] is the sub-list for extension type_name
+	10, // [10:10] is the sub-list for extension extendee
+	0,  // [0:10] is the sub-list for field type_name
 }
 
 func init() { file_uba_service_v1_application_proto_init() }
@@ -591,19 +729,28 @@ func file_uba_service_v1_application_proto_init() {
 	if File_uba_service_v1_application_proto != nil {
 		return
 	}
+	file_uba_service_v1_common_proto_init()
 	file_uba_service_v1_application_proto_msgTypes[0].OneofWrappers = []any{}
+	file_uba_service_v1_application_proto_msgTypes[2].OneofWrappers = []any{
+		(*GetApplicationRequest_Id)(nil),
+	}
+	file_uba_service_v1_application_proto_msgTypes[4].OneofWrappers = []any{}
+	file_uba_service_v1_application_proto_msgTypes[5].OneofWrappers = []any{
+		(*DeleteApplicationRequest_Id)(nil),
+	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_uba_service_v1_application_proto_rawDesc), len(file_uba_service_v1_application_proto_rawDesc)),
-			NumEnums:      0,
-			NumMessages:   7,
+			NumEnums:      1,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
 		GoTypes:           file_uba_service_v1_application_proto_goTypes,
 		DependencyIndexes: file_uba_service_v1_application_proto_depIdxs,
+		EnumInfos:         file_uba_service_v1_application_proto_enumTypes,
 		MessageInfos:      file_uba_service_v1_application_proto_msgTypes,
 	}.Build()
 	File_uba_service_v1_application_proto = out.File

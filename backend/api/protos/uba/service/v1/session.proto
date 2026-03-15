@@ -1,0 +1,136 @@
+﻿syntax = "proto3";
+
+package uba.service.v1;
+
+import "gnostic/openapi/v3/annotations.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+
+import "uba/service/v1/common.proto";
+
+// 会话服务
+service SessionService {
+}
+
+// 会话（对应 sessions 表）
+message Session {
+  // 会话ID（唯一标识一条会话）
+  uint32 id = 1 [
+    json_name = "id",
+    (gnostic.openapi.v3.property) = {description: "会话ID，唯一标识一条会话"}
+  ];
+  // 租户ID（多租户隔离，支持 SaaS 场景）
+  uint32 tenant_id = 2 [
+    json_name = "tenantId",
+    (gnostic.openapi.v3.property) = {description: "租户ID，多租户隔离，支持 SaaS 场景"}
+  ];
+
+  // 用户ID（会话主体用户）
+  uint32 user_id = 3 [
+    json_name = "userId",
+    (gnostic.openapi.v3.property) = {description: "用户ID，会话主体用户"}
+  ];
+  // 设备ID（会话主体设备）
+  string device_id = 4 [
+    json_name = "deviceId",
+    (gnostic.openapi.v3.property) = {description: "设备ID，会话主体设备"}
+  ];
+  // 全局用户ID（跨平台唯一标识用户）
+  string global_user_id = 5 [
+    json_name = "globalUserId",
+    (gnostic.openapi.v3.property) = {description: "全局用户ID，跨平台唯一标识用户"}
+  ];
+
+  // 会话起始时间
+  google.protobuf.Timestamp start_time = 6 [
+    json_name = "startTime",
+    (gnostic.openapi.v3.property) = {description: "会话起始时间"}
+  ];
+  // 会话结束时间
+  google.protobuf.Timestamp end_time = 7 [
+    json_name = "endTime",
+    (gnostic.openapi.v3.property) = {description: "会话结束时间"}
+  ];
+  // 会话时长（起止时间间隔，单位秒）
+  google.protobuf.Duration duration = 8 [
+    json_name = "duration",
+    (gnostic.openapi.v3.property) = {description: "会话时长，起止时间间隔，单位秒"}
+  ];
+
+  // 会话事件数（本会话内发生的事件总数）
+  uint32 event_count = 9 [
+    json_name = "eventCount",
+    (gnostic.openapi.v3.property) = {description: "会话事件数，本会话内发生的事件总数"}
+  ];
+  // 页面浏览数（PV，页面浏览次数）
+  uint32 page_view_count = 10 [
+    json_name = "pageViewCount",
+    (gnostic.openapi.v3.property) = {description: "页面浏览数（PV），页面浏览次数"}
+  ];
+  // 交互次数（本会话内用户交互总次数）
+  uint32 action_count = 11 [
+    json_name = "actionCount",
+    (gnostic.openapi.v3.property) = {description: "交互次数，本会话内用户交互总次数"}
+  ];
+  // 入口页面（会话起始页面）
+  string entry_page = 12 [
+    json_name = "entryPage",
+    (gnostic.openapi.v3.property) = {description: "入口页面，会话起始页面"}
+  ];
+  // 出口页面（会话结束页面）
+  string exit_page = 13 [
+    json_name = "exitPage",
+    (gnostic.openapi.v3.property) = {description: "出口页面，会话结束页面"}
+  ];
+  // 是否跳出（单页会话，true 表示跳出）
+  bool is_bounce = 14 [
+    json_name = "isBounce",
+    (gnostic.openapi.v3.property) = {description: "是否跳出，单页会话，true 表示跳出"}
+  ];
+
+  // 平台类型（会话发生的平台，如 Web、iOS、Android 等）
+  Platform platform = 15 [
+    json_name = "platform",
+    (gnostic.openapi.v3.property) = {description: "平台类型，会话发生的平台，如 Web、iOS、Android 等"}
+  ];
+  // IP城市（会话发生时的地理位置城市）
+  string ip_city = 16 [
+    json_name = "ipCity",
+    (gnostic.openapi.v3.property) = {description: "IP城市，会话发生时的地理位置城市"}
+  ];
+  // 应用版本（会话发生时的应用版本号）
+  string app_version = 17 [
+    json_name = "appVersion",
+    (gnostic.openapi.v3.property) = {description: "应用版本，会话发生时的应用版本号"}
+  ];
+
+  // 会话内总金额（本会话内发生的总金额，字符串类型，支持多币种）
+  string total_amount = 18 [
+    json_name = "totalAmount",
+    (gnostic.openapi.v3.property) = {description: "会话内总金额，本会话内发生的总金额，字符串类型，支持多币种"}
+  ];
+  // 支付事件数（本会话内发生的支付事件总数）
+  uint32 pay_event_count = 19 [
+    json_name = "payEventCount",
+    (gnostic.openapi.v3.property) = {description: "支付事件数，本会话内发生的支付事件总数"}
+  ];
+
+  // 风险等级（会话风险标记，枚举类型）
+  RiskLevel risk_level = 20 [
+    json_name = "riskLevel",
+    (gnostic.openapi.v3.property) = {description: "风险等级，会话风险标记，枚举类型"}
+  ];
+  // 风险标签（会话风险标记，字符串列表）
+  repeated string risk_tags = 21 [
+    json_name = "riskTags",
+    (gnostic.openapi.v3.property) = {description: "风险标签，会话风险标记，字符串列表"}
+  ];
+
+  // 更新时间（会话最近一次更新的时间）
+  google.protobuf.Timestamp update_time = 22 [
+    json_name = "updateTime",
+    (gnostic.openapi.v3.property) = {description: "更新时间，会话最近一次更新的时间"}
+  ];
+}

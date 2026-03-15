@@ -1,0 +1,219 @@
+﻿syntax = "proto3";
+
+package uba.service.v1;
+
+import "gnostic/openapi/v3/annotations.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/field_mask.proto";
+
+import "pagination/v1/pagination.proto";
+
+import "uba/service/v1/common.proto";
+
+// ID映射服务
+service IDMappingService {
+  // 查询ID映射列表
+  rpc List (pagination.PagingRequest) returns (ListIDMappingResponse) {}
+
+  // 查询ID映射详情
+  rpc Get (GetIDMappingRequest) returns (IDMapping) {}
+
+  // 创建ID映射
+  rpc Create (CreateIDMappingRequest) returns (IDMapping) {}
+
+  // 更新ID映射
+  rpc Update (UpdateIDMappingRequest) returns (IDMapping) {}
+
+  // 删除ID映射
+  rpc Delete (DeleteIDMappingRequest) returns (google.protobuf.Empty) {}
+}
+
+// ID类型枚举（用于标识不同类型的用户、设备、账号等标识符）
+enum IDType {
+  // 未指定ID类型
+  ID_TYPE_UNSPECIFIED = 0;
+
+  // 用户ID（如系统内唯一用户标识）
+  ID_TYPE_USER_ID = 1;
+  // 设备ID（如设备序列号、IMEI、MAC地址等）
+  ID_TYPE_DEVICE_ID = 2;
+  // Cookie（如 Web 端唯一标识）
+  ID_TYPE_COOKIE = 3;
+  // 邮箱（如用户邮箱地址）
+  ID_TYPE_EMAIL = 4;
+  // 手机号（如用户手机号码）
+  ID_TYPE_PHONE = 5;
+  // OpenID（如第三方平台用户标识，微信、支付宝等）
+  ID_TYPE_OPENID = 6;
+}
+
+// ID 关联记录（对应 id_mapping 表）
+message IDMapping {
+  // 自增长主键ID
+  uint32 id = 1 [
+    json_name = "id",
+    (gnostic.openapi.v3.property) = {description: "自增长主键ID，唯一标识一条ID映射记录"}
+  ];
+
+  // 全局用户唯一标识（用于跨平台、跨租户用户关联）
+  string global_user_id = 2 [
+    json_name = "globalUserId",
+    (gnostic.openapi.v3.property) = {description: "全局用户唯一标识，用于跨平台、跨租户用户关联"}
+  ];
+
+  // 租户ID（多租户隔离，支持 SaaS 场景）
+  uint32 tenant_id = 3 [
+    json_name = "tenantId",
+    (gnostic.openapi.v3.property) = {description: "租户ID，多租户隔离，支持 SaaS 场景"}
+  ];
+
+  // ID类型（如用户ID、设备ID、Cookie、邮箱、手机号、OpenID 等）
+  IDType id_type = 4 [
+    json_name = "idType",
+    (gnostic.openapi.v3.property) = {description: "ID类型，标识不同类型的用户、设备、账号等标识符"}
+  ];
+
+  // ID值（具体的标识符，如用户ID、设备ID、邮箱等）
+  string id_value = 5 [
+    json_name = "idValue",
+    (gnostic.openapi.v3.property) = {description: "ID值，具体的标识符，如用户ID、设备ID、邮箱等"}
+  ];
+
+  // 置信度（映射关系可信度评分，范围0~1）
+  float confidence = 6 [
+    json_name = "confidence",
+    (gnostic.openapi.v3.property) = {description: "置信度，映射关系可信度评分，范围0~1"}
+  ];
+
+  // 关联来源（如系统、人工、第三方平台等）
+  string link_source = 7 [
+    json_name = "linkSource",
+    (gnostic.openapi.v3.property) = {description: "关联来源，记录映射关系的来源，如系统、人工、第三方平台等"}
+  ];
+
+  // 首次出现时间（映射关系首次被发现或建立的时间）
+  google.protobuf.Timestamp first_seen = 8 [
+    json_name = "firstSeen",
+    (gnostic.openapi.v3.property) = {description: "首次出现时间，映射关系首次被发现或建立的时间"}
+  ];
+
+  // 最后出现时间（映射关系最近一次被使用或更新的时间）
+  google.protobuf.Timestamp last_seen = 9 [
+    json_name = "lastSeen",
+    (gnostic.openapi.v3.property) = {description: "最后出现时间，映射关系最近一次被使用或更新的时间"}
+  ];
+
+  // 是否激活（映射关系当前是否有效）
+  bool is_active = 10 [
+    json_name = "isActive",
+    (gnostic.openapi.v3.property) = {description: "是否激活，映射关系当前是否有效"}
+  ];
+
+  // 扩展属性（用于存储自定义的业务特征或附加信息）
+  map<string, string> properties = 11 [
+    json_name = "properties",
+    (gnostic.openapi.v3.property) = {description: "扩展属性，存储自定义的业务特征或附加信息，便于业务灵活扩展"}
+  ]; // 扩展属性，存储自定义的业务特征或附加信息，便于业务灵活扩展
+
+  // 创建者用户ID（记录创建该映射关系的用户）
+  optional uint32 created_by = 100 [
+    json_name = "createdBy",
+    (gnostic.openapi.v3.property) = {description: "创建者用户ID，记录创建该映射关系的用户"}
+  ];
+
+  // 更新者用户ID（记录最近一次更新该映射关系的用户）
+  optional uint32 updated_by = 101 [
+    json_name = "updatedBy",
+    (gnostic.openapi.v3.property) = {description: "更新者用户ID，记录最近一次更新该映射关系的用户"}
+  ];
+
+  // 删除者用户ID（记录删除该映射关系的用户）
+  optional uint32 deleted_by = 102 [
+    json_name = "deletedBy",
+    (gnostic.openapi.v3.property) = {description: "删除者用户ID，记录删除该映射关系的用户"}
+  ];
+
+  // 创建时间（记录映射关系创建的时间）
+  optional google.protobuf.Timestamp created_at = 200 [
+    json_name = "createdAt",
+    (gnostic.openapi.v3.property) = {description: "创建时间，记录映射关系创建的时间"}
+  ];
+
+  // 更新时间（记录映射关系最近一次更新的时间）
+  optional google.protobuf.Timestamp updated_at = 201 [
+    json_name = "updatedAt",
+    (gnostic.openapi.v3.property) = {description: "更新时间，记录映射关系最近一次更新的时间"}
+  ];
+
+  // 删除时间（记录映射关系被删除的时间）
+  optional google.protobuf.Timestamp deleted_at = 202 [
+    json_name = "deletedAt",
+    (gnostic.openapi.v3.property) = {description: "删除时间，记录映射关系被删除的时间"}
+  ];
+}
+
+// 获取ID映射列表 - 答复
+message ListIDMappingResponse {
+  repeated IDMapping items = 1;
+}
+
+// 获取ID映射数据 - 请求
+message GetIDMappingRequest {
+  oneof query_by {
+    uint32 id = 1 [
+      (gnostic.openapi.v3.property) = {description: "ID", read_only: true},
+      json_name = "id"
+    ]; // ID
+  }
+
+  optional google.protobuf.FieldMask view_mask = 100 [
+    json_name = "viewMask",
+    (gnostic.openapi.v3.property) = {
+      description: "视图字段过滤器，用于控制返回的字段"
+    }
+  ]; // 视图字段过滤器，用于控制返回的字段
+}
+
+// 创建ID映射 - 请求
+message CreateIDMappingRequest {
+  IDMapping data = 1;
+}
+
+// 更新ID映射 - 请求
+message UpdateIDMappingRequest {
+  uint32 id = 1;
+
+  IDMapping data = 2 [
+    json_name = "data",
+    (gnostic.openapi.v3.property) = {description: "数据"}
+  ]; // 数据
+
+  google.protobuf.FieldMask update_mask = 3 [
+    json_name = "updateMask",
+    (gnostic.openapi.v3.property) = {
+      description: "要更新的字段列表",
+      example: {yaml : "id,realname,username"}
+    }
+  ]; // 要更新的字段列表
+
+  optional bool allow_missing = 4 [
+    json_name = "allowMissing",
+    (gnostic.openapi.v3.property) = {description: "如果设置为true的时候，资源不存在则会新增(插入)，并且在这种情况下`updateMask`字段将会被忽略。"}
+  ]; // 如果设置为true的时候，资源不存在则会新增(插入)，并且在这种情况下`updateMask`字段将会被忽略。
+}
+
+// 删除ID映射 - 请求
+message DeleteIDMappingRequest {
+  oneof query_by {
+    uint32 id = 1 [
+      (gnostic.openapi.v3.property) = {description: "ID", read_only: true},
+      json_name = "id"
+    ]; // ID
+  }
+
+  optional uint32 deleted_by = 100 [
+    json_name = "deletedBy",
+    (gnostic.openapi.v3.property) = {description: "删除者用户ID"}
+  ]; // 删除者用户ID
+}

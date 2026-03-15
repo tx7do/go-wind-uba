@@ -161,6 +161,61 @@ var (
 			},
 		},
 	}
+	// UbaApplicationsColumns holds the columns for the "uba_applications" table.
+	UbaApplicationsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUint32, Increment: true, Comment: "id"},
+		{Name: "created_at", Type: field.TypeTime, Nullable: true, Comment: "创建时间"},
+		{Name: "updated_at", Type: field.TypeTime, Nullable: true, Comment: "更新时间"},
+		{Name: "deleted_at", Type: field.TypeTime, Nullable: true, Comment: "删除时间"},
+		{Name: "created_by", Type: field.TypeUint32, Nullable: true, Comment: "创建者ID"},
+		{Name: "updated_by", Type: field.TypeUint32, Nullable: true, Comment: "更新者ID"},
+		{Name: "deleted_by", Type: field.TypeUint32, Nullable: true, Comment: "删除者ID"},
+		{Name: "tenant_id", Type: field.TypeUint32, Nullable: true, Comment: "租户ID", Default: 0},
+		{Name: "name", Type: field.TypeString, Nullable: true, Comment: "UBA应用名称"},
+		{Name: "app_id", Type: field.TypeString, Nullable: true, Comment: "UBA应用唯一标识（上报时使用）"},
+		{Name: "app_key", Type: field.TypeString, Nullable: true, Comment: "密钥（签名/鉴权）"},
+		{Name: "app_secret", Type: field.TypeString, Nullable: true, Comment: "密钥"},
+		{Name: "type", Type: field.TypeEnum, Nullable: true, Comment: "应用类型", Enums: []string{"PLATFORM_WEB", "PLATFORM_IOS", "PLATFORM_ANDROID", "PLATFORM_WINDOWS", "PLATFORM_MACOS", "PLATFORM_LINUX", "PLATFORM_MINI_PROGRAM"}},
+		{Name: "status", Type: field.TypeEnum, Nullable: true, Comment: "应用状态", Enums: []string{"ON", "OFF"}, Default: "ON"},
+		{Name: "remark", Type: field.TypeString, Nullable: true, Comment: "备注信息"},
+		{Name: "desensitize", Type: field.TypeBool, Nullable: true, Comment: "是否开启脱敏"},
+		{Name: "webhook_url", Type: field.TypeString, Nullable: true, Comment: "事件回调 URL"},
+		{Name: "webhook_secret", Type: field.TypeString, Nullable: true, Comment: "回调签名密钥"},
+	}
+	// UbaApplicationsTable holds the schema information for the "uba_applications" table.
+	UbaApplicationsTable = &schema.Table{
+		Name:       "uba_applications",
+		Comment:    "UBA应用表",
+		Columns:    UbaApplicationsColumns,
+		PrimaryKey: []*schema.Column{UbaApplicationsColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "uix_uba_applications_tenant_app_id",
+				Unique:  true,
+				Columns: []*schema.Column{UbaApplicationsColumns[7], UbaApplicationsColumns[9]},
+			},
+			{
+				Name:    "idx_uba_applications_tenant_id",
+				Unique:  false,
+				Columns: []*schema.Column{UbaApplicationsColumns[7]},
+			},
+			{
+				Name:    "idx_uba_applications_status",
+				Unique:  false,
+				Columns: []*schema.Column{UbaApplicationsColumns[13]},
+			},
+			{
+				Name:    "idx_uba_applications_type",
+				Unique:  false,
+				Columns: []*schema.Column{UbaApplicationsColumns[12]},
+			},
+			{
+				Name:    "idx_uba_applications_created_at",
+				Unique:  false,
+				Columns: []*schema.Column{UbaApplicationsColumns[1]},
+			},
+		},
+	}
 	// SysDataAccessAuditLogsColumns holds the columns for the "sys_data_access_audit_logs" table.
 	SysDataAccessAuditLogsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUint32, Increment: true, Comment: "id"},
@@ -530,6 +585,51 @@ var (
 				Name:    "idx_files_created_at",
 				Unique:  false,
 				Columns: []*schema.Column{FilesColumns[1]},
+			},
+		},
+	}
+	// UbaIDMappingsColumns holds the columns for the "uba_id_mappings" table.
+	UbaIDMappingsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUint32, Increment: true, Comment: "id"},
+		{Name: "tenant_id", Type: field.TypeUint32, Nullable: true, Comment: "租户ID", Default: 0},
+		{Name: "created_at", Type: field.TypeTime, Nullable: true, Comment: "创建时间"},
+		{Name: "updated_at", Type: field.TypeTime, Nullable: true, Comment: "更新时间"},
+		{Name: "deleted_at", Type: field.TypeTime, Nullable: true, Comment: "删除时间"},
+		{Name: "global_user_id", Type: field.TypeString, Comment: "打通后的全局用户ID"},
+		{Name: "id_type", Type: field.TypeString, Comment: "身份类型：user_id/device_id/cookie/email/phone"},
+		{Name: "id_value", Type: field.TypeString, Comment: "身份值，具体的用户/设备/邮箱/手机号等标识"},
+		{Name: "confidence", Type: field.TypeFloat64, Comment: "关联置信度，默认1.0", Default: 1},
+		{Name: "link_source", Type: field.TypeString, Comment: "关联来源：login/bind/algorithm", Default: "login"},
+		{Name: "first_seen", Type: field.TypeTime, Nullable: true, Comment: "首次关联时间"},
+		{Name: "last_seen", Type: field.TypeTime, Nullable: true, Comment: "最近关联时间"},
+		{Name: "is_active", Type: field.TypeBool, Comment: "是否激活，1为激活，0为未激活", Default: true},
+	}
+	// UbaIDMappingsTable holds the schema information for the "uba_id_mappings" table.
+	UbaIDMappingsTable = &schema.Table{
+		Name:       "uba_id_mappings",
+		Comment:    "ID关联映射表",
+		Columns:    UbaIDMappingsColumns,
+		PrimaryKey: []*schema.Column{UbaIDMappingsColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "idx_global_user",
+				Unique:  false,
+				Columns: []*schema.Column{UbaIDMappingsColumns[1], UbaIDMappingsColumns[5]},
+			},
+			{
+				Name:    "idx_id_type_value",
+				Unique:  false,
+				Columns: []*schema.Column{UbaIDMappingsColumns[1], UbaIDMappingsColumns[6], UbaIDMappingsColumns[7]},
+			},
+			{
+				Name:    "idx_id_mapping_active",
+				Unique:  false,
+				Columns: []*schema.Column{UbaIDMappingsColumns[1], UbaIDMappingsColumns[12]},
+			},
+			{
+				Name:    "idx_type_value",
+				Unique:  true,
+				Columns: []*schema.Column{UbaIDMappingsColumns[1], UbaIDMappingsColumns[6], UbaIDMappingsColumns[7]},
 			},
 		},
 	}
@@ -1691,6 +1791,154 @@ var (
 			},
 		},
 	}
+	// UbaRiskRulesColumns holds the columns for the "uba_risk_rules" table.
+	UbaRiskRulesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUint32, Increment: true, Comment: "id"},
+		{Name: "created_at", Type: field.TypeTime, Nullable: true, Comment: "创建时间"},
+		{Name: "updated_at", Type: field.TypeTime, Nullable: true, Comment: "更新时间"},
+		{Name: "deleted_at", Type: field.TypeTime, Nullable: true, Comment: "删除时间"},
+		{Name: "created_by", Type: field.TypeUint32, Nullable: true, Comment: "创建者ID"},
+		{Name: "updated_by", Type: field.TypeUint32, Nullable: true, Comment: "更新者ID"},
+		{Name: "deleted_by", Type: field.TypeUint32, Nullable: true, Comment: "删除者ID"},
+		{Name: "tenant_id", Type: field.TypeUint32, Nullable: true, Comment: "租户ID", Default: 0},
+		{Name: "name", Type: field.TypeString, Nullable: true, Comment: "规则名称"},
+		{Name: "description", Type: field.TypeString, Nullable: true, Comment: "规则描述"},
+		{Name: "risk_type", Type: field.TypeEnum, Nullable: true, Comment: "风险类型，规则对应的风险类型", Enums: []string{"RISK_TYPE_LOGIN_ANOMALY", "RISK_TYPE_BRUTE_FORCE", "RISK_TYPE_CREDENTIAL_STUFFING", "RISK_TYPE_FREQUENT_OPERATION", "RISK_TYPE_ABNORMAL_FLOW", "RISK_TYPE_DATA_EXFILTRATION", "RISK_TYPE_DEVICE_CHANGE", "RISK_TYPE_LOCATION_ANOMALY", "RISK_TYPE_PROXY_DETECTED", "RISK_TYPE_FRAUD_PAYMENT", "RISK_TYPE_ABUSE_PROMOTION"}},
+		{Name: "default_level", Type: field.TypeEnum, Nullable: true, Comment: "默认风险等级，规则对应的默认风险等级", Enums: []string{"RISK_LEVEL_NORMAL", "RISK_LEVEL_SUSPICIOUS", "RISK_LEVEL_HIGH", "RISK_LEVEL_CRITICAL"}},
+		{Name: "condition", Type: field.TypeJSON, Nullable: true, Comment: "规则条件，简化版，实际可用 CEL/JSON Schema"},
+		{Name: "actions", Type: field.TypeJSON, Nullable: true, Comment: "动作配置，规则触发时的处置动作列表"},
+		{Name: "enabled", Type: field.TypeBool, Nullable: true, Comment: "是否启用，true: 启用，false: 禁用", Default: true},
+		{Name: "priority", Type: field.TypeUint32, Nullable: true, Comment: "优先级，越小优先级越高", Default: 100},
+		{Name: "code", Type: field.TypeString, Nullable: true, Comment: "规则编码，业务唯一标识，支持英文、数字、下划线"},
+		{Name: "rule_expression", Type: field.TypeString, Nullable: true, Size: 2147483647, Comment: "规则表达式（CEL/SQL）"},
+		{Name: "rule_config", Type: field.TypeJSON, Nullable: true, Comment: "规则配置参数"},
+		{Name: "exec_mode", Type: field.TypeEnum, Nullable: true, Comment: "执行模式：realtime/batch", Enums: []string{"REALTIME", "BATCH"}, Default: "REALTIME"},
+		{Name: "trigger_count", Type: field.TypeUint64, Nullable: true, Comment: "触发次数", Default: 0},
+		{Name: "last_triggered_at", Type: field.TypeTime, Nullable: true, Comment: "最后触发时间"},
+	}
+	// UbaRiskRulesTable holds the schema information for the "uba_risk_rules" table.
+	UbaRiskRulesTable = &schema.Table{
+		Name:       "uba_risk_rules",
+		Comment:    "UBA风险规则表",
+		Columns:    UbaRiskRulesColumns,
+		PrimaryKey: []*schema.Column{UbaRiskRulesColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "uix_uba_risk_rules_tenant_rule_id",
+				Unique:  true,
+				Columns: []*schema.Column{UbaRiskRulesColumns[7], UbaRiskRulesColumns[0]},
+			},
+			{
+				Name:    "idx_uba_risk_rules_tenant_id",
+				Unique:  false,
+				Columns: []*schema.Column{UbaRiskRulesColumns[7]},
+			},
+			{
+				Name:    "idx_uba_risk_rules_enabled",
+				Unique:  false,
+				Columns: []*schema.Column{UbaRiskRulesColumns[14]},
+			},
+			{
+				Name:    "idx_uba_risk_rules_risk_type",
+				Unique:  false,
+				Columns: []*schema.Column{UbaRiskRulesColumns[10]},
+			},
+			{
+				Name:    "idx_uba_risk_rules_priority",
+				Unique:  false,
+				Columns: []*schema.Column{UbaRiskRulesColumns[15]},
+			},
+			{
+				Name:    "idx_uba_risk_rules_created_at",
+				Unique:  false,
+				Columns: []*schema.Column{UbaRiskRulesColumns[1]},
+			},
+		},
+	}
+	// UbaRiskRuleConditionsColumns holds the columns for the "uba_risk_rule_conditions" table.
+	UbaRiskRuleConditionsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUint32, Increment: true, Comment: "id"},
+		{Name: "created_at", Type: field.TypeTime, Nullable: true, Comment: "创建时间"},
+		{Name: "updated_at", Type: field.TypeTime, Nullable: true, Comment: "更新时间"},
+		{Name: "deleted_at", Type: field.TypeTime, Nullable: true, Comment: "删除时间"},
+		{Name: "created_by", Type: field.TypeUint32, Nullable: true, Comment: "创建者ID"},
+		{Name: "updated_by", Type: field.TypeUint32, Nullable: true, Comment: "更新者ID"},
+		{Name: "deleted_by", Type: field.TypeUint32, Nullable: true, Comment: "删除者ID"},
+		{Name: "sort_order", Type: field.TypeUint32, Nullable: true, Comment: "排序值（越小越靠前）", Default: 0},
+		{Name: "tenant_id", Type: field.TypeUint32, Nullable: true, Comment: "租户ID", Default: 0},
+		{Name: "rule_id", Type: field.TypeUint32, Nullable: true, Comment: "风险规则ID，关联 uba_risk_rules.id"},
+		{Name: "field_name", Type: field.TypeString, Comment: "字段名，条件配置"},
+		{Name: "operator", Type: field.TypeString, Comment: "操作符：eq/gt/lt/contains/in"},
+		{Name: "field_value", Type: field.TypeString, Nullable: true, Size: 2147483647, Comment: "字段值，条件配置"},
+		{Name: "logic_operator", Type: field.TypeString, Comment: "逻辑关系：AND/OR", Default: "AND"},
+		{Name: "group_id", Type: field.TypeUint32, Nullable: true, Comment: "条件组ID，逻辑分组"},
+	}
+	// UbaRiskRuleConditionsTable holds the schema information for the "uba_risk_rule_conditions" table.
+	UbaRiskRuleConditionsTable = &schema.Table{
+		Name:       "uba_risk_rule_conditions",
+		Comment:    "UBA风险规则条件表",
+		Columns:    UbaRiskRuleConditionsColumns,
+		PrimaryKey: []*schema.Column{UbaRiskRuleConditionsColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "idx_risk_rule_condition_rule_id",
+				Unique:  false,
+				Columns: []*schema.Column{UbaRiskRuleConditionsColumns[8], UbaRiskRuleConditionsColumns[9]},
+			},
+			{
+				Name:    "idx_risk_rule_condition_field_name",
+				Unique:  false,
+				Columns: []*schema.Column{UbaRiskRuleConditionsColumns[8], UbaRiskRuleConditionsColumns[9], UbaRiskRuleConditionsColumns[10]},
+			},
+		},
+	}
+	// UbaRiskRuleVersionsColumns holds the columns for the "uba_risk_rule_versions" table.
+	UbaRiskRuleVersionsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUint32, Increment: true, Comment: "id"},
+		{Name: "created_at", Type: field.TypeTime, Nullable: true, Comment: "创建时间"},
+		{Name: "updated_at", Type: field.TypeTime, Nullable: true, Comment: "更新时间"},
+		{Name: "deleted_at", Type: field.TypeTime, Nullable: true, Comment: "删除时间"},
+		{Name: "created_by", Type: field.TypeUint32, Nullable: true, Comment: "创建者ID"},
+		{Name: "updated_by", Type: field.TypeUint32, Nullable: true, Comment: "更新者ID"},
+		{Name: "deleted_by", Type: field.TypeUint32, Nullable: true, Comment: "删除者ID"},
+		{Name: "version", Type: field.TypeUint32, Comment: "版本号/乐观锁", Default: 1},
+		{Name: "tenant_id", Type: field.TypeUint32, Nullable: true, Comment: "租户ID", Default: 0},
+		{Name: "rule_id", Type: field.TypeUint32, Nullable: true, Comment: "风险规则ID，关联 uba_risk_rules.id"},
+		{Name: "name", Type: field.TypeString, Comment: "规则名称，版本快照"},
+		{Name: "rule_expression", Type: field.TypeString, Size: 2147483647, Comment: "规则表达式，版本快照"},
+		{Name: "rule_config", Type: field.TypeJSON, Comment: "规则配置，版本快照"},
+		{Name: "actions", Type: field.TypeJSON, Comment: "动作配置，版本快照"},
+		{Name: "risk_level", Type: field.TypeString, Nullable: true, Comment: "风险等级，版本快照"},
+		{Name: "change_summary", Type: field.TypeString, Nullable: true, Comment: "变更说明"},
+		{Name: "change_reason", Type: field.TypeString, Nullable: true, Comment: "变更原因"},
+		{Name: "status", Type: field.TypeEnum, Comment: "版本状态：draft/published/archived", Enums: []string{"DRAFT", "PUBLISHED", "ARCHIVED"}, Default: "DRAFT"},
+		{Name: "published_at", Type: field.TypeTime, Nullable: true, Comment: "发布时间"},
+		{Name: "published_by", Type: field.TypeUint32, Nullable: true, Comment: "发布者用户ID"},
+	}
+	// UbaRiskRuleVersionsTable holds the schema information for the "uba_risk_rule_versions" table.
+	UbaRiskRuleVersionsTable = &schema.Table{
+		Name:       "uba_risk_rule_versions",
+		Comment:    "UBA风险规则版本表",
+		Columns:    UbaRiskRuleVersionsColumns,
+		PrimaryKey: []*schema.Column{UbaRiskRuleVersionsColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "idx_risk_rule_version_rule_id",
+				Unique:  false,
+				Columns: []*schema.Column{UbaRiskRuleVersionsColumns[8], UbaRiskRuleVersionsColumns[9]},
+			},
+			{
+				Name:    "idx_risk_rule_version_version",
+				Unique:  false,
+				Columns: []*schema.Column{UbaRiskRuleVersionsColumns[8], UbaRiskRuleVersionsColumns[9], UbaRiskRuleVersionsColumns[7]},
+			},
+			{
+				Name:    "idx_risk_rule_version_status",
+				Unique:  false,
+				Columns: []*schema.Column{UbaRiskRuleVersionsColumns[8], UbaRiskRuleVersionsColumns[17]},
+			},
+		},
+	}
 	// SysRolesColumns holds the columns for the "sys_roles" table.
 	SysRolesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUint32, Increment: true, Comment: "id"},
@@ -1890,6 +2138,95 @@ var (
 				Name:    "idx_rp_created_by",
 				Unique:  false,
 				Columns: []*schema.Column{SysRolePermissionsColumns[4]},
+			},
+		},
+	}
+	// UbaTagDefinitionsColumns holds the columns for the "uba_tag_definitions" table.
+	UbaTagDefinitionsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUint32, Increment: true, Comment: "id"},
+		{Name: "created_at", Type: field.TypeTime, Nullable: true, Comment: "创建时间"},
+		{Name: "updated_at", Type: field.TypeTime, Nullable: true, Comment: "更新时间"},
+		{Name: "deleted_at", Type: field.TypeTime, Nullable: true, Comment: "删除时间"},
+		{Name: "created_by", Type: field.TypeUint32, Nullable: true, Comment: "创建者ID"},
+		{Name: "updated_by", Type: field.TypeUint32, Nullable: true, Comment: "更新者ID"},
+		{Name: "deleted_by", Type: field.TypeUint32, Nullable: true, Comment: "删除者ID"},
+		{Name: "tenant_id", Type: field.TypeUint32, Nullable: true, Comment: "租户ID", Default: 0},
+		{Name: "name", Type: field.TypeString, Nullable: true, Comment: "标签名称，显示名称"},
+		{Name: "description", Type: field.TypeString, Nullable: true, Comment: "标签描述，详细说明"},
+		{Name: "category", Type: field.TypeEnum, Nullable: true, Comment: "标签分类，如用户属性、行为偏好、风险、业务等", Enums: []string{"TAG_CATEGORY_USER", "TAG_CATEGORY_BEHAVIOR", "TAG_CATEGORY_RISK", "TAG_CATEGORY_BUSINESS"}},
+		{Name: "tag_type", Type: field.TypeEnum, Nullable: true, Comment: "标签类型，如布尔、枚举、数值、字符串、列表等", Enums: []string{"TAG_TYPE_BOOLEAN", "TAG_TYPE_ENUM", "TAG_TYPE_NUMERIC", "TAG_TYPE_STRING", "TAG_TYPE_LIST"}},
+		{Name: "rule", Type: field.TypeJSON, Nullable: true, Comment: "计算规则，简化，实际可用表达式引擎，如 CEL/SQL"},
+		{Name: "allowed_values", Type: field.TypeJSON, Nullable: true, Comment: "取值范围，枚举型标签的允许值列表"},
+		{Name: "is_system", Type: field.TypeBool, Nullable: true, Comment: "是否系统预置，true: 系统预置，false: 用户自定义", Default: false},
+		{Name: "is_dynamic", Type: field.TypeBool, Nullable: true, Comment: "是否动态标签，true: 动态计算，false: 静态打标", Default: false},
+		{Name: "refresh_interval_seconds", Type: field.TypeUint32, Nullable: true, Comment: "动态标签刷新间隔，单位秒", Default: 0},
+		{Name: "code", Type: field.TypeString, Nullable: true, Comment: "标签唯一代码，业务唯一标识，支持英文、数字、下划线"},
+	}
+	// UbaTagDefinitionsTable holds the schema information for the "uba_tag_definitions" table.
+	UbaTagDefinitionsTable = &schema.Table{
+		Name:       "uba_tag_definitions",
+		Comment:    "UBA标签定义表",
+		Columns:    UbaTagDefinitionsColumns,
+		PrimaryKey: []*schema.Column{UbaTagDefinitionsColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "uix_uba_tag_definitions_tenant_tag_id",
+				Unique:  true,
+				Columns: []*schema.Column{UbaTagDefinitionsColumns[7], UbaTagDefinitionsColumns[0]},
+			},
+			{
+				Name:    "idx_uba_tag_definitions_tenant_id",
+				Unique:  false,
+				Columns: []*schema.Column{UbaTagDefinitionsColumns[7]},
+			},
+			{
+				Name:    "idx_uba_tag_definitions_tag_type",
+				Unique:  false,
+				Columns: []*schema.Column{UbaTagDefinitionsColumns[11]},
+			},
+			{
+				Name:    "idx_uba_tag_definitions_category",
+				Unique:  false,
+				Columns: []*schema.Column{UbaTagDefinitionsColumns[10]},
+			},
+			{
+				Name:    "idx_uba_tag_definitions_is_system",
+				Unique:  false,
+				Columns: []*schema.Column{UbaTagDefinitionsColumns[14]},
+			},
+			{
+				Name:    "idx_uba_tag_definitions_created_at",
+				Unique:  false,
+				Columns: []*schema.Column{UbaTagDefinitionsColumns[1]},
+			},
+		},
+	}
+	// UbaTagValuesColumns holds the columns for the "uba_tag_values" table.
+	UbaTagValuesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUint32, Increment: true, Comment: "id"},
+		{Name: "tenant_id", Type: field.TypeUint32, Nullable: true, Comment: "租户ID", Default: 0},
+		{Name: "created_at", Type: field.TypeTime, Nullable: true, Comment: "创建时间"},
+		{Name: "updated_at", Type: field.TypeTime, Nullable: true, Comment: "更新时间"},
+		{Name: "deleted_at", Type: field.TypeTime, Nullable: true, Comment: "删除时间"},
+		{Name: "sort_order", Type: field.TypeUint32, Nullable: true, Comment: "排序值（越小越靠前）", Default: 0},
+		{Name: "tag_id", Type: field.TypeUint32, Nullable: true, Comment: "标签定义ID，关联 uba_tag_definitions.id"},
+		{Name: "value", Type: field.TypeString, Comment: "标签值，业务唯一标识"},
+		{Name: "label", Type: field.TypeString, Nullable: true, Comment: "显示名称"},
+		{Name: "description", Type: field.TypeString, Nullable: true, Comment: "描述"},
+		{Name: "color", Type: field.TypeString, Nullable: true, Comment: "颜色标识"},
+		{Name: "icon", Type: field.TypeString, Nullable: true, Comment: "图标"},
+	}
+	// UbaTagValuesTable holds the schema information for the "uba_tag_values" table.
+	UbaTagValuesTable = &schema.Table{
+		Name:       "uba_tag_values",
+		Comment:    "UBA标签值表",
+		Columns:    UbaTagValuesColumns,
+		PrimaryKey: []*schema.Column{UbaTagValuesColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "idx_tag_value",
+				Unique:  true,
+				Columns: []*schema.Column{UbaTagValuesColumns[1], UbaTagValuesColumns[6], UbaTagValuesColumns[7]},
 			},
 		},
 	}
@@ -2449,16 +2786,111 @@ var (
 			},
 		},
 	}
+	// UbaUserTagsColumns holds the columns for the "uba_user_tags" table.
+	UbaUserTagsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUint32, Increment: true, Comment: "id"},
+		{Name: "tenant_id", Type: field.TypeUint32, Nullable: true, Comment: "租户ID", Default: 0},
+		{Name: "created_at", Type: field.TypeTime, Nullable: true, Comment: "创建时间"},
+		{Name: "updated_at", Type: field.TypeTime, Nullable: true, Comment: "更新时间"},
+		{Name: "deleted_at", Type: field.TypeTime, Nullable: true, Comment: "删除时间"},
+		{Name: "created_by", Type: field.TypeUint32, Nullable: true, Comment: "创建者ID"},
+		{Name: "updated_by", Type: field.TypeUint32, Nullable: true, Comment: "更新者ID"},
+		{Name: "deleted_by", Type: field.TypeUint32, Nullable: true, Comment: "删除者ID"},
+		{Name: "user_id", Type: field.TypeUint32, Nullable: true, Comment: "业务用户ID"},
+		{Name: "tag_id", Type: field.TypeUint32, Nullable: true, Comment: "标签定义ID，关联 uba_tag_definitions.id"},
+		{Name: "tag_value", Type: field.TypeString, Comment: "标签值，实际存储值"},
+		{Name: "value_label", Type: field.TypeString, Nullable: true, Comment: "显示名称"},
+		{Name: "confidence", Type: field.TypeFloat64, Comment: "置信度，算法打标", Default: 1},
+		{Name: "source", Type: field.TypeString, Comment: "来源：manual/rule/model/import", Default: "manual"},
+		{Name: "source_rule_id", Type: field.TypeUint32, Nullable: true, Comment: "来源规则ID，关联规则表"},
+		{Name: "effective_time", Type: field.TypeTime, Nullable: true, Comment: "生效时间"},
+		{Name: "expire_time", Type: field.TypeTime, Nullable: true, Comment: "过期时间，NULL表示永久"},
+		{Name: "is_active", Type: field.TypeBool, Comment: "是否激活，1为激活，0为未激活", Default: true},
+	}
+	// UbaUserTagsTable holds the schema information for the "uba_user_tags" table.
+	UbaUserTagsTable = &schema.Table{
+		Name:       "uba_user_tags",
+		Comment:    "用户标签关联表",
+		Columns:    UbaUserTagsColumns,
+		PrimaryKey: []*schema.Column{UbaUserTagsColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "idx_tenant_user",
+				Unique:  false,
+				Columns: []*schema.Column{UbaUserTagsColumns[1], UbaUserTagsColumns[8]},
+			},
+			{
+				Name:    "idx_tag_id",
+				Unique:  false,
+				Columns: []*schema.Column{UbaUserTagsColumns[1], UbaUserTagsColumns[9]},
+			},
+			{
+				Name:    "idx_user_tag_active",
+				Unique:  false,
+				Columns: []*schema.Column{UbaUserTagsColumns[1], UbaUserTagsColumns[17]},
+			},
+			{
+				Name:    "idx_expire",
+				Unique:  false,
+				Columns: []*schema.Column{UbaUserTagsColumns[1], UbaUserTagsColumns[16], UbaUserTagsColumns[17]},
+			},
+			{
+				Name:    "idx_user_tag",
+				Unique:  true,
+				Columns: []*schema.Column{UbaUserTagsColumns[1], UbaUserTagsColumns[8], UbaUserTagsColumns[9], UbaUserTagsColumns[15]},
+			},
+		},
+	}
+	// UbaWebhooksColumns holds the columns for the "uba_webhooks" table.
+	UbaWebhooksColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUint32, Increment: true, Comment: "id"},
+		{Name: "created_at", Type: field.TypeTime, Nullable: true, Comment: "创建时间"},
+		{Name: "updated_at", Type: field.TypeTime, Nullable: true, Comment: "更新时间"},
+		{Name: "deleted_at", Type: field.TypeTime, Nullable: true, Comment: "删除时间"},
+		{Name: "created_by", Type: field.TypeUint32, Nullable: true, Comment: "创建者ID"},
+		{Name: "updated_by", Type: field.TypeUint32, Nullable: true, Comment: "更新者ID"},
+		{Name: "deleted_by", Type: field.TypeUint32, Nullable: true, Comment: "删除者ID"},
+		{Name: "tenant_id", Type: field.TypeUint32, Nullable: true, Comment: "租户ID", Default: 0},
+		{Name: "name", Type: field.TypeString, Comment: "Webhook名称"},
+		{Name: "url", Type: field.TypeString, Comment: "回调URL"},
+		{Name: "secret", Type: field.TypeString, Nullable: true, Comment: "签名密钥"},
+		{Name: "event_types", Type: field.TypeJSON, Nullable: true, Comment: "触发事件类型列表，如[\"risk.high\", \"risk.critical\"]"},
+		{Name: "filters", Type: field.TypeJSON, Nullable: true, Comment: "过滤条件，结构化JSON"},
+		{Name: "enabled", Type: field.TypeBool, Comment: "是否启用，1为启用，0为禁用", Default: true},
+		{Name: "last_triggered_at", Type: field.TypeTime, Nullable: true, Comment: "最后触发时间"},
+		{Name: "failure_count", Type: field.TypeInt, Comment: "失败次数", Default: 0},
+	}
+	// UbaWebhooksTable holds the schema information for the "uba_webhooks" table.
+	UbaWebhooksTable = &schema.Table{
+		Name:       "uba_webhooks",
+		Comment:    "Webhook告警配置表",
+		Columns:    UbaWebhooksColumns,
+		PrimaryKey: []*schema.Column{UbaWebhooksColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "idx_tenant_id",
+				Unique:  false,
+				Columns: []*schema.Column{UbaWebhooksColumns[7]},
+			},
+			{
+				Name:    "idx_enabled",
+				Unique:  false,
+				Columns: []*schema.Column{UbaWebhooksColumns[7], UbaWebhooksColumns[13]},
+			},
+		},
+	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
 		SysApisTable,
 		SysAPIAuditLogsTable,
+		UbaApplicationsTable,
 		SysDataAccessAuditLogsTable,
 		SysDictEntriesTable,
 		SysDictEntryI18nTable,
 		SysDictTypesTable,
 		SysDictTypeI18nTable,
 		FilesTable,
+		UbaIDMappingsTable,
 		InternalMessagesTable,
 		InternalMessageCategoriesTable,
 		InternalMessageRecipientsTable,
@@ -2476,9 +2908,14 @@ var (
 		SysPermissionPoliciesTable,
 		SysPolicyEvaluationLogsTable,
 		SysPositionsTable,
+		UbaRiskRulesTable,
+		UbaRiskRuleConditionsTable,
+		UbaRiskRuleVersionsTable,
 		SysRolesTable,
 		SysRoleMetadataTable,
 		SysRolePermissionsTable,
+		UbaTagDefinitionsTable,
+		UbaTagValuesTable,
 		SysTasksTable,
 		SysTenantsTable,
 		SysUsersTable,
@@ -2486,6 +2923,8 @@ var (
 		SysUserOrgUnitsTable,
 		SysUserPositionsTable,
 		SysUserRolesTable,
+		UbaUserTagsTable,
+		UbaWebhooksTable,
 	}
 )
 
@@ -2497,6 +2936,11 @@ func init() {
 	}
 	SysAPIAuditLogsTable.Annotation = &entsql.Annotation{
 		Table:     "sys_api_audit_logs",
+		Charset:   "utf8mb4",
+		Collation: "utf8mb4_bin",
+	}
+	UbaApplicationsTable.Annotation = &entsql.Annotation{
+		Table:     "uba_applications",
 		Charset:   "utf8mb4",
 		Collation: "utf8mb4_bin",
 	}
@@ -2532,6 +2976,11 @@ func init() {
 		Table:     "files",
 		Charset:   "utf8mb4",
 		Collation: "utf8mb4_bin",
+	}
+	UbaIDMappingsTable.Annotation = &entsql.Annotation{
+		Table:     "uba_id_mappings",
+		Charset:   "utf8mb4",
+		Collation: "utf8mb4_unicode_ci",
 	}
 	InternalMessagesTable.Annotation = &entsql.Annotation{
 		Table:     "internal_messages",
@@ -2621,6 +3070,21 @@ func init() {
 		Charset:   "utf8mb4",
 		Collation: "utf8mb4_bin",
 	}
+	UbaRiskRulesTable.Annotation = &entsql.Annotation{
+		Table:     "uba_risk_rules",
+		Charset:   "utf8mb4",
+		Collation: "utf8mb4_bin",
+	}
+	UbaRiskRuleConditionsTable.Annotation = &entsql.Annotation{
+		Table:     "uba_risk_rule_conditions",
+		Charset:   "utf8mb4",
+		Collation: "utf8mb4_bin",
+	}
+	UbaRiskRuleVersionsTable.Annotation = &entsql.Annotation{
+		Table:     "uba_risk_rule_versions",
+		Charset:   "utf8mb4",
+		Collation: "utf8mb4_bin",
+	}
 	SysRolesTable.Annotation = &entsql.Annotation{
 		Table:     "sys_roles",
 		Charset:   "utf8mb4",
@@ -2633,6 +3097,16 @@ func init() {
 	}
 	SysRolePermissionsTable.Annotation = &entsql.Annotation{
 		Table:     "sys_role_permissions",
+		Charset:   "utf8mb4",
+		Collation: "utf8mb4_bin",
+	}
+	UbaTagDefinitionsTable.Annotation = &entsql.Annotation{
+		Table:     "uba_tag_definitions",
+		Charset:   "utf8mb4",
+		Collation: "utf8mb4_bin",
+	}
+	UbaTagValuesTable.Annotation = &entsql.Annotation{
+		Table:     "uba_tag_values",
 		Charset:   "utf8mb4",
 		Collation: "utf8mb4_bin",
 	}
@@ -2670,5 +3144,15 @@ func init() {
 		Table:     "sys_user_roles",
 		Charset:   "utf8mb4",
 		Collation: "utf8mb4_bin",
+	}
+	UbaUserTagsTable.Annotation = &entsql.Annotation{
+		Table:     "uba_user_tags",
+		Charset:   "utf8mb4",
+		Collation: "utf8mb4_unicode_ci",
+	}
+	UbaWebhooksTable.Annotation = &entsql.Annotation{
+		Table:     "uba_webhooks",
+		Charset:   "utf8mb4",
+		Collation: "utf8mb4_unicode_ci",
 	}
 }

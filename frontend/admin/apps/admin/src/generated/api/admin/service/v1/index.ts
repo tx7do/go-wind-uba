@@ -940,6 +940,269 @@ export type auditservicev1_GetApiAuditLogRequest = {
   viewMask?: wellKnownFieldMask;
 };
 
+// 应用服务
+export interface ApplicationService {
+  // 获取应用列表
+  ListApplication(request: pagination_PagingRequest): Promise<ubaservicev1_ListApplicationResponse>;
+  // 获取应用数据
+  GetApplication(request: ubaservicev1_GetApplicationRequest): Promise<ubaservicev1_Application>;
+  // 创建应用
+  CreateApplication(request: ubaservicev1_CreateApplicationRequest): Promise<ubaservicev1_Application>;
+  // 更新应用
+  UpdateApplication(request: ubaservicev1_UpdateApplicationRequest): Promise<ubaservicev1_Application>;
+  // 删除应用
+  DeleteApplication(request: ubaservicev1_DeleteApplicationRequest): Promise<wellKnownEmpty>;
+}
+
+export function createApplicationServiceClient(
+  handler: RequestHandler
+): ApplicationService {
+  return {
+    ListApplication(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+      const path = `admin/v1/apps`; // eslint-disable-line quotes
+      const body = null;
+      const queryParams: string[] = [];
+      if (request.page) {
+        queryParams.push(`page=${encodeURIComponent(request.page.toString())}`)
+      }
+      if (request.pageSize) {
+        queryParams.push(`pageSize=${encodeURIComponent(request.pageSize.toString())}`)
+      }
+      if (request.offset) {
+        queryParams.push(`offset=${encodeURIComponent(request.offset.toString())}`)
+      }
+      if (request.limit) {
+        queryParams.push(`limit=${encodeURIComponent(request.limit.toString())}`)
+      }
+      if (request.token) {
+        queryParams.push(`token=${encodeURIComponent(request.token.toString())}`)
+      }
+      if (request.noPaging) {
+        queryParams.push(`noPaging=${encodeURIComponent(request.noPaging.toString())}`)
+      }
+      if (request.query) {
+        queryParams.push(`query=${encodeURIComponent(request.query.toString())}`)
+      }
+      if (request.filter) {
+        queryParams.push(`filter=${encodeURIComponent(request.filter.toString())}`)
+      }
+      if (request.filterExpr?.type) {
+        queryParams.push(`filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.field) {
+        queryParams.push(`filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.op) {
+        queryParams.push(`filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.value) {
+        queryParams.push(`filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.jsonValue) {
+        queryParams.push(`filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.values) {
+        request.filterExpr.conditions.values.forEach((x) => {
+          queryParams.push(`filterExpr.conditions.values=${encodeURIComponent(x.toString())}`)
+        })
+      }
+      if (request.filterExpr?.conditions?.datePart) {
+        queryParams.push(`filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.jsonPath) {
+        queryParams.push(`filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`)
+      }
+      if (request.orderBy) {
+        queryParams.push(`orderBy=${encodeURIComponent(request.orderBy.toString())}`)
+      }
+      if (request.sorting?.field) {
+        queryParams.push(`sorting.field=${encodeURIComponent(request.sorting.field.toString())}`)
+      }
+      if (request.sorting?.direction) {
+        queryParams.push(`sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`)
+      }
+      if (request.fieldMask) {
+        queryParams.push(`fieldMask=${encodeURIComponent(request.fieldMask.toString())}`)
+      }
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join("&")}`
+      }
+      return handler({
+        path: uri,
+        method: "GET",
+        body,
+      }, {
+        service: "ApplicationService",
+        method: "ListApplication",
+      }) as Promise<ubaservicev1_ListApplicationResponse>;
+    },
+    GetApplication(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+      if (!request.id) {
+        throw new Error("missing required field request.id");
+      }
+      const path = `admin/v1/apps/${request.id}`; // eslint-disable-line quotes
+      const body = null;
+      const queryParams: string[] = [];
+      if (request.viewMask) {
+        queryParams.push(`viewMask=${encodeURIComponent(request.viewMask.toString())}`)
+      }
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join("&")}`
+      }
+      return handler({
+        path: uri,
+        method: "GET",
+        body,
+      }, {
+        service: "ApplicationService",
+        method: "GetApplication",
+      }) as Promise<ubaservicev1_Application>;
+    },
+    CreateApplication(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+      const path = `admin/v1/apps`; // eslint-disable-line quotes
+      const body = JSON.stringify(request?.data ?? {});
+      const queryParams: string[] = [];
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join("&")}`
+      }
+      return handler({
+        path: uri,
+        method: "POST",
+        body,
+      }, {
+        service: "ApplicationService",
+        method: "CreateApplication",
+      }) as Promise<ubaservicev1_Application>;
+    },
+    UpdateApplication(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+      if (!request.id) {
+        throw new Error("missing required field request.id");
+      }
+      const path = `admin/v1/apps/${request.id}`; // eslint-disable-line quotes
+      const body = JSON.stringify(request?.data ?? {});
+      const queryParams: string[] = [];
+      if (request.updateMask) {
+        queryParams.push(`updateMask=${encodeURIComponent(request.updateMask.toString())}`)
+      }
+      if (request.allowMissing) {
+        queryParams.push(`allowMissing=${encodeURIComponent(request.allowMissing.toString())}`)
+      }
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join("&")}`
+      }
+      return handler({
+        path: uri,
+        method: "PUT",
+        body,
+      }, {
+        service: "ApplicationService",
+        method: "UpdateApplication",
+      }) as Promise<ubaservicev1_Application>;
+    },
+    DeleteApplication(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+      if (!request.id) {
+        throw new Error("missing required field request.id");
+      }
+      const path = `admin/v1/apps/${request.id}`; // eslint-disable-line quotes
+      const body = null;
+      const queryParams: string[] = [];
+      if (request.deletedBy) {
+        queryParams.push(`deletedBy=${encodeURIComponent(request.deletedBy.toString())}`)
+      }
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join("&")}`
+      }
+      return handler({
+        path: uri,
+        method: "DELETE",
+        body,
+      }, {
+        service: "ApplicationService",
+        method: "DeleteApplication",
+      }) as Promise<wellKnownEmpty>;
+    },
+  };
+}
+// 获取UBA应用列表 - 答复
+export type ubaservicev1_ListApplicationResponse = {
+  items: ubaservicev1_Application[] | undefined;
+};
+
+// UBA应用
+export type ubaservicev1_Application = {
+  id: number | undefined;
+  name?: string;
+  appId?: string;
+  appKey?: string;
+  appSecret?: string;
+  type?: ubaservicev1_Platform;
+  status?: ubaservicev1_Application_Status;
+  remark?: string;
+  desensitize?: boolean;
+  tenantId?: number;
+  tenantName?: string;
+  webhookUrl?: string;
+  webhookSecret?: string;
+  createdBy?: number;
+  updatedBy?: number;
+  deletedBy?: number;
+  createdAt?: wellKnownTimestamp;
+  updatedAt?: wellKnownTimestamp;
+  deletedAt?: wellKnownTimestamp;
+};
+
+// 平台类型（用于标识应用或事件发生的平台）
+export type ubaservicev1_Platform =
+  // 未指定平台类型
+  | "PLATFORM_UNSPECIFIED"
+  // Web 平台
+  | "PLATFORM_WEB"
+  // iOS 平台
+  | "PLATFORM_IOS"
+  // Android 平台
+  | "PLATFORM_ANDROID"
+  // Windows 平台
+  | "PLATFORM_WINDOWS"
+  // macOS 平台
+  | "PLATFORM_MACOS"
+  // Linux 平台
+  | "PLATFORM_LINUX"
+  // 小程序平台
+  | "PLATFORM_MINI_PROGRAM";
+export type ubaservicev1_Application_Status =
+  | "STATUS_UNSPECIFIED"
+  | "ON"
+  | "OFF";
+// 获取UBA应用数据 - 请求
+export type ubaservicev1_GetApplicationRequest = {
+  id?: number;
+  viewMask?: wellKnownFieldMask;
+};
+
+// 创建UBA应用 - 请求
+export type ubaservicev1_CreateApplicationRequest = {
+  data: ubaservicev1_Application | undefined;
+};
+
+// 更新UBA应用 - 请求
+export type ubaservicev1_UpdateApplicationRequest = {
+  id: number | undefined;
+  data: ubaservicev1_Application | undefined;
+  updateMask: wellKnownFieldMask | undefined;
+  allowMissing?: boolean;
+};
+
+// 删除UBA应用 - 请求
+export type ubaservicev1_DeleteApplicationRequest = {
+  id?: number;
+  deletedBy?: number;
+};
+
 // 用户后台登录认证服务
 export interface AuthenticationService {
   // 登录
@@ -1007,7 +1270,7 @@ export function createAuthenticationServiceClient(
     },
   };
 }
-// 用户后台登录 - 请求
+// 用户登录 - 请求
 export type authenticationservicev1_LoginRequest = {
   //
   // Behaviors: REQUIRED
@@ -1016,13 +1279,16 @@ export type authenticationservicev1_LoginRequest = {
   client_secret?: string;
   scope?: string;
   redirect_uri?: string;
-  username?: string;
-  password?: string;
   user_id?: number;
+  username?: string;
+  email?: string;
+  mobile?: string;
+  password?: string;
   refresh_token?: string;
   code?: string;
   client_type?: authenticationservicev1_ClientType;
   device_id?: string;
+  jti?: string;
 };
 
 // 授权类型
@@ -1035,8 +1301,8 @@ export type authenticationservicev1_GrantType =
 // 客户端类型
 export type authenticationservicev1_ClientType =
   | "admin"
-  | "app";
-// 用户后台登录 - 回应
+  | "collector";
+// 用户登录 - 回应
 export type authenticationservicev1_LoginResponse = {
   token_type: authenticationservicev1_TokenType | undefined;
   access_token: string | undefined;
@@ -2030,40 +2296,6 @@ export function createFileTransferServiceClient(
         method: "PostUploadFile",
       }) as Promise<storageservicev1_UploadFileResponse>;
     },
-    UEditorPostUploadFile(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
-      const path = `admin/v1/ueditor`; // eslint-disable-line quotes
-      const body = JSON.stringify(request);
-      const queryParams: string[] = [];
-      let uri = path;
-      if (queryParams.length > 0) {
-        uri += `?${queryParams.join("&")}`
-      }
-      return handler({
-        path: uri,
-        method: "POST",
-        body,
-      }, {
-        service: "FileTransferService",
-        method: "UEditorPostUploadFile",
-      }) as Promise<storageservicev1_UEditorUploadResponse>;
-    },
-    UEditorPutUploadFile(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
-      const path = `admin/v1/ueditor`; // eslint-disable-line quotes
-      const body = JSON.stringify(request);
-      const queryParams: string[] = [];
-      let uri = path;
-      if (queryParams.length > 0) {
-        uri += `?${queryParams.join("&")}`
-      }
-      return handler({
-        path: uri,
-        method: "PUT",
-        body,
-      }, {
-        service: "FileTransferService",
-        method: "UEditorPutUploadFile",
-      }) as Promise<storageservicev1_UEditorUploadResponse>;
-    },
   };
 }
 // 文件下载请求
@@ -2106,6 +2338,8 @@ export type storageservicev1_UploadFileRequest = {
   sourceFileName?: string;
   mime?: string;
   size?: number;
+  tenantId?: number;
+  userId?: number;
 };
 
 // 预签名选项
@@ -2118,32 +2352,6 @@ export type storageservicev1_PresignOption = {
 export type storageservicev1_UploadFileResponse = {
   objectName?: string;
   presignedUrl?: string;
-};
-
-export type storageservicev1_UEditorUploadRequest = {
-  action?: string;
-  file?: string;
-  sourceFileName?: string;
-  mime?: string;
-};
-
-export type storageservicev1_UEditorUploadResponse = {
-  state?: string;
-  url?: string;
-  title?: string;
-  original?: string;
-  type?: string;
-  size?: number;
-  list: storageservicev1_UEditorUploadResponse_Item[] | undefined;
-};
-
-export type storageservicev1_UEditorUploadResponse_Item = {
-  state: string | undefined;
-  url?: string;
-  title?: string;
-  original?: string;
-  type?: string;
-  size?: number;
 };
 
 // 站内信消息管理服务
@@ -2414,6 +2622,7 @@ export type internal_messageservicev1_SendMessageRequest = {
   targetAll?: boolean;
   title?: string;
   content: string | undefined;
+  sendUserId?: number;
 };
 
 export type internal_messageservicev1_SendMessageResponse = {
@@ -5434,6 +5643,12 @@ export function createRoleServiceClient(
       const path = `admin/v1/roles/${request.id}`; // eslint-disable-line quotes
       const body = null;
       const queryParams: string[] = [];
+      if (request.code) {
+        queryParams.push(`code=${encodeURIComponent(request.code.toString())}`)
+      }
+      if (request.tenantId) {
+        queryParams.push(`tenantId=${encodeURIComponent(request.tenantId.toString())}`)
+      }
       let uri = path;
       if (queryParams.length > 0) {
         uri += `?${queryParams.join("&")}`
@@ -5509,6 +5724,8 @@ export type permissionservicev1_UpdateRoleRequest = {
 // 删除角色 - 请求
 export type permissionservicev1_DeleteRoleRequest = {
   id?: number;
+  code?: string;
+  tenantId?: number;
 };
 
 // 调度任务管理服务
@@ -6091,6 +6308,9 @@ export function createTenantServiceClient(
       const path = `admin/v1/tenants/${request.id}`; // eslint-disable-line quotes
       const body = null;
       const queryParams: string[] = [];
+      if (request.code) {
+        queryParams.push(`code=${encodeURIComponent(request.code.toString())}`)
+      }
       let uri = path;
       if (queryParams.length > 0) {
         uri += `?${queryParams.join("&")}`
@@ -6223,6 +6443,7 @@ export type identityservicev1_UpdateTenantRequest = {
 // 删除租户 - 请求
 export type identityservicev1_DeleteTenantRequest = {
   id?: number;
+  code?: string;
 };
 
 // 创建租户及管理员用户 - 请求
@@ -6230,6 +6451,7 @@ export type identityservicev1_CreateTenantWithAdminUserRequest = {
   tenant: identityservicev1_Tenant | undefined;
   user: identityservicev1_User | undefined;
   password: string | undefined;
+  operatorUserId?: number;
 };
 
 // 用户
@@ -6297,120 +6519,6 @@ export type identityservicev1_TenantExistsResponse = {
   exist: boolean | undefined;
 };
 
-// UEditor后端服务
-export interface UEditorService {
-  // UEditor API
-  UEditorAPI(request: storageservicev1_UEditorRequest): Promise<storageservicev1_UEditorResponse>;
-}
-
-export function createUEditorServiceClient(
-  handler: RequestHandler
-): UEditorService {
-  return {
-    UEditorAPI(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
-      const path = `admin/v1/ueditor`; // eslint-disable-line quotes
-      const body = null;
-      const queryParams: string[] = [];
-      if (request.action) {
-        queryParams.push(`action=${encodeURIComponent(request.action.toString())}`)
-      }
-      if (request.encode) {
-        queryParams.push(`encode=${encodeURIComponent(request.encode.toString())}`)
-      }
-      if (request.start) {
-        queryParams.push(`start=${encodeURIComponent(request.start.toString())}`)
-      }
-      if (request.size) {
-        queryParams.push(`size=${encodeURIComponent(request.size.toString())}`)
-      }
-      let uri = path;
-      if (queryParams.length > 0) {
-        uri += `?${queryParams.join("&")}`
-      }
-      return handler({
-        path: uri,
-        method: "GET",
-        body,
-      }, {
-        service: "UEditorService",
-        method: "UEditorAPI",
-      }) as Promise<storageservicev1_UEditorResponse>;
-    },
-  };
-}
-export type storageservicev1_UEditorRequest = {
-  action: string | undefined;
-  encode: string | undefined;
-  start: number | undefined;
-  size: number | undefined;
-};
-
-export type storageservicev1_UEditorResponse = {
-  imageActionName?: string;
-  imageFieldName?: string;
-  imageMaxSize?: number;
-  imageAllowFiles: string[] | undefined;
-  imageCompressEnable?: boolean;
-  imageCompressBorder?: number;
-  imageInsertAlign?: string;
-  imageUrlPrefix?: string;
-  imagePathFormat?: string;
-  scrawlActionName?: string;
-  scrawlFieldName?: string;
-  scrawlMaxSize?: number;
-  scrawlUrlPrefix?: string;
-  scrawlInsertAlign?: string;
-  scrawlPathFormat?: string;
-  snapscreenActionName?: string;
-  snapscreenUrlPrefix?: string;
-  snapscreenInsertAlign?: string;
-  snapscreenPathFormat?: string;
-  catcherActionName?: string;
-  catcherFieldName?: string;
-  catcherLocalDomain: string[] | undefined;
-  catcherUrlPrefix?: string;
-  catcherMaxSize?: number;
-  catcherAllowFiles: string[] | undefined;
-  catcherPathFormat?: string;
-  videoActionName?: string;
-  videoFieldName?: string;
-  videoUrlPrefix?: string;
-  videoMaxSize?: number;
-  videoAllowFiles: string[] | undefined;
-  videoPathFormat?: string;
-  fileActionName?: string;
-  fileFieldName?: string;
-  fileUrlPrefix?: string;
-  fileMaxSize?: number;
-  fileAllowFiles: string[] | undefined;
-  filePathFormat?: string;
-  imageManagerActionName?: string;
-  imageManagerListSize?: number;
-  imageManagerUrlPrefix?: string;
-  imageManagerInsertAlign?: string;
-  imageManagerAllowFiles: string[] | undefined;
-  imageManagerListPath?: string;
-  fileManagerActionName?: string;
-  fileManagerUrlPrefix?: string;
-  fileManagerListSize?: number;
-  fileManagerAllowFiles: string[] | undefined;
-  FileManagerListPath?: string;
-  formulaConfig?: storageservicev1_UEditorResponse_FormulaConfig;
-  state?: string;
-  start?: number;
-  total?: number;
-  list: storageservicev1_UEditorResponse_Item[] | undefined;
-};
-
-export type storageservicev1_UEditorResponse_FormulaConfig = {
-  imageUrlTemplate: string | undefined;
-};
-
-export type storageservicev1_UEditorResponse_Item = {
-  url: string | undefined;
-  mtime: number | undefined;
-};
-
 // 用户管理服务
 export interface UserService {
   // 获取用户列表
@@ -6418,7 +6526,7 @@ export interface UserService {
   // 获取用户数据
   Get(request: identityservicev1_GetUserRequest): Promise<identityservicev1_User>;
   // 创建用户
-  Create(request: identityservicev1_CreateUserRequest): Promise<wellKnownEmpty>;
+  Create(request: identityservicev1_CreateUserRequest): Promise<identityservicev1_User>;
   // 更新用户
   Update(request: identityservicev1_UpdateUserRequest): Promise<wellKnownEmpty>;
   // 删除用户
@@ -6553,7 +6661,7 @@ export function createUserServiceClient(
       }, {
         service: "UserService",
         method: "Create",
-      }) as Promise<wellKnownEmpty>;
+      }) as Promise<identityservicev1_User>;
     },
     Update(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
       if (!request.id) {
@@ -6584,6 +6692,9 @@ export function createUserServiceClient(
       const queryParams: string[] = [];
       if (request.username) {
         queryParams.push(`username=${encodeURIComponent(request.username.toString())}`)
+      }
+      if (request.deletedBy) {
+        queryParams.push(`deletedBy=${encodeURIComponent(request.deletedBy.toString())}`)
       }
       let uri = path;
       if (queryParams.length > 0) {
@@ -6677,6 +6788,7 @@ export type identityservicev1_UpdateUserRequest = {
 export type identityservicev1_DeleteUserRequest = {
   id?: number;
   username?: string;
+  deletedBy?: number;
 };
 
 // 用户是否存在 - 请求

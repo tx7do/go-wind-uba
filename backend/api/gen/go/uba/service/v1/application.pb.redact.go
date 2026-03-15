@@ -11,6 +11,7 @@ import (
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
+	fieldmaskpb "google.golang.org/protobuf/types/known/fieldmaskpb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -23,6 +24,7 @@ var (
 	_ status.Status
 	_ emptypb.Empty
 	_ timestamppb.Timestamp
+	_ fieldmaskpb.FieldMask
 	_ pagination.Sorting
 )
 
@@ -44,10 +46,10 @@ type redactedApplicationServiceServer struct {
 	bypass redact.Bypass
 }
 
-// ListApplication is the redacted wrapper for the actual ApplicationServiceServer.ListApplication method
+// List is the redacted wrapper for the actual ApplicationServiceServer.List method
 // Unary RPC
-func (s *redactedApplicationServiceServer) ListApplication(ctx context.Context, in *pagination.PagingRequest) (*ListApplicationResponse, error) {
-	res, err := s.srv.ListApplication(ctx, in)
+func (s *redactedApplicationServiceServer) List(ctx context.Context, in *pagination.PagingRequest) (*ListApplicationResponse, error) {
+	res, err := s.srv.List(ctx, in)
 	if !s.bypass.CheckInternal(ctx) {
 		// Apply redaction to the response
 		redact.Apply(res)
@@ -55,10 +57,10 @@ func (s *redactedApplicationServiceServer) ListApplication(ctx context.Context, 
 	return res, err
 }
 
-// GetApplication is the redacted wrapper for the actual ApplicationServiceServer.GetApplication method
+// Get is the redacted wrapper for the actual ApplicationServiceServer.Get method
 // Unary RPC
-func (s *redactedApplicationServiceServer) GetApplication(ctx context.Context, in *GetApplicationRequest) (*Application, error) {
-	res, err := s.srv.GetApplication(ctx, in)
+func (s *redactedApplicationServiceServer) Get(ctx context.Context, in *GetApplicationRequest) (*Application, error) {
+	res, err := s.srv.Get(ctx, in)
 	if !s.bypass.CheckInternal(ctx) {
 		// Apply redaction to the response
 		redact.Apply(res)
@@ -66,10 +68,10 @@ func (s *redactedApplicationServiceServer) GetApplication(ctx context.Context, i
 	return res, err
 }
 
-// CreateApplication is the redacted wrapper for the actual ApplicationServiceServer.CreateApplication method
+// Create is the redacted wrapper for the actual ApplicationServiceServer.Create method
 // Unary RPC
-func (s *redactedApplicationServiceServer) CreateApplication(ctx context.Context, in *CreateApplicationRequest) (*Application, error) {
-	res, err := s.srv.CreateApplication(ctx, in)
+func (s *redactedApplicationServiceServer) Create(ctx context.Context, in *CreateApplicationRequest) (*Application, error) {
+	res, err := s.srv.Create(ctx, in)
 	if !s.bypass.CheckInternal(ctx) {
 		// Apply redaction to the response
 		redact.Apply(res)
@@ -77,10 +79,10 @@ func (s *redactedApplicationServiceServer) CreateApplication(ctx context.Context
 	return res, err
 }
 
-// UpdateApplication is the redacted wrapper for the actual ApplicationServiceServer.UpdateApplication method
+// Update is the redacted wrapper for the actual ApplicationServiceServer.Update method
 // Unary RPC
-func (s *redactedApplicationServiceServer) UpdateApplication(ctx context.Context, in *UpdateApplicationRequest) (*Application, error) {
-	res, err := s.srv.UpdateApplication(ctx, in)
+func (s *redactedApplicationServiceServer) Update(ctx context.Context, in *UpdateApplicationRequest) (*Application, error) {
+	res, err := s.srv.Update(ctx, in)
 	if !s.bypass.CheckInternal(ctx) {
 		// Apply redaction to the response
 		redact.Apply(res)
@@ -88,21 +90,10 @@ func (s *redactedApplicationServiceServer) UpdateApplication(ctx context.Context
 	return res, err
 }
 
-// DeleteApplication is the redacted wrapper for the actual ApplicationServiceServer.DeleteApplication method
+// Delete is the redacted wrapper for the actual ApplicationServiceServer.Delete method
 // Unary RPC
-func (s *redactedApplicationServiceServer) DeleteApplication(ctx context.Context, in *DeleteApplicationRequest) (*emptypb.Empty, error) {
-	res, err := s.srv.DeleteApplication(ctx, in)
-	if !s.bypass.CheckInternal(ctx) {
-		// Apply redaction to the response
-		redact.Apply(res)
-	}
-	return res, err
-}
-
-// GetApplicationByAppId is the redacted wrapper for the actual ApplicationServiceServer.GetApplicationByAppId method
-// Unary RPC
-func (s *redactedApplicationServiceServer) GetApplicationByAppId(ctx context.Context, in *GetApplicationByAppIdRequest) (*Application, error) {
-	res, err := s.srv.GetApplicationByAppId(ctx, in)
+func (s *redactedApplicationServiceServer) Delete(ctx context.Context, in *DeleteApplicationRequest) (*emptypb.Empty, error) {
+	res, err := s.srv.Delete(ctx, in)
 	if !s.bypass.CheckInternal(ctx) {
 		// Apply redaction to the response
 		redact.Apply(res)
@@ -124,21 +115,35 @@ func (x *Application) Redact() string {
 
 	// Safe field: AppKey
 
+	// Safe field: AppSecret
+
+	// Safe field: Type
+
 	// Safe field: Status
-
-	// Safe field: CreatorId
-
-	// Safe field: OwnerId
 
 	// Safe field: Remark
 
-	// Safe field: KeepMonth
+	// Safe field: Desensitize
 
-	// Safe field: CreateTime
+	// Safe field: TenantId
 
-	// Safe field: UpdateTime
+	// Safe field: TenantName
 
-	// Safe field: DeleteTime
+	// Safe field: WebhookUrl
+
+	// Safe field: WebhookSecret
+
+	// Safe field: CreatedBy
+
+	// Safe field: UpdatedBy
+
+	// Safe field: DeletedBy
+
+	// Safe field: CreatedAt
+
+	// Safe field: UpdatedAt
+
+	// Safe field: DeletedAt
 	return x.String()
 }
 
@@ -149,8 +154,6 @@ func (x *ListApplicationResponse) Redact() string {
 	}
 
 	// Safe field: Items
-
-	// Safe field: Total
 	return x.String()
 }
 
@@ -160,7 +163,7 @@ func (x *GetApplicationRequest) Redact() string {
 		return ""
 	}
 
-	// Safe field: Id
+	// Safe field: ViewMask
 	return x.String()
 }
 
@@ -170,9 +173,7 @@ func (x *CreateApplicationRequest) Redact() string {
 		return ""
 	}
 
-	// Safe field: App
-
-	// Safe field: OperatorId
+	// Safe field: Data
 	return x.String()
 }
 
@@ -184,9 +185,11 @@ func (x *UpdateApplicationRequest) Redact() string {
 
 	// Safe field: Id
 
-	// Safe field: App
+	// Safe field: Data
 
-	// Safe field: OperatorId
+	// Safe field: UpdateMask
+
+	// Safe field: AllowMissing
 	return x.String()
 }
 
@@ -196,18 +199,6 @@ func (x *DeleteApplicationRequest) Redact() string {
 		return ""
 	}
 
-	// Safe field: Id
-
-	// Safe field: OperatorId
-	return x.String()
-}
-
-// Redact method implementation for GetApplicationByAppIdRequest
-func (x *GetApplicationByAppIdRequest) Redact() string {
-	if x == nil {
-		return ""
-	}
-
-	// Safe field: AppId
+	// Safe field: DeletedBy
 	return x.String()
 }

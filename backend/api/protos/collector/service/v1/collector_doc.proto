@@ -6,16 +6,17 @@ import "gnostic/openapi/v3/annotations.proto";
 
 option (gnostic.openapi.v3.document) = {
   info: {
-    title: "UBA 埋点服务 API";
-    version: "1.0";
-    description: "UBA 埋点服务 API";
+    title: "UBA 埋点服务 API"
+    version: "1.0"
+    description: "UBA 埋点服务 API"
   }
 
   security: [
     {
       additional_properties: [
         {
-          name: "OAuth2PasswordBearer"; value: {}
+          name: "OAuth2PasswordBearer"
+          value: {}
         }
       ]
     }
@@ -25,14 +26,14 @@ option (gnostic.openapi.v3.document) = {
     security_schemes: {
       additional_properties: [
         {
-          name: "OAuth2PasswordBearer";
+          name: "OAuth2PasswordBearer"
           value: {
             security_scheme: {
-              type: "oauth2";
+              type: "oauth2"
               flows: {
                 password: {
-                  token_url: "/uba/v1/login";
-                  refresh_url: "/uba/v1/refresh_token";
+                  token_url: "/uba/v1/login"
+                  refresh_url: "/uba/v1/refresh_token"
                   scopes: {}
                 }
               }
@@ -45,7 +46,7 @@ option (gnostic.openapi.v3.document) = {
     schemas: {
       additional_properties: [
         {
-          name: "KratosStatus";
+          name: "KratosStatus"
           value: {
             schema: {
               type: "object"
@@ -110,9 +111,7 @@ option (gnostic.openapi.v3.document) = {
                     name: "application/json"
                     value: {
                       schema: {
-                        reference: {
-                          _ref: "#/components/schemas/KratosStatus"
-                        }
+                        reference: {_ref: "#/components/schemas/KratosStatus"}
                       }
                     }
                   }
@@ -121,29 +120,6 @@ option (gnostic.openapi.v3.document) = {
             }
           }
         }
-
-        //        {
-        //          name: "500"
-        //          value: {
-        //            response: {
-        //              description: "default kratos response"
-        //              content: {
-        //                additional_properties: [
-        //                  {
-        //                    name: "application/json"
-        //                    value: {
-        //                      schema: {
-        //                        reference: {
-        //                          _ref: "#/components/schemas/KratosStatus"
-        //                        }
-        //                      }
-        //                    }
-        //                  }
-        //                ]
-        //              }
-        //            }
-        //          }
-        //        }
       ]
     }
   }

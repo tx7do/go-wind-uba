@@ -1,0 +1,112 @@
+﻿syntax = "proto3";
+
+package uba.service.v1;
+
+import "gnostic/openapi/v3/annotations.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+import "uba/service/v1/common.proto";
+
+// 聚合数据服务，支持日聚合统计的增删查改和列表查询
+service AggregationService {
+}
+
+// 日聚合统计（对应 events_agg_daily 表）
+message DailyAggregation {
+  // 租户ID（多租户隔离，支持 SaaS 场景）
+  uint32 tenant_id = 1 [
+    json_name = "tenantId",
+    (gnostic.openapi.v3.property) = {description: "租户ID，多租户隔离，支持 SaaS 场景"}
+  ];
+
+  // 统计日期（聚合数据对应的日期，精确到天）
+  google.protobuf.Timestamp stat_date = 2 [
+    json_name = "statDate",
+    (gnostic.openapi.v3.property) = {description: "统计日期，聚合数据对应的日期，精确到天"}
+  ];
+
+  // 维度字段
+  // 事件分类（如认证、支付、游戏等）
+  EventCategory event_category = 3 [
+    json_name = "eventCategory",
+    (gnostic.openapi.v3.property) = {description: "事件分类，如认证、支付、游戏等"}
+  ];
+  // 事件名称（具体事件名称，便于细粒度分析）
+  string event_name = 4 [
+    json_name = "eventName",
+    (gnostic.openapi.v3.property) = {description: "事件名称，具体事件名称，便于细粒度分析"}
+  ];
+  // 平台类型（如 Web、iOS、Android 等）
+  Platform platform = 5 [
+    json_name = "platform",
+    (gnostic.openapi.v3.property) = {description: "平台类型，如 Web、iOS、Android 等"}
+  ];
+  // 国家（事件发生的国家，便于全球业务分析）
+  string country = 6 [
+    json_name = "country",
+    (gnostic.openapi.v3.property) = {description: "国家，事件发生的国家，便于全球业务分析"}
+  ];
+  // 地区（事件发生的地区/省份，便于区域分析）
+  string region = 15 [
+    json_name = "region",
+    (gnostic.openapi.v3.property) = {description: "地区，事件发生的地区/省份，便于区域分析"}
+  ];
+  // 城市（事件发生的城市，便于城市级分析）
+  string city = 16 [
+    json_name = "city",
+    (gnostic.openapi.v3.property) = {description: "城市，事件发生的城市，便于城市级分析"}
+  ];
+
+  // 核心指标
+  // 去重用户数（UV，统计唯一用户数）
+  int64 uv = 7 [
+    json_name = "uv",
+    (gnostic.openapi.v3.property) = {description: "去重用户数（UV），统计唯一用户数"}
+  ];
+  // 事件数（PV，统计事件发生次数）
+  int64 pv = 8 [
+    json_name = "pv",
+    (gnostic.openapi.v3.property) = {description: "事件数（PV），统计事件发生次数"}
+  ];
+  // 会话数（统计会话数量）
+  int64 session_count = 9 [
+    json_name = "sessionCount",
+    (gnostic.openapi.v3.property) = {description: "会话数，统计会话数量"}
+  ];
+
+  // 业务指标
+  // 总金额（字符串类型，支持多币种，避免精度丢失）
+  string total_amount = 10 [
+    json_name = "totalAmount",
+    (gnostic.openapi.v3.property) = {description: "总金额，字符串类型，支持多币种，避免精度丢失"}
+  ];
+  // 平均时长（事件平均持续时间，单位秒）
+  double avg_duration = 11 [
+    json_name = "avgDuration",
+    (gnostic.openapi.v3.property) = {description: "平均时长，事件平均持续时间，单位秒"}
+  ];
+  // 风险事件数（统计风险事件发生次数）
+  int64 risk_event_count = 12 [
+    json_name = "riskEventCount",
+    (gnostic.openapi.v3.property) = {description: "风险事件数，统计风险事件发生次数"}
+  ];
+
+  // 游戏特有指标
+  // 升级事件数（统计用户升级次数，适用于游戏场景）
+  int64 level_up_count = 13 [
+    json_name = "levelUpCount",
+    (gnostic.openapi.v3.property) = {description: "升级事件数，统计用户升级次数，适用于游戏场景"}
+  ];
+  // 付费用户数（统计付费用户数量，适用于游戏/付费场景）
+  int64 pay_user_count = 14 [
+    json_name = "payUserCount",
+    (gnostic.openapi.v3.property) = {description: "付费用户数，统计付费用户数量，适用于游戏/付费场景"}
+  ];
+
+  // 扩展指标（自定义业务指标，键值对形式，便于灵活扩展）
+  map<string, string> metrics = 17 [
+    json_name = "metrics",
+    (gnostic.openapi.v3.property) = {description: "扩展指标，自定义业务指标，键值对形式，便于灵活扩展"}
+  ];
+}

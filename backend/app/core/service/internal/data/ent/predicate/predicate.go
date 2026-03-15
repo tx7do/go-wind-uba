@@ -12,6 +12,9 @@ type Api func(*sql.Selector)
 // ApiAuditLog is the predicate function for apiauditlog builders.
 type ApiAuditLog func(*sql.Selector)
 
+// Application is the predicate function for application builders.
+type Application func(*sql.Selector)
+
 // DataAccessAuditLog is the predicate function for dataaccessauditlog builders.
 type DataAccessAuditLog func(*sql.Selector)
 
@@ -29,6 +32,9 @@ type DictTypeI18n func(*sql.Selector)
 
 // File is the predicate function for file builders.
 type File func(*sql.Selector)
+
+// IDMapping is the predicate function for idmapping builders.
+type IDMapping func(*sql.Selector)
 
 // InternalMessage is the predicate function for internalmessage builders.
 type InternalMessage func(*sql.Selector)
@@ -81,6 +87,15 @@ type PolicyEvaluationLog func(*sql.Selector)
 // Position is the predicate function for position builders.
 type Position func(*sql.Selector)
 
+// RiskRule is the predicate function for riskrule builders.
+type RiskRule func(*sql.Selector)
+
+// RiskRuleCondition is the predicate function for riskrulecondition builders.
+type RiskRuleCondition func(*sql.Selector)
+
+// RiskRuleVersion is the predicate function for riskruleversion builders.
+type RiskRuleVersion func(*sql.Selector)
+
 // Role is the predicate function for role builders.
 type Role func(*sql.Selector)
 
@@ -89,6 +104,12 @@ type RoleMetadata func(*sql.Selector)
 
 // RolePermission is the predicate function for rolepermission builders.
 type RolePermission func(*sql.Selector)
+
+// TagDefinition is the predicate function for tagdefinition builders.
+type TagDefinition func(*sql.Selector)
+
+// TagValue is the predicate function for tagvalue builders.
+type TagValue func(*sql.Selector)
 
 // Task is the predicate function for task builders.
 type Task func(*sql.Selector)
@@ -110,3 +131,9 @@ type UserPosition func(*sql.Selector)
 
 // UserRole is the predicate function for userrole builders.
 type UserRole func(*sql.Selector)
+
+// UserTag is the predicate function for usertag builders.
+type UserTag func(*sql.Selector)
+
+// Webhook is the predicate function for webhook builders.
+type Webhook func(*sql.Selector)

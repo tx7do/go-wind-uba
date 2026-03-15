@@ -1,0 +1,325 @@
+﻿syntax = "proto3";
+
+package uba.service.v1;
+
+import "gnostic/openapi/v3/annotations.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/struct.proto";
+
+import "uba/service/v1/common.proto";
+
+// 风险事件服务
+service RiskEventService {
+
+}
+
+// 风险等级
+enum RiskType {
+  // 未指定风险类型
+  RISK_TYPE_UNSPECIFIED = 0;
+
+  // 异常登录风险
+  RISK_TYPE_LOGIN_ANOMALY = 1;
+  // 暴力破解风险
+  RISK_TYPE_BRUTE_FORCE = 2;
+  // 撞库风险
+  RISK_TYPE_CREDENTIAL_STUFFING = 3;
+
+  // 高频操作风险
+  RISK_TYPE_FREQUENT_OPERATION = 4;
+  // 异常流程风险
+  RISK_TYPE_ABNORMAL_FLOW = 5;
+  // 数据泄露风险
+  RISK_TYPE_DATA_EXFILTRATION = 6;
+
+  // 设备突变风险
+  RISK_TYPE_DEVICE_CHANGE = 7;
+  // 异地登录风险
+  RISK_TYPE_LOCATION_ANOMALY = 8;
+  // 代理/VPN风险
+  RISK_TYPE_PROXY_DETECTED = 9;
+
+  // 欺诈支付风险
+  RISK_TYPE_FRAUD_PAYMENT = 10;
+  // 薅羊毛风险
+  RISK_TYPE_ABUSE_PROMOTION = 11;
+}
+
+// 处置状态
+enum RiskEventStatus {
+  // 未指定处置状态
+  RISK_EVENT_STATUS_UNSPECIFIED = 0;
+  // 待处理
+  RISK_EVENT_STATUS_PENDING = 1;
+  // 调查中
+  RISK_EVENT_STATUS_INVESTIGATING = 2;
+  // 确认为风险
+  RISK_EVENT_STATUS_CONFIRMED = 3;
+  // 误报
+  RISK_EVENT_STATUS_FALSE_POSITIVE = 4;
+  // 忽略
+  RISK_EVENT_STATUS_IGNORED = 5;
+  // 自动拦截
+  RISK_EVENT_STATUS_AUTO_BLOCKED = 6;
+}
+
+// 风险事件
+message RiskEvent {
+  uint32 id = 1 [
+    (gnostic.openapi.v3.property) = { description: "ID" }
+  ]; // ID
+
+  // 租户ID（多租户隔离，支持 SaaS 场景）
+  uint32 tenant_id = 2 [
+    json_name = "tenantId",
+    (gnostic.openapi.v3.property) = {description: "租户ID，多租户隔离，支持 SaaS 场景"}
+  ];
+
+  // 用户ID（关联主体，风险事件涉及的用户）
+  uint32 user_id = 3 [
+    json_name = "userId",
+    (gnostic.openapi.v3.property) = {description: "用户ID，关联主体，风险事件涉及的用户"}
+  ];
+  // 设备ID（关联主体，风险事件涉及的设备）
+  string device_id = 4 [
+    json_name = "deviceId",
+    (gnostic.openapi.v3.property) = {description: "设备ID，关联主体，风险事件涉及的设备"}
+  ];
+  // 全局用户ID（跨平台唯一标识用户）
+  string global_user_id = 5 [
+    json_name = "globalUserId",
+    (gnostic.openapi.v3.property) = {description: "全局用户ID，跨平台唯一标识用户"}
+  ];
+
+  // 风险类型
+  RiskType risk_type = 6 [
+    json_name = "riskType",
+    (gnostic.openapi.v3.property) = {description: "风险类型，标识风险事件的类型"}
+  ];
+  // 风险等级
+  RiskLevel risk_level = 7 [
+    json_name = "riskLevel",
+    (gnostic.openapi.v3.property) = {description: "风险等级，标识风险事件的严重程度"}
+  ];
+  // 风险评分（0-100，风险事件的评分）
+  float risk_score = 8 [
+    json_name = "riskScore",
+    (gnostic.openapi.v3.property) = {description: "风险评分，0-100，风险事件的评分"}
+  ];
+
+  // 触发规则ID
+  uint32 rule_id = 10 [
+    json_name = "ruleId",
+    (gnostic.openapi.v3.property) = {description: "触发规则ID，标识触发风险事件的规则"}
+  ];
+  // 规则名称
+  string rule_name = 11 [
+    json_name = "ruleName",
+    (gnostic.openapi.v3.property) = {description: "规则名称，触发风险事件的规则名称"}
+  ];
+  // 规则上下文（触发条件，结构化信息）
+  google.protobuf.Struct rule_context = 12 [
+    json_name = "ruleContext",
+    (gnostic.openapi.v3.property) = {description: "规则上下文，触发条件，结构化信息"}
+  ];
+
+  // 关联行为事件ID列表（风险事件关联的行为事件）
+  repeated string related_event_ids = 13 [
+    json_name = "relatedEventIds",
+    (gnostic.openapi.v3.property) = {description: "关联行为事件ID列表，风险事件关联的行为事件"}
+  ];
+  // 会话ID（风险事件发生时的会话标识）
+  uint32 session_id = 14 [
+    json_name = "sessionId",
+    (gnostic.openapi.v3.property) = {description: "会话ID，风险事件发生时的会话标识"}
+  ];
+
+  // 风险详情描述
+  string description = 15 [
+    json_name = "description",
+    (gnostic.openapi.v3.property) = {description: "风险详情描述，风险事件的详细说明"}
+  ];
+  // 证据（风险事件相关证据，键值对形式）
+  map<string, string> evidence = 16 [
+    json_name = "evidence",
+    (gnostic.openapi.v3.property) = {description: "证据，风险事件相关证据，键值对形式"}
+  ];
+
+  // 处置状态
+  RiskEventStatus status = 17 [
+    json_name = "status",
+    (gnostic.openapi.v3.property) = {description: "处置状态，风险事件的处理状态"}
+  ];
+  // 处理人ID
+  string handler_id = 18 [
+    json_name = "handlerId",
+    (gnostic.openapi.v3.property) = {description: "处理人ID，风险事件的处理人"}
+  ];
+  // 处理时间
+  google.protobuf.Timestamp handled_time = 19 [
+    json_name = "handledTime",
+    (gnostic.openapi.v3.property) = {description: "处理时间，风险事件被处理的时间"}
+  ];
+  // 处理备注
+  string handle_remark = 20 [
+    json_name = "handleRemark",
+    (gnostic.openapi.v3.property) = {description: "处理备注，风险事件处理的说明"}
+  ];
+
+  // 风险事件发生时间
+  google.protobuf.Timestamp occur_time = 21 [
+    json_name = "occurTime",
+    (gnostic.openapi.v3.property) = {description: "风险事件发生时间"}
+  ];
+  // 风险事件上报时间
+  google.protobuf.Timestamp report_time = 22 [
+    json_name = "reportTime",
+    (gnostic.openapi.v3.property) = {description: "风险事件上报时间"}
+  ];
+
+  optional uint32 created_by = 100 [json_name = "createdBy", (gnostic.openapi.v3.property) = {description: "创建者用户ID"}]; // 创建者用户ID
+  optional uint32 updated_by = 101 [json_name = "updatedBy", (gnostic.openapi.v3.property) = {description: "更新者用户ID"}]; // 更新者用户ID
+  optional uint32 deleted_by = 102 [json_name = "deletedBy", (gnostic.openapi.v3.property) = {description: "删除者用户ID"}]; // 删除者用户ID
+
+  optional google.protobuf.Timestamp created_at = 200 [json_name = "createdAt", (gnostic.openapi.v3.property) = {description: "创建时间"}];// 创建时间
+  optional google.protobuf.Timestamp updated_at = 201 [json_name = "updatedAt", (gnostic.openapi.v3.property) = {description: "更新时间"}];// 更新时间
+  optional google.protobuf.Timestamp deleted_at = 202 [json_name = "deletedAt", (gnostic.openapi.v3.property) = {description: "删除时间"}];// 删除时间
+}
+
+// 风险事件处置动作
+message RiskAction {
+  // 动作类型
+  enum ActionType {
+    ACTION_UNSPECIFIED = 0;
+
+    // 封禁用户
+    ACTION_BLOCK_USER = 1;
+    // 封禁设备
+    ACTION_BLOCK_DEVICE = 2;
+    // 要求二次验证
+    ACTION_REQUIRE_MFA = 3;
+    // 限流
+    ACTION_LIMIT_RATE = 4;
+    // 通知管理员
+    ACTION_NOTIFY_ADMIN = 5;
+  }
+
+  // 动作类型
+  ActionType type = 1 [
+    json_name = "type",
+    (gnostic.openapi.v3.property) = {description: "动作类型，风险事件处置的动作类型"}
+  ];
+  // 动作持续时间
+  google.protobuf.Duration duration = 2 [
+    json_name = "duration",
+    (gnostic.openapi.v3.property) = {description: "动作持续时间，风险事件处置动作的持续时间"}
+  ];
+  // 动作原因
+  string reason = 3 [
+    json_name = "reason",
+    (gnostic.openapi.v3.property) = {description: "动作原因，风险事件处置动作的原因说明"}
+  ];
+}
+
+// 风险事件统计摘要
+message RiskEventSummary {
+  // 风险事件总数
+  int64 total_count = 1 [
+    json_name = "totalCount",
+    (gnostic.openapi.v3.property) = {description: "风险事件总数"}
+  ];
+  // 按风险等级分布统计
+  map<string, int64> by_level = 2 [
+    json_name = "byLevel",
+    (gnostic.openapi.v3.property) = {description: "按风险等级分布统计"}
+  ];
+  // 按风险类型分布统计
+  map<string, int64> by_type = 3 [
+    json_name = "byType",
+    (gnostic.openapi.v3.property) = {description: "按风险类型分布统计"}
+  ];
+  // 按处置状态分布统计
+  map<string, int64> by_status = 4 [
+    json_name = "byStatus",
+    (gnostic.openapi.v3.property) = {description: "按处置状态分布统计"}
+  ];
+  // 平均风险评分
+  double avg_risk_score = 5 [
+    json_name = "avgRiskScore",
+    (gnostic.openapi.v3.property) = {description: "平均风险评分"}
+  ];
+}
+
+// 风险规则定义
+message RiskRule {
+  // 规则ID（唯一标识一条风险规则）
+  uint32 id = 1 [
+    json_name = "id",
+    (gnostic.openapi.v3.property) = {description: "规则ID，唯一标识一条风险规则"}
+  ];
+  // 租户ID（多租户隔离，支持 SaaS 场景）
+  uint32 tenant_id = 2 [
+    json_name = "tenantId",
+    (gnostic.openapi.v3.property) = {description: "租户ID，多租户隔离，支持 SaaS 场景"}
+  ];
+  // 规则名称
+  string name = 3 [
+    json_name = "name",
+    (gnostic.openapi.v3.property) = {description: "规则名称"}
+  ];
+  // 规则编码
+  string code = 4 [
+    json_name = "code",
+    (gnostic.openapi.v3.property) = {description: "规则编码"}
+  ];
+  // 规则描述
+  string description = 5 [
+    json_name = "description",
+    (gnostic.openapi.v3.property) = {description: "规则描述"}
+  ];
+
+  // 风险类型
+  RiskType risk_type = 6 [
+    json_name = "riskType",
+    (gnostic.openapi.v3.property) = {description: "风险类型，规则对应的风险类型"}
+  ];
+  // 默认风险等级
+  RiskLevel default_level = 7 [
+    json_name = "defaultLevel",
+    (gnostic.openapi.v3.property) = {description: "默认风险等级，规则对应的默认风险等级"}
+  ];
+
+  // 规则条件（简化版，实际可用 CEL/JSON Schema）
+  google.protobuf.Struct condition = 8 [
+    json_name = "condition",
+    (gnostic.openapi.v3.property) = {description: "规则条件，简化版，实际可用 CEL/JSON Schema"}
+  ];
+
+  // 动作配置（规则触发时的处置动作列表）
+  repeated RiskAction actions = 9 [
+    json_name = "actions",
+    (gnostic.openapi.v3.property) = {description: "动作配置，规则触发时的处置动作列表"}
+  ];
+
+  // 是否启用（true: 启用，false: 禁用）
+  bool enabled = 10 [
+    json_name = "enabled",
+    (gnostic.openapi.v3.property) = {description: "是否启用，true: 启用，false: 禁用"}
+  ];
+  // 优先级（越小优先级越高）
+  uint32 priority = 11 [
+    json_name = "priority",
+    (gnostic.openapi.v3.property) = {description: "优先级，越小优先级越高"}
+  ];
+
+  optional uint32 created_by = 100 [json_name = "createdBy", (gnostic.openapi.v3.property) = {description: "创建者用户ID"}]; // 创建者用户ID
+  optional uint32 updated_by = 101 [json_name = "updatedBy", (gnostic.openapi.v3.property) = {description: "更新者用户ID"}]; // 更新者用户ID
+  optional uint32 deleted_by = 102 [json_name = "deletedBy", (gnostic.openapi.v3.property) = {description: "删除者用户ID"}]; // 删除者用户ID
+
+  optional google.protobuf.Timestamp created_at = 200 [json_name = "createdAt", (gnostic.openapi.v3.property) = {description: "创建时间"}];// 创建时间
+  optional google.protobuf.Timestamp updated_at = 201 [json_name = "updatedAt", (gnostic.openapi.v3.property) = {description: "更新时间"}];// 更新时间
+  optional google.protobuf.Timestamp deleted_at = 202 [json_name = "deletedAt", (gnostic.openapi.v3.property) = {description: "删除时间"}];// 删除时间
+}
