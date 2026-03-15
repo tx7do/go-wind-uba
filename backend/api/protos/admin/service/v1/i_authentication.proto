@@ -2,76 +2,39 @@ syntax = "proto3";
 
 package admin.service.v1;
 
-
 import "gnostic/openapi/v3/annotations.proto";
 import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
 
-import "user/service/v1/user.proto";
+import "authentication/service/v1/authentication.proto";
 
-option (gnostic.openapi.v3.document) = {
-  info: {
-    title: "用户后台登陆认证接口";
-    description: "用户后台登陆认证";
-    version: "1.0";
-  }
-};
-
-// 变量的命名一律使用小驼峰命名法，例如：firstName、lastName等。
-
-// 用户后台登陆认证服务
+// 用户后台登录认证服务
 service AuthenticationService {
-  // 后台登陆
-  rpc Login (LoginRequest) returns (LoginResponse) {
+  // 登录
+  rpc Login (authentication.service.v1.LoginRequest) returns (authentication.service.v1.LoginResponse) {
     option (google.api.http) = {
       post: "/admin/v1/login"
       body: "*"
     };
+
+    option(gnostic.openapi.v3.operation) = {
+      security: {}
+    };
   }
 
-  // 后台登出
-  rpc Logout (LogoutRequest) returns (google.protobuf.Empty) {
+  // 登出
+  rpc Logout (google.protobuf.Empty) returns (google.protobuf.Empty) {
     option (google.api.http) = {
       post: "/admin/v1/logout"
       body: "*"
     };
-
-    option(gnostic.openapi.v3.operation) = {
-      security: [{additional_properties: [{name: "OAuth2PasswordBearer"; value: {}}]}]
-    };
   }
 
-  // 后台获取已经登陆的用户的数据
-  rpc GetMe (GetMeRequest) returns (user.service.v1.User) {
+  // 刷新认证令牌
+  rpc RefreshToken (authentication.service.v1.LoginRequest) returns (authentication.service.v1.LoginResponse) {
     option (google.api.http) = {
-      get: "/admin/v1/me"
-    };
-
-    option(gnostic.openapi.v3.operation) = {
-      security: [{additional_properties: [{name: "OAuth2PasswordBearer"; value: {}}]}]
+      post: "/admin/v1/refresh-token"
+      body: "*"
     };
   }
-}
-
-// 用户后台登陆 - 请求
-message LoginRequest {
-  optional string userName = 1;
-  optional string password = 2;
-}
-// 用户后台登陆 - 回应
-message LoginResponse {
-  uint32 id = 1;
-  string userName = 2;
-  string token = 3;
-  string refreshToken = 4;
-}
-
-// 用户后台登出 - 请求
-message LogoutRequest {
-  uint32 id = 1;
-}
-
-// 获取当前用户信息 - 请求
-message GetMeRequest {
-  uint32 id = 1;
 }

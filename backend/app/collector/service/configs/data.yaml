@@ -1,0 +1,12 @@
+data:
+  redis:
+    addr: "redis:6379"
+    password: "*Abcd123456"
+    dial_timeout: 10s
+    read_timeout: 0.4s
+    write_timeout: 0.6s
+
+  kafka:
+    codec: json
+    endpoints:
+      - "127.0.0.1:9092"

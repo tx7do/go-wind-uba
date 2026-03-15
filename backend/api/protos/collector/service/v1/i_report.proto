@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package collector.service.v1;
+
+import "gnostic/openapi/v3/annotations.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+
+// 上报数据服务
+service ReportService {
+  // 提交事件
+  rpc PostReport (PostReportRequest) returns (PostReportResponse) {
+    option (google.api.http) = {
+      post: "/uba/v1/report"
+      body: "*"
+    };
+  }
+}
+
+message PostReportRequest {
+  string reportType = 1; // 类型
+  string appId = 2;// 应用ID
+  string appKey = 3;// 应用Key
+  string eventName = 4;// 事件名
+  int32 debug = 5;// 调试
+  string content = 6;// 事件内容
+}
+
+message PostReportResponse {
+  int32 code = 1;
+  string msg = 2;
+}

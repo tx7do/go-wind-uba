@@ -1,10 +1,56 @@
 data:
   database:
     driver: "postgres"
-    source: "host=localhost port=5432 user=postgres password=123456 dbname=kratos_bi sslmode=disable"
+    source: "host=postgres port=5432 user=postgres password=*Abcd123456 dbname=gwubd sslmode=disable"
     migrate: true
+    debug: false
+    max_idle_connections: 25
+    max_open_connections: 25
+    connection_max_lifetime: 300s
+
   redis:
-    addr: "localhost:6379"
+    addr: "redis:6379"
+    password: "*Abcd123456"
     dial_timeout: 10s
     read_timeout: 0.4s
     write_timeout: 0.6s
+
+  clickhouse:
+    scheme: native # 连接协议，支持http、https和native 三种协议
+    addresses:
+      - "clickhouse:9000"
+
+    username: "default"
+    password: "*Abcd123456"
+    database: "default"
+
+    debug: true # 是否启用ClickHouse的调试模式，输出更多的日志信息
+    enable_tracing: true # 是否启用ClickHouse的查询跟踪功能
+    enable_metrics: true # 是否启用ClickHouse的性能指标收集功能
+
+    dial_timeout: 10s # 连接超时时间
+    read_timeout: 0.4s # 读取超时时间
+    conn_max_lifetime: 300s # 连接可重用的最大时间长度
+
+    max_idle_conns: 25 # 连接池最大空闲连接数
+    max_open_conns: 25 # 连接池最大打开连接数
+
+    block_buffer_size: 1048576 # 块缓冲区大小，单位为字节
+
+    compression_method: "lz4" # 压缩方法：zstd、lz4、lz4hc、gzip、deflate、br、none
+    compression_level: 3 # 压缩级别，范围从0（最快）到9（最慢但压缩率最高）
+    max_compression_buffer: 10485760 # 最大压缩缓冲区大小
+
+    connection_open_strategy: "round_robin" # 连接打开策略：in_order、round_robin、random
+
+  doris:
+    dsn: "http://doris:8030/gwubd"
+    max_idle_connections: 25
+    max_open_connections: 25
+    connection_max_lifetime: 300s
+    stream_load:
+      endpoint: "http://doris:8030/api/gwubd/_stream_load"
+      username: "root"
+      password: "*Abcd123456"
+      method: "POST"
+      timeout: 30s

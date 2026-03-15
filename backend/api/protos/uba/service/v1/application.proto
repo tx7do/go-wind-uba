@@ -1,0 +1,90 @@
+syntax = "proto3";
+
+package uba.service.v1;
+
+
+import "gnostic/openapi/v3/annotations.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+import "pagination/v1/pagination.proto";
+
+// 应用服务
+service ApplicationService {
+  // 查询应用列表
+  rpc ListApplication (pagination.PagingRequest) returns (ListApplicationResponse) {}
+
+  // 查询应用详情
+  rpc GetApplication (GetApplicationRequest) returns (Application) {}
+
+  // 创建应用
+  rpc CreateApplication (CreateApplicationRequest) returns (Application) {}
+
+  // 更新应用
+  rpc UpdateApplication (UpdateApplicationRequest) returns (Application) {}
+
+  // 删除应用
+  rpc DeleteApplication (DeleteApplicationRequest) returns (google.protobuf.Empty) {}
+
+  // 查询应用详情
+  rpc GetApplicationByAppId (GetApplicationByAppIdRequest) returns (Application) {}
+}
+
+// 应用
+message Application {
+  uint32 id = 1 [(gnostic.openapi.v3.property) = { description: "ID" }]; // ID
+
+  optional string name = 2 [(gnostic.openapi.v3.property) = { description: "应用名称" }]; // 应用名称
+  optional string appId = 3 [(gnostic.openapi.v3.property) = { description: "应用ID" }]; // 应用ID
+  optional string appKey = 4 [(gnostic.openapi.v3.property) = { description: "应用密钥" }]; // 应用密钥
+
+  optional string status = 5 [(gnostic.openapi.v3.property) = {
+    description: "应用状态"
+    default: { string: "ON" }
+    enum: [{yaml: "ON"}, {yaml: "OFF"}]
+  }]; // 应用账号状态
+
+  optional uint32 creatorId = 6 [(gnostic.openapi.v3.property) = { description: "创建者ID" }]; // 创建者ID
+  optional uint32 ownerId = 7 [(gnostic.openapi.v3.property) = { description: "拥有者ID" }]; // 拥有者ID
+
+  optional string remark = 8 [(gnostic.openapi.v3.property) = { description: "个人描述" }]; // 个人描述
+  optional uint32 keepMonth = 9 [(gnostic.openapi.v3.property) = { description: "数据保存多少个月" }]; // 数据保存多少个月
+
+  optional google.protobuf.Timestamp create_time = 30 [json_name = "createTime"];
+  optional google.protobuf.Timestamp update_time = 31 [json_name = "updateTime"];
+  optional google.protobuf.Timestamp delete_time = 32 [json_name = "deleteTime"];
+}
+
+// 获取应用列表 - 答复
+message ListApplicationResponse {
+  repeated Application items = 1;
+  int32 total = 2;
+}
+
+// 获取应用数据 - 请求
+message GetApplicationRequest {
+  uint32 id = 1;
+}
+
+// 创建应用 - 请求
+message CreateApplicationRequest {
+  Application app = 1;
+  uint32 operatorId = 2;
+}
+
+// 更新应用 - 请求
+message UpdateApplicationRequest {
+  uint32 id = 1;
+  Application app = 2;
+  uint32 operatorId = 3;
+}
+
+// 删除应用 - 请求
+message DeleteApplicationRequest {
+  uint32 id = 1;
+  uint32 operatorId = 2;
+}
+
+message GetApplicationByAppIdRequest {
+  string appId = 1;
+}

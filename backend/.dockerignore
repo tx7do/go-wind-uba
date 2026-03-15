@@ -1,0 +1,48 @@
+# Git files
+.git
+.gitignore
+.gitattributes
+
+# CI/CD
+.github
+.gitlab-ci.yml
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+*~
+
+# Documentation
+*.md
+README.md
+docs/
+
+# Docker files (not needed inside image)
+Dockerfile
+docker-compose*.yaml
+.dockerignore
+
+# Build artifacts
+bin/
+dist/
+build/
+
+# Test files
+*_test.go
+testdata/
+
+# Scripts (if not needed at runtime)
+scripts/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Dependencies (will be downloaded during build)
+vendor/
+

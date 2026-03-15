@@ -8,31 +8,105 @@ package main
 
 import (
 	"github.com/go-kratos/kratos/v2"
-	"github.com/go-kratos/kratos/v2/log"
-	"github.com/go-kratos/kratos/v2/registry"
-	"github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
-	"kratos-uba/app/core/service/internal/data"
-	"kratos-uba/app/core/service/internal/server"
-	"kratos-uba/app/core/service/internal/service"
+	"github.com/tx7do/kratos-bootstrap/bootstrap"
+	"go-wind-uba/app/core/service/internal/data"
+	"go-wind-uba/app/core/service/internal/server"
+	"go-wind-uba/app/core/service/internal/service"
+)
+
+import (
+	_ "github.com/tx7do/kratos-bootstrap/registry/etcd"
+	_ "github.com/tx7do/kratos-bootstrap/tracer"
 )
 
 // Injectors from wire.go:
 
 // initApp init kratos application.
-func initApp(logger log.Logger, registrar registry.Registrar, bootstrap *v1.Bootstrap) (*kratos.App, func(), error) {
-	entClient := data.NewEntClient(bootstrap, logger)
-	client := data.NewRedisClient(bootstrap, logger)
-	dataData, cleanup, err := data.NewData(entClient, client, logger)
+func initApp(context *bootstrap.Context) (*kratos.App, func(), error) {
+	v := server.NewGrpcMiddleware(context)
+	authenticatorOption := data.NewAuthenticatorConfig(context)
+	client, cleanup, err := data.NewRedisClient(context)
 	if err != nil {
 		return nil, nil, err
 	}
-	userRepo := data.NewUserRepo(dataData, logger)
-	userService := service.NewUserService(logger, userRepo)
-	applicationRepo := data.NewApplicationRepo(dataData, logger)
-	applicationService := service.NewApplicationService(logger, applicationRepo)
-	grpcServer := server.NewGRPCServer(bootstrap, logger, userService, applicationService)
-	app := newApp(logger, registrar, grpcServer)
+	userTokenCache := data.NewUserTokenCache(context, client)
+	authenticator := data.NewAuthenticator(context, authenticatorOption, userTokenCache)
+	entClient, cleanup2, err := data.NewEntClient(context)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	crypto := data.NewPasswordCrypto()
+	userCredentialRepo := data.NewUserCredentialRepo(context, entClient, crypto)
+	userRoleRepo := data.NewUserRoleRepo(context, entClient)
+	userOrgUnitRepo := data.NewUserOrgUnitRepo(context, entClient)
+	userPositionRepo := data.NewUserPositionRepo(context, entClient)
+	userRepo := data.NewUserRepo(context, entClient, userRoleRepo, userOrgUnitRepo, userPositionRepo)
+	rolePermissionRepo := data.NewRolePermissionRepo(context, entClient)
+	permissionApiRepo := data.NewPermissionApiRepo(context, entClient)
+	permissionMenuRepo := data.NewPermissionMenuRepo(context, entClient)
+	permissionRepo := data.NewPermissionRepo(context, entClient, permissionApiRepo, permissionMenuRepo)
+	roleMetadataRepo := data.NewRoleMetadataRepo(context, entClient)
+	roleRepo := data.NewRoleRepo(context, entClient, rolePermissionRepo, permissionRepo, roleMetadataRepo, userRoleRepo)
+	tenantRepo := data.NewTenantRepo(context, entClient)
+	authenticationService := service.NewAuthenticationService(context, authenticator, userCredentialRepo, userRepo, roleRepo, tenantRepo, permissionRepo)
+	loginPolicyRepo := data.NewLoginPolicyRepo(context, entClient)
+	loginPolicyService := service.NewLoginPolicyService(context, loginPolicyRepo)
+	taskRepo := data.NewTaskRepo(context, entClient)
+	taskService := service.NewTaskService(context, taskRepo, userRepo)
+	fileRepo := data.NewFileRepo(context, entClient)
+	minIOClient := data.NewMinIoClient(context)
+	fileService := service.NewFileService(context, fileRepo, minIOClient)
+	dictTypeI18nRepo := data.NewDictTypeI18nRepo(context, entClient)
+	dictTypeRepo := data.NewDictTypeRepo(context, entClient, dictTypeI18nRepo)
+	dictTypeService := service.NewDictTypeService(context, dictTypeRepo)
+	dictEntryI18nRepo := data.NewDictEntryI18nRepo(context, entClient)
+	dictEntryRepo := data.NewDictEntryRepo(context, entClient, dictEntryI18nRepo)
+	dictEntryService := service.NewDictEntryService(context, dictEntryRepo)
+	languageRepo := data.NewLanguageRepo(context, entClient)
+	languageService := service.NewLanguageService(context, languageRepo)
+	tenantService := service.NewTenantService(context, tenantRepo, userRepo, userCredentialRepo, roleRepo)
+	positionRepo := data.NewPositionRepo(context, entClient)
+	orgUnitRepo := data.NewOrgUnitRepo(context, entClient)
+	userService := service.NewUserService(context, userRepo, roleRepo, userCredentialRepo, positionRepo, orgUnitRepo, tenantRepo)
+	roleService := service.NewRoleService(context, roleRepo, tenantRepo, userRoleRepo)
+	positionService := service.NewPositionService(context, positionRepo, orgUnitRepo)
+	orgUnitService := service.NewOrgUnitService(context, orgUnitRepo, userRepo)
+	menuRepo := data.NewMenuRepo(context, entClient)
+	menuService := service.NewMenuService(context, menuRepo)
+	apiRepo := data.NewApiRepo(context, entClient)
+	apiService := service.NewApiService(context, apiRepo)
+	permissionGroupRepo := data.NewPermissionGroupRepo(context, entClient)
+	permissionService := service.NewPermissionService(context, permissionRepo, permissionGroupRepo, menuRepo, apiRepo, roleRepo)
+	permissionGroupService := service.NewPermissionGroupService(context, permissionGroupRepo, permissionRepo)
+	permissionAuditLogRepo := data.NewPermissionAuditLogRepo(context, entClient)
+	permissionAuditLogService := service.NewPermissionAuditLogService(context, permissionAuditLogRepo)
+	policyEvaluationLogRepo := data.NewPolicyEvaluationLogRepo(context, entClient)
+	policyEvaluationLogService := service.NewPolicyEvaluationLogService(context, policyEvaluationLogRepo)
+	loginAuditLogRepo := data.NewLoginAuditLogRepo(context, entClient)
+	loginAuditLogService := service.NewLoginAuditLogService(context, loginAuditLogRepo)
+	apiAuditLogRepo := data.NewApiAuditLogRepo(context, entClient)
+	apiAuditLogService := service.NewApiAuditLogService(context, apiAuditLogRepo, apiRepo)
+	operationAuditLogRepo := data.NewOperationAuditLogRepo(context, entClient)
+	operationAuditLogService := service.NewOperationAuditLogService(context, operationAuditLogRepo)
+	dataAccessAuditLogRepo := data.NewDataAccessAuditLogRepo(context, entClient)
+	dataAccessAuditLogService := service.NewDataAccessAuditLogService(context, dataAccessAuditLogRepo)
+	internalMessageRepo := data.NewInternalMessageRepo(context, entClient)
+	internalMessageCategoryRepo := data.NewInternalMessageCategoryRepo(context, entClient)
+	internalMessageRecipientRepo := data.NewInternalMessageRecipientRepo(context, entClient)
+	internalMessageService := service.NewInternalMessageService(context, internalMessageRepo, internalMessageCategoryRepo, internalMessageRecipientRepo, userRepo)
+	internalMessageCategoryService := service.NewInternalMessageCategoryService(context, internalMessageCategoryRepo)
+	internalMessageRecipientService := service.NewInternalMessageRecipientService(context, internalMessageRepo, internalMessageRecipientRepo)
+	grpcServer, err := server.NewGrpcServer(context, v, authenticationService, loginPolicyService, taskService, fileService, dictTypeService, dictEntryService, languageService, tenantService, userService, roleService, positionService, orgUnitService, menuService, apiService, permissionService, permissionGroupService, permissionAuditLogService, policyEvaluationLogService, loginAuditLogService, apiAuditLogService, operationAuditLogService, dataAccessAuditLogService, internalMessageService, internalMessageCategoryService, internalMessageRecipientService)
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	asynqServer := server.NewAsynqServer(context, taskService)
+	app := newApp(context, grpcServer, asynqServer)
 	return app, func() {
+		cleanup2()
 		cleanup()
 	}, nil
 }

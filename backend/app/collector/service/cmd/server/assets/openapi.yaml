@@ -1,0 +1,90 @@
+# Generated with protoc-gen-openapi
+# https://github.com/google/gnostic/tree/master/cmd/protoc-gen-openapi
+
+openapi: 3.0.3
+info:
+    title: UBA 埋点服务 API
+    description: UBA 埋点服务 API
+    version: "1.0"
+paths:
+    /uba/v1/report:
+        post:
+            tags:
+                - ReportService
+            description: 提交事件
+            operationId: ReportService_PostReport
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/PostReportRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/PostReportResponse'
+components:
+    schemas:
+        KratosStatus:
+            type: object
+            properties:
+                code:
+                    type: number
+                    description: 错误码
+                    format: int32
+                message:
+                    type: string
+                    description: 错误消息
+                reason:
+                    type: string
+                    description: 错误原因
+                metadata:
+                    type: object
+                    description: 元数据
+            description: Kratos错误返回
+        PostReportRequest:
+            type: object
+            properties:
+                reportType:
+                    type: string
+                appId:
+                    type: string
+                appKey:
+                    type: string
+                eventName:
+                    type: string
+                debug:
+                    type: integer
+                    format: int32
+                content:
+                    type: string
+        PostReportResponse:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    format: int32
+                msg:
+                    type: string
+    responses:
+        default:
+            description: default kratos response
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/KratosStatus'
+    securitySchemes:
+        OAuth2PasswordBearer:
+            type: oauth2
+            flows:
+                password:
+                    tokenUrl: /uba/v1/login
+                    refreshUrl: /uba/v1/refresh_token
+                    scopes: {}
+security:
+    - OAuth2PasswordBearer: []
+tags:
+    - name: ReportService

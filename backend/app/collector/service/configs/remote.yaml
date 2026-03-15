@@ -1,0 +1,7 @@
+config:
+  type: "etcd"
+
+  consul:
+    scheme: "http"
+    address: "localhost:8500"
+    key: "go-wind-uba/collector/service"

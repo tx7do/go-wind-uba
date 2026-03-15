@@ -1,0 +1,72 @@
+package service
+
+import (
+	"context"
+
+	"github.com/go-kratos/kratos/v2/log"
+	paginationV1 "github.com/tx7do/go-crud/api/gen/go/pagination/v1"
+	"github.com/tx7do/kratos-bootstrap/bootstrap"
+	"google.golang.org/protobuf/types/known/emptypb"
+
+	"go-wind-uba/app/core/service/internal/data"
+
+	dictV1 "go-wind-uba/api/gen/go/dict/service/v1"
+)
+
+type DictTypeService struct {
+	dictV1.UnimplementedDictTypeServiceServer
+
+	log *log.Helper
+
+	dictTypeRepo *data.DictTypeRepo
+}
+
+func NewDictTypeService(
+	ctx *bootstrap.Context,
+	dictTypeRepo *data.DictTypeRepo,
+) *DictTypeService {
+	return &DictTypeService{
+		log:          ctx.NewLoggerHelper("dict-type/service/core-service"),
+		dictTypeRepo: dictTypeRepo,
+	}
+}
+
+func (s *DictTypeService) List(ctx context.Context, req *paginationV1.PagingRequest) (*dictV1.ListDictTypeResponse, error) {
+	return s.dictTypeRepo.List(ctx, req)
+}
+
+func (s *DictTypeService) Get(ctx context.Context, req *dictV1.GetDictTypeRequest) (*dictV1.DictType, error) {
+	return s.dictTypeRepo.Get(ctx, req)
+}
+
+func (s *DictTypeService) Create(ctx context.Context, req *dictV1.CreateDictTypeRequest) (*emptypb.Empty, error) {
+	if req.Data == nil {
+		return nil, dictV1.ErrorBadRequest("invalid parameter")
+	}
+
+	if err := s.dictTypeRepo.Create(ctx, req); err != nil {
+		return nil, err
+	}
+
+	return &emptypb.Empty{}, nil
+}
+
+func (s *DictTypeService) Update(ctx context.Context, req *dictV1.UpdateDictTypeRequest) (*emptypb.Empty, error) {
+	if req.Data == nil {
+		return nil, dictV1.ErrorBadRequest("invalid parameter")
+	}
+
+	if err := s.dictTypeRepo.Update(ctx, req); err != nil {
+		return nil, err
+	}
+
+	return &emptypb.Empty{}, nil
+}
+
+func (s *DictTypeService) Delete(ctx context.Context, req *dictV1.DeleteDictTypeRequest) (*emptypb.Empty, error) {
+	if err := s.dictTypeRepo.BatchDelete(ctx, req.GetIds()); err != nil {
+		return nil, err
+	}
+
+	return &emptypb.Empty{}, nil
+}

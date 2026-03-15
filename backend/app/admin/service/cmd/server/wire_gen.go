@@ -8,35 +8,85 @@ package main
 
 import (
 	"github.com/go-kratos/kratos/v2"
-	"github.com/go-kratos/kratos/v2/log"
-	"github.com/go-kratos/kratos/v2/registry"
-	"github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
-	"kratos-uba/app/admin/service/internal/data"
-	"kratos-uba/app/admin/service/internal/server"
-	"kratos-uba/app/admin/service/internal/service"
+	"github.com/tx7do/kratos-bootstrap/bootstrap"
+	"go-wind-uba/app/admin/service/internal/data"
+	"go-wind-uba/app/admin/service/internal/server"
+	"go-wind-uba/app/admin/service/internal/service"
+	"go-wind-uba/pkg/middleware/auth"
+)
+
+import (
+	_ "github.com/tx7do/kratos-bootstrap/registry/etcd"
+	_ "github.com/tx7do/kratos-bootstrap/tracer"
 )
 
 // Injectors from wire.go:
 
 // initApp init kratos application.
-func initApp(logger log.Logger, registrar registry.Registrar, bootstrap *v1.Bootstrap) (*kratos.App, func(), error) {
-	authenticator := data.NewAuthenticator(bootstrap)
+func initApp(context *bootstrap.Context) (*kratos.App, func(), error) {
+	discovery := data.NewDiscovery(context)
+	authenticationServiceClient := data.NewAuthenticationServiceClient(context, discovery)
+	clientType := data.NewClientType()
+	accessTokenChecker := auth.NewTokenChecker(context, authenticationServiceClient, clientType)
 	engine := data.NewAuthorizer()
-	discovery := data.NewDiscovery(bootstrap)
-	userServiceClient := data.NewUserServiceClient(discovery, bootstrap)
-	userService := service.NewUserService(userServiceClient, logger)
-	client := data.NewRedisClient(bootstrap, logger)
-	applicationServiceClient := data.NewApplicationServiceClient(discovery, bootstrap)
-	dataData, cleanup, err := data.NewData(logger, client, authenticator, engine, userServiceClient, applicationServiceClient)
-	if err != nil {
-		return nil, nil, err
-	}
-	userTokenRepo := data.NewUserTokenRepo(dataData, authenticator, logger)
-	authenticationService := service.NewAuthenticationService(logger, userServiceClient, userTokenRepo)
-	applicationService := service.NewApplicationService(logger, applicationServiceClient)
-	httpServer := server.NewHTTPServer(bootstrap, logger, authenticator, engine, userService, authenticationService, applicationService)
-	app := newApp(logger, registrar, httpServer)
+	apiAuditLogServiceClient := data.NewApiAuditLogServiceClient(context, discovery)
+	loginAuditLogServiceClient := data.NewLoginAuditLogServiceClient(context, discovery)
+	v := server.NewRestMiddleware(context, accessTokenChecker, engine, apiAuditLogServiceClient, loginAuditLogServiceClient)
+	userServiceClient := data.NewUserServiceClient(context, discovery)
+	tenantServiceClient := data.NewTenantServiceClient(context, discovery)
+	orgUnitServiceClient := data.NewOrgUnitServiceClient(context, discovery)
+	positionServiceClient := data.NewPositionServiceClient(context, discovery)
+	roleServiceClient := data.NewRoleServiceClient(context, discovery)
+	userCredentialServiceClient := data.NewUserCredentialServiceClient(context, discovery)
+	userService := service.NewUserService(context, userServiceClient, tenantServiceClient, orgUnitServiceClient, positionServiceClient, roleServiceClient, userCredentialServiceClient)
+	userProfileService := service.NewUserProfileService(context, userServiceClient, tenantServiceClient, orgUnitServiceClient, positionServiceClient, roleServiceClient, userCredentialServiceClient)
+	roleService := service.NewRoleService(context, roleServiceClient, tenantServiceClient)
+	tenantService := service.NewTenantService(context, userServiceClient, userCredentialServiceClient, tenantServiceClient, roleServiceClient)
+	orgUnitService := service.NewOrgUnitService(context, orgUnitServiceClient, userServiceClient)
+	positionService := service.NewPositionService(context, positionServiceClient, orgUnitServiceClient)
+	menuServiceClient := data.NewMenuServiceClient(context, discovery)
+	menuService := service.NewMenuService(context, menuServiceClient)
+	apiServiceClient := data.NewApiServiceClient(context, discovery)
+	apiService := service.NewApiService(context, apiServiceClient)
+	permissionServiceClient := data.NewPermissionServiceClient(context, discovery)
+	permissionGroupServiceClient := data.NewPermissionGroupServiceClient(context, discovery)
+	permissionGroupService := service.NewPermissionGroupService(context, permissionServiceClient, permissionGroupServiceClient)
+	permissionService := service.NewPermissionService(context, permissionServiceClient, permissionGroupServiceClient, roleServiceClient, apiServiceClient, menuServiceClient)
+	adminPortalService := service.NewRouterService(context, menuServiceClient, permissionServiceClient, roleServiceClient, userServiceClient)
+	taskServiceClient := data.NewTaskServiceClient(context, discovery)
+	taskService := service.NewTaskService(context, taskServiceClient)
+	authenticationService := service.NewAuthenticationService(context, authenticationServiceClient)
+	loginPolicyServiceClient := data.NewLoginPolicyServiceClient(context, discovery)
+	loginPolicyService := service.NewLoginPolicyService(context, loginPolicyServiceClient)
+	dictTypeServiceClient := data.NewDictTypeServiceClient(context, discovery)
+	dictTypeService := service.NewDictTypeService(context, dictTypeServiceClient)
+	dictEntryServiceClient := data.NewDictEntryServiceClient(context, discovery)
+	dictEntryService := service.NewDictEntryService(context, dictEntryServiceClient)
+	languageServiceClient := data.NewLanguageServiceClient(context, discovery)
+	languageService := service.NewLanguageService(context, languageServiceClient)
+	fileServiceClient := data.NewFileServiceClient(context, discovery)
+	fileService := service.NewFileService(context, fileServiceClient)
+	minIOClient := data.NewMinIoClient(context)
+	fileTransferService := service.NewFileTransferService(context, minIOClient, fileServiceClient)
+	internalMessageServiceClient := data.NewInternalMessageServiceClient(context, discovery)
+	internalMessageCategoryServiceClient := data.NewInternalMessageCategoryServiceClient(context, discovery)
+	internalMessageRecipientServiceClient := data.NewInternalMessageRecipientServiceClient(context, discovery)
+	sseServer := server.NewSseServer(context)
+	internalMessageService := service.NewInternalMessageService(context, internalMessageServiceClient, internalMessageCategoryServiceClient, internalMessageRecipientServiceClient, authenticationServiceClient, userServiceClient, sseServer)
+	internalMessageCategoryService := service.NewInternalMessageCategoryService(context, internalMessageCategoryServiceClient)
+	internalMessageRecipientService := service.NewInternalMessageRecipientService(context, internalMessageServiceClient, internalMessageRecipientServiceClient)
+	apiAuditLogService := service.NewApiAuditLogService(context, apiAuditLogServiceClient, apiServiceClient)
+	dataAccessAuditLogServiceClient := data.NewDataAccessAuditLogServiceClient(context, discovery)
+	dataAccessAuditLogService := service.NewDataAccessAuditLogService(context, dataAccessAuditLogServiceClient)
+	loginAuditLogService := service.NewLoginAuditLogService(context, loginAuditLogServiceClient)
+	policyEvaluationLogServiceClient := data.NewPolicyEvaluationLogServiceClient(context, discovery)
+	policyEvaluationLogService := service.NewPolicyEvaluationLogService(context, policyEvaluationLogServiceClient)
+	operationAuditLogServiceClient := data.NewOperationAuditLogServiceClient(context, discovery)
+	operationAuditLogService := service.NewOperationAuditLogService(context, operationAuditLogServiceClient)
+	permissionAuditLogServiceClient := data.NewPermissionAuditLogServiceClient(context, discovery)
+	permissionAuditLogService := service.NewPermissionAuditLogService(context, permissionAuditLogServiceClient)
+	httpServer := server.NewRestServer(context, v, userService, userProfileService, roleService, tenantService, orgUnitService, positionService, menuService, apiService, permissionGroupService, permissionService, adminPortalService, taskService, authenticationService, loginPolicyService, dictTypeService, dictEntryService, languageService, fileService, fileTransferService, internalMessageService, internalMessageCategoryService, internalMessageRecipientService, apiAuditLogService, dataAccessAuditLogService, loginAuditLogService, policyEvaluationLogService, operationAuditLogService, permissionAuditLogService)
+	app := newApp(context, httpServer, sseServer)
 	return app, func() {
-		cleanup()
 	}, nil
 }
