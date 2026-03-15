@@ -169,9 +169,9 @@ func (r *WebhookRepo) newWebhookCreate(w *ubaV1.Webhook) *ent.WebhookCreate {
 	if w.EventTypes != nil {
 		builder.SetEventTypes(w.GetEventTypes())
 	}
-	if w.Filter != nil {
-		builder.SetFilter(w.GetFilter())
-	}
+	//if w.Filter != nil {
+	//	builder.SetFilter(w.GetFilter())
+	//}
 
 	return builder
 }
@@ -232,9 +232,9 @@ func (r *WebhookRepo) Update(ctx context.Context, req *ubaV1.UpdateWebhookReques
 			if req.Data.EventTypes != nil {
 				builder.SetEventTypes(req.Data.GetEventTypes())
 			}
-			if req.Data.Filter != nil {
-				builder.SetFilter(req.Data.GetFilter())
-			}
+			//if req.Data.Filter != nil {
+			//	builder.SetFilter(req.Data.GetFilter())
+			//}
 		},
 		func(s *sql.Selector) {
 			s.Where(sql.EQ(webhook.FieldID, req.GetId()))

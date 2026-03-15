@@ -1,8 +1,6 @@
 package schema
 
 import (
-	ubaV1 "go-wind-uba/api/gen/go/uba/service/v1"
-
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
@@ -51,9 +49,9 @@ func (Webhook) Fields() []ent.Field {
 			Comment("触发事件类型列表，如[\\\"risk.high\\\", \\\"risk.critical\\\"]").
 			Optional(),
 
-		field.JSON("filter", &ubaV1.WebhookFilter{}).
-			Comment("过滤条件，结构化JSON").
-			Optional(),
+		//field.JSON("filter", &ubaV1.WebhookFilter{}).
+		//	Comment("过滤条件，结构化JSON").
+		//	Optional(),
 
 		field.Bool("enabled").
 			Comment("是否启用，1为启用，0为禁用").

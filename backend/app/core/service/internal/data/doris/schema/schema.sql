@@ -1,5 +1,5 @@
 -- 事件事实表
-CREATE TABLE IF NOT EXISTS ubd.events_fact (
+CREATE TABLE IF NOT EXISTS gw_uba.events_fact (
     -- ========== 主键 & 路由 ==========
                                                event_id       VARCHAR(64) COMMENT '全局唯一事件 ID',
     tenant_id      INT UNSIGNED NOT NULL COMMENT '租户 ID',
@@ -81,16 +81,16 @@ CREATE TABLE IF NOT EXISTS ubd.events_fact (
 
 -- ========== 倒排索引 (替代 CH 的 LowCardinality + Index) ==========
 -- 加速高频过滤字段
-ALTER TABLE ubd.events_fact ADD INDEX idx_event_name (event_name) USING INVERTED;
-ALTER TABLE ubd.events_fact ADD INDEX idx_user_id (user_id) USING INVERTED;
-ALTER TABLE ubd.events_fact ADD INDEX idx_object_id (object_id) USING INVERTED;
-ALTER TABLE ubd.events_fact ADD INDEX idx_risk_level (risk_level) USING INVERTED;
+ALTER TABLE gw_uba.events_fact ADD INDEX idx_event_name (event_name) USING INVERTED;
+ALTER TABLE gw_uba.events_fact ADD INDEX idx_user_id (user_id) USING INVERTED;
+ALTER TABLE gw_uba.events_fact ADD INDEX idx_object_id (object_id) USING INVERTED;
+ALTER TABLE gw_uba.events_fact ADD INDEX idx_risk_level (risk_level) USING INVERTED;
 -- JSON 字段内部键的索引 (Doris 2.0 特性)
-ALTER TABLE ubd.events_fact ADD INDEX idx_props_server (properties) USING INVERTED PROPERTIES ("parser" = "json", "jsonpaths" = "[\"server_id\"]");
+ALTER TABLE gw_uba.events_fact ADD INDEX idx_props_server (properties) USING INVERTED PROPERTIES ("parser" = "json", "jsonpaths" = "[\"server_id\"]");
 
 
 -- 用户维度表
-CREATE TABLE IF NOT EXISTS ubd.users_dim (
+CREATE TABLE IF NOT EXISTS gw_uba.users_dim (
                                              tenant_id         INT UNSIGNED NOT NULL,
     user_id           INT UNSIGNED NOT NULL,
     ver               BIGINT COMMENT '版本号',
@@ -135,7 +135,7 @@ CREATE TABLE IF NOT EXISTS ubd.users_dim (
 
 
 -- 对象维度表
-CREATE TABLE IF NOT EXISTS ubd.objects_dim (
+CREATE TABLE IF NOT EXISTS gw_uba.objects_dim (
                                                tenant_id     INT UNSIGNED NOT NULL,
     object_type   VARCHAR(32) NOT NULL,
     object_id     VARCHAR(128) NOT NULL,
@@ -165,7 +165,7 @@ CREATE TABLE IF NOT EXISTS ubd.objects_dim (
 
 
 -- ID-Mapping 表
-CREATE TABLE IF NOT EXISTS ubd.id_mapping (
+CREATE TABLE IF NOT EXISTS gw_uba.id_mapping (
                                               global_user_id VARCHAR(64) NOT NULL,
     tenant_id      INT UNSIGNED NOT NULL,
 
@@ -192,7 +192,7 @@ CREATE TABLE IF NOT EXISTS ubd.id_mapping (
 
 
 -- 聚合表
-CREATE TABLE IF NOT EXISTS ubd.events_agg_daily (
+CREATE TABLE IF NOT EXISTS gw_uba.events_agg_daily (
                                                     tenant_id        INT UNSIGNED NOT NULL,
     stat_date        DATE NOT NULL,
 
@@ -227,7 +227,7 @@ CREATE TABLE IF NOT EXISTS ubd.events_agg_daily (
 
 
 -- 风险事件表（独立存储，便于快速检索）
-CREATE TABLE ubd.risk_events (
+CREATE TABLE gw_uba.risk_events (
                                  risk_id VARCHAR(64),
                                  tenant_id INT UNSIGNED,
                                  user_id INT UNSIGNED,
@@ -252,7 +252,7 @@ DISTRIBUTED BY HASH(tenant_id, occur_time) BUCKETS AUTO
 PARTITION BY RANGE(occur_time) ();
 
 -- 用户标签聚合表（用于快速圈选）
-CREATE TABLE ubd.user_tags_agg (
+CREATE TABLE gw_uba.user_tags_agg (
                                    tenant_id INT UNSIGNED,
                                    user_id INT UNSIGNED,
                                    tag_id INT UNSIGNED,
@@ -265,18 +265,18 @@ UNIQUE KEY(tenant_id, user_id, tag_id)
 DISTRIBUTED BY HASH(user_id) BUCKETS AUTO;
 
 -- 物化视图：按标签统计用户数（用于运营仪表盘）
-CREATE MATERIALIZED VIEW ubd.mv_tag_stats AS
+CREATE MATERIALIZED VIEW gw_uba.mv_tag_stats AS
 SELECT
     tenant_id,
     tag_id,
     tag_value,
     count(DISTINCT user_id) as user_count,
     toDate(update_time) as stat_date
-FROM ubd.user_tags_agg
+FROM gw_uba.user_tags_agg
 GROUP BY tenant_id, tag_id, tag_value, stat_date;
 
 -- 不存储完整路径，而是存储路径特征用于加速查询
-CREATE TABLE ubd.path_features (
+CREATE TABLE gw_uba.path_features (
                                    tenant_id INT UNSIGNED,
                                    user_id INT UNSIGNED,
                                    session_id INT UNSIGNED,
@@ -298,18 +298,18 @@ DUPLICATE KEY(tenant_id, session_id)
 DISTRIBUTED BY HASH(tenant_id, session_id) BUCKETS AUTO;
 
 -- 物化视图：预计算漏斗步骤到达人数
-CREATE MATERIALIZED VIEW ubd.mv_funnel_steps AS
+CREATE MATERIALIZED VIEW gw_uba.mv_funnel_steps AS
 SELECT
     tenant_id,
     event_date,
     event_name,
     count(DISTINCT user_id) as step_users
-FROM ubd.events_fact
+FROM gw_uba.events_fact
 WHERE event_name IN ('register', 'activate', 'pay')  -- 漏斗事件
 GROUP BY tenant_id, event_date, event_name;
 
 -- Doris: 会话事实表（预计算）
-CREATE TABLE ubd.sessions_fact (
+CREATE TABLE gw_uba.sessions_fact (
                                    session_id INT UNSIGNED,
                                    tenant_id INT UNSIGNED,
                                    user_id INT UNSIGNED,
@@ -325,7 +325,7 @@ DISTRIBUTED BY HASH(tenant_id, start_time) BUCKETS AUTO
 PARTITION BY RANGE(start_time) ();
 
 -- 物化视图：按日聚合会话统计
-CREATE MATERIALIZED VIEW ubd.mv_session_daily_stats AS
+CREATE MATERIALIZED VIEW gw_uba.mv_session_daily_stats AS
 SELECT
     tenant_id,
     toDate(start_time) as stat_date,
@@ -333,11 +333,11 @@ SELECT
     count(DISTINCT user_id) as unique_user_count,
     avg(duration_ms) as avg_duration,
     countIf(is_bounce) * 1.0 / count() as bounce_rate
-FROM ubd.sessions_fact
+FROM gw_uba.sessions_fact
 GROUP BY tenant_id, stat_date;
 
 -- 异步物化视图
-CREATE ASYNC MATERIALIZED VIEW IF NOT EXISTS ubd.mv_events_agg_daily
+CREATE ASYNC MATERIALIZED VIEW IF NOT EXISTS gw_uba.mv_events_agg_daily
 REFRESH ASYNC EVERY (INTERVAL 1 MINUTE)  -- 每分钟刷新一次
 PROPERTIES (
     "replication_num" = "3",
@@ -360,13 +360,13 @@ SELECT
     SUM(CASE WHEN risk_level != 'normal' THEN 1 ELSE 0 END) AS risk_event_count,
     SUM(CASE WHEN event_name = 'level_up' THEN 1 ELSE 0 END) AS level_up_count,
     BITMAP_UNION_IF(to_bitmap(user_id), amount > 0) AS pay_user_count
-FROM ubd.events_fact
+FROM gw_uba.events_fact
 GROUP BY tenant_id, event_date, event_category, event_name, platform, country;
 
 
 -- 创建 Routine Load 任务
-CREATE ROUTINE LOAD ubd.load_events_fact
-ON ubd.events_fact
+CREATE ROUTINE LOAD gw_uba.load_events_fact
+ON gw_uba.events_fact
 COLUMNS TERMINATED BY "\n"
 WITH FORMAT JSON
 STRICT_MODE = false
@@ -395,8 +395,8 @@ FROM KAFKA (
     "property.sasl.mechanism" = "PLAIN"
 );
 
-CREATE ROUTINE LOAD ubd.load_events_fact
-ON ubd.events_fact
+CREATE ROUTINE LOAD gw_uba.load_events_fact
+ON gw_uba.events_fact
 COLUMNS TERMINATED BY "\n"
 WITH FORMAT JSON
 -- 映射 Kafka JSON 字段到表列

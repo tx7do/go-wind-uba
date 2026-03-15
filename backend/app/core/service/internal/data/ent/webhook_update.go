@@ -6,7 +6,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	servicev1 "go-wind-uba/api/gen/go/uba/service/v1"
 	"go-wind-uba/app/core/service/internal/data/ent/predicate"
 	"go-wind-uba/app/core/service/internal/data/ent/webhook"
 	"time"
@@ -230,18 +229,6 @@ func (_u *WebhookUpdate) ClearEventTypes() *WebhookUpdate {
 	return _u
 }
 
-// SetFilter sets the "filter" field.
-func (_u *WebhookUpdate) SetFilter(v *servicev1.WebhookFilter) *WebhookUpdate {
-	_u.mutation.SetFilter(v)
-	return _u
-}
-
-// ClearFilter clears the value of the "filter" field.
-func (_u *WebhookUpdate) ClearFilter() *WebhookUpdate {
-	_u.mutation.ClearFilter()
-	return _u
-}
-
 // SetEnabled sets the "enabled" field.
 func (_u *WebhookUpdate) SetEnabled(v bool) *WebhookUpdate {
 	_u.mutation.SetEnabled(v)
@@ -368,11 +355,6 @@ func (_u *WebhookUpdate) check() error {
 			return &ValidationError{Name: "url", err: fmt.Errorf(`ent: validator failed for field "Webhook.url": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.Filter(); ok {
-		if err := v.Validate(); err != nil {
-			return &ValidationError{Name: "filter", err: fmt.Errorf(`ent: validator failed for field "Webhook.filter": %w`, err)}
-		}
-	}
 	return nil
 }
 
@@ -467,12 +449,6 @@ func (_u *WebhookUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if _u.mutation.EventTypesCleared() {
 		_spec.ClearField(webhook.FieldEventTypes, field.TypeJSON)
-	}
-	if value, ok := _u.mutation.Filter(); ok {
-		_spec.SetField(webhook.FieldFilter, field.TypeJSON, value)
-	}
-	if _u.mutation.FilterCleared() {
-		_spec.ClearField(webhook.FieldFilter, field.TypeJSON)
 	}
 	if value, ok := _u.mutation.Enabled(); ok {
 		_spec.SetField(webhook.FieldEnabled, field.TypeBool, value)
@@ -719,18 +695,6 @@ func (_u *WebhookUpdateOne) ClearEventTypes() *WebhookUpdateOne {
 	return _u
 }
 
-// SetFilter sets the "filter" field.
-func (_u *WebhookUpdateOne) SetFilter(v *servicev1.WebhookFilter) *WebhookUpdateOne {
-	_u.mutation.SetFilter(v)
-	return _u
-}
-
-// ClearFilter clears the value of the "filter" field.
-func (_u *WebhookUpdateOne) ClearFilter() *WebhookUpdateOne {
-	_u.mutation.ClearFilter()
-	return _u
-}
-
 // SetEnabled sets the "enabled" field.
 func (_u *WebhookUpdateOne) SetEnabled(v bool) *WebhookUpdateOne {
 	_u.mutation.SetEnabled(v)
@@ -870,11 +834,6 @@ func (_u *WebhookUpdateOne) check() error {
 			return &ValidationError{Name: "url", err: fmt.Errorf(`ent: validator failed for field "Webhook.url": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.Filter(); ok {
-		if err := v.Validate(); err != nil {
-			return &ValidationError{Name: "filter", err: fmt.Errorf(`ent: validator failed for field "Webhook.filter": %w`, err)}
-		}
-	}
 	return nil
 }
 
@@ -986,12 +945,6 @@ func (_u *WebhookUpdateOne) sqlSave(ctx context.Context) (_node *Webhook, err er
 	}
 	if _u.mutation.EventTypesCleared() {
 		_spec.ClearField(webhook.FieldEventTypes, field.TypeJSON)
-	}
-	if value, ok := _u.mutation.Filter(); ok {
-		_spec.SetField(webhook.FieldFilter, field.TypeJSON, value)
-	}
-	if _u.mutation.FilterCleared() {
-		_spec.ClearField(webhook.FieldFilter, field.TypeJSON)
 	}
 	if value, ok := _u.mutation.Enabled(); ok {
 		_spec.SetField(webhook.FieldEnabled, field.TypeBool, value)

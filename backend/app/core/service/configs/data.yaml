@@ -1,7 +1,7 @@
 data:
   database:
     driver: "postgres"
-    source: "host=postgres port=5432 user=postgres password=*Abcd123456 dbname=gwubd sslmode=disable"
+    source: "host=postgres port=5432 user=postgres password=*Abcd123456 dbname=gw_ubd sslmode=disable"
     migrate: true
     debug: false
     max_idle_connections: 25
@@ -22,7 +22,7 @@ data:
 
     username: "default"
     password: "*Abcd123456"
-    database: "default"
+    database: "gw_ubd"
 
     debug: true # 是否启用ClickHouse的调试模式，输出更多的日志信息
     enable_tracing: true # 是否启用ClickHouse的查询跟踪功能
@@ -44,12 +44,12 @@ data:
     connection_open_strategy: "round_robin" # 连接打开策略：in_order、round_robin、random
 
   doris:
-    dsn: "http://doris:8030/gwubd"
+    dsn: "http://doris:8030/gw_ubd"
     max_idle_connections: 25
     max_open_connections: 25
     connection_max_lifetime: 300s
     stream_load:
-      endpoint: "http://doris:8030/api/gwubd/_stream_load"
+      endpoint: "http://doris:8030/api/gw_ubd/_stream_load"
       username: "root"
       password: "*Abcd123456"
       method: "POST"

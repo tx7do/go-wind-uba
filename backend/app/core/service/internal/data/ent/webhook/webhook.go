@@ -34,8 +34,6 @@ const (
 	FieldSecret = "secret"
 	// FieldEventTypes holds the string denoting the event_types field in the database.
 	FieldEventTypes = "event_types"
-	// FieldFilter holds the string denoting the filter field in the database.
-	FieldFilter = "filter"
 	// FieldEnabled holds the string denoting the enabled field in the database.
 	FieldEnabled = "enabled"
 	// FieldLastTriggeredAt holds the string denoting the last_triggered_at field in the database.
@@ -62,7 +60,6 @@ var Columns = []string{
 	FieldURL,
 	FieldSecret,
 	FieldEventTypes,
-	FieldFilter,
 	FieldEnabled,
 	FieldLastTriggeredAt,
 	FieldFailureCount,

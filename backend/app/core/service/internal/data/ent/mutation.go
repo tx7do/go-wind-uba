@@ -69256,7 +69256,6 @@ type WebhookMutation struct {
 	secret            *string
 	event_types       *[]string
 	appendevent_types []string
-	filter            **servicev1.WebhookFilter
 	enabled           *bool
 	last_triggered_at *time.Time
 	failure_count     *uint32
@@ -70012,55 +70011,6 @@ func (m *WebhookMutation) ResetEventTypes() {
 	delete(m.clearedFields, webhook.FieldEventTypes)
 }
 
-// SetFilter sets the "filter" field.
-func (m *WebhookMutation) SetFilter(sf *servicev1.WebhookFilter) {
-	m.filter = &sf
-}
-
-// Filter returns the value of the "filter" field in the mutation.
-func (m *WebhookMutation) Filter() (r *servicev1.WebhookFilter, exists bool) {
-	v := m.filter
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldFilter returns the old "filter" field's value of the Webhook entity.
-// If the Webhook object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *WebhookMutation) OldFilter(ctx context.Context) (v *servicev1.WebhookFilter, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldFilter is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldFilter requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldFilter: %w", err)
-	}
-	return oldValue.Filter, nil
-}
-
-// ClearFilter clears the value of the "filter" field.
-func (m *WebhookMutation) ClearFilter() {
-	m.filter = nil
-	m.clearedFields[webhook.FieldFilter] = struct{}{}
-}
-
-// FilterCleared returns if the "filter" field was cleared in this mutation.
-func (m *WebhookMutation) FilterCleared() bool {
-	_, ok := m.clearedFields[webhook.FieldFilter]
-	return ok
-}
-
-// ResetFilter resets all changes to the "filter" field.
-func (m *WebhookMutation) ResetFilter() {
-	m.filter = nil
-	delete(m.clearedFields, webhook.FieldFilter)
-}
-
 // SetEnabled sets the "enabled" field.
 func (m *WebhookMutation) SetEnabled(b bool) {
 	m.enabled = &b
@@ -70306,7 +70256,7 @@ func (m *WebhookMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *WebhookMutation) Fields() []string {
-	fields := make([]string, 0, 16)
+	fields := make([]string, 0, 15)
 	if m.created_at != nil {
 		fields = append(fields, webhook.FieldCreatedAt)
 	}
@@ -70339,9 +70289,6 @@ func (m *WebhookMutation) Fields() []string {
 	}
 	if m.event_types != nil {
 		fields = append(fields, webhook.FieldEventTypes)
-	}
-	if m.filter != nil {
-		fields = append(fields, webhook.FieldFilter)
 	}
 	if m.enabled != nil {
 		fields = append(fields, webhook.FieldEnabled)
@@ -70385,8 +70332,6 @@ func (m *WebhookMutation) Field(name string) (ent.Value, bool) {
 		return m.Secret()
 	case webhook.FieldEventTypes:
 		return m.EventTypes()
-	case webhook.FieldFilter:
-		return m.Filter()
 	case webhook.FieldEnabled:
 		return m.Enabled()
 	case webhook.FieldLastTriggeredAt:
@@ -70426,8 +70371,6 @@ func (m *WebhookMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldSecret(ctx)
 	case webhook.FieldEventTypes:
 		return m.OldEventTypes(ctx)
-	case webhook.FieldFilter:
-		return m.OldFilter(ctx)
 	case webhook.FieldEnabled:
 		return m.OldEnabled(ctx)
 	case webhook.FieldLastTriggeredAt:
@@ -70521,13 +70464,6 @@ func (m *WebhookMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetEventTypes(v)
-		return nil
-	case webhook.FieldFilter:
-		v, ok := value.(*servicev1.WebhookFilter)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetFilter(v)
 		return nil
 	case webhook.FieldEnabled:
 		v, ok := value.(bool)
@@ -70695,9 +70631,6 @@ func (m *WebhookMutation) ClearedFields() []string {
 	if m.FieldCleared(webhook.FieldEventTypes) {
 		fields = append(fields, webhook.FieldEventTypes)
 	}
-	if m.FieldCleared(webhook.FieldFilter) {
-		fields = append(fields, webhook.FieldFilter)
-	}
 	if m.FieldCleared(webhook.FieldLastTriggeredAt) {
 		fields = append(fields, webhook.FieldLastTriggeredAt)
 	}
@@ -70751,9 +70684,6 @@ func (m *WebhookMutation) ClearField(name string) error {
 	case webhook.FieldEventTypes:
 		m.ClearEventTypes()
 		return nil
-	case webhook.FieldFilter:
-		m.ClearFilter()
-		return nil
 	case webhook.FieldLastTriggeredAt:
 		m.ClearLastTriggeredAt()
 		return nil
@@ -70800,9 +70730,6 @@ func (m *WebhookMutation) ResetField(name string) error {
 		return nil
 	case webhook.FieldEventTypes:
 		m.ResetEventTypes()
-		return nil
-	case webhook.FieldFilter:
-		m.ResetFilter()
 		return nil
 	case webhook.FieldEnabled:
 		m.ResetEnabled()

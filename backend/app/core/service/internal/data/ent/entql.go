@@ -1320,7 +1320,6 @@ var schemaGraph = func() *sqlgraph.Schema {
 			webhook.FieldURL:             {Type: field.TypeString, Column: webhook.FieldURL},
 			webhook.FieldSecret:          {Type: field.TypeString, Column: webhook.FieldSecret},
 			webhook.FieldEventTypes:      {Type: field.TypeJSON, Column: webhook.FieldEventTypes},
-			webhook.FieldFilter:          {Type: field.TypeJSON, Column: webhook.FieldFilter},
 			webhook.FieldEnabled:         {Type: field.TypeBool, Column: webhook.FieldEnabled},
 			webhook.FieldLastTriggeredAt: {Type: field.TypeTime, Column: webhook.FieldLastTriggeredAt},
 			webhook.FieldFailureCount:    {Type: field.TypeUint32, Column: webhook.FieldFailureCount},
@@ -6866,11 +6865,6 @@ func (f *WebhookFilter) WhereSecret(p entql.StringP) {
 // WhereEventTypes applies the entql json.RawMessage predicate on the event_types field.
 func (f *WebhookFilter) WhereEventTypes(p entql.BytesP) {
 	f.Where(p.Field(webhook.FieldEventTypes))
-}
-
-// WhereFilter applies the entql json.RawMessage predicate on the filter field.
-func (f *WebhookFilter) WhereFilter(p entql.BytesP) {
-	f.Where(p.Field(webhook.FieldFilter))
 }
 
 // WhereEnabled applies the entql bool predicate on the enabled field.

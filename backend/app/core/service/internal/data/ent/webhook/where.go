@@ -709,16 +709,6 @@ func EventTypesNotNil() predicate.Webhook {
 	return predicate.Webhook(sql.FieldNotNull(FieldEventTypes))
 }
 
-// FilterIsNil applies the IsNil predicate on the "filter" field.
-func FilterIsNil() predicate.Webhook {
-	return predicate.Webhook(sql.FieldIsNull(FieldFilter))
-}
-
-// FilterNotNil applies the NotNil predicate on the "filter" field.
-func FilterNotNil() predicate.Webhook {
-	return predicate.Webhook(sql.FieldNotNull(FieldFilter))
-}
-
 // EnabledEQ applies the EQ predicate on the "enabled" field.
 func EnabledEQ(v bool) predicate.Webhook {
 	return predicate.Webhook(sql.FieldEQ(FieldEnabled, v))

@@ -6,7 +6,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	servicev1 "go-wind-uba/api/gen/go/uba/service/v1"
 	"go-wind-uba/app/core/service/internal/data/ent/webhook"
 	"time"
 
@@ -169,12 +168,6 @@ func (_c *WebhookCreate) SetEventTypes(v []string) *WebhookCreate {
 	return _c
 }
 
-// SetFilter sets the "filter" field.
-func (_c *WebhookCreate) SetFilter(v *servicev1.WebhookFilter) *WebhookCreate {
-	_c.mutation.SetFilter(v)
-	return _c
-}
-
 // SetEnabled sets the "enabled" field.
 func (_c *WebhookCreate) SetEnabled(v bool) *WebhookCreate {
 	_c.mutation.SetEnabled(v)
@@ -301,11 +294,6 @@ func (_c *WebhookCreate) check() error {
 			return &ValidationError{Name: "url", err: fmt.Errorf(`ent: validator failed for field "Webhook.url": %w`, err)}
 		}
 	}
-	if v, ok := _c.mutation.Filter(); ok {
-		if err := v.Validate(); err != nil {
-			return &ValidationError{Name: "filter", err: fmt.Errorf(`ent: validator failed for field "Webhook.filter": %w`, err)}
-		}
-	}
 	if _, ok := _c.mutation.Enabled(); !ok {
 		return &ValidationError{Name: "enabled", err: errors.New(`ent: missing required field "Webhook.enabled"`)}
 	}
@@ -393,10 +381,6 @@ func (_c *WebhookCreate) createSpec() (*Webhook, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.EventTypes(); ok {
 		_spec.SetField(webhook.FieldEventTypes, field.TypeJSON, value)
 		_node.EventTypes = value
-	}
-	if value, ok := _c.mutation.Filter(); ok {
-		_spec.SetField(webhook.FieldFilter, field.TypeJSON, value)
-		_node.Filter = value
 	}
 	if value, ok := _c.mutation.Enabled(); ok {
 		_spec.SetField(webhook.FieldEnabled, field.TypeBool, value)
@@ -643,24 +627,6 @@ func (u *WebhookUpsert) UpdateEventTypes() *WebhookUpsert {
 // ClearEventTypes clears the value of the "event_types" field.
 func (u *WebhookUpsert) ClearEventTypes() *WebhookUpsert {
 	u.SetNull(webhook.FieldEventTypes)
-	return u
-}
-
-// SetFilter sets the "filter" field.
-func (u *WebhookUpsert) SetFilter(v *servicev1.WebhookFilter) *WebhookUpsert {
-	u.Set(webhook.FieldFilter, v)
-	return u
-}
-
-// UpdateFilter sets the "filter" field to the value that was provided on create.
-func (u *WebhookUpsert) UpdateFilter() *WebhookUpsert {
-	u.SetExcluded(webhook.FieldFilter)
-	return u
-}
-
-// ClearFilter clears the value of the "filter" field.
-func (u *WebhookUpsert) ClearFilter() *WebhookUpsert {
-	u.SetNull(webhook.FieldFilter)
 	return u
 }
 
@@ -997,27 +963,6 @@ func (u *WebhookUpsertOne) UpdateEventTypes() *WebhookUpsertOne {
 func (u *WebhookUpsertOne) ClearEventTypes() *WebhookUpsertOne {
 	return u.Update(func(s *WebhookUpsert) {
 		s.ClearEventTypes()
-	})
-}
-
-// SetFilter sets the "filter" field.
-func (u *WebhookUpsertOne) SetFilter(v *servicev1.WebhookFilter) *WebhookUpsertOne {
-	return u.Update(func(s *WebhookUpsert) {
-		s.SetFilter(v)
-	})
-}
-
-// UpdateFilter sets the "filter" field to the value that was provided on create.
-func (u *WebhookUpsertOne) UpdateFilter() *WebhookUpsertOne {
-	return u.Update(func(s *WebhookUpsert) {
-		s.UpdateFilter()
-	})
-}
-
-// ClearFilter clears the value of the "filter" field.
-func (u *WebhookUpsertOne) ClearFilter() *WebhookUpsertOne {
-	return u.Update(func(s *WebhookUpsert) {
-		s.ClearFilter()
 	})
 }
 
@@ -1532,27 +1477,6 @@ func (u *WebhookUpsertBulk) UpdateEventTypes() *WebhookUpsertBulk {
 func (u *WebhookUpsertBulk) ClearEventTypes() *WebhookUpsertBulk {
 	return u.Update(func(s *WebhookUpsert) {
 		s.ClearEventTypes()
-	})
-}
-
-// SetFilter sets the "filter" field.
-func (u *WebhookUpsertBulk) SetFilter(v *servicev1.WebhookFilter) *WebhookUpsertBulk {
-	return u.Update(func(s *WebhookUpsert) {
-		s.SetFilter(v)
-	})
-}
-
-// UpdateFilter sets the "filter" field to the value that was provided on create.
-func (u *WebhookUpsertBulk) UpdateFilter() *WebhookUpsertBulk {
-	return u.Update(func(s *WebhookUpsert) {
-		s.UpdateFilter()
-	})
-}
-
-// ClearFilter clears the value of the "filter" field.
-func (u *WebhookUpsertBulk) ClearFilter() *WebhookUpsertBulk {
-	return u.Update(func(s *WebhookUpsert) {
-		s.ClearFilter()
 	})
 }
 

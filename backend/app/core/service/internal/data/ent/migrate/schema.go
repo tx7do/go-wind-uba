@@ -2859,7 +2859,6 @@ var (
 		{Name: "url", Type: field.TypeString, Nullable: true, Comment: "回调URL"},
 		{Name: "secret", Type: field.TypeString, Nullable: true, Comment: "签名密钥"},
 		{Name: "event_types", Type: field.TypeJSON, Nullable: true, Comment: "触发事件类型列表，如[\"risk.high\", \"risk.critical\"]"},
-		{Name: "filter", Type: field.TypeJSON, Nullable: true, Comment: "过滤条件，结构化JSON"},
 		{Name: "enabled", Type: field.TypeBool, Comment: "是否启用，1为启用，0为禁用", Default: true},
 		{Name: "last_triggered_at", Type: field.TypeTime, Nullable: true, Comment: "最后触发时间"},
 		{Name: "failure_count", Type: field.TypeUint32, Comment: "失败次数", Default: 0},
@@ -2880,7 +2879,7 @@ var (
 			{
 				Name:    "idx_webhook_tenant_id_enabled",
 				Unique:  false,
-				Columns: []*schema.Column{UbaWebhooksColumns[7], UbaWebhooksColumns[13]},
+				Columns: []*schema.Column{UbaWebhooksColumns[7], UbaWebhooksColumns[12]},
 			},
 		},
 	}

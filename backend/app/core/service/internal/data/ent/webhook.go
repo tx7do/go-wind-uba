@@ -5,7 +5,6 @@ package ent
 import (
 	"encoding/json"
 	"fmt"
-	servicev1 "go-wind-uba/api/gen/go/uba/service/v1"
 	"go-wind-uba/app/core/service/internal/data/ent/webhook"
 	"strings"
 	"time"
@@ -42,8 +41,6 @@ type Webhook struct {
 	Secret *string `json:"secret,omitempty"`
 	// 触发事件类型列表，如[\"risk.high\", \"risk.critical\"]
 	EventTypes []string `json:"event_types,omitempty"`
-	// 过滤条件，结构化JSON
-	Filter *servicev1.WebhookFilter `json:"filter,omitempty"`
 	// 是否启用，1为启用，0为禁用
 	Enabled bool `json:"enabled,omitempty"`
 	// 最后触发时间
@@ -60,7 +57,7 @@ func (*Webhook) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case webhook.FieldEventTypes, webhook.FieldFilter:
+		case webhook.FieldEventTypes:
 			values[i] = new([]byte)
 		case webhook.FieldEnabled:
 			values[i] = new(sql.NullBool)
@@ -167,14 +164,6 @@ func (_m *Webhook) assignValues(columns []string, values []any) error {
 			} else if value != nil && len(*value) > 0 {
 				if err := json.Unmarshal(*value, &_m.EventTypes); err != nil {
 					return fmt.Errorf("unmarshal field event_types: %w", err)
-				}
-			}
-		case webhook.FieldFilter:
-			if value, ok := values[i].(*[]byte); !ok {
-				return fmt.Errorf("unexpected type %T for field filter", values[i])
-			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &_m.Filter); err != nil {
-					return fmt.Errorf("unmarshal field filter: %w", err)
 				}
 			}
 		case webhook.FieldEnabled:
@@ -291,9 +280,6 @@ func (_m *Webhook) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("event_types=")
 	builder.WriteString(fmt.Sprintf("%v", _m.EventTypes))
-	builder.WriteString(", ")
-	builder.WriteString("filter=")
-	builder.WriteString(fmt.Sprintf("%v", _m.Filter))
 	builder.WriteString(", ")
 	builder.WriteString("enabled=")
 	builder.WriteString(fmt.Sprintf("%v", _m.Enabled))
