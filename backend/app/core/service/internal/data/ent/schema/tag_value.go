@@ -35,7 +35,9 @@ func (TagValue) Fields() []ent.Field {
 
 		field.String("value").
 			Comment("标签值，业务唯一标识").
-			NotEmpty(),
+			NotEmpty().
+			Optional().
+			Nillable(),
 
 		field.String("label").
 			Comment("显示名称").

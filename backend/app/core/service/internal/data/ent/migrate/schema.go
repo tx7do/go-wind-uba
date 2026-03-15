@@ -2214,7 +2214,7 @@ var (
 		{Name: "deleted_at", Type: field.TypeTime, Nullable: true, Comment: "删除时间"},
 		{Name: "sort_order", Type: field.TypeUint32, Nullable: true, Comment: "排序值（越小越靠前）", Default: 0},
 		{Name: "tag_id", Type: field.TypeUint32, Nullable: true, Comment: "标签定义ID，关联 uba_tag_definitions.id"},
-		{Name: "value", Type: field.TypeString, Comment: "标签值，业务唯一标识"},
+		{Name: "value", Type: field.TypeString, Nullable: true, Comment: "标签值，业务唯一标识"},
 		{Name: "label", Type: field.TypeString, Nullable: true, Comment: "显示名称"},
 		{Name: "description", Type: field.TypeString, Nullable: true, Comment: "描述"},
 		{Name: "color", Type: field.TypeString, Nullable: true, Comment: "颜色标识"},

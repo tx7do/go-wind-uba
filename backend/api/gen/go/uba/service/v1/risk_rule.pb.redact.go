@@ -172,6 +172,82 @@ func (x *RiskAction) Redact() string {
 	return x.String()
 }
 
+// Redact method implementation for RuleAction
+func (x *RuleAction) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Type
+
+	// Safe field: Config
+
+	// Safe field: DurationSeconds
+	return x.String()
+}
+
+// Redact method implementation for RuleCondition
+func (x *RuleCondition) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Id
+
+	// Safe field: FieldName
+
+	// Safe field: Operator
+
+	// Safe field: FieldValue
+
+	// Safe field: LogicOperator
+
+	// Safe field: GroupId
+
+	// Safe field: SortOrder
+	return x.String()
+}
+
+// Redact method implementation for RiskRuleVersion
+func (x *RiskRuleVersion) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Id
+
+	// Safe field: RuleId
+
+	// Safe field: TenantId
+
+	// Safe field: Version
+
+	// Safe field: Name
+
+	// Safe field: RuleExpression
+
+	// Safe field: RuleConfig
+
+	// Safe field: Actions
+
+	// Safe field: RiskLevel
+
+	// Safe field: ChangeSummary
+
+	// Safe field: ChangeReason
+
+	// Safe field: Status
+
+	// Safe field: PublishedAt
+
+	// Safe field: PublishedBy
+
+	// Safe field: CreatedBy
+
+	// Safe field: CreatedAt
+	return x.String()
+}
+
 // Redact method implementation for ListRiskRuleResponse
 func (x *ListRiskRuleResponse) Redact() string {
 	if x == nil {

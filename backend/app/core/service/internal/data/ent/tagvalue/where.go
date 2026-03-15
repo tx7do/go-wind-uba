@@ -459,6 +459,16 @@ func ValueHasSuffix(v string) predicate.TagValue {
 	return predicate.TagValue(sql.FieldHasSuffix(FieldValue, v))
 }
 
+// ValueIsNil applies the IsNil predicate on the "value" field.
+func ValueIsNil() predicate.TagValue {
+	return predicate.TagValue(sql.FieldIsNull(FieldValue))
+}
+
+// ValueNotNil applies the NotNil predicate on the "value" field.
+func ValueNotNil() predicate.TagValue {
+	return predicate.TagValue(sql.FieldNotNull(FieldValue))
+}
+
 // ValueEqualFold applies the EqualFold predicate on the "value" field.
 func ValueEqualFold(v string) predicate.TagValue {
 	return predicate.TagValue(sql.FieldEqualFold(FieldValue, v))

@@ -31,7 +31,7 @@ type TagValue struct {
 	// 标签定义ID，关联 uba_tag_definitions.id
 	TagID *uint32 `json:"tag_id,omitempty"`
 	// 标签值，业务唯一标识
-	Value string `json:"value,omitempty"`
+	Value *string `json:"value,omitempty"`
 	// 显示名称
 	Label *string `json:"label,omitempty"`
 	// 描述
@@ -121,7 +121,8 @@ func (_m *TagValue) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field value", values[i])
 			} else if value.Valid {
-				_m.Value = value.String
+				_m.Value = new(string)
+				*_m.Value = value.String
 			}
 		case tagvalue.FieldLabel:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -217,8 +218,10 @@ func (_m *TagValue) String() string {
 		builder.WriteString(fmt.Sprintf("%v", *v))
 	}
 	builder.WriteString(", ")
-	builder.WriteString("value=")
-	builder.WriteString(_m.Value)
+	if v := _m.Value; v != nil {
+		builder.WriteString("value=")
+		builder.WriteString(*v)
+	}
 	builder.WriteString(", ")
 	if v := _m.Label; v != nil {
 		builder.WriteString("label=")

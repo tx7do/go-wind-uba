@@ -88,4 +88,5 @@ var ProviderSet = wire.NewSet(
 	data.NewUserTagRepo,
 	data.NewIDMappingRepo,
 	data.NewRiskRuleRepo,
+	data.NewTagValueRepo,
 )

@@ -1,7 +1,10 @@
-﻿syntax = "proto3";
+﻿// 风险规则相关 proto 定义
+syntax = "proto3";
 
+// 包名：uba.service.v1
 package uba.service.v1;
 
+// 导入依赖 proto
 import "gnostic/openapi/v3/annotations.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
@@ -13,28 +16,28 @@ import "pagination/v1/pagination.proto";
 
 import "uba/service/v1/common.proto";
 
-// 风险规则服务
+// 风险规则服务接口
 service RiskRuleService {
-  // 查询风险规则列表
+  // 查询风险规则列表，支持分页
   rpc List (pagination.PagingRequest) returns (ListRiskRuleResponse) {}
 
-  // 查询风险规则数量
+  // 查询风险规则数量，返回总数
   rpc Count (pagination.PagingRequest) returns (CountRiskRuleResponse) {}
 
-  // 查询风险规则详情
+  // 查询风险规则详情，根据ID获取单条规则
   rpc Get (GetRiskRuleRequest) returns (RiskRule) {}
 
-  // 创建风险规则
+  // 创建风险规则，返回新建的规则对象
   rpc Create (CreateRiskRuleRequest) returns (RiskRule) {}
 
-  // 更新风险规则
+  // 更新风险规则，根据ID和字段掩码更新规则
   rpc Update (UpdateRiskRuleRequest) returns (RiskRule) {}
 
-  // 删除风险规则
+  // 删除风险规则，根据ID删除规则
   rpc Delete (DeleteRiskRuleRequest) returns (google.protobuf.Empty) {}
 }
 
-// 风险规则定义
+// 风险规则定义，描述一条风险规则的所有属性
 message RiskRule {
   // 规则ID（唯一标识一条风险规则）
   uint32 id = 1 [
@@ -46,104 +49,254 @@ message RiskRule {
     json_name = "tenantId",
     (gnostic.openapi.v3.property) = {description: "租户ID，多租户隔离，支持 SaaS 场景"}
   ];
-  // 规则名称
+  // 规则名称（规则的显示名称）
   optional string name = 3 [
     json_name = "name",
     (gnostic.openapi.v3.property) = {description: "规则名称"}
   ];
-  // 规则编码
+  // 规则编码（规则的唯一编码）
   optional string code = 4 [
     json_name = "code",
     (gnostic.openapi.v3.property) = {description: "规则编码"}
   ];
-  // 规则描述
+  // 规则描述（规则的详细说明）
   optional string description = 5 [
     json_name = "description",
     (gnostic.openapi.v3.property) = {description: "规则描述"}
   ];
 
-  // 风险类型
+  // 风险类型（规则对应的风险类型）
   optional RiskType risk_type = 6 [
     json_name = "riskType",
     (gnostic.openapi.v3.property) = {description: "风险类型，规则对应的风险类型"}
   ];
-  // 默认风险等级
+  // 默认风险等级（规则对应的默认风险等级）
   optional RiskLevel default_level = 7 [
     json_name = "defaultLevel",
     (gnostic.openapi.v3.property) = {description: "默认风险等级，规则对应的默认风险等级"}
   ];
 
-  // 规则条件（简化版，实际可用 CEL/JSON Schema）
+  // 规则条件（简化版，实际可用 CEL/JSON Schema，支持复杂表达式）
   optional google.protobuf.Struct condition = 8 [
     json_name = "condition",
     (gnostic.openapi.v3.property) = {description: "规则条件，简化版，实际可用 CEL/JSON Schema"}
   ];
 
-  // 动作配置（规则触发时的处置动作列表）
+  // 动作配置（规则触发时的处置动作列表，支持多种动作）
   repeated RiskAction actions = 9 [
     json_name = "actions",
     (gnostic.openapi.v3.property) = {description: "动作配置，规则触发时的处置动作列表"}
   ];
 
-  // 是否启用（true: 启用，false: 禁用）
+  // 是否启用（true: 启用，false: 禁用，控制规则生效状态）
   optional bool enabled = 10 [
     json_name = "enabled",
     (gnostic.openapi.v3.property) = {description: "是否启用，true: 启用，false: 禁用"}
   ];
-  // 优先级（越小优先级越高）
+  // 优先级（越小优先级越高，控制规则执行顺序）
   optional uint32 priority = 11 [
     json_name = "priority",
     (gnostic.openapi.v3.property) = {description: "优先级，越小优先级越高"}
   ];
 
-  optional uint32 created_by = 100 [json_name = "createdBy", (gnostic.openapi.v3.property) = {description: "创建者用户ID"}]; // 创建者用户ID
-  optional uint32 updated_by = 101 [json_name = "updatedBy", (gnostic.openapi.v3.property) = {description: "更新者用户ID"}]; // 更新者用户ID
-  optional uint32 deleted_by = 102 [json_name = "deletedBy", (gnostic.openapi.v3.property) = {description: "删除者用户ID"}]; // 删除者用户ID
+  // 创建者用户ID
+  optional uint32 created_by = 100 [json_name = "createdBy", (gnostic.openapi.v3.property) = {description: "创建者用户ID"}];
+  // 更新者用户ID
+  optional uint32 updated_by = 101 [json_name = "updatedBy", (gnostic.openapi.v3.property) = {description: "更新者用户ID"}];
+  // 删除者用户ID
+  optional uint32 deleted_by = 102 [json_name = "deletedBy", (gnostic.openapi.v3.property) = {description: "删除者用户ID"}];
 
-  optional google.protobuf.Timestamp created_at = 200 [json_name = "createdAt", (gnostic.openapi.v3.property) = {description: "创建时间"}];// 创建时间
-  optional google.protobuf.Timestamp updated_at = 201 [json_name = "updatedAt", (gnostic.openapi.v3.property) = {description: "更新时间"}];// 更新时间
-  optional google.protobuf.Timestamp deleted_at = 202 [json_name = "deletedAt", (gnostic.openapi.v3.property) = {description: "删除时间"}];// 删除时间
+  // 创建时间
+  optional google.protobuf.Timestamp created_at = 200 [json_name = "createdAt", (gnostic.openapi.v3.property) = {description: "创建时间"}];
+  // 更新时间
+  optional google.protobuf.Timestamp updated_at = 201 [json_name = "updatedAt", (gnostic.openapi.v3.property) = {description: "更新时间"}];
+  // 删除时间
+  optional google.protobuf.Timestamp deleted_at = 202 [json_name = "deletedAt", (gnostic.openapi.v3.property) = {description: "删除时间"}];
 }
 
-// 风险事件处置动作
+// 风险事件处置动作，定义规则触发后的处置方式
 message RiskAction {
-  // 动作类型
+  // 动作类型枚举，定义风险事件处置的动作类型
   enum ActionType {
-    ACTION_UNSPECIFIED = 0;
+    ACTION_UNSPECIFIED = 0; // 未指定动作
 
-    // 封禁用户
-    BLOCK_USER = 1;
-    // 封禁设备
-    BLOCK_DEVICE = 2;
-    // 要求二次验证
-    REQUIRE_MFA = 3;
-    // 限流
-    LIMIT_RATE = 4;
-    // 通知管理员
-    NOTIFY_ADMIN = 5;
+    BLOCK_USER = 1;      // 封禁用户
+    BLOCK_DEVICE = 2;    // 封禁设备
+    REQUIRE_MFA = 3;     // 要求二次验证
+    LIMIT_RATE = 4;      // 限流
+    NOTIFY_ADMIN = 5;    // 通知管理员
   }
 
-  // 动作类型
+  // 动作类型（风险事件处置的动作类型）
   optional ActionType type = 1 [
     json_name = "type",
     (gnostic.openapi.v3.property) = {description: "动作类型，风险事件处置的动作类型"}
   ];
-  // 动作持续时间
+  // 动作持续时间（风险事件处置动作的持续时间）
   optional google.protobuf.Duration duration = 2 [
     json_name = "duration",
     (gnostic.openapi.v3.property) = {description: "动作持续时间，风险事件处置动作的持续时间"}
   ];
-  // 动作原因
+  // 动作原因（风险事件处置动作的原因说明）
   optional string reason = 3 [
     json_name = "reason",
     (gnostic.openapi.v3.property) = {description: "动作原因，风险事件处置动作的原因说明"}
   ];
 }
 
+// 规则动作，描述风险规则触发时的具体处置动作
+message RuleAction {
+  // 动作类型（如 block/notify/limit/require_mfa）
+  string type = 1 [
+    json_name = "type",
+    (gnostic.openapi.v3.property) = {description: "动作类型，如 block/notify/limit/require_mfa"}
+  ];
+  // 动作配置（动作参数配置，支持自定义参数）
+  map<string, string> config = 2 [
+    json_name = "config",
+    (gnostic.openapi.v3.property) = {description: "动作配置，动作参数配置，支持自定义参数"}
+  ];
+  // 动作持续时间（秒，表示动作生效时长）
+  uint32 duration_seconds = 3 [
+    json_name = "durationSeconds",
+    (gnostic.openapi.v3.property) = {description: "动作持续时间（秒），表示动作生效时长"}
+  ];
+}
+
+// 规则条件，描述风险规则的条件表达式
+message RuleCondition {
+  // 条件ID，对应数据库 id
+  uint32 id = 1 [
+    json_name = "id",
+    (gnostic.openapi.v3.property) = {description: "条件ID，对应数据库 id"}
+  ];
+
+  // 字段名，如 risk_score, login_count
+  optional string field_name = 2 [
+    json_name = "fieldName",
+    (gnostic.openapi.v3.property) = {description: "字段名，如 risk_score, login_count"}
+  ];
+  // 操作符，如 eq/gt/lt/contains/in
+  optional string operator = 3 [
+    json_name = "operator",
+    (gnostic.openapi.v3.property) = {description: "操作符，如 eq/gt/lt/contains/in"}
+  ];
+  // 字段值
+  optional string field_value = 4 [
+    json_name = "fieldValue",
+    (gnostic.openapi.v3.property) = {description: "字段值"}
+  ];
+  // 逻辑操作符，如 AND/OR
+  optional string logic_operator = 5 [
+    json_name = "logicOperator",
+    (gnostic.openapi.v3.property) = {description: "逻辑操作符，如 AND/OR"}
+  ];
+  // 条件组 ID（用于条件分组）
+  optional uint32 group_id = 6 [
+    json_name = "groupId",
+    (gnostic.openapi.v3.property) = {description: "条件组 ID，用于条件分组"}
+  ];
+  // 排序序号（条件优先级）
+  optional uint32 sort_order = 7 [
+    json_name = "sortOrder",
+    (gnostic.openapi.v3.property) = {description: "排序序号，条件优先级"}
+  ];
+}
+
+// 风险规则版本，描述风险规则的历史版本信息及变更记录
+message RiskRuleVersion {
+  // 版本表 id（唯一标识版本）
+  uint32 id = 1 [
+    json_name = "id",
+    (gnostic.openapi.v3.property) = {description: "版本表 id，唯一标识版本"}
+  ];
+
+  // 所属规则ID（→ RiskRule.id）
+  optional uint32 rule_id = 2 [
+    json_name = "ruleId",
+    (gnostic.openapi.v3.property) = {description: "所属规则ID，关联 RiskRule.id"}
+  ];
+  // 租户ID
+  optional uint32 tenant_id = 3 [
+    json_name = "tenantId",
+    (gnostic.openapi.v3.property) = {description: "租户ID"}
+  ];
+
+  // 版本号（递增，标识版本顺序）
+  optional uint32 version = 4 [
+    json_name = "version",
+    (gnostic.openapi.v3.property) = {description: "版本号，递增，标识版本顺序"}
+  ];
+
+  // 版本快照
+  optional string name = 5 [
+    json_name = "name",
+    (gnostic.openapi.v3.property) = {description: "版本名称"}
+  ];
+  optional string rule_expression = 6 [
+    json_name = "ruleExpression",
+    (gnostic.openapi.v3.property) = {description: "规则表达式"}
+  ];
+  map<string, string> rule_config = 7 [
+    json_name = "ruleConfig",
+    (gnostic.openapi.v3.property) = {description: "规则配置"}
+  ];
+  repeated RuleAction actions = 8 [
+    json_name = "actions",
+    (gnostic.openapi.v3.property) = {description: "版本动作列表"}
+  ];
+  optional RiskLevel risk_level = 9 [
+    json_name = "riskLevel",
+    (gnostic.openapi.v3.property) = {description: "风险等级"}
+  ];
+
+  // 变更说明
+  optional string change_summary = 10 [
+    json_name = "changeSummary",
+    (gnostic.openapi.v3.property) = {description: "变更摘要，简要说明变更内容"}
+  ];
+  optional string change_reason = 11 [
+    json_name = "changeReason",
+    (gnostic.openapi.v3.property) = {description: "变更原因，详细说明变更原因"}
+  ];
+
+  // 状态
+  optional RuleVersionStatus status = 12 [
+    json_name = "status",
+    (gnostic.openapi.v3.property) = {description: "版本状态，draft/published/archived"}
+  ];
+  optional google.protobuf.Timestamp published_at = 13 [
+    json_name = "publishedAt",
+    (gnostic.openapi.v3.property) = {description: "发布时间"}
+  ];
+  optional uint32 published_by = 14 [
+    json_name = "publishedBy",
+    (gnostic.openapi.v3.property) = {description: "发布者用户ID"}
+  ];
+
+  optional uint32 created_by = 15 [
+    json_name = "createdBy",
+    (gnostic.openapi.v3.property) = {description: "创建者用户ID"}
+  ];
+  optional google.protobuf.Timestamp created_at = 16 [
+    json_name = "createdAt",
+    (gnostic.openapi.v3.property) = {description: "创建时间"}
+  ];
+}
+
+// 规则版本状态枚举，定义规则版本的生命周期状态
+enum RuleVersionStatus {
+  RULE_VERSION_STATUS_UNSPECIFIED = 0; // 未指定状态
+  RULE_VERSION_STATUS_DRAFT = 1;       // 草稿
+  RULE_VERSION_STATUS_PUBLISHED = 2;   // 已发布
+  RULE_VERSION_STATUS_ARCHIVED = 3;    // 已归档
+}
+
+
 // 获取风险规则列表 - 答复
 message ListRiskRuleResponse {
-  repeated RiskRule items = 1;
-  uint64 total = 2;
+  repeated RiskRule items = 1; // 风险规则列表
+  uint64 total = 2;            // 总数
 }
 
 // 获取风险规则数据 - 请求
@@ -152,7 +305,7 @@ message GetRiskRuleRequest {
     uint32 id = 1 [
       (gnostic.openapi.v3.property) = {description: "ID", read_only: true},
       json_name = "id"
-    ]; // ID
+    ]; // 规则ID
   }
 
   optional google.protobuf.FieldMask view_mask = 100 [
@@ -165,17 +318,17 @@ message GetRiskRuleRequest {
 
 // 创建风险规则 - 请求
 message CreateRiskRuleRequest {
-  RiskRule data = 1;
+  RiskRule data = 1; // 新建规则数据
 }
 
 // 更新风险规则 - 请求
 message UpdateRiskRuleRequest {
-  uint32 id = 1;
+  uint32 id = 1; // 规则ID
 
   RiskRule data = 2 [
     json_name = "data",
     (gnostic.openapi.v3.property) = {description: "数据"}
-  ]; // 数据
+  ]; // 更新数据
 
   google.protobuf.FieldMask update_mask = 3 [
     json_name = "updateMask",
@@ -188,7 +341,7 @@ message UpdateRiskRuleRequest {
   optional bool allow_missing = 4 [
     json_name = "allowMissing",
     (gnostic.openapi.v3.property) = {description: "如果设置为true的时候，资源不存在则会新增(插入)，并且在这种情况下`updateMask`字段将会被忽略。"}
-  ]; // 如果设置为true的时候，资源不存在则会新增(插入)，并且在这种情况下`updateMask`字段将会被忽略。
+  ]; // 允许资源不存在时插入
 }
 
 // 删除风险规则 - 请求
@@ -197,7 +350,7 @@ message DeleteRiskRuleRequest {
     uint32 id = 1 [
       (gnostic.openapi.v3.property) = {description: "ID", read_only: true},
       json_name = "id"
-    ]; // ID
+    ]; // 规则ID
   }
 
   optional uint32 deleted_by = 100 [
@@ -206,6 +359,7 @@ message DeleteRiskRuleRequest {
   ]; // 删除者用户ID
 }
 
+// 获取风险规则数量 - 答复
 message CountRiskRuleResponse {
-  uint64 count = 1;
+  uint64 count = 1; // 风险规则总数
 }

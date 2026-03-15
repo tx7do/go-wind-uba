@@ -139,9 +139,9 @@ func (x *ObjectDim) Redact() string {
 
 	// Safe field: DeletedBy
 
-	// Safe field: CreateTime
+	// Safe field: CreatedAt
 
-	// Safe field: UpdateTime
+	// Safe field: UpdatedAt
 
 	// Safe field: DeletedAt
 	return x.String()

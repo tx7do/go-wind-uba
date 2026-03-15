@@ -486,6 +486,485 @@ var _ interface {
 	ErrorName() string
 } = RiskActionValidationError{}
 
+// Validate checks the field values on RuleAction with the rules defined in the
+// proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *RuleAction) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on RuleAction with the rules defined in
+// the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in RuleActionMultiError, or
+// nil if none found.
+func (m *RuleAction) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *RuleAction) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Type
+
+	// no validation rules for Config
+
+	// no validation rules for DurationSeconds
+
+	if len(errors) > 0 {
+		return RuleActionMultiError(errors)
+	}
+
+	return nil
+}
+
+// RuleActionMultiError is an error wrapping multiple validation errors
+// returned by RuleAction.ValidateAll() if the designated constraints aren't met.
+type RuleActionMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m RuleActionMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m RuleActionMultiError) AllErrors() []error { return m }
+
+// RuleActionValidationError is the validation error returned by
+// RuleAction.Validate if the designated constraints aren't met.
+type RuleActionValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e RuleActionValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e RuleActionValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e RuleActionValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e RuleActionValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e RuleActionValidationError) ErrorName() string { return "RuleActionValidationError" }
+
+// Error satisfies the builtin error interface
+func (e RuleActionValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sRuleAction.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = RuleActionValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = RuleActionValidationError{}
+
+// Validate checks the field values on RuleCondition with the rules defined in
+// the proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *RuleCondition) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on RuleCondition with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in RuleConditionMultiError, or
+// nil if none found.
+func (m *RuleCondition) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *RuleCondition) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Id
+
+	if m.FieldName != nil {
+		// no validation rules for FieldName
+	}
+
+	if m.Operator != nil {
+		// no validation rules for Operator
+	}
+
+	if m.FieldValue != nil {
+		// no validation rules for FieldValue
+	}
+
+	if m.LogicOperator != nil {
+		// no validation rules for LogicOperator
+	}
+
+	if m.GroupId != nil {
+		// no validation rules for GroupId
+	}
+
+	if m.SortOrder != nil {
+		// no validation rules for SortOrder
+	}
+
+	if len(errors) > 0 {
+		return RuleConditionMultiError(errors)
+	}
+
+	return nil
+}
+
+// RuleConditionMultiError is an error wrapping multiple validation errors
+// returned by RuleCondition.ValidateAll() if the designated constraints
+// aren't met.
+type RuleConditionMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m RuleConditionMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m RuleConditionMultiError) AllErrors() []error { return m }
+
+// RuleConditionValidationError is the validation error returned by
+// RuleCondition.Validate if the designated constraints aren't met.
+type RuleConditionValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e RuleConditionValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e RuleConditionValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e RuleConditionValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e RuleConditionValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e RuleConditionValidationError) ErrorName() string { return "RuleConditionValidationError" }
+
+// Error satisfies the builtin error interface
+func (e RuleConditionValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sRuleCondition.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = RuleConditionValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = RuleConditionValidationError{}
+
+// Validate checks the field values on RiskRuleVersion with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// first error encountered is returned, or nil if there are no violations.
+func (m *RiskRuleVersion) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on RiskRuleVersion with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// RiskRuleVersionMultiError, or nil if none found.
+func (m *RiskRuleVersion) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *RiskRuleVersion) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Id
+
+	// no validation rules for RuleConfig
+
+	for idx, item := range m.GetActions() {
+		_, _ = idx, item
+
+		if all {
+			switch v := interface{}(item).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, RiskRuleVersionValidationError{
+						field:  fmt.Sprintf("Actions[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, RiskRuleVersionValidationError{
+						field:  fmt.Sprintf("Actions[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(item).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return RiskRuleVersionValidationError{
+					field:  fmt.Sprintf("Actions[%v]", idx),
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
+	if m.RuleId != nil {
+		// no validation rules for RuleId
+	}
+
+	if m.TenantId != nil {
+		// no validation rules for TenantId
+	}
+
+	if m.Version != nil {
+		// no validation rules for Version
+	}
+
+	if m.Name != nil {
+		// no validation rules for Name
+	}
+
+	if m.RuleExpression != nil {
+		// no validation rules for RuleExpression
+	}
+
+	if m.RiskLevel != nil {
+		// no validation rules for RiskLevel
+	}
+
+	if m.ChangeSummary != nil {
+		// no validation rules for ChangeSummary
+	}
+
+	if m.ChangeReason != nil {
+		// no validation rules for ChangeReason
+	}
+
+	if m.Status != nil {
+		// no validation rules for Status
+	}
+
+	if m.PublishedAt != nil {
+
+		if all {
+			switch v := interface{}(m.GetPublishedAt()).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, RiskRuleVersionValidationError{
+						field:  "PublishedAt",
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, RiskRuleVersionValidationError{
+						field:  "PublishedAt",
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(m.GetPublishedAt()).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return RiskRuleVersionValidationError{
+					field:  "PublishedAt",
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
+	if m.PublishedBy != nil {
+		// no validation rules for PublishedBy
+	}
+
+	if m.CreatedBy != nil {
+		// no validation rules for CreatedBy
+	}
+
+	if m.CreatedAt != nil {
+
+		if all {
+			switch v := interface{}(m.GetCreatedAt()).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, RiskRuleVersionValidationError{
+						field:  "CreatedAt",
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, RiskRuleVersionValidationError{
+						field:  "CreatedAt",
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(m.GetCreatedAt()).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return RiskRuleVersionValidationError{
+					field:  "CreatedAt",
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
+	if len(errors) > 0 {
+		return RiskRuleVersionMultiError(errors)
+	}
+
+	return nil
+}
+
+// RiskRuleVersionMultiError is an error wrapping multiple validation errors
+// returned by RiskRuleVersion.ValidateAll() if the designated constraints
+// aren't met.
+type RiskRuleVersionMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m RiskRuleVersionMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m RiskRuleVersionMultiError) AllErrors() []error { return m }
+
+// RiskRuleVersionValidationError is the validation error returned by
+// RiskRuleVersion.Validate if the designated constraints aren't met.
+type RiskRuleVersionValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e RiskRuleVersionValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e RiskRuleVersionValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e RiskRuleVersionValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e RiskRuleVersionValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e RiskRuleVersionValidationError) ErrorName() string { return "RiskRuleVersionValidationError" }
+
+// Error satisfies the builtin error interface
+func (e RiskRuleVersionValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sRiskRuleVersion.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = RiskRuleVersionValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = RiskRuleVersionValidationError{}
+
 // Validate checks the field values on ListRiskRuleResponse with the rules
 // defined in the proto definition for this message. If any rules are
 // violated, the first error encountered is returned, or nil if there are no violations.

@@ -60,13 +60,10 @@ type ObjectDim struct {
 	// 更新者用户ID（记录最近一次更新该对象的用户）
 	UpdatedBy *uint32 `protobuf:"varint,101,opt,name=updated_by,json=updatedBy,proto3,oneof" json:"updated_by,omitempty"`
 	// 删除者用户ID（记录删除该对象的用户）
-	DeletedBy *uint32 `protobuf:"varint,102,opt,name=deleted_by,json=deletedBy,proto3,oneof" json:"deleted_by,omitempty"`
-	// 创建时间（对象信息创建的时间）
-	CreateTime *timestamppb.Timestamp `protobuf:"bytes,200,opt,name=create_time,json=createTime,proto3,oneof" json:"create_time,omitempty"`
-	// 更新时间（对象信息最近一次更新的时间）
-	UpdateTime *timestamppb.Timestamp `protobuf:"bytes,201,opt,name=update_time,json=updateTime,proto3" json:"update_time,omitempty"`
-	// 删除时间（对象信息被删除的时间）
-	DeletedAt     *timestamppb.Timestamp `protobuf:"bytes,202,opt,name=deleted_at,json=deletedAt,proto3,oneof" json:"deleted_at,omitempty"`
+	DeletedBy     *uint32                `protobuf:"varint,102,opt,name=deleted_by,json=deletedBy,proto3,oneof" json:"deleted_by,omitempty"`
+	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,200,opt,name=created_at,json=createdAt,proto3,oneof" json:"created_at,omitempty"` // 创建时间
+	UpdatedAt     *timestamppb.Timestamp `protobuf:"bytes,201,opt,name=updated_at,json=updatedAt,proto3,oneof" json:"updated_at,omitempty"` // 更新时间
+	DeletedAt     *timestamppb.Timestamp `protobuf:"bytes,202,opt,name=deleted_at,json=deletedAt,proto3,oneof" json:"deleted_at,omitempty"` // 删除时间
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -213,16 +210,16 @@ func (x *ObjectDim) GetDeletedBy() uint32 {
 	return 0
 }
 
-func (x *ObjectDim) GetCreateTime() *timestamppb.Timestamp {
+func (x *ObjectDim) GetCreatedAt() *timestamppb.Timestamp {
 	if x != nil {
-		return x.CreateTime
+		return x.CreatedAt
 	}
 	return nil
 }
 
-func (x *ObjectDim) GetUpdateTime() *timestamppb.Timestamp {
+func (x *ObjectDim) GetUpdatedAt() *timestamppb.Timestamp {
 	if x != nil {
-		return x.UpdateTime
+		return x.UpdatedAt
 	}
 	return nil
 }
@@ -547,7 +544,7 @@ var File_uba_service_v1_object_proto protoreflect.FileDescriptor
 
 const file_uba_service_v1_object_proto_rawDesc = "" +
 	"\n" +
-	"\x1buba/service/v1/object.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a google/protobuf/field_mask.proto\x1a\x1epagination/v1/pagination.proto\x1a\x1buba/service/v1/common.proto\"\x96\x10\n" +
+	"\x1buba/service/v1/object.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a google/protobuf/field_mask.proto\x1a\x1epagination/v1/pagination.proto\x1a\x1buba/service/v1/common.proto\"\xbc\x0f\n" +
 	"\tObjectDim\x12N\n" +
 	"\x02id\x18\x01 \x01(\rB>\xbaG;\x92\x028自增长主键ID，唯一标识一条对象维度记录R\x02id\x12R\n" +
 	"\ttenant_id\x18\x02 \x01(\rB5\xbaG2\x92\x02/租户ID，多租户隔离，支持 SaaS 场景R\btenantId\x12T\n" +
@@ -573,20 +570,21 @@ const file_uba_service_v1_object_proto_rawDesc = "" +
 	"\n" +
 	"updated_by\x18e \x01(\rBD\xbaGA\x92\x02>更新者用户ID，记录最近一次更新该对象的用户H\x01R\tupdatedBy\x88\x01\x01\x12\\\n" +
 	"\n" +
-	"deleted_by\x18f \x01(\rB8\xbaG5\x92\x022删除者用户ID，记录删除该对象的用户H\x02R\tdeletedBy\x88\x01\x01\x12s\n" +
-	"\vcreate_time\x18\xc8\x01 \x01(\v2\x1a.google.protobuf.TimestampB0\xbaG-\x92\x02*创建时间，对象信息创建的时间H\x03R\n" +
-	"createTime\x88\x01\x01\x12z\n" +
-	"\vupdate_time\x18\xc9\x01 \x01(\v2\x1a.google.protobuf.TimestampB<\xbaG9\x92\x026更新时间，对象信息最近一次更新的时间R\n" +
-	"updateTime\x12t\n" +
+	"deleted_by\x18f \x01(\rB8\xbaG5\x92\x022删除者用户ID，记录删除该对象的用户H\x02R\tdeletedBy\x88\x01\x01\x12S\n" +
 	"\n" +
-	"deleted_at\x18\xca\x01 \x01(\v2\x1a.google.protobuf.TimestampB3\xbaG0\x92\x02-删除时间，对象信息被删除的时间H\x04R\tdeletedAt\x88\x01\x01\x1a=\n" +
+	"created_at\x18\xc8\x01 \x01(\v2\x1a.google.protobuf.TimestampB\x12\xbaG\x0f\x92\x02\f创建时间H\x03R\tcreatedAt\x88\x01\x01\x12S\n" +
+	"\n" +
+	"updated_at\x18\xc9\x01 \x01(\v2\x1a.google.protobuf.TimestampB\x12\xbaG\x0f\x92\x02\f更新时间H\x04R\tupdatedAt\x88\x01\x01\x12S\n" +
+	"\n" +
+	"deleted_at\x18\xca\x01 \x01(\v2\x1a.google.protobuf.TimestampB\x12\xbaG\x0f\x92\x02\f删除时间H\x05R\tdeletedAt\x88\x01\x01\x1a=\n" +
 	"\x0fAttributesEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\r\n" +
 	"\v_created_byB\r\n" +
 	"\v_updated_byB\r\n" +
-	"\v_deleted_byB\x0e\n" +
-	"\f_create_timeB\r\n" +
+	"\v_deleted_byB\r\n" +
+	"\v_created_atB\r\n" +
+	"\v_updated_atB\r\n" +
 	"\v_deleted_at\"H\n" +
 	"\x15ListObjectDimResponse\x12/\n" +
 	"\x05items\x18\x01 \x03(\v2\x19.uba.service.v1.ObjectDimR\x05items\"\xc6\x01\n" +
@@ -653,8 +651,8 @@ var file_uba_service_v1_object_proto_depIdxs = []int32{
 	6,  // 0: uba.service.v1.ObjectDim.attributes:type_name -> uba.service.v1.ObjectDim.AttributesEntry
 	7,  // 1: uba.service.v1.ObjectDim.valid_from:type_name -> google.protobuf.Timestamp
 	7,  // 2: uba.service.v1.ObjectDim.valid_to:type_name -> google.protobuf.Timestamp
-	7,  // 3: uba.service.v1.ObjectDim.create_time:type_name -> google.protobuf.Timestamp
-	7,  // 4: uba.service.v1.ObjectDim.update_time:type_name -> google.protobuf.Timestamp
+	7,  // 3: uba.service.v1.ObjectDim.created_at:type_name -> google.protobuf.Timestamp
+	7,  // 4: uba.service.v1.ObjectDim.updated_at:type_name -> google.protobuf.Timestamp
 	7,  // 5: uba.service.v1.ObjectDim.deleted_at:type_name -> google.protobuf.Timestamp
 	0,  // 6: uba.service.v1.ListObjectDimResponse.items:type_name -> uba.service.v1.ObjectDim
 	8,  // 7: uba.service.v1.GetObjectDimRequest.view_mask:type_name -> google.protobuf.FieldMask

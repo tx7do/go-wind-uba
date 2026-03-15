@@ -54611,7 +54611,7 @@ func (m *TagValueMutation) Value() (r string, exists bool) {
 // OldValue returns the old "value" field's value of the TagValue entity.
 // If the TagValue object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TagValueMutation) OldValue(ctx context.Context) (v string, err error) {
+func (m *TagValueMutation) OldValue(ctx context.Context) (v *string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldValue is only allowed on UpdateOne operations")
 	}
@@ -54625,9 +54625,22 @@ func (m *TagValueMutation) OldValue(ctx context.Context) (v string, err error) {
 	return oldValue.Value, nil
 }
 
+// ClearValue clears the value of the "value" field.
+func (m *TagValueMutation) ClearValue() {
+	m.value = nil
+	m.clearedFields[tagvalue.FieldValue] = struct{}{}
+}
+
+// ValueCleared returns if the "value" field was cleared in this mutation.
+func (m *TagValueMutation) ValueCleared() bool {
+	_, ok := m.clearedFields[tagvalue.FieldValue]
+	return ok
+}
+
 // ResetValue resets all changes to the "value" field.
 func (m *TagValueMutation) ResetValue() {
 	m.value = nil
+	delete(m.clearedFields, tagvalue.FieldValue)
 }
 
 // SetLabel sets the "label" field.
@@ -55128,6 +55141,9 @@ func (m *TagValueMutation) ClearedFields() []string {
 	if m.FieldCleared(tagvalue.FieldTagID) {
 		fields = append(fields, tagvalue.FieldTagID)
 	}
+	if m.FieldCleared(tagvalue.FieldValue) {
+		fields = append(fields, tagvalue.FieldValue)
+	}
 	if m.FieldCleared(tagvalue.FieldLabel) {
 		fields = append(fields, tagvalue.FieldLabel)
 	}
@@ -55171,6 +55187,9 @@ func (m *TagValueMutation) ClearField(name string) error {
 		return nil
 	case tagvalue.FieldTagID:
 		m.ClearTagID()
+		return nil
+	case tagvalue.FieldValue:
+		m.ClearValue()
 		return nil
 	case tagvalue.FieldLabel:
 		m.ClearLabel()

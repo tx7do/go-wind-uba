@@ -156,21 +156,59 @@ message TagRule {
 
 // 标签值定义（用于枚举型标签的取值范围）
 message TagValue {
+  optional uint32 id = 1;
+
   // 标签值（实际存储值）
-  string value = 1 [
+  optional string value = 2 [
     json_name = "value",
     (gnostic.openapi.v3.property) = {description: "标签值，实际存储值"}
   ];
+
   // 标签值显示名称（用于展示）
-  string label = 2 [
+  optional string label = 3 [
     json_name = "label",
     (gnostic.openapi.v3.property) = {description: "标签值显示名称，用于展示"}
   ];
+
   // 标签值描述（详细说明）
-  string description = 3 [
+  optional string description = 4 [
     json_name = "description",
     (gnostic.openapi.v3.property) = {description: "标签值描述，详细说明"}
   ];
+
+  // 排序
+  optional uint32 sort_order = 5 [
+    json_name = "sortOrder",
+    (gnostic.openapi.v3.property) = {description: "排序"}
+  ];
+
+  // UI 颜色
+  optional string color = 6 [
+    json_name = "color",
+    (gnostic.openapi.v3.property) = {description: "UI 颜色"}
+  ];
+
+  // 图标
+  optional string icon = 7 [
+    json_name = "icon",
+    (gnostic.openapi.v3.property) = {description: "图标"}
+  ];
+
+  // 租户ID（多租户隔离，支持 SaaS 场景）
+  optional uint32 tenant_id = 10 [
+    json_name = "tenantId",
+    (gnostic.openapi.v3.property) = {description: "租户ID，多租户隔离，支持 SaaS 场景"}
+  ];
+
+  // 标签ID（所属标签ID，关联 TagDefinition.id）
+  optional uint32 tag_id = 11 [
+    json_name = "tagId",
+    (gnostic.openapi.v3.property) = {description: "标签ID（所属标签ID，关联 TagDefinition.id）"}
+  ];
+
+  optional google.protobuf.Timestamp created_at = 200 [json_name = "createdAt", (gnostic.openapi.v3.property) = {description: "创建时间"}];// 创建时间
+  optional google.protobuf.Timestamp updated_at = 201 [json_name = "updatedAt", (gnostic.openapi.v3.property) = {description: "更新时间"}];// 更新时间
+  optional google.protobuf.Timestamp deleted_at = 202 [json_name = "deletedAt", (gnostic.openapi.v3.property) = {description: "删除时间"}];// 删除时间
 }
 
 // 获取标签定义列表 - 答复

@@ -174,11 +174,29 @@ func (x *TagValue) Redact() string {
 		return ""
 	}
 
+	// Safe field: Id
+
 	// Safe field: Value
 
 	// Safe field: Label
 
 	// Safe field: Description
+
+	// Safe field: SortOrder
+
+	// Safe field: Color
+
+	// Safe field: Icon
+
+	// Safe field: TenantId
+
+	// Safe field: TagId
+
+	// Safe field: CreatedAt
+
+	// Safe field: UpdatedAt
+
+	// Safe field: DeletedAt
 	return x.String()
 }
 

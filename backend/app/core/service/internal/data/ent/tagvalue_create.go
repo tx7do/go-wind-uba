@@ -112,6 +112,14 @@ func (_c *TagValueCreate) SetValue(v string) *TagValueCreate {
 	return _c
 }
 
+// SetNillableValue sets the "value" field if the given value is not nil.
+func (_c *TagValueCreate) SetNillableValue(v *string) *TagValueCreate {
+	if v != nil {
+		_c.SetValue(*v)
+	}
+	return _c
+}
+
 // SetLabel sets the "label" field.
 func (_c *TagValueCreate) SetLabel(v string) *TagValueCreate {
 	_c.mutation.SetLabel(v)
@@ -224,9 +232,6 @@ func (_c *TagValueCreate) defaults() error {
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *TagValueCreate) check() error {
-	if _, ok := _c.mutation.Value(); !ok {
-		return &ValidationError{Name: "value", err: errors.New(`ent: missing required field "TagValue.value"`)}
-	}
 	if v, ok := _c.mutation.Value(); ok {
 		if err := tagvalue.ValueValidator(v); err != nil {
 			return &ValidationError{Name: "value", err: fmt.Errorf(`ent: validator failed for field "TagValue.value": %w`, err)}
@@ -296,7 +301,7 @@ func (_c *TagValueCreate) createSpec() (*TagValue, *sqlgraph.CreateSpec) {
 	}
 	if value, ok := _c.mutation.Value(); ok {
 		_spec.SetField(tagvalue.FieldValue, field.TypeString, value)
-		_node.Value = value
+		_node.Value = &value
 	}
 	if value, ok := _c.mutation.Label(); ok {
 		_spec.SetField(tagvalue.FieldLabel, field.TypeString, value)
@@ -459,6 +464,12 @@ func (u *TagValueUpsert) SetValue(v string) *TagValueUpsert {
 // UpdateValue sets the "value" field to the value that was provided on create.
 func (u *TagValueUpsert) UpdateValue() *TagValueUpsert {
 	u.SetExcluded(tagvalue.FieldValue)
+	return u
+}
+
+// ClearValue clears the value of the "value" field.
+func (u *TagValueUpsert) ClearValue() *TagValueUpsert {
+	u.SetNull(tagvalue.FieldValue)
 	return u
 }
 
@@ -697,6 +708,13 @@ func (u *TagValueUpsertOne) SetValue(v string) *TagValueUpsertOne {
 func (u *TagValueUpsertOne) UpdateValue() *TagValueUpsertOne {
 	return u.Update(func(s *TagValueUpsert) {
 		s.UpdateValue()
+	})
+}
+
+// ClearValue clears the value of the "value" field.
+func (u *TagValueUpsertOne) ClearValue() *TagValueUpsertOne {
+	return u.Update(func(s *TagValueUpsert) {
+		s.ClearValue()
 	})
 }
 
@@ -1113,6 +1131,13 @@ func (u *TagValueUpsertBulk) SetValue(v string) *TagValueUpsertBulk {
 func (u *TagValueUpsertBulk) UpdateValue() *TagValueUpsertBulk {
 	return u.Update(func(s *TagValueUpsert) {
 		s.UpdateValue()
+	})
+}
+
+// ClearValue clears the value of the "value" field.
+func (u *TagValueUpsertBulk) ClearValue() *TagValueUpsertBulk {
+	return u.Update(func(s *TagValueUpsert) {
+		s.ClearValue()
 	})
 }
 

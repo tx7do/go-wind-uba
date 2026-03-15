@@ -137,6 +137,12 @@ func (_u *TagValueUpdate) SetNillableValue(v *string) *TagValueUpdate {
 	return _u
 }
 
+// ClearValue clears the value of the "value" field.
+func (_u *TagValueUpdate) ClearValue() *TagValueUpdate {
+	_u.mutation.ClearValue()
+	return _u
+}
+
 // SetLabel sets the "label" field.
 func (_u *TagValueUpdate) SetLabel(v string) *TagValueUpdate {
 	_u.mutation.SetLabel(v)
@@ -316,6 +322,9 @@ func (_u *TagValueUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if value, ok := _u.mutation.Value(); ok {
 		_spec.SetField(tagvalue.FieldValue, field.TypeString, value)
 	}
+	if _u.mutation.ValueCleared() {
+		_spec.ClearField(tagvalue.FieldValue, field.TypeString)
+	}
 	if value, ok := _u.mutation.Label(); ok {
 		_spec.SetField(tagvalue.FieldLabel, field.TypeString, value)
 	}
@@ -467,6 +476,12 @@ func (_u *TagValueUpdateOne) SetNillableValue(v *string) *TagValueUpdateOne {
 	if v != nil {
 		_u.SetValue(*v)
 	}
+	return _u
+}
+
+// ClearValue clears the value of the "value" field.
+func (_u *TagValueUpdateOne) ClearValue() *TagValueUpdateOne {
+	_u.mutation.ClearValue()
 	return _u
 }
 
@@ -678,6 +693,9 @@ func (_u *TagValueUpdateOne) sqlSave(ctx context.Context) (_node *TagValue, err 
 	}
 	if value, ok := _u.mutation.Value(); ok {
 		_spec.SetField(tagvalue.FieldValue, field.TypeString, value)
+	}
+	if _u.mutation.ValueCleared() {
+		_spec.ClearField(tagvalue.FieldValue, field.TypeString)
 	}
 	if value, ok := _u.mutation.Label(); ok {
 		_spec.SetField(tagvalue.FieldLabel, field.TypeString, value)
