@@ -1,6 +1,8 @@
 package schema
 
 import (
+	ubaV1 "go-wind-uba/api/gen/go/uba/service/v1"
+
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
@@ -62,11 +64,11 @@ func (TagDefinition) Fields() []ent.Field {
 			Optional().
 			Nillable(),
 
-		field.JSON("rule", map[string]any{}).
+		field.JSON("rule", &ubaV1.TagRule{}).
 			Comment("计算规则，简化，实际可用表达式引擎，如 CEL/SQL").
 			Optional(),
 
-		field.JSON("allowed_values", []map[string]any{}).
+		field.JSON("allowed_values", []*ubaV1.TagValue{}).
 			Comment("取值范围，枚举型标签的允许值列表").
 			Optional(),
 

@@ -268,6 +268,7 @@ func (x *Application) GetDeletedAt() *timestamppb.Timestamp {
 type ListApplicationResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Items         []*Application         `protobuf:"bytes,1,rep,name=items,proto3" json:"items,omitempty"`
+	Total         uint64                 `protobuf:"varint,2,opt,name=total,proto3" json:"total,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -307,6 +308,13 @@ func (x *ListApplicationResponse) GetItems() []*Application {
 		return x.Items
 	}
 	return nil
+}
+
+func (x *ListApplicationResponse) GetTotal() uint64 {
+	if x != nil {
+		return x.Total
+	}
+	return 0
 }
 
 // 获取UBA应用数据 - 请求
@@ -573,6 +581,50 @@ type DeleteApplicationRequest_Id struct {
 
 func (*DeleteApplicationRequest_Id) isDeleteApplicationRequest_QueryBy() {}
 
+type CountApplicationResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Count         uint64                 `protobuf:"varint,1,opt,name=count,proto3" json:"count,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CountApplicationResponse) Reset() {
+	*x = CountApplicationResponse{}
+	mi := &file_uba_service_v1_application_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CountApplicationResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CountApplicationResponse) ProtoMessage() {}
+
+func (x *CountApplicationResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_application_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CountApplicationResponse.ProtoReflect.Descriptor instead.
+func (*CountApplicationResponse) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_application_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *CountApplicationResponse) GetCount() uint64 {
+	if x != nil {
+		return x.Count
+	}
+	return 0
+}
+
 var File_uba_service_v1_application_proto protoreflect.FileDescriptor
 
 const file_uba_service_v1_application_proto_rawDesc = "" +
@@ -632,9 +684,10 @@ const file_uba_service_v1_application_proto_rawDesc = "" +
 	"\v_deleted_byB\r\n" +
 	"\v_created_atB\r\n" +
 	"\v_updated_atB\r\n" +
-	"\v_deleted_at\"L\n" +
+	"\v_deleted_at\"b\n" +
 	"\x17ListApplicationResponse\x121\n" +
-	"\x05items\x18\x01 \x03(\v2\x1b.uba.service.v1.ApplicationR\x05items\"\xc8\x01\n" +
+	"\x05items\x18\x01 \x03(\v2\x1b.uba.service.v1.ApplicationR\x05items\x12\x14\n" +
+	"\x05total\x18\x02 \x01(\x04R\x05total\"\xc8\x01\n" +
 	"\x15GetApplicationRequest\x12\x1c\n" +
 	"\x02id\x18\x01 \x01(\rB\n" +
 	"\xbaG\a\x18\x01\x92\x02\x02IDH\x00R\x02id\x12w\n" +
@@ -659,9 +712,12 @@ const file_uba_service_v1_application_proto_rawDesc = "" +
 	"deleted_by\x18d \x01(\rB\x17\xbaG\x14\x92\x02\x11删除者用户IDH\x01R\tdeletedBy\x88\x01\x01B\n" +
 	"\n" +
 	"\bquery_byB\r\n" +
-	"\v_deleted_by2\xa3\x03\n" +
+	"\v_deleted_by\"0\n" +
+	"\x18CountApplicationResponse\x12\x14\n" +
+	"\x05count\x18\x01 \x01(\x04R\x05count2\xf3\x03\n" +
 	"\x12ApplicationService\x12L\n" +
-	"\x04List\x12\x19.pagination.PagingRequest\x1a'.uba.service.v1.ListApplicationResponse\"\x00\x12K\n" +
+	"\x04List\x12\x19.pagination.PagingRequest\x1a'.uba.service.v1.ListApplicationResponse\"\x00\x12N\n" +
+	"\x05Count\x12\x19.pagination.PagingRequest\x1a(.uba.service.v1.CountApplicationResponse\"\x00\x12K\n" +
 	"\x03Get\x12%.uba.service.v1.GetApplicationRequest\x1a\x1b.uba.service.v1.Application\"\x00\x12Q\n" +
 	"\x06Create\x12(.uba.service.v1.CreateApplicationRequest\x1a\x1b.uba.service.v1.Application\"\x00\x12Q\n" +
 	"\x06Update\x12(.uba.service.v1.UpdateApplicationRequest\x1a\x1b.uba.service.v1.Application\"\x00\x12L\n" +
@@ -681,7 +737,7 @@ func file_uba_service_v1_application_proto_rawDescGZIP() []byte {
 }
 
 var file_uba_service_v1_application_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_uba_service_v1_application_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_uba_service_v1_application_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_uba_service_v1_application_proto_goTypes = []any{
 	(Application_Status)(0),          // 0: uba.service.v1.Application.Status
 	(*Application)(nil),              // 1: uba.service.v1.Application
@@ -690,35 +746,38 @@ var file_uba_service_v1_application_proto_goTypes = []any{
 	(*CreateApplicationRequest)(nil), // 4: uba.service.v1.CreateApplicationRequest
 	(*UpdateApplicationRequest)(nil), // 5: uba.service.v1.UpdateApplicationRequest
 	(*DeleteApplicationRequest)(nil), // 6: uba.service.v1.DeleteApplicationRequest
-	(Platform)(0),                    // 7: uba.service.v1.Platform
-	(*timestamppb.Timestamp)(nil),    // 8: google.protobuf.Timestamp
-	(*fieldmaskpb.FieldMask)(nil),    // 9: google.protobuf.FieldMask
-	(*v1.PagingRequest)(nil),         // 10: pagination.PagingRequest
-	(*emptypb.Empty)(nil),            // 11: google.protobuf.Empty
+	(*CountApplicationResponse)(nil), // 7: uba.service.v1.CountApplicationResponse
+	(Platform)(0),                    // 8: uba.service.v1.Platform
+	(*timestamppb.Timestamp)(nil),    // 9: google.protobuf.Timestamp
+	(*fieldmaskpb.FieldMask)(nil),    // 10: google.protobuf.FieldMask
+	(*v1.PagingRequest)(nil),         // 11: pagination.PagingRequest
+	(*emptypb.Empty)(nil),            // 12: google.protobuf.Empty
 }
 var file_uba_service_v1_application_proto_depIdxs = []int32{
-	7,  // 0: uba.service.v1.Application.type:type_name -> uba.service.v1.Platform
+	8,  // 0: uba.service.v1.Application.type:type_name -> uba.service.v1.Platform
 	0,  // 1: uba.service.v1.Application.status:type_name -> uba.service.v1.Application.Status
-	8,  // 2: uba.service.v1.Application.created_at:type_name -> google.protobuf.Timestamp
-	8,  // 3: uba.service.v1.Application.updated_at:type_name -> google.protobuf.Timestamp
-	8,  // 4: uba.service.v1.Application.deleted_at:type_name -> google.protobuf.Timestamp
+	9,  // 2: uba.service.v1.Application.created_at:type_name -> google.protobuf.Timestamp
+	9,  // 3: uba.service.v1.Application.updated_at:type_name -> google.protobuf.Timestamp
+	9,  // 4: uba.service.v1.Application.deleted_at:type_name -> google.protobuf.Timestamp
 	1,  // 5: uba.service.v1.ListApplicationResponse.items:type_name -> uba.service.v1.Application
-	9,  // 6: uba.service.v1.GetApplicationRequest.view_mask:type_name -> google.protobuf.FieldMask
+	10, // 6: uba.service.v1.GetApplicationRequest.view_mask:type_name -> google.protobuf.FieldMask
 	1,  // 7: uba.service.v1.CreateApplicationRequest.data:type_name -> uba.service.v1.Application
 	1,  // 8: uba.service.v1.UpdateApplicationRequest.data:type_name -> uba.service.v1.Application
-	9,  // 9: uba.service.v1.UpdateApplicationRequest.update_mask:type_name -> google.protobuf.FieldMask
-	10, // 10: uba.service.v1.ApplicationService.List:input_type -> pagination.PagingRequest
-	3,  // 11: uba.service.v1.ApplicationService.Get:input_type -> uba.service.v1.GetApplicationRequest
-	4,  // 12: uba.service.v1.ApplicationService.Create:input_type -> uba.service.v1.CreateApplicationRequest
-	5,  // 13: uba.service.v1.ApplicationService.Update:input_type -> uba.service.v1.UpdateApplicationRequest
-	6,  // 14: uba.service.v1.ApplicationService.Delete:input_type -> uba.service.v1.DeleteApplicationRequest
-	2,  // 15: uba.service.v1.ApplicationService.List:output_type -> uba.service.v1.ListApplicationResponse
-	1,  // 16: uba.service.v1.ApplicationService.Get:output_type -> uba.service.v1.Application
-	1,  // 17: uba.service.v1.ApplicationService.Create:output_type -> uba.service.v1.Application
-	1,  // 18: uba.service.v1.ApplicationService.Update:output_type -> uba.service.v1.Application
-	11, // 19: uba.service.v1.ApplicationService.Delete:output_type -> google.protobuf.Empty
-	15, // [15:20] is the sub-list for method output_type
-	10, // [10:15] is the sub-list for method input_type
+	10, // 9: uba.service.v1.UpdateApplicationRequest.update_mask:type_name -> google.protobuf.FieldMask
+	11, // 10: uba.service.v1.ApplicationService.List:input_type -> pagination.PagingRequest
+	11, // 11: uba.service.v1.ApplicationService.Count:input_type -> pagination.PagingRequest
+	3,  // 12: uba.service.v1.ApplicationService.Get:input_type -> uba.service.v1.GetApplicationRequest
+	4,  // 13: uba.service.v1.ApplicationService.Create:input_type -> uba.service.v1.CreateApplicationRequest
+	5,  // 14: uba.service.v1.ApplicationService.Update:input_type -> uba.service.v1.UpdateApplicationRequest
+	6,  // 15: uba.service.v1.ApplicationService.Delete:input_type -> uba.service.v1.DeleteApplicationRequest
+	2,  // 16: uba.service.v1.ApplicationService.List:output_type -> uba.service.v1.ListApplicationResponse
+	7,  // 17: uba.service.v1.ApplicationService.Count:output_type -> uba.service.v1.CountApplicationResponse
+	1,  // 18: uba.service.v1.ApplicationService.Get:output_type -> uba.service.v1.Application
+	1,  // 19: uba.service.v1.ApplicationService.Create:output_type -> uba.service.v1.Application
+	1,  // 20: uba.service.v1.ApplicationService.Update:output_type -> uba.service.v1.Application
+	12, // 21: uba.service.v1.ApplicationService.Delete:output_type -> google.protobuf.Empty
+	16, // [16:22] is the sub-list for method output_type
+	10, // [10:16] is the sub-list for method input_type
 	10, // [10:10] is the sub-list for extension type_name
 	10, // [10:10] is the sub-list for extension extendee
 	0,  // [0:10] is the sub-list for field type_name
@@ -744,7 +803,7 @@ func file_uba_service_v1_application_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_uba_service_v1_application_proto_rawDesc), len(file_uba_service_v1_application_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   6,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

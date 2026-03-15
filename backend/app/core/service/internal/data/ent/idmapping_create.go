@@ -36,6 +36,48 @@ func (_c *IDMappingCreate) SetNillableTenantID(v *uint32) *IDMappingCreate {
 	return _c
 }
 
+// SetCreatedBy sets the "created_by" field.
+func (_c *IDMappingCreate) SetCreatedBy(v uint32) *IDMappingCreate {
+	_c.mutation.SetCreatedBy(v)
+	return _c
+}
+
+// SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
+func (_c *IDMappingCreate) SetNillableCreatedBy(v *uint32) *IDMappingCreate {
+	if v != nil {
+		_c.SetCreatedBy(*v)
+	}
+	return _c
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (_c *IDMappingCreate) SetUpdatedBy(v uint32) *IDMappingCreate {
+	_c.mutation.SetUpdatedBy(v)
+	return _c
+}
+
+// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
+func (_c *IDMappingCreate) SetNillableUpdatedBy(v *uint32) *IDMappingCreate {
+	if v != nil {
+		_c.SetUpdatedBy(*v)
+	}
+	return _c
+}
+
+// SetDeletedBy sets the "deleted_by" field.
+func (_c *IDMappingCreate) SetDeletedBy(v uint32) *IDMappingCreate {
+	_c.mutation.SetDeletedBy(v)
+	return _c
+}
+
+// SetNillableDeletedBy sets the "deleted_by" field if the given value is not nil.
+func (_c *IDMappingCreate) SetNillableDeletedBy(v *uint32) *IDMappingCreate {
+	if v != nil {
+		_c.SetDeletedBy(*v)
+	}
+	return _c
+}
+
 // SetCreatedAt sets the "created_at" field.
 func (_c *IDMappingCreate) SetCreatedAt(v time.Time) *IDMappingCreate {
 	_c.mutation.SetCreatedAt(v)
@@ -84,9 +126,25 @@ func (_c *IDMappingCreate) SetGlobalUserID(v string) *IDMappingCreate {
 	return _c
 }
 
+// SetNillableGlobalUserID sets the "global_user_id" field if the given value is not nil.
+func (_c *IDMappingCreate) SetNillableGlobalUserID(v *string) *IDMappingCreate {
+	if v != nil {
+		_c.SetGlobalUserID(*v)
+	}
+	return _c
+}
+
 // SetIDType sets the "id_type" field.
-func (_c *IDMappingCreate) SetIDType(v string) *IDMappingCreate {
+func (_c *IDMappingCreate) SetIDType(v idmapping.IDType) *IDMappingCreate {
 	_c.mutation.SetIDType(v)
+	return _c
+}
+
+// SetNillableIDType sets the "id_type" field if the given value is not nil.
+func (_c *IDMappingCreate) SetNillableIDType(v *idmapping.IDType) *IDMappingCreate {
+	if v != nil {
+		_c.SetIDType(*v)
+	}
 	return _c
 }
 
@@ -96,14 +154,22 @@ func (_c *IDMappingCreate) SetIDValue(v string) *IDMappingCreate {
 	return _c
 }
 
+// SetNillableIDValue sets the "id_value" field if the given value is not nil.
+func (_c *IDMappingCreate) SetNillableIDValue(v *string) *IDMappingCreate {
+	if v != nil {
+		_c.SetIDValue(*v)
+	}
+	return _c
+}
+
 // SetConfidence sets the "confidence" field.
-func (_c *IDMappingCreate) SetConfidence(v float64) *IDMappingCreate {
+func (_c *IDMappingCreate) SetConfidence(v float32) *IDMappingCreate {
 	_c.mutation.SetConfidence(v)
 	return _c
 }
 
 // SetNillableConfidence sets the "confidence" field if the given value is not nil.
-func (_c *IDMappingCreate) SetNillableConfidence(v *float64) *IDMappingCreate {
+func (_c *IDMappingCreate) SetNillableConfidence(v *float32) *IDMappingCreate {
 	if v != nil {
 		_c.SetConfidence(*v)
 	}
@@ -163,6 +229,12 @@ func (_c *IDMappingCreate) SetNillableIsActive(v *bool) *IDMappingCreate {
 	if v != nil {
 		_c.SetIsActive(*v)
 	}
+	return _c
+}
+
+// SetProperties sets the "properties" field.
+func (_c *IDMappingCreate) SetProperties(v map[string]string) *IDMappingCreate {
+	_c.mutation.SetProperties(v)
 	return _c
 }
 
@@ -230,38 +302,20 @@ func (_c *IDMappingCreate) defaults() error {
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *IDMappingCreate) check() error {
-	if _, ok := _c.mutation.GlobalUserID(); !ok {
-		return &ValidationError{Name: "global_user_id", err: errors.New(`ent: missing required field "IDMapping.global_user_id"`)}
-	}
 	if v, ok := _c.mutation.GlobalUserID(); ok {
 		if err := idmapping.GlobalUserIDValidator(v); err != nil {
 			return &ValidationError{Name: "global_user_id", err: fmt.Errorf(`ent: validator failed for field "IDMapping.global_user_id": %w`, err)}
 		}
-	}
-	if _, ok := _c.mutation.IDType(); !ok {
-		return &ValidationError{Name: "id_type", err: errors.New(`ent: missing required field "IDMapping.id_type"`)}
 	}
 	if v, ok := _c.mutation.IDType(); ok {
 		if err := idmapping.IDTypeValidator(v); err != nil {
 			return &ValidationError{Name: "id_type", err: fmt.Errorf(`ent: validator failed for field "IDMapping.id_type": %w`, err)}
 		}
 	}
-	if _, ok := _c.mutation.IDValue(); !ok {
-		return &ValidationError{Name: "id_value", err: errors.New(`ent: missing required field "IDMapping.id_value"`)}
-	}
 	if v, ok := _c.mutation.IDValue(); ok {
 		if err := idmapping.IDValueValidator(v); err != nil {
 			return &ValidationError{Name: "id_value", err: fmt.Errorf(`ent: validator failed for field "IDMapping.id_value": %w`, err)}
 		}
-	}
-	if _, ok := _c.mutation.Confidence(); !ok {
-		return &ValidationError{Name: "confidence", err: errors.New(`ent: missing required field "IDMapping.confidence"`)}
-	}
-	if _, ok := _c.mutation.LinkSource(); !ok {
-		return &ValidationError{Name: "link_source", err: errors.New(`ent: missing required field "IDMapping.link_source"`)}
-	}
-	if _, ok := _c.mutation.IsActive(); !ok {
-		return &ValidationError{Name: "is_active", err: errors.New(`ent: missing required field "IDMapping.is_active"`)}
 	}
 	if v, ok := _c.mutation.ID(); ok {
 		if err := idmapping.IDValidator(v); err != nil {
@@ -305,6 +359,18 @@ func (_c *IDMappingCreate) createSpec() (*IDMapping, *sqlgraph.CreateSpec) {
 		_spec.SetField(idmapping.FieldTenantID, field.TypeUint32, value)
 		_node.TenantID = &value
 	}
+	if value, ok := _c.mutation.CreatedBy(); ok {
+		_spec.SetField(idmapping.FieldCreatedBy, field.TypeUint32, value)
+		_node.CreatedBy = &value
+	}
+	if value, ok := _c.mutation.UpdatedBy(); ok {
+		_spec.SetField(idmapping.FieldUpdatedBy, field.TypeUint32, value)
+		_node.UpdatedBy = &value
+	}
+	if value, ok := _c.mutation.DeletedBy(); ok {
+		_spec.SetField(idmapping.FieldDeletedBy, field.TypeUint32, value)
+		_node.DeletedBy = &value
+	}
 	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(idmapping.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = &value
@@ -319,23 +385,23 @@ func (_c *IDMappingCreate) createSpec() (*IDMapping, *sqlgraph.CreateSpec) {
 	}
 	if value, ok := _c.mutation.GlobalUserID(); ok {
 		_spec.SetField(idmapping.FieldGlobalUserID, field.TypeString, value)
-		_node.GlobalUserID = value
+		_node.GlobalUserID = &value
 	}
 	if value, ok := _c.mutation.IDType(); ok {
-		_spec.SetField(idmapping.FieldIDType, field.TypeString, value)
-		_node.IDType = value
+		_spec.SetField(idmapping.FieldIDType, field.TypeEnum, value)
+		_node.IDType = &value
 	}
 	if value, ok := _c.mutation.IDValue(); ok {
 		_spec.SetField(idmapping.FieldIDValue, field.TypeString, value)
-		_node.IDValue = value
+		_node.IDValue = &value
 	}
 	if value, ok := _c.mutation.Confidence(); ok {
-		_spec.SetField(idmapping.FieldConfidence, field.TypeFloat64, value)
-		_node.Confidence = value
+		_spec.SetField(idmapping.FieldConfidence, field.TypeFloat32, value)
+		_node.Confidence = &value
 	}
 	if value, ok := _c.mutation.LinkSource(); ok {
 		_spec.SetField(idmapping.FieldLinkSource, field.TypeString, value)
-		_node.LinkSource = value
+		_node.LinkSource = &value
 	}
 	if value, ok := _c.mutation.FirstSeen(); ok {
 		_spec.SetField(idmapping.FieldFirstSeen, field.TypeTime, value)
@@ -347,7 +413,11 @@ func (_c *IDMappingCreate) createSpec() (*IDMapping, *sqlgraph.CreateSpec) {
 	}
 	if value, ok := _c.mutation.IsActive(); ok {
 		_spec.SetField(idmapping.FieldIsActive, field.TypeBool, value)
-		_node.IsActive = value
+		_node.IsActive = &value
+	}
+	if value, ok := _c.mutation.Properties(); ok {
+		_spec.SetField(idmapping.FieldProperties, field.TypeJSON, value)
+		_node.Properties = value
 	}
 	return _node, _spec
 }
@@ -401,6 +471,78 @@ type (
 	}
 )
 
+// SetCreatedBy sets the "created_by" field.
+func (u *IDMappingUpsert) SetCreatedBy(v uint32) *IDMappingUpsert {
+	u.Set(idmapping.FieldCreatedBy, v)
+	return u
+}
+
+// UpdateCreatedBy sets the "created_by" field to the value that was provided on create.
+func (u *IDMappingUpsert) UpdateCreatedBy() *IDMappingUpsert {
+	u.SetExcluded(idmapping.FieldCreatedBy)
+	return u
+}
+
+// AddCreatedBy adds v to the "created_by" field.
+func (u *IDMappingUpsert) AddCreatedBy(v uint32) *IDMappingUpsert {
+	u.Add(idmapping.FieldCreatedBy, v)
+	return u
+}
+
+// ClearCreatedBy clears the value of the "created_by" field.
+func (u *IDMappingUpsert) ClearCreatedBy() *IDMappingUpsert {
+	u.SetNull(idmapping.FieldCreatedBy)
+	return u
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (u *IDMappingUpsert) SetUpdatedBy(v uint32) *IDMappingUpsert {
+	u.Set(idmapping.FieldUpdatedBy, v)
+	return u
+}
+
+// UpdateUpdatedBy sets the "updated_by" field to the value that was provided on create.
+func (u *IDMappingUpsert) UpdateUpdatedBy() *IDMappingUpsert {
+	u.SetExcluded(idmapping.FieldUpdatedBy)
+	return u
+}
+
+// AddUpdatedBy adds v to the "updated_by" field.
+func (u *IDMappingUpsert) AddUpdatedBy(v uint32) *IDMappingUpsert {
+	u.Add(idmapping.FieldUpdatedBy, v)
+	return u
+}
+
+// ClearUpdatedBy clears the value of the "updated_by" field.
+func (u *IDMappingUpsert) ClearUpdatedBy() *IDMappingUpsert {
+	u.SetNull(idmapping.FieldUpdatedBy)
+	return u
+}
+
+// SetDeletedBy sets the "deleted_by" field.
+func (u *IDMappingUpsert) SetDeletedBy(v uint32) *IDMappingUpsert {
+	u.Set(idmapping.FieldDeletedBy, v)
+	return u
+}
+
+// UpdateDeletedBy sets the "deleted_by" field to the value that was provided on create.
+func (u *IDMappingUpsert) UpdateDeletedBy() *IDMappingUpsert {
+	u.SetExcluded(idmapping.FieldDeletedBy)
+	return u
+}
+
+// AddDeletedBy adds v to the "deleted_by" field.
+func (u *IDMappingUpsert) AddDeletedBy(v uint32) *IDMappingUpsert {
+	u.Add(idmapping.FieldDeletedBy, v)
+	return u
+}
+
+// ClearDeletedBy clears the value of the "deleted_by" field.
+func (u *IDMappingUpsert) ClearDeletedBy() *IDMappingUpsert {
+	u.SetNull(idmapping.FieldDeletedBy)
+	return u
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (u *IDMappingUpsert) SetUpdatedAt(v time.Time) *IDMappingUpsert {
 	u.Set(idmapping.FieldUpdatedAt, v)
@@ -449,8 +591,14 @@ func (u *IDMappingUpsert) UpdateGlobalUserID() *IDMappingUpsert {
 	return u
 }
 
+// ClearGlobalUserID clears the value of the "global_user_id" field.
+func (u *IDMappingUpsert) ClearGlobalUserID() *IDMappingUpsert {
+	u.SetNull(idmapping.FieldGlobalUserID)
+	return u
+}
+
 // SetIDType sets the "id_type" field.
-func (u *IDMappingUpsert) SetIDType(v string) *IDMappingUpsert {
+func (u *IDMappingUpsert) SetIDType(v idmapping.IDType) *IDMappingUpsert {
 	u.Set(idmapping.FieldIDType, v)
 	return u
 }
@@ -458,6 +606,12 @@ func (u *IDMappingUpsert) SetIDType(v string) *IDMappingUpsert {
 // UpdateIDType sets the "id_type" field to the value that was provided on create.
 func (u *IDMappingUpsert) UpdateIDType() *IDMappingUpsert {
 	u.SetExcluded(idmapping.FieldIDType)
+	return u
+}
+
+// ClearIDType clears the value of the "id_type" field.
+func (u *IDMappingUpsert) ClearIDType() *IDMappingUpsert {
+	u.SetNull(idmapping.FieldIDType)
 	return u
 }
 
@@ -473,8 +627,14 @@ func (u *IDMappingUpsert) UpdateIDValue() *IDMappingUpsert {
 	return u
 }
 
+// ClearIDValue clears the value of the "id_value" field.
+func (u *IDMappingUpsert) ClearIDValue() *IDMappingUpsert {
+	u.SetNull(idmapping.FieldIDValue)
+	return u
+}
+
 // SetConfidence sets the "confidence" field.
-func (u *IDMappingUpsert) SetConfidence(v float64) *IDMappingUpsert {
+func (u *IDMappingUpsert) SetConfidence(v float32) *IDMappingUpsert {
 	u.Set(idmapping.FieldConfidence, v)
 	return u
 }
@@ -486,8 +646,14 @@ func (u *IDMappingUpsert) UpdateConfidence() *IDMappingUpsert {
 }
 
 // AddConfidence adds v to the "confidence" field.
-func (u *IDMappingUpsert) AddConfidence(v float64) *IDMappingUpsert {
+func (u *IDMappingUpsert) AddConfidence(v float32) *IDMappingUpsert {
 	u.Add(idmapping.FieldConfidence, v)
+	return u
+}
+
+// ClearConfidence clears the value of the "confidence" field.
+func (u *IDMappingUpsert) ClearConfidence() *IDMappingUpsert {
+	u.SetNull(idmapping.FieldConfidence)
 	return u
 }
 
@@ -500,6 +666,12 @@ func (u *IDMappingUpsert) SetLinkSource(v string) *IDMappingUpsert {
 // UpdateLinkSource sets the "link_source" field to the value that was provided on create.
 func (u *IDMappingUpsert) UpdateLinkSource() *IDMappingUpsert {
 	u.SetExcluded(idmapping.FieldLinkSource)
+	return u
+}
+
+// ClearLinkSource clears the value of the "link_source" field.
+func (u *IDMappingUpsert) ClearLinkSource() *IDMappingUpsert {
+	u.SetNull(idmapping.FieldLinkSource)
 	return u
 }
 
@@ -548,6 +720,30 @@ func (u *IDMappingUpsert) SetIsActive(v bool) *IDMappingUpsert {
 // UpdateIsActive sets the "is_active" field to the value that was provided on create.
 func (u *IDMappingUpsert) UpdateIsActive() *IDMappingUpsert {
 	u.SetExcluded(idmapping.FieldIsActive)
+	return u
+}
+
+// ClearIsActive clears the value of the "is_active" field.
+func (u *IDMappingUpsert) ClearIsActive() *IDMappingUpsert {
+	u.SetNull(idmapping.FieldIsActive)
+	return u
+}
+
+// SetProperties sets the "properties" field.
+func (u *IDMappingUpsert) SetProperties(v map[string]string) *IDMappingUpsert {
+	u.Set(idmapping.FieldProperties, v)
+	return u
+}
+
+// UpdateProperties sets the "properties" field to the value that was provided on create.
+func (u *IDMappingUpsert) UpdateProperties() *IDMappingUpsert {
+	u.SetExcluded(idmapping.FieldProperties)
+	return u
+}
+
+// ClearProperties clears the value of the "properties" field.
+func (u *IDMappingUpsert) ClearProperties() *IDMappingUpsert {
+	u.SetNull(idmapping.FieldProperties)
 	return u
 }
 
@@ -603,6 +799,90 @@ func (u *IDMappingUpsertOne) Update(set func(*IDMappingUpsert)) *IDMappingUpsert
 		set(&IDMappingUpsert{UpdateSet: update})
 	}))
 	return u
+}
+
+// SetCreatedBy sets the "created_by" field.
+func (u *IDMappingUpsertOne) SetCreatedBy(v uint32) *IDMappingUpsertOne {
+	return u.Update(func(s *IDMappingUpsert) {
+		s.SetCreatedBy(v)
+	})
+}
+
+// AddCreatedBy adds v to the "created_by" field.
+func (u *IDMappingUpsertOne) AddCreatedBy(v uint32) *IDMappingUpsertOne {
+	return u.Update(func(s *IDMappingUpsert) {
+		s.AddCreatedBy(v)
+	})
+}
+
+// UpdateCreatedBy sets the "created_by" field to the value that was provided on create.
+func (u *IDMappingUpsertOne) UpdateCreatedBy() *IDMappingUpsertOne {
+	return u.Update(func(s *IDMappingUpsert) {
+		s.UpdateCreatedBy()
+	})
+}
+
+// ClearCreatedBy clears the value of the "created_by" field.
+func (u *IDMappingUpsertOne) ClearCreatedBy() *IDMappingUpsertOne {
+	return u.Update(func(s *IDMappingUpsert) {
+		s.ClearCreatedBy()
+	})
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (u *IDMappingUpsertOne) SetUpdatedBy(v uint32) *IDMappingUpsertOne {
+	return u.Update(func(s *IDMappingUpsert) {
+		s.SetUpdatedBy(v)
+	})
+}
+
+// AddUpdatedBy adds v to the "updated_by" field.
+func (u *IDMappingUpsertOne) AddUpdatedBy(v uint32) *IDMappingUpsertOne {
+	return u.Update(func(s *IDMappingUpsert) {
+		s.AddUpdatedBy(v)
+	})
+}
+
+// UpdateUpdatedBy sets the "updated_by" field to the value that was provided on create.
+func (u *IDMappingUpsertOne) UpdateUpdatedBy() *IDMappingUpsertOne {
+	return u.Update(func(s *IDMappingUpsert) {
+		s.UpdateUpdatedBy()
+	})
+}
+
+// ClearUpdatedBy clears the value of the "updated_by" field.
+func (u *IDMappingUpsertOne) ClearUpdatedBy() *IDMappingUpsertOne {
+	return u.Update(func(s *IDMappingUpsert) {
+		s.ClearUpdatedBy()
+	})
+}
+
+// SetDeletedBy sets the "deleted_by" field.
+func (u *IDMappingUpsertOne) SetDeletedBy(v uint32) *IDMappingUpsertOne {
+	return u.Update(func(s *IDMappingUpsert) {
+		s.SetDeletedBy(v)
+	})
+}
+
+// AddDeletedBy adds v to the "deleted_by" field.
+func (u *IDMappingUpsertOne) AddDeletedBy(v uint32) *IDMappingUpsertOne {
+	return u.Update(func(s *IDMappingUpsert) {
+		s.AddDeletedBy(v)
+	})
+}
+
+// UpdateDeletedBy sets the "deleted_by" field to the value that was provided on create.
+func (u *IDMappingUpsertOne) UpdateDeletedBy() *IDMappingUpsertOne {
+	return u.Update(func(s *IDMappingUpsert) {
+		s.UpdateDeletedBy()
+	})
+}
+
+// ClearDeletedBy clears the value of the "deleted_by" field.
+func (u *IDMappingUpsertOne) ClearDeletedBy() *IDMappingUpsertOne {
+	return u.Update(func(s *IDMappingUpsert) {
+		s.ClearDeletedBy()
+	})
 }
 
 // SetUpdatedAt sets the "updated_at" field.
@@ -661,8 +941,15 @@ func (u *IDMappingUpsertOne) UpdateGlobalUserID() *IDMappingUpsertOne {
 	})
 }
 
+// ClearGlobalUserID clears the value of the "global_user_id" field.
+func (u *IDMappingUpsertOne) ClearGlobalUserID() *IDMappingUpsertOne {
+	return u.Update(func(s *IDMappingUpsert) {
+		s.ClearGlobalUserID()
+	})
+}
+
 // SetIDType sets the "id_type" field.
-func (u *IDMappingUpsertOne) SetIDType(v string) *IDMappingUpsertOne {
+func (u *IDMappingUpsertOne) SetIDType(v idmapping.IDType) *IDMappingUpsertOne {
 	return u.Update(func(s *IDMappingUpsert) {
 		s.SetIDType(v)
 	})
@@ -672,6 +959,13 @@ func (u *IDMappingUpsertOne) SetIDType(v string) *IDMappingUpsertOne {
 func (u *IDMappingUpsertOne) UpdateIDType() *IDMappingUpsertOne {
 	return u.Update(func(s *IDMappingUpsert) {
 		s.UpdateIDType()
+	})
+}
+
+// ClearIDType clears the value of the "id_type" field.
+func (u *IDMappingUpsertOne) ClearIDType() *IDMappingUpsertOne {
+	return u.Update(func(s *IDMappingUpsert) {
+		s.ClearIDType()
 	})
 }
 
@@ -689,15 +983,22 @@ func (u *IDMappingUpsertOne) UpdateIDValue() *IDMappingUpsertOne {
 	})
 }
 
+// ClearIDValue clears the value of the "id_value" field.
+func (u *IDMappingUpsertOne) ClearIDValue() *IDMappingUpsertOne {
+	return u.Update(func(s *IDMappingUpsert) {
+		s.ClearIDValue()
+	})
+}
+
 // SetConfidence sets the "confidence" field.
-func (u *IDMappingUpsertOne) SetConfidence(v float64) *IDMappingUpsertOne {
+func (u *IDMappingUpsertOne) SetConfidence(v float32) *IDMappingUpsertOne {
 	return u.Update(func(s *IDMappingUpsert) {
 		s.SetConfidence(v)
 	})
 }
 
 // AddConfidence adds v to the "confidence" field.
-func (u *IDMappingUpsertOne) AddConfidence(v float64) *IDMappingUpsertOne {
+func (u *IDMappingUpsertOne) AddConfidence(v float32) *IDMappingUpsertOne {
 	return u.Update(func(s *IDMappingUpsert) {
 		s.AddConfidence(v)
 	})
@@ -707,6 +1008,13 @@ func (u *IDMappingUpsertOne) AddConfidence(v float64) *IDMappingUpsertOne {
 func (u *IDMappingUpsertOne) UpdateConfidence() *IDMappingUpsertOne {
 	return u.Update(func(s *IDMappingUpsert) {
 		s.UpdateConfidence()
+	})
+}
+
+// ClearConfidence clears the value of the "confidence" field.
+func (u *IDMappingUpsertOne) ClearConfidence() *IDMappingUpsertOne {
+	return u.Update(func(s *IDMappingUpsert) {
+		s.ClearConfidence()
 	})
 }
 
@@ -721,6 +1029,13 @@ func (u *IDMappingUpsertOne) SetLinkSource(v string) *IDMappingUpsertOne {
 func (u *IDMappingUpsertOne) UpdateLinkSource() *IDMappingUpsertOne {
 	return u.Update(func(s *IDMappingUpsert) {
 		s.UpdateLinkSource()
+	})
+}
+
+// ClearLinkSource clears the value of the "link_source" field.
+func (u *IDMappingUpsertOne) ClearLinkSource() *IDMappingUpsertOne {
+	return u.Update(func(s *IDMappingUpsert) {
+		s.ClearLinkSource()
 	})
 }
 
@@ -777,6 +1092,34 @@ func (u *IDMappingUpsertOne) SetIsActive(v bool) *IDMappingUpsertOne {
 func (u *IDMappingUpsertOne) UpdateIsActive() *IDMappingUpsertOne {
 	return u.Update(func(s *IDMappingUpsert) {
 		s.UpdateIsActive()
+	})
+}
+
+// ClearIsActive clears the value of the "is_active" field.
+func (u *IDMappingUpsertOne) ClearIsActive() *IDMappingUpsertOne {
+	return u.Update(func(s *IDMappingUpsert) {
+		s.ClearIsActive()
+	})
+}
+
+// SetProperties sets the "properties" field.
+func (u *IDMappingUpsertOne) SetProperties(v map[string]string) *IDMappingUpsertOne {
+	return u.Update(func(s *IDMappingUpsert) {
+		s.SetProperties(v)
+	})
+}
+
+// UpdateProperties sets the "properties" field to the value that was provided on create.
+func (u *IDMappingUpsertOne) UpdateProperties() *IDMappingUpsertOne {
+	return u.Update(func(s *IDMappingUpsert) {
+		s.UpdateProperties()
+	})
+}
+
+// ClearProperties clears the value of the "properties" field.
+func (u *IDMappingUpsertOne) ClearProperties() *IDMappingUpsertOne {
+	return u.Update(func(s *IDMappingUpsert) {
+		s.ClearProperties()
 	})
 }
 
@@ -1000,6 +1343,90 @@ func (u *IDMappingUpsertBulk) Update(set func(*IDMappingUpsert)) *IDMappingUpser
 	return u
 }
 
+// SetCreatedBy sets the "created_by" field.
+func (u *IDMappingUpsertBulk) SetCreatedBy(v uint32) *IDMappingUpsertBulk {
+	return u.Update(func(s *IDMappingUpsert) {
+		s.SetCreatedBy(v)
+	})
+}
+
+// AddCreatedBy adds v to the "created_by" field.
+func (u *IDMappingUpsertBulk) AddCreatedBy(v uint32) *IDMappingUpsertBulk {
+	return u.Update(func(s *IDMappingUpsert) {
+		s.AddCreatedBy(v)
+	})
+}
+
+// UpdateCreatedBy sets the "created_by" field to the value that was provided on create.
+func (u *IDMappingUpsertBulk) UpdateCreatedBy() *IDMappingUpsertBulk {
+	return u.Update(func(s *IDMappingUpsert) {
+		s.UpdateCreatedBy()
+	})
+}
+
+// ClearCreatedBy clears the value of the "created_by" field.
+func (u *IDMappingUpsertBulk) ClearCreatedBy() *IDMappingUpsertBulk {
+	return u.Update(func(s *IDMappingUpsert) {
+		s.ClearCreatedBy()
+	})
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (u *IDMappingUpsertBulk) SetUpdatedBy(v uint32) *IDMappingUpsertBulk {
+	return u.Update(func(s *IDMappingUpsert) {
+		s.SetUpdatedBy(v)
+	})
+}
+
+// AddUpdatedBy adds v to the "updated_by" field.
+func (u *IDMappingUpsertBulk) AddUpdatedBy(v uint32) *IDMappingUpsertBulk {
+	return u.Update(func(s *IDMappingUpsert) {
+		s.AddUpdatedBy(v)
+	})
+}
+
+// UpdateUpdatedBy sets the "updated_by" field to the value that was provided on create.
+func (u *IDMappingUpsertBulk) UpdateUpdatedBy() *IDMappingUpsertBulk {
+	return u.Update(func(s *IDMappingUpsert) {
+		s.UpdateUpdatedBy()
+	})
+}
+
+// ClearUpdatedBy clears the value of the "updated_by" field.
+func (u *IDMappingUpsertBulk) ClearUpdatedBy() *IDMappingUpsertBulk {
+	return u.Update(func(s *IDMappingUpsert) {
+		s.ClearUpdatedBy()
+	})
+}
+
+// SetDeletedBy sets the "deleted_by" field.
+func (u *IDMappingUpsertBulk) SetDeletedBy(v uint32) *IDMappingUpsertBulk {
+	return u.Update(func(s *IDMappingUpsert) {
+		s.SetDeletedBy(v)
+	})
+}
+
+// AddDeletedBy adds v to the "deleted_by" field.
+func (u *IDMappingUpsertBulk) AddDeletedBy(v uint32) *IDMappingUpsertBulk {
+	return u.Update(func(s *IDMappingUpsert) {
+		s.AddDeletedBy(v)
+	})
+}
+
+// UpdateDeletedBy sets the "deleted_by" field to the value that was provided on create.
+func (u *IDMappingUpsertBulk) UpdateDeletedBy() *IDMappingUpsertBulk {
+	return u.Update(func(s *IDMappingUpsert) {
+		s.UpdateDeletedBy()
+	})
+}
+
+// ClearDeletedBy clears the value of the "deleted_by" field.
+func (u *IDMappingUpsertBulk) ClearDeletedBy() *IDMappingUpsertBulk {
+	return u.Update(func(s *IDMappingUpsert) {
+		s.ClearDeletedBy()
+	})
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (u *IDMappingUpsertBulk) SetUpdatedAt(v time.Time) *IDMappingUpsertBulk {
 	return u.Update(func(s *IDMappingUpsert) {
@@ -1056,8 +1483,15 @@ func (u *IDMappingUpsertBulk) UpdateGlobalUserID() *IDMappingUpsertBulk {
 	})
 }
 
+// ClearGlobalUserID clears the value of the "global_user_id" field.
+func (u *IDMappingUpsertBulk) ClearGlobalUserID() *IDMappingUpsertBulk {
+	return u.Update(func(s *IDMappingUpsert) {
+		s.ClearGlobalUserID()
+	})
+}
+
 // SetIDType sets the "id_type" field.
-func (u *IDMappingUpsertBulk) SetIDType(v string) *IDMappingUpsertBulk {
+func (u *IDMappingUpsertBulk) SetIDType(v idmapping.IDType) *IDMappingUpsertBulk {
 	return u.Update(func(s *IDMappingUpsert) {
 		s.SetIDType(v)
 	})
@@ -1067,6 +1501,13 @@ func (u *IDMappingUpsertBulk) SetIDType(v string) *IDMappingUpsertBulk {
 func (u *IDMappingUpsertBulk) UpdateIDType() *IDMappingUpsertBulk {
 	return u.Update(func(s *IDMappingUpsert) {
 		s.UpdateIDType()
+	})
+}
+
+// ClearIDType clears the value of the "id_type" field.
+func (u *IDMappingUpsertBulk) ClearIDType() *IDMappingUpsertBulk {
+	return u.Update(func(s *IDMappingUpsert) {
+		s.ClearIDType()
 	})
 }
 
@@ -1084,15 +1525,22 @@ func (u *IDMappingUpsertBulk) UpdateIDValue() *IDMappingUpsertBulk {
 	})
 }
 
+// ClearIDValue clears the value of the "id_value" field.
+func (u *IDMappingUpsertBulk) ClearIDValue() *IDMappingUpsertBulk {
+	return u.Update(func(s *IDMappingUpsert) {
+		s.ClearIDValue()
+	})
+}
+
 // SetConfidence sets the "confidence" field.
-func (u *IDMappingUpsertBulk) SetConfidence(v float64) *IDMappingUpsertBulk {
+func (u *IDMappingUpsertBulk) SetConfidence(v float32) *IDMappingUpsertBulk {
 	return u.Update(func(s *IDMappingUpsert) {
 		s.SetConfidence(v)
 	})
 }
 
 // AddConfidence adds v to the "confidence" field.
-func (u *IDMappingUpsertBulk) AddConfidence(v float64) *IDMappingUpsertBulk {
+func (u *IDMappingUpsertBulk) AddConfidence(v float32) *IDMappingUpsertBulk {
 	return u.Update(func(s *IDMappingUpsert) {
 		s.AddConfidence(v)
 	})
@@ -1102,6 +1550,13 @@ func (u *IDMappingUpsertBulk) AddConfidence(v float64) *IDMappingUpsertBulk {
 func (u *IDMappingUpsertBulk) UpdateConfidence() *IDMappingUpsertBulk {
 	return u.Update(func(s *IDMappingUpsert) {
 		s.UpdateConfidence()
+	})
+}
+
+// ClearConfidence clears the value of the "confidence" field.
+func (u *IDMappingUpsertBulk) ClearConfidence() *IDMappingUpsertBulk {
+	return u.Update(func(s *IDMappingUpsert) {
+		s.ClearConfidence()
 	})
 }
 
@@ -1116,6 +1571,13 @@ func (u *IDMappingUpsertBulk) SetLinkSource(v string) *IDMappingUpsertBulk {
 func (u *IDMappingUpsertBulk) UpdateLinkSource() *IDMappingUpsertBulk {
 	return u.Update(func(s *IDMappingUpsert) {
 		s.UpdateLinkSource()
+	})
+}
+
+// ClearLinkSource clears the value of the "link_source" field.
+func (u *IDMappingUpsertBulk) ClearLinkSource() *IDMappingUpsertBulk {
+	return u.Update(func(s *IDMappingUpsert) {
+		s.ClearLinkSource()
 	})
 }
 
@@ -1172,6 +1634,34 @@ func (u *IDMappingUpsertBulk) SetIsActive(v bool) *IDMappingUpsertBulk {
 func (u *IDMappingUpsertBulk) UpdateIsActive() *IDMappingUpsertBulk {
 	return u.Update(func(s *IDMappingUpsert) {
 		s.UpdateIsActive()
+	})
+}
+
+// ClearIsActive clears the value of the "is_active" field.
+func (u *IDMappingUpsertBulk) ClearIsActive() *IDMappingUpsertBulk {
+	return u.Update(func(s *IDMappingUpsert) {
+		s.ClearIsActive()
+	})
+}
+
+// SetProperties sets the "properties" field.
+func (u *IDMappingUpsertBulk) SetProperties(v map[string]string) *IDMappingUpsertBulk {
+	return u.Update(func(s *IDMappingUpsert) {
+		s.SetProperties(v)
+	})
+}
+
+// UpdateProperties sets the "properties" field to the value that was provided on create.
+func (u *IDMappingUpsertBulk) UpdateProperties() *IDMappingUpsertBulk {
+	return u.Update(func(s *IDMappingUpsert) {
+		s.UpdateProperties()
+	})
+}
+
+// ClearProperties clears the value of the "properties" field.
+func (u *IDMappingUpsertBulk) ClearProperties() *IDMappingUpsertBulk {
+	return u.Update(func(s *IDMappingUpsert) {
+		s.ClearProperties()
 	})
 }
 

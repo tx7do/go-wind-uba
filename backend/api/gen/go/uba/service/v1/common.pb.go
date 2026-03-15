@@ -21,67 +21,6 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// 风险等级（用于标识事件或用户的风险级别）
-type RiskLevel int32
-
-const (
-	// 未指定风险等级
-	RiskLevel_RISK_LEVEL_UNSPECIFIED RiskLevel = 0
-	// 正常风险
-	RiskLevel_RISK_LEVEL_NORMAL RiskLevel = 1
-	// 可疑风险
-	RiskLevel_RISK_LEVEL_SUSPICIOUS RiskLevel = 2
-	// 高风险
-	RiskLevel_RISK_LEVEL_HIGH RiskLevel = 3
-	// 危急风险
-	RiskLevel_RISK_LEVEL_CRITICAL RiskLevel = 4
-)
-
-// Enum value maps for RiskLevel.
-var (
-	RiskLevel_name = map[int32]string{
-		0: "RISK_LEVEL_UNSPECIFIED",
-		1: "RISK_LEVEL_NORMAL",
-		2: "RISK_LEVEL_SUSPICIOUS",
-		3: "RISK_LEVEL_HIGH",
-		4: "RISK_LEVEL_CRITICAL",
-	}
-	RiskLevel_value = map[string]int32{
-		"RISK_LEVEL_UNSPECIFIED": 0,
-		"RISK_LEVEL_NORMAL":      1,
-		"RISK_LEVEL_SUSPICIOUS":  2,
-		"RISK_LEVEL_HIGH":        3,
-		"RISK_LEVEL_CRITICAL":    4,
-	}
-)
-
-func (x RiskLevel) Enum() *RiskLevel {
-	p := new(RiskLevel)
-	*p = x
-	return p
-}
-
-func (x RiskLevel) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (RiskLevel) Descriptor() protoreflect.EnumDescriptor {
-	return file_uba_service_v1_common_proto_enumTypes[0].Descriptor()
-}
-
-func (RiskLevel) Type() protoreflect.EnumType {
-	return &file_uba_service_v1_common_proto_enumTypes[0]
-}
-
-func (x RiskLevel) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
-// Deprecated: Use RiskLevel.Descriptor instead.
-func (RiskLevel) EnumDescriptor() ([]byte, []int) {
-	return file_uba_service_v1_common_proto_rawDescGZIP(), []int{0}
-}
-
 // 事件分类（用于标识事件所属的业务类型）
 type EventCategory int32
 
@@ -135,11 +74,11 @@ func (x EventCategory) String() string {
 }
 
 func (EventCategory) Descriptor() protoreflect.EnumDescriptor {
-	return file_uba_service_v1_common_proto_enumTypes[1].Descriptor()
+	return file_uba_service_v1_common_proto_enumTypes[0].Descriptor()
 }
 
 func (EventCategory) Type() protoreflect.EnumType {
-	return &file_uba_service_v1_common_proto_enumTypes[1]
+	return &file_uba_service_v1_common_proto_enumTypes[0]
 }
 
 func (x EventCategory) Number() protoreflect.EnumNumber {
@@ -148,7 +87,7 @@ func (x EventCategory) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use EventCategory.Descriptor instead.
 func (EventCategory) EnumDescriptor() ([]byte, []int) {
-	return file_uba_service_v1_common_proto_rawDescGZIP(), []int{1}
+	return file_uba_service_v1_common_proto_rawDescGZIP(), []int{0}
 }
 
 // 平台类型（用于标识应用或事件发生的平台）
@@ -208,11 +147,11 @@ func (x Platform) String() string {
 }
 
 func (Platform) Descriptor() protoreflect.EnumDescriptor {
-	return file_uba_service_v1_common_proto_enumTypes[2].Descriptor()
+	return file_uba_service_v1_common_proto_enumTypes[1].Descriptor()
 }
 
 func (Platform) Type() protoreflect.EnumType {
-	return &file_uba_service_v1_common_proto_enumTypes[2]
+	return &file_uba_service_v1_common_proto_enumTypes[1]
 }
 
 func (x Platform) Number() protoreflect.EnumNumber {
@@ -221,7 +160,7 @@ func (x Platform) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use Platform.Descriptor instead.
 func (Platform) EnumDescriptor() ([]byte, []int) {
-	return file_uba_service_v1_common_proto_rawDescGZIP(), []int{2}
+	return file_uba_service_v1_common_proto_rawDescGZIP(), []int{1}
 }
 
 // 操作结果（用于标识操作的执行结果状态）
@@ -269,11 +208,11 @@ func (x OpResult) String() string {
 }
 
 func (OpResult) Descriptor() protoreflect.EnumDescriptor {
-	return file_uba_service_v1_common_proto_enumTypes[3].Descriptor()
+	return file_uba_service_v1_common_proto_enumTypes[2].Descriptor()
 }
 
 func (OpResult) Type() protoreflect.EnumType {
-	return &file_uba_service_v1_common_proto_enumTypes[3]
+	return &file_uba_service_v1_common_proto_enumTypes[2]
 }
 
 func (x OpResult) Number() protoreflect.EnumNumber {
@@ -282,20 +221,164 @@ func (x OpResult) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use OpResult.Descriptor instead.
 func (OpResult) EnumDescriptor() ([]byte, []int) {
+	return file_uba_service_v1_common_proto_rawDescGZIP(), []int{2}
+}
+
+// 风险等级（用于标识事件或用户的风险级别）
+type RiskLevel int32
+
+const (
+	// 未指定风险等级
+	RiskLevel_RISK_LEVEL_UNSPECIFIED RiskLevel = 0
+	// 正常风险
+	RiskLevel_RISK_LEVEL_NORMAL RiskLevel = 1
+	// 可疑风险
+	RiskLevel_RISK_LEVEL_SUSPICIOUS RiskLevel = 2
+	// 高风险
+	RiskLevel_RISK_LEVEL_HIGH RiskLevel = 3
+	// 危急风险
+	RiskLevel_RISK_LEVEL_CRITICAL RiskLevel = 4
+)
+
+// Enum value maps for RiskLevel.
+var (
+	RiskLevel_name = map[int32]string{
+		0: "RISK_LEVEL_UNSPECIFIED",
+		1: "RISK_LEVEL_NORMAL",
+		2: "RISK_LEVEL_SUSPICIOUS",
+		3: "RISK_LEVEL_HIGH",
+		4: "RISK_LEVEL_CRITICAL",
+	}
+	RiskLevel_value = map[string]int32{
+		"RISK_LEVEL_UNSPECIFIED": 0,
+		"RISK_LEVEL_NORMAL":      1,
+		"RISK_LEVEL_SUSPICIOUS":  2,
+		"RISK_LEVEL_HIGH":        3,
+		"RISK_LEVEL_CRITICAL":    4,
+	}
+)
+
+func (x RiskLevel) Enum() *RiskLevel {
+	p := new(RiskLevel)
+	*p = x
+	return p
+}
+
+func (x RiskLevel) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (RiskLevel) Descriptor() protoreflect.EnumDescriptor {
+	return file_uba_service_v1_common_proto_enumTypes[3].Descriptor()
+}
+
+func (RiskLevel) Type() protoreflect.EnumType {
+	return &file_uba_service_v1_common_proto_enumTypes[3]
+}
+
+func (x RiskLevel) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use RiskLevel.Descriptor instead.
+func (RiskLevel) EnumDescriptor() ([]byte, []int) {
 	return file_uba_service_v1_common_proto_rawDescGZIP(), []int{3}
+}
+
+// 风险等级
+type RiskType int32
+
+const (
+	// 未指定风险类型
+	RiskType_RISK_TYPE_UNSPECIFIED RiskType = 0
+	// 异常登录风险
+	RiskType_RISK_TYPE_LOGIN_ANOMALY RiskType = 1
+	// 暴力破解风险
+	RiskType_RISK_TYPE_BRUTE_FORCE RiskType = 2
+	// 撞库风险
+	RiskType_RISK_TYPE_CREDENTIAL_STUFFING RiskType = 3
+	// 高频操作风险
+	RiskType_RISK_TYPE_FREQUENT_OPERATION RiskType = 4
+	// 异常流程风险
+	RiskType_RISK_TYPE_ABNORMAL_FLOW RiskType = 5
+	// 数据泄露风险
+	RiskType_RISK_TYPE_DATA_EXFILTRATION RiskType = 6
+	// 设备突变风险
+	RiskType_RISK_TYPE_DEVICE_CHANGE RiskType = 7
+	// 异地登录风险
+	RiskType_RISK_TYPE_LOCATION_ANOMALY RiskType = 8
+	// 代理/VPN风险
+	RiskType_RISK_TYPE_PROXY_DETECTED RiskType = 9
+	// 欺诈支付风险
+	RiskType_RISK_TYPE_FRAUD_PAYMENT RiskType = 10
+	// 薅羊毛风险
+	RiskType_RISK_TYPE_ABUSE_PROMOTION RiskType = 11
+)
+
+// Enum value maps for RiskType.
+var (
+	RiskType_name = map[int32]string{
+		0:  "RISK_TYPE_UNSPECIFIED",
+		1:  "RISK_TYPE_LOGIN_ANOMALY",
+		2:  "RISK_TYPE_BRUTE_FORCE",
+		3:  "RISK_TYPE_CREDENTIAL_STUFFING",
+		4:  "RISK_TYPE_FREQUENT_OPERATION",
+		5:  "RISK_TYPE_ABNORMAL_FLOW",
+		6:  "RISK_TYPE_DATA_EXFILTRATION",
+		7:  "RISK_TYPE_DEVICE_CHANGE",
+		8:  "RISK_TYPE_LOCATION_ANOMALY",
+		9:  "RISK_TYPE_PROXY_DETECTED",
+		10: "RISK_TYPE_FRAUD_PAYMENT",
+		11: "RISK_TYPE_ABUSE_PROMOTION",
+	}
+	RiskType_value = map[string]int32{
+		"RISK_TYPE_UNSPECIFIED":         0,
+		"RISK_TYPE_LOGIN_ANOMALY":       1,
+		"RISK_TYPE_BRUTE_FORCE":         2,
+		"RISK_TYPE_CREDENTIAL_STUFFING": 3,
+		"RISK_TYPE_FREQUENT_OPERATION":  4,
+		"RISK_TYPE_ABNORMAL_FLOW":       5,
+		"RISK_TYPE_DATA_EXFILTRATION":   6,
+		"RISK_TYPE_DEVICE_CHANGE":       7,
+		"RISK_TYPE_LOCATION_ANOMALY":    8,
+		"RISK_TYPE_PROXY_DETECTED":      9,
+		"RISK_TYPE_FRAUD_PAYMENT":       10,
+		"RISK_TYPE_ABUSE_PROMOTION":     11,
+	}
+)
+
+func (x RiskType) Enum() *RiskType {
+	p := new(RiskType)
+	*p = x
+	return p
+}
+
+func (x RiskType) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (RiskType) Descriptor() protoreflect.EnumDescriptor {
+	return file_uba_service_v1_common_proto_enumTypes[4].Descriptor()
+}
+
+func (RiskType) Type() protoreflect.EnumType {
+	return &file_uba_service_v1_common_proto_enumTypes[4]
+}
+
+func (x RiskType) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use RiskType.Descriptor instead.
+func (RiskType) EnumDescriptor() ([]byte, []int) {
+	return file_uba_service_v1_common_proto_rawDescGZIP(), []int{4}
 }
 
 var File_uba_service_v1_common_proto protoreflect.FileDescriptor
 
 const file_uba_service_v1_common_proto_rawDesc = "" +
 	"\n" +
-	"\x1buba/service/v1/common.proto\x12\x0euba.service.v1*\x87\x01\n" +
-	"\tRiskLevel\x12\x1a\n" +
-	"\x16RISK_LEVEL_UNSPECIFIED\x10\x00\x12\x15\n" +
-	"\x11RISK_LEVEL_NORMAL\x10\x01\x12\x19\n" +
-	"\x15RISK_LEVEL_SUSPICIOUS\x10\x02\x12\x13\n" +
-	"\x0fRISK_LEVEL_HIGH\x10\x03\x12\x17\n" +
-	"\x13RISK_LEVEL_CRITICAL\x10\x04*\xcd\x01\n" +
+	"\x1buba/service/v1/common.proto\x12\x0euba.service.v1*\xcd\x01\n" +
 	"\rEventCategory\x12\x1e\n" +
 	"\x1aEVENT_CATEGORY_UNSPECIFIED\x10\x00\x12\x17\n" +
 	"\x13EVENT_CATEGORY_AUTH\x10\x01\x12\x16\n" +
@@ -318,7 +401,27 @@ const file_uba_service_v1_common_proto_rawDesc = "" +
 	"\x11OP_RESULT_SUCCESS\x10\x01\x12\x14\n" +
 	"\x10OP_RESULT_FAILED\x10\x02\x12\x15\n" +
 	"\x11OP_RESULT_TIMEOUT\x10\x03\x12\x15\n" +
-	"\x11OP_RESULT_PARTIAL\x10\x04B\xac\x01\n" +
+	"\x11OP_RESULT_PARTIAL\x10\x04*\x87\x01\n" +
+	"\tRiskLevel\x12\x1a\n" +
+	"\x16RISK_LEVEL_UNSPECIFIED\x10\x00\x12\x15\n" +
+	"\x11RISK_LEVEL_NORMAL\x10\x01\x12\x19\n" +
+	"\x15RISK_LEVEL_SUSPICIOUS\x10\x02\x12\x13\n" +
+	"\x0fRISK_LEVEL_HIGH\x10\x03\x12\x17\n" +
+	"\x13RISK_LEVEL_CRITICAL\x10\x04*\xf7\x02\n" +
+	"\bRiskType\x12\x19\n" +
+	"\x15RISK_TYPE_UNSPECIFIED\x10\x00\x12\x1b\n" +
+	"\x17RISK_TYPE_LOGIN_ANOMALY\x10\x01\x12\x19\n" +
+	"\x15RISK_TYPE_BRUTE_FORCE\x10\x02\x12!\n" +
+	"\x1dRISK_TYPE_CREDENTIAL_STUFFING\x10\x03\x12 \n" +
+	"\x1cRISK_TYPE_FREQUENT_OPERATION\x10\x04\x12\x1b\n" +
+	"\x17RISK_TYPE_ABNORMAL_FLOW\x10\x05\x12\x1f\n" +
+	"\x1bRISK_TYPE_DATA_EXFILTRATION\x10\x06\x12\x1b\n" +
+	"\x17RISK_TYPE_DEVICE_CHANGE\x10\a\x12\x1e\n" +
+	"\x1aRISK_TYPE_LOCATION_ANOMALY\x10\b\x12\x1c\n" +
+	"\x18RISK_TYPE_PROXY_DETECTED\x10\t\x12\x1b\n" +
+	"\x17RISK_TYPE_FRAUD_PAYMENT\x10\n" +
+	"\x12\x1d\n" +
+	"\x19RISK_TYPE_ABUSE_PROMOTION\x10\vB\xac\x01\n" +
 	"\x12com.uba.service.v1B\vCommonProtoP\x01Z/go-wind-uba/api/gen/go/uba/service/v1;servicev1\xa2\x02\x03USX\xaa\x02\x0eUba.Service.V1\xca\x02\x0eUba\\Service\\V1\xe2\x02\x1aUba\\Service\\V1\\GPBMetadata\xea\x02\x10Uba::Service::V1b\x06proto3"
 
 var (
@@ -333,12 +436,13 @@ func file_uba_service_v1_common_proto_rawDescGZIP() []byte {
 	return file_uba_service_v1_common_proto_rawDescData
 }
 
-var file_uba_service_v1_common_proto_enumTypes = make([]protoimpl.EnumInfo, 4)
+var file_uba_service_v1_common_proto_enumTypes = make([]protoimpl.EnumInfo, 5)
 var file_uba_service_v1_common_proto_goTypes = []any{
-	(RiskLevel)(0),     // 0: uba.service.v1.RiskLevel
-	(EventCategory)(0), // 1: uba.service.v1.EventCategory
-	(Platform)(0),      // 2: uba.service.v1.Platform
-	(OpResult)(0),      // 3: uba.service.v1.OpResult
+	(EventCategory)(0), // 0: uba.service.v1.EventCategory
+	(Platform)(0),      // 1: uba.service.v1.Platform
+	(OpResult)(0),      // 2: uba.service.v1.OpResult
+	(RiskLevel)(0),     // 3: uba.service.v1.RiskLevel
+	(RiskType)(0),      // 4: uba.service.v1.RiskType
 }
 var file_uba_service_v1_common_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
@@ -358,7 +462,7 @@ func file_uba_service_v1_common_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_uba_service_v1_common_proto_rawDesc), len(file_uba_service_v1_common_proto_rawDesc)),
-			NumEnums:      4,
+			NumEnums:      5,
 			NumMessages:   0,
 			NumExtensions: 0,
 			NumServices:   0,

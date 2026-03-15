@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	servicev1 "go-wind-uba/api/gen/go/uba/service/v1"
 	"go-wind-uba/app/core/service/internal/data/ent/tagdefinition"
 	"time"
 
@@ -177,13 +178,13 @@ func (_c *TagDefinitionCreate) SetNillableTagType(v *tagdefinition.TagType) *Tag
 }
 
 // SetRule sets the "rule" field.
-func (_c *TagDefinitionCreate) SetRule(v map[string]interface{}) *TagDefinitionCreate {
+func (_c *TagDefinitionCreate) SetRule(v *servicev1.TagRule) *TagDefinitionCreate {
 	_c.mutation.SetRule(v)
 	return _c
 }
 
 // SetAllowedValues sets the "allowed_values" field.
-func (_c *TagDefinitionCreate) SetAllowedValues(v []map[string]interface{}) *TagDefinitionCreate {
+func (_c *TagDefinitionCreate) SetAllowedValues(v []*servicev1.TagValue) *TagDefinitionCreate {
 	_c.mutation.SetAllowedValues(v)
 	return _c
 }
@@ -321,6 +322,11 @@ func (_c *TagDefinitionCreate) check() error {
 	if v, ok := _c.mutation.TagType(); ok {
 		if err := tagdefinition.TagTypeValidator(v); err != nil {
 			return &ValidationError{Name: "tag_type", err: fmt.Errorf(`ent: validator failed for field "TagDefinition.tag_type": %w`, err)}
+		}
+	}
+	if v, ok := _c.mutation.Rule(); ok {
+		if err := v.Validate(); err != nil {
+			return &ValidationError{Name: "rule", err: fmt.Errorf(`ent: validator failed for field "TagDefinition.rule": %w`, err)}
 		}
 	}
 	if v, ok := _c.mutation.Code(); ok {
@@ -667,7 +673,7 @@ func (u *TagDefinitionUpsert) ClearTagType() *TagDefinitionUpsert {
 }
 
 // SetRule sets the "rule" field.
-func (u *TagDefinitionUpsert) SetRule(v map[string]interface{}) *TagDefinitionUpsert {
+func (u *TagDefinitionUpsert) SetRule(v *servicev1.TagRule) *TagDefinitionUpsert {
 	u.Set(tagdefinition.FieldRule, v)
 	return u
 }
@@ -685,7 +691,7 @@ func (u *TagDefinitionUpsert) ClearRule() *TagDefinitionUpsert {
 }
 
 // SetAllowedValues sets the "allowed_values" field.
-func (u *TagDefinitionUpsert) SetAllowedValues(v []map[string]interface{}) *TagDefinitionUpsert {
+func (u *TagDefinitionUpsert) SetAllowedValues(v []*servicev1.TagValue) *TagDefinitionUpsert {
 	u.Set(tagdefinition.FieldAllowedValues, v)
 	return u
 }
@@ -1045,7 +1051,7 @@ func (u *TagDefinitionUpsertOne) ClearTagType() *TagDefinitionUpsertOne {
 }
 
 // SetRule sets the "rule" field.
-func (u *TagDefinitionUpsertOne) SetRule(v map[string]interface{}) *TagDefinitionUpsertOne {
+func (u *TagDefinitionUpsertOne) SetRule(v *servicev1.TagRule) *TagDefinitionUpsertOne {
 	return u.Update(func(s *TagDefinitionUpsert) {
 		s.SetRule(v)
 	})
@@ -1066,7 +1072,7 @@ func (u *TagDefinitionUpsertOne) ClearRule() *TagDefinitionUpsertOne {
 }
 
 // SetAllowedValues sets the "allowed_values" field.
-func (u *TagDefinitionUpsertOne) SetAllowedValues(v []map[string]interface{}) *TagDefinitionUpsertOne {
+func (u *TagDefinitionUpsertOne) SetAllowedValues(v []*servicev1.TagValue) *TagDefinitionUpsertOne {
 	return u.Update(func(s *TagDefinitionUpsert) {
 		s.SetAllowedValues(v)
 	})
@@ -1608,7 +1614,7 @@ func (u *TagDefinitionUpsertBulk) ClearTagType() *TagDefinitionUpsertBulk {
 }
 
 // SetRule sets the "rule" field.
-func (u *TagDefinitionUpsertBulk) SetRule(v map[string]interface{}) *TagDefinitionUpsertBulk {
+func (u *TagDefinitionUpsertBulk) SetRule(v *servicev1.TagRule) *TagDefinitionUpsertBulk {
 	return u.Update(func(s *TagDefinitionUpsert) {
 		s.SetRule(v)
 	})
@@ -1629,7 +1635,7 @@ func (u *TagDefinitionUpsertBulk) ClearRule() *TagDefinitionUpsertBulk {
 }
 
 // SetAllowedValues sets the "allowed_values" field.
-func (u *TagDefinitionUpsertBulk) SetAllowedValues(v []map[string]interface{}) *TagDefinitionUpsertBulk {
+func (u *TagDefinitionUpsertBulk) SetAllowedValues(v []*servicev1.TagValue) *TagDefinitionUpsertBulk {
 	return u.Update(func(s *TagDefinitionUpsert) {
 		s.SetAllowedValues(v)
 	})

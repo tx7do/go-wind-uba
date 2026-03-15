@@ -57,6 +57,17 @@ func (s *redactedApplicationServiceServer) List(ctx context.Context, in *paginat
 	return res, err
 }
 
+// Count is the redacted wrapper for the actual ApplicationServiceServer.Count method
+// Unary RPC
+func (s *redactedApplicationServiceServer) Count(ctx context.Context, in *pagination.PagingRequest) (*CountApplicationResponse, error) {
+	res, err := s.srv.Count(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
 // Get is the redacted wrapper for the actual ApplicationServiceServer.Get method
 // Unary RPC
 func (s *redactedApplicationServiceServer) Get(ctx context.Context, in *GetApplicationRequest) (*Application, error) {
@@ -154,6 +165,8 @@ func (x *ListApplicationResponse) Redact() string {
 	}
 
 	// Safe field: Items
+
+	// Safe field: Total
 	return x.String()
 }
 
@@ -200,5 +213,15 @@ func (x *DeleteApplicationRequest) Redact() string {
 	}
 
 	// Safe field: DeletedBy
+	return x.String()
+}
+
+// Redact method implementation for CountApplicationResponse
+func (x *CountApplicationResponse) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Count
 	return x.String()
 }

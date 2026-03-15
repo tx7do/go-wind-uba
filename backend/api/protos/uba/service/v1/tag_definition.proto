@@ -1,0 +1,219 @@
+﻿syntax = "proto3";
+
+package uba.service.v1;
+
+import "gnostic/openapi/v3/annotations.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/field_mask.proto";
+
+import "pagination/v1/pagination.proto";
+
+// 标签定义服务
+service TagDefinitionService {
+  // 查询标签定义列表
+  rpc List (pagination.PagingRequest) returns (ListTagDefinitionResponse) {}
+
+  // 查询标签定义数量
+  rpc Count (pagination.PagingRequest) returns (CountTagDefinitionResponse) {}
+
+  // 查询标签定义详情
+  rpc Get (GetTagDefinitionRequest) returns (TagDefinition) {}
+
+  // 创建标签定义
+  rpc Create (CreateTagDefinitionRequest) returns (TagDefinition) {}
+
+  // 更新标签定义
+  rpc Update (UpdateTagDefinitionRequest) returns (TagDefinition) {}
+
+  // 删除标签定义
+  rpc Delete (DeleteTagDefinitionRequest) returns (google.protobuf.Empty) {}
+}
+
+// 标签分类枚举
+enum TagCategory {
+  // 未指定标签分类
+  TAG_CATEGORY_UNSPECIFIED = 0;
+
+  // 用户属性标签
+  TAG_CATEGORY_USER = 1;
+  // 行为偏好标签
+  TAG_CATEGORY_BEHAVIOR = 2;
+  // 风险标签
+  TAG_CATEGORY_RISK = 3;
+  // 业务标签
+  TAG_CATEGORY_BUSINESS = 4;
+}
+
+// 标签类型枚举
+enum TagType {
+  // 未指定标签类型
+  TAG_TYPE_UNSPECIFIED = 0;
+
+  // 布尔型标签（是/否）
+  TAG_TYPE_BOOLEAN = 1;
+  // 枚举型标签
+  TAG_TYPE_ENUM = 2;
+  // 数值型标签
+  TAG_TYPE_NUMERIC = 3;
+  // 字符串型标签
+  TAG_TYPE_STRING = 4;
+  // 列表型标签
+  TAG_TYPE_LIST = 5;
+}
+
+// 标签定义（对应 tag_definition 表）
+message TagDefinition {
+  // 标签ID（唯一标识一个标签）
+  uint32 id = 1 [
+    json_name = "id",
+    (gnostic.openapi.v3.property) = {description: "标签ID，唯一标识一个标签"}
+  ];
+  // 租户ID（多租户隔离，支持 SaaS 场景）
+  optional uint32 tenant_id = 2 [
+    json_name = "tenantId",
+    (gnostic.openapi.v3.property) = {description: "租户ID，多租户隔离，支持 SaaS 场景"}
+  ];
+
+  // 标签名称（显示名称）
+  optional string name = 3 [
+    json_name = "name",
+    (gnostic.openapi.v3.property) = {description: "标签名称，显示名称"}
+  ];
+  // 标签唯一代码，业务唯一标识，支持英文、数字、下划线
+  optional string code = 4 [
+    json_name = "code",
+    (gnostic.openapi.v3.property) = {description: "标签唯一代码，业务唯一标识，支持英文、数字、下划线"}
+  ];
+
+  // 标签描述（详细说明）
+  optional string description = 5 [
+    json_name = "description",
+    (gnostic.openapi.v3.property) = {description: "标签描述，详细说明"}
+  ];
+  // 标签分类（如用户属性、行为偏好、风险、业务等）
+  optional TagCategory category = 6 [
+    json_name = "category",
+    (gnostic.openapi.v3.property) = {description: "标签分类，如用户属性、行为偏好、风险、业务等"}
+  ];
+
+  // 标签类型（如布尔、枚举、数值、字符串、列表等）
+  optional TagType tag_type = 10 [
+    json_name = "tagType",
+    (gnostic.openapi.v3.property) = {description: "标签类型，如布尔、枚举、数值、字符串、列表等"}
+  ];
+
+  // 计算规则（简化，实际可用表达式引擎，如 CEL/SQL）
+  optional TagRule rule = 11 [
+    json_name = "rule",
+    (gnostic.openapi.v3.property) = {description: "计算规则，简化，实际可用表达式引擎，如 CEL/SQL"}
+  ];
+
+  // 取值范围（枚举型标签的允许值列表）
+  repeated TagValue allowed_values = 12 [
+    json_name = "allowedValues",
+    (gnostic.openapi.v3.property) = {description: "取值范围，枚举型标签的允许值列表"}
+  ];
+
+  // 是否系统预置（true: 系统预置，false: 用户自定义）
+  optional bool is_system = 13 [
+    json_name = "isSystem",
+    (gnostic.openapi.v3.property) = {description: "是否系统预置，true: 系统预置，false: 用户自定义"}
+  ];
+  // 是否动态标签（true: 动态计算，false: 静态打标）
+  optional bool is_dynamic = 14 [
+    json_name = "isDynamic",
+    (gnostic.openapi.v3.property) = {description: "是否动态标签，true: 动态计算，false: 静态打标"}
+  ];
+  // 动态标签刷新间隔（单位秒）
+  optional uint32 refresh_interval_seconds = 15 [
+    json_name = "refreshIntervalSeconds",
+    (gnostic.openapi.v3.property) = {description: "动态标签刷新间隔，单位秒"}
+  ];
+
+  optional uint32 created_by = 100 [json_name = "createdBy", (gnostic.openapi.v3.property) = {description: "创建者用户ID"}]; // 创建者用户ID
+  optional uint32 updated_by = 101 [json_name = "updatedBy", (gnostic.openapi.v3.property) = {description: "更新者用户ID"}]; // 更新者用户ID
+  optional uint32 deleted_by = 102 [json_name = "deletedBy", (gnostic.openapi.v3.property) = {description: "删除者用户ID"}]; // 删除者用户ID
+
+  optional google.protobuf.Timestamp created_at = 200 [json_name = "createdAt", (gnostic.openapi.v3.property) = {description: "创建时间"}];// 创建时间
+  optional google.protobuf.Timestamp updated_at = 201 [json_name = "updatedAt", (gnostic.openapi.v3.property) = {description: "更新时间"}];// 更新时间
+  optional google.protobuf.Timestamp deleted_at = 202 [json_name = "deletedAt", (gnostic.openapi.v3.property) = {description: "删除时间"}];// 删除时间
+}
+
+// 标签规则定义（简化，实际可根据需求扩展为更复杂的表达式结构）
+message TagRule {
+  // 规则表达式（如 CEL/SQL，示例: "total_pay_amount > 1000 AND last_pay_time > now() - 30d"）
+  string expression = 1 [
+    json_name = "expression",
+    (gnostic.openapi.v3.property) = {description: "规则表达式，如 CEL/SQL，示例: 'total_pay_amount > 1000 AND last_pay_time > now() - 30d'"}
+  ];
+  // 规则参数（键值对形式，支持自定义参数）
+  map<string, string> params = 2 [
+    json_name = "params",
+    (gnostic.openapi.v3.property) = {description: "规则参数，键值对形式，支持自定义参数"}
+  ];
+}
+
+// 标签值定义（用于枚举型标签的取值范围）
+message TagValue {
+  // 标签值（实际存储值）
+  string value = 1 [
+    json_name = "value",
+    (gnostic.openapi.v3.property) = {description: "标签值，实际存储值"}
+  ];
+  // 标签值显示名称（用于展示）
+  string label = 2 [
+    json_name = "label",
+    (gnostic.openapi.v3.property) = {description: "标签值显示名称，用于展示"}
+  ];
+  // 标签值描述（详细说明）
+  string description = 3 [
+    json_name = "description",
+    (gnostic.openapi.v3.property) = {description: "标签值描述，详细说明"}
+  ];
+}
+
+// 获取标签定义列表 - 答复
+message ListTagDefinitionResponse {
+  repeated TagDefinition items = 1 [json_name = "items", (gnostic.openapi.v3.property) = {description: "TagDefinition列表"}]; // TagDefinition列表
+  uint64 total = 2 [json_name = "total", (gnostic.openapi.v3.property) = {description: "总数"}]; // 总数
+}
+
+// 获取标签定义数据 - 请求
+message GetTagDefinitionRequest {
+  oneof query_by {
+    uint32 id = 1 [json_name = "id", (gnostic.openapi.v3.property) = {description: "ID", read_only: true}]; // ID
+  }
+
+  optional google.protobuf.FieldMask view_mask = 100 [json_name = "viewMask", (gnostic.openapi.v3.property) = {description: "视图字段过滤器，用于控制返回的字段"}]; // 视图字段过滤器
+}
+
+// 创建标签定义 - 请求
+message CreateTagDefinitionRequest {
+  TagDefinition data = 1 [json_name = "data", (gnostic.openapi.v3.property) = {description: "TagDefinition配置数据"}]; // TagDefinition配置数据
+}
+
+// 更新标签定义 - 请求
+message UpdateTagDefinitionRequest {
+  uint32 id = 1 [json_name = "id", (gnostic.openapi.v3.property) = {description: "TagDefinition配置ID"}]; // TagDefinition配置ID
+
+  TagDefinition data = 2 [json_name = "data", (gnostic.openapi.v3.property) = {description: "TagDefinition配置数据"}]; // TagDefinition配置数据
+
+  google.protobuf.FieldMask update_mask = 3 [json_name = "updateMask", (gnostic.openapi.v3.property) = {description: "要更新的字段列表", example: {yaml : "id,name,url"}}]; // 要更新的字段列表
+
+  optional bool allow_missing = 4 [json_name = "allowMissing", (gnostic.openapi.v3.property) = {description: "如果设置为true，资源不存在则会新增(插入)，并且在这种情况下`updateMask`字段将会被忽略。"}]; // 资源不存在时自动新增
+}
+
+// 删除标签定义 - 请求
+message DeleteTagDefinitionRequest {
+  oneof query_by {
+    uint32 id = 1 [json_name = "id", (gnostic.openapi.v3.property) = {description: "ID", read_only: true}]; // ID
+  }
+
+  optional uint32 deleted_by = 100 [json_name = "deletedBy", (gnostic.openapi.v3.property) = {description: "删除者用户ID"}]; // 删除者用户ID
+}
+
+// 标签定义数量 - 答复
+message CountTagDefinitionResponse {
+  uint64 count = 1 [json_name = "count", (gnostic.openapi.v3.property) = {description: "数量"}]; // 数量
+}

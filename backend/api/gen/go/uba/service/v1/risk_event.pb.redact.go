@@ -6,10 +6,10 @@ package servicev1
 import (
 	context "context"
 	redact "github.com/menta2k/protoc-gen-redact/v3/redact/v3"
+	pagination "github.com/tx7do/go-crud/api/gen/go/pagination/v1"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	durationpb "google.golang.org/protobuf/types/known/durationpb"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	fieldmaskpb "google.golang.org/protobuf/types/known/fieldmaskpb"
 	structpb "google.golang.org/protobuf/types/known/structpb"
@@ -25,9 +25,9 @@ var (
 	_ status.Status
 	_ emptypb.Empty
 	_ timestamppb.Timestamp
-	_ durationpb.Duration
 	_ fieldmaskpb.FieldMask
 	_ structpb.Struct
+	_ pagination.Sorting
 )
 
 // RegisterRedactedRiskEventServiceServer wraps the RiskEventServiceServer with the redacted server and registers the service in GRPC
@@ -46,6 +46,72 @@ type redactedRiskEventServiceServer struct {
 	UnsafeRiskEventServiceServer
 	srv    RiskEventServiceServer
 	bypass redact.Bypass
+}
+
+// List is the redacted wrapper for the actual RiskEventServiceServer.List method
+// Unary RPC
+func (s *redactedRiskEventServiceServer) List(ctx context.Context, in *pagination.PagingRequest) (*ListRiskEventResponse, error) {
+	res, err := s.srv.List(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
+// Count is the redacted wrapper for the actual RiskEventServiceServer.Count method
+// Unary RPC
+func (s *redactedRiskEventServiceServer) Count(ctx context.Context, in *pagination.PagingRequest) (*CountRiskEventResponse, error) {
+	res, err := s.srv.Count(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
+// Get is the redacted wrapper for the actual RiskEventServiceServer.Get method
+// Unary RPC
+func (s *redactedRiskEventServiceServer) Get(ctx context.Context, in *GetRiskEventRequest) (*RiskEvent, error) {
+	res, err := s.srv.Get(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
+// Create is the redacted wrapper for the actual RiskEventServiceServer.Create method
+// Unary RPC
+func (s *redactedRiskEventServiceServer) Create(ctx context.Context, in *CreateRiskEventRequest) (*RiskEvent, error) {
+	res, err := s.srv.Create(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
+// Update is the redacted wrapper for the actual RiskEventServiceServer.Update method
+// Unary RPC
+func (s *redactedRiskEventServiceServer) Update(ctx context.Context, in *UpdateRiskEventRequest) (*RiskEvent, error) {
+	res, err := s.srv.Update(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
+// Delete is the redacted wrapper for the actual RiskEventServiceServer.Delete method
+// Unary RPC
+func (s *redactedRiskEventServiceServer) Delete(ctx context.Context, in *DeleteRiskEventRequest) (*emptypb.Empty, error) {
+	res, err := s.srv.Delete(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
 }
 
 // Redact method implementation for RiskEvent
@@ -110,20 +176,6 @@ func (x *RiskEvent) Redact() string {
 	return x.String()
 }
 
-// Redact method implementation for RiskAction
-func (x *RiskAction) Redact() string {
-	if x == nil {
-		return ""
-	}
-
-	// Safe field: Type
-
-	// Safe field: Duration
-
-	// Safe field: Reason
-	return x.String()
-}
-
 // Redact method implementation for RiskEventSummary
 func (x *RiskEventSummary) Redact() string {
 	if x == nil {
@@ -142,44 +194,70 @@ func (x *RiskEventSummary) Redact() string {
 	return x.String()
 }
 
-// Redact method implementation for RiskRule
-func (x *RiskRule) Redact() string {
+// Redact method implementation for ListRiskEventResponse
+func (x *ListRiskEventResponse) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Items
+
+	// Safe field: Total
+	return x.String()
+}
+
+// Redact method implementation for GetRiskEventRequest
+func (x *GetRiskEventRequest) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: ViewMask
+	return x.String()
+}
+
+// Redact method implementation for CreateRiskEventRequest
+func (x *CreateRiskEventRequest) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Data
+	return x.String()
+}
+
+// Redact method implementation for UpdateRiskEventRequest
+func (x *UpdateRiskEventRequest) Redact() string {
 	if x == nil {
 		return ""
 	}
 
 	// Safe field: Id
 
-	// Safe field: TenantId
+	// Safe field: Data
 
-	// Safe field: Name
+	// Safe field: UpdateMask
 
-	// Safe field: Code
+	// Safe field: AllowMissing
+	return x.String()
+}
 
-	// Safe field: Description
-
-	// Safe field: RiskType
-
-	// Safe field: DefaultLevel
-
-	// Safe field: Condition
-
-	// Safe field: Actions
-
-	// Safe field: Enabled
-
-	// Safe field: Priority
-
-	// Safe field: CreatedBy
-
-	// Safe field: UpdatedBy
+// Redact method implementation for DeleteRiskEventRequest
+func (x *DeleteRiskEventRequest) Redact() string {
+	if x == nil {
+		return ""
+	}
 
 	// Safe field: DeletedBy
+	return x.String()
+}
 
-	// Safe field: CreatedAt
+// Redact method implementation for CountRiskEventResponse
+func (x *CountRiskEventResponse) Redact() string {
+	if x == nil {
+		return ""
+	}
 
-	// Safe field: UpdatedAt
-
-	// Safe field: DeletedAt
+	// Safe field: Count
 	return x.String()
 }

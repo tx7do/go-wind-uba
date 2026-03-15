@@ -5,6 +5,7 @@ package ent
 import (
 	"encoding/json"
 	"fmt"
+	servicev1 "go-wind-uba/api/gen/go/uba/service/v1"
 	"go-wind-uba/app/core/service/internal/data/ent/tagdefinition"
 	"strings"
 	"time"
@@ -42,9 +43,9 @@ type TagDefinition struct {
 	// 标签类型，如布尔、枚举、数值、字符串、列表等
 	TagType *tagdefinition.TagType `json:"tag_type,omitempty"`
 	// 计算规则，简化，实际可用表达式引擎，如 CEL/SQL
-	Rule map[string]interface{} `json:"rule,omitempty"`
+	Rule *servicev1.TagRule `json:"rule,omitempty"`
 	// 取值范围，枚举型标签的允许值列表
-	AllowedValues []map[string]interface{} `json:"allowed_values,omitempty"`
+	AllowedValues []*servicev1.TagValue `json:"allowed_values,omitempty"`
 	// 是否系统预置，true: 系统预置，false: 用户自定义
 	IsSystem *bool `json:"is_system,omitempty"`
 	// 是否动态标签，true: 动态计算，false: 静态打标

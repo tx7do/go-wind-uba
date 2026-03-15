@@ -3,6 +3,8 @@
 package idmapping
 
 import (
+	"fmt"
+
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 )
@@ -14,6 +16,12 @@ const (
 	FieldID = "id"
 	// FieldTenantID holds the string denoting the tenant_id field in the database.
 	FieldTenantID = "tenant_id"
+	// FieldCreatedBy holds the string denoting the created_by field in the database.
+	FieldCreatedBy = "created_by"
+	// FieldUpdatedBy holds the string denoting the updated_by field in the database.
+	FieldUpdatedBy = "updated_by"
+	// FieldDeletedBy holds the string denoting the deleted_by field in the database.
+	FieldDeletedBy = "deleted_by"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
@@ -36,6 +44,8 @@ const (
 	FieldLastSeen = "last_seen"
 	// FieldIsActive holds the string denoting the is_active field in the database.
 	FieldIsActive = "is_active"
+	// FieldProperties holds the string denoting the properties field in the database.
+	FieldProperties = "properties"
 	// Table holds the table name of the idmapping in the database.
 	Table = "uba_id_mappings"
 )
@@ -44,6 +54,9 @@ const (
 var Columns = []string{
 	FieldID,
 	FieldTenantID,
+	FieldCreatedBy,
+	FieldUpdatedBy,
+	FieldDeletedBy,
 	FieldCreatedAt,
 	FieldUpdatedAt,
 	FieldDeletedAt,
@@ -55,6 +68,7 @@ var Columns = []string{
 	FieldFirstSeen,
 	FieldLastSeen,
 	FieldIsActive,
+	FieldProperties,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -79,12 +93,10 @@ var (
 	DefaultTenantID uint32
 	// GlobalUserIDValidator is a validator for the "global_user_id" field. It is called by the builders before save.
 	GlobalUserIDValidator func(string) error
-	// IDTypeValidator is a validator for the "id_type" field. It is called by the builders before save.
-	IDTypeValidator func(string) error
 	// IDValueValidator is a validator for the "id_value" field. It is called by the builders before save.
 	IDValueValidator func(string) error
 	// DefaultConfidence holds the default value on creation for the "confidence" field.
-	DefaultConfidence float64
+	DefaultConfidence float32
 	// DefaultLinkSource holds the default value on creation for the "link_source" field.
 	DefaultLinkSource string
 	// DefaultIsActive holds the default value on creation for the "is_active" field.
@@ -92,6 +104,33 @@ var (
 	// IDValidator is a validator for the "id" field. It is called by the builders before save.
 	IDValidator func(uint32) error
 )
+
+// IDType defines the type for the "id_type" enum field.
+type IDType string
+
+// IDType values.
+const (
+	IDTypeIdTypeUserId   IDType = "ID_TYPE_USER_ID"
+	IDTypeIdTypeDeviceId IDType = "ID_TYPE_DEVICE_ID"
+	IDTypeIdTypeCookie   IDType = "ID_TYPE_COOKIE"
+	IDTypeIdTypeEmail    IDType = "ID_TYPE_EMAIL"
+	IDTypeIdTypePhone    IDType = "ID_TYPE_PHONE"
+	IDTypeIdTypeOpenid   IDType = "ID_TYPE_OPENID"
+)
+
+func (it IDType) String() string {
+	return string(it)
+}
+
+// IDTypeValidator is a validator for the "id_type" field enum values. It is called by the builders before save.
+func IDTypeValidator(it IDType) error {
+	switch it {
+	case IDTypeIdTypeUserId, IDTypeIdTypeDeviceId, IDTypeIdTypeCookie, IDTypeIdTypeEmail, IDTypeIdTypePhone, IDTypeIdTypeOpenid:
+		return nil
+	default:
+		return fmt.Errorf("idmapping: invalid enum value for id_type field: %q", it)
+	}
+}
 
 // OrderOption defines the ordering options for the IDMapping queries.
 type OrderOption func(*sql.Selector)
@@ -104,6 +143,21 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 // ByTenantID orders the results by the tenant_id field.
 func ByTenantID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldTenantID, opts...).ToFunc()
+}
+
+// ByCreatedBy orders the results by the created_by field.
+func ByCreatedBy(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCreatedBy, opts...).ToFunc()
+}
+
+// ByUpdatedBy orders the results by the updated_by field.
+func ByUpdatedBy(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUpdatedBy, opts...).ToFunc()
+}
+
+// ByDeletedBy orders the results by the deleted_by field.
+func ByDeletedBy(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDeletedBy, opts...).ToFunc()
 }
 
 // ByCreatedAt orders the results by the created_at field.

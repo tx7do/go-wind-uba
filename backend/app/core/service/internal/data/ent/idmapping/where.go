@@ -59,6 +59,21 @@ func TenantID(v uint32) predicate.IDMapping {
 	return predicate.IDMapping(sql.FieldEQ(FieldTenantID, v))
 }
 
+// CreatedBy applies equality check predicate on the "created_by" field. It's identical to CreatedByEQ.
+func CreatedBy(v uint32) predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldEQ(FieldCreatedBy, v))
+}
+
+// UpdatedBy applies equality check predicate on the "updated_by" field. It's identical to UpdatedByEQ.
+func UpdatedBy(v uint32) predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldEQ(FieldUpdatedBy, v))
+}
+
+// DeletedBy applies equality check predicate on the "deleted_by" field. It's identical to DeletedByEQ.
+func DeletedBy(v uint32) predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldEQ(FieldDeletedBy, v))
+}
+
 // CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
 func CreatedAt(v time.Time) predicate.IDMapping {
 	return predicate.IDMapping(sql.FieldEQ(FieldCreatedAt, v))
@@ -79,18 +94,13 @@ func GlobalUserID(v string) predicate.IDMapping {
 	return predicate.IDMapping(sql.FieldEQ(FieldGlobalUserID, v))
 }
 
-// IDType applies equality check predicate on the "id_type" field. It's identical to IDTypeEQ.
-func IDType(v string) predicate.IDMapping {
-	return predicate.IDMapping(sql.FieldEQ(FieldIDType, v))
-}
-
 // IDValue applies equality check predicate on the "id_value" field. It's identical to IDValueEQ.
 func IDValue(v string) predicate.IDMapping {
 	return predicate.IDMapping(sql.FieldEQ(FieldIDValue, v))
 }
 
 // Confidence applies equality check predicate on the "confidence" field. It's identical to ConfidenceEQ.
-func Confidence(v float64) predicate.IDMapping {
+func Confidence(v float32) predicate.IDMapping {
 	return predicate.IDMapping(sql.FieldEQ(FieldConfidence, v))
 }
 
@@ -162,6 +172,156 @@ func TenantIDIsNil() predicate.IDMapping {
 // TenantIDNotNil applies the NotNil predicate on the "tenant_id" field.
 func TenantIDNotNil() predicate.IDMapping {
 	return predicate.IDMapping(sql.FieldNotNull(FieldTenantID))
+}
+
+// CreatedByEQ applies the EQ predicate on the "created_by" field.
+func CreatedByEQ(v uint32) predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldEQ(FieldCreatedBy, v))
+}
+
+// CreatedByNEQ applies the NEQ predicate on the "created_by" field.
+func CreatedByNEQ(v uint32) predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldNEQ(FieldCreatedBy, v))
+}
+
+// CreatedByIn applies the In predicate on the "created_by" field.
+func CreatedByIn(vs ...uint32) predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldIn(FieldCreatedBy, vs...))
+}
+
+// CreatedByNotIn applies the NotIn predicate on the "created_by" field.
+func CreatedByNotIn(vs ...uint32) predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldNotIn(FieldCreatedBy, vs...))
+}
+
+// CreatedByGT applies the GT predicate on the "created_by" field.
+func CreatedByGT(v uint32) predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldGT(FieldCreatedBy, v))
+}
+
+// CreatedByGTE applies the GTE predicate on the "created_by" field.
+func CreatedByGTE(v uint32) predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldGTE(FieldCreatedBy, v))
+}
+
+// CreatedByLT applies the LT predicate on the "created_by" field.
+func CreatedByLT(v uint32) predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldLT(FieldCreatedBy, v))
+}
+
+// CreatedByLTE applies the LTE predicate on the "created_by" field.
+func CreatedByLTE(v uint32) predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldLTE(FieldCreatedBy, v))
+}
+
+// CreatedByIsNil applies the IsNil predicate on the "created_by" field.
+func CreatedByIsNil() predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldIsNull(FieldCreatedBy))
+}
+
+// CreatedByNotNil applies the NotNil predicate on the "created_by" field.
+func CreatedByNotNil() predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldNotNull(FieldCreatedBy))
+}
+
+// UpdatedByEQ applies the EQ predicate on the "updated_by" field.
+func UpdatedByEQ(v uint32) predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldEQ(FieldUpdatedBy, v))
+}
+
+// UpdatedByNEQ applies the NEQ predicate on the "updated_by" field.
+func UpdatedByNEQ(v uint32) predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldNEQ(FieldUpdatedBy, v))
+}
+
+// UpdatedByIn applies the In predicate on the "updated_by" field.
+func UpdatedByIn(vs ...uint32) predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldIn(FieldUpdatedBy, vs...))
+}
+
+// UpdatedByNotIn applies the NotIn predicate on the "updated_by" field.
+func UpdatedByNotIn(vs ...uint32) predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldNotIn(FieldUpdatedBy, vs...))
+}
+
+// UpdatedByGT applies the GT predicate on the "updated_by" field.
+func UpdatedByGT(v uint32) predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldGT(FieldUpdatedBy, v))
+}
+
+// UpdatedByGTE applies the GTE predicate on the "updated_by" field.
+func UpdatedByGTE(v uint32) predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldGTE(FieldUpdatedBy, v))
+}
+
+// UpdatedByLT applies the LT predicate on the "updated_by" field.
+func UpdatedByLT(v uint32) predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldLT(FieldUpdatedBy, v))
+}
+
+// UpdatedByLTE applies the LTE predicate on the "updated_by" field.
+func UpdatedByLTE(v uint32) predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldLTE(FieldUpdatedBy, v))
+}
+
+// UpdatedByIsNil applies the IsNil predicate on the "updated_by" field.
+func UpdatedByIsNil() predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldIsNull(FieldUpdatedBy))
+}
+
+// UpdatedByNotNil applies the NotNil predicate on the "updated_by" field.
+func UpdatedByNotNil() predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldNotNull(FieldUpdatedBy))
+}
+
+// DeletedByEQ applies the EQ predicate on the "deleted_by" field.
+func DeletedByEQ(v uint32) predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldEQ(FieldDeletedBy, v))
+}
+
+// DeletedByNEQ applies the NEQ predicate on the "deleted_by" field.
+func DeletedByNEQ(v uint32) predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldNEQ(FieldDeletedBy, v))
+}
+
+// DeletedByIn applies the In predicate on the "deleted_by" field.
+func DeletedByIn(vs ...uint32) predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldIn(FieldDeletedBy, vs...))
+}
+
+// DeletedByNotIn applies the NotIn predicate on the "deleted_by" field.
+func DeletedByNotIn(vs ...uint32) predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldNotIn(FieldDeletedBy, vs...))
+}
+
+// DeletedByGT applies the GT predicate on the "deleted_by" field.
+func DeletedByGT(v uint32) predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldGT(FieldDeletedBy, v))
+}
+
+// DeletedByGTE applies the GTE predicate on the "deleted_by" field.
+func DeletedByGTE(v uint32) predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldGTE(FieldDeletedBy, v))
+}
+
+// DeletedByLT applies the LT predicate on the "deleted_by" field.
+func DeletedByLT(v uint32) predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldLT(FieldDeletedBy, v))
+}
+
+// DeletedByLTE applies the LTE predicate on the "deleted_by" field.
+func DeletedByLTE(v uint32) predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldLTE(FieldDeletedBy, v))
+}
+
+// DeletedByIsNil applies the IsNil predicate on the "deleted_by" field.
+func DeletedByIsNil() predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldIsNull(FieldDeletedBy))
+}
+
+// DeletedByNotNil applies the NotNil predicate on the "deleted_by" field.
+func DeletedByNotNil() predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldNotNull(FieldDeletedBy))
 }
 
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
@@ -369,6 +529,16 @@ func GlobalUserIDHasSuffix(v string) predicate.IDMapping {
 	return predicate.IDMapping(sql.FieldHasSuffix(FieldGlobalUserID, v))
 }
 
+// GlobalUserIDIsNil applies the IsNil predicate on the "global_user_id" field.
+func GlobalUserIDIsNil() predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldIsNull(FieldGlobalUserID))
+}
+
+// GlobalUserIDNotNil applies the NotNil predicate on the "global_user_id" field.
+func GlobalUserIDNotNil() predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldNotNull(FieldGlobalUserID))
+}
+
 // GlobalUserIDEqualFold applies the EqualFold predicate on the "global_user_id" field.
 func GlobalUserIDEqualFold(v string) predicate.IDMapping {
 	return predicate.IDMapping(sql.FieldEqualFold(FieldGlobalUserID, v))
@@ -380,68 +550,33 @@ func GlobalUserIDContainsFold(v string) predicate.IDMapping {
 }
 
 // IDTypeEQ applies the EQ predicate on the "id_type" field.
-func IDTypeEQ(v string) predicate.IDMapping {
+func IDTypeEQ(v IDType) predicate.IDMapping {
 	return predicate.IDMapping(sql.FieldEQ(FieldIDType, v))
 }
 
 // IDTypeNEQ applies the NEQ predicate on the "id_type" field.
-func IDTypeNEQ(v string) predicate.IDMapping {
+func IDTypeNEQ(v IDType) predicate.IDMapping {
 	return predicate.IDMapping(sql.FieldNEQ(FieldIDType, v))
 }
 
 // IDTypeIn applies the In predicate on the "id_type" field.
-func IDTypeIn(vs ...string) predicate.IDMapping {
+func IDTypeIn(vs ...IDType) predicate.IDMapping {
 	return predicate.IDMapping(sql.FieldIn(FieldIDType, vs...))
 }
 
 // IDTypeNotIn applies the NotIn predicate on the "id_type" field.
-func IDTypeNotIn(vs ...string) predicate.IDMapping {
+func IDTypeNotIn(vs ...IDType) predicate.IDMapping {
 	return predicate.IDMapping(sql.FieldNotIn(FieldIDType, vs...))
 }
 
-// IDTypeGT applies the GT predicate on the "id_type" field.
-func IDTypeGT(v string) predicate.IDMapping {
-	return predicate.IDMapping(sql.FieldGT(FieldIDType, v))
+// IDTypeIsNil applies the IsNil predicate on the "id_type" field.
+func IDTypeIsNil() predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldIsNull(FieldIDType))
 }
 
-// IDTypeGTE applies the GTE predicate on the "id_type" field.
-func IDTypeGTE(v string) predicate.IDMapping {
-	return predicate.IDMapping(sql.FieldGTE(FieldIDType, v))
-}
-
-// IDTypeLT applies the LT predicate on the "id_type" field.
-func IDTypeLT(v string) predicate.IDMapping {
-	return predicate.IDMapping(sql.FieldLT(FieldIDType, v))
-}
-
-// IDTypeLTE applies the LTE predicate on the "id_type" field.
-func IDTypeLTE(v string) predicate.IDMapping {
-	return predicate.IDMapping(sql.FieldLTE(FieldIDType, v))
-}
-
-// IDTypeContains applies the Contains predicate on the "id_type" field.
-func IDTypeContains(v string) predicate.IDMapping {
-	return predicate.IDMapping(sql.FieldContains(FieldIDType, v))
-}
-
-// IDTypeHasPrefix applies the HasPrefix predicate on the "id_type" field.
-func IDTypeHasPrefix(v string) predicate.IDMapping {
-	return predicate.IDMapping(sql.FieldHasPrefix(FieldIDType, v))
-}
-
-// IDTypeHasSuffix applies the HasSuffix predicate on the "id_type" field.
-func IDTypeHasSuffix(v string) predicate.IDMapping {
-	return predicate.IDMapping(sql.FieldHasSuffix(FieldIDType, v))
-}
-
-// IDTypeEqualFold applies the EqualFold predicate on the "id_type" field.
-func IDTypeEqualFold(v string) predicate.IDMapping {
-	return predicate.IDMapping(sql.FieldEqualFold(FieldIDType, v))
-}
-
-// IDTypeContainsFold applies the ContainsFold predicate on the "id_type" field.
-func IDTypeContainsFold(v string) predicate.IDMapping {
-	return predicate.IDMapping(sql.FieldContainsFold(FieldIDType, v))
+// IDTypeNotNil applies the NotNil predicate on the "id_type" field.
+func IDTypeNotNil() predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldNotNull(FieldIDType))
 }
 
 // IDValueEQ applies the EQ predicate on the "id_value" field.
@@ -499,6 +634,16 @@ func IDValueHasSuffix(v string) predicate.IDMapping {
 	return predicate.IDMapping(sql.FieldHasSuffix(FieldIDValue, v))
 }
 
+// IDValueIsNil applies the IsNil predicate on the "id_value" field.
+func IDValueIsNil() predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldIsNull(FieldIDValue))
+}
+
+// IDValueNotNil applies the NotNil predicate on the "id_value" field.
+func IDValueNotNil() predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldNotNull(FieldIDValue))
+}
+
 // IDValueEqualFold applies the EqualFold predicate on the "id_value" field.
 func IDValueEqualFold(v string) predicate.IDMapping {
 	return predicate.IDMapping(sql.FieldEqualFold(FieldIDValue, v))
@@ -510,43 +655,53 @@ func IDValueContainsFold(v string) predicate.IDMapping {
 }
 
 // ConfidenceEQ applies the EQ predicate on the "confidence" field.
-func ConfidenceEQ(v float64) predicate.IDMapping {
+func ConfidenceEQ(v float32) predicate.IDMapping {
 	return predicate.IDMapping(sql.FieldEQ(FieldConfidence, v))
 }
 
 // ConfidenceNEQ applies the NEQ predicate on the "confidence" field.
-func ConfidenceNEQ(v float64) predicate.IDMapping {
+func ConfidenceNEQ(v float32) predicate.IDMapping {
 	return predicate.IDMapping(sql.FieldNEQ(FieldConfidence, v))
 }
 
 // ConfidenceIn applies the In predicate on the "confidence" field.
-func ConfidenceIn(vs ...float64) predicate.IDMapping {
+func ConfidenceIn(vs ...float32) predicate.IDMapping {
 	return predicate.IDMapping(sql.FieldIn(FieldConfidence, vs...))
 }
 
 // ConfidenceNotIn applies the NotIn predicate on the "confidence" field.
-func ConfidenceNotIn(vs ...float64) predicate.IDMapping {
+func ConfidenceNotIn(vs ...float32) predicate.IDMapping {
 	return predicate.IDMapping(sql.FieldNotIn(FieldConfidence, vs...))
 }
 
 // ConfidenceGT applies the GT predicate on the "confidence" field.
-func ConfidenceGT(v float64) predicate.IDMapping {
+func ConfidenceGT(v float32) predicate.IDMapping {
 	return predicate.IDMapping(sql.FieldGT(FieldConfidence, v))
 }
 
 // ConfidenceGTE applies the GTE predicate on the "confidence" field.
-func ConfidenceGTE(v float64) predicate.IDMapping {
+func ConfidenceGTE(v float32) predicate.IDMapping {
 	return predicate.IDMapping(sql.FieldGTE(FieldConfidence, v))
 }
 
 // ConfidenceLT applies the LT predicate on the "confidence" field.
-func ConfidenceLT(v float64) predicate.IDMapping {
+func ConfidenceLT(v float32) predicate.IDMapping {
 	return predicate.IDMapping(sql.FieldLT(FieldConfidence, v))
 }
 
 // ConfidenceLTE applies the LTE predicate on the "confidence" field.
-func ConfidenceLTE(v float64) predicate.IDMapping {
+func ConfidenceLTE(v float32) predicate.IDMapping {
 	return predicate.IDMapping(sql.FieldLTE(FieldConfidence, v))
+}
+
+// ConfidenceIsNil applies the IsNil predicate on the "confidence" field.
+func ConfidenceIsNil() predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldIsNull(FieldConfidence))
+}
+
+// ConfidenceNotNil applies the NotNil predicate on the "confidence" field.
+func ConfidenceNotNil() predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldNotNull(FieldConfidence))
 }
 
 // LinkSourceEQ applies the EQ predicate on the "link_source" field.
@@ -602,6 +757,16 @@ func LinkSourceHasPrefix(v string) predicate.IDMapping {
 // LinkSourceHasSuffix applies the HasSuffix predicate on the "link_source" field.
 func LinkSourceHasSuffix(v string) predicate.IDMapping {
 	return predicate.IDMapping(sql.FieldHasSuffix(FieldLinkSource, v))
+}
+
+// LinkSourceIsNil applies the IsNil predicate on the "link_source" field.
+func LinkSourceIsNil() predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldIsNull(FieldLinkSource))
+}
+
+// LinkSourceNotNil applies the NotNil predicate on the "link_source" field.
+func LinkSourceNotNil() predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldNotNull(FieldLinkSource))
 }
 
 // LinkSourceEqualFold applies the EqualFold predicate on the "link_source" field.
@@ -722,6 +887,26 @@ func IsActiveEQ(v bool) predicate.IDMapping {
 // IsActiveNEQ applies the NEQ predicate on the "is_active" field.
 func IsActiveNEQ(v bool) predicate.IDMapping {
 	return predicate.IDMapping(sql.FieldNEQ(FieldIsActive, v))
+}
+
+// IsActiveIsNil applies the IsNil predicate on the "is_active" field.
+func IsActiveIsNil() predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldIsNull(FieldIsActive))
+}
+
+// IsActiveNotNil applies the NotNil predicate on the "is_active" field.
+func IsActiveNotNil() predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldNotNull(FieldIsActive))
+}
+
+// PropertiesIsNil applies the IsNil predicate on the "properties" field.
+func PropertiesIsNil() predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldIsNull(FieldProperties))
+}
+
+// PropertiesNotNil applies the NotNil predicate on the "properties" field.
+func PropertiesNotNil() predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldNotNull(FieldProperties))
 }
 
 // And groups predicates with the AND operator between them.

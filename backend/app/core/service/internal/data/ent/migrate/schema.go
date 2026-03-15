@@ -592,17 +592,21 @@ var (
 	UbaIDMappingsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUint32, Increment: true, Comment: "id"},
 		{Name: "tenant_id", Type: field.TypeUint32, Nullable: true, Comment: "租户ID", Default: 0},
+		{Name: "created_by", Type: field.TypeUint32, Nullable: true, Comment: "创建者ID"},
+		{Name: "updated_by", Type: field.TypeUint32, Nullable: true, Comment: "更新者ID"},
+		{Name: "deleted_by", Type: field.TypeUint32, Nullable: true, Comment: "删除者ID"},
 		{Name: "created_at", Type: field.TypeTime, Nullable: true, Comment: "创建时间"},
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true, Comment: "更新时间"},
 		{Name: "deleted_at", Type: field.TypeTime, Nullable: true, Comment: "删除时间"},
-		{Name: "global_user_id", Type: field.TypeString, Comment: "打通后的全局用户ID"},
-		{Name: "id_type", Type: field.TypeString, Comment: "身份类型：user_id/device_id/cookie/email/phone"},
-		{Name: "id_value", Type: field.TypeString, Comment: "身份值，具体的用户/设备/邮箱/手机号等标识"},
-		{Name: "confidence", Type: field.TypeFloat64, Comment: "关联置信度，默认1.0", Default: 1},
-		{Name: "link_source", Type: field.TypeString, Comment: "关联来源：login/bind/algorithm", Default: "login"},
+		{Name: "global_user_id", Type: field.TypeString, Nullable: true, Comment: "全局用户唯一标识"},
+		{Name: "id_type", Type: field.TypeEnum, Nullable: true, Comment: "ID类型", Enums: []string{"ID_TYPE_USER_ID", "ID_TYPE_DEVICE_ID", "ID_TYPE_COOKIE", "ID_TYPE_EMAIL", "ID_TYPE_PHONE", "ID_TYPE_OPENID"}},
+		{Name: "id_value", Type: field.TypeString, Nullable: true, Comment: "ID值"},
+		{Name: "confidence", Type: field.TypeFloat32, Nullable: true, Comment: "置信度，映射关系可信度评分，范围0~1，默认1.0", Default: 1},
+		{Name: "link_source", Type: field.TypeString, Nullable: true, Comment: "关联来源：login/bind/algorithm", Default: "login"},
 		{Name: "first_seen", Type: field.TypeTime, Nullable: true, Comment: "首次关联时间"},
 		{Name: "last_seen", Type: field.TypeTime, Nullable: true, Comment: "最近关联时间"},
-		{Name: "is_active", Type: field.TypeBool, Comment: "是否激活，1为激活，0为未激活", Default: true},
+		{Name: "is_active", Type: field.TypeBool, Nullable: true, Comment: "是否激活，1为激活，0为未激活", Default: true},
+		{Name: "properties", Type: field.TypeJSON, Nullable: true, Comment: "扩展属性"},
 	}
 	// UbaIDMappingsTable holds the schema information for the "uba_id_mappings" table.
 	UbaIDMappingsTable = &schema.Table{
@@ -612,24 +616,24 @@ var (
 		PrimaryKey: []*schema.Column{UbaIDMappingsColumns[0]},
 		Indexes: []*schema.Index{
 			{
-				Name:    "idx_global_user",
+				Name:    "idx_id_mapping_global_user",
 				Unique:  false,
-				Columns: []*schema.Column{UbaIDMappingsColumns[1], UbaIDMappingsColumns[5]},
+				Columns: []*schema.Column{UbaIDMappingsColumns[1], UbaIDMappingsColumns[8]},
 			},
 			{
-				Name:    "idx_id_type_value",
+				Name:    "idx_id_mapping_id_type_value",
 				Unique:  false,
-				Columns: []*schema.Column{UbaIDMappingsColumns[1], UbaIDMappingsColumns[6], UbaIDMappingsColumns[7]},
+				Columns: []*schema.Column{UbaIDMappingsColumns[1], UbaIDMappingsColumns[9], UbaIDMappingsColumns[10]},
 			},
 			{
 				Name:    "idx_id_mapping_active",
 				Unique:  false,
-				Columns: []*schema.Column{UbaIDMappingsColumns[1], UbaIDMappingsColumns[12]},
+				Columns: []*schema.Column{UbaIDMappingsColumns[1], UbaIDMappingsColumns[15]},
 			},
 			{
-				Name:    "idx_type_value",
+				Name:    "idx_id_mapping_type_value",
 				Unique:  true,
-				Columns: []*schema.Column{UbaIDMappingsColumns[1], UbaIDMappingsColumns[6], UbaIDMappingsColumns[7]},
+				Columns: []*schema.Column{UbaIDMappingsColumns[1], UbaIDMappingsColumns[9], UbaIDMappingsColumns[10]},
 			},
 		},
 	}
@@ -2798,14 +2802,14 @@ var (
 		{Name: "deleted_by", Type: field.TypeUint32, Nullable: true, Comment: "删除者ID"},
 		{Name: "user_id", Type: field.TypeUint32, Nullable: true, Comment: "业务用户ID"},
 		{Name: "tag_id", Type: field.TypeUint32, Nullable: true, Comment: "标签定义ID，关联 uba_tag_definitions.id"},
-		{Name: "tag_value", Type: field.TypeString, Comment: "标签值，实际存储值"},
+		{Name: "value", Type: field.TypeString, Nullable: true, Comment: "标签值，实际存储值"},
 		{Name: "value_label", Type: field.TypeString, Nullable: true, Comment: "显示名称"},
-		{Name: "confidence", Type: field.TypeFloat64, Comment: "置信度，算法打标", Default: 1},
-		{Name: "source", Type: field.TypeString, Comment: "来源：manual/rule/model/import", Default: "manual"},
+		{Name: "confidence", Type: field.TypeFloat64, Nullable: true, Comment: "置信度，算法打标", Default: 1},
+		{Name: "source", Type: field.TypeEnum, Nullable: true, Comment: "标签来源", Enums: []string{"TAG_SOURCE_MANUAL", "TAG_SOURCE_RULE", "TAG_SOURCE_MODEL", "TAG_SOURCE_IMPORT"}},
 		{Name: "source_rule_id", Type: field.TypeUint32, Nullable: true, Comment: "来源规则ID，关联规则表"},
 		{Name: "effective_time", Type: field.TypeTime, Nullable: true, Comment: "生效时间"},
 		{Name: "expire_time", Type: field.TypeTime, Nullable: true, Comment: "过期时间，NULL表示永久"},
-		{Name: "is_active", Type: field.TypeBool, Comment: "是否激活，1为激活，0为未激活", Default: true},
+		{Name: "is_active", Type: field.TypeBool, Nullable: true, Comment: "是否激活，1为激活，0为未激活", Default: true},
 	}
 	// UbaUserTagsTable holds the schema information for the "uba_user_tags" table.
 	UbaUserTagsTable = &schema.Table{
@@ -2851,14 +2855,15 @@ var (
 		{Name: "updated_by", Type: field.TypeUint32, Nullable: true, Comment: "更新者ID"},
 		{Name: "deleted_by", Type: field.TypeUint32, Nullable: true, Comment: "删除者ID"},
 		{Name: "tenant_id", Type: field.TypeUint32, Nullable: true, Comment: "租户ID", Default: 0},
-		{Name: "name", Type: field.TypeString, Comment: "Webhook名称"},
-		{Name: "url", Type: field.TypeString, Comment: "回调URL"},
+		{Name: "name", Type: field.TypeString, Nullable: true, Comment: "Webhook名称"},
+		{Name: "url", Type: field.TypeString, Nullable: true, Comment: "回调URL"},
 		{Name: "secret", Type: field.TypeString, Nullable: true, Comment: "签名密钥"},
 		{Name: "event_types", Type: field.TypeJSON, Nullable: true, Comment: "触发事件类型列表，如[\"risk.high\", \"risk.critical\"]"},
-		{Name: "filters", Type: field.TypeJSON, Nullable: true, Comment: "过滤条件，结构化JSON"},
+		{Name: "filter", Type: field.TypeJSON, Nullable: true, Comment: "过滤条件，结构化JSON"},
 		{Name: "enabled", Type: field.TypeBool, Comment: "是否启用，1为启用，0为禁用", Default: true},
 		{Name: "last_triggered_at", Type: field.TypeTime, Nullable: true, Comment: "最后触发时间"},
-		{Name: "failure_count", Type: field.TypeInt, Comment: "失败次数", Default: 0},
+		{Name: "failure_count", Type: field.TypeUint32, Comment: "失败次数", Default: 0},
+		{Name: "app_id", Type: field.TypeUint32, Nullable: true, Comment: "关联应用ID"},
 	}
 	// UbaWebhooksTable holds the schema information for the "uba_webhooks" table.
 	UbaWebhooksTable = &schema.Table{
@@ -2868,12 +2873,12 @@ var (
 		PrimaryKey: []*schema.Column{UbaWebhooksColumns[0]},
 		Indexes: []*schema.Index{
 			{
-				Name:    "idx_tenant_id",
+				Name:    "idx_webhook_tenant_id",
 				Unique:  false,
 				Columns: []*schema.Column{UbaWebhooksColumns[7]},
 			},
 			{
-				Name:    "idx_enabled",
+				Name:    "idx_webhook_tenant_id_enabled",
 				Unique:  false,
 				Columns: []*schema.Column{UbaWebhooksColumns[7], UbaWebhooksColumns[13]},
 			},

@@ -29,6 +29,87 @@ func (_u *IDMappingUpdate) Where(ps ...predicate.IDMapping) *IDMappingUpdate {
 	return _u
 }
 
+// SetCreatedBy sets the "created_by" field.
+func (_u *IDMappingUpdate) SetCreatedBy(v uint32) *IDMappingUpdate {
+	_u.mutation.ResetCreatedBy()
+	_u.mutation.SetCreatedBy(v)
+	return _u
+}
+
+// SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
+func (_u *IDMappingUpdate) SetNillableCreatedBy(v *uint32) *IDMappingUpdate {
+	if v != nil {
+		_u.SetCreatedBy(*v)
+	}
+	return _u
+}
+
+// AddCreatedBy adds value to the "created_by" field.
+func (_u *IDMappingUpdate) AddCreatedBy(v int32) *IDMappingUpdate {
+	_u.mutation.AddCreatedBy(v)
+	return _u
+}
+
+// ClearCreatedBy clears the value of the "created_by" field.
+func (_u *IDMappingUpdate) ClearCreatedBy() *IDMappingUpdate {
+	_u.mutation.ClearCreatedBy()
+	return _u
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (_u *IDMappingUpdate) SetUpdatedBy(v uint32) *IDMappingUpdate {
+	_u.mutation.ResetUpdatedBy()
+	_u.mutation.SetUpdatedBy(v)
+	return _u
+}
+
+// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
+func (_u *IDMappingUpdate) SetNillableUpdatedBy(v *uint32) *IDMappingUpdate {
+	if v != nil {
+		_u.SetUpdatedBy(*v)
+	}
+	return _u
+}
+
+// AddUpdatedBy adds value to the "updated_by" field.
+func (_u *IDMappingUpdate) AddUpdatedBy(v int32) *IDMappingUpdate {
+	_u.mutation.AddUpdatedBy(v)
+	return _u
+}
+
+// ClearUpdatedBy clears the value of the "updated_by" field.
+func (_u *IDMappingUpdate) ClearUpdatedBy() *IDMappingUpdate {
+	_u.mutation.ClearUpdatedBy()
+	return _u
+}
+
+// SetDeletedBy sets the "deleted_by" field.
+func (_u *IDMappingUpdate) SetDeletedBy(v uint32) *IDMappingUpdate {
+	_u.mutation.ResetDeletedBy()
+	_u.mutation.SetDeletedBy(v)
+	return _u
+}
+
+// SetNillableDeletedBy sets the "deleted_by" field if the given value is not nil.
+func (_u *IDMappingUpdate) SetNillableDeletedBy(v *uint32) *IDMappingUpdate {
+	if v != nil {
+		_u.SetDeletedBy(*v)
+	}
+	return _u
+}
+
+// AddDeletedBy adds value to the "deleted_by" field.
+func (_u *IDMappingUpdate) AddDeletedBy(v int32) *IDMappingUpdate {
+	_u.mutation.AddDeletedBy(v)
+	return _u
+}
+
+// ClearDeletedBy clears the value of the "deleted_by" field.
+func (_u *IDMappingUpdate) ClearDeletedBy() *IDMappingUpdate {
+	_u.mutation.ClearDeletedBy()
+	return _u
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (_u *IDMappingUpdate) SetUpdatedAt(v time.Time) *IDMappingUpdate {
 	_u.mutation.SetUpdatedAt(v)
@@ -83,17 +164,29 @@ func (_u *IDMappingUpdate) SetNillableGlobalUserID(v *string) *IDMappingUpdate {
 	return _u
 }
 
+// ClearGlobalUserID clears the value of the "global_user_id" field.
+func (_u *IDMappingUpdate) ClearGlobalUserID() *IDMappingUpdate {
+	_u.mutation.ClearGlobalUserID()
+	return _u
+}
+
 // SetIDType sets the "id_type" field.
-func (_u *IDMappingUpdate) SetIDType(v string) *IDMappingUpdate {
+func (_u *IDMappingUpdate) SetIDType(v idmapping.IDType) *IDMappingUpdate {
 	_u.mutation.SetIDType(v)
 	return _u
 }
 
 // SetNillableIDType sets the "id_type" field if the given value is not nil.
-func (_u *IDMappingUpdate) SetNillableIDType(v *string) *IDMappingUpdate {
+func (_u *IDMappingUpdate) SetNillableIDType(v *idmapping.IDType) *IDMappingUpdate {
 	if v != nil {
 		_u.SetIDType(*v)
 	}
+	return _u
+}
+
+// ClearIDType clears the value of the "id_type" field.
+func (_u *IDMappingUpdate) ClearIDType() *IDMappingUpdate {
+	_u.mutation.ClearIDType()
 	return _u
 }
 
@@ -111,15 +204,21 @@ func (_u *IDMappingUpdate) SetNillableIDValue(v *string) *IDMappingUpdate {
 	return _u
 }
 
+// ClearIDValue clears the value of the "id_value" field.
+func (_u *IDMappingUpdate) ClearIDValue() *IDMappingUpdate {
+	_u.mutation.ClearIDValue()
+	return _u
+}
+
 // SetConfidence sets the "confidence" field.
-func (_u *IDMappingUpdate) SetConfidence(v float64) *IDMappingUpdate {
+func (_u *IDMappingUpdate) SetConfidence(v float32) *IDMappingUpdate {
 	_u.mutation.ResetConfidence()
 	_u.mutation.SetConfidence(v)
 	return _u
 }
 
 // SetNillableConfidence sets the "confidence" field if the given value is not nil.
-func (_u *IDMappingUpdate) SetNillableConfidence(v *float64) *IDMappingUpdate {
+func (_u *IDMappingUpdate) SetNillableConfidence(v *float32) *IDMappingUpdate {
 	if v != nil {
 		_u.SetConfidence(*v)
 	}
@@ -127,8 +226,14 @@ func (_u *IDMappingUpdate) SetNillableConfidence(v *float64) *IDMappingUpdate {
 }
 
 // AddConfidence adds value to the "confidence" field.
-func (_u *IDMappingUpdate) AddConfidence(v float64) *IDMappingUpdate {
+func (_u *IDMappingUpdate) AddConfidence(v float32) *IDMappingUpdate {
 	_u.mutation.AddConfidence(v)
+	return _u
+}
+
+// ClearConfidence clears the value of the "confidence" field.
+func (_u *IDMappingUpdate) ClearConfidence() *IDMappingUpdate {
+	_u.mutation.ClearConfidence()
 	return _u
 }
 
@@ -143,6 +248,12 @@ func (_u *IDMappingUpdate) SetNillableLinkSource(v *string) *IDMappingUpdate {
 	if v != nil {
 		_u.SetLinkSource(*v)
 	}
+	return _u
+}
+
+// ClearLinkSource clears the value of the "link_source" field.
+func (_u *IDMappingUpdate) ClearLinkSource() *IDMappingUpdate {
+	_u.mutation.ClearLinkSource()
 	return _u
 }
 
@@ -197,6 +308,24 @@ func (_u *IDMappingUpdate) SetNillableIsActive(v *bool) *IDMappingUpdate {
 	if v != nil {
 		_u.SetIsActive(*v)
 	}
+	return _u
+}
+
+// ClearIsActive clears the value of the "is_active" field.
+func (_u *IDMappingUpdate) ClearIsActive() *IDMappingUpdate {
+	_u.mutation.ClearIsActive()
+	return _u
+}
+
+// SetProperties sets the "properties" field.
+func (_u *IDMappingUpdate) SetProperties(v map[string]string) *IDMappingUpdate {
+	_u.mutation.SetProperties(v)
+	return _u
+}
+
+// ClearProperties clears the value of the "properties" field.
+func (_u *IDMappingUpdate) ClearProperties() *IDMappingUpdate {
+	_u.mutation.ClearProperties()
 	return _u
 }
 
@@ -273,6 +402,33 @@ func (_u *IDMappingUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if _u.mutation.TenantIDCleared() {
 		_spec.ClearField(idmapping.FieldTenantID, field.TypeUint32)
 	}
+	if value, ok := _u.mutation.CreatedBy(); ok {
+		_spec.SetField(idmapping.FieldCreatedBy, field.TypeUint32, value)
+	}
+	if value, ok := _u.mutation.AddedCreatedBy(); ok {
+		_spec.AddField(idmapping.FieldCreatedBy, field.TypeUint32, value)
+	}
+	if _u.mutation.CreatedByCleared() {
+		_spec.ClearField(idmapping.FieldCreatedBy, field.TypeUint32)
+	}
+	if value, ok := _u.mutation.UpdatedBy(); ok {
+		_spec.SetField(idmapping.FieldUpdatedBy, field.TypeUint32, value)
+	}
+	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
+		_spec.AddField(idmapping.FieldUpdatedBy, field.TypeUint32, value)
+	}
+	if _u.mutation.UpdatedByCleared() {
+		_spec.ClearField(idmapping.FieldUpdatedBy, field.TypeUint32)
+	}
+	if value, ok := _u.mutation.DeletedBy(); ok {
+		_spec.SetField(idmapping.FieldDeletedBy, field.TypeUint32, value)
+	}
+	if value, ok := _u.mutation.AddedDeletedBy(); ok {
+		_spec.AddField(idmapping.FieldDeletedBy, field.TypeUint32, value)
+	}
+	if _u.mutation.DeletedByCleared() {
+		_spec.ClearField(idmapping.FieldDeletedBy, field.TypeUint32)
+	}
 	if _u.mutation.CreatedAtCleared() {
 		_spec.ClearField(idmapping.FieldCreatedAt, field.TypeTime)
 	}
@@ -291,20 +447,35 @@ func (_u *IDMappingUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if value, ok := _u.mutation.GlobalUserID(); ok {
 		_spec.SetField(idmapping.FieldGlobalUserID, field.TypeString, value)
 	}
+	if _u.mutation.GlobalUserIDCleared() {
+		_spec.ClearField(idmapping.FieldGlobalUserID, field.TypeString)
+	}
 	if value, ok := _u.mutation.IDType(); ok {
-		_spec.SetField(idmapping.FieldIDType, field.TypeString, value)
+		_spec.SetField(idmapping.FieldIDType, field.TypeEnum, value)
+	}
+	if _u.mutation.IDTypeCleared() {
+		_spec.ClearField(idmapping.FieldIDType, field.TypeEnum)
 	}
 	if value, ok := _u.mutation.IDValue(); ok {
 		_spec.SetField(idmapping.FieldIDValue, field.TypeString, value)
 	}
+	if _u.mutation.IDValueCleared() {
+		_spec.ClearField(idmapping.FieldIDValue, field.TypeString)
+	}
 	if value, ok := _u.mutation.Confidence(); ok {
-		_spec.SetField(idmapping.FieldConfidence, field.TypeFloat64, value)
+		_spec.SetField(idmapping.FieldConfidence, field.TypeFloat32, value)
 	}
 	if value, ok := _u.mutation.AddedConfidence(); ok {
-		_spec.AddField(idmapping.FieldConfidence, field.TypeFloat64, value)
+		_spec.AddField(idmapping.FieldConfidence, field.TypeFloat32, value)
+	}
+	if _u.mutation.ConfidenceCleared() {
+		_spec.ClearField(idmapping.FieldConfidence, field.TypeFloat32)
 	}
 	if value, ok := _u.mutation.LinkSource(); ok {
 		_spec.SetField(idmapping.FieldLinkSource, field.TypeString, value)
+	}
+	if _u.mutation.LinkSourceCleared() {
+		_spec.ClearField(idmapping.FieldLinkSource, field.TypeString)
 	}
 	if value, ok := _u.mutation.FirstSeen(); ok {
 		_spec.SetField(idmapping.FieldFirstSeen, field.TypeTime, value)
@@ -320,6 +491,15 @@ func (_u *IDMappingUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if value, ok := _u.mutation.IsActive(); ok {
 		_spec.SetField(idmapping.FieldIsActive, field.TypeBool, value)
+	}
+	if _u.mutation.IsActiveCleared() {
+		_spec.ClearField(idmapping.FieldIsActive, field.TypeBool)
+	}
+	if value, ok := _u.mutation.Properties(); ok {
+		_spec.SetField(idmapping.FieldProperties, field.TypeJSON, value)
+	}
+	if _u.mutation.PropertiesCleared() {
+		_spec.ClearField(idmapping.FieldProperties, field.TypeJSON)
 	}
 	_spec.AddModifiers(_u.modifiers...)
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
@@ -341,6 +521,87 @@ type IDMappingUpdateOne struct {
 	hooks     []Hook
 	mutation  *IDMappingMutation
 	modifiers []func(*sql.UpdateBuilder)
+}
+
+// SetCreatedBy sets the "created_by" field.
+func (_u *IDMappingUpdateOne) SetCreatedBy(v uint32) *IDMappingUpdateOne {
+	_u.mutation.ResetCreatedBy()
+	_u.mutation.SetCreatedBy(v)
+	return _u
+}
+
+// SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
+func (_u *IDMappingUpdateOne) SetNillableCreatedBy(v *uint32) *IDMappingUpdateOne {
+	if v != nil {
+		_u.SetCreatedBy(*v)
+	}
+	return _u
+}
+
+// AddCreatedBy adds value to the "created_by" field.
+func (_u *IDMappingUpdateOne) AddCreatedBy(v int32) *IDMappingUpdateOne {
+	_u.mutation.AddCreatedBy(v)
+	return _u
+}
+
+// ClearCreatedBy clears the value of the "created_by" field.
+func (_u *IDMappingUpdateOne) ClearCreatedBy() *IDMappingUpdateOne {
+	_u.mutation.ClearCreatedBy()
+	return _u
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (_u *IDMappingUpdateOne) SetUpdatedBy(v uint32) *IDMappingUpdateOne {
+	_u.mutation.ResetUpdatedBy()
+	_u.mutation.SetUpdatedBy(v)
+	return _u
+}
+
+// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
+func (_u *IDMappingUpdateOne) SetNillableUpdatedBy(v *uint32) *IDMappingUpdateOne {
+	if v != nil {
+		_u.SetUpdatedBy(*v)
+	}
+	return _u
+}
+
+// AddUpdatedBy adds value to the "updated_by" field.
+func (_u *IDMappingUpdateOne) AddUpdatedBy(v int32) *IDMappingUpdateOne {
+	_u.mutation.AddUpdatedBy(v)
+	return _u
+}
+
+// ClearUpdatedBy clears the value of the "updated_by" field.
+func (_u *IDMappingUpdateOne) ClearUpdatedBy() *IDMappingUpdateOne {
+	_u.mutation.ClearUpdatedBy()
+	return _u
+}
+
+// SetDeletedBy sets the "deleted_by" field.
+func (_u *IDMappingUpdateOne) SetDeletedBy(v uint32) *IDMappingUpdateOne {
+	_u.mutation.ResetDeletedBy()
+	_u.mutation.SetDeletedBy(v)
+	return _u
+}
+
+// SetNillableDeletedBy sets the "deleted_by" field if the given value is not nil.
+func (_u *IDMappingUpdateOne) SetNillableDeletedBy(v *uint32) *IDMappingUpdateOne {
+	if v != nil {
+		_u.SetDeletedBy(*v)
+	}
+	return _u
+}
+
+// AddDeletedBy adds value to the "deleted_by" field.
+func (_u *IDMappingUpdateOne) AddDeletedBy(v int32) *IDMappingUpdateOne {
+	_u.mutation.AddDeletedBy(v)
+	return _u
+}
+
+// ClearDeletedBy clears the value of the "deleted_by" field.
+func (_u *IDMappingUpdateOne) ClearDeletedBy() *IDMappingUpdateOne {
+	_u.mutation.ClearDeletedBy()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
@@ -397,17 +658,29 @@ func (_u *IDMappingUpdateOne) SetNillableGlobalUserID(v *string) *IDMappingUpdat
 	return _u
 }
 
+// ClearGlobalUserID clears the value of the "global_user_id" field.
+func (_u *IDMappingUpdateOne) ClearGlobalUserID() *IDMappingUpdateOne {
+	_u.mutation.ClearGlobalUserID()
+	return _u
+}
+
 // SetIDType sets the "id_type" field.
-func (_u *IDMappingUpdateOne) SetIDType(v string) *IDMappingUpdateOne {
+func (_u *IDMappingUpdateOne) SetIDType(v idmapping.IDType) *IDMappingUpdateOne {
 	_u.mutation.SetIDType(v)
 	return _u
 }
 
 // SetNillableIDType sets the "id_type" field if the given value is not nil.
-func (_u *IDMappingUpdateOne) SetNillableIDType(v *string) *IDMappingUpdateOne {
+func (_u *IDMappingUpdateOne) SetNillableIDType(v *idmapping.IDType) *IDMappingUpdateOne {
 	if v != nil {
 		_u.SetIDType(*v)
 	}
+	return _u
+}
+
+// ClearIDType clears the value of the "id_type" field.
+func (_u *IDMappingUpdateOne) ClearIDType() *IDMappingUpdateOne {
+	_u.mutation.ClearIDType()
 	return _u
 }
 
@@ -425,15 +698,21 @@ func (_u *IDMappingUpdateOne) SetNillableIDValue(v *string) *IDMappingUpdateOne 
 	return _u
 }
 
+// ClearIDValue clears the value of the "id_value" field.
+func (_u *IDMappingUpdateOne) ClearIDValue() *IDMappingUpdateOne {
+	_u.mutation.ClearIDValue()
+	return _u
+}
+
 // SetConfidence sets the "confidence" field.
-func (_u *IDMappingUpdateOne) SetConfidence(v float64) *IDMappingUpdateOne {
+func (_u *IDMappingUpdateOne) SetConfidence(v float32) *IDMappingUpdateOne {
 	_u.mutation.ResetConfidence()
 	_u.mutation.SetConfidence(v)
 	return _u
 }
 
 // SetNillableConfidence sets the "confidence" field if the given value is not nil.
-func (_u *IDMappingUpdateOne) SetNillableConfidence(v *float64) *IDMappingUpdateOne {
+func (_u *IDMappingUpdateOne) SetNillableConfidence(v *float32) *IDMappingUpdateOne {
 	if v != nil {
 		_u.SetConfidence(*v)
 	}
@@ -441,8 +720,14 @@ func (_u *IDMappingUpdateOne) SetNillableConfidence(v *float64) *IDMappingUpdate
 }
 
 // AddConfidence adds value to the "confidence" field.
-func (_u *IDMappingUpdateOne) AddConfidence(v float64) *IDMappingUpdateOne {
+func (_u *IDMappingUpdateOne) AddConfidence(v float32) *IDMappingUpdateOne {
 	_u.mutation.AddConfidence(v)
+	return _u
+}
+
+// ClearConfidence clears the value of the "confidence" field.
+func (_u *IDMappingUpdateOne) ClearConfidence() *IDMappingUpdateOne {
+	_u.mutation.ClearConfidence()
 	return _u
 }
 
@@ -457,6 +742,12 @@ func (_u *IDMappingUpdateOne) SetNillableLinkSource(v *string) *IDMappingUpdateO
 	if v != nil {
 		_u.SetLinkSource(*v)
 	}
+	return _u
+}
+
+// ClearLinkSource clears the value of the "link_source" field.
+func (_u *IDMappingUpdateOne) ClearLinkSource() *IDMappingUpdateOne {
+	_u.mutation.ClearLinkSource()
 	return _u
 }
 
@@ -511,6 +802,24 @@ func (_u *IDMappingUpdateOne) SetNillableIsActive(v *bool) *IDMappingUpdateOne {
 	if v != nil {
 		_u.SetIsActive(*v)
 	}
+	return _u
+}
+
+// ClearIsActive clears the value of the "is_active" field.
+func (_u *IDMappingUpdateOne) ClearIsActive() *IDMappingUpdateOne {
+	_u.mutation.ClearIsActive()
+	return _u
+}
+
+// SetProperties sets the "properties" field.
+func (_u *IDMappingUpdateOne) SetProperties(v map[string]string) *IDMappingUpdateOne {
+	_u.mutation.SetProperties(v)
+	return _u
+}
+
+// ClearProperties clears the value of the "properties" field.
+func (_u *IDMappingUpdateOne) ClearProperties() *IDMappingUpdateOne {
+	_u.mutation.ClearProperties()
 	return _u
 }
 
@@ -617,6 +926,33 @@ func (_u *IDMappingUpdateOne) sqlSave(ctx context.Context) (_node *IDMapping, er
 	if _u.mutation.TenantIDCleared() {
 		_spec.ClearField(idmapping.FieldTenantID, field.TypeUint32)
 	}
+	if value, ok := _u.mutation.CreatedBy(); ok {
+		_spec.SetField(idmapping.FieldCreatedBy, field.TypeUint32, value)
+	}
+	if value, ok := _u.mutation.AddedCreatedBy(); ok {
+		_spec.AddField(idmapping.FieldCreatedBy, field.TypeUint32, value)
+	}
+	if _u.mutation.CreatedByCleared() {
+		_spec.ClearField(idmapping.FieldCreatedBy, field.TypeUint32)
+	}
+	if value, ok := _u.mutation.UpdatedBy(); ok {
+		_spec.SetField(idmapping.FieldUpdatedBy, field.TypeUint32, value)
+	}
+	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
+		_spec.AddField(idmapping.FieldUpdatedBy, field.TypeUint32, value)
+	}
+	if _u.mutation.UpdatedByCleared() {
+		_spec.ClearField(idmapping.FieldUpdatedBy, field.TypeUint32)
+	}
+	if value, ok := _u.mutation.DeletedBy(); ok {
+		_spec.SetField(idmapping.FieldDeletedBy, field.TypeUint32, value)
+	}
+	if value, ok := _u.mutation.AddedDeletedBy(); ok {
+		_spec.AddField(idmapping.FieldDeletedBy, field.TypeUint32, value)
+	}
+	if _u.mutation.DeletedByCleared() {
+		_spec.ClearField(idmapping.FieldDeletedBy, field.TypeUint32)
+	}
 	if _u.mutation.CreatedAtCleared() {
 		_spec.ClearField(idmapping.FieldCreatedAt, field.TypeTime)
 	}
@@ -635,20 +971,35 @@ func (_u *IDMappingUpdateOne) sqlSave(ctx context.Context) (_node *IDMapping, er
 	if value, ok := _u.mutation.GlobalUserID(); ok {
 		_spec.SetField(idmapping.FieldGlobalUserID, field.TypeString, value)
 	}
+	if _u.mutation.GlobalUserIDCleared() {
+		_spec.ClearField(idmapping.FieldGlobalUserID, field.TypeString)
+	}
 	if value, ok := _u.mutation.IDType(); ok {
-		_spec.SetField(idmapping.FieldIDType, field.TypeString, value)
+		_spec.SetField(idmapping.FieldIDType, field.TypeEnum, value)
+	}
+	if _u.mutation.IDTypeCleared() {
+		_spec.ClearField(idmapping.FieldIDType, field.TypeEnum)
 	}
 	if value, ok := _u.mutation.IDValue(); ok {
 		_spec.SetField(idmapping.FieldIDValue, field.TypeString, value)
 	}
+	if _u.mutation.IDValueCleared() {
+		_spec.ClearField(idmapping.FieldIDValue, field.TypeString)
+	}
 	if value, ok := _u.mutation.Confidence(); ok {
-		_spec.SetField(idmapping.FieldConfidence, field.TypeFloat64, value)
+		_spec.SetField(idmapping.FieldConfidence, field.TypeFloat32, value)
 	}
 	if value, ok := _u.mutation.AddedConfidence(); ok {
-		_spec.AddField(idmapping.FieldConfidence, field.TypeFloat64, value)
+		_spec.AddField(idmapping.FieldConfidence, field.TypeFloat32, value)
+	}
+	if _u.mutation.ConfidenceCleared() {
+		_spec.ClearField(idmapping.FieldConfidence, field.TypeFloat32)
 	}
 	if value, ok := _u.mutation.LinkSource(); ok {
 		_spec.SetField(idmapping.FieldLinkSource, field.TypeString, value)
+	}
+	if _u.mutation.LinkSourceCleared() {
+		_spec.ClearField(idmapping.FieldLinkSource, field.TypeString)
 	}
 	if value, ok := _u.mutation.FirstSeen(); ok {
 		_spec.SetField(idmapping.FieldFirstSeen, field.TypeTime, value)
@@ -664,6 +1015,15 @@ func (_u *IDMappingUpdateOne) sqlSave(ctx context.Context) (_node *IDMapping, er
 	}
 	if value, ok := _u.mutation.IsActive(); ok {
 		_spec.SetField(idmapping.FieldIsActive, field.TypeBool, value)
+	}
+	if _u.mutation.IsActiveCleared() {
+		_spec.ClearField(idmapping.FieldIsActive, field.TypeBool)
+	}
+	if value, ok := _u.mutation.Properties(); ok {
+		_spec.SetField(idmapping.FieldProperties, field.TypeJSON, value)
+	}
+	if _u.mutation.PropertiesCleared() {
+		_spec.ClearField(idmapping.FieldProperties, field.TypeJSON)
 	}
 	_spec.AddModifiers(_u.modifiers...)
 	_node = &IDMapping{config: _u.config}

@@ -16,6 +16,9 @@ service IDMappingService {
   // 查询ID映射列表
   rpc List (pagination.PagingRequest) returns (ListIDMappingResponse) {}
 
+  // 查询ID映射数量
+  rpc Count (pagination.PagingRequest) returns (CountIDMappingResponse) {}
+
   // 查询ID映射详情
   rpc Get (GetIDMappingRequest) returns (IDMapping) {}
 
@@ -57,55 +60,55 @@ message IDMapping {
   ];
 
   // 全局用户唯一标识（用于跨平台、跨租户用户关联）
-  string global_user_id = 2 [
+  optional string global_user_id = 2 [
     json_name = "globalUserId",
     (gnostic.openapi.v3.property) = {description: "全局用户唯一标识，用于跨平台、跨租户用户关联"}
   ];
 
   // 租户ID（多租户隔离，支持 SaaS 场景）
-  uint32 tenant_id = 3 [
+  optional uint32 tenant_id = 3 [
     json_name = "tenantId",
     (gnostic.openapi.v3.property) = {description: "租户ID，多租户隔离，支持 SaaS 场景"}
   ];
 
   // ID类型（如用户ID、设备ID、Cookie、邮箱、手机号、OpenID 等）
-  IDType id_type = 4 [
+  optional IDType id_type = 4 [
     json_name = "idType",
     (gnostic.openapi.v3.property) = {description: "ID类型，标识不同类型的用户、设备、账号等标识符"}
   ];
 
   // ID值（具体的标识符，如用户ID、设备ID、邮箱等）
-  string id_value = 5 [
+  optional string id_value = 5 [
     json_name = "idValue",
     (gnostic.openapi.v3.property) = {description: "ID值，具体的标识符，如用户ID、设备ID、邮箱等"}
   ];
 
   // 置信度（映射关系可信度评分，范围0~1）
-  float confidence = 6 [
+  optional float confidence = 6 [
     json_name = "confidence",
     (gnostic.openapi.v3.property) = {description: "置信度，映射关系可信度评分，范围0~1"}
   ];
 
   // 关联来源（如系统、人工、第三方平台等）
-  string link_source = 7 [
+  optional string link_source = 7 [
     json_name = "linkSource",
     (gnostic.openapi.v3.property) = {description: "关联来源，记录映射关系的来源，如系统、人工、第三方平台等"}
   ];
 
   // 首次出现时间（映射关系首次被发现或建立的时间）
-  google.protobuf.Timestamp first_seen = 8 [
+  optional google.protobuf.Timestamp first_seen = 8 [
     json_name = "firstSeen",
     (gnostic.openapi.v3.property) = {description: "首次出现时间，映射关系首次被发现或建立的时间"}
   ];
 
   // 最后出现时间（映射关系最近一次被使用或更新的时间）
-  google.protobuf.Timestamp last_seen = 9 [
+  optional google.protobuf.Timestamp last_seen = 9 [
     json_name = "lastSeen",
     (gnostic.openapi.v3.property) = {description: "最后出现时间，映射关系最近一次被使用或更新的时间"}
   ];
 
   // 是否激活（映射关系当前是否有效）
-  bool is_active = 10 [
+  optional bool is_active = 10 [
     json_name = "isActive",
     (gnostic.openapi.v3.property) = {description: "是否激活，映射关系当前是否有效"}
   ];
@@ -156,6 +159,7 @@ message IDMapping {
 // 获取ID映射列表 - 答复
 message ListIDMappingResponse {
   repeated IDMapping items = 1;
+  uint64 total = 2;
 }
 
 // 获取ID映射数据 - 请求
@@ -216,4 +220,8 @@ message DeleteIDMappingRequest {
     json_name = "deletedBy",
     (gnostic.openapi.v3.property) = {description: "删除者用户ID"}
   ]; // 删除者用户ID
+}
+
+message CountIDMappingResponse {
+  uint64 count = 1;
 }

@@ -8,11 +8,11 @@ package servicev1
 
 import (
 	_ "github.com/google/gnostic/openapiv3"
+	v1 "github.com/tx7do/go-crud/api/gen/go/pagination/v1"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	durationpb "google.golang.org/protobuf/types/known/durationpb"
-	_ "google.golang.org/protobuf/types/known/emptypb"
-	_ "google.golang.org/protobuf/types/known/fieldmaskpb"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
+	fieldmaskpb "google.golang.org/protobuf/types/known/fieldmaskpb"
 	structpb "google.golang.org/protobuf/types/known/structpb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	reflect "reflect"
@@ -27,226 +27,73 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// 风险等级
-type RiskType int32
-
-const (
-	// 未指定风险类型
-	RiskType_RISK_TYPE_UNSPECIFIED RiskType = 0
-	// 异常登录风险
-	RiskType_RISK_TYPE_LOGIN_ANOMALY RiskType = 1
-	// 暴力破解风险
-	RiskType_RISK_TYPE_BRUTE_FORCE RiskType = 2
-	// 撞库风险
-	RiskType_RISK_TYPE_CREDENTIAL_STUFFING RiskType = 3
-	// 高频操作风险
-	RiskType_RISK_TYPE_FREQUENT_OPERATION RiskType = 4
-	// 异常流程风险
-	RiskType_RISK_TYPE_ABNORMAL_FLOW RiskType = 5
-	// 数据泄露风险
-	RiskType_RISK_TYPE_DATA_EXFILTRATION RiskType = 6
-	// 设备突变风险
-	RiskType_RISK_TYPE_DEVICE_CHANGE RiskType = 7
-	// 异地登录风险
-	RiskType_RISK_TYPE_LOCATION_ANOMALY RiskType = 8
-	// 代理/VPN风险
-	RiskType_RISK_TYPE_PROXY_DETECTED RiskType = 9
-	// 欺诈支付风险
-	RiskType_RISK_TYPE_FRAUD_PAYMENT RiskType = 10
-	// 薅羊毛风险
-	RiskType_RISK_TYPE_ABUSE_PROMOTION RiskType = 11
-)
-
-// Enum value maps for RiskType.
-var (
-	RiskType_name = map[int32]string{
-		0:  "RISK_TYPE_UNSPECIFIED",
-		1:  "RISK_TYPE_LOGIN_ANOMALY",
-		2:  "RISK_TYPE_BRUTE_FORCE",
-		3:  "RISK_TYPE_CREDENTIAL_STUFFING",
-		4:  "RISK_TYPE_FREQUENT_OPERATION",
-		5:  "RISK_TYPE_ABNORMAL_FLOW",
-		6:  "RISK_TYPE_DATA_EXFILTRATION",
-		7:  "RISK_TYPE_DEVICE_CHANGE",
-		8:  "RISK_TYPE_LOCATION_ANOMALY",
-		9:  "RISK_TYPE_PROXY_DETECTED",
-		10: "RISK_TYPE_FRAUD_PAYMENT",
-		11: "RISK_TYPE_ABUSE_PROMOTION",
-	}
-	RiskType_value = map[string]int32{
-		"RISK_TYPE_UNSPECIFIED":         0,
-		"RISK_TYPE_LOGIN_ANOMALY":       1,
-		"RISK_TYPE_BRUTE_FORCE":         2,
-		"RISK_TYPE_CREDENTIAL_STUFFING": 3,
-		"RISK_TYPE_FREQUENT_OPERATION":  4,
-		"RISK_TYPE_ABNORMAL_FLOW":       5,
-		"RISK_TYPE_DATA_EXFILTRATION":   6,
-		"RISK_TYPE_DEVICE_CHANGE":       7,
-		"RISK_TYPE_LOCATION_ANOMALY":    8,
-		"RISK_TYPE_PROXY_DETECTED":      9,
-		"RISK_TYPE_FRAUD_PAYMENT":       10,
-		"RISK_TYPE_ABUSE_PROMOTION":     11,
-	}
-)
-
-func (x RiskType) Enum() *RiskType {
-	p := new(RiskType)
-	*p = x
-	return p
-}
-
-func (x RiskType) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (RiskType) Descriptor() protoreflect.EnumDescriptor {
-	return file_uba_service_v1_risk_event_proto_enumTypes[0].Descriptor()
-}
-
-func (RiskType) Type() protoreflect.EnumType {
-	return &file_uba_service_v1_risk_event_proto_enumTypes[0]
-}
-
-func (x RiskType) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
-// Deprecated: Use RiskType.Descriptor instead.
-func (RiskType) EnumDescriptor() ([]byte, []int) {
-	return file_uba_service_v1_risk_event_proto_rawDescGZIP(), []int{0}
-}
-
 // 处置状态
-type RiskEventStatus int32
+type RiskEvent_Status int32
 
 const (
 	// 未指定处置状态
-	RiskEventStatus_RISK_EVENT_STATUS_UNSPECIFIED RiskEventStatus = 0
+	RiskEvent_RISK_EVENT_STATUS_UNSPECIFIED RiskEvent_Status = 0
 	// 待处理
-	RiskEventStatus_RISK_EVENT_STATUS_PENDING RiskEventStatus = 1
+	RiskEvent_PENDING RiskEvent_Status = 1
 	// 调查中
-	RiskEventStatus_RISK_EVENT_STATUS_INVESTIGATING RiskEventStatus = 2
+	RiskEvent_INVESTIGATING RiskEvent_Status = 2
 	// 确认为风险
-	RiskEventStatus_RISK_EVENT_STATUS_CONFIRMED RiskEventStatus = 3
+	RiskEvent_CONFIRMED RiskEvent_Status = 3
 	// 误报
-	RiskEventStatus_RISK_EVENT_STATUS_FALSE_POSITIVE RiskEventStatus = 4
+	RiskEvent_FALSE_POSITIVE RiskEvent_Status = 4
 	// 忽略
-	RiskEventStatus_RISK_EVENT_STATUS_IGNORED RiskEventStatus = 5
+	RiskEvent_IGNORED RiskEvent_Status = 5
 	// 自动拦截
-	RiskEventStatus_RISK_EVENT_STATUS_AUTO_BLOCKED RiskEventStatus = 6
+	RiskEvent_AUTO_BLOCKED RiskEvent_Status = 6
 )
 
-// Enum value maps for RiskEventStatus.
+// Enum value maps for RiskEvent_Status.
 var (
-	RiskEventStatus_name = map[int32]string{
+	RiskEvent_Status_name = map[int32]string{
 		0: "RISK_EVENT_STATUS_UNSPECIFIED",
-		1: "RISK_EVENT_STATUS_PENDING",
-		2: "RISK_EVENT_STATUS_INVESTIGATING",
-		3: "RISK_EVENT_STATUS_CONFIRMED",
-		4: "RISK_EVENT_STATUS_FALSE_POSITIVE",
-		5: "RISK_EVENT_STATUS_IGNORED",
-		6: "RISK_EVENT_STATUS_AUTO_BLOCKED",
+		1: "PENDING",
+		2: "INVESTIGATING",
+		3: "CONFIRMED",
+		4: "FALSE_POSITIVE",
+		5: "IGNORED",
+		6: "AUTO_BLOCKED",
 	}
-	RiskEventStatus_value = map[string]int32{
-		"RISK_EVENT_STATUS_UNSPECIFIED":    0,
-		"RISK_EVENT_STATUS_PENDING":        1,
-		"RISK_EVENT_STATUS_INVESTIGATING":  2,
-		"RISK_EVENT_STATUS_CONFIRMED":      3,
-		"RISK_EVENT_STATUS_FALSE_POSITIVE": 4,
-		"RISK_EVENT_STATUS_IGNORED":        5,
-		"RISK_EVENT_STATUS_AUTO_BLOCKED":   6,
+	RiskEvent_Status_value = map[string]int32{
+		"RISK_EVENT_STATUS_UNSPECIFIED": 0,
+		"PENDING":                       1,
+		"INVESTIGATING":                 2,
+		"CONFIRMED":                     3,
+		"FALSE_POSITIVE":                4,
+		"IGNORED":                       5,
+		"AUTO_BLOCKED":                  6,
 	}
 )
 
-func (x RiskEventStatus) Enum() *RiskEventStatus {
-	p := new(RiskEventStatus)
+func (x RiskEvent_Status) Enum() *RiskEvent_Status {
+	p := new(RiskEvent_Status)
 	*p = x
 	return p
 }
 
-func (x RiskEventStatus) String() string {
+func (x RiskEvent_Status) String() string {
 	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
-func (RiskEventStatus) Descriptor() protoreflect.EnumDescriptor {
-	return file_uba_service_v1_risk_event_proto_enumTypes[1].Descriptor()
+func (RiskEvent_Status) Descriptor() protoreflect.EnumDescriptor {
+	return file_uba_service_v1_risk_event_proto_enumTypes[0].Descriptor()
 }
 
-func (RiskEventStatus) Type() protoreflect.EnumType {
-	return &file_uba_service_v1_risk_event_proto_enumTypes[1]
+func (RiskEvent_Status) Type() protoreflect.EnumType {
+	return &file_uba_service_v1_risk_event_proto_enumTypes[0]
 }
 
-func (x RiskEventStatus) Number() protoreflect.EnumNumber {
+func (x RiskEvent_Status) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(x)
 }
 
-// Deprecated: Use RiskEventStatus.Descriptor instead.
-func (RiskEventStatus) EnumDescriptor() ([]byte, []int) {
-	return file_uba_service_v1_risk_event_proto_rawDescGZIP(), []int{1}
-}
-
-// 动作类型
-type RiskAction_ActionType int32
-
-const (
-	RiskAction_ACTION_UNSPECIFIED RiskAction_ActionType = 0
-	// 封禁用户
-	RiskAction_ACTION_BLOCK_USER RiskAction_ActionType = 1
-	// 封禁设备
-	RiskAction_ACTION_BLOCK_DEVICE RiskAction_ActionType = 2
-	// 要求二次验证
-	RiskAction_ACTION_REQUIRE_MFA RiskAction_ActionType = 3
-	// 限流
-	RiskAction_ACTION_LIMIT_RATE RiskAction_ActionType = 4
-	// 通知管理员
-	RiskAction_ACTION_NOTIFY_ADMIN RiskAction_ActionType = 5
-)
-
-// Enum value maps for RiskAction_ActionType.
-var (
-	RiskAction_ActionType_name = map[int32]string{
-		0: "ACTION_UNSPECIFIED",
-		1: "ACTION_BLOCK_USER",
-		2: "ACTION_BLOCK_DEVICE",
-		3: "ACTION_REQUIRE_MFA",
-		4: "ACTION_LIMIT_RATE",
-		5: "ACTION_NOTIFY_ADMIN",
-	}
-	RiskAction_ActionType_value = map[string]int32{
-		"ACTION_UNSPECIFIED":  0,
-		"ACTION_BLOCK_USER":   1,
-		"ACTION_BLOCK_DEVICE": 2,
-		"ACTION_REQUIRE_MFA":  3,
-		"ACTION_LIMIT_RATE":   4,
-		"ACTION_NOTIFY_ADMIN": 5,
-	}
-)
-
-func (x RiskAction_ActionType) Enum() *RiskAction_ActionType {
-	p := new(RiskAction_ActionType)
-	*p = x
-	return p
-}
-
-func (x RiskAction_ActionType) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (RiskAction_ActionType) Descriptor() protoreflect.EnumDescriptor {
-	return file_uba_service_v1_risk_event_proto_enumTypes[2].Descriptor()
-}
-
-func (RiskAction_ActionType) Type() protoreflect.EnumType {
-	return &file_uba_service_v1_risk_event_proto_enumTypes[2]
-}
-
-func (x RiskAction_ActionType) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
-// Deprecated: Use RiskAction_ActionType.Descriptor instead.
-func (RiskAction_ActionType) EnumDescriptor() ([]byte, []int) {
-	return file_uba_service_v1_risk_event_proto_rawDescGZIP(), []int{1, 0}
+// Deprecated: Use RiskEvent_Status.Descriptor instead.
+func (RiskEvent_Status) EnumDescriptor() ([]byte, []int) {
+	return file_uba_service_v1_risk_event_proto_rawDescGZIP(), []int{0, 0}
 }
 
 // 风险事件
@@ -254,45 +101,45 @@ type RiskEvent struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	Id    uint32                 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"` // ID
 	// 租户ID（多租户隔离，支持 SaaS 场景）
-	TenantId uint32 `protobuf:"varint,2,opt,name=tenant_id,json=tenantId,proto3" json:"tenant_id,omitempty"`
+	TenantId *uint32 `protobuf:"varint,2,opt,name=tenant_id,json=tenantId,proto3,oneof" json:"tenant_id,omitempty"`
 	// 用户ID（关联主体，风险事件涉及的用户）
-	UserId uint32 `protobuf:"varint,3,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	UserId *uint32 `protobuf:"varint,3,opt,name=user_id,json=userId,proto3,oneof" json:"user_id,omitempty"`
 	// 设备ID（关联主体，风险事件涉及的设备）
-	DeviceId string `protobuf:"bytes,4,opt,name=device_id,json=deviceId,proto3" json:"device_id,omitempty"`
+	DeviceId *string `protobuf:"bytes,4,opt,name=device_id,json=deviceId,proto3,oneof" json:"device_id,omitempty"`
 	// 全局用户ID（跨平台唯一标识用户）
-	GlobalUserId string `protobuf:"bytes,5,opt,name=global_user_id,json=globalUserId,proto3" json:"global_user_id,omitempty"`
+	GlobalUserId *string `protobuf:"bytes,5,opt,name=global_user_id,json=globalUserId,proto3,oneof" json:"global_user_id,omitempty"`
 	// 风险类型
-	RiskType RiskType `protobuf:"varint,6,opt,name=risk_type,json=riskType,proto3,enum=uba.service.v1.RiskType" json:"risk_type,omitempty"`
+	RiskType *RiskType `protobuf:"varint,6,opt,name=risk_type,json=riskType,proto3,enum=uba.service.v1.RiskType,oneof" json:"risk_type,omitempty"`
 	// 风险等级
-	RiskLevel RiskLevel `protobuf:"varint,7,opt,name=risk_level,json=riskLevel,proto3,enum=uba.service.v1.RiskLevel" json:"risk_level,omitempty"`
+	RiskLevel *RiskLevel `protobuf:"varint,7,opt,name=risk_level,json=riskLevel,proto3,enum=uba.service.v1.RiskLevel,oneof" json:"risk_level,omitempty"`
 	// 风险评分（0-100，风险事件的评分）
-	RiskScore float32 `protobuf:"fixed32,8,opt,name=risk_score,json=riskScore,proto3" json:"risk_score,omitempty"`
+	RiskScore *float32 `protobuf:"fixed32,8,opt,name=risk_score,json=riskScore,proto3,oneof" json:"risk_score,omitempty"`
 	// 触发规则ID
-	RuleId uint32 `protobuf:"varint,10,opt,name=rule_id,json=ruleId,proto3" json:"rule_id,omitempty"`
+	RuleId *uint32 `protobuf:"varint,10,opt,name=rule_id,json=ruleId,proto3,oneof" json:"rule_id,omitempty"`
 	// 规则名称
-	RuleName string `protobuf:"bytes,11,opt,name=rule_name,json=ruleName,proto3" json:"rule_name,omitempty"`
+	RuleName *string `protobuf:"bytes,11,opt,name=rule_name,json=ruleName,proto3,oneof" json:"rule_name,omitempty"`
 	// 规则上下文（触发条件，结构化信息）
-	RuleContext *structpb.Struct `protobuf:"bytes,12,opt,name=rule_context,json=ruleContext,proto3" json:"rule_context,omitempty"`
+	RuleContext *structpb.Struct `protobuf:"bytes,12,opt,name=rule_context,json=ruleContext,proto3,oneof" json:"rule_context,omitempty"`
 	// 关联行为事件ID列表（风险事件关联的行为事件）
-	RelatedEventIds []string `protobuf:"bytes,13,rep,name=related_event_ids,json=relatedEventIds,proto3" json:"related_event_ids,omitempty"`
+	RelatedEventIds []uint32 `protobuf:"varint,13,rep,packed,name=related_event_ids,json=relatedEventIds,proto3" json:"related_event_ids,omitempty"`
 	// 会话ID（风险事件发生时的会话标识）
-	SessionId uint32 `protobuf:"varint,14,opt,name=session_id,json=sessionId,proto3" json:"session_id,omitempty"`
+	SessionId *uint32 `protobuf:"varint,14,opt,name=session_id,json=sessionId,proto3,oneof" json:"session_id,omitempty"`
 	// 风险详情描述
-	Description string `protobuf:"bytes,15,opt,name=description,proto3" json:"description,omitempty"`
+	Description *string `protobuf:"bytes,15,opt,name=description,proto3,oneof" json:"description,omitempty"`
 	// 证据（风险事件相关证据，键值对形式）
 	Evidence map[string]string `protobuf:"bytes,16,rep,name=evidence,proto3" json:"evidence,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	// 处置状态
-	Status RiskEventStatus `protobuf:"varint,17,opt,name=status,proto3,enum=uba.service.v1.RiskEventStatus" json:"status,omitempty"`
+	Status *RiskEvent_Status `protobuf:"varint,17,opt,name=status,proto3,enum=uba.service.v1.RiskEvent_Status,oneof" json:"status,omitempty"`
 	// 处理人ID
-	HandlerId string `protobuf:"bytes,18,opt,name=handler_id,json=handlerId,proto3" json:"handler_id,omitempty"`
+	HandlerId *uint32 `protobuf:"varint,18,opt,name=handler_id,json=handlerId,proto3,oneof" json:"handler_id,omitempty"`
 	// 处理时间
-	HandledTime *timestamppb.Timestamp `protobuf:"bytes,19,opt,name=handled_time,json=handledTime,proto3" json:"handled_time,omitempty"`
+	HandledTime *timestamppb.Timestamp `protobuf:"bytes,19,opt,name=handled_time,json=handledTime,proto3,oneof" json:"handled_time,omitempty"`
 	// 处理备注
-	HandleRemark string `protobuf:"bytes,20,opt,name=handle_remark,json=handleRemark,proto3" json:"handle_remark,omitempty"`
+	HandleRemark *string `protobuf:"bytes,20,opt,name=handle_remark,json=handleRemark,proto3,oneof" json:"handle_remark,omitempty"`
 	// 风险事件发生时间
-	OccurTime *timestamppb.Timestamp `protobuf:"bytes,21,opt,name=occur_time,json=occurTime,proto3" json:"occur_time,omitempty"`
+	OccurTime *timestamppb.Timestamp `protobuf:"bytes,21,opt,name=occur_time,json=occurTime,proto3,oneof" json:"occur_time,omitempty"`
 	// 风险事件上报时间
-	ReportTime    *timestamppb.Timestamp `protobuf:"bytes,22,opt,name=report_time,json=reportTime,proto3" json:"report_time,omitempty"`
+	ReportTime    *timestamppb.Timestamp `protobuf:"bytes,22,opt,name=report_time,json=reportTime,proto3,oneof" json:"report_time,omitempty"`
 	CreatedBy     *uint32                `protobuf:"varint,100,opt,name=created_by,json=createdBy,proto3,oneof" json:"created_by,omitempty"` // 创建者用户ID
 	UpdatedBy     *uint32                `protobuf:"varint,101,opt,name=updated_by,json=updatedBy,proto3,oneof" json:"updated_by,omitempty"` // 更新者用户ID
 	DeletedBy     *uint32                `protobuf:"varint,102,opt,name=deleted_by,json=deletedBy,proto3,oneof" json:"deleted_by,omitempty"` // 删除者用户ID
@@ -341,64 +188,64 @@ func (x *RiskEvent) GetId() uint32 {
 }
 
 func (x *RiskEvent) GetTenantId() uint32 {
-	if x != nil {
-		return x.TenantId
+	if x != nil && x.TenantId != nil {
+		return *x.TenantId
 	}
 	return 0
 }
 
 func (x *RiskEvent) GetUserId() uint32 {
-	if x != nil {
-		return x.UserId
+	if x != nil && x.UserId != nil {
+		return *x.UserId
 	}
 	return 0
 }
 
 func (x *RiskEvent) GetDeviceId() string {
-	if x != nil {
-		return x.DeviceId
+	if x != nil && x.DeviceId != nil {
+		return *x.DeviceId
 	}
 	return ""
 }
 
 func (x *RiskEvent) GetGlobalUserId() string {
-	if x != nil {
-		return x.GlobalUserId
+	if x != nil && x.GlobalUserId != nil {
+		return *x.GlobalUserId
 	}
 	return ""
 }
 
 func (x *RiskEvent) GetRiskType() RiskType {
-	if x != nil {
-		return x.RiskType
+	if x != nil && x.RiskType != nil {
+		return *x.RiskType
 	}
 	return RiskType_RISK_TYPE_UNSPECIFIED
 }
 
 func (x *RiskEvent) GetRiskLevel() RiskLevel {
-	if x != nil {
-		return x.RiskLevel
+	if x != nil && x.RiskLevel != nil {
+		return *x.RiskLevel
 	}
 	return RiskLevel_RISK_LEVEL_UNSPECIFIED
 }
 
 func (x *RiskEvent) GetRiskScore() float32 {
-	if x != nil {
-		return x.RiskScore
+	if x != nil && x.RiskScore != nil {
+		return *x.RiskScore
 	}
 	return 0
 }
 
 func (x *RiskEvent) GetRuleId() uint32 {
-	if x != nil {
-		return x.RuleId
+	if x != nil && x.RuleId != nil {
+		return *x.RuleId
 	}
 	return 0
 }
 
 func (x *RiskEvent) GetRuleName() string {
-	if x != nil {
-		return x.RuleName
+	if x != nil && x.RuleName != nil {
+		return *x.RuleName
 	}
 	return ""
 }
@@ -410,7 +257,7 @@ func (x *RiskEvent) GetRuleContext() *structpb.Struct {
 	return nil
 }
 
-func (x *RiskEvent) GetRelatedEventIds() []string {
+func (x *RiskEvent) GetRelatedEventIds() []uint32 {
 	if x != nil {
 		return x.RelatedEventIds
 	}
@@ -418,15 +265,15 @@ func (x *RiskEvent) GetRelatedEventIds() []string {
 }
 
 func (x *RiskEvent) GetSessionId() uint32 {
-	if x != nil {
-		return x.SessionId
+	if x != nil && x.SessionId != nil {
+		return *x.SessionId
 	}
 	return 0
 }
 
 func (x *RiskEvent) GetDescription() string {
-	if x != nil {
-		return x.Description
+	if x != nil && x.Description != nil {
+		return *x.Description
 	}
 	return ""
 }
@@ -438,18 +285,18 @@ func (x *RiskEvent) GetEvidence() map[string]string {
 	return nil
 }
 
-func (x *RiskEvent) GetStatus() RiskEventStatus {
-	if x != nil {
-		return x.Status
+func (x *RiskEvent) GetStatus() RiskEvent_Status {
+	if x != nil && x.Status != nil {
+		return *x.Status
 	}
-	return RiskEventStatus_RISK_EVENT_STATUS_UNSPECIFIED
+	return RiskEvent_RISK_EVENT_STATUS_UNSPECIFIED
 }
 
-func (x *RiskEvent) GetHandlerId() string {
-	if x != nil {
-		return x.HandlerId
+func (x *RiskEvent) GetHandlerId() uint32 {
+	if x != nil && x.HandlerId != nil {
+		return *x.HandlerId
 	}
-	return ""
+	return 0
 }
 
 func (x *RiskEvent) GetHandledTime() *timestamppb.Timestamp {
@@ -460,8 +307,8 @@ func (x *RiskEvent) GetHandledTime() *timestamppb.Timestamp {
 }
 
 func (x *RiskEvent) GetHandleRemark() string {
-	if x != nil {
-		return x.HandleRemark
+	if x != nil && x.HandleRemark != nil {
+		return *x.HandleRemark
 	}
 	return ""
 }
@@ -522,70 +369,6 @@ func (x *RiskEvent) GetDeletedAt() *timestamppb.Timestamp {
 	return nil
 }
 
-// 风险事件处置动作
-type RiskAction struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// 动作类型
-	Type RiskAction_ActionType `protobuf:"varint,1,opt,name=type,proto3,enum=uba.service.v1.RiskAction_ActionType" json:"type,omitempty"`
-	// 动作持续时间
-	Duration *durationpb.Duration `protobuf:"bytes,2,opt,name=duration,proto3" json:"duration,omitempty"`
-	// 动作原因
-	Reason        string `protobuf:"bytes,3,opt,name=reason,proto3" json:"reason,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *RiskAction) Reset() {
-	*x = RiskAction{}
-	mi := &file_uba_service_v1_risk_event_proto_msgTypes[1]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *RiskAction) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*RiskAction) ProtoMessage() {}
-
-func (x *RiskAction) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_risk_event_proto_msgTypes[1]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use RiskAction.ProtoReflect.Descriptor instead.
-func (*RiskAction) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_risk_event_proto_rawDescGZIP(), []int{1}
-}
-
-func (x *RiskAction) GetType() RiskAction_ActionType {
-	if x != nil {
-		return x.Type
-	}
-	return RiskAction_ACTION_UNSPECIFIED
-}
-
-func (x *RiskAction) GetDuration() *durationpb.Duration {
-	if x != nil {
-		return x.Duration
-	}
-	return nil
-}
-
-func (x *RiskAction) GetReason() string {
-	if x != nil {
-		return x.Reason
-	}
-	return ""
-}
-
 // 风险事件统计摘要
 type RiskEventSummary struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -605,7 +388,7 @@ type RiskEventSummary struct {
 
 func (x *RiskEventSummary) Reset() {
 	*x = RiskEventSummary{}
-	mi := &file_uba_service_v1_risk_event_proto_msgTypes[2]
+	mi := &file_uba_service_v1_risk_event_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -617,7 +400,7 @@ func (x *RiskEventSummary) String() string {
 func (*RiskEventSummary) ProtoMessage() {}
 
 func (x *RiskEventSummary) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_risk_event_proto_msgTypes[2]
+	mi := &file_uba_service_v1_risk_event_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -630,7 +413,7 @@ func (x *RiskEventSummary) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RiskEventSummary.ProtoReflect.Descriptor instead.
 func (*RiskEventSummary) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_risk_event_proto_rawDescGZIP(), []int{2}
+	return file_uba_service_v1_risk_event_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *RiskEventSummary) GetTotalCount() int64 {
@@ -668,55 +451,85 @@ func (x *RiskEventSummary) GetAvgRiskScore() float64 {
 	return 0
 }
 
-// 风险规则定义
-type RiskRule struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// 规则ID（唯一标识一条风险规则）
-	Id uint32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	// 租户ID（多租户隔离，支持 SaaS 场景）
-	TenantId uint32 `protobuf:"varint,2,opt,name=tenant_id,json=tenantId,proto3" json:"tenant_id,omitempty"`
-	// 规则名称
-	Name string `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
-	// 规则编码
-	Code string `protobuf:"bytes,4,opt,name=code,proto3" json:"code,omitempty"`
-	// 规则描述
-	Description string `protobuf:"bytes,5,opt,name=description,proto3" json:"description,omitempty"`
-	// 风险类型
-	RiskType RiskType `protobuf:"varint,6,opt,name=risk_type,json=riskType,proto3,enum=uba.service.v1.RiskType" json:"risk_type,omitempty"`
-	// 默认风险等级
-	DefaultLevel RiskLevel `protobuf:"varint,7,opt,name=default_level,json=defaultLevel,proto3,enum=uba.service.v1.RiskLevel" json:"default_level,omitempty"`
-	// 规则条件（简化版，实际可用 CEL/JSON Schema）
-	Condition *structpb.Struct `protobuf:"bytes,8,opt,name=condition,proto3" json:"condition,omitempty"`
-	// 动作配置（规则触发时的处置动作列表）
-	Actions []*RiskAction `protobuf:"bytes,9,rep,name=actions,proto3" json:"actions,omitempty"`
-	// 是否启用（true: 启用，false: 禁用）
-	Enabled bool `protobuf:"varint,10,opt,name=enabled,proto3" json:"enabled,omitempty"`
-	// 优先级（越小优先级越高）
-	Priority      uint32                 `protobuf:"varint,11,opt,name=priority,proto3" json:"priority,omitempty"`
-	CreatedBy     *uint32                `protobuf:"varint,100,opt,name=created_by,json=createdBy,proto3,oneof" json:"created_by,omitempty"` // 创建者用户ID
-	UpdatedBy     *uint32                `protobuf:"varint,101,opt,name=updated_by,json=updatedBy,proto3,oneof" json:"updated_by,omitempty"` // 更新者用户ID
-	DeletedBy     *uint32                `protobuf:"varint,102,opt,name=deleted_by,json=deletedBy,proto3,oneof" json:"deleted_by,omitempty"` // 删除者用户ID
-	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,200,opt,name=created_at,json=createdAt,proto3,oneof" json:"created_at,omitempty"`  // 创建时间
-	UpdatedAt     *timestamppb.Timestamp `protobuf:"bytes,201,opt,name=updated_at,json=updatedAt,proto3,oneof" json:"updated_at,omitempty"`  // 更新时间
-	DeletedAt     *timestamppb.Timestamp `protobuf:"bytes,202,opt,name=deleted_at,json=deletedAt,proto3,oneof" json:"deleted_at,omitempty"`  // 删除时间
+// 获取风险事件列表 - 答复
+type ListRiskEventResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Items         []*RiskEvent           `protobuf:"bytes,1,rep,name=items,proto3" json:"items,omitempty"`
+	Total         uint64                 `protobuf:"varint,2,opt,name=total,proto3" json:"total,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *RiskRule) Reset() {
-	*x = RiskRule{}
+func (x *ListRiskEventResponse) Reset() {
+	*x = ListRiskEventResponse{}
+	mi := &file_uba_service_v1_risk_event_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListRiskEventResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListRiskEventResponse) ProtoMessage() {}
+
+func (x *ListRiskEventResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_risk_event_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListRiskEventResponse.ProtoReflect.Descriptor instead.
+func (*ListRiskEventResponse) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_risk_event_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *ListRiskEventResponse) GetItems() []*RiskEvent {
+	if x != nil {
+		return x.Items
+	}
+	return nil
+}
+
+func (x *ListRiskEventResponse) GetTotal() uint64 {
+	if x != nil {
+		return x.Total
+	}
+	return 0
+}
+
+// 获取风险事件数据 - 请求
+type GetRiskEventRequest struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Types that are valid to be assigned to QueryBy:
+	//
+	//	*GetRiskEventRequest_Id
+	QueryBy       isGetRiskEventRequest_QueryBy `protobuf_oneof:"query_by"`
+	ViewMask      *fieldmaskpb.FieldMask        `protobuf:"bytes,100,opt,name=view_mask,json=viewMask,proto3,oneof" json:"view_mask,omitempty"` // 视图字段过滤器，用于控制返回的字段
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetRiskEventRequest) Reset() {
+	*x = GetRiskEventRequest{}
 	mi := &file_uba_service_v1_risk_event_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *RiskRule) String() string {
+func (x *GetRiskEventRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*RiskRule) ProtoMessage() {}
+func (*GetRiskEventRequest) ProtoMessage() {}
 
-func (x *RiskRule) ProtoReflect() protoreflect.Message {
+func (x *GetRiskEventRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_uba_service_v1_risk_event_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -728,198 +541,365 @@ func (x *RiskRule) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use RiskRule.ProtoReflect.Descriptor instead.
-func (*RiskRule) Descriptor() ([]byte, []int) {
+// Deprecated: Use GetRiskEventRequest.ProtoReflect.Descriptor instead.
+func (*GetRiskEventRequest) Descriptor() ([]byte, []int) {
 	return file_uba_service_v1_risk_event_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *RiskRule) GetId() uint32 {
+func (x *GetRiskEventRequest) GetQueryBy() isGetRiskEventRequest_QueryBy {
+	if x != nil {
+		return x.QueryBy
+	}
+	return nil
+}
+
+func (x *GetRiskEventRequest) GetId() uint32 {
+	if x != nil {
+		if x, ok := x.QueryBy.(*GetRiskEventRequest_Id); ok {
+			return x.Id
+		}
+	}
+	return 0
+}
+
+func (x *GetRiskEventRequest) GetViewMask() *fieldmaskpb.FieldMask {
+	if x != nil {
+		return x.ViewMask
+	}
+	return nil
+}
+
+type isGetRiskEventRequest_QueryBy interface {
+	isGetRiskEventRequest_QueryBy()
+}
+
+type GetRiskEventRequest_Id struct {
+	Id uint32 `protobuf:"varint,1,opt,name=id,proto3,oneof"` // ID
+}
+
+func (*GetRiskEventRequest_Id) isGetRiskEventRequest_QueryBy() {}
+
+// 创建风险事件 - 请求
+type CreateRiskEventRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Data          *RiskEvent             `protobuf:"bytes,1,opt,name=data,proto3" json:"data,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateRiskEventRequest) Reset() {
+	*x = CreateRiskEventRequest{}
+	mi := &file_uba_service_v1_risk_event_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateRiskEventRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateRiskEventRequest) ProtoMessage() {}
+
+func (x *CreateRiskEventRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_risk_event_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateRiskEventRequest.ProtoReflect.Descriptor instead.
+func (*CreateRiskEventRequest) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_risk_event_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *CreateRiskEventRequest) GetData() *RiskEvent {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
+// 更新风险事件 - 请求
+type UpdateRiskEventRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            uint32                 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Data          *RiskEvent             `protobuf:"bytes,2,opt,name=data,proto3" json:"data,omitempty"`                                            // 数据
+	UpdateMask    *fieldmaskpb.FieldMask `protobuf:"bytes,3,opt,name=update_mask,json=updateMask,proto3" json:"update_mask,omitempty"`              // 要更新的字段列表
+	AllowMissing  *bool                  `protobuf:"varint,4,opt,name=allow_missing,json=allowMissing,proto3,oneof" json:"allow_missing,omitempty"` // 如果设置为true的时候，资源不存在则会新增(插入)，并且在这种情况下`updateMask`字段将会被忽略。
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateRiskEventRequest) Reset() {
+	*x = UpdateRiskEventRequest{}
+	mi := &file_uba_service_v1_risk_event_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateRiskEventRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateRiskEventRequest) ProtoMessage() {}
+
+func (x *UpdateRiskEventRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_risk_event_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateRiskEventRequest.ProtoReflect.Descriptor instead.
+func (*UpdateRiskEventRequest) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_risk_event_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *UpdateRiskEventRequest) GetId() uint32 {
 	if x != nil {
 		return x.Id
 	}
 	return 0
 }
 
-func (x *RiskRule) GetTenantId() uint32 {
+func (x *UpdateRiskEventRequest) GetData() *RiskEvent {
 	if x != nil {
-		return x.TenantId
-	}
-	return 0
-}
-
-func (x *RiskRule) GetName() string {
-	if x != nil {
-		return x.Name
-	}
-	return ""
-}
-
-func (x *RiskRule) GetCode() string {
-	if x != nil {
-		return x.Code
-	}
-	return ""
-}
-
-func (x *RiskRule) GetDescription() string {
-	if x != nil {
-		return x.Description
-	}
-	return ""
-}
-
-func (x *RiskRule) GetRiskType() RiskType {
-	if x != nil {
-		return x.RiskType
-	}
-	return RiskType_RISK_TYPE_UNSPECIFIED
-}
-
-func (x *RiskRule) GetDefaultLevel() RiskLevel {
-	if x != nil {
-		return x.DefaultLevel
-	}
-	return RiskLevel_RISK_LEVEL_UNSPECIFIED
-}
-
-func (x *RiskRule) GetCondition() *structpb.Struct {
-	if x != nil {
-		return x.Condition
+		return x.Data
 	}
 	return nil
 }
 
-func (x *RiskRule) GetActions() []*RiskAction {
+func (x *UpdateRiskEventRequest) GetUpdateMask() *fieldmaskpb.FieldMask {
 	if x != nil {
-		return x.Actions
+		return x.UpdateMask
 	}
 	return nil
 }
 
-func (x *RiskRule) GetEnabled() bool {
-	if x != nil {
-		return x.Enabled
+func (x *UpdateRiskEventRequest) GetAllowMissing() bool {
+	if x != nil && x.AllowMissing != nil {
+		return *x.AllowMissing
 	}
 	return false
 }
 
-func (x *RiskRule) GetPriority() uint32 {
+// 删除风险事件 - 请求
+type DeleteRiskEventRequest struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Types that are valid to be assigned to QueryBy:
+	//
+	//	*DeleteRiskEventRequest_Id
+	QueryBy       isDeleteRiskEventRequest_QueryBy `protobuf_oneof:"query_by"`
+	DeletedBy     *uint32                          `protobuf:"varint,100,opt,name=deleted_by,json=deletedBy,proto3,oneof" json:"deleted_by,omitempty"` // 删除者用户ID
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteRiskEventRequest) Reset() {
+	*x = DeleteRiskEventRequest{}
+	mi := &file_uba_service_v1_risk_event_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteRiskEventRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteRiskEventRequest) ProtoMessage() {}
+
+func (x *DeleteRiskEventRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_risk_event_proto_msgTypes[6]
 	if x != nil {
-		return x.Priority
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteRiskEventRequest.ProtoReflect.Descriptor instead.
+func (*DeleteRiskEventRequest) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_risk_event_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *DeleteRiskEventRequest) GetQueryBy() isDeleteRiskEventRequest_QueryBy {
+	if x != nil {
+		return x.QueryBy
+	}
+	return nil
+}
+
+func (x *DeleteRiskEventRequest) GetId() uint32 {
+	if x != nil {
+		if x, ok := x.QueryBy.(*DeleteRiskEventRequest_Id); ok {
+			return x.Id
+		}
 	}
 	return 0
 }
 
-func (x *RiskRule) GetCreatedBy() uint32 {
-	if x != nil && x.CreatedBy != nil {
-		return *x.CreatedBy
-	}
-	return 0
-}
-
-func (x *RiskRule) GetUpdatedBy() uint32 {
-	if x != nil && x.UpdatedBy != nil {
-		return *x.UpdatedBy
-	}
-	return 0
-}
-
-func (x *RiskRule) GetDeletedBy() uint32 {
+func (x *DeleteRiskEventRequest) GetDeletedBy() uint32 {
 	if x != nil && x.DeletedBy != nil {
 		return *x.DeletedBy
 	}
 	return 0
 }
 
-func (x *RiskRule) GetCreatedAt() *timestamppb.Timestamp {
-	if x != nil {
-		return x.CreatedAt
-	}
-	return nil
+type isDeleteRiskEventRequest_QueryBy interface {
+	isDeleteRiskEventRequest_QueryBy()
 }
 
-func (x *RiskRule) GetUpdatedAt() *timestamppb.Timestamp {
-	if x != nil {
-		return x.UpdatedAt
-	}
-	return nil
+type DeleteRiskEventRequest_Id struct {
+	Id uint32 `protobuf:"varint,1,opt,name=id,proto3,oneof"` // ID
 }
 
-func (x *RiskRule) GetDeletedAt() *timestamppb.Timestamp {
+func (*DeleteRiskEventRequest_Id) isDeleteRiskEventRequest_QueryBy() {}
+
+type CountRiskEventResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Count         uint64                 `protobuf:"varint,1,opt,name=count,proto3" json:"count,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CountRiskEventResponse) Reset() {
+	*x = CountRiskEventResponse{}
+	mi := &file_uba_service_v1_risk_event_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CountRiskEventResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CountRiskEventResponse) ProtoMessage() {}
+
+func (x *CountRiskEventResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_risk_event_proto_msgTypes[7]
 	if x != nil {
-		return x.DeletedAt
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
 	}
-	return nil
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CountRiskEventResponse.ProtoReflect.Descriptor instead.
+func (*CountRiskEventResponse) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_risk_event_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *CountRiskEventResponse) GetCount() uint64 {
+	if x != nil {
+		return x.Count
+	}
+	return 0
 }
 
 var File_uba_service_v1_risk_event_proto protoreflect.FileDescriptor
 
 const file_uba_service_v1_risk_event_proto_rawDesc = "" +
 	"\n" +
-	"\x1fuba/service/v1/risk_event.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1egoogle/protobuf/duration.proto\x1a google/protobuf/field_mask.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1buba/service/v1/common.proto\"\xf7\x13\n" +
+	"\x1fuba/service/v1/risk_event.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a google/protobuf/field_mask.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1epagination/v1/pagination.proto\x1a\x1buba/service/v1/common.proto\"\xef\x17\n" +
 	"\tRiskEvent\x12\x18\n" +
-	"\x02id\x18\x01 \x01(\rB\b\xbaG\x05\x92\x02\x02IDR\x02id\x12R\n" +
-	"\ttenant_id\x18\x02 \x01(\rB5\xbaG2\x92\x02/租户ID，多租户隔离，支持 SaaS 场景R\btenantId\x12T\n" +
-	"\auser_id\x18\x03 \x01(\rB;\xbaG8\x92\x025用户ID，关联主体，风险事件涉及的用户R\x06userId\x12X\n" +
-	"\tdevice_id\x18\x04 \x01(\tB;\xbaG8\x92\x025设备ID，关联主体，风险事件涉及的设备R\bdeviceId\x12X\n" +
-	"\x0eglobal_user_id\x18\x05 \x01(\tB2\xbaG/\x92\x02,全局用户ID，跨平台唯一标识用户R\fglobalUserId\x12g\n" +
-	"\trisk_type\x18\x06 \x01(\x0e2\x18.uba.service.v1.RiskTypeB0\xbaG-\x92\x02*风险类型，标识风险事件的类型R\briskType\x12p\n" +
+	"\x02id\x18\x01 \x01(\rB\b\xbaG\x05\x92\x02\x02IDR\x02id\x12W\n" +
+	"\ttenant_id\x18\x02 \x01(\rB5\xbaG2\x92\x02/租户ID，多租户隔离，支持 SaaS 场景H\x00R\btenantId\x88\x01\x01\x12Y\n" +
+	"\auser_id\x18\x03 \x01(\rB;\xbaG8\x92\x025用户ID，关联主体，风险事件涉及的用户H\x01R\x06userId\x88\x01\x01\x12]\n" +
+	"\tdevice_id\x18\x04 \x01(\tB;\xbaG8\x92\x025设备ID，关联主体，风险事件涉及的设备H\x02R\bdeviceId\x88\x01\x01\x12]\n" +
+	"\x0eglobal_user_id\x18\x05 \x01(\tB2\xbaG/\x92\x02,全局用户ID，跨平台唯一标识用户H\x03R\fglobalUserId\x88\x01\x01\x12l\n" +
+	"\trisk_type\x18\x06 \x01(\x0e2\x18.uba.service.v1.RiskTypeB0\xbaG-\x92\x02*风险类型，标识风险事件的类型H\x04R\briskType\x88\x01\x01\x12u\n" +
 	"\n" +
-	"risk_level\x18\a \x01(\x0e2\x19.uba.service.v1.RiskLevelB6\xbaG3\x92\x020风险等级，标识风险事件的严重程度R\triskLevel\x12Q\n" +
+	"risk_level\x18\a \x01(\x0e2\x19.uba.service.v1.RiskLevelB6\xbaG3\x92\x020风险等级，标识风险事件的严重程度H\x05R\triskLevel\x88\x01\x01\x12V\n" +
 	"\n" +
-	"risk_score\x18\b \x01(\x02B2\xbaG/\x92\x02,风险评分，0-100，风险事件的评分R\triskScore\x12Q\n" +
+	"risk_score\x18\b \x01(\x02B2\xbaG/\x92\x02,风险评分，0-100，风险事件的评分H\x06R\triskScore\x88\x01\x01\x12V\n" +
 	"\arule_id\x18\n" +
-	" \x01(\rB8\xbaG5\x92\x022触发规则ID，标识触发风险事件的规则R\x06ruleId\x12S\n" +
-	"\trule_name\x18\v \x01(\tB6\xbaG3\x92\x020规则名称，触发风险事件的规则名称R\bruleName\x12r\n" +
-	"\frule_context\x18\f \x01(\v2\x17.google.protobuf.StructB6\xbaG3\x92\x020规则上下文，触发条件，结构化信息R\vruleContext\x12p\n" +
-	"\x11related_event_ids\x18\r \x03(\tBD\xbaGA\x92\x02>关联行为事件ID列表，风险事件关联的行为事件R\x0frelatedEventIds\x12T\n" +
+	" \x01(\rB8\xbaG5\x92\x022触发规则ID，标识触发风险事件的规则H\aR\x06ruleId\x88\x01\x01\x12X\n" +
+	"\trule_name\x18\v \x01(\tB6\xbaG3\x92\x020规则名称，触发风险事件的规则名称H\bR\bruleName\x88\x01\x01\x12w\n" +
+	"\frule_context\x18\f \x01(\v2\x17.google.protobuf.StructB6\xbaG3\x92\x020规则上下文，触发条件，结构化信息H\tR\vruleContext\x88\x01\x01\x12p\n" +
+	"\x11related_event_ids\x18\r \x03(\rBD\xbaGA\x92\x02>关联行为事件ID列表，风险事件关联的行为事件R\x0frelatedEventIds\x12Y\n" +
 	"\n" +
-	"session_id\x18\x0e \x01(\rB5\xbaG2\x92\x02/会话ID，风险事件发生时的会话标识R\tsessionId\x12X\n" +
-	"\vdescription\x18\x0f \x01(\tB6\xbaG3\x92\x020风险详情描述，风险事件的详细说明R\vdescription\x12~\n" +
-	"\bevidence\x18\x10 \x03(\v2'.uba.service.v1.RiskEvent.EvidenceEntryB9\xbaG6\x92\x023证据，风险事件相关证据，键值对形式R\bevidence\x12i\n" +
-	"\x06status\x18\x11 \x01(\x0e2\x1f.uba.service.v1.RiskEventStatusB0\xbaG-\x92\x02*处置状态，风险事件的处理状态R\x06status\x12K\n" +
+	"session_id\x18\x0e \x01(\rB5\xbaG2\x92\x02/会话ID，风险事件发生时的会话标识H\n" +
+	"R\tsessionId\x88\x01\x01\x12]\n" +
+	"\vdescription\x18\x0f \x01(\tB6\xbaG3\x92\x020风险详情描述，风险事件的详细说明H\vR\vdescription\x88\x01\x01\x12~\n" +
+	"\bevidence\x18\x10 \x03(\v2'.uba.service.v1.RiskEvent.EvidenceEntryB9\xbaG6\x92\x023证据，风险事件相关证据，键值对形式R\bevidence\x12o\n" +
+	"\x06status\x18\x11 \x01(\x0e2 .uba.service.v1.RiskEvent.StatusB0\xbaG-\x92\x02*处置状态，风险事件的处理状态H\fR\x06status\x88\x01\x01\x12P\n" +
 	"\n" +
-	"handler_id\x18\x12 \x01(\tB,\xbaG)\x92\x02&处理人ID，风险事件的处理人R\thandlerId\x12r\n" +
-	"\fhandled_time\x18\x13 \x01(\v2\x1a.google.protobuf.TimestampB3\xbaG0\x92\x02-处理时间，风险事件被处理的时间R\vhandledTime\x12U\n" +
-	"\rhandle_remark\x18\x14 \x01(\tB0\xbaG-\x92\x02*处理备注，风险事件处理的说明R\fhandleRemark\x12Y\n" +
+	"handler_id\x18\x12 \x01(\rB,\xbaG)\x92\x02&处理人ID，风险事件的处理人H\rR\thandlerId\x88\x01\x01\x12w\n" +
+	"\fhandled_time\x18\x13 \x01(\v2\x1a.google.protobuf.TimestampB3\xbaG0\x92\x02-处理时间，风险事件被处理的时间H\x0eR\vhandledTime\x88\x01\x01\x12Z\n" +
+	"\rhandle_remark\x18\x14 \x01(\tB0\xbaG-\x92\x02*处理备注，风险事件处理的说明H\x0fR\fhandleRemark\x88\x01\x01\x12^\n" +
 	"\n" +
-	"occur_time\x18\x15 \x01(\v2\x1a.google.protobuf.TimestampB\x1e\xbaG\x1b\x92\x02\x18风险事件发生时间R\toccurTime\x12[\n" +
-	"\vreport_time\x18\x16 \x01(\v2\x1a.google.protobuf.TimestampB\x1e\xbaG\x1b\x92\x02\x18风险事件上报时间R\n" +
-	"reportTime\x12;\n" +
+	"occur_time\x18\x15 \x01(\v2\x1a.google.protobuf.TimestampB\x1e\xbaG\x1b\x92\x02\x18风险事件发生时间H\x10R\toccurTime\x88\x01\x01\x12`\n" +
+	"\vreport_time\x18\x16 \x01(\v2\x1a.google.protobuf.TimestampB\x1e\xbaG\x1b\x92\x02\x18风险事件上报时间H\x11R\n" +
+	"reportTime\x88\x01\x01\x12;\n" +
 	"\n" +
-	"created_by\x18d \x01(\rB\x17\xbaG\x14\x92\x02\x11创建者用户IDH\x00R\tcreatedBy\x88\x01\x01\x12;\n" +
+	"created_by\x18d \x01(\rB\x17\xbaG\x14\x92\x02\x11创建者用户IDH\x12R\tcreatedBy\x88\x01\x01\x12;\n" +
 	"\n" +
-	"updated_by\x18e \x01(\rB\x17\xbaG\x14\x92\x02\x11更新者用户IDH\x01R\tupdatedBy\x88\x01\x01\x12;\n" +
+	"updated_by\x18e \x01(\rB\x17\xbaG\x14\x92\x02\x11更新者用户IDH\x13R\tupdatedBy\x88\x01\x01\x12;\n" +
 	"\n" +
-	"deleted_by\x18f \x01(\rB\x17\xbaG\x14\x92\x02\x11删除者用户IDH\x02R\tdeletedBy\x88\x01\x01\x12S\n" +
+	"deleted_by\x18f \x01(\rB\x17\xbaG\x14\x92\x02\x11删除者用户IDH\x14R\tdeletedBy\x88\x01\x01\x12S\n" +
 	"\n" +
-	"created_at\x18\xc8\x01 \x01(\v2\x1a.google.protobuf.TimestampB\x12\xbaG\x0f\x92\x02\f创建时间H\x03R\tcreatedAt\x88\x01\x01\x12S\n" +
+	"created_at\x18\xc8\x01 \x01(\v2\x1a.google.protobuf.TimestampB\x12\xbaG\x0f\x92\x02\f创建时间H\x15R\tcreatedAt\x88\x01\x01\x12S\n" +
 	"\n" +
-	"updated_at\x18\xc9\x01 \x01(\v2\x1a.google.protobuf.TimestampB\x12\xbaG\x0f\x92\x02\f更新时间H\x04R\tupdatedAt\x88\x01\x01\x12S\n" +
+	"updated_at\x18\xc9\x01 \x01(\v2\x1a.google.protobuf.TimestampB\x12\xbaG\x0f\x92\x02\f更新时间H\x16R\tupdatedAt\x88\x01\x01\x12S\n" +
 	"\n" +
-	"deleted_at\x18\xca\x01 \x01(\v2\x1a.google.protobuf.TimestampB\x12\xbaG\x0f\x92\x02\f删除时间H\x05R\tdeletedAt\x88\x01\x01\x1a;\n" +
+	"deleted_at\x18\xca\x01 \x01(\v2\x1a.google.protobuf.TimestampB\x12\xbaG\x0f\x92\x02\f删除时间H\x17R\tdeletedAt\x88\x01\x01\x1a;\n" +
 	"\rEvidenceEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\r\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\x8d\x01\n" +
+	"\x06Status\x12!\n" +
+	"\x1dRISK_EVENT_STATUS_UNSPECIFIED\x10\x00\x12\v\n" +
+	"\aPENDING\x10\x01\x12\x11\n" +
+	"\rINVESTIGATING\x10\x02\x12\r\n" +
+	"\tCONFIRMED\x10\x03\x12\x12\n" +
+	"\x0eFALSE_POSITIVE\x10\x04\x12\v\n" +
+	"\aIGNORED\x10\x05\x12\x10\n" +
+	"\fAUTO_BLOCKED\x10\x06B\f\n" +
+	"\n" +
+	"_tenant_idB\n" +
+	"\n" +
+	"\b_user_idB\f\n" +
+	"\n" +
+	"_device_idB\x11\n" +
+	"\x0f_global_user_idB\f\n" +
+	"\n" +
+	"_risk_typeB\r\n" +
+	"\v_risk_levelB\r\n" +
+	"\v_risk_scoreB\n" +
+	"\n" +
+	"\b_rule_idB\f\n" +
+	"\n" +
+	"_rule_nameB\x0f\n" +
+	"\r_rule_contextB\r\n" +
+	"\v_session_idB\x0e\n" +
+	"\f_descriptionB\t\n" +
+	"\a_statusB\r\n" +
+	"\v_handler_idB\x0f\n" +
+	"\r_handled_timeB\x10\n" +
+	"\x0e_handle_remarkB\r\n" +
+	"\v_occur_timeB\x0e\n" +
+	"\f_report_timeB\r\n" +
 	"\v_created_byB\r\n" +
 	"\v_updated_byB\r\n" +
 	"\v_deleted_byB\r\n" +
 	"\v_created_atB\r\n" +
 	"\v_updated_atB\r\n" +
-	"\v_deleted_at\"\xef\x03\n" +
-	"\n" +
-	"RiskAction\x12q\n" +
-	"\x04type\x18\x01 \x01(\x0e2%.uba.service.v1.RiskAction.ActionTypeB6\xbaG3\x92\x020动作类型，风险事件处置的动作类型R\x04type\x12y\n" +
-	"\bduration\x18\x02 \x01(\v2\x19.google.protobuf.DurationBB\xbaG?\x92\x02<动作持续时间，风险事件处置动作的持续时间R\bduration\x12T\n" +
-	"\x06reason\x18\x03 \x01(\tB<\xbaG9\x92\x026动作原因，风险事件处置动作的原因说明R\x06reason\"\x9c\x01\n" +
-	"\n" +
-	"ActionType\x12\x16\n" +
-	"\x12ACTION_UNSPECIFIED\x10\x00\x12\x15\n" +
-	"\x11ACTION_BLOCK_USER\x10\x01\x12\x17\n" +
-	"\x13ACTION_BLOCK_DEVICE\x10\x02\x12\x16\n" +
-	"\x12ACTION_REQUIRE_MFA\x10\x03\x12\x15\n" +
-	"\x11ACTION_LIMIT_RATE\x10\x04\x12\x17\n" +
-	"\x13ACTION_NOTIFY_ADMIN\x10\x05\"\x88\x05\n" +
+	"\v_deleted_at\"\x88\x05\n" +
 	"\x10RiskEventSummary\x129\n" +
 	"\vtotal_count\x18\x01 \x01(\x03B\x18\xbaG\x15\x92\x02\x12风险事件总数R\n" +
 	"totalCount\x12k\n" +
@@ -935,61 +915,44 @@ const file_uba_service_v1_risk_event_proto_rawDesc = "" +
 	"\x05value\x18\x02 \x01(\x03R\x05value:\x028\x01\x1a;\n" +
 	"\rByStatusEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\x03R\x05value:\x028\x01\"\x95\v\n" +
-	"\bRiskRule\x12?\n" +
-	"\x02id\x18\x01 \x01(\rB/\xbaG,\x92\x02)规则ID，唯一标识一条风险规则R\x02id\x12R\n" +
-	"\ttenant_id\x18\x02 \x01(\rB5\xbaG2\x92\x02/租户ID，多租户隔离，支持 SaaS 场景R\btenantId\x12&\n" +
-	"\x04name\x18\x03 \x01(\tB\x12\xbaG\x0f\x92\x02\f规则名称R\x04name\x12&\n" +
-	"\x04code\x18\x04 \x01(\tB\x12\xbaG\x0f\x92\x02\f规则编码R\x04code\x124\n" +
-	"\vdescription\x18\x05 \x01(\tB\x12\xbaG\x0f\x92\x02\f规则描述R\vdescription\x12g\n" +
-	"\trisk_type\x18\x06 \x01(\x0e2\x18.uba.service.v1.RiskTypeB0\xbaG-\x92\x02*风险类型，规则对应的风险类型R\briskType\x12|\n" +
-	"\rdefault_level\x18\a \x01(\x0e2\x19.uba.service.v1.RiskLevelB<\xbaG9\x92\x026默认风险等级，规则对应的默认风险等级R\fdefaultLevel\x12t\n" +
-	"\tcondition\x18\b \x01(\v2\x17.google.protobuf.StructB=\xbaG:\x92\x027规则条件，简化版，实际可用 CEL/JSON SchemaR\tcondition\x12o\n" +
-	"\aactions\x18\t \x03(\v2\x1a.uba.service.v1.RiskActionB9\xbaG6\x92\x023动作配置，规则触发时的处置动作列表R\aactions\x12K\n" +
-	"\aenabled\x18\n" +
-	" \x01(\bB1\xbaG.\x92\x02+是否启用，true: 启用，false: 禁用R\aenabled\x12C\n" +
-	"\bpriority\x18\v \x01(\rB'\xbaG$\x92\x02!优先级，越小优先级越高R\bpriority\x12;\n" +
+	"\x05value\x18\x02 \x01(\x03R\x05value:\x028\x01\"^\n" +
+	"\x15ListRiskEventResponse\x12/\n" +
+	"\x05items\x18\x01 \x03(\v2\x19.uba.service.v1.RiskEventR\x05items\x12\x14\n" +
+	"\x05total\x18\x02 \x01(\x04R\x05total\"\xc6\x01\n" +
+	"\x13GetRiskEventRequest\x12\x1c\n" +
+	"\x02id\x18\x01 \x01(\rB\n" +
+	"\xbaG\a\x18\x01\x92\x02\x02IDH\x00R\x02id\x12w\n" +
+	"\tview_mask\x18d \x01(\v2\x1a.google.protobuf.FieldMaskB9\xbaG6\x92\x023视图字段过滤器，用于控制返回的字段H\x01R\bviewMask\x88\x01\x01B\n" +
 	"\n" +
-	"created_by\x18d \x01(\rB\x17\xbaG\x14\x92\x02\x11创建者用户IDH\x00R\tcreatedBy\x88\x01\x01\x12;\n" +
+	"\bquery_byB\f\n" +
 	"\n" +
-	"updated_by\x18e \x01(\rB\x17\xbaG\x14\x92\x02\x11更新者用户IDH\x01R\tupdatedBy\x88\x01\x01\x12;\n" +
+	"_view_mask\"G\n" +
+	"\x16CreateRiskEventRequest\x12-\n" +
+	"\x04data\x18\x01 \x01(\v2\x19.uba.service.v1.RiskEventR\x04data\"\xa3\x03\n" +
+	"\x16UpdateRiskEventRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\rR\x02id\x12;\n" +
+	"\x04data\x18\x02 \x01(\v2\x19.uba.service.v1.RiskEventB\f\xbaG\t\x92\x02\x06数据R\x04data\x12s\n" +
+	"\vupdate_mask\x18\x03 \x01(\v2\x1a.google.protobuf.FieldMaskB6\xbaG3:\x16\x12\x14id,realname,username\x92\x02\x18要更新的字段列表R\n" +
+	"updateMask\x12\xb4\x01\n" +
+	"\rallow_missing\x18\x04 \x01(\bB\x89\x01\xbaG\x85\x01\x92\x02\x81\x01如果设置为true的时候，资源不存在则会新增(插入)，并且在这种情况下`updateMask`字段将会被忽略。H\x00R\fallowMissing\x88\x01\x01B\x10\n" +
+	"\x0e_allow_missing\"\x8e\x01\n" +
+	"\x16DeleteRiskEventRequest\x12\x1c\n" +
+	"\x02id\x18\x01 \x01(\rB\n" +
+	"\xbaG\a\x18\x01\x92\x02\x02IDH\x00R\x02id\x12;\n" +
 	"\n" +
-	"deleted_by\x18f \x01(\rB\x17\xbaG\x14\x92\x02\x11删除者用户IDH\x02R\tdeletedBy\x88\x01\x01\x12S\n" +
+	"deleted_by\x18d \x01(\rB\x17\xbaG\x14\x92\x02\x11删除者用户IDH\x01R\tdeletedBy\x88\x01\x01B\n" +
 	"\n" +
-	"created_at\x18\xc8\x01 \x01(\v2\x1a.google.protobuf.TimestampB\x12\xbaG\x0f\x92\x02\f创建时间H\x03R\tcreatedAt\x88\x01\x01\x12S\n" +
-	"\n" +
-	"updated_at\x18\xc9\x01 \x01(\v2\x1a.google.protobuf.TimestampB\x12\xbaG\x0f\x92\x02\f更新时间H\x04R\tupdatedAt\x88\x01\x01\x12S\n" +
-	"\n" +
-	"deleted_at\x18\xca\x01 \x01(\v2\x1a.google.protobuf.TimestampB\x12\xbaG\x0f\x92\x02\f删除时间H\x05R\tdeletedAt\x88\x01\x01B\r\n" +
-	"\v_created_byB\r\n" +
-	"\v_updated_byB\r\n" +
-	"\v_deleted_byB\r\n" +
-	"\v_created_atB\r\n" +
-	"\v_updated_atB\r\n" +
-	"\v_deleted_at*\xf7\x02\n" +
-	"\bRiskType\x12\x19\n" +
-	"\x15RISK_TYPE_UNSPECIFIED\x10\x00\x12\x1b\n" +
-	"\x17RISK_TYPE_LOGIN_ANOMALY\x10\x01\x12\x19\n" +
-	"\x15RISK_TYPE_BRUTE_FORCE\x10\x02\x12!\n" +
-	"\x1dRISK_TYPE_CREDENTIAL_STUFFING\x10\x03\x12 \n" +
-	"\x1cRISK_TYPE_FREQUENT_OPERATION\x10\x04\x12\x1b\n" +
-	"\x17RISK_TYPE_ABNORMAL_FLOW\x10\x05\x12\x1f\n" +
-	"\x1bRISK_TYPE_DATA_EXFILTRATION\x10\x06\x12\x1b\n" +
-	"\x17RISK_TYPE_DEVICE_CHANGE\x10\a\x12\x1e\n" +
-	"\x1aRISK_TYPE_LOCATION_ANOMALY\x10\b\x12\x1c\n" +
-	"\x18RISK_TYPE_PROXY_DETECTED\x10\t\x12\x1b\n" +
-	"\x17RISK_TYPE_FRAUD_PAYMENT\x10\n" +
-	"\x12\x1d\n" +
-	"\x19RISK_TYPE_ABUSE_PROMOTION\x10\v*\x82\x02\n" +
-	"\x0fRiskEventStatus\x12!\n" +
-	"\x1dRISK_EVENT_STATUS_UNSPECIFIED\x10\x00\x12\x1d\n" +
-	"\x19RISK_EVENT_STATUS_PENDING\x10\x01\x12#\n" +
-	"\x1fRISK_EVENT_STATUS_INVESTIGATING\x10\x02\x12\x1f\n" +
-	"\x1bRISK_EVENT_STATUS_CONFIRMED\x10\x03\x12$\n" +
-	" RISK_EVENT_STATUS_FALSE_POSITIVE\x10\x04\x12\x1d\n" +
-	"\x19RISK_EVENT_STATUS_IGNORED\x10\x05\x12\"\n" +
-	"\x1eRISK_EVENT_STATUS_AUTO_BLOCKED\x10\x062\x12\n" +
-	"\x10RiskEventServiceB\xaf\x01\n" +
+	"\bquery_byB\r\n" +
+	"\v_deleted_by\".\n" +
+	"\x16CountRiskEventResponse\x12\x14\n" +
+	"\x05count\x18\x01 \x01(\x04R\x05count2\xdf\x03\n" +
+	"\x10RiskEventService\x12J\n" +
+	"\x04List\x12\x19.pagination.PagingRequest\x1a%.uba.service.v1.ListRiskEventResponse\"\x00\x12L\n" +
+	"\x05Count\x12\x19.pagination.PagingRequest\x1a&.uba.service.v1.CountRiskEventResponse\"\x00\x12G\n" +
+	"\x03Get\x12#.uba.service.v1.GetRiskEventRequest\x1a\x19.uba.service.v1.RiskEvent\"\x00\x12M\n" +
+	"\x06Create\x12&.uba.service.v1.CreateRiskEventRequest\x1a\x19.uba.service.v1.RiskEvent\"\x00\x12M\n" +
+	"\x06Update\x12&.uba.service.v1.UpdateRiskEventRequest\x1a\x19.uba.service.v1.RiskEvent\"\x00\x12J\n" +
+	"\x06Delete\x12&.uba.service.v1.DeleteRiskEventRequest\x1a\x16.google.protobuf.Empty\"\x00B\xaf\x01\n" +
 	"\x12com.uba.service.v1B\x0eRiskEventProtoP\x01Z/go-wind-uba/api/gen/go/uba/service/v1;servicev1\xa2\x02\x03USX\xaa\x02\x0eUba.Service.V1\xca\x02\x0eUba\\Service\\V1\xe2\x02\x1aUba\\Service\\V1\\GPBMetadata\xea\x02\x10Uba::Service::V1b\x06proto3"
 
 var (
@@ -1004,54 +967,67 @@ func file_uba_service_v1_risk_event_proto_rawDescGZIP() []byte {
 	return file_uba_service_v1_risk_event_proto_rawDescData
 }
 
-var file_uba_service_v1_risk_event_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
-var file_uba_service_v1_risk_event_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
+var file_uba_service_v1_risk_event_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_uba_service_v1_risk_event_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
 var file_uba_service_v1_risk_event_proto_goTypes = []any{
-	(RiskType)(0),                 // 0: uba.service.v1.RiskType
-	(RiskEventStatus)(0),          // 1: uba.service.v1.RiskEventStatus
-	(RiskAction_ActionType)(0),    // 2: uba.service.v1.RiskAction.ActionType
-	(*RiskEvent)(nil),             // 3: uba.service.v1.RiskEvent
-	(*RiskAction)(nil),            // 4: uba.service.v1.RiskAction
-	(*RiskEventSummary)(nil),      // 5: uba.service.v1.RiskEventSummary
-	(*RiskRule)(nil),              // 6: uba.service.v1.RiskRule
-	nil,                           // 7: uba.service.v1.RiskEvent.EvidenceEntry
-	nil,                           // 8: uba.service.v1.RiskEventSummary.ByLevelEntry
-	nil,                           // 9: uba.service.v1.RiskEventSummary.ByTypeEntry
-	nil,                           // 10: uba.service.v1.RiskEventSummary.ByStatusEntry
-	(RiskLevel)(0),                // 11: uba.service.v1.RiskLevel
-	(*structpb.Struct)(nil),       // 12: google.protobuf.Struct
-	(*timestamppb.Timestamp)(nil), // 13: google.protobuf.Timestamp
-	(*durationpb.Duration)(nil),   // 14: google.protobuf.Duration
+	(RiskEvent_Status)(0),          // 0: uba.service.v1.RiskEvent.Status
+	(*RiskEvent)(nil),              // 1: uba.service.v1.RiskEvent
+	(*RiskEventSummary)(nil),       // 2: uba.service.v1.RiskEventSummary
+	(*ListRiskEventResponse)(nil),  // 3: uba.service.v1.ListRiskEventResponse
+	(*GetRiskEventRequest)(nil),    // 4: uba.service.v1.GetRiskEventRequest
+	(*CreateRiskEventRequest)(nil), // 5: uba.service.v1.CreateRiskEventRequest
+	(*UpdateRiskEventRequest)(nil), // 6: uba.service.v1.UpdateRiskEventRequest
+	(*DeleteRiskEventRequest)(nil), // 7: uba.service.v1.DeleteRiskEventRequest
+	(*CountRiskEventResponse)(nil), // 8: uba.service.v1.CountRiskEventResponse
+	nil,                            // 9: uba.service.v1.RiskEvent.EvidenceEntry
+	nil,                            // 10: uba.service.v1.RiskEventSummary.ByLevelEntry
+	nil,                            // 11: uba.service.v1.RiskEventSummary.ByTypeEntry
+	nil,                            // 12: uba.service.v1.RiskEventSummary.ByStatusEntry
+	(RiskType)(0),                  // 13: uba.service.v1.RiskType
+	(RiskLevel)(0),                 // 14: uba.service.v1.RiskLevel
+	(*structpb.Struct)(nil),        // 15: google.protobuf.Struct
+	(*timestamppb.Timestamp)(nil),  // 16: google.protobuf.Timestamp
+	(*fieldmaskpb.FieldMask)(nil),  // 17: google.protobuf.FieldMask
+	(*v1.PagingRequest)(nil),       // 18: pagination.PagingRequest
+	(*emptypb.Empty)(nil),          // 19: google.protobuf.Empty
 }
 var file_uba_service_v1_risk_event_proto_depIdxs = []int32{
-	0,  // 0: uba.service.v1.RiskEvent.risk_type:type_name -> uba.service.v1.RiskType
-	11, // 1: uba.service.v1.RiskEvent.risk_level:type_name -> uba.service.v1.RiskLevel
-	12, // 2: uba.service.v1.RiskEvent.rule_context:type_name -> google.protobuf.Struct
-	7,  // 3: uba.service.v1.RiskEvent.evidence:type_name -> uba.service.v1.RiskEvent.EvidenceEntry
-	1,  // 4: uba.service.v1.RiskEvent.status:type_name -> uba.service.v1.RiskEventStatus
-	13, // 5: uba.service.v1.RiskEvent.handled_time:type_name -> google.protobuf.Timestamp
-	13, // 6: uba.service.v1.RiskEvent.occur_time:type_name -> google.protobuf.Timestamp
-	13, // 7: uba.service.v1.RiskEvent.report_time:type_name -> google.protobuf.Timestamp
-	13, // 8: uba.service.v1.RiskEvent.created_at:type_name -> google.protobuf.Timestamp
-	13, // 9: uba.service.v1.RiskEvent.updated_at:type_name -> google.protobuf.Timestamp
-	13, // 10: uba.service.v1.RiskEvent.deleted_at:type_name -> google.protobuf.Timestamp
-	2,  // 11: uba.service.v1.RiskAction.type:type_name -> uba.service.v1.RiskAction.ActionType
-	14, // 12: uba.service.v1.RiskAction.duration:type_name -> google.protobuf.Duration
-	8,  // 13: uba.service.v1.RiskEventSummary.by_level:type_name -> uba.service.v1.RiskEventSummary.ByLevelEntry
-	9,  // 14: uba.service.v1.RiskEventSummary.by_type:type_name -> uba.service.v1.RiskEventSummary.ByTypeEntry
-	10, // 15: uba.service.v1.RiskEventSummary.by_status:type_name -> uba.service.v1.RiskEventSummary.ByStatusEntry
-	0,  // 16: uba.service.v1.RiskRule.risk_type:type_name -> uba.service.v1.RiskType
-	11, // 17: uba.service.v1.RiskRule.default_level:type_name -> uba.service.v1.RiskLevel
-	12, // 18: uba.service.v1.RiskRule.condition:type_name -> google.protobuf.Struct
-	4,  // 19: uba.service.v1.RiskRule.actions:type_name -> uba.service.v1.RiskAction
-	13, // 20: uba.service.v1.RiskRule.created_at:type_name -> google.protobuf.Timestamp
-	13, // 21: uba.service.v1.RiskRule.updated_at:type_name -> google.protobuf.Timestamp
-	13, // 22: uba.service.v1.RiskRule.deleted_at:type_name -> google.protobuf.Timestamp
-	23, // [23:23] is the sub-list for method output_type
-	23, // [23:23] is the sub-list for method input_type
-	23, // [23:23] is the sub-list for extension type_name
-	23, // [23:23] is the sub-list for extension extendee
-	0,  // [0:23] is the sub-list for field type_name
+	13, // 0: uba.service.v1.RiskEvent.risk_type:type_name -> uba.service.v1.RiskType
+	14, // 1: uba.service.v1.RiskEvent.risk_level:type_name -> uba.service.v1.RiskLevel
+	15, // 2: uba.service.v1.RiskEvent.rule_context:type_name -> google.protobuf.Struct
+	9,  // 3: uba.service.v1.RiskEvent.evidence:type_name -> uba.service.v1.RiskEvent.EvidenceEntry
+	0,  // 4: uba.service.v1.RiskEvent.status:type_name -> uba.service.v1.RiskEvent.Status
+	16, // 5: uba.service.v1.RiskEvent.handled_time:type_name -> google.protobuf.Timestamp
+	16, // 6: uba.service.v1.RiskEvent.occur_time:type_name -> google.protobuf.Timestamp
+	16, // 7: uba.service.v1.RiskEvent.report_time:type_name -> google.protobuf.Timestamp
+	16, // 8: uba.service.v1.RiskEvent.created_at:type_name -> google.protobuf.Timestamp
+	16, // 9: uba.service.v1.RiskEvent.updated_at:type_name -> google.protobuf.Timestamp
+	16, // 10: uba.service.v1.RiskEvent.deleted_at:type_name -> google.protobuf.Timestamp
+	10, // 11: uba.service.v1.RiskEventSummary.by_level:type_name -> uba.service.v1.RiskEventSummary.ByLevelEntry
+	11, // 12: uba.service.v1.RiskEventSummary.by_type:type_name -> uba.service.v1.RiskEventSummary.ByTypeEntry
+	12, // 13: uba.service.v1.RiskEventSummary.by_status:type_name -> uba.service.v1.RiskEventSummary.ByStatusEntry
+	1,  // 14: uba.service.v1.ListRiskEventResponse.items:type_name -> uba.service.v1.RiskEvent
+	17, // 15: uba.service.v1.GetRiskEventRequest.view_mask:type_name -> google.protobuf.FieldMask
+	1,  // 16: uba.service.v1.CreateRiskEventRequest.data:type_name -> uba.service.v1.RiskEvent
+	1,  // 17: uba.service.v1.UpdateRiskEventRequest.data:type_name -> uba.service.v1.RiskEvent
+	17, // 18: uba.service.v1.UpdateRiskEventRequest.update_mask:type_name -> google.protobuf.FieldMask
+	18, // 19: uba.service.v1.RiskEventService.List:input_type -> pagination.PagingRequest
+	18, // 20: uba.service.v1.RiskEventService.Count:input_type -> pagination.PagingRequest
+	4,  // 21: uba.service.v1.RiskEventService.Get:input_type -> uba.service.v1.GetRiskEventRequest
+	5,  // 22: uba.service.v1.RiskEventService.Create:input_type -> uba.service.v1.CreateRiskEventRequest
+	6,  // 23: uba.service.v1.RiskEventService.Update:input_type -> uba.service.v1.UpdateRiskEventRequest
+	7,  // 24: uba.service.v1.RiskEventService.Delete:input_type -> uba.service.v1.DeleteRiskEventRequest
+	3,  // 25: uba.service.v1.RiskEventService.List:output_type -> uba.service.v1.ListRiskEventResponse
+	8,  // 26: uba.service.v1.RiskEventService.Count:output_type -> uba.service.v1.CountRiskEventResponse
+	1,  // 27: uba.service.v1.RiskEventService.Get:output_type -> uba.service.v1.RiskEvent
+	1,  // 28: uba.service.v1.RiskEventService.Create:output_type -> uba.service.v1.RiskEvent
+	1,  // 29: uba.service.v1.RiskEventService.Update:output_type -> uba.service.v1.RiskEvent
+	19, // 30: uba.service.v1.RiskEventService.Delete:output_type -> google.protobuf.Empty
+	25, // [25:31] is the sub-list for method output_type
+	19, // [19:25] is the sub-list for method input_type
+	19, // [19:19] is the sub-list for extension type_name
+	19, // [19:19] is the sub-list for extension extendee
+	0,  // [0:19] is the sub-list for field type_name
 }
 
 func init() { file_uba_service_v1_risk_event_proto_init() }
@@ -1061,14 +1037,20 @@ func file_uba_service_v1_risk_event_proto_init() {
 	}
 	file_uba_service_v1_common_proto_init()
 	file_uba_service_v1_risk_event_proto_msgTypes[0].OneofWrappers = []any{}
-	file_uba_service_v1_risk_event_proto_msgTypes[3].OneofWrappers = []any{}
+	file_uba_service_v1_risk_event_proto_msgTypes[3].OneofWrappers = []any{
+		(*GetRiskEventRequest_Id)(nil),
+	}
+	file_uba_service_v1_risk_event_proto_msgTypes[5].OneofWrappers = []any{}
+	file_uba_service_v1_risk_event_proto_msgTypes[6].OneofWrappers = []any{
+		(*DeleteRiskEventRequest_Id)(nil),
+	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_uba_service_v1_risk_event_proto_rawDesc), len(file_uba_service_v1_risk_event_proto_rawDesc)),
-			NumEnums:      3,
-			NumMessages:   8,
+			NumEnums:      1,
+			NumMessages:   12,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

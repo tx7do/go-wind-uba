@@ -1131,6 +1131,7 @@ export function createApplicationServiceClient(
 // 获取UBA应用列表 - 答复
 export type ubaservicev1_ListApplicationResponse = {
   items: ubaservicev1_Application[] | undefined;
+  total: number | undefined;
 };
 
 // UBA应用

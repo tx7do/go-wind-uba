@@ -6,13 +6,12 @@ package servicev1
 import (
 	context "context"
 	redact "github.com/menta2k/protoc-gen-redact/v3/redact/v3"
+	pagination "github.com/tx7do/go-crud/api/gen/go/pagination/v1"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	durationpb "google.golang.org/protobuf/types/known/durationpb"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	fieldmaskpb "google.golang.org/protobuf/types/known/fieldmaskpb"
-	structpb "google.golang.org/protobuf/types/known/structpb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -25,9 +24,8 @@ var (
 	_ status.Status
 	_ emptypb.Empty
 	_ timestamppb.Timestamp
-	_ durationpb.Duration
 	_ fieldmaskpb.FieldMask
-	_ structpb.Struct
+	_ pagination.Sorting
 )
 
 // RegisterRedactedUserTagServiceServer wraps the UserTagServiceServer with the redacted server and registers the service in GRPC
@@ -48,74 +46,70 @@ type redactedUserTagServiceServer struct {
 	bypass redact.Bypass
 }
 
-// Redact method implementation for TagDefinition
-func (x *TagDefinition) Redact() string {
-	if x == nil {
-		return ""
+// List is the redacted wrapper for the actual UserTagServiceServer.List method
+// Unary RPC
+func (s *redactedUserTagServiceServer) List(ctx context.Context, in *pagination.PagingRequest) (*ListUserTagResponse, error) {
+	res, err := s.srv.List(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
 	}
-
-	// Safe field: Id
-
-	// Safe field: TenantId
-
-	// Safe field: Name
-
-	// Safe field: Code
-
-	// Safe field: Description
-
-	// Safe field: Category
-
-	// Safe field: TagType
-
-	// Safe field: Rule
-
-	// Safe field: AllowedValues
-
-	// Safe field: IsSystem
-
-	// Safe field: IsDynamic
-
-	// Safe field: RefreshIntervalSeconds
-
-	// Safe field: CreatedBy
-
-	// Safe field: UpdatedBy
-
-	// Safe field: DeletedBy
-
-	// Safe field: CreatedAt
-
-	// Safe field: UpdatedAt
-
-	// Safe field: DeletedAt
-	return x.String()
+	return res, err
 }
 
-// Redact method implementation for TagRule
-func (x *TagRule) Redact() string {
-	if x == nil {
-		return ""
+// Count is the redacted wrapper for the actual UserTagServiceServer.Count method
+// Unary RPC
+func (s *redactedUserTagServiceServer) Count(ctx context.Context, in *pagination.PagingRequest) (*CountUserTagResponse, error) {
+	res, err := s.srv.Count(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
 	}
-
-	// Safe field: Expression
-
-	// Safe field: Params
-	return x.String()
+	return res, err
 }
 
-// Redact method implementation for TagValue
-func (x *TagValue) Redact() string {
-	if x == nil {
-		return ""
+// Get is the redacted wrapper for the actual UserTagServiceServer.Get method
+// Unary RPC
+func (s *redactedUserTagServiceServer) Get(ctx context.Context, in *GetUserTagRequest) (*UserTag, error) {
+	res, err := s.srv.Get(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
 	}
+	return res, err
+}
 
-	// Safe field: Value
+// Create is the redacted wrapper for the actual UserTagServiceServer.Create method
+// Unary RPC
+func (s *redactedUserTagServiceServer) Create(ctx context.Context, in *CreateUserTagRequest) (*UserTag, error) {
+	res, err := s.srv.Create(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
 
-	// Safe field: Label
+// Update is the redacted wrapper for the actual UserTagServiceServer.Update method
+// Unary RPC
+func (s *redactedUserTagServiceServer) Update(ctx context.Context, in *UpdateUserTagRequest) (*UserTag, error) {
+	res, err := s.srv.Update(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
 
-	// Safe field: Description
-	return x.String()
+// Delete is the redacted wrapper for the actual UserTagServiceServer.Delete method
+// Unary RPC
+func (s *redactedUserTagServiceServer) Delete(ctx context.Context, in *DeleteUserTagRequest) (*emptypb.Empty, error) {
+	res, err := s.srv.Delete(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
 }
 
 // Redact method implementation for UserTag
@@ -123,6 +117,8 @@ func (x *UserTag) Redact() string {
 	if x == nil {
 		return ""
 	}
+
+	// Safe field: Id
 
 	// Safe field: TenantId
 
@@ -144,6 +140,84 @@ func (x *UserTag) Redact() string {
 
 	// Safe field: ExpireTime
 
-	// Safe field: UpdateTime
+	// Safe field: CreatedBy
+
+	// Safe field: UpdatedBy
+
+	// Safe field: DeletedBy
+
+	// Safe field: CreatedAt
+
+	// Safe field: UpdatedAt
+
+	// Safe field: DeletedAt
+	return x.String()
+}
+
+// Redact method implementation for ListUserTagResponse
+func (x *ListUserTagResponse) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Items
+
+	// Safe field: Total
+	return x.String()
+}
+
+// Redact method implementation for GetUserTagRequest
+func (x *GetUserTagRequest) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: ViewMask
+	return x.String()
+}
+
+// Redact method implementation for CreateUserTagRequest
+func (x *CreateUserTagRequest) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Data
+	return x.String()
+}
+
+// Redact method implementation for UpdateUserTagRequest
+func (x *UpdateUserTagRequest) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Id
+
+	// Safe field: Data
+
+	// Safe field: UpdateMask
+
+	// Safe field: AllowMissing
+	return x.String()
+}
+
+// Redact method implementation for DeleteUserTagRequest
+func (x *DeleteUserTagRequest) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: DeletedBy
+	return x.String()
+}
+
+// Redact method implementation for CountUserTagResponse
+func (x *CountUserTagResponse) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Count
 	return x.String()
 }

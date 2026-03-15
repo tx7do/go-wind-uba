@@ -332,17 +332,21 @@ var schemaGraph = func() *sqlgraph.Schema {
 		Type: "IDMapping",
 		Fields: map[string]*sqlgraph.FieldSpec{
 			idmapping.FieldTenantID:     {Type: field.TypeUint32, Column: idmapping.FieldTenantID},
+			idmapping.FieldCreatedBy:    {Type: field.TypeUint32, Column: idmapping.FieldCreatedBy},
+			idmapping.FieldUpdatedBy:    {Type: field.TypeUint32, Column: idmapping.FieldUpdatedBy},
+			idmapping.FieldDeletedBy:    {Type: field.TypeUint32, Column: idmapping.FieldDeletedBy},
 			idmapping.FieldCreatedAt:    {Type: field.TypeTime, Column: idmapping.FieldCreatedAt},
 			idmapping.FieldUpdatedAt:    {Type: field.TypeTime, Column: idmapping.FieldUpdatedAt},
 			idmapping.FieldDeletedAt:    {Type: field.TypeTime, Column: idmapping.FieldDeletedAt},
 			idmapping.FieldGlobalUserID: {Type: field.TypeString, Column: idmapping.FieldGlobalUserID},
-			idmapping.FieldIDType:       {Type: field.TypeString, Column: idmapping.FieldIDType},
+			idmapping.FieldIDType:       {Type: field.TypeEnum, Column: idmapping.FieldIDType},
 			idmapping.FieldIDValue:      {Type: field.TypeString, Column: idmapping.FieldIDValue},
-			idmapping.FieldConfidence:   {Type: field.TypeFloat64, Column: idmapping.FieldConfidence},
+			idmapping.FieldConfidence:   {Type: field.TypeFloat32, Column: idmapping.FieldConfidence},
 			idmapping.FieldLinkSource:   {Type: field.TypeString, Column: idmapping.FieldLinkSource},
 			idmapping.FieldFirstSeen:    {Type: field.TypeTime, Column: idmapping.FieldFirstSeen},
 			idmapping.FieldLastSeen:     {Type: field.TypeTime, Column: idmapping.FieldLastSeen},
 			idmapping.FieldIsActive:     {Type: field.TypeBool, Column: idmapping.FieldIsActive},
+			idmapping.FieldProperties:   {Type: field.TypeJSON, Column: idmapping.FieldProperties},
 		},
 	}
 	graph.Nodes[10] = &sqlgraph.Node{
@@ -1284,10 +1288,10 @@ var schemaGraph = func() *sqlgraph.Schema {
 			usertag.FieldDeletedBy:     {Type: field.TypeUint32, Column: usertag.FieldDeletedBy},
 			usertag.FieldUserID:        {Type: field.TypeUint32, Column: usertag.FieldUserID},
 			usertag.FieldTagID:         {Type: field.TypeUint32, Column: usertag.FieldTagID},
-			usertag.FieldTagValue:      {Type: field.TypeString, Column: usertag.FieldTagValue},
+			usertag.FieldValue:         {Type: field.TypeString, Column: usertag.FieldValue},
 			usertag.FieldValueLabel:    {Type: field.TypeString, Column: usertag.FieldValueLabel},
 			usertag.FieldConfidence:    {Type: field.TypeFloat64, Column: usertag.FieldConfidence},
-			usertag.FieldSource:        {Type: field.TypeString, Column: usertag.FieldSource},
+			usertag.FieldSource:        {Type: field.TypeEnum, Column: usertag.FieldSource},
 			usertag.FieldSourceRuleID:  {Type: field.TypeUint32, Column: usertag.FieldSourceRuleID},
 			usertag.FieldEffectiveTime: {Type: field.TypeTime, Column: usertag.FieldEffectiveTime},
 			usertag.FieldExpireTime:    {Type: field.TypeTime, Column: usertag.FieldExpireTime},
@@ -1316,10 +1320,11 @@ var schemaGraph = func() *sqlgraph.Schema {
 			webhook.FieldURL:             {Type: field.TypeString, Column: webhook.FieldURL},
 			webhook.FieldSecret:          {Type: field.TypeString, Column: webhook.FieldSecret},
 			webhook.FieldEventTypes:      {Type: field.TypeJSON, Column: webhook.FieldEventTypes},
-			webhook.FieldFilters:         {Type: field.TypeJSON, Column: webhook.FieldFilters},
+			webhook.FieldFilter:          {Type: field.TypeJSON, Column: webhook.FieldFilter},
 			webhook.FieldEnabled:         {Type: field.TypeBool, Column: webhook.FieldEnabled},
 			webhook.FieldLastTriggeredAt: {Type: field.TypeTime, Column: webhook.FieldLastTriggeredAt},
-			webhook.FieldFailureCount:    {Type: field.TypeInt, Column: webhook.FieldFailureCount},
+			webhook.FieldFailureCount:    {Type: field.TypeUint32, Column: webhook.FieldFailureCount},
+			webhook.FieldAppID:           {Type: field.TypeUint32, Column: webhook.FieldAppID},
 		},
 	}
 	graph.MustAddE(
@@ -2689,6 +2694,21 @@ func (f *IDMappingFilter) WhereTenantID(p entql.Uint32P) {
 	f.Where(p.Field(idmapping.FieldTenantID))
 }
 
+// WhereCreatedBy applies the entql uint32 predicate on the created_by field.
+func (f *IDMappingFilter) WhereCreatedBy(p entql.Uint32P) {
+	f.Where(p.Field(idmapping.FieldCreatedBy))
+}
+
+// WhereUpdatedBy applies the entql uint32 predicate on the updated_by field.
+func (f *IDMappingFilter) WhereUpdatedBy(p entql.Uint32P) {
+	f.Where(p.Field(idmapping.FieldUpdatedBy))
+}
+
+// WhereDeletedBy applies the entql uint32 predicate on the deleted_by field.
+func (f *IDMappingFilter) WhereDeletedBy(p entql.Uint32P) {
+	f.Where(p.Field(idmapping.FieldDeletedBy))
+}
+
 // WhereCreatedAt applies the entql time.Time predicate on the created_at field.
 func (f *IDMappingFilter) WhereCreatedAt(p entql.TimeP) {
 	f.Where(p.Field(idmapping.FieldCreatedAt))
@@ -2719,8 +2739,8 @@ func (f *IDMappingFilter) WhereIDValue(p entql.StringP) {
 	f.Where(p.Field(idmapping.FieldIDValue))
 }
 
-// WhereConfidence applies the entql float64 predicate on the confidence field.
-func (f *IDMappingFilter) WhereConfidence(p entql.Float64P) {
+// WhereConfidence applies the entql float32 predicate on the confidence field.
+func (f *IDMappingFilter) WhereConfidence(p entql.Float32P) {
 	f.Where(p.Field(idmapping.FieldConfidence))
 }
 
@@ -2742,6 +2762,11 @@ func (f *IDMappingFilter) WhereLastSeen(p entql.TimeP) {
 // WhereIsActive applies the entql bool predicate on the is_active field.
 func (f *IDMappingFilter) WhereIsActive(p entql.BoolP) {
 	f.Where(p.Field(idmapping.FieldIsActive))
+}
+
+// WhereProperties applies the entql json.RawMessage predicate on the properties field.
+func (f *IDMappingFilter) WhereProperties(p entql.BytesP) {
+	f.Where(p.Field(idmapping.FieldProperties))
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -6708,9 +6733,9 @@ func (f *UserTagFilter) WhereTagID(p entql.Uint32P) {
 	f.Where(p.Field(usertag.FieldTagID))
 }
 
-// WhereTagValue applies the entql string predicate on the tag_value field.
-func (f *UserTagFilter) WhereTagValue(p entql.StringP) {
-	f.Where(p.Field(usertag.FieldTagValue))
+// WhereValue applies the entql string predicate on the value field.
+func (f *UserTagFilter) WhereValue(p entql.StringP) {
+	f.Where(p.Field(usertag.FieldValue))
 }
 
 // WhereValueLabel applies the entql string predicate on the value_label field.
@@ -6843,9 +6868,9 @@ func (f *WebhookFilter) WhereEventTypes(p entql.BytesP) {
 	f.Where(p.Field(webhook.FieldEventTypes))
 }
 
-// WhereFilters applies the entql json.RawMessage predicate on the filters field.
-func (f *WebhookFilter) WhereFilters(p entql.BytesP) {
-	f.Where(p.Field(webhook.FieldFilters))
+// WhereFilter applies the entql json.RawMessage predicate on the filter field.
+func (f *WebhookFilter) WhereFilter(p entql.BytesP) {
+	f.Where(p.Field(webhook.FieldFilter))
 }
 
 // WhereEnabled applies the entql bool predicate on the enabled field.
@@ -6858,7 +6883,12 @@ func (f *WebhookFilter) WhereLastTriggeredAt(p entql.TimeP) {
 	f.Where(p.Field(webhook.FieldLastTriggeredAt))
 }
 
-// WhereFailureCount applies the entql int predicate on the failure_count field.
-func (f *WebhookFilter) WhereFailureCount(p entql.IntP) {
+// WhereFailureCount applies the entql uint32 predicate on the failure_count field.
+func (f *WebhookFilter) WhereFailureCount(p entql.Uint32P) {
 	f.Where(p.Field(webhook.FieldFailureCount))
+}
+
+// WhereAppID applies the entql uint32 predicate on the app_id field.
+func (f *WebhookFilter) WhereAppID(p entql.Uint32P) {
+	f.Where(p.Field(webhook.FieldAppID))
 }

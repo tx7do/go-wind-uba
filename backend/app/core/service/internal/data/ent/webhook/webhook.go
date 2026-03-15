@@ -34,14 +34,16 @@ const (
 	FieldSecret = "secret"
 	// FieldEventTypes holds the string denoting the event_types field in the database.
 	FieldEventTypes = "event_types"
-	// FieldFilters holds the string denoting the filters field in the database.
-	FieldFilters = "filters"
+	// FieldFilter holds the string denoting the filter field in the database.
+	FieldFilter = "filter"
 	// FieldEnabled holds the string denoting the enabled field in the database.
 	FieldEnabled = "enabled"
 	// FieldLastTriggeredAt holds the string denoting the last_triggered_at field in the database.
 	FieldLastTriggeredAt = "last_triggered_at"
 	// FieldFailureCount holds the string denoting the failure_count field in the database.
 	FieldFailureCount = "failure_count"
+	// FieldAppID holds the string denoting the app_id field in the database.
+	FieldAppID = "app_id"
 	// Table holds the table name of the webhook in the database.
 	Table = "uba_webhooks"
 )
@@ -60,10 +62,11 @@ var Columns = []string{
 	FieldURL,
 	FieldSecret,
 	FieldEventTypes,
-	FieldFilters,
+	FieldFilter,
 	FieldEnabled,
 	FieldLastTriggeredAt,
 	FieldFailureCount,
+	FieldAppID,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -93,7 +96,7 @@ var (
 	// DefaultEnabled holds the default value on creation for the "enabled" field.
 	DefaultEnabled bool
 	// DefaultFailureCount holds the default value on creation for the "failure_count" field.
-	DefaultFailureCount int
+	DefaultFailureCount uint32
 	// IDValidator is a validator for the "id" field. It is called by the builders before save.
 	IDValidator func(uint32) error
 )
@@ -169,4 +172,9 @@ func ByLastTriggeredAt(opts ...sql.OrderTermOption) OrderOption {
 // ByFailureCount orders the results by the failure_count field.
 func ByFailureCount(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldFailureCount, opts...).ToFunc()
+}
+
+// ByAppID orders the results by the app_id field.
+func ByAppID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldAppID, opts...).ToFunc()
 }

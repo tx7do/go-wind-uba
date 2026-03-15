@@ -115,8 +115,13 @@ func LastTriggeredAt(v time.Time) predicate.Webhook {
 }
 
 // FailureCount applies equality check predicate on the "failure_count" field. It's identical to FailureCountEQ.
-func FailureCount(v int) predicate.Webhook {
+func FailureCount(v uint32) predicate.Webhook {
 	return predicate.Webhook(sql.FieldEQ(FieldFailureCount, v))
+}
+
+// AppID applies equality check predicate on the "app_id" field. It's identical to AppIDEQ.
+func AppID(v uint32) predicate.Webhook {
+	return predicate.Webhook(sql.FieldEQ(FieldAppID, v))
 }
 
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
@@ -524,6 +529,16 @@ func NameHasSuffix(v string) predicate.Webhook {
 	return predicate.Webhook(sql.FieldHasSuffix(FieldName, v))
 }
 
+// NameIsNil applies the IsNil predicate on the "name" field.
+func NameIsNil() predicate.Webhook {
+	return predicate.Webhook(sql.FieldIsNull(FieldName))
+}
+
+// NameNotNil applies the NotNil predicate on the "name" field.
+func NameNotNil() predicate.Webhook {
+	return predicate.Webhook(sql.FieldNotNull(FieldName))
+}
+
 // NameEqualFold applies the EqualFold predicate on the "name" field.
 func NameEqualFold(v string) predicate.Webhook {
 	return predicate.Webhook(sql.FieldEqualFold(FieldName, v))
@@ -587,6 +602,16 @@ func URLHasPrefix(v string) predicate.Webhook {
 // URLHasSuffix applies the HasSuffix predicate on the "url" field.
 func URLHasSuffix(v string) predicate.Webhook {
 	return predicate.Webhook(sql.FieldHasSuffix(FieldURL, v))
+}
+
+// URLIsNil applies the IsNil predicate on the "url" field.
+func URLIsNil() predicate.Webhook {
+	return predicate.Webhook(sql.FieldIsNull(FieldURL))
+}
+
+// URLNotNil applies the NotNil predicate on the "url" field.
+func URLNotNil() predicate.Webhook {
+	return predicate.Webhook(sql.FieldNotNull(FieldURL))
 }
 
 // URLEqualFold applies the EqualFold predicate on the "url" field.
@@ -684,14 +709,14 @@ func EventTypesNotNil() predicate.Webhook {
 	return predicate.Webhook(sql.FieldNotNull(FieldEventTypes))
 }
 
-// FiltersIsNil applies the IsNil predicate on the "filters" field.
-func FiltersIsNil() predicate.Webhook {
-	return predicate.Webhook(sql.FieldIsNull(FieldFilters))
+// FilterIsNil applies the IsNil predicate on the "filter" field.
+func FilterIsNil() predicate.Webhook {
+	return predicate.Webhook(sql.FieldIsNull(FieldFilter))
 }
 
-// FiltersNotNil applies the NotNil predicate on the "filters" field.
-func FiltersNotNil() predicate.Webhook {
-	return predicate.Webhook(sql.FieldNotNull(FieldFilters))
+// FilterNotNil applies the NotNil predicate on the "filter" field.
+func FilterNotNil() predicate.Webhook {
+	return predicate.Webhook(sql.FieldNotNull(FieldFilter))
 }
 
 // EnabledEQ applies the EQ predicate on the "enabled" field.
@@ -755,43 +780,93 @@ func LastTriggeredAtNotNil() predicate.Webhook {
 }
 
 // FailureCountEQ applies the EQ predicate on the "failure_count" field.
-func FailureCountEQ(v int) predicate.Webhook {
+func FailureCountEQ(v uint32) predicate.Webhook {
 	return predicate.Webhook(sql.FieldEQ(FieldFailureCount, v))
 }
 
 // FailureCountNEQ applies the NEQ predicate on the "failure_count" field.
-func FailureCountNEQ(v int) predicate.Webhook {
+func FailureCountNEQ(v uint32) predicate.Webhook {
 	return predicate.Webhook(sql.FieldNEQ(FieldFailureCount, v))
 }
 
 // FailureCountIn applies the In predicate on the "failure_count" field.
-func FailureCountIn(vs ...int) predicate.Webhook {
+func FailureCountIn(vs ...uint32) predicate.Webhook {
 	return predicate.Webhook(sql.FieldIn(FieldFailureCount, vs...))
 }
 
 // FailureCountNotIn applies the NotIn predicate on the "failure_count" field.
-func FailureCountNotIn(vs ...int) predicate.Webhook {
+func FailureCountNotIn(vs ...uint32) predicate.Webhook {
 	return predicate.Webhook(sql.FieldNotIn(FieldFailureCount, vs...))
 }
 
 // FailureCountGT applies the GT predicate on the "failure_count" field.
-func FailureCountGT(v int) predicate.Webhook {
+func FailureCountGT(v uint32) predicate.Webhook {
 	return predicate.Webhook(sql.FieldGT(FieldFailureCount, v))
 }
 
 // FailureCountGTE applies the GTE predicate on the "failure_count" field.
-func FailureCountGTE(v int) predicate.Webhook {
+func FailureCountGTE(v uint32) predicate.Webhook {
 	return predicate.Webhook(sql.FieldGTE(FieldFailureCount, v))
 }
 
 // FailureCountLT applies the LT predicate on the "failure_count" field.
-func FailureCountLT(v int) predicate.Webhook {
+func FailureCountLT(v uint32) predicate.Webhook {
 	return predicate.Webhook(sql.FieldLT(FieldFailureCount, v))
 }
 
 // FailureCountLTE applies the LTE predicate on the "failure_count" field.
-func FailureCountLTE(v int) predicate.Webhook {
+func FailureCountLTE(v uint32) predicate.Webhook {
 	return predicate.Webhook(sql.FieldLTE(FieldFailureCount, v))
+}
+
+// AppIDEQ applies the EQ predicate on the "app_id" field.
+func AppIDEQ(v uint32) predicate.Webhook {
+	return predicate.Webhook(sql.FieldEQ(FieldAppID, v))
+}
+
+// AppIDNEQ applies the NEQ predicate on the "app_id" field.
+func AppIDNEQ(v uint32) predicate.Webhook {
+	return predicate.Webhook(sql.FieldNEQ(FieldAppID, v))
+}
+
+// AppIDIn applies the In predicate on the "app_id" field.
+func AppIDIn(vs ...uint32) predicate.Webhook {
+	return predicate.Webhook(sql.FieldIn(FieldAppID, vs...))
+}
+
+// AppIDNotIn applies the NotIn predicate on the "app_id" field.
+func AppIDNotIn(vs ...uint32) predicate.Webhook {
+	return predicate.Webhook(sql.FieldNotIn(FieldAppID, vs...))
+}
+
+// AppIDGT applies the GT predicate on the "app_id" field.
+func AppIDGT(v uint32) predicate.Webhook {
+	return predicate.Webhook(sql.FieldGT(FieldAppID, v))
+}
+
+// AppIDGTE applies the GTE predicate on the "app_id" field.
+func AppIDGTE(v uint32) predicate.Webhook {
+	return predicate.Webhook(sql.FieldGTE(FieldAppID, v))
+}
+
+// AppIDLT applies the LT predicate on the "app_id" field.
+func AppIDLT(v uint32) predicate.Webhook {
+	return predicate.Webhook(sql.FieldLT(FieldAppID, v))
+}
+
+// AppIDLTE applies the LTE predicate on the "app_id" field.
+func AppIDLTE(v uint32) predicate.Webhook {
+	return predicate.Webhook(sql.FieldLTE(FieldAppID, v))
+}
+
+// AppIDIsNil applies the IsNil predicate on the "app_id" field.
+func AppIDIsNil() predicate.Webhook {
+	return predicate.Webhook(sql.FieldIsNull(FieldAppID))
+}
+
+// AppIDNotNil applies the NotNil predicate on the "app_id" field.
+func AppIDNotNil() predicate.Webhook {
+	return predicate.Webhook(sql.FieldNotNull(FieldAppID))
 }
 
 // And groups predicates with the AND operator between them.

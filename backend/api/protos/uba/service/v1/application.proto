@@ -16,6 +16,9 @@ service ApplicationService {
   // 查询UBA应用列表
   rpc List (pagination.PagingRequest) returns (ListApplicationResponse) {}
 
+  // 查询UBA应用数量
+  rpc Count (pagination.PagingRequest) returns (CountApplicationResponse) {}
+
   // 查询UBA应用详情
   rpc Get (GetApplicationRequest) returns (Application) {}
 
@@ -106,6 +109,7 @@ message Application {
 // 获取UBA应用列表 - 答复
 message ListApplicationResponse {
   repeated Application items = 1;
+  uint64 total = 2;
 }
 
 // 获取UBA应用数据 - 请求
@@ -166,4 +170,8 @@ message DeleteApplicationRequest {
     json_name = "deletedBy",
     (gnostic.openapi.v3.property) = {description: "删除者用户ID"}
   ]; // 删除者用户ID
+}
+
+message CountApplicationResponse {
+  uint64 count = 1;
 }

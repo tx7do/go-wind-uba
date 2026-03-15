@@ -5,6 +5,7 @@ package ent
 import (
 	"encoding/json"
 	"fmt"
+	servicev1 "go-wind-uba/api/gen/go/uba/service/v1"
 	"go-wind-uba/app/core/service/internal/data/ent/riskrule"
 	"strings"
 	"time"
@@ -44,7 +45,7 @@ type RiskRule struct {
 	// 规则条件，简化版，实际可用 CEL/JSON Schema
 	Condition map[string]interface{} `json:"condition,omitempty"`
 	// 动作配置，规则触发时的处置动作列表
-	Actions []map[string]interface{} `json:"actions,omitempty"`
+	Actions []*servicev1.RiskAction `json:"actions,omitempty"`
 	// 是否启用，true: 启用，false: 禁用
 	Enabled *bool `json:"enabled,omitempty"`
 	// 优先级，越小优先级越高

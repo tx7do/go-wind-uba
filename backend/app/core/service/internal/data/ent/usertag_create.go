@@ -148,9 +148,17 @@ func (_c *UserTagCreate) SetNillableTagID(v *uint32) *UserTagCreate {
 	return _c
 }
 
-// SetTagValue sets the "tag_value" field.
-func (_c *UserTagCreate) SetTagValue(v string) *UserTagCreate {
-	_c.mutation.SetTagValue(v)
+// SetValue sets the "value" field.
+func (_c *UserTagCreate) SetValue(v string) *UserTagCreate {
+	_c.mutation.SetValue(v)
+	return _c
+}
+
+// SetNillableValue sets the "value" field if the given value is not nil.
+func (_c *UserTagCreate) SetNillableValue(v *string) *UserTagCreate {
+	if v != nil {
+		_c.SetValue(*v)
+	}
 	return _c
 }
 
@@ -183,13 +191,13 @@ func (_c *UserTagCreate) SetNillableConfidence(v *float64) *UserTagCreate {
 }
 
 // SetSource sets the "source" field.
-func (_c *UserTagCreate) SetSource(v string) *UserTagCreate {
+func (_c *UserTagCreate) SetSource(v usertag.Source) *UserTagCreate {
 	_c.mutation.SetSource(v)
 	return _c
 }
 
 // SetNillableSource sets the "source" field if the given value is not nil.
-func (_c *UserTagCreate) SetNillableSource(v *string) *UserTagCreate {
+func (_c *UserTagCreate) SetNillableSource(v *usertag.Source) *UserTagCreate {
 	if v != nil {
 		_c.SetSource(*v)
 	}
@@ -303,10 +311,6 @@ func (_c *UserTagCreate) defaults() error {
 		v := usertag.DefaultConfidence
 		_c.mutation.SetConfidence(v)
 	}
-	if _, ok := _c.mutation.Source(); !ok {
-		v := usertag.DefaultSource
-		_c.mutation.SetSource(v)
-	}
 	if _, ok := _c.mutation.IsActive(); !ok {
 		v := usertag.DefaultIsActive
 		_c.mutation.SetIsActive(v)
@@ -316,22 +320,15 @@ func (_c *UserTagCreate) defaults() error {
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *UserTagCreate) check() error {
-	if _, ok := _c.mutation.TagValue(); !ok {
-		return &ValidationError{Name: "tag_value", err: errors.New(`ent: missing required field "UserTag.tag_value"`)}
-	}
-	if v, ok := _c.mutation.TagValue(); ok {
-		if err := usertag.TagValueValidator(v); err != nil {
-			return &ValidationError{Name: "tag_value", err: fmt.Errorf(`ent: validator failed for field "UserTag.tag_value": %w`, err)}
+	if v, ok := _c.mutation.Value(); ok {
+		if err := usertag.ValueValidator(v); err != nil {
+			return &ValidationError{Name: "value", err: fmt.Errorf(`ent: validator failed for field "UserTag.value": %w`, err)}
 		}
 	}
-	if _, ok := _c.mutation.Confidence(); !ok {
-		return &ValidationError{Name: "confidence", err: errors.New(`ent: missing required field "UserTag.confidence"`)}
-	}
-	if _, ok := _c.mutation.Source(); !ok {
-		return &ValidationError{Name: "source", err: errors.New(`ent: missing required field "UserTag.source"`)}
-	}
-	if _, ok := _c.mutation.IsActive(); !ok {
-		return &ValidationError{Name: "is_active", err: errors.New(`ent: missing required field "UserTag.is_active"`)}
+	if v, ok := _c.mutation.Source(); ok {
+		if err := usertag.SourceValidator(v); err != nil {
+			return &ValidationError{Name: "source", err: fmt.Errorf(`ent: validator failed for field "UserTag.source": %w`, err)}
+		}
 	}
 	if v, ok := _c.mutation.ID(); ok {
 		if err := usertag.IDValidator(v); err != nil {
@@ -407,9 +404,9 @@ func (_c *UserTagCreate) createSpec() (*UserTag, *sqlgraph.CreateSpec) {
 		_spec.SetField(usertag.FieldTagID, field.TypeUint32, value)
 		_node.TagID = &value
 	}
-	if value, ok := _c.mutation.TagValue(); ok {
-		_spec.SetField(usertag.FieldTagValue, field.TypeString, value)
-		_node.TagValue = value
+	if value, ok := _c.mutation.Value(); ok {
+		_spec.SetField(usertag.FieldValue, field.TypeString, value)
+		_node.Value = &value
 	}
 	if value, ok := _c.mutation.ValueLabel(); ok {
 		_spec.SetField(usertag.FieldValueLabel, field.TypeString, value)
@@ -417,11 +414,11 @@ func (_c *UserTagCreate) createSpec() (*UserTag, *sqlgraph.CreateSpec) {
 	}
 	if value, ok := _c.mutation.Confidence(); ok {
 		_spec.SetField(usertag.FieldConfidence, field.TypeFloat64, value)
-		_node.Confidence = value
+		_node.Confidence = &value
 	}
 	if value, ok := _c.mutation.Source(); ok {
-		_spec.SetField(usertag.FieldSource, field.TypeString, value)
-		_node.Source = value
+		_spec.SetField(usertag.FieldSource, field.TypeEnum, value)
+		_node.Source = &value
 	}
 	if value, ok := _c.mutation.SourceRuleID(); ok {
 		_spec.SetField(usertag.FieldSourceRuleID, field.TypeUint32, value)
@@ -437,7 +434,7 @@ func (_c *UserTagCreate) createSpec() (*UserTag, *sqlgraph.CreateSpec) {
 	}
 	if value, ok := _c.mutation.IsActive(); ok {
 		_spec.SetField(usertag.FieldIsActive, field.TypeBool, value)
-		_node.IsActive = value
+		_node.IsActive = &value
 	}
 	return _node, _spec
 }
@@ -647,15 +644,21 @@ func (u *UserTagUpsert) ClearTagID() *UserTagUpsert {
 	return u
 }
 
-// SetTagValue sets the "tag_value" field.
-func (u *UserTagUpsert) SetTagValue(v string) *UserTagUpsert {
-	u.Set(usertag.FieldTagValue, v)
+// SetValue sets the "value" field.
+func (u *UserTagUpsert) SetValue(v string) *UserTagUpsert {
+	u.Set(usertag.FieldValue, v)
 	return u
 }
 
-// UpdateTagValue sets the "tag_value" field to the value that was provided on create.
-func (u *UserTagUpsert) UpdateTagValue() *UserTagUpsert {
-	u.SetExcluded(usertag.FieldTagValue)
+// UpdateValue sets the "value" field to the value that was provided on create.
+func (u *UserTagUpsert) UpdateValue() *UserTagUpsert {
+	u.SetExcluded(usertag.FieldValue)
+	return u
+}
+
+// ClearValue clears the value of the "value" field.
+func (u *UserTagUpsert) ClearValue() *UserTagUpsert {
+	u.SetNull(usertag.FieldValue)
 	return u
 }
 
@@ -695,8 +698,14 @@ func (u *UserTagUpsert) AddConfidence(v float64) *UserTagUpsert {
 	return u
 }
 
+// ClearConfidence clears the value of the "confidence" field.
+func (u *UserTagUpsert) ClearConfidence() *UserTagUpsert {
+	u.SetNull(usertag.FieldConfidence)
+	return u
+}
+
 // SetSource sets the "source" field.
-func (u *UserTagUpsert) SetSource(v string) *UserTagUpsert {
+func (u *UserTagUpsert) SetSource(v usertag.Source) *UserTagUpsert {
 	u.Set(usertag.FieldSource, v)
 	return u
 }
@@ -704,6 +713,12 @@ func (u *UserTagUpsert) SetSource(v string) *UserTagUpsert {
 // UpdateSource sets the "source" field to the value that was provided on create.
 func (u *UserTagUpsert) UpdateSource() *UserTagUpsert {
 	u.SetExcluded(usertag.FieldSource)
+	return u
+}
+
+// ClearSource clears the value of the "source" field.
+func (u *UserTagUpsert) ClearSource() *UserTagUpsert {
+	u.SetNull(usertag.FieldSource)
 	return u
 }
 
@@ -776,6 +791,12 @@ func (u *UserTagUpsert) SetIsActive(v bool) *UserTagUpsert {
 // UpdateIsActive sets the "is_active" field to the value that was provided on create.
 func (u *UserTagUpsert) UpdateIsActive() *UserTagUpsert {
 	u.SetExcluded(usertag.FieldIsActive)
+	return u
+}
+
+// ClearIsActive clears the value of the "is_active" field.
+func (u *UserTagUpsert) ClearIsActive() *UserTagUpsert {
+	u.SetNull(usertag.FieldIsActive)
 	return u
 }
 
@@ -1015,17 +1036,24 @@ func (u *UserTagUpsertOne) ClearTagID() *UserTagUpsertOne {
 	})
 }
 
-// SetTagValue sets the "tag_value" field.
-func (u *UserTagUpsertOne) SetTagValue(v string) *UserTagUpsertOne {
+// SetValue sets the "value" field.
+func (u *UserTagUpsertOne) SetValue(v string) *UserTagUpsertOne {
 	return u.Update(func(s *UserTagUpsert) {
-		s.SetTagValue(v)
+		s.SetValue(v)
 	})
 }
 
-// UpdateTagValue sets the "tag_value" field to the value that was provided on create.
-func (u *UserTagUpsertOne) UpdateTagValue() *UserTagUpsertOne {
+// UpdateValue sets the "value" field to the value that was provided on create.
+func (u *UserTagUpsertOne) UpdateValue() *UserTagUpsertOne {
 	return u.Update(func(s *UserTagUpsert) {
-		s.UpdateTagValue()
+		s.UpdateValue()
+	})
+}
+
+// ClearValue clears the value of the "value" field.
+func (u *UserTagUpsertOne) ClearValue() *UserTagUpsertOne {
+	return u.Update(func(s *UserTagUpsert) {
+		s.ClearValue()
 	})
 }
 
@@ -1071,8 +1099,15 @@ func (u *UserTagUpsertOne) UpdateConfidence() *UserTagUpsertOne {
 	})
 }
 
+// ClearConfidence clears the value of the "confidence" field.
+func (u *UserTagUpsertOne) ClearConfidence() *UserTagUpsertOne {
+	return u.Update(func(s *UserTagUpsert) {
+		s.ClearConfidence()
+	})
+}
+
 // SetSource sets the "source" field.
-func (u *UserTagUpsertOne) SetSource(v string) *UserTagUpsertOne {
+func (u *UserTagUpsertOne) SetSource(v usertag.Source) *UserTagUpsertOne {
 	return u.Update(func(s *UserTagUpsert) {
 		s.SetSource(v)
 	})
@@ -1082,6 +1117,13 @@ func (u *UserTagUpsertOne) SetSource(v string) *UserTagUpsertOne {
 func (u *UserTagUpsertOne) UpdateSource() *UserTagUpsertOne {
 	return u.Update(func(s *UserTagUpsert) {
 		s.UpdateSource()
+	})
+}
+
+// ClearSource clears the value of the "source" field.
+func (u *UserTagUpsertOne) ClearSource() *UserTagUpsertOne {
+	return u.Update(func(s *UserTagUpsert) {
+		s.ClearSource()
 	})
 }
 
@@ -1166,6 +1208,13 @@ func (u *UserTagUpsertOne) SetIsActive(v bool) *UserTagUpsertOne {
 func (u *UserTagUpsertOne) UpdateIsActive() *UserTagUpsertOne {
 	return u.Update(func(s *UserTagUpsert) {
 		s.UpdateIsActive()
+	})
+}
+
+// ClearIsActive clears the value of the "is_active" field.
+func (u *UserTagUpsertOne) ClearIsActive() *UserTagUpsertOne {
+	return u.Update(func(s *UserTagUpsert) {
+		s.ClearIsActive()
 	})
 }
 
@@ -1571,17 +1620,24 @@ func (u *UserTagUpsertBulk) ClearTagID() *UserTagUpsertBulk {
 	})
 }
 
-// SetTagValue sets the "tag_value" field.
-func (u *UserTagUpsertBulk) SetTagValue(v string) *UserTagUpsertBulk {
+// SetValue sets the "value" field.
+func (u *UserTagUpsertBulk) SetValue(v string) *UserTagUpsertBulk {
 	return u.Update(func(s *UserTagUpsert) {
-		s.SetTagValue(v)
+		s.SetValue(v)
 	})
 }
 
-// UpdateTagValue sets the "tag_value" field to the value that was provided on create.
-func (u *UserTagUpsertBulk) UpdateTagValue() *UserTagUpsertBulk {
+// UpdateValue sets the "value" field to the value that was provided on create.
+func (u *UserTagUpsertBulk) UpdateValue() *UserTagUpsertBulk {
 	return u.Update(func(s *UserTagUpsert) {
-		s.UpdateTagValue()
+		s.UpdateValue()
+	})
+}
+
+// ClearValue clears the value of the "value" field.
+func (u *UserTagUpsertBulk) ClearValue() *UserTagUpsertBulk {
+	return u.Update(func(s *UserTagUpsert) {
+		s.ClearValue()
 	})
 }
 
@@ -1627,8 +1683,15 @@ func (u *UserTagUpsertBulk) UpdateConfidence() *UserTagUpsertBulk {
 	})
 }
 
+// ClearConfidence clears the value of the "confidence" field.
+func (u *UserTagUpsertBulk) ClearConfidence() *UserTagUpsertBulk {
+	return u.Update(func(s *UserTagUpsert) {
+		s.ClearConfidence()
+	})
+}
+
 // SetSource sets the "source" field.
-func (u *UserTagUpsertBulk) SetSource(v string) *UserTagUpsertBulk {
+func (u *UserTagUpsertBulk) SetSource(v usertag.Source) *UserTagUpsertBulk {
 	return u.Update(func(s *UserTagUpsert) {
 		s.SetSource(v)
 	})
@@ -1638,6 +1701,13 @@ func (u *UserTagUpsertBulk) SetSource(v string) *UserTagUpsertBulk {
 func (u *UserTagUpsertBulk) UpdateSource() *UserTagUpsertBulk {
 	return u.Update(func(s *UserTagUpsert) {
 		s.UpdateSource()
+	})
+}
+
+// ClearSource clears the value of the "source" field.
+func (u *UserTagUpsertBulk) ClearSource() *UserTagUpsertBulk {
+	return u.Update(func(s *UserTagUpsert) {
+		s.ClearSource()
 	})
 }
 
@@ -1722,6 +1792,13 @@ func (u *UserTagUpsertBulk) SetIsActive(v bool) *UserTagUpsertBulk {
 func (u *UserTagUpsertBulk) UpdateIsActive() *UserTagUpsertBulk {
 	return u.Update(func(s *UserTagUpsert) {
 		s.UpdateIsActive()
+	})
+}
+
+// ClearIsActive clears the value of the "is_active" field.
+func (u *UserTagUpsertBulk) ClearIsActive() *UserTagUpsertBulk {
+	return u.Update(func(s *UserTagUpsert) {
+		s.ClearIsActive()
 	})
 }
 

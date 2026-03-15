@@ -17,12 +17,12 @@ func IsNotLoggedIn(err error) bool {
 		return false
 	}
 	e := errors.FromError(err)
-	return e.Reason == AdminErrorReason_NOT_LOGGED_IN.String() && e.Code == 401
+	return e.Reason == CollectorErrorReason_NOT_LOGGED_IN.String() && e.Code == 401
 }
 
 // 401
 func ErrorNotLoggedIn(format string, args ...interface{}) *errors.Error {
-	return errors.New(401, AdminErrorReason_NOT_LOGGED_IN.String(), fmt.Sprintf(format, args...))
+	return errors.New(401, CollectorErrorReason_NOT_LOGGED_IN.String(), fmt.Sprintf(format, args...))
 }
 
 // 403
@@ -31,12 +31,12 @@ func IsAccessForbidden(err error) bool {
 		return false
 	}
 	e := errors.FromError(err)
-	return e.Reason == AdminErrorReason_ACCESS_FORBIDDEN.String() && e.Code == 403
+	return e.Reason == CollectorErrorReason_ACCESS_FORBIDDEN.String() && e.Code == 403
 }
 
 // 403
 func ErrorAccessForbidden(format string, args ...interface{}) *errors.Error {
-	return errors.New(403, AdminErrorReason_ACCESS_FORBIDDEN.String(), fmt.Sprintf(format, args...))
+	return errors.New(403, CollectorErrorReason_ACCESS_FORBIDDEN.String(), fmt.Sprintf(format, args...))
 }
 
 // 404
@@ -45,12 +45,12 @@ func IsResourceNotFound(err error) bool {
 		return false
 	}
 	e := errors.FromError(err)
-	return e.Reason == AdminErrorReason_RESOURCE_NOT_FOUND.String() && e.Code == 404
+	return e.Reason == CollectorErrorReason_RESOURCE_NOT_FOUND.String() && e.Code == 404
 }
 
 // 404
 func ErrorResourceNotFound(format string, args ...interface{}) *errors.Error {
-	return errors.New(404, AdminErrorReason_RESOURCE_NOT_FOUND.String(), fmt.Sprintf(format, args...))
+	return errors.New(404, CollectorErrorReason_RESOURCE_NOT_FOUND.String(), fmt.Sprintf(format, args...))
 }
 
 // 405
@@ -59,12 +59,12 @@ func IsMethodNotAllowed(err error) bool {
 		return false
 	}
 	e := errors.FromError(err)
-	return e.Reason == AdminErrorReason_METHOD_NOT_ALLOWED.String() && e.Code == 405
+	return e.Reason == CollectorErrorReason_METHOD_NOT_ALLOWED.String() && e.Code == 405
 }
 
 // 405
 func ErrorMethodNotAllowed(format string, args ...interface{}) *errors.Error {
-	return errors.New(405, AdminErrorReason_METHOD_NOT_ALLOWED.String(), fmt.Sprintf(format, args...))
+	return errors.New(405, CollectorErrorReason_METHOD_NOT_ALLOWED.String(), fmt.Sprintf(format, args...))
 }
 
 // 408
@@ -73,12 +73,12 @@ func IsRequestTimeout(err error) bool {
 		return false
 	}
 	e := errors.FromError(err)
-	return e.Reason == AdminErrorReason_REQUEST_TIMEOUT.String() && e.Code == 408
+	return e.Reason == CollectorErrorReason_REQUEST_TIMEOUT.String() && e.Code == 408
 }
 
 // 408
 func ErrorRequestTimeout(format string, args ...interface{}) *errors.Error {
-	return errors.New(408, AdminErrorReason_REQUEST_TIMEOUT.String(), fmt.Sprintf(format, args...))
+	return errors.New(408, CollectorErrorReason_REQUEST_TIMEOUT.String(), fmt.Sprintf(format, args...))
 }
 
 // 500
@@ -87,12 +87,12 @@ func IsInternalServerError(err error) bool {
 		return false
 	}
 	e := errors.FromError(err)
-	return e.Reason == AdminErrorReason_INTERNAL_SERVER_ERROR.String() && e.Code == 500
+	return e.Reason == CollectorErrorReason_INTERNAL_SERVER_ERROR.String() && e.Code == 500
 }
 
 // 500
 func ErrorInternalServerError(format string, args ...interface{}) *errors.Error {
-	return errors.New(500, AdminErrorReason_INTERNAL_SERVER_ERROR.String(), fmt.Sprintf(format, args...))
+	return errors.New(500, CollectorErrorReason_INTERNAL_SERVER_ERROR.String(), fmt.Sprintf(format, args...))
 }
 
 // 501
@@ -101,12 +101,12 @@ func IsNotImplemented(err error) bool {
 		return false
 	}
 	e := errors.FromError(err)
-	return e.Reason == AdminErrorReason_NOT_IMPLEMENTED.String() && e.Code == 501
+	return e.Reason == CollectorErrorReason_NOT_IMPLEMENTED.String() && e.Code == 501
 }
 
 // 501
 func ErrorNotImplemented(format string, args ...interface{}) *errors.Error {
-	return errors.New(501, AdminErrorReason_NOT_IMPLEMENTED.String(), fmt.Sprintf(format, args...))
+	return errors.New(501, CollectorErrorReason_NOT_IMPLEMENTED.String(), fmt.Sprintf(format, args...))
 }
 
 // 502
@@ -115,12 +115,12 @@ func IsNetworkError(err error) bool {
 		return false
 	}
 	e := errors.FromError(err)
-	return e.Reason == AdminErrorReason_NETWORK_ERROR.String() && e.Code == 502
+	return e.Reason == CollectorErrorReason_NETWORK_ERROR.String() && e.Code == 502
 }
 
 // 502
 func ErrorNetworkError(format string, args ...interface{}) *errors.Error {
-	return errors.New(502, AdminErrorReason_NETWORK_ERROR.String(), fmt.Sprintf(format, args...))
+	return errors.New(502, CollectorErrorReason_NETWORK_ERROR.String(), fmt.Sprintf(format, args...))
 }
 
 // 503
@@ -129,12 +129,12 @@ func IsServiceUnavailable(err error) bool {
 		return false
 	}
 	e := errors.FromError(err)
-	return e.Reason == AdminErrorReason_SERVICE_UNAVAILABLE.String() && e.Code == 503
+	return e.Reason == CollectorErrorReason_SERVICE_UNAVAILABLE.String() && e.Code == 503
 }
 
 // 503
 func ErrorServiceUnavailable(format string, args ...interface{}) *errors.Error {
-	return errors.New(503, AdminErrorReason_SERVICE_UNAVAILABLE.String(), fmt.Sprintf(format, args...))
+	return errors.New(503, CollectorErrorReason_SERVICE_UNAVAILABLE.String(), fmt.Sprintf(format, args...))
 }
 
 // 504
@@ -143,12 +143,12 @@ func IsNetworkTimeout(err error) bool {
 		return false
 	}
 	e := errors.FromError(err)
-	return e.Reason == AdminErrorReason_NETWORK_TIMEOUT.String() && e.Code == 504
+	return e.Reason == CollectorErrorReason_NETWORK_TIMEOUT.String() && e.Code == 504
 }
 
 // 504
 func ErrorNetworkTimeout(format string, args ...interface{}) *errors.Error {
-	return errors.New(504, AdminErrorReason_NETWORK_TIMEOUT.String(), fmt.Sprintf(format, args...))
+	return errors.New(504, CollectorErrorReason_NETWORK_TIMEOUT.String(), fmt.Sprintf(format, args...))
 }
 
 // 505
@@ -157,12 +157,12 @@ func IsRequestNotSupport(err error) bool {
 		return false
 	}
 	e := errors.FromError(err)
-	return e.Reason == AdminErrorReason_REQUEST_NOT_SUPPORT.String() && e.Code == 505
+	return e.Reason == CollectorErrorReason_REQUEST_NOT_SUPPORT.String() && e.Code == 505
 }
 
 // 505
 func ErrorRequestNotSupport(format string, args ...interface{}) *errors.Error {
-	return errors.New(505, AdminErrorReason_REQUEST_NOT_SUPPORT.String(), fmt.Sprintf(format, args...))
+	return errors.New(505, CollectorErrorReason_REQUEST_NOT_SUPPORT.String(), fmt.Sprintf(format, args...))
 }
 
 func IsUserNotFound(err error) bool {
@@ -170,11 +170,11 @@ func IsUserNotFound(err error) bool {
 		return false
 	}
 	e := errors.FromError(err)
-	return e.Reason == AdminErrorReason_USER_NOT_FOUND.String() && e.Code == 600
+	return e.Reason == CollectorErrorReason_USER_NOT_FOUND.String() && e.Code == 600
 }
 
 func ErrorUserNotFound(format string, args ...interface{}) *errors.Error {
-	return errors.New(600, AdminErrorReason_USER_NOT_FOUND.String(), fmt.Sprintf(format, args...))
+	return errors.New(600, CollectorErrorReason_USER_NOT_FOUND.String(), fmt.Sprintf(format, args...))
 }
 
 func IsIncorrectPassword(err error) bool {
@@ -182,11 +182,11 @@ func IsIncorrectPassword(err error) bool {
 		return false
 	}
 	e := errors.FromError(err)
-	return e.Reason == AdminErrorReason_INCORRECT_PASSWORD.String() && e.Code == 599
+	return e.Reason == CollectorErrorReason_INCORRECT_PASSWORD.String() && e.Code == 599
 }
 
 func ErrorIncorrectPassword(format string, args ...interface{}) *errors.Error {
-	return errors.New(599, AdminErrorReason_INCORRECT_PASSWORD.String(), fmt.Sprintf(format, args...))
+	return errors.New(599, CollectorErrorReason_INCORRECT_PASSWORD.String(), fmt.Sprintf(format, args...))
 }
 
 func IsUserFreeze(err error) bool {
@@ -194,11 +194,11 @@ func IsUserFreeze(err error) bool {
 		return false
 	}
 	e := errors.FromError(err)
-	return e.Reason == AdminErrorReason_USER_FREEZE.String() && e.Code == 598
+	return e.Reason == CollectorErrorReason_USER_FREEZE.String() && e.Code == 598
 }
 
 func ErrorUserFreeze(format string, args ...interface{}) *errors.Error {
-	return errors.New(598, AdminErrorReason_USER_FREEZE.String(), fmt.Sprintf(format, args...))
+	return errors.New(598, CollectorErrorReason_USER_FREEZE.String(), fmt.Sprintf(format, args...))
 }
 
 // 用户ID无效
@@ -207,12 +207,12 @@ func IsInvalidUserid(err error) bool {
 		return false
 	}
 	e := errors.FromError(err)
-	return e.Reason == AdminErrorReason_INVALID_USERID.String() && e.Code == 101
+	return e.Reason == CollectorErrorReason_INVALID_USERID.String() && e.Code == 101
 }
 
 // 用户ID无效
 func ErrorInvalidUserid(format string, args ...interface{}) *errors.Error {
-	return errors.New(101, AdminErrorReason_INVALID_USERID.String(), fmt.Sprintf(format, args...))
+	return errors.New(101, CollectorErrorReason_INVALID_USERID.String(), fmt.Sprintf(format, args...))
 }
 
 // 密码无效
@@ -221,12 +221,12 @@ func IsInvalidPassword(err error) bool {
 		return false
 	}
 	e := errors.FromError(err)
-	return e.Reason == AdminErrorReason_INVALID_PASSWORD.String() && e.Code == 102
+	return e.Reason == CollectorErrorReason_INVALID_PASSWORD.String() && e.Code == 102
 }
 
 // 密码无效
 func ErrorInvalidPassword(format string, args ...interface{}) *errors.Error {
-	return errors.New(102, AdminErrorReason_INVALID_PASSWORD.String(), fmt.Sprintf(format, args...))
+	return errors.New(102, CollectorErrorReason_INVALID_PASSWORD.String(), fmt.Sprintf(format, args...))
 }
 
 // token过期
@@ -235,12 +235,12 @@ func IsTokenExpired(err error) bool {
 		return false
 	}
 	e := errors.FromError(err)
-	return e.Reason == AdminErrorReason_TOKEN_EXPIRED.String() && e.Code == 103
+	return e.Reason == CollectorErrorReason_TOKEN_EXPIRED.String() && e.Code == 103
 }
 
 // token过期
 func ErrorTokenExpired(format string, args ...interface{}) *errors.Error {
-	return errors.New(103, AdminErrorReason_TOKEN_EXPIRED.String(), fmt.Sprintf(format, args...))
+	return errors.New(103, CollectorErrorReason_TOKEN_EXPIRED.String(), fmt.Sprintf(format, args...))
 }
 
 // token无效
@@ -249,12 +249,12 @@ func IsInvalidToken(err error) bool {
 		return false
 	}
 	e := errors.FromError(err)
-	return e.Reason == AdminErrorReason_INVALID_TOKEN.String() && e.Code == 104
+	return e.Reason == CollectorErrorReason_INVALID_TOKEN.String() && e.Code == 104
 }
 
 // token无效
 func ErrorInvalidToken(format string, args ...interface{}) *errors.Error {
-	return errors.New(104, AdminErrorReason_INVALID_TOKEN.String(), fmt.Sprintf(format, args...))
+	return errors.New(104, CollectorErrorReason_INVALID_TOKEN.String(), fmt.Sprintf(format, args...))
 }
 
 // token不存在
@@ -263,12 +263,12 @@ func IsTokenNotExist(err error) bool {
 		return false
 	}
 	e := errors.FromError(err)
-	return e.Reason == AdminErrorReason_TOKEN_NOT_EXIST.String() && e.Code == 105
+	return e.Reason == CollectorErrorReason_TOKEN_NOT_EXIST.String() && e.Code == 105
 }
 
 // token不存在
 func ErrorTokenNotExist(format string, args ...interface{}) *errors.Error {
-	return errors.New(105, AdminErrorReason_TOKEN_NOT_EXIST.String(), fmt.Sprintf(format, args...))
+	return errors.New(105, CollectorErrorReason_TOKEN_NOT_EXIST.String(), fmt.Sprintf(format, args...))
 }
 
 // 用户不存在
@@ -277,10 +277,10 @@ func IsUserNotExist(err error) bool {
 		return false
 	}
 	e := errors.FromError(err)
-	return e.Reason == AdminErrorReason_USER_NOT_EXIST.String() && e.Code == 106
+	return e.Reason == CollectorErrorReason_USER_NOT_EXIST.String() && e.Code == 106
 }
 
 // 用户不存在
 func ErrorUserNotExist(format string, args ...interface{}) *errors.Error {
-	return errors.New(106, AdminErrorReason_USER_NOT_EXIST.String(), fmt.Sprintf(format, args...))
+	return errors.New(106, CollectorErrorReason_USER_NOT_EXIST.String(), fmt.Sprintf(format, args...))
 }

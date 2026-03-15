@@ -5527,6 +5527,8 @@ components:
                     type: array
                     items:
                         $ref: '#/components/schemas/Application'
+                total:
+                    type: string
             description: 获取UBA应用列表 - 答复
         ListDataAccessAuditLogResponse:
             type: object

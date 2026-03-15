@@ -22,34 +22,35 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type AdminErrorReason int32
+// 错误码定义
+type CollectorErrorReason int32
 
 const (
-	AdminErrorReason_NOT_LOGGED_IN         AdminErrorReason = 0  // 401
-	AdminErrorReason_ACCESS_FORBIDDEN      AdminErrorReason = 1  // 403
-	AdminErrorReason_RESOURCE_NOT_FOUND    AdminErrorReason = 2  // 404
-	AdminErrorReason_METHOD_NOT_ALLOWED    AdminErrorReason = 3  // 405
-	AdminErrorReason_REQUEST_TIMEOUT       AdminErrorReason = 4  // 408
-	AdminErrorReason_INTERNAL_SERVER_ERROR AdminErrorReason = 5  // 500
-	AdminErrorReason_NOT_IMPLEMENTED       AdminErrorReason = 6  // 501
-	AdminErrorReason_NETWORK_ERROR         AdminErrorReason = 7  // 502
-	AdminErrorReason_SERVICE_UNAVAILABLE   AdminErrorReason = 8  // 503
-	AdminErrorReason_NETWORK_TIMEOUT       AdminErrorReason = 9  // 504
-	AdminErrorReason_REQUEST_NOT_SUPPORT   AdminErrorReason = 10 // 505
-	AdminErrorReason_USER_NOT_FOUND        AdminErrorReason = 11
-	AdminErrorReason_INCORRECT_PASSWORD    AdminErrorReason = 12
-	AdminErrorReason_USER_FREEZE           AdminErrorReason = 13
-	AdminErrorReason_INVALID_USERID        AdminErrorReason = 14 // 用户ID无效
-	AdminErrorReason_INVALID_PASSWORD      AdminErrorReason = 15 // 密码无效
-	AdminErrorReason_TOKEN_EXPIRED         AdminErrorReason = 16 // token过期
-	AdminErrorReason_INVALID_TOKEN         AdminErrorReason = 17 // token无效
-	AdminErrorReason_TOKEN_NOT_EXIST       AdminErrorReason = 18 // token不存在
-	AdminErrorReason_USER_NOT_EXIST        AdminErrorReason = 19 // 用户不存在
+	CollectorErrorReason_NOT_LOGGED_IN         CollectorErrorReason = 0  // 401
+	CollectorErrorReason_ACCESS_FORBIDDEN      CollectorErrorReason = 1  // 403
+	CollectorErrorReason_RESOURCE_NOT_FOUND    CollectorErrorReason = 2  // 404
+	CollectorErrorReason_METHOD_NOT_ALLOWED    CollectorErrorReason = 3  // 405
+	CollectorErrorReason_REQUEST_TIMEOUT       CollectorErrorReason = 4  // 408
+	CollectorErrorReason_INTERNAL_SERVER_ERROR CollectorErrorReason = 5  // 500
+	CollectorErrorReason_NOT_IMPLEMENTED       CollectorErrorReason = 6  // 501
+	CollectorErrorReason_NETWORK_ERROR         CollectorErrorReason = 7  // 502
+	CollectorErrorReason_SERVICE_UNAVAILABLE   CollectorErrorReason = 8  // 503
+	CollectorErrorReason_NETWORK_TIMEOUT       CollectorErrorReason = 9  // 504
+	CollectorErrorReason_REQUEST_NOT_SUPPORT   CollectorErrorReason = 10 // 505
+	CollectorErrorReason_USER_NOT_FOUND        CollectorErrorReason = 11
+	CollectorErrorReason_INCORRECT_PASSWORD    CollectorErrorReason = 12
+	CollectorErrorReason_USER_FREEZE           CollectorErrorReason = 13
+	CollectorErrorReason_INVALID_USERID        CollectorErrorReason = 14 // 用户ID无效
+	CollectorErrorReason_INVALID_PASSWORD      CollectorErrorReason = 15 // 密码无效
+	CollectorErrorReason_TOKEN_EXPIRED         CollectorErrorReason = 16 // token过期
+	CollectorErrorReason_INVALID_TOKEN         CollectorErrorReason = 17 // token无效
+	CollectorErrorReason_TOKEN_NOT_EXIST       CollectorErrorReason = 18 // token不存在
+	CollectorErrorReason_USER_NOT_EXIST        CollectorErrorReason = 19 // 用户不存在
 )
 
-// Enum value maps for AdminErrorReason.
+// Enum value maps for CollectorErrorReason.
 var (
-	AdminErrorReason_name = map[int32]string{
+	CollectorErrorReason_name = map[int32]string{
 		0:  "NOT_LOGGED_IN",
 		1:  "ACCESS_FORBIDDEN",
 		2:  "RESOURCE_NOT_FOUND",
@@ -71,7 +72,7 @@ var (
 		18: "TOKEN_NOT_EXIST",
 		19: "USER_NOT_EXIST",
 	}
-	AdminErrorReason_value = map[string]int32{
+	CollectorErrorReason_value = map[string]int32{
 		"NOT_LOGGED_IN":         0,
 		"ACCESS_FORBIDDEN":      1,
 		"RESOURCE_NOT_FOUND":    2,
@@ -95,30 +96,30 @@ var (
 	}
 )
 
-func (x AdminErrorReason) Enum() *AdminErrorReason {
-	p := new(AdminErrorReason)
+func (x CollectorErrorReason) Enum() *CollectorErrorReason {
+	p := new(CollectorErrorReason)
 	*p = x
 	return p
 }
 
-func (x AdminErrorReason) String() string {
+func (x CollectorErrorReason) String() string {
 	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
-func (AdminErrorReason) Descriptor() protoreflect.EnumDescriptor {
+func (CollectorErrorReason) Descriptor() protoreflect.EnumDescriptor {
 	return file_collector_service_v1_collector_error_proto_enumTypes[0].Descriptor()
 }
 
-func (AdminErrorReason) Type() protoreflect.EnumType {
+func (CollectorErrorReason) Type() protoreflect.EnumType {
 	return &file_collector_service_v1_collector_error_proto_enumTypes[0]
 }
 
-func (x AdminErrorReason) Number() protoreflect.EnumNumber {
+func (x CollectorErrorReason) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(x)
 }
 
-// Deprecated: Use AdminErrorReason.Descriptor instead.
-func (AdminErrorReason) EnumDescriptor() ([]byte, []int) {
+// Deprecated: Use CollectorErrorReason.Descriptor instead.
+func (CollectorErrorReason) EnumDescriptor() ([]byte, []int) {
 	return file_collector_service_v1_collector_error_proto_rawDescGZIP(), []int{0}
 }
 
@@ -126,8 +127,8 @@ var File_collector_service_v1_collector_error_proto protoreflect.FileDescriptor
 
 const file_collector_service_v1_collector_error_proto_rawDesc = "" +
 	"\n" +
-	"*collector/service/v1/collector_error.proto\x12\x10agent.service.v1\x1a\x13errors/errors.proto*\xb8\x04\n" +
-	"\x10AdminErrorReason\x12\x17\n" +
+	"*collector/service/v1/collector_error.proto\x12\x10agent.service.v1\x1a\x13errors/errors.proto*\xbc\x04\n" +
+	"\x14CollectorErrorReason\x12\x17\n" +
 	"\rNOT_LOGGED_IN\x10\x00\x1a\x04\xa8E\x91\x03\x12\x1a\n" +
 	"\x10ACCESS_FORBIDDEN\x10\x01\x1a\x04\xa8E\x93\x03\x12\x1c\n" +
 	"\x12RESOURCE_NOT_FOUND\x10\x02\x1a\x04\xa8E\x94\x03\x12\x1c\n" +
@@ -165,7 +166,7 @@ func file_collector_service_v1_collector_error_proto_rawDescGZIP() []byte {
 
 var file_collector_service_v1_collector_error_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_collector_service_v1_collector_error_proto_goTypes = []any{
-	(AdminErrorReason)(0), // 0: agent.service.v1.AdminErrorReason
+	(CollectorErrorReason)(0), // 0: agent.service.v1.CollectorErrorReason
 }
 var file_collector_service_v1_collector_error_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

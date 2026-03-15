@@ -59,150 +59,194 @@ func (m *RiskEvent) validate(all bool) error {
 
 	// no validation rules for Id
 
-	// no validation rules for TenantId
-
-	// no validation rules for UserId
-
-	// no validation rules for DeviceId
-
-	// no validation rules for GlobalUserId
-
-	// no validation rules for RiskType
-
-	// no validation rules for RiskLevel
-
-	// no validation rules for RiskScore
-
-	// no validation rules for RuleId
-
-	// no validation rules for RuleName
-
-	if all {
-		switch v := interface{}(m.GetRuleContext()).(type) {
-		case interface{ ValidateAll() error }:
-			if err := v.ValidateAll(); err != nil {
-				errors = append(errors, RiskEventValidationError{
-					field:  "RuleContext",
-					reason: "embedded message failed validation",
-					cause:  err,
-				})
-			}
-		case interface{ Validate() error }:
-			if err := v.Validate(); err != nil {
-				errors = append(errors, RiskEventValidationError{
-					field:  "RuleContext",
-					reason: "embedded message failed validation",
-					cause:  err,
-				})
-			}
-		}
-	} else if v, ok := interface{}(m.GetRuleContext()).(interface{ Validate() error }); ok {
-		if err := v.Validate(); err != nil {
-			return RiskEventValidationError{
-				field:  "RuleContext",
-				reason: "embedded message failed validation",
-				cause:  err,
-			}
-		}
-	}
-
-	// no validation rules for SessionId
-
-	// no validation rules for Description
-
 	// no validation rules for Evidence
 
-	// no validation rules for Status
+	if m.TenantId != nil {
+		// no validation rules for TenantId
+	}
 
-	// no validation rules for HandlerId
+	if m.UserId != nil {
+		// no validation rules for UserId
+	}
 
-	if all {
-		switch v := interface{}(m.GetHandledTime()).(type) {
-		case interface{ ValidateAll() error }:
-			if err := v.ValidateAll(); err != nil {
-				errors = append(errors, RiskEventValidationError{
+	if m.DeviceId != nil {
+		// no validation rules for DeviceId
+	}
+
+	if m.GlobalUserId != nil {
+		// no validation rules for GlobalUserId
+	}
+
+	if m.RiskType != nil {
+		// no validation rules for RiskType
+	}
+
+	if m.RiskLevel != nil {
+		// no validation rules for RiskLevel
+	}
+
+	if m.RiskScore != nil {
+		// no validation rules for RiskScore
+	}
+
+	if m.RuleId != nil {
+		// no validation rules for RuleId
+	}
+
+	if m.RuleName != nil {
+		// no validation rules for RuleName
+	}
+
+	if m.RuleContext != nil {
+
+		if all {
+			switch v := interface{}(m.GetRuleContext()).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, RiskEventValidationError{
+						field:  "RuleContext",
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, RiskEventValidationError{
+						field:  "RuleContext",
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(m.GetRuleContext()).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return RiskEventValidationError{
+					field:  "RuleContext",
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
+	if m.SessionId != nil {
+		// no validation rules for SessionId
+	}
+
+	if m.Description != nil {
+		// no validation rules for Description
+	}
+
+	if m.Status != nil {
+		// no validation rules for Status
+	}
+
+	if m.HandlerId != nil {
+		// no validation rules for HandlerId
+	}
+
+	if m.HandledTime != nil {
+
+		if all {
+			switch v := interface{}(m.GetHandledTime()).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, RiskEventValidationError{
+						field:  "HandledTime",
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, RiskEventValidationError{
+						field:  "HandledTime",
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(m.GetHandledTime()).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return RiskEventValidationError{
 					field:  "HandledTime",
 					reason: "embedded message failed validation",
 					cause:  err,
-				})
-			}
-		case interface{ Validate() error }:
-			if err := v.Validate(); err != nil {
-				errors = append(errors, RiskEventValidationError{
-					field:  "HandledTime",
-					reason: "embedded message failed validation",
-					cause:  err,
-				})
+				}
 			}
 		}
-	} else if v, ok := interface{}(m.GetHandledTime()).(interface{ Validate() error }); ok {
-		if err := v.Validate(); err != nil {
-			return RiskEventValidationError{
-				field:  "HandledTime",
-				reason: "embedded message failed validation",
-				cause:  err,
-			}
-		}
+
 	}
 
-	// no validation rules for HandleRemark
+	if m.HandleRemark != nil {
+		// no validation rules for HandleRemark
+	}
 
-	if all {
-		switch v := interface{}(m.GetOccurTime()).(type) {
-		case interface{ ValidateAll() error }:
-			if err := v.ValidateAll(); err != nil {
-				errors = append(errors, RiskEventValidationError{
+	if m.OccurTime != nil {
+
+		if all {
+			switch v := interface{}(m.GetOccurTime()).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, RiskEventValidationError{
+						field:  "OccurTime",
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, RiskEventValidationError{
+						field:  "OccurTime",
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(m.GetOccurTime()).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return RiskEventValidationError{
 					field:  "OccurTime",
 					reason: "embedded message failed validation",
 					cause:  err,
-				})
-			}
-		case interface{ Validate() error }:
-			if err := v.Validate(); err != nil {
-				errors = append(errors, RiskEventValidationError{
-					field:  "OccurTime",
-					reason: "embedded message failed validation",
-					cause:  err,
-				})
+				}
 			}
 		}
-	} else if v, ok := interface{}(m.GetOccurTime()).(interface{ Validate() error }); ok {
-		if err := v.Validate(); err != nil {
-			return RiskEventValidationError{
-				field:  "OccurTime",
-				reason: "embedded message failed validation",
-				cause:  err,
-			}
-		}
+
 	}
 
-	if all {
-		switch v := interface{}(m.GetReportTime()).(type) {
-		case interface{ ValidateAll() error }:
-			if err := v.ValidateAll(); err != nil {
-				errors = append(errors, RiskEventValidationError{
-					field:  "ReportTime",
-					reason: "embedded message failed validation",
-					cause:  err,
-				})
+	if m.ReportTime != nil {
+
+		if all {
+			switch v := interface{}(m.GetReportTime()).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, RiskEventValidationError{
+						field:  "ReportTime",
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, RiskEventValidationError{
+						field:  "ReportTime",
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
 			}
-		case interface{ Validate() error }:
+		} else if v, ok := interface{}(m.GetReportTime()).(interface{ Validate() error }); ok {
 			if err := v.Validate(); err != nil {
-				errors = append(errors, RiskEventValidationError{
+				return RiskEventValidationError{
 					field:  "ReportTime",
 					reason: "embedded message failed validation",
 					cause:  err,
-				})
+				}
 			}
 		}
-	} else if v, ok := interface{}(m.GetReportTime()).(interface{ Validate() error }); ok {
-		if err := v.Validate(); err != nil {
-			return RiskEventValidationError{
-				field:  "ReportTime",
-				reason: "embedded message failed validation",
-				cause:  err,
-			}
-		}
+
 	}
 
 	if m.CreatedBy != nil {
@@ -393,138 +437,6 @@ var _ interface {
 	ErrorName() string
 } = RiskEventValidationError{}
 
-// Validate checks the field values on RiskAction with the rules defined in the
-// proto definition for this message. If any rules are violated, the first
-// error encountered is returned, or nil if there are no violations.
-func (m *RiskAction) Validate() error {
-	return m.validate(false)
-}
-
-// ValidateAll checks the field values on RiskAction with the rules defined in
-// the proto definition for this message. If any rules are violated, the
-// result is a list of violation errors wrapped in RiskActionMultiError, or
-// nil if none found.
-func (m *RiskAction) ValidateAll() error {
-	return m.validate(true)
-}
-
-func (m *RiskAction) validate(all bool) error {
-	if m == nil {
-		return nil
-	}
-
-	var errors []error
-
-	// no validation rules for Type
-
-	if all {
-		switch v := interface{}(m.GetDuration()).(type) {
-		case interface{ ValidateAll() error }:
-			if err := v.ValidateAll(); err != nil {
-				errors = append(errors, RiskActionValidationError{
-					field:  "Duration",
-					reason: "embedded message failed validation",
-					cause:  err,
-				})
-			}
-		case interface{ Validate() error }:
-			if err := v.Validate(); err != nil {
-				errors = append(errors, RiskActionValidationError{
-					field:  "Duration",
-					reason: "embedded message failed validation",
-					cause:  err,
-				})
-			}
-		}
-	} else if v, ok := interface{}(m.GetDuration()).(interface{ Validate() error }); ok {
-		if err := v.Validate(); err != nil {
-			return RiskActionValidationError{
-				field:  "Duration",
-				reason: "embedded message failed validation",
-				cause:  err,
-			}
-		}
-	}
-
-	// no validation rules for Reason
-
-	if len(errors) > 0 {
-		return RiskActionMultiError(errors)
-	}
-
-	return nil
-}
-
-// RiskActionMultiError is an error wrapping multiple validation errors
-// returned by RiskAction.ValidateAll() if the designated constraints aren't met.
-type RiskActionMultiError []error
-
-// Error returns a concatenation of all the error messages it wraps.
-func (m RiskActionMultiError) Error() string {
-	msgs := make([]string, 0, len(m))
-	for _, err := range m {
-		msgs = append(msgs, err.Error())
-	}
-	return strings.Join(msgs, "; ")
-}
-
-// AllErrors returns a list of validation violation errors.
-func (m RiskActionMultiError) AllErrors() []error { return m }
-
-// RiskActionValidationError is the validation error returned by
-// RiskAction.Validate if the designated constraints aren't met.
-type RiskActionValidationError struct {
-	field  string
-	reason string
-	cause  error
-	key    bool
-}
-
-// Field function returns field value.
-func (e RiskActionValidationError) Field() string { return e.field }
-
-// Reason function returns reason value.
-func (e RiskActionValidationError) Reason() string { return e.reason }
-
-// Cause function returns cause value.
-func (e RiskActionValidationError) Cause() error { return e.cause }
-
-// Key function returns key value.
-func (e RiskActionValidationError) Key() bool { return e.key }
-
-// ErrorName returns error name.
-func (e RiskActionValidationError) ErrorName() string { return "RiskActionValidationError" }
-
-// Error satisfies the builtin error interface
-func (e RiskActionValidationError) Error() string {
-	cause := ""
-	if e.cause != nil {
-		cause = fmt.Sprintf(" | caused by: %v", e.cause)
-	}
-
-	key := ""
-	if e.key {
-		key = "key for "
-	}
-
-	return fmt.Sprintf(
-		"invalid %sRiskAction.%s: %s%s",
-		key,
-		e.field,
-		e.reason,
-		cause)
-}
-
-var _ error = RiskActionValidationError{}
-
-var _ interface {
-	Field() string
-	Reason() string
-	Key() bool
-	Cause() error
-	ErrorName() string
-} = RiskActionValidationError{}
-
 // Validate checks the field values on RiskEventSummary with the rules defined
 // in the proto definition for this message. If any rules are violated, the
 // first error encountered is returned, or nil if there are no violations.
@@ -635,88 +547,45 @@ var _ interface {
 	ErrorName() string
 } = RiskEventSummaryValidationError{}
 
-// Validate checks the field values on RiskRule with the rules defined in the
-// proto definition for this message. If any rules are violated, the first
-// error encountered is returned, or nil if there are no violations.
-func (m *RiskRule) Validate() error {
+// Validate checks the field values on ListRiskEventResponse with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *ListRiskEventResponse) Validate() error {
 	return m.validate(false)
 }
 
-// ValidateAll checks the field values on RiskRule with the rules defined in
-// the proto definition for this message. If any rules are violated, the
-// result is a list of violation errors wrapped in RiskRuleMultiError, or nil
-// if none found.
-func (m *RiskRule) ValidateAll() error {
+// ValidateAll checks the field values on ListRiskEventResponse with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// ListRiskEventResponseMultiError, or nil if none found.
+func (m *ListRiskEventResponse) ValidateAll() error {
 	return m.validate(true)
 }
 
-func (m *RiskRule) validate(all bool) error {
+func (m *ListRiskEventResponse) validate(all bool) error {
 	if m == nil {
 		return nil
 	}
 
 	var errors []error
 
-	// no validation rules for Id
-
-	// no validation rules for TenantId
-
-	// no validation rules for Name
-
-	// no validation rules for Code
-
-	// no validation rules for Description
-
-	// no validation rules for RiskType
-
-	// no validation rules for DefaultLevel
-
-	if all {
-		switch v := interface{}(m.GetCondition()).(type) {
-		case interface{ ValidateAll() error }:
-			if err := v.ValidateAll(); err != nil {
-				errors = append(errors, RiskRuleValidationError{
-					field:  "Condition",
-					reason: "embedded message failed validation",
-					cause:  err,
-				})
-			}
-		case interface{ Validate() error }:
-			if err := v.Validate(); err != nil {
-				errors = append(errors, RiskRuleValidationError{
-					field:  "Condition",
-					reason: "embedded message failed validation",
-					cause:  err,
-				})
-			}
-		}
-	} else if v, ok := interface{}(m.GetCondition()).(interface{ Validate() error }); ok {
-		if err := v.Validate(); err != nil {
-			return RiskRuleValidationError{
-				field:  "Condition",
-				reason: "embedded message failed validation",
-				cause:  err,
-			}
-		}
-	}
-
-	for idx, item := range m.GetActions() {
+	for idx, item := range m.GetItems() {
 		_, _ = idx, item
 
 		if all {
 			switch v := interface{}(item).(type) {
 			case interface{ ValidateAll() error }:
 				if err := v.ValidateAll(); err != nil {
-					errors = append(errors, RiskRuleValidationError{
-						field:  fmt.Sprintf("Actions[%v]", idx),
+					errors = append(errors, ListRiskEventResponseValidationError{
+						field:  fmt.Sprintf("Items[%v]", idx),
 						reason: "embedded message failed validation",
 						cause:  err,
 					})
 				}
 			case interface{ Validate() error }:
 				if err := v.Validate(); err != nil {
-					errors = append(errors, RiskRuleValidationError{
-						field:  fmt.Sprintf("Actions[%v]", idx),
+					errors = append(errors, ListRiskEventResponseValidationError{
+						field:  fmt.Sprintf("Items[%v]", idx),
 						reason: "embedded message failed validation",
 						cause:  err,
 					})
@@ -724,8 +593,8 @@ func (m *RiskRule) validate(all bool) error {
 			}
 		} else if v, ok := interface{}(item).(interface{ Validate() error }); ok {
 			if err := v.Validate(); err != nil {
-				return RiskRuleValidationError{
-					field:  fmt.Sprintf("Actions[%v]", idx),
+				return ListRiskEventResponseValidationError{
+					field:  fmt.Sprintf("Items[%v]", idx),
 					reason: "embedded message failed validation",
 					cause:  err,
 				}
@@ -734,134 +603,22 @@ func (m *RiskRule) validate(all bool) error {
 
 	}
 
-	// no validation rules for Enabled
-
-	// no validation rules for Priority
-
-	if m.CreatedBy != nil {
-		// no validation rules for CreatedBy
-	}
-
-	if m.UpdatedBy != nil {
-		// no validation rules for UpdatedBy
-	}
-
-	if m.DeletedBy != nil {
-		// no validation rules for DeletedBy
-	}
-
-	if m.CreatedAt != nil {
-
-		if all {
-			switch v := interface{}(m.GetCreatedAt()).(type) {
-			case interface{ ValidateAll() error }:
-				if err := v.ValidateAll(); err != nil {
-					errors = append(errors, RiskRuleValidationError{
-						field:  "CreatedAt",
-						reason: "embedded message failed validation",
-						cause:  err,
-					})
-				}
-			case interface{ Validate() error }:
-				if err := v.Validate(); err != nil {
-					errors = append(errors, RiskRuleValidationError{
-						field:  "CreatedAt",
-						reason: "embedded message failed validation",
-						cause:  err,
-					})
-				}
-			}
-		} else if v, ok := interface{}(m.GetCreatedAt()).(interface{ Validate() error }); ok {
-			if err := v.Validate(); err != nil {
-				return RiskRuleValidationError{
-					field:  "CreatedAt",
-					reason: "embedded message failed validation",
-					cause:  err,
-				}
-			}
-		}
-
-	}
-
-	if m.UpdatedAt != nil {
-
-		if all {
-			switch v := interface{}(m.GetUpdatedAt()).(type) {
-			case interface{ ValidateAll() error }:
-				if err := v.ValidateAll(); err != nil {
-					errors = append(errors, RiskRuleValidationError{
-						field:  "UpdatedAt",
-						reason: "embedded message failed validation",
-						cause:  err,
-					})
-				}
-			case interface{ Validate() error }:
-				if err := v.Validate(); err != nil {
-					errors = append(errors, RiskRuleValidationError{
-						field:  "UpdatedAt",
-						reason: "embedded message failed validation",
-						cause:  err,
-					})
-				}
-			}
-		} else if v, ok := interface{}(m.GetUpdatedAt()).(interface{ Validate() error }); ok {
-			if err := v.Validate(); err != nil {
-				return RiskRuleValidationError{
-					field:  "UpdatedAt",
-					reason: "embedded message failed validation",
-					cause:  err,
-				}
-			}
-		}
-
-	}
-
-	if m.DeletedAt != nil {
-
-		if all {
-			switch v := interface{}(m.GetDeletedAt()).(type) {
-			case interface{ ValidateAll() error }:
-				if err := v.ValidateAll(); err != nil {
-					errors = append(errors, RiskRuleValidationError{
-						field:  "DeletedAt",
-						reason: "embedded message failed validation",
-						cause:  err,
-					})
-				}
-			case interface{ Validate() error }:
-				if err := v.Validate(); err != nil {
-					errors = append(errors, RiskRuleValidationError{
-						field:  "DeletedAt",
-						reason: "embedded message failed validation",
-						cause:  err,
-					})
-				}
-			}
-		} else if v, ok := interface{}(m.GetDeletedAt()).(interface{ Validate() error }); ok {
-			if err := v.Validate(); err != nil {
-				return RiskRuleValidationError{
-					field:  "DeletedAt",
-					reason: "embedded message failed validation",
-					cause:  err,
-				}
-			}
-		}
-
-	}
+	// no validation rules for Total
 
 	if len(errors) > 0 {
-		return RiskRuleMultiError(errors)
+		return ListRiskEventResponseMultiError(errors)
 	}
 
 	return nil
 }
 
-// RiskRuleMultiError is an error wrapping multiple validation errors returned
-// by RiskRule.ValidateAll() if the designated constraints aren't met.
-type RiskRuleMultiError []error
+// ListRiskEventResponseMultiError is an error wrapping multiple validation
+// errors returned by ListRiskEventResponse.ValidateAll() if the designated
+// constraints aren't met.
+type ListRiskEventResponseMultiError []error
 
 // Error returns a concatenation of all the error messages it wraps.
-func (m RiskRuleMultiError) Error() string {
+func (m ListRiskEventResponseMultiError) Error() string {
 	msgs := make([]string, 0, len(m))
 	for _, err := range m {
 		msgs = append(msgs, err.Error())
@@ -870,11 +627,11 @@ func (m RiskRuleMultiError) Error() string {
 }
 
 // AllErrors returns a list of validation violation errors.
-func (m RiskRuleMultiError) AllErrors() []error { return m }
+func (m ListRiskEventResponseMultiError) AllErrors() []error { return m }
 
-// RiskRuleValidationError is the validation error returned by
-// RiskRule.Validate if the designated constraints aren't met.
-type RiskRuleValidationError struct {
+// ListRiskEventResponseValidationError is the validation error returned by
+// ListRiskEventResponse.Validate if the designated constraints aren't met.
+type ListRiskEventResponseValidationError struct {
 	field  string
 	reason string
 	cause  error
@@ -882,22 +639,24 @@ type RiskRuleValidationError struct {
 }
 
 // Field function returns field value.
-func (e RiskRuleValidationError) Field() string { return e.field }
+func (e ListRiskEventResponseValidationError) Field() string { return e.field }
 
 // Reason function returns reason value.
-func (e RiskRuleValidationError) Reason() string { return e.reason }
+func (e ListRiskEventResponseValidationError) Reason() string { return e.reason }
 
 // Cause function returns cause value.
-func (e RiskRuleValidationError) Cause() error { return e.cause }
+func (e ListRiskEventResponseValidationError) Cause() error { return e.cause }
 
 // Key function returns key value.
-func (e RiskRuleValidationError) Key() bool { return e.key }
+func (e ListRiskEventResponseValidationError) Key() bool { return e.key }
 
 // ErrorName returns error name.
-func (e RiskRuleValidationError) ErrorName() string { return "RiskRuleValidationError" }
+func (e ListRiskEventResponseValidationError) ErrorName() string {
+	return "ListRiskEventResponseValidationError"
+}
 
 // Error satisfies the builtin error interface
-func (e RiskRuleValidationError) Error() string {
+func (e ListRiskEventResponseValidationError) Error() string {
 	cause := ""
 	if e.cause != nil {
 		cause = fmt.Sprintf(" | caused by: %v", e.cause)
@@ -909,14 +668,14 @@ func (e RiskRuleValidationError) Error() string {
 	}
 
 	return fmt.Sprintf(
-		"invalid %sRiskRule.%s: %s%s",
+		"invalid %sListRiskEventResponse.%s: %s%s",
 		key,
 		e.field,
 		e.reason,
 		cause)
 }
 
-var _ error = RiskRuleValidationError{}
+var _ error = ListRiskEventResponseValidationError{}
 
 var _ interface {
 	Field() string
@@ -924,4 +683,680 @@ var _ interface {
 	Key() bool
 	Cause() error
 	ErrorName() string
-} = RiskRuleValidationError{}
+} = ListRiskEventResponseValidationError{}
+
+// Validate checks the field values on GetRiskEventRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *GetRiskEventRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on GetRiskEventRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// GetRiskEventRequestMultiError, or nil if none found.
+func (m *GetRiskEventRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *GetRiskEventRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	switch v := m.QueryBy.(type) {
+	case *GetRiskEventRequest_Id:
+		if v == nil {
+			err := GetRiskEventRequestValidationError{
+				field:  "QueryBy",
+				reason: "oneof value cannot be a typed-nil",
+			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
+		}
+		// no validation rules for Id
+	default:
+		_ = v // ensures v is used
+	}
+
+	if m.ViewMask != nil {
+
+		if all {
+			switch v := interface{}(m.GetViewMask()).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, GetRiskEventRequestValidationError{
+						field:  "ViewMask",
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, GetRiskEventRequestValidationError{
+						field:  "ViewMask",
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(m.GetViewMask()).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return GetRiskEventRequestValidationError{
+					field:  "ViewMask",
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
+	if len(errors) > 0 {
+		return GetRiskEventRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// GetRiskEventRequestMultiError is an error wrapping multiple validation
+// errors returned by GetRiskEventRequest.ValidateAll() if the designated
+// constraints aren't met.
+type GetRiskEventRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m GetRiskEventRequestMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m GetRiskEventRequestMultiError) AllErrors() []error { return m }
+
+// GetRiskEventRequestValidationError is the validation error returned by
+// GetRiskEventRequest.Validate if the designated constraints aren't met.
+type GetRiskEventRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e GetRiskEventRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e GetRiskEventRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e GetRiskEventRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e GetRiskEventRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e GetRiskEventRequestValidationError) ErrorName() string {
+	return "GetRiskEventRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e GetRiskEventRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sGetRiskEventRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = GetRiskEventRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = GetRiskEventRequestValidationError{}
+
+// Validate checks the field values on CreateRiskEventRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *CreateRiskEventRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on CreateRiskEventRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// CreateRiskEventRequestMultiError, or nil if none found.
+func (m *CreateRiskEventRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *CreateRiskEventRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if all {
+		switch v := interface{}(m.GetData()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, CreateRiskEventRequestValidationError{
+					field:  "Data",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, CreateRiskEventRequestValidationError{
+					field:  "Data",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetData()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return CreateRiskEventRequestValidationError{
+				field:  "Data",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if len(errors) > 0 {
+		return CreateRiskEventRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// CreateRiskEventRequestMultiError is an error wrapping multiple validation
+// errors returned by CreateRiskEventRequest.ValidateAll() if the designated
+// constraints aren't met.
+type CreateRiskEventRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m CreateRiskEventRequestMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m CreateRiskEventRequestMultiError) AllErrors() []error { return m }
+
+// CreateRiskEventRequestValidationError is the validation error returned by
+// CreateRiskEventRequest.Validate if the designated constraints aren't met.
+type CreateRiskEventRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e CreateRiskEventRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e CreateRiskEventRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e CreateRiskEventRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e CreateRiskEventRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e CreateRiskEventRequestValidationError) ErrorName() string {
+	return "CreateRiskEventRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e CreateRiskEventRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sCreateRiskEventRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = CreateRiskEventRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = CreateRiskEventRequestValidationError{}
+
+// Validate checks the field values on UpdateRiskEventRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *UpdateRiskEventRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on UpdateRiskEventRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// UpdateRiskEventRequestMultiError, or nil if none found.
+func (m *UpdateRiskEventRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *UpdateRiskEventRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Id
+
+	if all {
+		switch v := interface{}(m.GetData()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, UpdateRiskEventRequestValidationError{
+					field:  "Data",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, UpdateRiskEventRequestValidationError{
+					field:  "Data",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetData()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return UpdateRiskEventRequestValidationError{
+				field:  "Data",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if all {
+		switch v := interface{}(m.GetUpdateMask()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, UpdateRiskEventRequestValidationError{
+					field:  "UpdateMask",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, UpdateRiskEventRequestValidationError{
+					field:  "UpdateMask",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetUpdateMask()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return UpdateRiskEventRequestValidationError{
+				field:  "UpdateMask",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if m.AllowMissing != nil {
+		// no validation rules for AllowMissing
+	}
+
+	if len(errors) > 0 {
+		return UpdateRiskEventRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// UpdateRiskEventRequestMultiError is an error wrapping multiple validation
+// errors returned by UpdateRiskEventRequest.ValidateAll() if the designated
+// constraints aren't met.
+type UpdateRiskEventRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m UpdateRiskEventRequestMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m UpdateRiskEventRequestMultiError) AllErrors() []error { return m }
+
+// UpdateRiskEventRequestValidationError is the validation error returned by
+// UpdateRiskEventRequest.Validate if the designated constraints aren't met.
+type UpdateRiskEventRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e UpdateRiskEventRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e UpdateRiskEventRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e UpdateRiskEventRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e UpdateRiskEventRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e UpdateRiskEventRequestValidationError) ErrorName() string {
+	return "UpdateRiskEventRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e UpdateRiskEventRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sUpdateRiskEventRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = UpdateRiskEventRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = UpdateRiskEventRequestValidationError{}
+
+// Validate checks the field values on DeleteRiskEventRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *DeleteRiskEventRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on DeleteRiskEventRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// DeleteRiskEventRequestMultiError, or nil if none found.
+func (m *DeleteRiskEventRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *DeleteRiskEventRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	switch v := m.QueryBy.(type) {
+	case *DeleteRiskEventRequest_Id:
+		if v == nil {
+			err := DeleteRiskEventRequestValidationError{
+				field:  "QueryBy",
+				reason: "oneof value cannot be a typed-nil",
+			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
+		}
+		// no validation rules for Id
+	default:
+		_ = v // ensures v is used
+	}
+
+	if m.DeletedBy != nil {
+		// no validation rules for DeletedBy
+	}
+
+	if len(errors) > 0 {
+		return DeleteRiskEventRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// DeleteRiskEventRequestMultiError is an error wrapping multiple validation
+// errors returned by DeleteRiskEventRequest.ValidateAll() if the designated
+// constraints aren't met.
+type DeleteRiskEventRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m DeleteRiskEventRequestMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m DeleteRiskEventRequestMultiError) AllErrors() []error { return m }
+
+// DeleteRiskEventRequestValidationError is the validation error returned by
+// DeleteRiskEventRequest.Validate if the designated constraints aren't met.
+type DeleteRiskEventRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e DeleteRiskEventRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e DeleteRiskEventRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e DeleteRiskEventRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e DeleteRiskEventRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e DeleteRiskEventRequestValidationError) ErrorName() string {
+	return "DeleteRiskEventRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e DeleteRiskEventRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sDeleteRiskEventRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = DeleteRiskEventRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = DeleteRiskEventRequestValidationError{}
+
+// Validate checks the field values on CountRiskEventResponse with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *CountRiskEventResponse) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on CountRiskEventResponse with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// CountRiskEventResponseMultiError, or nil if none found.
+func (m *CountRiskEventResponse) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *CountRiskEventResponse) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Count
+
+	if len(errors) > 0 {
+		return CountRiskEventResponseMultiError(errors)
+	}
+
+	return nil
+}
+
+// CountRiskEventResponseMultiError is an error wrapping multiple validation
+// errors returned by CountRiskEventResponse.ValidateAll() if the designated
+// constraints aren't met.
+type CountRiskEventResponseMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m CountRiskEventResponseMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m CountRiskEventResponseMultiError) AllErrors() []error { return m }
+
+// CountRiskEventResponseValidationError is the validation error returned by
+// CountRiskEventResponse.Validate if the designated constraints aren't met.
+type CountRiskEventResponseValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e CountRiskEventResponseValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e CountRiskEventResponseValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e CountRiskEventResponseValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e CountRiskEventResponseValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e CountRiskEventResponseValidationError) ErrorName() string {
+	return "CountRiskEventResponseValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e CountRiskEventResponseValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sCountRiskEventResponse.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = CountRiskEventResponseValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = CountRiskEventResponseValidationError{}

@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	servicev1 "go-wind-uba/api/gen/go/uba/service/v1"
 	"go-wind-uba/app/core/service/internal/data/ent/webhook"
 	"time"
 
@@ -126,9 +127,25 @@ func (_c *WebhookCreate) SetName(v string) *WebhookCreate {
 	return _c
 }
 
+// SetNillableName sets the "name" field if the given value is not nil.
+func (_c *WebhookCreate) SetNillableName(v *string) *WebhookCreate {
+	if v != nil {
+		_c.SetName(*v)
+	}
+	return _c
+}
+
 // SetURL sets the "url" field.
 func (_c *WebhookCreate) SetURL(v string) *WebhookCreate {
 	_c.mutation.SetURL(v)
+	return _c
+}
+
+// SetNillableURL sets the "url" field if the given value is not nil.
+func (_c *WebhookCreate) SetNillableURL(v *string) *WebhookCreate {
+	if v != nil {
+		_c.SetURL(*v)
+	}
 	return _c
 }
 
@@ -152,9 +169,9 @@ func (_c *WebhookCreate) SetEventTypes(v []string) *WebhookCreate {
 	return _c
 }
 
-// SetFilters sets the "filters" field.
-func (_c *WebhookCreate) SetFilters(v map[string]interface{}) *WebhookCreate {
-	_c.mutation.SetFilters(v)
+// SetFilter sets the "filter" field.
+func (_c *WebhookCreate) SetFilter(v *servicev1.WebhookFilter) *WebhookCreate {
+	_c.mutation.SetFilter(v)
 	return _c
 }
 
@@ -187,15 +204,29 @@ func (_c *WebhookCreate) SetNillableLastTriggeredAt(v *time.Time) *WebhookCreate
 }
 
 // SetFailureCount sets the "failure_count" field.
-func (_c *WebhookCreate) SetFailureCount(v int) *WebhookCreate {
+func (_c *WebhookCreate) SetFailureCount(v uint32) *WebhookCreate {
 	_c.mutation.SetFailureCount(v)
 	return _c
 }
 
 // SetNillableFailureCount sets the "failure_count" field if the given value is not nil.
-func (_c *WebhookCreate) SetNillableFailureCount(v *int) *WebhookCreate {
+func (_c *WebhookCreate) SetNillableFailureCount(v *uint32) *WebhookCreate {
 	if v != nil {
 		_c.SetFailureCount(*v)
+	}
+	return _c
+}
+
+// SetAppID sets the "app_id" field.
+func (_c *WebhookCreate) SetAppID(v uint32) *WebhookCreate {
+	_c.mutation.SetAppID(v)
+	return _c
+}
+
+// SetNillableAppID sets the "app_id" field if the given value is not nil.
+func (_c *WebhookCreate) SetNillableAppID(v *uint32) *WebhookCreate {
+	if v != nil {
+		_c.SetAppID(*v)
 	}
 	return _c
 }
@@ -260,20 +291,19 @@ func (_c *WebhookCreate) defaults() error {
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *WebhookCreate) check() error {
-	if _, ok := _c.mutation.Name(); !ok {
-		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "Webhook.name"`)}
-	}
 	if v, ok := _c.mutation.Name(); ok {
 		if err := webhook.NameValidator(v); err != nil {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "Webhook.name": %w`, err)}
 		}
 	}
-	if _, ok := _c.mutation.URL(); !ok {
-		return &ValidationError{Name: "url", err: errors.New(`ent: missing required field "Webhook.url"`)}
-	}
 	if v, ok := _c.mutation.URL(); ok {
 		if err := webhook.URLValidator(v); err != nil {
 			return &ValidationError{Name: "url", err: fmt.Errorf(`ent: validator failed for field "Webhook.url": %w`, err)}
+		}
+	}
+	if v, ok := _c.mutation.Filter(); ok {
+		if err := v.Validate(); err != nil {
+			return &ValidationError{Name: "filter", err: fmt.Errorf(`ent: validator failed for field "Webhook.filter": %w`, err)}
 		}
 	}
 	if _, ok := _c.mutation.Enabled(); !ok {
@@ -350,11 +380,11 @@ func (_c *WebhookCreate) createSpec() (*Webhook, *sqlgraph.CreateSpec) {
 	}
 	if value, ok := _c.mutation.Name(); ok {
 		_spec.SetField(webhook.FieldName, field.TypeString, value)
-		_node.Name = value
+		_node.Name = &value
 	}
 	if value, ok := _c.mutation.URL(); ok {
 		_spec.SetField(webhook.FieldURL, field.TypeString, value)
-		_node.URL = value
+		_node.URL = &value
 	}
 	if value, ok := _c.mutation.Secret(); ok {
 		_spec.SetField(webhook.FieldSecret, field.TypeString, value)
@@ -364,9 +394,9 @@ func (_c *WebhookCreate) createSpec() (*Webhook, *sqlgraph.CreateSpec) {
 		_spec.SetField(webhook.FieldEventTypes, field.TypeJSON, value)
 		_node.EventTypes = value
 	}
-	if value, ok := _c.mutation.Filters(); ok {
-		_spec.SetField(webhook.FieldFilters, field.TypeJSON, value)
-		_node.Filters = value
+	if value, ok := _c.mutation.Filter(); ok {
+		_spec.SetField(webhook.FieldFilter, field.TypeJSON, value)
+		_node.Filter = value
 	}
 	if value, ok := _c.mutation.Enabled(); ok {
 		_spec.SetField(webhook.FieldEnabled, field.TypeBool, value)
@@ -377,8 +407,12 @@ func (_c *WebhookCreate) createSpec() (*Webhook, *sqlgraph.CreateSpec) {
 		_node.LastTriggeredAt = &value
 	}
 	if value, ok := _c.mutation.FailureCount(); ok {
-		_spec.SetField(webhook.FieldFailureCount, field.TypeInt, value)
+		_spec.SetField(webhook.FieldFailureCount, field.TypeUint32, value)
 		_node.FailureCount = value
+	}
+	if value, ok := _c.mutation.AppID(); ok {
+		_spec.SetField(webhook.FieldAppID, field.TypeUint32, value)
+		_node.AppID = &value
 	}
 	return _node, _spec
 }
@@ -552,6 +586,12 @@ func (u *WebhookUpsert) UpdateName() *WebhookUpsert {
 	return u
 }
 
+// ClearName clears the value of the "name" field.
+func (u *WebhookUpsert) ClearName() *WebhookUpsert {
+	u.SetNull(webhook.FieldName)
+	return u
+}
+
 // SetURL sets the "url" field.
 func (u *WebhookUpsert) SetURL(v string) *WebhookUpsert {
 	u.Set(webhook.FieldURL, v)
@@ -561,6 +601,12 @@ func (u *WebhookUpsert) SetURL(v string) *WebhookUpsert {
 // UpdateURL sets the "url" field to the value that was provided on create.
 func (u *WebhookUpsert) UpdateURL() *WebhookUpsert {
 	u.SetExcluded(webhook.FieldURL)
+	return u
+}
+
+// ClearURL clears the value of the "url" field.
+func (u *WebhookUpsert) ClearURL() *WebhookUpsert {
+	u.SetNull(webhook.FieldURL)
 	return u
 }
 
@@ -600,21 +646,21 @@ func (u *WebhookUpsert) ClearEventTypes() *WebhookUpsert {
 	return u
 }
 
-// SetFilters sets the "filters" field.
-func (u *WebhookUpsert) SetFilters(v map[string]interface{}) *WebhookUpsert {
-	u.Set(webhook.FieldFilters, v)
+// SetFilter sets the "filter" field.
+func (u *WebhookUpsert) SetFilter(v *servicev1.WebhookFilter) *WebhookUpsert {
+	u.Set(webhook.FieldFilter, v)
 	return u
 }
 
-// UpdateFilters sets the "filters" field to the value that was provided on create.
-func (u *WebhookUpsert) UpdateFilters() *WebhookUpsert {
-	u.SetExcluded(webhook.FieldFilters)
+// UpdateFilter sets the "filter" field to the value that was provided on create.
+func (u *WebhookUpsert) UpdateFilter() *WebhookUpsert {
+	u.SetExcluded(webhook.FieldFilter)
 	return u
 }
 
-// ClearFilters clears the value of the "filters" field.
-func (u *WebhookUpsert) ClearFilters() *WebhookUpsert {
-	u.SetNull(webhook.FieldFilters)
+// ClearFilter clears the value of the "filter" field.
+func (u *WebhookUpsert) ClearFilter() *WebhookUpsert {
+	u.SetNull(webhook.FieldFilter)
 	return u
 }
 
@@ -649,7 +695,7 @@ func (u *WebhookUpsert) ClearLastTriggeredAt() *WebhookUpsert {
 }
 
 // SetFailureCount sets the "failure_count" field.
-func (u *WebhookUpsert) SetFailureCount(v int) *WebhookUpsert {
+func (u *WebhookUpsert) SetFailureCount(v uint32) *WebhookUpsert {
 	u.Set(webhook.FieldFailureCount, v)
 	return u
 }
@@ -661,8 +707,32 @@ func (u *WebhookUpsert) UpdateFailureCount() *WebhookUpsert {
 }
 
 // AddFailureCount adds v to the "failure_count" field.
-func (u *WebhookUpsert) AddFailureCount(v int) *WebhookUpsert {
+func (u *WebhookUpsert) AddFailureCount(v uint32) *WebhookUpsert {
 	u.Add(webhook.FieldFailureCount, v)
+	return u
+}
+
+// SetAppID sets the "app_id" field.
+func (u *WebhookUpsert) SetAppID(v uint32) *WebhookUpsert {
+	u.Set(webhook.FieldAppID, v)
+	return u
+}
+
+// UpdateAppID sets the "app_id" field to the value that was provided on create.
+func (u *WebhookUpsert) UpdateAppID() *WebhookUpsert {
+	u.SetExcluded(webhook.FieldAppID)
+	return u
+}
+
+// AddAppID adds v to the "app_id" field.
+func (u *WebhookUpsert) AddAppID(v uint32) *WebhookUpsert {
+	u.Add(webhook.FieldAppID, v)
+	return u
+}
+
+// ClearAppID clears the value of the "app_id" field.
+func (u *WebhookUpsert) ClearAppID() *WebhookUpsert {
+	u.SetNull(webhook.FieldAppID)
 	return u
 }
 
@@ -860,6 +930,13 @@ func (u *WebhookUpsertOne) UpdateName() *WebhookUpsertOne {
 	})
 }
 
+// ClearName clears the value of the "name" field.
+func (u *WebhookUpsertOne) ClearName() *WebhookUpsertOne {
+	return u.Update(func(s *WebhookUpsert) {
+		s.ClearName()
+	})
+}
+
 // SetURL sets the "url" field.
 func (u *WebhookUpsertOne) SetURL(v string) *WebhookUpsertOne {
 	return u.Update(func(s *WebhookUpsert) {
@@ -871,6 +948,13 @@ func (u *WebhookUpsertOne) SetURL(v string) *WebhookUpsertOne {
 func (u *WebhookUpsertOne) UpdateURL() *WebhookUpsertOne {
 	return u.Update(func(s *WebhookUpsert) {
 		s.UpdateURL()
+	})
+}
+
+// ClearURL clears the value of the "url" field.
+func (u *WebhookUpsertOne) ClearURL() *WebhookUpsertOne {
+	return u.Update(func(s *WebhookUpsert) {
+		s.ClearURL()
 	})
 }
 
@@ -916,24 +1000,24 @@ func (u *WebhookUpsertOne) ClearEventTypes() *WebhookUpsertOne {
 	})
 }
 
-// SetFilters sets the "filters" field.
-func (u *WebhookUpsertOne) SetFilters(v map[string]interface{}) *WebhookUpsertOne {
+// SetFilter sets the "filter" field.
+func (u *WebhookUpsertOne) SetFilter(v *servicev1.WebhookFilter) *WebhookUpsertOne {
 	return u.Update(func(s *WebhookUpsert) {
-		s.SetFilters(v)
+		s.SetFilter(v)
 	})
 }
 
-// UpdateFilters sets the "filters" field to the value that was provided on create.
-func (u *WebhookUpsertOne) UpdateFilters() *WebhookUpsertOne {
+// UpdateFilter sets the "filter" field to the value that was provided on create.
+func (u *WebhookUpsertOne) UpdateFilter() *WebhookUpsertOne {
 	return u.Update(func(s *WebhookUpsert) {
-		s.UpdateFilters()
+		s.UpdateFilter()
 	})
 }
 
-// ClearFilters clears the value of the "filters" field.
-func (u *WebhookUpsertOne) ClearFilters() *WebhookUpsertOne {
+// ClearFilter clears the value of the "filter" field.
+func (u *WebhookUpsertOne) ClearFilter() *WebhookUpsertOne {
 	return u.Update(func(s *WebhookUpsert) {
-		s.ClearFilters()
+		s.ClearFilter()
 	})
 }
 
@@ -973,14 +1057,14 @@ func (u *WebhookUpsertOne) ClearLastTriggeredAt() *WebhookUpsertOne {
 }
 
 // SetFailureCount sets the "failure_count" field.
-func (u *WebhookUpsertOne) SetFailureCount(v int) *WebhookUpsertOne {
+func (u *WebhookUpsertOne) SetFailureCount(v uint32) *WebhookUpsertOne {
 	return u.Update(func(s *WebhookUpsert) {
 		s.SetFailureCount(v)
 	})
 }
 
 // AddFailureCount adds v to the "failure_count" field.
-func (u *WebhookUpsertOne) AddFailureCount(v int) *WebhookUpsertOne {
+func (u *WebhookUpsertOne) AddFailureCount(v uint32) *WebhookUpsertOne {
 	return u.Update(func(s *WebhookUpsert) {
 		s.AddFailureCount(v)
 	})
@@ -990,6 +1074,34 @@ func (u *WebhookUpsertOne) AddFailureCount(v int) *WebhookUpsertOne {
 func (u *WebhookUpsertOne) UpdateFailureCount() *WebhookUpsertOne {
 	return u.Update(func(s *WebhookUpsert) {
 		s.UpdateFailureCount()
+	})
+}
+
+// SetAppID sets the "app_id" field.
+func (u *WebhookUpsertOne) SetAppID(v uint32) *WebhookUpsertOne {
+	return u.Update(func(s *WebhookUpsert) {
+		s.SetAppID(v)
+	})
+}
+
+// AddAppID adds v to the "app_id" field.
+func (u *WebhookUpsertOne) AddAppID(v uint32) *WebhookUpsertOne {
+	return u.Update(func(s *WebhookUpsert) {
+		s.AddAppID(v)
+	})
+}
+
+// UpdateAppID sets the "app_id" field to the value that was provided on create.
+func (u *WebhookUpsertOne) UpdateAppID() *WebhookUpsertOne {
+	return u.Update(func(s *WebhookUpsert) {
+		s.UpdateAppID()
+	})
+}
+
+// ClearAppID clears the value of the "app_id" field.
+func (u *WebhookUpsertOne) ClearAppID() *WebhookUpsertOne {
+	return u.Update(func(s *WebhookUpsert) {
+		s.ClearAppID()
 	})
 }
 
@@ -1353,6 +1465,13 @@ func (u *WebhookUpsertBulk) UpdateName() *WebhookUpsertBulk {
 	})
 }
 
+// ClearName clears the value of the "name" field.
+func (u *WebhookUpsertBulk) ClearName() *WebhookUpsertBulk {
+	return u.Update(func(s *WebhookUpsert) {
+		s.ClearName()
+	})
+}
+
 // SetURL sets the "url" field.
 func (u *WebhookUpsertBulk) SetURL(v string) *WebhookUpsertBulk {
 	return u.Update(func(s *WebhookUpsert) {
@@ -1364,6 +1483,13 @@ func (u *WebhookUpsertBulk) SetURL(v string) *WebhookUpsertBulk {
 func (u *WebhookUpsertBulk) UpdateURL() *WebhookUpsertBulk {
 	return u.Update(func(s *WebhookUpsert) {
 		s.UpdateURL()
+	})
+}
+
+// ClearURL clears the value of the "url" field.
+func (u *WebhookUpsertBulk) ClearURL() *WebhookUpsertBulk {
+	return u.Update(func(s *WebhookUpsert) {
+		s.ClearURL()
 	})
 }
 
@@ -1409,24 +1535,24 @@ func (u *WebhookUpsertBulk) ClearEventTypes() *WebhookUpsertBulk {
 	})
 }
 
-// SetFilters sets the "filters" field.
-func (u *WebhookUpsertBulk) SetFilters(v map[string]interface{}) *WebhookUpsertBulk {
+// SetFilter sets the "filter" field.
+func (u *WebhookUpsertBulk) SetFilter(v *servicev1.WebhookFilter) *WebhookUpsertBulk {
 	return u.Update(func(s *WebhookUpsert) {
-		s.SetFilters(v)
+		s.SetFilter(v)
 	})
 }
 
-// UpdateFilters sets the "filters" field to the value that was provided on create.
-func (u *WebhookUpsertBulk) UpdateFilters() *WebhookUpsertBulk {
+// UpdateFilter sets the "filter" field to the value that was provided on create.
+func (u *WebhookUpsertBulk) UpdateFilter() *WebhookUpsertBulk {
 	return u.Update(func(s *WebhookUpsert) {
-		s.UpdateFilters()
+		s.UpdateFilter()
 	})
 }
 
-// ClearFilters clears the value of the "filters" field.
-func (u *WebhookUpsertBulk) ClearFilters() *WebhookUpsertBulk {
+// ClearFilter clears the value of the "filter" field.
+func (u *WebhookUpsertBulk) ClearFilter() *WebhookUpsertBulk {
 	return u.Update(func(s *WebhookUpsert) {
-		s.ClearFilters()
+		s.ClearFilter()
 	})
 }
 
@@ -1466,14 +1592,14 @@ func (u *WebhookUpsertBulk) ClearLastTriggeredAt() *WebhookUpsertBulk {
 }
 
 // SetFailureCount sets the "failure_count" field.
-func (u *WebhookUpsertBulk) SetFailureCount(v int) *WebhookUpsertBulk {
+func (u *WebhookUpsertBulk) SetFailureCount(v uint32) *WebhookUpsertBulk {
 	return u.Update(func(s *WebhookUpsert) {
 		s.SetFailureCount(v)
 	})
 }
 
 // AddFailureCount adds v to the "failure_count" field.
-func (u *WebhookUpsertBulk) AddFailureCount(v int) *WebhookUpsertBulk {
+func (u *WebhookUpsertBulk) AddFailureCount(v uint32) *WebhookUpsertBulk {
 	return u.Update(func(s *WebhookUpsert) {
 		s.AddFailureCount(v)
 	})
@@ -1483,6 +1609,34 @@ func (u *WebhookUpsertBulk) AddFailureCount(v int) *WebhookUpsertBulk {
 func (u *WebhookUpsertBulk) UpdateFailureCount() *WebhookUpsertBulk {
 	return u.Update(func(s *WebhookUpsert) {
 		s.UpdateFailureCount()
+	})
+}
+
+// SetAppID sets the "app_id" field.
+func (u *WebhookUpsertBulk) SetAppID(v uint32) *WebhookUpsertBulk {
+	return u.Update(func(s *WebhookUpsert) {
+		s.SetAppID(v)
+	})
+}
+
+// AddAppID adds v to the "app_id" field.
+func (u *WebhookUpsertBulk) AddAppID(v uint32) *WebhookUpsertBulk {
+	return u.Update(func(s *WebhookUpsert) {
+		s.AddAppID(v)
+	})
+}
+
+// UpdateAppID sets the "app_id" field to the value that was provided on create.
+func (u *WebhookUpsertBulk) UpdateAppID() *WebhookUpsertBulk {
+	return u.Update(func(s *WebhookUpsert) {
+		s.UpdateAppID()
+	})
+}
+
+// ClearAppID clears the value of the "app_id" field.
+func (u *WebhookUpsertBulk) ClearAppID() *WebhookUpsertBulk {
+	return u.Update(func(s *WebhookUpsert) {
+		s.ClearAppID()
 	})
 }
 

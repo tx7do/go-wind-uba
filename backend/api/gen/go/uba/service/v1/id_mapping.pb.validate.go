@@ -59,79 +59,101 @@ func (m *IDMapping) validate(all bool) error {
 
 	// no validation rules for Id
 
-	// no validation rules for GlobalUserId
-
-	// no validation rules for TenantId
-
-	// no validation rules for IdType
-
-	// no validation rules for IdValue
-
-	// no validation rules for Confidence
-
-	// no validation rules for LinkSource
-
-	if all {
-		switch v := interface{}(m.GetFirstSeen()).(type) {
-		case interface{ ValidateAll() error }:
-			if err := v.ValidateAll(); err != nil {
-				errors = append(errors, IDMappingValidationError{
-					field:  "FirstSeen",
-					reason: "embedded message failed validation",
-					cause:  err,
-				})
-			}
-		case interface{ Validate() error }:
-			if err := v.Validate(); err != nil {
-				errors = append(errors, IDMappingValidationError{
-					field:  "FirstSeen",
-					reason: "embedded message failed validation",
-					cause:  err,
-				})
-			}
-		}
-	} else if v, ok := interface{}(m.GetFirstSeen()).(interface{ Validate() error }); ok {
-		if err := v.Validate(); err != nil {
-			return IDMappingValidationError{
-				field:  "FirstSeen",
-				reason: "embedded message failed validation",
-				cause:  err,
-			}
-		}
-	}
-
-	if all {
-		switch v := interface{}(m.GetLastSeen()).(type) {
-		case interface{ ValidateAll() error }:
-			if err := v.ValidateAll(); err != nil {
-				errors = append(errors, IDMappingValidationError{
-					field:  "LastSeen",
-					reason: "embedded message failed validation",
-					cause:  err,
-				})
-			}
-		case interface{ Validate() error }:
-			if err := v.Validate(); err != nil {
-				errors = append(errors, IDMappingValidationError{
-					field:  "LastSeen",
-					reason: "embedded message failed validation",
-					cause:  err,
-				})
-			}
-		}
-	} else if v, ok := interface{}(m.GetLastSeen()).(interface{ Validate() error }); ok {
-		if err := v.Validate(); err != nil {
-			return IDMappingValidationError{
-				field:  "LastSeen",
-				reason: "embedded message failed validation",
-				cause:  err,
-			}
-		}
-	}
-
-	// no validation rules for IsActive
-
 	// no validation rules for Properties
+
+	if m.GlobalUserId != nil {
+		// no validation rules for GlobalUserId
+	}
+
+	if m.TenantId != nil {
+		// no validation rules for TenantId
+	}
+
+	if m.IdType != nil {
+		// no validation rules for IdType
+	}
+
+	if m.IdValue != nil {
+		// no validation rules for IdValue
+	}
+
+	if m.Confidence != nil {
+		// no validation rules for Confidence
+	}
+
+	if m.LinkSource != nil {
+		// no validation rules for LinkSource
+	}
+
+	if m.FirstSeen != nil {
+
+		if all {
+			switch v := interface{}(m.GetFirstSeen()).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, IDMappingValidationError{
+						field:  "FirstSeen",
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, IDMappingValidationError{
+						field:  "FirstSeen",
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(m.GetFirstSeen()).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return IDMappingValidationError{
+					field:  "FirstSeen",
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
+	if m.LastSeen != nil {
+
+		if all {
+			switch v := interface{}(m.GetLastSeen()).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, IDMappingValidationError{
+						field:  "LastSeen",
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, IDMappingValidationError{
+						field:  "LastSeen",
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(m.GetLastSeen()).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return IDMappingValidationError{
+					field:  "LastSeen",
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
+	if m.IsActive != nil {
+		// no validation rules for IsActive
+	}
 
 	if m.CreatedBy != nil {
 		// no validation rules for CreatedBy
@@ -376,6 +398,8 @@ func (m *ListIDMappingResponse) validate(all bool) error {
 		}
 
 	}
+
+	// no validation rules for Total
 
 	if len(errors) > 0 {
 		return ListIDMappingResponseMultiError(errors)
@@ -1028,3 +1052,107 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = DeleteIDMappingRequestValidationError{}
+
+// Validate checks the field values on CountIDMappingResponse with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *CountIDMappingResponse) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on CountIDMappingResponse with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// CountIDMappingResponseMultiError, or nil if none found.
+func (m *CountIDMappingResponse) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *CountIDMappingResponse) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Count
+
+	if len(errors) > 0 {
+		return CountIDMappingResponseMultiError(errors)
+	}
+
+	return nil
+}
+
+// CountIDMappingResponseMultiError is an error wrapping multiple validation
+// errors returned by CountIDMappingResponse.ValidateAll() if the designated
+// constraints aren't met.
+type CountIDMappingResponseMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m CountIDMappingResponseMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m CountIDMappingResponseMultiError) AllErrors() []error { return m }
+
+// CountIDMappingResponseValidationError is the validation error returned by
+// CountIDMappingResponse.Validate if the designated constraints aren't met.
+type CountIDMappingResponseValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e CountIDMappingResponseValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e CountIDMappingResponseValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e CountIDMappingResponseValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e CountIDMappingResponseValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e CountIDMappingResponseValidationError) ErrorName() string {
+	return "CountIDMappingResponseValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e CountIDMappingResponseValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sCountIDMappingResponse.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = CountIDMappingResponseValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = CountIDMappingResponseValidationError{}

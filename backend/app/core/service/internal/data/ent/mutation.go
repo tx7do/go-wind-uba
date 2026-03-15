@@ -10,6 +10,7 @@ import (
 	permissionpb "go-wind-uba/api/gen/go/permission/service/v1"
 	resourcepb "go-wind-uba/api/gen/go/resource/service/v1"
 	taskpb "go-wind-uba/api/gen/go/task/service/v1"
+	servicev1 "go-wind-uba/api/gen/go/uba/service/v1"
 	"go-wind-uba/app/core/service/internal/data/ent/api"
 	"go-wind-uba/app/core/service/internal/data/ent/apiauditlog"
 	"go-wind-uba/app/core/service/internal/data/ent/application"
@@ -15050,18 +15051,25 @@ type IDMappingMutation struct {
 	id             *uint32
 	tenant_id      *uint32
 	addtenant_id   *int32
+	created_by     *uint32
+	addcreated_by  *int32
+	updated_by     *uint32
+	addupdated_by  *int32
+	deleted_by     *uint32
+	adddeleted_by  *int32
 	created_at     *time.Time
 	updated_at     *time.Time
 	deleted_at     *time.Time
 	global_user_id *string
-	id_type        *string
+	id_type        *idmapping.IDType
 	id_value       *string
-	confidence     *float64
-	addconfidence  *float64
+	confidence     *float32
+	addconfidence  *float32
 	link_source    *string
 	first_seen     *time.Time
 	last_seen      *time.Time
 	is_active      *bool
+	properties     *map[string]string
 	clearedFields  map[string]struct{}
 	done           bool
 	oldValue       func(context.Context) (*IDMapping, error)
@@ -15242,6 +15250,216 @@ func (m *IDMappingMutation) ResetTenantID() {
 	delete(m.clearedFields, idmapping.FieldTenantID)
 }
 
+// SetCreatedBy sets the "created_by" field.
+func (m *IDMappingMutation) SetCreatedBy(u uint32) {
+	m.created_by = &u
+	m.addcreated_by = nil
+}
+
+// CreatedBy returns the value of the "created_by" field in the mutation.
+func (m *IDMappingMutation) CreatedBy() (r uint32, exists bool) {
+	v := m.created_by
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedBy returns the old "created_by" field's value of the IDMapping entity.
+// If the IDMapping object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *IDMappingMutation) OldCreatedBy(ctx context.Context) (v *uint32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedBy is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedBy requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedBy: %w", err)
+	}
+	return oldValue.CreatedBy, nil
+}
+
+// AddCreatedBy adds u to the "created_by" field.
+func (m *IDMappingMutation) AddCreatedBy(u int32) {
+	if m.addcreated_by != nil {
+		*m.addcreated_by += u
+	} else {
+		m.addcreated_by = &u
+	}
+}
+
+// AddedCreatedBy returns the value that was added to the "created_by" field in this mutation.
+func (m *IDMappingMutation) AddedCreatedBy() (r int32, exists bool) {
+	v := m.addcreated_by
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearCreatedBy clears the value of the "created_by" field.
+func (m *IDMappingMutation) ClearCreatedBy() {
+	m.created_by = nil
+	m.addcreated_by = nil
+	m.clearedFields[idmapping.FieldCreatedBy] = struct{}{}
+}
+
+// CreatedByCleared returns if the "created_by" field was cleared in this mutation.
+func (m *IDMappingMutation) CreatedByCleared() bool {
+	_, ok := m.clearedFields[idmapping.FieldCreatedBy]
+	return ok
+}
+
+// ResetCreatedBy resets all changes to the "created_by" field.
+func (m *IDMappingMutation) ResetCreatedBy() {
+	m.created_by = nil
+	m.addcreated_by = nil
+	delete(m.clearedFields, idmapping.FieldCreatedBy)
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (m *IDMappingMutation) SetUpdatedBy(u uint32) {
+	m.updated_by = &u
+	m.addupdated_by = nil
+}
+
+// UpdatedBy returns the value of the "updated_by" field in the mutation.
+func (m *IDMappingMutation) UpdatedBy() (r uint32, exists bool) {
+	v := m.updated_by
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedBy returns the old "updated_by" field's value of the IDMapping entity.
+// If the IDMapping object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *IDMappingMutation) OldUpdatedBy(ctx context.Context) (v *uint32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedBy is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedBy requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedBy: %w", err)
+	}
+	return oldValue.UpdatedBy, nil
+}
+
+// AddUpdatedBy adds u to the "updated_by" field.
+func (m *IDMappingMutation) AddUpdatedBy(u int32) {
+	if m.addupdated_by != nil {
+		*m.addupdated_by += u
+	} else {
+		m.addupdated_by = &u
+	}
+}
+
+// AddedUpdatedBy returns the value that was added to the "updated_by" field in this mutation.
+func (m *IDMappingMutation) AddedUpdatedBy() (r int32, exists bool) {
+	v := m.addupdated_by
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearUpdatedBy clears the value of the "updated_by" field.
+func (m *IDMappingMutation) ClearUpdatedBy() {
+	m.updated_by = nil
+	m.addupdated_by = nil
+	m.clearedFields[idmapping.FieldUpdatedBy] = struct{}{}
+}
+
+// UpdatedByCleared returns if the "updated_by" field was cleared in this mutation.
+func (m *IDMappingMutation) UpdatedByCleared() bool {
+	_, ok := m.clearedFields[idmapping.FieldUpdatedBy]
+	return ok
+}
+
+// ResetUpdatedBy resets all changes to the "updated_by" field.
+func (m *IDMappingMutation) ResetUpdatedBy() {
+	m.updated_by = nil
+	m.addupdated_by = nil
+	delete(m.clearedFields, idmapping.FieldUpdatedBy)
+}
+
+// SetDeletedBy sets the "deleted_by" field.
+func (m *IDMappingMutation) SetDeletedBy(u uint32) {
+	m.deleted_by = &u
+	m.adddeleted_by = nil
+}
+
+// DeletedBy returns the value of the "deleted_by" field in the mutation.
+func (m *IDMappingMutation) DeletedBy() (r uint32, exists bool) {
+	v := m.deleted_by
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDeletedBy returns the old "deleted_by" field's value of the IDMapping entity.
+// If the IDMapping object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *IDMappingMutation) OldDeletedBy(ctx context.Context) (v *uint32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDeletedBy is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDeletedBy requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDeletedBy: %w", err)
+	}
+	return oldValue.DeletedBy, nil
+}
+
+// AddDeletedBy adds u to the "deleted_by" field.
+func (m *IDMappingMutation) AddDeletedBy(u int32) {
+	if m.adddeleted_by != nil {
+		*m.adddeleted_by += u
+	} else {
+		m.adddeleted_by = &u
+	}
+}
+
+// AddedDeletedBy returns the value that was added to the "deleted_by" field in this mutation.
+func (m *IDMappingMutation) AddedDeletedBy() (r int32, exists bool) {
+	v := m.adddeleted_by
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearDeletedBy clears the value of the "deleted_by" field.
+func (m *IDMappingMutation) ClearDeletedBy() {
+	m.deleted_by = nil
+	m.adddeleted_by = nil
+	m.clearedFields[idmapping.FieldDeletedBy] = struct{}{}
+}
+
+// DeletedByCleared returns if the "deleted_by" field was cleared in this mutation.
+func (m *IDMappingMutation) DeletedByCleared() bool {
+	_, ok := m.clearedFields[idmapping.FieldDeletedBy]
+	return ok
+}
+
+// ResetDeletedBy resets all changes to the "deleted_by" field.
+func (m *IDMappingMutation) ResetDeletedBy() {
+	m.deleted_by = nil
+	m.adddeleted_by = nil
+	delete(m.clearedFields, idmapping.FieldDeletedBy)
+}
+
 // SetCreatedAt sets the "created_at" field.
 func (m *IDMappingMutation) SetCreatedAt(t time.Time) {
 	m.created_at = &t
@@ -15406,7 +15624,7 @@ func (m *IDMappingMutation) GlobalUserID() (r string, exists bool) {
 // OldGlobalUserID returns the old "global_user_id" field's value of the IDMapping entity.
 // If the IDMapping object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *IDMappingMutation) OldGlobalUserID(ctx context.Context) (v string, err error) {
+func (m *IDMappingMutation) OldGlobalUserID(ctx context.Context) (v *string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldGlobalUserID is only allowed on UpdateOne operations")
 	}
@@ -15420,18 +15638,31 @@ func (m *IDMappingMutation) OldGlobalUserID(ctx context.Context) (v string, err 
 	return oldValue.GlobalUserID, nil
 }
 
+// ClearGlobalUserID clears the value of the "global_user_id" field.
+func (m *IDMappingMutation) ClearGlobalUserID() {
+	m.global_user_id = nil
+	m.clearedFields[idmapping.FieldGlobalUserID] = struct{}{}
+}
+
+// GlobalUserIDCleared returns if the "global_user_id" field was cleared in this mutation.
+func (m *IDMappingMutation) GlobalUserIDCleared() bool {
+	_, ok := m.clearedFields[idmapping.FieldGlobalUserID]
+	return ok
+}
+
 // ResetGlobalUserID resets all changes to the "global_user_id" field.
 func (m *IDMappingMutation) ResetGlobalUserID() {
 	m.global_user_id = nil
+	delete(m.clearedFields, idmapping.FieldGlobalUserID)
 }
 
 // SetIDType sets the "id_type" field.
-func (m *IDMappingMutation) SetIDType(s string) {
-	m.id_type = &s
+func (m *IDMappingMutation) SetIDType(it idmapping.IDType) {
+	m.id_type = &it
 }
 
 // IDType returns the value of the "id_type" field in the mutation.
-func (m *IDMappingMutation) IDType() (r string, exists bool) {
+func (m *IDMappingMutation) IDType() (r idmapping.IDType, exists bool) {
 	v := m.id_type
 	if v == nil {
 		return
@@ -15442,7 +15673,7 @@ func (m *IDMappingMutation) IDType() (r string, exists bool) {
 // OldIDType returns the old "id_type" field's value of the IDMapping entity.
 // If the IDMapping object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *IDMappingMutation) OldIDType(ctx context.Context) (v string, err error) {
+func (m *IDMappingMutation) OldIDType(ctx context.Context) (v *idmapping.IDType, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldIDType is only allowed on UpdateOne operations")
 	}
@@ -15456,9 +15687,22 @@ func (m *IDMappingMutation) OldIDType(ctx context.Context) (v string, err error)
 	return oldValue.IDType, nil
 }
 
+// ClearIDType clears the value of the "id_type" field.
+func (m *IDMappingMutation) ClearIDType() {
+	m.id_type = nil
+	m.clearedFields[idmapping.FieldIDType] = struct{}{}
+}
+
+// IDTypeCleared returns if the "id_type" field was cleared in this mutation.
+func (m *IDMappingMutation) IDTypeCleared() bool {
+	_, ok := m.clearedFields[idmapping.FieldIDType]
+	return ok
+}
+
 // ResetIDType resets all changes to the "id_type" field.
 func (m *IDMappingMutation) ResetIDType() {
 	m.id_type = nil
+	delete(m.clearedFields, idmapping.FieldIDType)
 }
 
 // SetIDValue sets the "id_value" field.
@@ -15478,7 +15722,7 @@ func (m *IDMappingMutation) IDValue() (r string, exists bool) {
 // OldIDValue returns the old "id_value" field's value of the IDMapping entity.
 // If the IDMapping object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *IDMappingMutation) OldIDValue(ctx context.Context) (v string, err error) {
+func (m *IDMappingMutation) OldIDValue(ctx context.Context) (v *string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldIDValue is only allowed on UpdateOne operations")
 	}
@@ -15492,19 +15736,32 @@ func (m *IDMappingMutation) OldIDValue(ctx context.Context) (v string, err error
 	return oldValue.IDValue, nil
 }
 
+// ClearIDValue clears the value of the "id_value" field.
+func (m *IDMappingMutation) ClearIDValue() {
+	m.id_value = nil
+	m.clearedFields[idmapping.FieldIDValue] = struct{}{}
+}
+
+// IDValueCleared returns if the "id_value" field was cleared in this mutation.
+func (m *IDMappingMutation) IDValueCleared() bool {
+	_, ok := m.clearedFields[idmapping.FieldIDValue]
+	return ok
+}
+
 // ResetIDValue resets all changes to the "id_value" field.
 func (m *IDMappingMutation) ResetIDValue() {
 	m.id_value = nil
+	delete(m.clearedFields, idmapping.FieldIDValue)
 }
 
 // SetConfidence sets the "confidence" field.
-func (m *IDMappingMutation) SetConfidence(f float64) {
+func (m *IDMappingMutation) SetConfidence(f float32) {
 	m.confidence = &f
 	m.addconfidence = nil
 }
 
 // Confidence returns the value of the "confidence" field in the mutation.
-func (m *IDMappingMutation) Confidence() (r float64, exists bool) {
+func (m *IDMappingMutation) Confidence() (r float32, exists bool) {
 	v := m.confidence
 	if v == nil {
 		return
@@ -15515,7 +15772,7 @@ func (m *IDMappingMutation) Confidence() (r float64, exists bool) {
 // OldConfidence returns the old "confidence" field's value of the IDMapping entity.
 // If the IDMapping object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *IDMappingMutation) OldConfidence(ctx context.Context) (v float64, err error) {
+func (m *IDMappingMutation) OldConfidence(ctx context.Context) (v *float32, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldConfidence is only allowed on UpdateOne operations")
 	}
@@ -15530,7 +15787,7 @@ func (m *IDMappingMutation) OldConfidence(ctx context.Context) (v float64, err e
 }
 
 // AddConfidence adds f to the "confidence" field.
-func (m *IDMappingMutation) AddConfidence(f float64) {
+func (m *IDMappingMutation) AddConfidence(f float32) {
 	if m.addconfidence != nil {
 		*m.addconfidence += f
 	} else {
@@ -15539,7 +15796,7 @@ func (m *IDMappingMutation) AddConfidence(f float64) {
 }
 
 // AddedConfidence returns the value that was added to the "confidence" field in this mutation.
-func (m *IDMappingMutation) AddedConfidence() (r float64, exists bool) {
+func (m *IDMappingMutation) AddedConfidence() (r float32, exists bool) {
 	v := m.addconfidence
 	if v == nil {
 		return
@@ -15547,10 +15804,24 @@ func (m *IDMappingMutation) AddedConfidence() (r float64, exists bool) {
 	return *v, true
 }
 
+// ClearConfidence clears the value of the "confidence" field.
+func (m *IDMappingMutation) ClearConfidence() {
+	m.confidence = nil
+	m.addconfidence = nil
+	m.clearedFields[idmapping.FieldConfidence] = struct{}{}
+}
+
+// ConfidenceCleared returns if the "confidence" field was cleared in this mutation.
+func (m *IDMappingMutation) ConfidenceCleared() bool {
+	_, ok := m.clearedFields[idmapping.FieldConfidence]
+	return ok
+}
+
 // ResetConfidence resets all changes to the "confidence" field.
 func (m *IDMappingMutation) ResetConfidence() {
 	m.confidence = nil
 	m.addconfidence = nil
+	delete(m.clearedFields, idmapping.FieldConfidence)
 }
 
 // SetLinkSource sets the "link_source" field.
@@ -15570,7 +15841,7 @@ func (m *IDMappingMutation) LinkSource() (r string, exists bool) {
 // OldLinkSource returns the old "link_source" field's value of the IDMapping entity.
 // If the IDMapping object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *IDMappingMutation) OldLinkSource(ctx context.Context) (v string, err error) {
+func (m *IDMappingMutation) OldLinkSource(ctx context.Context) (v *string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldLinkSource is only allowed on UpdateOne operations")
 	}
@@ -15584,9 +15855,22 @@ func (m *IDMappingMutation) OldLinkSource(ctx context.Context) (v string, err er
 	return oldValue.LinkSource, nil
 }
 
+// ClearLinkSource clears the value of the "link_source" field.
+func (m *IDMappingMutation) ClearLinkSource() {
+	m.link_source = nil
+	m.clearedFields[idmapping.FieldLinkSource] = struct{}{}
+}
+
+// LinkSourceCleared returns if the "link_source" field was cleared in this mutation.
+func (m *IDMappingMutation) LinkSourceCleared() bool {
+	_, ok := m.clearedFields[idmapping.FieldLinkSource]
+	return ok
+}
+
 // ResetLinkSource resets all changes to the "link_source" field.
 func (m *IDMappingMutation) ResetLinkSource() {
 	m.link_source = nil
+	delete(m.clearedFields, idmapping.FieldLinkSource)
 }
 
 // SetFirstSeen sets the "first_seen" field.
@@ -15704,7 +15988,7 @@ func (m *IDMappingMutation) IsActive() (r bool, exists bool) {
 // OldIsActive returns the old "is_active" field's value of the IDMapping entity.
 // If the IDMapping object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *IDMappingMutation) OldIsActive(ctx context.Context) (v bool, err error) {
+func (m *IDMappingMutation) OldIsActive(ctx context.Context) (v *bool, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldIsActive is only allowed on UpdateOne operations")
 	}
@@ -15718,9 +16002,71 @@ func (m *IDMappingMutation) OldIsActive(ctx context.Context) (v bool, err error)
 	return oldValue.IsActive, nil
 }
 
+// ClearIsActive clears the value of the "is_active" field.
+func (m *IDMappingMutation) ClearIsActive() {
+	m.is_active = nil
+	m.clearedFields[idmapping.FieldIsActive] = struct{}{}
+}
+
+// IsActiveCleared returns if the "is_active" field was cleared in this mutation.
+func (m *IDMappingMutation) IsActiveCleared() bool {
+	_, ok := m.clearedFields[idmapping.FieldIsActive]
+	return ok
+}
+
 // ResetIsActive resets all changes to the "is_active" field.
 func (m *IDMappingMutation) ResetIsActive() {
 	m.is_active = nil
+	delete(m.clearedFields, idmapping.FieldIsActive)
+}
+
+// SetProperties sets the "properties" field.
+func (m *IDMappingMutation) SetProperties(value map[string]string) {
+	m.properties = &value
+}
+
+// Properties returns the value of the "properties" field in the mutation.
+func (m *IDMappingMutation) Properties() (r map[string]string, exists bool) {
+	v := m.properties
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldProperties returns the old "properties" field's value of the IDMapping entity.
+// If the IDMapping object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *IDMappingMutation) OldProperties(ctx context.Context) (v map[string]string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldProperties is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldProperties requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldProperties: %w", err)
+	}
+	return oldValue.Properties, nil
+}
+
+// ClearProperties clears the value of the "properties" field.
+func (m *IDMappingMutation) ClearProperties() {
+	m.properties = nil
+	m.clearedFields[idmapping.FieldProperties] = struct{}{}
+}
+
+// PropertiesCleared returns if the "properties" field was cleared in this mutation.
+func (m *IDMappingMutation) PropertiesCleared() bool {
+	_, ok := m.clearedFields[idmapping.FieldProperties]
+	return ok
+}
+
+// ResetProperties resets all changes to the "properties" field.
+func (m *IDMappingMutation) ResetProperties() {
+	m.properties = nil
+	delete(m.clearedFields, idmapping.FieldProperties)
 }
 
 // Where appends a list predicates to the IDMappingMutation builder.
@@ -15757,9 +16103,18 @@ func (m *IDMappingMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *IDMappingMutation) Fields() []string {
-	fields := make([]string, 0, 12)
+	fields := make([]string, 0, 16)
 	if m.tenant_id != nil {
 		fields = append(fields, idmapping.FieldTenantID)
+	}
+	if m.created_by != nil {
+		fields = append(fields, idmapping.FieldCreatedBy)
+	}
+	if m.updated_by != nil {
+		fields = append(fields, idmapping.FieldUpdatedBy)
+	}
+	if m.deleted_by != nil {
+		fields = append(fields, idmapping.FieldDeletedBy)
 	}
 	if m.created_at != nil {
 		fields = append(fields, idmapping.FieldCreatedAt)
@@ -15794,6 +16149,9 @@ func (m *IDMappingMutation) Fields() []string {
 	if m.is_active != nil {
 		fields = append(fields, idmapping.FieldIsActive)
 	}
+	if m.properties != nil {
+		fields = append(fields, idmapping.FieldProperties)
+	}
 	return fields
 }
 
@@ -15804,6 +16162,12 @@ func (m *IDMappingMutation) Field(name string) (ent.Value, bool) {
 	switch name {
 	case idmapping.FieldTenantID:
 		return m.TenantID()
+	case idmapping.FieldCreatedBy:
+		return m.CreatedBy()
+	case idmapping.FieldUpdatedBy:
+		return m.UpdatedBy()
+	case idmapping.FieldDeletedBy:
+		return m.DeletedBy()
 	case idmapping.FieldCreatedAt:
 		return m.CreatedAt()
 	case idmapping.FieldUpdatedAt:
@@ -15826,6 +16190,8 @@ func (m *IDMappingMutation) Field(name string) (ent.Value, bool) {
 		return m.LastSeen()
 	case idmapping.FieldIsActive:
 		return m.IsActive()
+	case idmapping.FieldProperties:
+		return m.Properties()
 	}
 	return nil, false
 }
@@ -15837,6 +16203,12 @@ func (m *IDMappingMutation) OldField(ctx context.Context, name string) (ent.Valu
 	switch name {
 	case idmapping.FieldTenantID:
 		return m.OldTenantID(ctx)
+	case idmapping.FieldCreatedBy:
+		return m.OldCreatedBy(ctx)
+	case idmapping.FieldUpdatedBy:
+		return m.OldUpdatedBy(ctx)
+	case idmapping.FieldDeletedBy:
+		return m.OldDeletedBy(ctx)
 	case idmapping.FieldCreatedAt:
 		return m.OldCreatedAt(ctx)
 	case idmapping.FieldUpdatedAt:
@@ -15859,6 +16231,8 @@ func (m *IDMappingMutation) OldField(ctx context.Context, name string) (ent.Valu
 		return m.OldLastSeen(ctx)
 	case idmapping.FieldIsActive:
 		return m.OldIsActive(ctx)
+	case idmapping.FieldProperties:
+		return m.OldProperties(ctx)
 	}
 	return nil, fmt.Errorf("unknown IDMapping field %s", name)
 }
@@ -15874,6 +16248,27 @@ func (m *IDMappingMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetTenantID(v)
+		return nil
+	case idmapping.FieldCreatedBy:
+		v, ok := value.(uint32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedBy(v)
+		return nil
+	case idmapping.FieldUpdatedBy:
+		v, ok := value.(uint32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedBy(v)
+		return nil
+	case idmapping.FieldDeletedBy:
+		v, ok := value.(uint32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDeletedBy(v)
 		return nil
 	case idmapping.FieldCreatedAt:
 		v, ok := value.(time.Time)
@@ -15904,7 +16299,7 @@ func (m *IDMappingMutation) SetField(name string, value ent.Value) error {
 		m.SetGlobalUserID(v)
 		return nil
 	case idmapping.FieldIDType:
-		v, ok := value.(string)
+		v, ok := value.(idmapping.IDType)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -15918,7 +16313,7 @@ func (m *IDMappingMutation) SetField(name string, value ent.Value) error {
 		m.SetIDValue(v)
 		return nil
 	case idmapping.FieldConfidence:
-		v, ok := value.(float64)
+		v, ok := value.(float32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -15952,6 +16347,13 @@ func (m *IDMappingMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetIsActive(v)
 		return nil
+	case idmapping.FieldProperties:
+		v, ok := value.(map[string]string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetProperties(v)
+		return nil
 	}
 	return fmt.Errorf("unknown IDMapping field %s", name)
 }
@@ -15962,6 +16364,15 @@ func (m *IDMappingMutation) AddedFields() []string {
 	var fields []string
 	if m.addtenant_id != nil {
 		fields = append(fields, idmapping.FieldTenantID)
+	}
+	if m.addcreated_by != nil {
+		fields = append(fields, idmapping.FieldCreatedBy)
+	}
+	if m.addupdated_by != nil {
+		fields = append(fields, idmapping.FieldUpdatedBy)
+	}
+	if m.adddeleted_by != nil {
+		fields = append(fields, idmapping.FieldDeletedBy)
 	}
 	if m.addconfidence != nil {
 		fields = append(fields, idmapping.FieldConfidence)
@@ -15976,6 +16387,12 @@ func (m *IDMappingMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
 	case idmapping.FieldTenantID:
 		return m.AddedTenantID()
+	case idmapping.FieldCreatedBy:
+		return m.AddedCreatedBy()
+	case idmapping.FieldUpdatedBy:
+		return m.AddedUpdatedBy()
+	case idmapping.FieldDeletedBy:
+		return m.AddedDeletedBy()
 	case idmapping.FieldConfidence:
 		return m.AddedConfidence()
 	}
@@ -15994,8 +16411,29 @@ func (m *IDMappingMutation) AddField(name string, value ent.Value) error {
 		}
 		m.AddTenantID(v)
 		return nil
+	case idmapping.FieldCreatedBy:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddCreatedBy(v)
+		return nil
+	case idmapping.FieldUpdatedBy:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddUpdatedBy(v)
+		return nil
+	case idmapping.FieldDeletedBy:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddDeletedBy(v)
+		return nil
 	case idmapping.FieldConfidence:
-		v, ok := value.(float64)
+		v, ok := value.(float32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -16012,6 +16450,15 @@ func (m *IDMappingMutation) ClearedFields() []string {
 	if m.FieldCleared(idmapping.FieldTenantID) {
 		fields = append(fields, idmapping.FieldTenantID)
 	}
+	if m.FieldCleared(idmapping.FieldCreatedBy) {
+		fields = append(fields, idmapping.FieldCreatedBy)
+	}
+	if m.FieldCleared(idmapping.FieldUpdatedBy) {
+		fields = append(fields, idmapping.FieldUpdatedBy)
+	}
+	if m.FieldCleared(idmapping.FieldDeletedBy) {
+		fields = append(fields, idmapping.FieldDeletedBy)
+	}
 	if m.FieldCleared(idmapping.FieldCreatedAt) {
 		fields = append(fields, idmapping.FieldCreatedAt)
 	}
@@ -16021,11 +16468,32 @@ func (m *IDMappingMutation) ClearedFields() []string {
 	if m.FieldCleared(idmapping.FieldDeletedAt) {
 		fields = append(fields, idmapping.FieldDeletedAt)
 	}
+	if m.FieldCleared(idmapping.FieldGlobalUserID) {
+		fields = append(fields, idmapping.FieldGlobalUserID)
+	}
+	if m.FieldCleared(idmapping.FieldIDType) {
+		fields = append(fields, idmapping.FieldIDType)
+	}
+	if m.FieldCleared(idmapping.FieldIDValue) {
+		fields = append(fields, idmapping.FieldIDValue)
+	}
+	if m.FieldCleared(idmapping.FieldConfidence) {
+		fields = append(fields, idmapping.FieldConfidence)
+	}
+	if m.FieldCleared(idmapping.FieldLinkSource) {
+		fields = append(fields, idmapping.FieldLinkSource)
+	}
 	if m.FieldCleared(idmapping.FieldFirstSeen) {
 		fields = append(fields, idmapping.FieldFirstSeen)
 	}
 	if m.FieldCleared(idmapping.FieldLastSeen) {
 		fields = append(fields, idmapping.FieldLastSeen)
+	}
+	if m.FieldCleared(idmapping.FieldIsActive) {
+		fields = append(fields, idmapping.FieldIsActive)
+	}
+	if m.FieldCleared(idmapping.FieldProperties) {
+		fields = append(fields, idmapping.FieldProperties)
 	}
 	return fields
 }
@@ -16044,6 +16512,15 @@ func (m *IDMappingMutation) ClearField(name string) error {
 	case idmapping.FieldTenantID:
 		m.ClearTenantID()
 		return nil
+	case idmapping.FieldCreatedBy:
+		m.ClearCreatedBy()
+		return nil
+	case idmapping.FieldUpdatedBy:
+		m.ClearUpdatedBy()
+		return nil
+	case idmapping.FieldDeletedBy:
+		m.ClearDeletedBy()
+		return nil
 	case idmapping.FieldCreatedAt:
 		m.ClearCreatedAt()
 		return nil
@@ -16053,11 +16530,32 @@ func (m *IDMappingMutation) ClearField(name string) error {
 	case idmapping.FieldDeletedAt:
 		m.ClearDeletedAt()
 		return nil
+	case idmapping.FieldGlobalUserID:
+		m.ClearGlobalUserID()
+		return nil
+	case idmapping.FieldIDType:
+		m.ClearIDType()
+		return nil
+	case idmapping.FieldIDValue:
+		m.ClearIDValue()
+		return nil
+	case idmapping.FieldConfidence:
+		m.ClearConfidence()
+		return nil
+	case idmapping.FieldLinkSource:
+		m.ClearLinkSource()
+		return nil
 	case idmapping.FieldFirstSeen:
 		m.ClearFirstSeen()
 		return nil
 	case idmapping.FieldLastSeen:
 		m.ClearLastSeen()
+		return nil
+	case idmapping.FieldIsActive:
+		m.ClearIsActive()
+		return nil
+	case idmapping.FieldProperties:
+		m.ClearProperties()
 		return nil
 	}
 	return fmt.Errorf("unknown IDMapping nullable field %s", name)
@@ -16069,6 +16567,15 @@ func (m *IDMappingMutation) ResetField(name string) error {
 	switch name {
 	case idmapping.FieldTenantID:
 		m.ResetTenantID()
+		return nil
+	case idmapping.FieldCreatedBy:
+		m.ResetCreatedBy()
+		return nil
+	case idmapping.FieldUpdatedBy:
+		m.ResetUpdatedBy()
+		return nil
+	case idmapping.FieldDeletedBy:
+		m.ResetDeletedBy()
 		return nil
 	case idmapping.FieldCreatedAt:
 		m.ResetCreatedAt()
@@ -16102,6 +16609,9 @@ func (m *IDMappingMutation) ResetField(name string) error {
 		return nil
 	case idmapping.FieldIsActive:
 		m.ResetIsActive()
+		return nil
+	case idmapping.FieldProperties:
+		m.ResetProperties()
 		return nil
 	}
 	return fmt.Errorf("unknown IDMapping field %s", name)
@@ -42070,8 +42580,8 @@ type RiskRuleMutation struct {
 	risk_type         *riskrule.RiskType
 	default_level     *riskrule.DefaultLevel
 	condition         *map[string]interface{}
-	actions           *[]map[string]interface{}
-	appendactions     []map[string]interface{}
+	actions           *[]*servicev1.RiskAction
+	appendactions     []*servicev1.RiskAction
 	enabled           *bool
 	priority          *uint32
 	addpriority       *int32
@@ -42865,13 +43375,13 @@ func (m *RiskRuleMutation) ResetCondition() {
 }
 
 // SetActions sets the "actions" field.
-func (m *RiskRuleMutation) SetActions(value []map[string]interface{}) {
-	m.actions = &value
+func (m *RiskRuleMutation) SetActions(sa []*servicev1.RiskAction) {
+	m.actions = &sa
 	m.appendactions = nil
 }
 
 // Actions returns the value of the "actions" field in the mutation.
-func (m *RiskRuleMutation) Actions() (r []map[string]interface{}, exists bool) {
+func (m *RiskRuleMutation) Actions() (r []*servicev1.RiskAction, exists bool) {
 	v := m.actions
 	if v == nil {
 		return
@@ -42882,7 +43392,7 @@ func (m *RiskRuleMutation) Actions() (r []map[string]interface{}, exists bool) {
 // OldActions returns the old "actions" field's value of the RiskRule entity.
 // If the RiskRule object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *RiskRuleMutation) OldActions(ctx context.Context) (v []map[string]interface{}, err error) {
+func (m *RiskRuleMutation) OldActions(ctx context.Context) (v []*servicev1.RiskAction, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldActions is only allowed on UpdateOne operations")
 	}
@@ -42896,13 +43406,13 @@ func (m *RiskRuleMutation) OldActions(ctx context.Context) (v []map[string]inter
 	return oldValue.Actions, nil
 }
 
-// AppendActions adds value to the "actions" field.
-func (m *RiskRuleMutation) AppendActions(value []map[string]interface{}) {
-	m.appendactions = append(m.appendactions, value...)
+// AppendActions adds sa to the "actions" field.
+func (m *RiskRuleMutation) AppendActions(sa []*servicev1.RiskAction) {
+	m.appendactions = append(m.appendactions, sa...)
 }
 
 // AppendedActions returns the list of values that were appended to the "actions" field in this mutation.
-func (m *RiskRuleMutation) AppendedActions() ([]map[string]interface{}, bool) {
+func (m *RiskRuleMutation) AppendedActions() ([]*servicev1.RiskAction, bool) {
 	if len(m.appendactions) == 0 {
 		return nil, false
 	}
@@ -43656,7 +44166,7 @@ func (m *RiskRuleMutation) SetField(name string, value ent.Value) error {
 		m.SetCondition(v)
 		return nil
 	case riskrule.FieldActions:
-		v, ok := value.([]map[string]interface{})
+		v, ok := value.([]*servicev1.RiskAction)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -51906,9 +52416,9 @@ type TagDefinitionMutation struct {
 	description                 *string
 	category                    *tagdefinition.Category
 	tag_type                    *tagdefinition.TagType
-	rule                        *map[string]interface{}
-	allowed_values              *[]map[string]interface{}
-	appendallowed_values        []map[string]interface{}
+	rule                        **servicev1.TagRule
+	allowed_values              *[]*servicev1.TagValue
+	appendallowed_values        []*servicev1.TagValue
 	is_system                   *bool
 	is_dynamic                  *bool
 	refresh_interval_seconds    *uint32
@@ -52648,12 +53158,12 @@ func (m *TagDefinitionMutation) ResetTagType() {
 }
 
 // SetRule sets the "rule" field.
-func (m *TagDefinitionMutation) SetRule(value map[string]interface{}) {
-	m.rule = &value
+func (m *TagDefinitionMutation) SetRule(sr *servicev1.TagRule) {
+	m.rule = &sr
 }
 
 // Rule returns the value of the "rule" field in the mutation.
-func (m *TagDefinitionMutation) Rule() (r map[string]interface{}, exists bool) {
+func (m *TagDefinitionMutation) Rule() (r *servicev1.TagRule, exists bool) {
 	v := m.rule
 	if v == nil {
 		return
@@ -52664,7 +53174,7 @@ func (m *TagDefinitionMutation) Rule() (r map[string]interface{}, exists bool) {
 // OldRule returns the old "rule" field's value of the TagDefinition entity.
 // If the TagDefinition object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TagDefinitionMutation) OldRule(ctx context.Context) (v map[string]interface{}, err error) {
+func (m *TagDefinitionMutation) OldRule(ctx context.Context) (v *servicev1.TagRule, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldRule is only allowed on UpdateOne operations")
 	}
@@ -52697,13 +53207,13 @@ func (m *TagDefinitionMutation) ResetRule() {
 }
 
 // SetAllowedValues sets the "allowed_values" field.
-func (m *TagDefinitionMutation) SetAllowedValues(value []map[string]interface{}) {
-	m.allowed_values = &value
+func (m *TagDefinitionMutation) SetAllowedValues(sv []*servicev1.TagValue) {
+	m.allowed_values = &sv
 	m.appendallowed_values = nil
 }
 
 // AllowedValues returns the value of the "allowed_values" field in the mutation.
-func (m *TagDefinitionMutation) AllowedValues() (r []map[string]interface{}, exists bool) {
+func (m *TagDefinitionMutation) AllowedValues() (r []*servicev1.TagValue, exists bool) {
 	v := m.allowed_values
 	if v == nil {
 		return
@@ -52714,7 +53224,7 @@ func (m *TagDefinitionMutation) AllowedValues() (r []map[string]interface{}, exi
 // OldAllowedValues returns the old "allowed_values" field's value of the TagDefinition entity.
 // If the TagDefinition object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TagDefinitionMutation) OldAllowedValues(ctx context.Context) (v []map[string]interface{}, err error) {
+func (m *TagDefinitionMutation) OldAllowedValues(ctx context.Context) (v []*servicev1.TagValue, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldAllowedValues is only allowed on UpdateOne operations")
 	}
@@ -52728,13 +53238,13 @@ func (m *TagDefinitionMutation) OldAllowedValues(ctx context.Context) (v []map[s
 	return oldValue.AllowedValues, nil
 }
 
-// AppendAllowedValues adds value to the "allowed_values" field.
-func (m *TagDefinitionMutation) AppendAllowedValues(value []map[string]interface{}) {
-	m.appendallowed_values = append(m.appendallowed_values, value...)
+// AppendAllowedValues adds sv to the "allowed_values" field.
+func (m *TagDefinitionMutation) AppendAllowedValues(sv []*servicev1.TagValue) {
+	m.appendallowed_values = append(m.appendallowed_values, sv...)
 }
 
 // AppendedAllowedValues returns the list of values that were appended to the "allowed_values" field in this mutation.
-func (m *TagDefinitionMutation) AppendedAllowedValues() ([]map[string]interface{}, bool) {
+func (m *TagDefinitionMutation) AppendedAllowedValues() ([]*servicev1.TagValue, bool) {
 	if len(m.appendallowed_values) == 0 {
 		return nil, false
 	}
@@ -53236,14 +53746,14 @@ func (m *TagDefinitionMutation) SetField(name string, value ent.Value) error {
 		m.SetTagType(v)
 		return nil
 	case tagdefinition.FieldRule:
-		v, ok := value.(map[string]interface{})
+		v, ok := value.(*servicev1.TagRule)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetRule(v)
 		return nil
 	case tagdefinition.FieldAllowedValues:
-		v, ok := value.([]map[string]interface{})
+		v, ok := value.([]*servicev1.TagValue)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -66929,11 +67439,11 @@ type UserTagMutation struct {
 	adduser_id        *int32
 	tag_id            *uint32
 	addtag_id         *int32
-	tag_value         *string
+	value             *string
 	value_label       *string
 	confidence        *float64
 	addconfidence     *float64
-	source            *string
+	source            *usertag.Source
 	source_rule_id    *uint32
 	addsource_rule_id *int32
 	effective_time    *time.Time
@@ -67616,40 +68126,53 @@ func (m *UserTagMutation) ResetTagID() {
 	delete(m.clearedFields, usertag.FieldTagID)
 }
 
-// SetTagValue sets the "tag_value" field.
-func (m *UserTagMutation) SetTagValue(s string) {
-	m.tag_value = &s
+// SetValue sets the "value" field.
+func (m *UserTagMutation) SetValue(s string) {
+	m.value = &s
 }
 
-// TagValue returns the value of the "tag_value" field in the mutation.
-func (m *UserTagMutation) TagValue() (r string, exists bool) {
-	v := m.tag_value
+// Value returns the value of the "value" field in the mutation.
+func (m *UserTagMutation) Value() (r string, exists bool) {
+	v := m.value
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldTagValue returns the old "tag_value" field's value of the UserTag entity.
+// OldValue returns the old "value" field's value of the UserTag entity.
 // If the UserTag object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *UserTagMutation) OldTagValue(ctx context.Context) (v string, err error) {
+func (m *UserTagMutation) OldValue(ctx context.Context) (v *string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldTagValue is only allowed on UpdateOne operations")
+		return v, errors.New("OldValue is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldTagValue requires an ID field in the mutation")
+		return v, errors.New("OldValue requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldTagValue: %w", err)
+		return v, fmt.Errorf("querying old value for OldValue: %w", err)
 	}
-	return oldValue.TagValue, nil
+	return oldValue.Value, nil
 }
 
-// ResetTagValue resets all changes to the "tag_value" field.
-func (m *UserTagMutation) ResetTagValue() {
-	m.tag_value = nil
+// ClearValue clears the value of the "value" field.
+func (m *UserTagMutation) ClearValue() {
+	m.value = nil
+	m.clearedFields[usertag.FieldValue] = struct{}{}
+}
+
+// ValueCleared returns if the "value" field was cleared in this mutation.
+func (m *UserTagMutation) ValueCleared() bool {
+	_, ok := m.clearedFields[usertag.FieldValue]
+	return ok
+}
+
+// ResetValue resets all changes to the "value" field.
+func (m *UserTagMutation) ResetValue() {
+	m.value = nil
+	delete(m.clearedFields, usertag.FieldValue)
 }
 
 // SetValueLabel sets the "value_label" field.
@@ -67719,7 +68242,7 @@ func (m *UserTagMutation) Confidence() (r float64, exists bool) {
 // OldConfidence returns the old "confidence" field's value of the UserTag entity.
 // If the UserTag object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *UserTagMutation) OldConfidence(ctx context.Context) (v float64, err error) {
+func (m *UserTagMutation) OldConfidence(ctx context.Context) (v *float64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldConfidence is only allowed on UpdateOne operations")
 	}
@@ -67751,19 +68274,33 @@ func (m *UserTagMutation) AddedConfidence() (r float64, exists bool) {
 	return *v, true
 }
 
+// ClearConfidence clears the value of the "confidence" field.
+func (m *UserTagMutation) ClearConfidence() {
+	m.confidence = nil
+	m.addconfidence = nil
+	m.clearedFields[usertag.FieldConfidence] = struct{}{}
+}
+
+// ConfidenceCleared returns if the "confidence" field was cleared in this mutation.
+func (m *UserTagMutation) ConfidenceCleared() bool {
+	_, ok := m.clearedFields[usertag.FieldConfidence]
+	return ok
+}
+
 // ResetConfidence resets all changes to the "confidence" field.
 func (m *UserTagMutation) ResetConfidence() {
 	m.confidence = nil
 	m.addconfidence = nil
+	delete(m.clearedFields, usertag.FieldConfidence)
 }
 
 // SetSource sets the "source" field.
-func (m *UserTagMutation) SetSource(s string) {
-	m.source = &s
+func (m *UserTagMutation) SetSource(u usertag.Source) {
+	m.source = &u
 }
 
 // Source returns the value of the "source" field in the mutation.
-func (m *UserTagMutation) Source() (r string, exists bool) {
+func (m *UserTagMutation) Source() (r usertag.Source, exists bool) {
 	v := m.source
 	if v == nil {
 		return
@@ -67774,7 +68311,7 @@ func (m *UserTagMutation) Source() (r string, exists bool) {
 // OldSource returns the old "source" field's value of the UserTag entity.
 // If the UserTag object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *UserTagMutation) OldSource(ctx context.Context) (v string, err error) {
+func (m *UserTagMutation) OldSource(ctx context.Context) (v *usertag.Source, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldSource is only allowed on UpdateOne operations")
 	}
@@ -67788,9 +68325,22 @@ func (m *UserTagMutation) OldSource(ctx context.Context) (v string, err error) {
 	return oldValue.Source, nil
 }
 
+// ClearSource clears the value of the "source" field.
+func (m *UserTagMutation) ClearSource() {
+	m.source = nil
+	m.clearedFields[usertag.FieldSource] = struct{}{}
+}
+
+// SourceCleared returns if the "source" field was cleared in this mutation.
+func (m *UserTagMutation) SourceCleared() bool {
+	_, ok := m.clearedFields[usertag.FieldSource]
+	return ok
+}
+
 // ResetSource resets all changes to the "source" field.
 func (m *UserTagMutation) ResetSource() {
 	m.source = nil
+	delete(m.clearedFields, usertag.FieldSource)
 }
 
 // SetSourceRuleID sets the "source_rule_id" field.
@@ -67978,7 +68528,7 @@ func (m *UserTagMutation) IsActive() (r bool, exists bool) {
 // OldIsActive returns the old "is_active" field's value of the UserTag entity.
 // If the UserTag object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *UserTagMutation) OldIsActive(ctx context.Context) (v bool, err error) {
+func (m *UserTagMutation) OldIsActive(ctx context.Context) (v *bool, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldIsActive is only allowed on UpdateOne operations")
 	}
@@ -67992,9 +68542,22 @@ func (m *UserTagMutation) OldIsActive(ctx context.Context) (v bool, err error) {
 	return oldValue.IsActive, nil
 }
 
+// ClearIsActive clears the value of the "is_active" field.
+func (m *UserTagMutation) ClearIsActive() {
+	m.is_active = nil
+	m.clearedFields[usertag.FieldIsActive] = struct{}{}
+}
+
+// IsActiveCleared returns if the "is_active" field was cleared in this mutation.
+func (m *UserTagMutation) IsActiveCleared() bool {
+	_, ok := m.clearedFields[usertag.FieldIsActive]
+	return ok
+}
+
 // ResetIsActive resets all changes to the "is_active" field.
 func (m *UserTagMutation) ResetIsActive() {
 	m.is_active = nil
+	delete(m.clearedFields, usertag.FieldIsActive)
 }
 
 // Where appends a list predicates to the UserTagMutation builder.
@@ -68059,8 +68622,8 @@ func (m *UserTagMutation) Fields() []string {
 	if m.tag_id != nil {
 		fields = append(fields, usertag.FieldTagID)
 	}
-	if m.tag_value != nil {
-		fields = append(fields, usertag.FieldTagValue)
+	if m.value != nil {
+		fields = append(fields, usertag.FieldValue)
 	}
 	if m.value_label != nil {
 		fields = append(fields, usertag.FieldValueLabel)
@@ -68109,8 +68672,8 @@ func (m *UserTagMutation) Field(name string) (ent.Value, bool) {
 		return m.UserID()
 	case usertag.FieldTagID:
 		return m.TagID()
-	case usertag.FieldTagValue:
-		return m.TagValue()
+	case usertag.FieldValue:
+		return m.Value()
 	case usertag.FieldValueLabel:
 		return m.ValueLabel()
 	case usertag.FieldConfidence:
@@ -68152,8 +68715,8 @@ func (m *UserTagMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldUserID(ctx)
 	case usertag.FieldTagID:
 		return m.OldTagID(ctx)
-	case usertag.FieldTagValue:
-		return m.OldTagValue(ctx)
+	case usertag.FieldValue:
+		return m.OldValue(ctx)
 	case usertag.FieldValueLabel:
 		return m.OldValueLabel(ctx)
 	case usertag.FieldConfidence:
@@ -68240,12 +68803,12 @@ func (m *UserTagMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetTagID(v)
 		return nil
-	case usertag.FieldTagValue:
+	case usertag.FieldValue:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetTagValue(v)
+		m.SetValue(v)
 		return nil
 	case usertag.FieldValueLabel:
 		v, ok := value.(string)
@@ -68262,7 +68825,7 @@ func (m *UserTagMutation) SetField(name string, value ent.Value) error {
 		m.SetConfidence(v)
 		return nil
 	case usertag.FieldSource:
-		v, ok := value.(string)
+		v, ok := value.(usertag.Source)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -68452,8 +69015,17 @@ func (m *UserTagMutation) ClearedFields() []string {
 	if m.FieldCleared(usertag.FieldTagID) {
 		fields = append(fields, usertag.FieldTagID)
 	}
+	if m.FieldCleared(usertag.FieldValue) {
+		fields = append(fields, usertag.FieldValue)
+	}
 	if m.FieldCleared(usertag.FieldValueLabel) {
 		fields = append(fields, usertag.FieldValueLabel)
+	}
+	if m.FieldCleared(usertag.FieldConfidence) {
+		fields = append(fields, usertag.FieldConfidence)
+	}
+	if m.FieldCleared(usertag.FieldSource) {
+		fields = append(fields, usertag.FieldSource)
 	}
 	if m.FieldCleared(usertag.FieldSourceRuleID) {
 		fields = append(fields, usertag.FieldSourceRuleID)
@@ -68463,6 +69035,9 @@ func (m *UserTagMutation) ClearedFields() []string {
 	}
 	if m.FieldCleared(usertag.FieldExpireTime) {
 		fields = append(fields, usertag.FieldExpireTime)
+	}
+	if m.FieldCleared(usertag.FieldIsActive) {
+		fields = append(fields, usertag.FieldIsActive)
 	}
 	return fields
 }
@@ -68505,8 +69080,17 @@ func (m *UserTagMutation) ClearField(name string) error {
 	case usertag.FieldTagID:
 		m.ClearTagID()
 		return nil
+	case usertag.FieldValue:
+		m.ClearValue()
+		return nil
 	case usertag.FieldValueLabel:
 		m.ClearValueLabel()
+		return nil
+	case usertag.FieldConfidence:
+		m.ClearConfidence()
+		return nil
+	case usertag.FieldSource:
+		m.ClearSource()
 		return nil
 	case usertag.FieldSourceRuleID:
 		m.ClearSourceRuleID()
@@ -68516,6 +69100,9 @@ func (m *UserTagMutation) ClearField(name string) error {
 		return nil
 	case usertag.FieldExpireTime:
 		m.ClearExpireTime()
+		return nil
+	case usertag.FieldIsActive:
+		m.ClearIsActive()
 		return nil
 	}
 	return fmt.Errorf("unknown UserTag nullable field %s", name)
@@ -68552,8 +69139,8 @@ func (m *UserTagMutation) ResetField(name string) error {
 	case usertag.FieldTagID:
 		m.ResetTagID()
 		return nil
-	case usertag.FieldTagValue:
-		m.ResetTagValue()
+	case usertag.FieldValue:
+		m.ResetValue()
 		return nil
 	case usertag.FieldValueLabel:
 		m.ResetValueLabel()
@@ -68650,11 +69237,13 @@ type WebhookMutation struct {
 	secret            *string
 	event_types       *[]string
 	appendevent_types []string
-	filters           *map[string]interface{}
+	filter            **servicev1.WebhookFilter
 	enabled           *bool
 	last_triggered_at *time.Time
-	failure_count     *int
-	addfailure_count  *int
+	failure_count     *uint32
+	addfailure_count  *int32
+	app_id            *uint32
+	addapp_id         *int32
 	clearedFields     map[string]struct{}
 	done              bool
 	oldValue          func(context.Context) (*Webhook, error)
@@ -69209,7 +69798,7 @@ func (m *WebhookMutation) Name() (r string, exists bool) {
 // OldName returns the old "name" field's value of the Webhook entity.
 // If the Webhook object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *WebhookMutation) OldName(ctx context.Context) (v string, err error) {
+func (m *WebhookMutation) OldName(ctx context.Context) (v *string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldName is only allowed on UpdateOne operations")
 	}
@@ -69223,9 +69812,22 @@ func (m *WebhookMutation) OldName(ctx context.Context) (v string, err error) {
 	return oldValue.Name, nil
 }
 
+// ClearName clears the value of the "name" field.
+func (m *WebhookMutation) ClearName() {
+	m.name = nil
+	m.clearedFields[webhook.FieldName] = struct{}{}
+}
+
+// NameCleared returns if the "name" field was cleared in this mutation.
+func (m *WebhookMutation) NameCleared() bool {
+	_, ok := m.clearedFields[webhook.FieldName]
+	return ok
+}
+
 // ResetName resets all changes to the "name" field.
 func (m *WebhookMutation) ResetName() {
 	m.name = nil
+	delete(m.clearedFields, webhook.FieldName)
 }
 
 // SetURL sets the "url" field.
@@ -69245,7 +69847,7 @@ func (m *WebhookMutation) URL() (r string, exists bool) {
 // OldURL returns the old "url" field's value of the Webhook entity.
 // If the Webhook object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *WebhookMutation) OldURL(ctx context.Context) (v string, err error) {
+func (m *WebhookMutation) OldURL(ctx context.Context) (v *string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldURL is only allowed on UpdateOne operations")
 	}
@@ -69259,9 +69861,22 @@ func (m *WebhookMutation) OldURL(ctx context.Context) (v string, err error) {
 	return oldValue.URL, nil
 }
 
+// ClearURL clears the value of the "url" field.
+func (m *WebhookMutation) ClearURL() {
+	m.url = nil
+	m.clearedFields[webhook.FieldURL] = struct{}{}
+}
+
+// URLCleared returns if the "url" field was cleared in this mutation.
+func (m *WebhookMutation) URLCleared() bool {
+	_, ok := m.clearedFields[webhook.FieldURL]
+	return ok
+}
+
 // ResetURL resets all changes to the "url" field.
 func (m *WebhookMutation) ResetURL() {
 	m.url = nil
+	delete(m.clearedFields, webhook.FieldURL)
 }
 
 // SetSecret sets the "secret" field.
@@ -69378,53 +69993,53 @@ func (m *WebhookMutation) ResetEventTypes() {
 	delete(m.clearedFields, webhook.FieldEventTypes)
 }
 
-// SetFilters sets the "filters" field.
-func (m *WebhookMutation) SetFilters(value map[string]interface{}) {
-	m.filters = &value
+// SetFilter sets the "filter" field.
+func (m *WebhookMutation) SetFilter(sf *servicev1.WebhookFilter) {
+	m.filter = &sf
 }
 
-// Filters returns the value of the "filters" field in the mutation.
-func (m *WebhookMutation) Filters() (r map[string]interface{}, exists bool) {
-	v := m.filters
+// Filter returns the value of the "filter" field in the mutation.
+func (m *WebhookMutation) Filter() (r *servicev1.WebhookFilter, exists bool) {
+	v := m.filter
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldFilters returns the old "filters" field's value of the Webhook entity.
+// OldFilter returns the old "filter" field's value of the Webhook entity.
 // If the Webhook object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *WebhookMutation) OldFilters(ctx context.Context) (v map[string]interface{}, err error) {
+func (m *WebhookMutation) OldFilter(ctx context.Context) (v *servicev1.WebhookFilter, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldFilters is only allowed on UpdateOne operations")
+		return v, errors.New("OldFilter is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldFilters requires an ID field in the mutation")
+		return v, errors.New("OldFilter requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldFilters: %w", err)
+		return v, fmt.Errorf("querying old value for OldFilter: %w", err)
 	}
-	return oldValue.Filters, nil
+	return oldValue.Filter, nil
 }
 
-// ClearFilters clears the value of the "filters" field.
-func (m *WebhookMutation) ClearFilters() {
-	m.filters = nil
-	m.clearedFields[webhook.FieldFilters] = struct{}{}
+// ClearFilter clears the value of the "filter" field.
+func (m *WebhookMutation) ClearFilter() {
+	m.filter = nil
+	m.clearedFields[webhook.FieldFilter] = struct{}{}
 }
 
-// FiltersCleared returns if the "filters" field was cleared in this mutation.
-func (m *WebhookMutation) FiltersCleared() bool {
-	_, ok := m.clearedFields[webhook.FieldFilters]
+// FilterCleared returns if the "filter" field was cleared in this mutation.
+func (m *WebhookMutation) FilterCleared() bool {
+	_, ok := m.clearedFields[webhook.FieldFilter]
 	return ok
 }
 
-// ResetFilters resets all changes to the "filters" field.
-func (m *WebhookMutation) ResetFilters() {
-	m.filters = nil
-	delete(m.clearedFields, webhook.FieldFilters)
+// ResetFilter resets all changes to the "filter" field.
+func (m *WebhookMutation) ResetFilter() {
+	m.filter = nil
+	delete(m.clearedFields, webhook.FieldFilter)
 }
 
 // SetEnabled sets the "enabled" field.
@@ -69513,13 +70128,13 @@ func (m *WebhookMutation) ResetLastTriggeredAt() {
 }
 
 // SetFailureCount sets the "failure_count" field.
-func (m *WebhookMutation) SetFailureCount(i int) {
-	m.failure_count = &i
+func (m *WebhookMutation) SetFailureCount(u uint32) {
+	m.failure_count = &u
 	m.addfailure_count = nil
 }
 
 // FailureCount returns the value of the "failure_count" field in the mutation.
-func (m *WebhookMutation) FailureCount() (r int, exists bool) {
+func (m *WebhookMutation) FailureCount() (r uint32, exists bool) {
 	v := m.failure_count
 	if v == nil {
 		return
@@ -69530,7 +70145,7 @@ func (m *WebhookMutation) FailureCount() (r int, exists bool) {
 // OldFailureCount returns the old "failure_count" field's value of the Webhook entity.
 // If the Webhook object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *WebhookMutation) OldFailureCount(ctx context.Context) (v int, err error) {
+func (m *WebhookMutation) OldFailureCount(ctx context.Context) (v uint32, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldFailureCount is only allowed on UpdateOne operations")
 	}
@@ -69544,17 +70159,17 @@ func (m *WebhookMutation) OldFailureCount(ctx context.Context) (v int, err error
 	return oldValue.FailureCount, nil
 }
 
-// AddFailureCount adds i to the "failure_count" field.
-func (m *WebhookMutation) AddFailureCount(i int) {
+// AddFailureCount adds u to the "failure_count" field.
+func (m *WebhookMutation) AddFailureCount(u int32) {
 	if m.addfailure_count != nil {
-		*m.addfailure_count += i
+		*m.addfailure_count += u
 	} else {
-		m.addfailure_count = &i
+		m.addfailure_count = &u
 	}
 }
 
 // AddedFailureCount returns the value that was added to the "failure_count" field in this mutation.
-func (m *WebhookMutation) AddedFailureCount() (r int, exists bool) {
+func (m *WebhookMutation) AddedFailureCount() (r int32, exists bool) {
 	v := m.addfailure_count
 	if v == nil {
 		return
@@ -69566,6 +70181,76 @@ func (m *WebhookMutation) AddedFailureCount() (r int, exists bool) {
 func (m *WebhookMutation) ResetFailureCount() {
 	m.failure_count = nil
 	m.addfailure_count = nil
+}
+
+// SetAppID sets the "app_id" field.
+func (m *WebhookMutation) SetAppID(u uint32) {
+	m.app_id = &u
+	m.addapp_id = nil
+}
+
+// AppID returns the value of the "app_id" field in the mutation.
+func (m *WebhookMutation) AppID() (r uint32, exists bool) {
+	v := m.app_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAppID returns the old "app_id" field's value of the Webhook entity.
+// If the Webhook object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *WebhookMutation) OldAppID(ctx context.Context) (v *uint32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldAppID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldAppID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAppID: %w", err)
+	}
+	return oldValue.AppID, nil
+}
+
+// AddAppID adds u to the "app_id" field.
+func (m *WebhookMutation) AddAppID(u int32) {
+	if m.addapp_id != nil {
+		*m.addapp_id += u
+	} else {
+		m.addapp_id = &u
+	}
+}
+
+// AddedAppID returns the value that was added to the "app_id" field in this mutation.
+func (m *WebhookMutation) AddedAppID() (r int32, exists bool) {
+	v := m.addapp_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearAppID clears the value of the "app_id" field.
+func (m *WebhookMutation) ClearAppID() {
+	m.app_id = nil
+	m.addapp_id = nil
+	m.clearedFields[webhook.FieldAppID] = struct{}{}
+}
+
+// AppIDCleared returns if the "app_id" field was cleared in this mutation.
+func (m *WebhookMutation) AppIDCleared() bool {
+	_, ok := m.clearedFields[webhook.FieldAppID]
+	return ok
+}
+
+// ResetAppID resets all changes to the "app_id" field.
+func (m *WebhookMutation) ResetAppID() {
+	m.app_id = nil
+	m.addapp_id = nil
+	delete(m.clearedFields, webhook.FieldAppID)
 }
 
 // Where appends a list predicates to the WebhookMutation builder.
@@ -69602,7 +70287,7 @@ func (m *WebhookMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *WebhookMutation) Fields() []string {
-	fields := make([]string, 0, 15)
+	fields := make([]string, 0, 16)
 	if m.created_at != nil {
 		fields = append(fields, webhook.FieldCreatedAt)
 	}
@@ -69636,8 +70321,8 @@ func (m *WebhookMutation) Fields() []string {
 	if m.event_types != nil {
 		fields = append(fields, webhook.FieldEventTypes)
 	}
-	if m.filters != nil {
-		fields = append(fields, webhook.FieldFilters)
+	if m.filter != nil {
+		fields = append(fields, webhook.FieldFilter)
 	}
 	if m.enabled != nil {
 		fields = append(fields, webhook.FieldEnabled)
@@ -69647,6 +70332,9 @@ func (m *WebhookMutation) Fields() []string {
 	}
 	if m.failure_count != nil {
 		fields = append(fields, webhook.FieldFailureCount)
+	}
+	if m.app_id != nil {
+		fields = append(fields, webhook.FieldAppID)
 	}
 	return fields
 }
@@ -69678,14 +70366,16 @@ func (m *WebhookMutation) Field(name string) (ent.Value, bool) {
 		return m.Secret()
 	case webhook.FieldEventTypes:
 		return m.EventTypes()
-	case webhook.FieldFilters:
-		return m.Filters()
+	case webhook.FieldFilter:
+		return m.Filter()
 	case webhook.FieldEnabled:
 		return m.Enabled()
 	case webhook.FieldLastTriggeredAt:
 		return m.LastTriggeredAt()
 	case webhook.FieldFailureCount:
 		return m.FailureCount()
+	case webhook.FieldAppID:
+		return m.AppID()
 	}
 	return nil, false
 }
@@ -69717,14 +70407,16 @@ func (m *WebhookMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldSecret(ctx)
 	case webhook.FieldEventTypes:
 		return m.OldEventTypes(ctx)
-	case webhook.FieldFilters:
-		return m.OldFilters(ctx)
+	case webhook.FieldFilter:
+		return m.OldFilter(ctx)
 	case webhook.FieldEnabled:
 		return m.OldEnabled(ctx)
 	case webhook.FieldLastTriggeredAt:
 		return m.OldLastTriggeredAt(ctx)
 	case webhook.FieldFailureCount:
 		return m.OldFailureCount(ctx)
+	case webhook.FieldAppID:
+		return m.OldAppID(ctx)
 	}
 	return nil, fmt.Errorf("unknown Webhook field %s", name)
 }
@@ -69811,12 +70503,12 @@ func (m *WebhookMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetEventTypes(v)
 		return nil
-	case webhook.FieldFilters:
-		v, ok := value.(map[string]interface{})
+	case webhook.FieldFilter:
+		v, ok := value.(*servicev1.WebhookFilter)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetFilters(v)
+		m.SetFilter(v)
 		return nil
 	case webhook.FieldEnabled:
 		v, ok := value.(bool)
@@ -69833,11 +70525,18 @@ func (m *WebhookMutation) SetField(name string, value ent.Value) error {
 		m.SetLastTriggeredAt(v)
 		return nil
 	case webhook.FieldFailureCount:
-		v, ok := value.(int)
+		v, ok := value.(uint32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetFailureCount(v)
+		return nil
+	case webhook.FieldAppID:
+		v, ok := value.(uint32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAppID(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Webhook field %s", name)
@@ -69862,6 +70561,9 @@ func (m *WebhookMutation) AddedFields() []string {
 	if m.addfailure_count != nil {
 		fields = append(fields, webhook.FieldFailureCount)
 	}
+	if m.addapp_id != nil {
+		fields = append(fields, webhook.FieldAppID)
+	}
 	return fields
 }
 
@@ -69880,6 +70582,8 @@ func (m *WebhookMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedTenantID()
 	case webhook.FieldFailureCount:
 		return m.AddedFailureCount()
+	case webhook.FieldAppID:
+		return m.AddedAppID()
 	}
 	return nil, false
 }
@@ -69918,11 +70622,18 @@ func (m *WebhookMutation) AddField(name string, value ent.Value) error {
 		m.AddTenantID(v)
 		return nil
 	case webhook.FieldFailureCount:
-		v, ok := value.(int)
+		v, ok := value.(int32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddFailureCount(v)
+		return nil
+	case webhook.FieldAppID:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddAppID(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Webhook numeric field %s", name)
@@ -69953,17 +70664,26 @@ func (m *WebhookMutation) ClearedFields() []string {
 	if m.FieldCleared(webhook.FieldTenantID) {
 		fields = append(fields, webhook.FieldTenantID)
 	}
+	if m.FieldCleared(webhook.FieldName) {
+		fields = append(fields, webhook.FieldName)
+	}
+	if m.FieldCleared(webhook.FieldURL) {
+		fields = append(fields, webhook.FieldURL)
+	}
 	if m.FieldCleared(webhook.FieldSecret) {
 		fields = append(fields, webhook.FieldSecret)
 	}
 	if m.FieldCleared(webhook.FieldEventTypes) {
 		fields = append(fields, webhook.FieldEventTypes)
 	}
-	if m.FieldCleared(webhook.FieldFilters) {
-		fields = append(fields, webhook.FieldFilters)
+	if m.FieldCleared(webhook.FieldFilter) {
+		fields = append(fields, webhook.FieldFilter)
 	}
 	if m.FieldCleared(webhook.FieldLastTriggeredAt) {
 		fields = append(fields, webhook.FieldLastTriggeredAt)
+	}
+	if m.FieldCleared(webhook.FieldAppID) {
+		fields = append(fields, webhook.FieldAppID)
 	}
 	return fields
 }
@@ -70000,17 +70720,26 @@ func (m *WebhookMutation) ClearField(name string) error {
 	case webhook.FieldTenantID:
 		m.ClearTenantID()
 		return nil
+	case webhook.FieldName:
+		m.ClearName()
+		return nil
+	case webhook.FieldURL:
+		m.ClearURL()
+		return nil
 	case webhook.FieldSecret:
 		m.ClearSecret()
 		return nil
 	case webhook.FieldEventTypes:
 		m.ClearEventTypes()
 		return nil
-	case webhook.FieldFilters:
-		m.ClearFilters()
+	case webhook.FieldFilter:
+		m.ClearFilter()
 		return nil
 	case webhook.FieldLastTriggeredAt:
 		m.ClearLastTriggeredAt()
+		return nil
+	case webhook.FieldAppID:
+		m.ClearAppID()
 		return nil
 	}
 	return fmt.Errorf("unknown Webhook nullable field %s", name)
@@ -70053,8 +70782,8 @@ func (m *WebhookMutation) ResetField(name string) error {
 	case webhook.FieldEventTypes:
 		m.ResetEventTypes()
 		return nil
-	case webhook.FieldFilters:
-		m.ResetFilters()
+	case webhook.FieldFilter:
+		m.ResetFilter()
 		return nil
 	case webhook.FieldEnabled:
 		m.ResetEnabled()
@@ -70064,6 +70793,9 @@ func (m *WebhookMutation) ResetField(name string) error {
 		return nil
 	case webhook.FieldFailureCount:
 		m.ResetFailureCount()
+		return nil
+	case webhook.FieldAppID:
+		m.ResetAppID()
 		return nil
 	}
 	return fmt.Errorf("unknown Webhook field %s", name)

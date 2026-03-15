@@ -204,17 +204,23 @@ func (_u *UserTagUpdate) ClearTagID() *UserTagUpdate {
 	return _u
 }
 
-// SetTagValue sets the "tag_value" field.
-func (_u *UserTagUpdate) SetTagValue(v string) *UserTagUpdate {
-	_u.mutation.SetTagValue(v)
+// SetValue sets the "value" field.
+func (_u *UserTagUpdate) SetValue(v string) *UserTagUpdate {
+	_u.mutation.SetValue(v)
 	return _u
 }
 
-// SetNillableTagValue sets the "tag_value" field if the given value is not nil.
-func (_u *UserTagUpdate) SetNillableTagValue(v *string) *UserTagUpdate {
+// SetNillableValue sets the "value" field if the given value is not nil.
+func (_u *UserTagUpdate) SetNillableValue(v *string) *UserTagUpdate {
 	if v != nil {
-		_u.SetTagValue(*v)
+		_u.SetValue(*v)
 	}
+	return _u
+}
+
+// ClearValue clears the value of the "value" field.
+func (_u *UserTagUpdate) ClearValue() *UserTagUpdate {
+	_u.mutation.ClearValue()
 	return _u
 }
 
@@ -259,17 +265,29 @@ func (_u *UserTagUpdate) AddConfidence(v float64) *UserTagUpdate {
 	return _u
 }
 
+// ClearConfidence clears the value of the "confidence" field.
+func (_u *UserTagUpdate) ClearConfidence() *UserTagUpdate {
+	_u.mutation.ClearConfidence()
+	return _u
+}
+
 // SetSource sets the "source" field.
-func (_u *UserTagUpdate) SetSource(v string) *UserTagUpdate {
+func (_u *UserTagUpdate) SetSource(v usertag.Source) *UserTagUpdate {
 	_u.mutation.SetSource(v)
 	return _u
 }
 
 // SetNillableSource sets the "source" field if the given value is not nil.
-func (_u *UserTagUpdate) SetNillableSource(v *string) *UserTagUpdate {
+func (_u *UserTagUpdate) SetNillableSource(v *usertag.Source) *UserTagUpdate {
 	if v != nil {
 		_u.SetSource(*v)
 	}
+	return _u
+}
+
+// ClearSource clears the value of the "source" field.
+func (_u *UserTagUpdate) ClearSource() *UserTagUpdate {
+	_u.mutation.ClearSource()
 	return _u
 }
 
@@ -354,6 +372,12 @@ func (_u *UserTagUpdate) SetNillableIsActive(v *bool) *UserTagUpdate {
 	return _u
 }
 
+// ClearIsActive clears the value of the "is_active" field.
+func (_u *UserTagUpdate) ClearIsActive() *UserTagUpdate {
+	_u.mutation.ClearIsActive()
+	return _u
+}
+
 // Mutation returns the UserTagMutation object of the builder.
 func (_u *UserTagUpdate) Mutation() *UserTagMutation {
 	return _u.mutation
@@ -388,9 +412,14 @@ func (_u *UserTagUpdate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *UserTagUpdate) check() error {
-	if v, ok := _u.mutation.TagValue(); ok {
-		if err := usertag.TagValueValidator(v); err != nil {
-			return &ValidationError{Name: "tag_value", err: fmt.Errorf(`ent: validator failed for field "UserTag.tag_value": %w`, err)}
+	if v, ok := _u.mutation.Value(); ok {
+		if err := usertag.ValueValidator(v); err != nil {
+			return &ValidationError{Name: "value", err: fmt.Errorf(`ent: validator failed for field "UserTag.value": %w`, err)}
+		}
+	}
+	if v, ok := _u.mutation.Source(); ok {
+		if err := usertag.SourceValidator(v); err != nil {
+			return &ValidationError{Name: "source", err: fmt.Errorf(`ent: validator failed for field "UserTag.source": %w`, err)}
 		}
 	}
 	return nil
@@ -477,8 +506,11 @@ func (_u *UserTagUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if _u.mutation.TagIDCleared() {
 		_spec.ClearField(usertag.FieldTagID, field.TypeUint32)
 	}
-	if value, ok := _u.mutation.TagValue(); ok {
-		_spec.SetField(usertag.FieldTagValue, field.TypeString, value)
+	if value, ok := _u.mutation.Value(); ok {
+		_spec.SetField(usertag.FieldValue, field.TypeString, value)
+	}
+	if _u.mutation.ValueCleared() {
+		_spec.ClearField(usertag.FieldValue, field.TypeString)
 	}
 	if value, ok := _u.mutation.ValueLabel(); ok {
 		_spec.SetField(usertag.FieldValueLabel, field.TypeString, value)
@@ -492,8 +524,14 @@ func (_u *UserTagUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if value, ok := _u.mutation.AddedConfidence(); ok {
 		_spec.AddField(usertag.FieldConfidence, field.TypeFloat64, value)
 	}
+	if _u.mutation.ConfidenceCleared() {
+		_spec.ClearField(usertag.FieldConfidence, field.TypeFloat64)
+	}
 	if value, ok := _u.mutation.Source(); ok {
-		_spec.SetField(usertag.FieldSource, field.TypeString, value)
+		_spec.SetField(usertag.FieldSource, field.TypeEnum, value)
+	}
+	if _u.mutation.SourceCleared() {
+		_spec.ClearField(usertag.FieldSource, field.TypeEnum)
 	}
 	if value, ok := _u.mutation.SourceRuleID(); ok {
 		_spec.SetField(usertag.FieldSourceRuleID, field.TypeUint32, value)
@@ -518,6 +556,9 @@ func (_u *UserTagUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if value, ok := _u.mutation.IsActive(); ok {
 		_spec.SetField(usertag.FieldIsActive, field.TypeBool, value)
+	}
+	if _u.mutation.IsActiveCleared() {
+		_spec.ClearField(usertag.FieldIsActive, field.TypeBool)
 	}
 	_spec.AddModifiers(_u.modifiers...)
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
@@ -716,17 +757,23 @@ func (_u *UserTagUpdateOne) ClearTagID() *UserTagUpdateOne {
 	return _u
 }
 
-// SetTagValue sets the "tag_value" field.
-func (_u *UserTagUpdateOne) SetTagValue(v string) *UserTagUpdateOne {
-	_u.mutation.SetTagValue(v)
+// SetValue sets the "value" field.
+func (_u *UserTagUpdateOne) SetValue(v string) *UserTagUpdateOne {
+	_u.mutation.SetValue(v)
 	return _u
 }
 
-// SetNillableTagValue sets the "tag_value" field if the given value is not nil.
-func (_u *UserTagUpdateOne) SetNillableTagValue(v *string) *UserTagUpdateOne {
+// SetNillableValue sets the "value" field if the given value is not nil.
+func (_u *UserTagUpdateOne) SetNillableValue(v *string) *UserTagUpdateOne {
 	if v != nil {
-		_u.SetTagValue(*v)
+		_u.SetValue(*v)
 	}
+	return _u
+}
+
+// ClearValue clears the value of the "value" field.
+func (_u *UserTagUpdateOne) ClearValue() *UserTagUpdateOne {
+	_u.mutation.ClearValue()
 	return _u
 }
 
@@ -771,17 +818,29 @@ func (_u *UserTagUpdateOne) AddConfidence(v float64) *UserTagUpdateOne {
 	return _u
 }
 
+// ClearConfidence clears the value of the "confidence" field.
+func (_u *UserTagUpdateOne) ClearConfidence() *UserTagUpdateOne {
+	_u.mutation.ClearConfidence()
+	return _u
+}
+
 // SetSource sets the "source" field.
-func (_u *UserTagUpdateOne) SetSource(v string) *UserTagUpdateOne {
+func (_u *UserTagUpdateOne) SetSource(v usertag.Source) *UserTagUpdateOne {
 	_u.mutation.SetSource(v)
 	return _u
 }
 
 // SetNillableSource sets the "source" field if the given value is not nil.
-func (_u *UserTagUpdateOne) SetNillableSource(v *string) *UserTagUpdateOne {
+func (_u *UserTagUpdateOne) SetNillableSource(v *usertag.Source) *UserTagUpdateOne {
 	if v != nil {
 		_u.SetSource(*v)
 	}
+	return _u
+}
+
+// ClearSource clears the value of the "source" field.
+func (_u *UserTagUpdateOne) ClearSource() *UserTagUpdateOne {
+	_u.mutation.ClearSource()
 	return _u
 }
 
@@ -866,6 +925,12 @@ func (_u *UserTagUpdateOne) SetNillableIsActive(v *bool) *UserTagUpdateOne {
 	return _u
 }
 
+// ClearIsActive clears the value of the "is_active" field.
+func (_u *UserTagUpdateOne) ClearIsActive() *UserTagUpdateOne {
+	_u.mutation.ClearIsActive()
+	return _u
+}
+
 // Mutation returns the UserTagMutation object of the builder.
 func (_u *UserTagUpdateOne) Mutation() *UserTagMutation {
 	return _u.mutation
@@ -913,9 +978,14 @@ func (_u *UserTagUpdateOne) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *UserTagUpdateOne) check() error {
-	if v, ok := _u.mutation.TagValue(); ok {
-		if err := usertag.TagValueValidator(v); err != nil {
-			return &ValidationError{Name: "tag_value", err: fmt.Errorf(`ent: validator failed for field "UserTag.tag_value": %w`, err)}
+	if v, ok := _u.mutation.Value(); ok {
+		if err := usertag.ValueValidator(v); err != nil {
+			return &ValidationError{Name: "value", err: fmt.Errorf(`ent: validator failed for field "UserTag.value": %w`, err)}
+		}
+	}
+	if v, ok := _u.mutation.Source(); ok {
+		if err := usertag.SourceValidator(v); err != nil {
+			return &ValidationError{Name: "source", err: fmt.Errorf(`ent: validator failed for field "UserTag.source": %w`, err)}
 		}
 	}
 	return nil
@@ -1019,8 +1089,11 @@ func (_u *UserTagUpdateOne) sqlSave(ctx context.Context) (_node *UserTag, err er
 	if _u.mutation.TagIDCleared() {
 		_spec.ClearField(usertag.FieldTagID, field.TypeUint32)
 	}
-	if value, ok := _u.mutation.TagValue(); ok {
-		_spec.SetField(usertag.FieldTagValue, field.TypeString, value)
+	if value, ok := _u.mutation.Value(); ok {
+		_spec.SetField(usertag.FieldValue, field.TypeString, value)
+	}
+	if _u.mutation.ValueCleared() {
+		_spec.ClearField(usertag.FieldValue, field.TypeString)
 	}
 	if value, ok := _u.mutation.ValueLabel(); ok {
 		_spec.SetField(usertag.FieldValueLabel, field.TypeString, value)
@@ -1034,8 +1107,14 @@ func (_u *UserTagUpdateOne) sqlSave(ctx context.Context) (_node *UserTag, err er
 	if value, ok := _u.mutation.AddedConfidence(); ok {
 		_spec.AddField(usertag.FieldConfidence, field.TypeFloat64, value)
 	}
+	if _u.mutation.ConfidenceCleared() {
+		_spec.ClearField(usertag.FieldConfidence, field.TypeFloat64)
+	}
 	if value, ok := _u.mutation.Source(); ok {
-		_spec.SetField(usertag.FieldSource, field.TypeString, value)
+		_spec.SetField(usertag.FieldSource, field.TypeEnum, value)
+	}
+	if _u.mutation.SourceCleared() {
+		_spec.ClearField(usertag.FieldSource, field.TypeEnum)
 	}
 	if value, ok := _u.mutation.SourceRuleID(); ok {
 		_spec.SetField(usertag.FieldSourceRuleID, field.TypeUint32, value)
@@ -1060,6 +1139,9 @@ func (_u *UserTagUpdateOne) sqlSave(ctx context.Context) (_node *UserTag, err er
 	}
 	if value, ok := _u.mutation.IsActive(); ok {
 		_spec.SetField(usertag.FieldIsActive, field.TypeBool, value)
+	}
+	if _u.mutation.IsActiveCleared() {
+		_spec.ClearField(usertag.FieldIsActive, field.TypeBool)
 	}
 	_spec.AddModifiers(_u.modifiers...)
 	_node = &UserTag{config: _u.config}

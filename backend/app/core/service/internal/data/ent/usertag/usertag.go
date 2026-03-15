@@ -3,6 +3,8 @@
 package usertag
 
 import (
+	"fmt"
+
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 )
@@ -30,8 +32,8 @@ const (
 	FieldUserID = "user_id"
 	// FieldTagID holds the string denoting the tag_id field in the database.
 	FieldTagID = "tag_id"
-	// FieldTagValue holds the string denoting the tag_value field in the database.
-	FieldTagValue = "tag_value"
+	// FieldValue holds the string denoting the value field in the database.
+	FieldValue = "value"
 	// FieldValueLabel holds the string denoting the value_label field in the database.
 	FieldValueLabel = "value_label"
 	// FieldConfidence holds the string denoting the confidence field in the database.
@@ -62,7 +64,7 @@ var Columns = []string{
 	FieldDeletedBy,
 	FieldUserID,
 	FieldTagID,
-	FieldTagValue,
+	FieldValue,
 	FieldValueLabel,
 	FieldConfidence,
 	FieldSource,
@@ -92,17 +94,40 @@ var (
 	Policy ent.Policy
 	// DefaultTenantID holds the default value on creation for the "tenant_id" field.
 	DefaultTenantID uint32
-	// TagValueValidator is a validator for the "tag_value" field. It is called by the builders before save.
-	TagValueValidator func(string) error
+	// ValueValidator is a validator for the "value" field. It is called by the builders before save.
+	ValueValidator func(string) error
 	// DefaultConfidence holds the default value on creation for the "confidence" field.
 	DefaultConfidence float64
-	// DefaultSource holds the default value on creation for the "source" field.
-	DefaultSource string
 	// DefaultIsActive holds the default value on creation for the "is_active" field.
 	DefaultIsActive bool
 	// IDValidator is a validator for the "id" field. It is called by the builders before save.
 	IDValidator func(uint32) error
 )
+
+// Source defines the type for the "source" enum field.
+type Source string
+
+// Source values.
+const (
+	SourceTagSourceManual Source = "TAG_SOURCE_MANUAL"
+	SourceTagSourceRule   Source = "TAG_SOURCE_RULE"
+	SourceTagSourceModel  Source = "TAG_SOURCE_MODEL"
+	SourceTagSourceImport Source = "TAG_SOURCE_IMPORT"
+)
+
+func (s Source) String() string {
+	return string(s)
+}
+
+// SourceValidator is a validator for the "source" field enum values. It is called by the builders before save.
+func SourceValidator(s Source) error {
+	switch s {
+	case SourceTagSourceManual, SourceTagSourceRule, SourceTagSourceModel, SourceTagSourceImport:
+		return nil
+	default:
+		return fmt.Errorf("usertag: invalid enum value for source field: %q", s)
+	}
+}
 
 // OrderOption defines the ordering options for the UserTag queries.
 type OrderOption func(*sql.Selector)
@@ -157,9 +182,9 @@ func ByTagID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldTagID, opts...).ToFunc()
 }
 
-// ByTagValue orders the results by the tag_value field.
-func ByTagValue(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldTagValue, opts...).ToFunc()
+// ByValue orders the results by the value field.
+func ByValue(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldValue, opts...).ToFunc()
 }
 
 // ByValueLabel orders the results by the value_label field.

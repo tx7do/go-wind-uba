@@ -1,0 +1,130 @@
+﻿syntax = "proto3";
+
+package uba.service.v1;
+
+import "gnostic/openapi/v3/annotations.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+
+import "pagination/v1/pagination.proto";
+
+
+// 网络钩子服务
+service WebhookService {
+  // 查询网络钩子列表
+  rpc List (pagination.PagingRequest) returns (ListWebhookResponse) {}
+
+  // 查询网络钩子数量
+  rpc Count (pagination.PagingRequest) returns (CountWebhookResponse) {}
+
+  // 查询网络钩子详情
+  rpc Get (GetWebhookRequest) returns (Webhook) {}
+
+  // 创建网络钩子
+  rpc Create (CreateWebhookRequest) returns (Webhook) {}
+
+  // 更新网络钩子
+  rpc Update (UpdateWebhookRequest) returns (Webhook) {}
+
+  // 删除网络钩子
+  rpc Delete (DeleteWebhookRequest) returns (google.protobuf.Empty) {}
+}
+
+// 网络钩子配置
+message Webhook {
+  uint32 id = 1 [json_name = "id", (gnostic.openapi.v3.property) = {description: "主键ID，唯一标识Webhook配置"}]; // 主键ID
+  optional uint32 tenant_id = 2 [json_name = "tenantId", (gnostic.openapi.v3.property) = {description: "租户ID，多租户隔离，支持SaaS场景"}]; // 租户ID
+  optional uint32 app_id = 3 [json_name = "appId", (gnostic.openapi.v3.property) = {description: "关联应用ID"}]; // 关联应用ID
+
+  optional string name = 4 [json_name = "name", (gnostic.openapi.v3.property) = {description: "Webhook名称"}]; // 名称
+  optional string url = 5 [json_name = "url", (gnostic.openapi.v3.property) = {description: "回调URL"}]; // 回调URL
+  optional string secret = 6 [json_name = "secret", (gnostic.openapi.v3.property) = {description: "签名密钥（写入时返回，读取时脱敏）"}]; // 签名密钥
+
+  // 触发条件
+  repeated string event_types = 7 [json_name = "eventTypes", (gnostic.openapi.v3.property) = {description: "触发事件类型列表，如[\"risk.high\", \"risk.critical\"]"}]; // 触发事件类型
+  optional WebhookFilter filter = 8 [json_name = "filter", (gnostic.openapi.v3.property) = {description: "高级过滤条件"}]; // 高级过滤
+
+  // 状态
+  optional bool enabled = 9 [json_name = "enabled", (gnostic.openapi.v3.property) = {description: "是否启用，true为启用，false为禁用"}]; // 是否启用
+  optional uint32 failure_count = 10 [json_name = "failureCount", (gnostic.openapi.v3.property) = {description: "失败次数"}]; // 失败次数
+  optional google.protobuf.Timestamp last_triggered_at = 11 [json_name = "lastTriggeredAt", (gnostic.openapi.v3.property) = {description: "最后触发时间"}]; // 最后触发时间
+
+  optional uint32 created_by = 100 [json_name = "createdBy", (gnostic.openapi.v3.property) = {description: "创建者用户ID"}]; // 创建者用户ID
+  optional uint32 updated_by = 101 [json_name = "updatedBy", (gnostic.openapi.v3.property) = {description: "更新者用户ID"}]; // 更新者用户ID
+  optional uint32 deleted_by = 102 [json_name = "deletedBy", (gnostic.openapi.v3.property) = {description: "删除者用户ID"}]; // 删除者用户ID
+
+  optional google.protobuf.Timestamp created_at = 200 [json_name = "createdAt", (gnostic.openapi.v3.property) = {description: "创建时间"}]; // 创建时间
+  optional google.protobuf.Timestamp updated_at = 201 [json_name = "updatedAt", (gnostic.openapi.v3.property) = {description: "更新时间"}]; // 更新时间
+  optional google.protobuf.Timestamp deleted_at = 202 [json_name = "deletedAt", (gnostic.openapi.v3.property) = {description: "删除时间"}]; // 删除时间
+}
+
+// 网络钩子过滤器
+message WebhookFilter {
+  repeated string risk_levels = 1 [json_name = "riskLevels", (gnostic.openapi.v3.property) = {description: "风险等级过滤"}]; // 风险等级过滤
+  repeated string risk_types = 2 [json_name = "riskTypes", (gnostic.openapi.v3.property) = {description: "风险类型过滤"}]; // 风险类型过滤
+  map<string, string> properties = 3 [json_name = "properties", (gnostic.openapi.v3.property) = {description: "事件属性过滤，键值对"}]; // 事件属性过滤
+}
+
+// 网络钩子投递日志
+message WebhookDeliveryLog {
+  uint64 id = 1 [json_name = "id", (gnostic.openapi.v3.property) = {description: "日志主键ID"}]; // 日志主键ID
+  uint32 webhook_id = 2 [json_name = "webhookId", (gnostic.openapi.v3.property) = {description: "Webhook配置ID"}]; // Webhook配置ID
+  uint32 tenant_id = 3 [json_name = "tenantId", (gnostic.openapi.v3.property) = {description: "租户ID"}]; // 租户ID
+
+  string event_type = 4 [json_name = "eventType", (gnostic.openapi.v3.property) = {description: "事件类型"}]; // 事件类型
+  string payload = 5 [json_name = "payload", (gnostic.openapi.v3.property) = {description: "发送的payload内容"}]; // 发送的payload
+
+  int32 status_code = 6 [json_name = "statusCode", (gnostic.openapi.v3.property) = {description: "HTTP状态码"}]; // HTTP状态码
+  string response_body = 7 [json_name = "responseBody", (gnostic.openapi.v3.property) = {description: "响应内容"}]; // 响应内容
+  uint32 retry_count = 8 [json_name = "retryCount", (gnostic.openapi.v3.property) = {description: "重试次数"}]; // 重试次数
+
+  google.protobuf.Timestamp sent_at = 9 [json_name = "sentAt", (gnostic.openapi.v3.property) = {description: "发送时间"}]; // 发送时间
+  string error_message = 10 [json_name = "errorMessage", (gnostic.openapi.v3.property) = {description: "错误信息"}]; // 错误信息
+}
+
+// 获取网络钩子列表 - 答复
+message ListWebhookResponse {
+  repeated Webhook items = 1 [json_name = "items", (gnostic.openapi.v3.property) = {description: "Webhook列表"}]; // Webhook列表
+  uint64 total = 2 [json_name = "total", (gnostic.openapi.v3.property) = {description: "总数"}]; // 总数
+}
+
+// 获取网络钩子数据 - 请求
+message GetWebhookRequest {
+  oneof query_by {
+    uint32 id = 1 [json_name = "id", (gnostic.openapi.v3.property) = {description: "ID", read_only: true}]; // ID
+  }
+
+  optional google.protobuf.FieldMask view_mask = 100 [json_name = "viewMask", (gnostic.openapi.v3.property) = {description: "视图字段过滤器，用于控制返回的字段"}]; // 视图字段过滤器
+}
+
+// 创建网络钩子 - 请求
+message CreateWebhookRequest {
+  Webhook data = 1 [json_name = "data", (gnostic.openapi.v3.property) = {description: "Webhook配置数据"}]; // Webhook配置数据
+}
+
+// 更新网络钩子 - 请求
+message UpdateWebhookRequest {
+  uint32 id = 1 [json_name = "id", (gnostic.openapi.v3.property) = {description: "Webhook配置ID"}]; // Webhook配置ID
+
+  Webhook data = 2 [json_name = "data", (gnostic.openapi.v3.property) = {description: "Webhook配置数据"}]; // Webhook配置数据
+
+  google.protobuf.FieldMask update_mask = 3 [json_name = "updateMask", (gnostic.openapi.v3.property) = {description: "要更新的字段列表", example: {yaml : "id,name,url"}}]; // 要更新的字段列表
+
+  optional bool allow_missing = 4 [json_name = "allowMissing", (gnostic.openapi.v3.property) = {description: "如果设置为true，资源不存在则会新增(插入)，并且在这种情况下`updateMask`字段将会被忽略。"}]; // 资源不存在时自动新增
+}
+
+// 删除网络钩子 - 请求
+message DeleteWebhookRequest {
+  oneof query_by {
+    uint32 id = 1 [json_name = "id", (gnostic.openapi.v3.property) = {description: "ID", read_only: true}]; // ID
+  }
+
+  optional uint32 deleted_by = 100 [json_name = "deletedBy", (gnostic.openapi.v3.property) = {description: "删除者用户ID"}]; // 删除者用户ID
+}
+
+// 网络钩子数量 - 答复
+message CountWebhookResponse {
+  uint64 count = 1 [json_name = "count", (gnostic.openapi.v3.property) = {description: "数量"}]; // 数量
+}

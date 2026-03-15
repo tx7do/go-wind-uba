@@ -1,6 +1,8 @@
 package schema
 
 import (
+	ubaV1 "go-wind-uba/api/gen/go/uba/service/v1"
+
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
@@ -72,7 +74,7 @@ func (RiskRule) Fields() []ent.Field {
 			Comment("规则条件，简化版，实际可用 CEL/JSON Schema").
 			Optional(),
 
-		field.JSON("actions", []map[string]any{}).
+		field.JSON("actions", []*ubaV1.RiskAction{}).
 			Comment("动作配置，规则触发时的处置动作列表").
 			Optional(),
 

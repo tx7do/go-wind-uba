@@ -1,6 +1,8 @@
 package schema
 
 import (
+	ubaV1 "go-wind-uba/api/gen/go/uba/service/v1"
+
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
@@ -30,11 +32,15 @@ func (Webhook) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("name").
 			Comment("Webhook名称").
-			NotEmpty(),
+			NotEmpty().
+			Optional().
+			Nillable(),
 
 		field.String("url").
 			Comment("回调URL").
-			NotEmpty(),
+			NotEmpty().
+			Optional().
+			Nillable(),
 
 		field.String("secret").
 			Comment("签名密钥").
@@ -45,7 +51,7 @@ func (Webhook) Fields() []ent.Field {
 			Comment("触发事件类型列表，如[\\\"risk.high\\\", \\\"risk.critical\\\"]").
 			Optional(),
 
-		field.JSON("filters", map[string]interface{}{}).
+		field.JSON("filter", &ubaV1.WebhookFilter{}).
 			Comment("过滤条件，结构化JSON").
 			Optional(),
 
@@ -58,9 +64,14 @@ func (Webhook) Fields() []ent.Field {
 			Optional().
 			Nillable(),
 
-		field.Int("failure_count").
+		field.Uint32("failure_count").
 			Comment("失败次数").
 			Default(0),
+
+		field.Uint32("app_id").
+			Comment("关联应用ID").
+			Optional().
+			Nillable(),
 	}
 }
 
@@ -77,10 +88,10 @@ func (Webhook) Indexes() []ent.Index {
 	return []ent.Index{
 		// 索引：tenant_id
 		index.Fields("tenant_id").
-			StorageKey("idx_tenant_id"),
+			StorageKey("idx_webhook_tenant_id"),
 
 		// 索引：tenant_id + enabled
 		index.Fields("tenant_id", "enabled").
-			StorageKey("idx_enabled"),
+			StorageKey("idx_webhook_tenant_id_enabled"),
 	}
 }

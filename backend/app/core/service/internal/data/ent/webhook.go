@@ -5,6 +5,7 @@ package ent
 import (
 	"encoding/json"
 	"fmt"
+	servicev1 "go-wind-uba/api/gen/go/uba/service/v1"
 	"go-wind-uba/app/core/service/internal/data/ent/webhook"
 	"strings"
 	"time"
@@ -34,21 +35,23 @@ type Webhook struct {
 	// 租户ID
 	TenantID *uint32 `json:"tenant_id,omitempty"`
 	// Webhook名称
-	Name string `json:"name,omitempty"`
+	Name *string `json:"name,omitempty"`
 	// 回调URL
-	URL string `json:"url,omitempty"`
+	URL *string `json:"url,omitempty"`
 	// 签名密钥
 	Secret *string `json:"secret,omitempty"`
 	// 触发事件类型列表，如[\"risk.high\", \"risk.critical\"]
 	EventTypes []string `json:"event_types,omitempty"`
 	// 过滤条件，结构化JSON
-	Filters map[string]interface{} `json:"filters,omitempty"`
+	Filter *servicev1.WebhookFilter `json:"filter,omitempty"`
 	// 是否启用，1为启用，0为禁用
 	Enabled bool `json:"enabled,omitempty"`
 	// 最后触发时间
 	LastTriggeredAt *time.Time `json:"last_triggered_at,omitempty"`
 	// 失败次数
-	FailureCount int `json:"failure_count,omitempty"`
+	FailureCount uint32 `json:"failure_count,omitempty"`
+	// 关联应用ID
+	AppID        *uint32 `json:"app_id,omitempty"`
 	selectValues sql.SelectValues
 }
 
@@ -57,11 +60,11 @@ func (*Webhook) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case webhook.FieldEventTypes, webhook.FieldFilters:
+		case webhook.FieldEventTypes, webhook.FieldFilter:
 			values[i] = new([]byte)
 		case webhook.FieldEnabled:
 			values[i] = new(sql.NullBool)
-		case webhook.FieldID, webhook.FieldCreatedBy, webhook.FieldUpdatedBy, webhook.FieldDeletedBy, webhook.FieldTenantID, webhook.FieldFailureCount:
+		case webhook.FieldID, webhook.FieldCreatedBy, webhook.FieldUpdatedBy, webhook.FieldDeletedBy, webhook.FieldTenantID, webhook.FieldFailureCount, webhook.FieldAppID:
 			values[i] = new(sql.NullInt64)
 		case webhook.FieldName, webhook.FieldURL, webhook.FieldSecret:
 			values[i] = new(sql.NullString)
@@ -141,13 +144,15 @@ func (_m *Webhook) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
-				_m.Name = value.String
+				_m.Name = new(string)
+				*_m.Name = value.String
 			}
 		case webhook.FieldURL:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field url", values[i])
 			} else if value.Valid {
-				_m.URL = value.String
+				_m.URL = new(string)
+				*_m.URL = value.String
 			}
 		case webhook.FieldSecret:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -164,12 +169,12 @@ func (_m *Webhook) assignValues(columns []string, values []any) error {
 					return fmt.Errorf("unmarshal field event_types: %w", err)
 				}
 			}
-		case webhook.FieldFilters:
+		case webhook.FieldFilter:
 			if value, ok := values[i].(*[]byte); !ok {
-				return fmt.Errorf("unexpected type %T for field filters", values[i])
+				return fmt.Errorf("unexpected type %T for field filter", values[i])
 			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &_m.Filters); err != nil {
-					return fmt.Errorf("unmarshal field filters: %w", err)
+				if err := json.Unmarshal(*value, &_m.Filter); err != nil {
+					return fmt.Errorf("unmarshal field filter: %w", err)
 				}
 			}
 		case webhook.FieldEnabled:
@@ -189,7 +194,14 @@ func (_m *Webhook) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field failure_count", values[i])
 			} else if value.Valid {
-				_m.FailureCount = int(value.Int64)
+				_m.FailureCount = uint32(value.Int64)
+			}
+		case webhook.FieldAppID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field app_id", values[i])
+			} else if value.Valid {
+				_m.AppID = new(uint32)
+				*_m.AppID = uint32(value.Int64)
 			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
@@ -262,11 +274,15 @@ func (_m *Webhook) String() string {
 		builder.WriteString(fmt.Sprintf("%v", *v))
 	}
 	builder.WriteString(", ")
-	builder.WriteString("name=")
-	builder.WriteString(_m.Name)
+	if v := _m.Name; v != nil {
+		builder.WriteString("name=")
+		builder.WriteString(*v)
+	}
 	builder.WriteString(", ")
-	builder.WriteString("url=")
-	builder.WriteString(_m.URL)
+	if v := _m.URL; v != nil {
+		builder.WriteString("url=")
+		builder.WriteString(*v)
+	}
 	builder.WriteString(", ")
 	if v := _m.Secret; v != nil {
 		builder.WriteString("secret=")
@@ -276,8 +292,8 @@ func (_m *Webhook) String() string {
 	builder.WriteString("event_types=")
 	builder.WriteString(fmt.Sprintf("%v", _m.EventTypes))
 	builder.WriteString(", ")
-	builder.WriteString("filters=")
-	builder.WriteString(fmt.Sprintf("%v", _m.Filters))
+	builder.WriteString("filter=")
+	builder.WriteString(fmt.Sprintf("%v", _m.Filter))
 	builder.WriteString(", ")
 	builder.WriteString("enabled=")
 	builder.WriteString(fmt.Sprintf("%v", _m.Enabled))
@@ -289,6 +305,11 @@ func (_m *Webhook) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("failure_count=")
 	builder.WriteString(fmt.Sprintf("%v", _m.FailureCount))
+	builder.WriteString(", ")
+	if v := _m.AppID; v != nil {
+		builder.WriteString("app_id=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
 	builder.WriteByte(')')
 	return builder.String()
 }

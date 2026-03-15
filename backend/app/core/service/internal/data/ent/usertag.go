@@ -37,13 +37,13 @@ type UserTag struct {
 	// 标签定义ID，关联 uba_tag_definitions.id
 	TagID *uint32 `json:"tag_id,omitempty"`
 	// 标签值，实际存储值
-	TagValue string `json:"tag_value,omitempty"`
+	Value *string `json:"value,omitempty"`
 	// 显示名称
 	ValueLabel *string `json:"value_label,omitempty"`
 	// 置信度，算法打标
-	Confidence float64 `json:"confidence,omitempty"`
-	// 来源：manual/rule/model/import
-	Source string `json:"source,omitempty"`
+	Confidence *float64 `json:"confidence,omitempty"`
+	// 标签来源
+	Source *usertag.Source `json:"source,omitempty"`
 	// 来源规则ID，关联规则表
 	SourceRuleID *uint32 `json:"source_rule_id,omitempty"`
 	// 生效时间
@@ -51,7 +51,7 @@ type UserTag struct {
 	// 过期时间，NULL表示永久
 	ExpireTime *time.Time `json:"expire_time,omitempty"`
 	// 是否激活，1为激活，0为未激活
-	IsActive     bool `json:"is_active,omitempty"`
+	IsActive     *bool `json:"is_active,omitempty"`
 	selectValues sql.SelectValues
 }
 
@@ -66,7 +66,7 @@ func (*UserTag) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullFloat64)
 		case usertag.FieldID, usertag.FieldTenantID, usertag.FieldCreatedBy, usertag.FieldUpdatedBy, usertag.FieldDeletedBy, usertag.FieldUserID, usertag.FieldTagID, usertag.FieldSourceRuleID:
 			values[i] = new(sql.NullInt64)
-		case usertag.FieldTagValue, usertag.FieldValueLabel, usertag.FieldSource:
+		case usertag.FieldValue, usertag.FieldValueLabel, usertag.FieldSource:
 			values[i] = new(sql.NullString)
 		case usertag.FieldCreatedAt, usertag.FieldUpdatedAt, usertag.FieldDeletedAt, usertag.FieldEffectiveTime, usertag.FieldExpireTime:
 			values[i] = new(sql.NullTime)
@@ -154,11 +154,12 @@ func (_m *UserTag) assignValues(columns []string, values []any) error {
 				_m.TagID = new(uint32)
 				*_m.TagID = uint32(value.Int64)
 			}
-		case usertag.FieldTagValue:
+		case usertag.FieldValue:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field tag_value", values[i])
+				return fmt.Errorf("unexpected type %T for field value", values[i])
 			} else if value.Valid {
-				_m.TagValue = value.String
+				_m.Value = new(string)
+				*_m.Value = value.String
 			}
 		case usertag.FieldValueLabel:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -171,13 +172,15 @@ func (_m *UserTag) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullFloat64); !ok {
 				return fmt.Errorf("unexpected type %T for field confidence", values[i])
 			} else if value.Valid {
-				_m.Confidence = value.Float64
+				_m.Confidence = new(float64)
+				*_m.Confidence = value.Float64
 			}
 		case usertag.FieldSource:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field source", values[i])
 			} else if value.Valid {
-				_m.Source = value.String
+				_m.Source = new(usertag.Source)
+				*_m.Source = usertag.Source(value.String)
 			}
 		case usertag.FieldSourceRuleID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -204,7 +207,8 @@ func (_m *UserTag) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field is_active", values[i])
 			} else if value.Valid {
-				_m.IsActive = value.Bool
+				_m.IsActive = new(bool)
+				*_m.IsActive = value.Bool
 			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
@@ -213,9 +217,9 @@ func (_m *UserTag) assignValues(columns []string, values []any) error {
 	return nil
 }
 
-// Value returns the ent.Value that was dynamically selected and assigned to the UserTag.
+// GetValue returns the ent.Value that was dynamically selected and assigned to the UserTag.
 // This includes values selected through modifiers, order, etc.
-func (_m *UserTag) Value(name string) (ent.Value, error) {
+func (_m *UserTag) GetValue(name string) (ent.Value, error) {
 	return _m.selectValues.Get(name)
 }
 
@@ -287,19 +291,25 @@ func (_m *UserTag) String() string {
 		builder.WriteString(fmt.Sprintf("%v", *v))
 	}
 	builder.WriteString(", ")
-	builder.WriteString("tag_value=")
-	builder.WriteString(_m.TagValue)
+	if v := _m.Value; v != nil {
+		builder.WriteString("value=")
+		builder.WriteString(*v)
+	}
 	builder.WriteString(", ")
 	if v := _m.ValueLabel; v != nil {
 		builder.WriteString("value_label=")
 		builder.WriteString(*v)
 	}
 	builder.WriteString(", ")
-	builder.WriteString("confidence=")
-	builder.WriteString(fmt.Sprintf("%v", _m.Confidence))
+	if v := _m.Confidence; v != nil {
+		builder.WriteString("confidence=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
 	builder.WriteString(", ")
-	builder.WriteString("source=")
-	builder.WriteString(_m.Source)
+	if v := _m.Source; v != nil {
+		builder.WriteString("source=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
 	builder.WriteString(", ")
 	if v := _m.SourceRuleID; v != nil {
 		builder.WriteString("source_rule_id=")
@@ -316,8 +326,10 @@ func (_m *UserTag) String() string {
 		builder.WriteString(v.Format(time.ANSIC))
 	}
 	builder.WriteString(", ")
-	builder.WriteString("is_active=")
-	builder.WriteString(fmt.Sprintf("%v", _m.IsActive))
+	if v := _m.IsActive; v != nil {
+		builder.WriteString("is_active=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
 	builder.WriteByte(')')
 	return builder.String()
 }

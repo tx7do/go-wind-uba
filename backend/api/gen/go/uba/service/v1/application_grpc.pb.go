@@ -22,6 +22,7 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	ApplicationService_List_FullMethodName   = "/uba.service.v1.ApplicationService/List"
+	ApplicationService_Count_FullMethodName  = "/uba.service.v1.ApplicationService/Count"
 	ApplicationService_Get_FullMethodName    = "/uba.service.v1.ApplicationService/Get"
 	ApplicationService_Create_FullMethodName = "/uba.service.v1.ApplicationService/Create"
 	ApplicationService_Update_FullMethodName = "/uba.service.v1.ApplicationService/Update"
@@ -36,6 +37,8 @@ const (
 type ApplicationServiceClient interface {
 	// 查询UBA应用列表
 	List(ctx context.Context, in *v1.PagingRequest, opts ...grpc.CallOption) (*ListApplicationResponse, error)
+	// 查询UBA应用数量
+	Count(ctx context.Context, in *v1.PagingRequest, opts ...grpc.CallOption) (*CountApplicationResponse, error)
 	// 查询UBA应用详情
 	Get(ctx context.Context, in *GetApplicationRequest, opts ...grpc.CallOption) (*Application, error)
 	// 创建UBA应用
@@ -58,6 +61,16 @@ func (c *applicationServiceClient) List(ctx context.Context, in *v1.PagingReques
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ListApplicationResponse)
 	err := c.cc.Invoke(ctx, ApplicationService_List_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *applicationServiceClient) Count(ctx context.Context, in *v1.PagingRequest, opts ...grpc.CallOption) (*CountApplicationResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CountApplicationResponse)
+	err := c.cc.Invoke(ctx, ApplicationService_Count_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -112,6 +125,8 @@ func (c *applicationServiceClient) Delete(ctx context.Context, in *DeleteApplica
 type ApplicationServiceServer interface {
 	// 查询UBA应用列表
 	List(context.Context, *v1.PagingRequest) (*ListApplicationResponse, error)
+	// 查询UBA应用数量
+	Count(context.Context, *v1.PagingRequest) (*CountApplicationResponse, error)
 	// 查询UBA应用详情
 	Get(context.Context, *GetApplicationRequest) (*Application, error)
 	// 创建UBA应用
@@ -132,6 +147,9 @@ type UnimplementedApplicationServiceServer struct{}
 
 func (UnimplementedApplicationServiceServer) List(context.Context, *v1.PagingRequest) (*ListApplicationResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method List not implemented")
+}
+func (UnimplementedApplicationServiceServer) Count(context.Context, *v1.PagingRequest) (*CountApplicationResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method Count not implemented")
 }
 func (UnimplementedApplicationServiceServer) Get(context.Context, *GetApplicationRequest) (*Application, error) {
 	return nil, status.Error(codes.Unimplemented, "method Get not implemented")
@@ -180,6 +198,24 @@ func _ApplicationService_List_Handler(srv interface{}, ctx context.Context, dec 
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ApplicationServiceServer).List(ctx, req.(*v1.PagingRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ApplicationService_Count_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(v1.PagingRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ApplicationServiceServer).Count(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ApplicationService_Count_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ApplicationServiceServer).Count(ctx, req.(*v1.PagingRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -266,6 +302,10 @@ var ApplicationService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "List",
 			Handler:    _ApplicationService_List_Handler,
+		},
+		{
+			MethodName: "Count",
+			Handler:    _ApplicationService_Count_Handler,
 		},
 		{
 			MethodName: "Get",

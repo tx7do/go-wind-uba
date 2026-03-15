@@ -8,12 +8,11 @@ package servicev1
 
 import (
 	_ "github.com/google/gnostic/openapiv3"
+	v1 "github.com/tx7do/go-crud/api/gen/go/pagination/v1"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	_ "google.golang.org/protobuf/types/known/durationpb"
-	_ "google.golang.org/protobuf/types/known/emptypb"
-	_ "google.golang.org/protobuf/types/known/fieldmaskpb"
-	_ "google.golang.org/protobuf/types/known/structpb"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
+	fieldmaskpb "google.golang.org/protobuf/types/known/fieldmaskpb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	reflect "reflect"
 	sync "sync"
@@ -26,132 +25,6 @@ const (
 	// Verify that runtime/protoimpl is sufficiently up-to-date.
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
-
-// 标签分类枚举
-type TagCategory int32
-
-const (
-	// 未指定标签分类
-	TagCategory_TAG_CATEGORY_UNSPECIFIED TagCategory = 0
-	// 用户属性标签
-	TagCategory_TAG_CATEGORY_USER TagCategory = 1
-	// 行为偏好标签
-	TagCategory_TAG_CATEGORY_BEHAVIOR TagCategory = 2
-	// 风险标签
-	TagCategory_TAG_CATEGORY_RISK TagCategory = 3
-	// 业务标签
-	TagCategory_TAG_CATEGORY_BUSINESS TagCategory = 4
-)
-
-// Enum value maps for TagCategory.
-var (
-	TagCategory_name = map[int32]string{
-		0: "TAG_CATEGORY_UNSPECIFIED",
-		1: "TAG_CATEGORY_USER",
-		2: "TAG_CATEGORY_BEHAVIOR",
-		3: "TAG_CATEGORY_RISK",
-		4: "TAG_CATEGORY_BUSINESS",
-	}
-	TagCategory_value = map[string]int32{
-		"TAG_CATEGORY_UNSPECIFIED": 0,
-		"TAG_CATEGORY_USER":        1,
-		"TAG_CATEGORY_BEHAVIOR":    2,
-		"TAG_CATEGORY_RISK":        3,
-		"TAG_CATEGORY_BUSINESS":    4,
-	}
-)
-
-func (x TagCategory) Enum() *TagCategory {
-	p := new(TagCategory)
-	*p = x
-	return p
-}
-
-func (x TagCategory) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (TagCategory) Descriptor() protoreflect.EnumDescriptor {
-	return file_uba_service_v1_user_tag_proto_enumTypes[0].Descriptor()
-}
-
-func (TagCategory) Type() protoreflect.EnumType {
-	return &file_uba_service_v1_user_tag_proto_enumTypes[0]
-}
-
-func (x TagCategory) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
-// Deprecated: Use TagCategory.Descriptor instead.
-func (TagCategory) EnumDescriptor() ([]byte, []int) {
-	return file_uba_service_v1_user_tag_proto_rawDescGZIP(), []int{0}
-}
-
-// 标签类型枚举
-type TagType int32
-
-const (
-	// 未指定标签类型
-	TagType_TAG_TYPE_UNSPECIFIED TagType = 0
-	// 布尔型标签（是/否）
-	TagType_TAG_TYPE_BOOLEAN TagType = 1
-	// 枚举型标签
-	TagType_TAG_TYPE_ENUM TagType = 2
-	// 数值型标签
-	TagType_TAG_TYPE_NUMERIC TagType = 3
-	// 字符串型标签
-	TagType_TAG_TYPE_STRING TagType = 4
-	// 列表型标签
-	TagType_TAG_TYPE_LIST TagType = 5
-)
-
-// Enum value maps for TagType.
-var (
-	TagType_name = map[int32]string{
-		0: "TAG_TYPE_UNSPECIFIED",
-		1: "TAG_TYPE_BOOLEAN",
-		2: "TAG_TYPE_ENUM",
-		3: "TAG_TYPE_NUMERIC",
-		4: "TAG_TYPE_STRING",
-		5: "TAG_TYPE_LIST",
-	}
-	TagType_value = map[string]int32{
-		"TAG_TYPE_UNSPECIFIED": 0,
-		"TAG_TYPE_BOOLEAN":     1,
-		"TAG_TYPE_ENUM":        2,
-		"TAG_TYPE_NUMERIC":     3,
-		"TAG_TYPE_STRING":      4,
-		"TAG_TYPE_LIST":        5,
-	}
-)
-
-func (x TagType) Enum() *TagType {
-	p := new(TagType)
-	*p = x
-	return p
-}
-
-func (x TagType) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (TagType) Descriptor() protoreflect.EnumDescriptor {
-	return file_uba_service_v1_user_tag_proto_enumTypes[1].Descriptor()
-}
-
-func (TagType) Type() protoreflect.EnumType {
-	return &file_uba_service_v1_user_tag_proto_enumTypes[1]
-}
-
-func (x TagType) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
-// Deprecated: Use TagType.Descriptor instead.
-func (TagType) EnumDescriptor() ([]byte, []int) {
-	return file_uba_service_v1_user_tag_proto_rawDescGZIP(), []int{1}
-}
 
 // 标签来源枚举
 type TagSource int32
@@ -198,11 +71,11 @@ func (x TagSource) String() string {
 }
 
 func (TagSource) Descriptor() protoreflect.EnumDescriptor {
-	return file_uba_service_v1_user_tag_proto_enumTypes[2].Descriptor()
+	return file_uba_service_v1_user_tag_proto_enumTypes[0].Descriptor()
 }
 
 func (TagSource) Type() protoreflect.EnumType {
-	return &file_uba_service_v1_user_tag_proto_enumTypes[2]
+	return &file_uba_service_v1_user_tag_proto_enumTypes[0]
 }
 
 func (x TagSource) Number() protoreflect.EnumNumber {
@@ -211,353 +84,47 @@ func (x TagSource) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use TagSource.Descriptor instead.
 func (TagSource) EnumDescriptor() ([]byte, []int) {
-	return file_uba_service_v1_user_tag_proto_rawDescGZIP(), []int{2}
-}
-
-// 标签定义（对应 tag_definition 表）
-type TagDefinition struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// 标签ID（唯一标识一个标签）
-	Id uint32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	// 租户ID（多租户隔离，支持 SaaS 场景）
-	TenantId uint32 `protobuf:"varint,2,opt,name=tenant_id,json=tenantId,proto3" json:"tenant_id,omitempty"`
-	// 标签名称（显示名称）
-	Name string `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
-	// 标签唯一代码，业务唯一标识，支持英文、数字、下划线
-	Code string `protobuf:"bytes,4,opt,name=code,proto3" json:"code,omitempty"`
-	// 标签描述（详细说明）
-	Description string `protobuf:"bytes,5,opt,name=description,proto3" json:"description,omitempty"`
-	// 标签分类（如用户属性、行为偏好、风险、业务等）
-	Category TagCategory `protobuf:"varint,6,opt,name=category,proto3,enum=uba.service.v1.TagCategory" json:"category,omitempty"`
-	// 标签类型（如布尔、枚举、数值、字符串、列表等）
-	TagType TagType `protobuf:"varint,10,opt,name=tag_type,json=tagType,proto3,enum=uba.service.v1.TagType" json:"tag_type,omitempty"`
-	// 计算规则（简化，实际可用表达式引擎，如 CEL/SQL）
-	Rule *TagRule `protobuf:"bytes,11,opt,name=rule,proto3" json:"rule,omitempty"`
-	// 取值范围（枚举型标签的允许值列表）
-	AllowedValues []*TagValue `protobuf:"bytes,12,rep,name=allowed_values,json=allowedValues,proto3" json:"allowed_values,omitempty"`
-	// 是否系统预置（true: 系统预置，false: 用户自定义）
-	IsSystem bool `protobuf:"varint,13,opt,name=is_system,json=isSystem,proto3" json:"is_system,omitempty"`
-	// 是否动态标签（true: 动态计算，false: 静态打标）
-	IsDynamic bool `protobuf:"varint,14,opt,name=is_dynamic,json=isDynamic,proto3" json:"is_dynamic,omitempty"`
-	// 动态标签刷新间隔（单位秒）
-	RefreshIntervalSeconds uint32                 `protobuf:"varint,15,opt,name=refresh_interval_seconds,json=refreshIntervalSeconds,proto3" json:"refresh_interval_seconds,omitempty"`
-	CreatedBy              *uint32                `protobuf:"varint,100,opt,name=created_by,json=createdBy,proto3,oneof" json:"created_by,omitempty"` // 创建者用户ID
-	UpdatedBy              *uint32                `protobuf:"varint,101,opt,name=updated_by,json=updatedBy,proto3,oneof" json:"updated_by,omitempty"` // 更新者用户ID
-	DeletedBy              *uint32                `protobuf:"varint,102,opt,name=deleted_by,json=deletedBy,proto3,oneof" json:"deleted_by,omitempty"` // 删除者用户ID
-	CreatedAt              *timestamppb.Timestamp `protobuf:"bytes,200,opt,name=created_at,json=createdAt,proto3,oneof" json:"created_at,omitempty"`  // 创建时间
-	UpdatedAt              *timestamppb.Timestamp `protobuf:"bytes,201,opt,name=updated_at,json=updatedAt,proto3,oneof" json:"updated_at,omitempty"`  // 更新时间
-	DeletedAt              *timestamppb.Timestamp `protobuf:"bytes,202,opt,name=deleted_at,json=deletedAt,proto3,oneof" json:"deleted_at,omitempty"`  // 删除时间
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
-}
-
-func (x *TagDefinition) Reset() {
-	*x = TagDefinition{}
-	mi := &file_uba_service_v1_user_tag_proto_msgTypes[0]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *TagDefinition) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*TagDefinition) ProtoMessage() {}
-
-func (x *TagDefinition) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_user_tag_proto_msgTypes[0]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use TagDefinition.ProtoReflect.Descriptor instead.
-func (*TagDefinition) Descriptor() ([]byte, []int) {
 	return file_uba_service_v1_user_tag_proto_rawDescGZIP(), []int{0}
-}
-
-func (x *TagDefinition) GetId() uint32 {
-	if x != nil {
-		return x.Id
-	}
-	return 0
-}
-
-func (x *TagDefinition) GetTenantId() uint32 {
-	if x != nil {
-		return x.TenantId
-	}
-	return 0
-}
-
-func (x *TagDefinition) GetName() string {
-	if x != nil {
-		return x.Name
-	}
-	return ""
-}
-
-func (x *TagDefinition) GetCode() string {
-	if x != nil {
-		return x.Code
-	}
-	return ""
-}
-
-func (x *TagDefinition) GetDescription() string {
-	if x != nil {
-		return x.Description
-	}
-	return ""
-}
-
-func (x *TagDefinition) GetCategory() TagCategory {
-	if x != nil {
-		return x.Category
-	}
-	return TagCategory_TAG_CATEGORY_UNSPECIFIED
-}
-
-func (x *TagDefinition) GetTagType() TagType {
-	if x != nil {
-		return x.TagType
-	}
-	return TagType_TAG_TYPE_UNSPECIFIED
-}
-
-func (x *TagDefinition) GetRule() *TagRule {
-	if x != nil {
-		return x.Rule
-	}
-	return nil
-}
-
-func (x *TagDefinition) GetAllowedValues() []*TagValue {
-	if x != nil {
-		return x.AllowedValues
-	}
-	return nil
-}
-
-func (x *TagDefinition) GetIsSystem() bool {
-	if x != nil {
-		return x.IsSystem
-	}
-	return false
-}
-
-func (x *TagDefinition) GetIsDynamic() bool {
-	if x != nil {
-		return x.IsDynamic
-	}
-	return false
-}
-
-func (x *TagDefinition) GetRefreshIntervalSeconds() uint32 {
-	if x != nil {
-		return x.RefreshIntervalSeconds
-	}
-	return 0
-}
-
-func (x *TagDefinition) GetCreatedBy() uint32 {
-	if x != nil && x.CreatedBy != nil {
-		return *x.CreatedBy
-	}
-	return 0
-}
-
-func (x *TagDefinition) GetUpdatedBy() uint32 {
-	if x != nil && x.UpdatedBy != nil {
-		return *x.UpdatedBy
-	}
-	return 0
-}
-
-func (x *TagDefinition) GetDeletedBy() uint32 {
-	if x != nil && x.DeletedBy != nil {
-		return *x.DeletedBy
-	}
-	return 0
-}
-
-func (x *TagDefinition) GetCreatedAt() *timestamppb.Timestamp {
-	if x != nil {
-		return x.CreatedAt
-	}
-	return nil
-}
-
-func (x *TagDefinition) GetUpdatedAt() *timestamppb.Timestamp {
-	if x != nil {
-		return x.UpdatedAt
-	}
-	return nil
-}
-
-func (x *TagDefinition) GetDeletedAt() *timestamppb.Timestamp {
-	if x != nil {
-		return x.DeletedAt
-	}
-	return nil
-}
-
-// 标签规则定义（简化，实际可根据需求扩展为更复杂的表达式结构）
-type TagRule struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// 规则表达式（如 CEL/SQL，示例: "total_pay_amount > 1000 AND last_pay_time > now() - 30d"）
-	Expression string `protobuf:"bytes,1,opt,name=expression,proto3" json:"expression,omitempty"`
-	// 规则参数（键值对形式，支持自定义参数）
-	Params        map[string]string `protobuf:"bytes,2,rep,name=params,proto3" json:"params,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *TagRule) Reset() {
-	*x = TagRule{}
-	mi := &file_uba_service_v1_user_tag_proto_msgTypes[1]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *TagRule) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*TagRule) ProtoMessage() {}
-
-func (x *TagRule) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_user_tag_proto_msgTypes[1]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use TagRule.ProtoReflect.Descriptor instead.
-func (*TagRule) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_user_tag_proto_rawDescGZIP(), []int{1}
-}
-
-func (x *TagRule) GetExpression() string {
-	if x != nil {
-		return x.Expression
-	}
-	return ""
-}
-
-func (x *TagRule) GetParams() map[string]string {
-	if x != nil {
-		return x.Params
-	}
-	return nil
-}
-
-// 标签值定义（用于枚举型标签的取值范围）
-type TagValue struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// 标签值（实际存储值）
-	Value string `protobuf:"bytes,1,opt,name=value,proto3" json:"value,omitempty"`
-	// 标签值显示名称（用于展示）
-	Label string `protobuf:"bytes,2,opt,name=label,proto3" json:"label,omitempty"`
-	// 标签值描述（详细说明）
-	Description   string `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *TagValue) Reset() {
-	*x = TagValue{}
-	mi := &file_uba_service_v1_user_tag_proto_msgTypes[2]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *TagValue) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*TagValue) ProtoMessage() {}
-
-func (x *TagValue) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_user_tag_proto_msgTypes[2]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use TagValue.ProtoReflect.Descriptor instead.
-func (*TagValue) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_user_tag_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *TagValue) GetValue() string {
-	if x != nil {
-		return x.Value
-	}
-	return ""
-}
-
-func (x *TagValue) GetLabel() string {
-	if x != nil {
-		return x.Label
-	}
-	return ""
-}
-
-func (x *TagValue) GetDescription() string {
-	if x != nil {
-		return x.Description
-	}
-	return ""
 }
 
 // 用户标签记录（对应 user_tag 表）
 type UserTag struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// 主键ID（自增长，唯一标识一条用户标签记录）
+	Id *uint32 `protobuf:"varint,1,opt,name=id,proto3,oneof" json:"id,omitempty"`
 	// 租户ID（多租户隔离，支持 SaaS 场景）
-	TenantId uint32 `protobuf:"varint,1,opt,name=tenant_id,json=tenantId,proto3" json:"tenant_id,omitempty"`
+	TenantId *uint32 `protobuf:"varint,2,opt,name=tenant_id,json=tenantId,proto3,oneof" json:"tenant_id,omitempty"`
 	// 用户ID（唯一标识一个用户）
-	UserId uint32 `protobuf:"varint,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	UserId *uint32 `protobuf:"varint,3,opt,name=user_id,json=userId,proto3,oneof" json:"user_id,omitempty"`
 	// 标签ID（唯一标识一个标签）
-	TagId uint32 `protobuf:"varint,3,opt,name=tag_id,json=tagId,proto3" json:"tag_id,omitempty"`
+	TagId *uint32 `protobuf:"varint,4,opt,name=tag_id,json=tagId,proto3,oneof" json:"tag_id,omitempty"`
 	// 标签值（根据 tag_type 解析，实际存储值）
-	Value string `protobuf:"bytes,4,opt,name=value,proto3" json:"value,omitempty"`
+	Value *string `protobuf:"bytes,5,opt,name=value,proto3,oneof" json:"value,omitempty"`
 	// 标签值显示名称（枚举值的展示名称）
-	ValueLabel string `protobuf:"bytes,5,opt,name=value_label,json=valueLabel,proto3" json:"value_label,omitempty"`
+	ValueLabel *string `protobuf:"bytes,6,opt,name=value_label,json=valueLabel,proto3,oneof" json:"value_label,omitempty"`
 	// 置信度（算法打标时，范围0~1）
-	Confidence float32 `protobuf:"fixed32,6,opt,name=confidence,proto3" json:"confidence,omitempty"`
+	Confidence *float64 `protobuf:"fixed64,7,opt,name=confidence,proto3,oneof" json:"confidence,omitempty"`
 	// 标签来源（如人工打标、规则引擎、算法模型、批量导入等）
-	Source TagSource `protobuf:"varint,7,opt,name=source,proto3,enum=uba.service.v1.TagSource" json:"source,omitempty"`
+	Source *TagSource `protobuf:"varint,8,opt,name=source,proto3,enum=uba.service.v1.TagSource,oneof" json:"source,omitempty"`
 	// 来源规则ID（如果是规则计算，记录规则ID）
-	SourceRuleId string `protobuf:"bytes,8,opt,name=source_rule_id,json=sourceRuleId,proto3" json:"source_rule_id,omitempty"`
+	SourceRuleId *uint32 `protobuf:"varint,9,opt,name=source_rule_id,json=sourceRuleId,proto3,oneof" json:"source_rule_id,omitempty"`
 	// 有效时间（标签生效时间）
-	EffectiveTime *timestamppb.Timestamp `protobuf:"bytes,9,opt,name=effective_time,json=effectiveTime,proto3" json:"effective_time,omitempty"`
+	EffectiveTime *timestamppb.Timestamp `protobuf:"bytes,10,opt,name=effective_time,json=effectiveTime,proto3,oneof" json:"effective_time,omitempty"`
 	// 过期时间（标签失效时间）
-	ExpireTime *timestamppb.Timestamp `protobuf:"bytes,10,opt,name=expire_time,json=expireTime,proto3" json:"expire_time,omitempty"`
-	// 更新时间（标签最近一次更新的时间）
-	UpdateTime    *timestamppb.Timestamp `protobuf:"bytes,11,opt,name=update_time,json=updateTime,proto3" json:"update_time,omitempty"`
+	ExpireTime    *timestamppb.Timestamp `protobuf:"bytes,11,opt,name=expire_time,json=expireTime,proto3,oneof" json:"expire_time,omitempty"`
+	CreatedBy     *uint32                `protobuf:"varint,100,opt,name=created_by,json=createdBy,proto3,oneof" json:"created_by,omitempty"` // 创建者用户ID
+	UpdatedBy     *uint32                `protobuf:"varint,101,opt,name=updated_by,json=updatedBy,proto3,oneof" json:"updated_by,omitempty"` // 更新者用户ID
+	DeletedBy     *uint32                `protobuf:"varint,102,opt,name=deleted_by,json=deletedBy,proto3,oneof" json:"deleted_by,omitempty"` // 删除者用户ID
+	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,200,opt,name=created_at,json=createdAt,proto3,oneof" json:"created_at,omitempty"`  // 创建时间
+	UpdatedAt     *timestamppb.Timestamp `protobuf:"bytes,201,opt,name=updated_at,json=updatedAt,proto3,oneof" json:"updated_at,omitempty"`  // 更新时间
+	DeletedAt     *timestamppb.Timestamp `protobuf:"bytes,202,opt,name=deleted_at,json=deletedAt,proto3,oneof" json:"deleted_at,omitempty"`  // 删除时间
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *UserTag) Reset() {
 	*x = UserTag{}
-	mi := &file_uba_service_v1_user_tag_proto_msgTypes[3]
+	mi := &file_uba_service_v1_user_tag_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -569,7 +136,7 @@ func (x *UserTag) String() string {
 func (*UserTag) ProtoMessage() {}
 
 func (x *UserTag) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_user_tag_proto_msgTypes[3]
+	mi := &file_uba_service_v1_user_tag_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -582,63 +149,70 @@ func (x *UserTag) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UserTag.ProtoReflect.Descriptor instead.
 func (*UserTag) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_user_tag_proto_rawDescGZIP(), []int{3}
+	return file_uba_service_v1_user_tag_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *UserTag) GetId() uint32 {
+	if x != nil && x.Id != nil {
+		return *x.Id
+	}
+	return 0
 }
 
 func (x *UserTag) GetTenantId() uint32 {
-	if x != nil {
-		return x.TenantId
+	if x != nil && x.TenantId != nil {
+		return *x.TenantId
 	}
 	return 0
 }
 
 func (x *UserTag) GetUserId() uint32 {
-	if x != nil {
-		return x.UserId
+	if x != nil && x.UserId != nil {
+		return *x.UserId
 	}
 	return 0
 }
 
 func (x *UserTag) GetTagId() uint32 {
-	if x != nil {
-		return x.TagId
+	if x != nil && x.TagId != nil {
+		return *x.TagId
 	}
 	return 0
 }
 
 func (x *UserTag) GetValue() string {
-	if x != nil {
-		return x.Value
+	if x != nil && x.Value != nil {
+		return *x.Value
 	}
 	return ""
 }
 
 func (x *UserTag) GetValueLabel() string {
-	if x != nil {
-		return x.ValueLabel
+	if x != nil && x.ValueLabel != nil {
+		return *x.ValueLabel
 	}
 	return ""
 }
 
-func (x *UserTag) GetConfidence() float32 {
-	if x != nil {
-		return x.Confidence
+func (x *UserTag) GetConfidence() float64 {
+	if x != nil && x.Confidence != nil {
+		return *x.Confidence
 	}
 	return 0
 }
 
 func (x *UserTag) GetSource() TagSource {
-	if x != nil {
-		return x.Source
+	if x != nil && x.Source != nil {
+		return *x.Source
 	}
 	return TagSource_TAG_SOURCE_UNSPECIFIED
 }
 
-func (x *UserTag) GetSourceRuleId() string {
-	if x != nil {
-		return x.SourceRuleId
+func (x *UserTag) GetSourceRuleId() uint32 {
+	if x != nil && x.SourceRuleId != nil {
+		return *x.SourceRuleId
 	}
-	return ""
+	return 0
 }
 
 func (x *UserTag) GetEffectiveTime() *timestamppb.Timestamp {
@@ -655,101 +229,506 @@ func (x *UserTag) GetExpireTime() *timestamppb.Timestamp {
 	return nil
 }
 
-func (x *UserTag) GetUpdateTime() *timestamppb.Timestamp {
+func (x *UserTag) GetCreatedBy() uint32 {
+	if x != nil && x.CreatedBy != nil {
+		return *x.CreatedBy
+	}
+	return 0
+}
+
+func (x *UserTag) GetUpdatedBy() uint32 {
+	if x != nil && x.UpdatedBy != nil {
+		return *x.UpdatedBy
+	}
+	return 0
+}
+
+func (x *UserTag) GetDeletedBy() uint32 {
+	if x != nil && x.DeletedBy != nil {
+		return *x.DeletedBy
+	}
+	return 0
+}
+
+func (x *UserTag) GetCreatedAt() *timestamppb.Timestamp {
 	if x != nil {
-		return x.UpdateTime
+		return x.CreatedAt
 	}
 	return nil
+}
+
+func (x *UserTag) GetUpdatedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.UpdatedAt
+	}
+	return nil
+}
+
+func (x *UserTag) GetDeletedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.DeletedAt
+	}
+	return nil
+}
+
+// 获取用户标签列表 - 答复
+type ListUserTagResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Items         []*UserTag             `protobuf:"bytes,1,rep,name=items,proto3" json:"items,omitempty"`
+	Total         uint64                 `protobuf:"varint,2,opt,name=total,proto3" json:"total,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListUserTagResponse) Reset() {
+	*x = ListUserTagResponse{}
+	mi := &file_uba_service_v1_user_tag_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListUserTagResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListUserTagResponse) ProtoMessage() {}
+
+func (x *ListUserTagResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_user_tag_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListUserTagResponse.ProtoReflect.Descriptor instead.
+func (*ListUserTagResponse) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_user_tag_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *ListUserTagResponse) GetItems() []*UserTag {
+	if x != nil {
+		return x.Items
+	}
+	return nil
+}
+
+func (x *ListUserTagResponse) GetTotal() uint64 {
+	if x != nil {
+		return x.Total
+	}
+	return 0
+}
+
+// 获取用户标签数据 - 请求
+type GetUserTagRequest struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Types that are valid to be assigned to QueryBy:
+	//
+	//	*GetUserTagRequest_Id
+	QueryBy       isGetUserTagRequest_QueryBy `protobuf_oneof:"query_by"`
+	ViewMask      *fieldmaskpb.FieldMask      `protobuf:"bytes,100,opt,name=view_mask,json=viewMask,proto3,oneof" json:"view_mask,omitempty"` // 视图字段过滤器，用于控制返回的字段
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetUserTagRequest) Reset() {
+	*x = GetUserTagRequest{}
+	mi := &file_uba_service_v1_user_tag_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetUserTagRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetUserTagRequest) ProtoMessage() {}
+
+func (x *GetUserTagRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_user_tag_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetUserTagRequest.ProtoReflect.Descriptor instead.
+func (*GetUserTagRequest) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_user_tag_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *GetUserTagRequest) GetQueryBy() isGetUserTagRequest_QueryBy {
+	if x != nil {
+		return x.QueryBy
+	}
+	return nil
+}
+
+func (x *GetUserTagRequest) GetId() uint32 {
+	if x != nil {
+		if x, ok := x.QueryBy.(*GetUserTagRequest_Id); ok {
+			return x.Id
+		}
+	}
+	return 0
+}
+
+func (x *GetUserTagRequest) GetViewMask() *fieldmaskpb.FieldMask {
+	if x != nil {
+		return x.ViewMask
+	}
+	return nil
+}
+
+type isGetUserTagRequest_QueryBy interface {
+	isGetUserTagRequest_QueryBy()
+}
+
+type GetUserTagRequest_Id struct {
+	Id uint32 `protobuf:"varint,1,opt,name=id,proto3,oneof"` // ID
+}
+
+func (*GetUserTagRequest_Id) isGetUserTagRequest_QueryBy() {}
+
+// 创建用户标签 - 请求
+type CreateUserTagRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Data          *UserTag               `protobuf:"bytes,1,opt,name=data,proto3" json:"data,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateUserTagRequest) Reset() {
+	*x = CreateUserTagRequest{}
+	mi := &file_uba_service_v1_user_tag_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateUserTagRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateUserTagRequest) ProtoMessage() {}
+
+func (x *CreateUserTagRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_user_tag_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateUserTagRequest.ProtoReflect.Descriptor instead.
+func (*CreateUserTagRequest) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_user_tag_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *CreateUserTagRequest) GetData() *UserTag {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
+// 更新用户标签 - 请求
+type UpdateUserTagRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            uint32                 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Data          *UserTag               `protobuf:"bytes,2,opt,name=data,proto3" json:"data,omitempty"`                                            // 数据
+	UpdateMask    *fieldmaskpb.FieldMask `protobuf:"bytes,3,opt,name=update_mask,json=updateMask,proto3" json:"update_mask,omitempty"`              // 要更新的字段列表
+	AllowMissing  *bool                  `protobuf:"varint,4,opt,name=allow_missing,json=allowMissing,proto3,oneof" json:"allow_missing,omitempty"` // 如果设置为true的时候，资源不存在则会新增(插入)，并且在这种情况下`updateMask`字段将会被忽略。
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateUserTagRequest) Reset() {
+	*x = UpdateUserTagRequest{}
+	mi := &file_uba_service_v1_user_tag_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateUserTagRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateUserTagRequest) ProtoMessage() {}
+
+func (x *UpdateUserTagRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_user_tag_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateUserTagRequest.ProtoReflect.Descriptor instead.
+func (*UpdateUserTagRequest) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_user_tag_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *UpdateUserTagRequest) GetId() uint32 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *UpdateUserTagRequest) GetData() *UserTag {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
+func (x *UpdateUserTagRequest) GetUpdateMask() *fieldmaskpb.FieldMask {
+	if x != nil {
+		return x.UpdateMask
+	}
+	return nil
+}
+
+func (x *UpdateUserTagRequest) GetAllowMissing() bool {
+	if x != nil && x.AllowMissing != nil {
+		return *x.AllowMissing
+	}
+	return false
+}
+
+// 删除用户标签 - 请求
+type DeleteUserTagRequest struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Types that are valid to be assigned to QueryBy:
+	//
+	//	*DeleteUserTagRequest_Id
+	QueryBy       isDeleteUserTagRequest_QueryBy `protobuf_oneof:"query_by"`
+	DeletedBy     *uint32                        `protobuf:"varint,100,opt,name=deleted_by,json=deletedBy,proto3,oneof" json:"deleted_by,omitempty"` // 删除者用户ID
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteUserTagRequest) Reset() {
+	*x = DeleteUserTagRequest{}
+	mi := &file_uba_service_v1_user_tag_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteUserTagRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteUserTagRequest) ProtoMessage() {}
+
+func (x *DeleteUserTagRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_user_tag_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteUserTagRequest.ProtoReflect.Descriptor instead.
+func (*DeleteUserTagRequest) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_user_tag_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *DeleteUserTagRequest) GetQueryBy() isDeleteUserTagRequest_QueryBy {
+	if x != nil {
+		return x.QueryBy
+	}
+	return nil
+}
+
+func (x *DeleteUserTagRequest) GetId() uint32 {
+	if x != nil {
+		if x, ok := x.QueryBy.(*DeleteUserTagRequest_Id); ok {
+			return x.Id
+		}
+	}
+	return 0
+}
+
+func (x *DeleteUserTagRequest) GetDeletedBy() uint32 {
+	if x != nil && x.DeletedBy != nil {
+		return *x.DeletedBy
+	}
+	return 0
+}
+
+type isDeleteUserTagRequest_QueryBy interface {
+	isDeleteUserTagRequest_QueryBy()
+}
+
+type DeleteUserTagRequest_Id struct {
+	Id uint32 `protobuf:"varint,1,opt,name=id,proto3,oneof"` // ID
+}
+
+func (*DeleteUserTagRequest_Id) isDeleteUserTagRequest_QueryBy() {}
+
+type CountUserTagResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Count         uint64                 `protobuf:"varint,1,opt,name=count,proto3" json:"count,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CountUserTagResponse) Reset() {
+	*x = CountUserTagResponse{}
+	mi := &file_uba_service_v1_user_tag_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CountUserTagResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CountUserTagResponse) ProtoMessage() {}
+
+func (x *CountUserTagResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_user_tag_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CountUserTagResponse.ProtoReflect.Descriptor instead.
+func (*CountUserTagResponse) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_user_tag_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *CountUserTagResponse) GetCount() uint64 {
+	if x != nil {
+		return x.Count
+	}
+	return 0
 }
 
 var File_uba_service_v1_user_tag_proto protoreflect.FileDescriptor
 
 const file_uba_service_v1_user_tag_proto_rawDesc = "" +
 	"\n" +
-	"\x1duba/service/v1/user_tag.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1egoogle/protobuf/duration.proto\x1a google/protobuf/field_mask.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1buba/service/v1/common.proto\"\xb1\r\n" +
-	"\rTagDefinition\x129\n" +
-	"\x02id\x18\x01 \x01(\rB)\xbaG&\x92\x02#标签ID，唯一标识一个标签R\x02id\x12R\n" +
-	"\ttenant_id\x18\x02 \x01(\rB5\xbaG2\x92\x02/租户ID，多租户隔离，支持 SaaS 场景R\btenantId\x125\n" +
-	"\x04name\x18\x03 \x01(\tB!\xbaG\x1e\x92\x02\x1b标签名称，显示名称R\x04name\x12e\n" +
-	"\x04code\x18\x04 \x01(\tBQ\xbaGN\x92\x02K标签唯一代码，业务唯一标识，支持英文、数字、下划线R\x04code\x12C\n" +
-	"\vdescription\x18\x05 \x01(\tB!\xbaG\x1e\x92\x02\x1b标签描述，详细说明R\vdescription\x12\x81\x01\n" +
-	"\bcategory\x18\x06 \x01(\x0e2\x1b.uba.service.v1.TagCategoryBH\xbaGE\x92\x02B标签分类，如用户属性、行为偏好、风险、业务等R\bcategory\x12|\n" +
-	"\btag_type\x18\n" +
-	" \x01(\x0e2\x17.uba.service.v1.TagTypeBH\xbaGE\x92\x02B标签类型，如布尔、枚举、数值、字符串、列表等R\atagType\x12t\n" +
-	"\x04rule\x18\v \x01(\v2\x17.uba.service.v1.TagRuleBG\xbaGD\x92\x02A计算规则，简化，实际可用表达式引擎，如 CEL/SQLR\x04rule\x12w\n" +
-	"\x0eallowed_values\x18\f \x03(\v2\x18.uba.service.v1.TagValueB6\xbaG3\x92\x020取值范围，枚举型标签的允许值列表R\rallowedValues\x12c\n" +
-	"\tis_system\x18\r \x01(\bBF\xbaGC\x92\x02@是否系统预置，true: 系统预置，false: 用户自定义R\bisSystem\x12b\n" +
+	"\x1duba/service/v1/user_tag.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a google/protobuf/field_mask.proto\x1a\x1epagination/v1/pagination.proto\"\xce\r\n" +
+	"\aUserTag\x12V\n" +
+	"\x02id\x18\x01 \x01(\rBA\xbaG>\x92\x02;主键ID，自增长，唯一标识一条用户标签记录H\x00R\x02id\x88\x01\x01\x12W\n" +
+	"\ttenant_id\x18\x02 \x01(\rB5\xbaG2\x92\x02/租户ID，多租户隔离，支持 SaaS 场景H\x01R\btenantId\x88\x01\x01\x12G\n" +
+	"\auser_id\x18\x03 \x01(\rB)\xbaG&\x92\x02#用户ID，唯一标识一个用户H\x02R\x06userId\x88\x01\x01\x12E\n" +
+	"\x06tag_id\x18\x04 \x01(\rB)\xbaG&\x92\x02#标签ID，唯一标识一个标签H\x03R\x05tagId\x88\x01\x01\x12U\n" +
+	"\x05value\x18\x05 \x01(\tB:\xbaG7\x92\x024标签值，根据 tag_type 解析，实际存储值H\x04R\x05value\x88\x01\x01\x12\\\n" +
+	"\vvalue_label\x18\x06 \x01(\tB6\xbaG3\x92\x020标签值显示名称，枚举值的展示名称H\x05R\n" +
+	"valueLabel\x88\x01\x01\x12R\n" +
 	"\n" +
-	"is_dynamic\x18\x0e \x01(\bBC\xbaG@\x92\x02=是否动态标签，true: 动态计算，false: 静态打标R\tisDynamic\x12d\n" +
-	"\x18refresh_interval_seconds\x18\x0f \x01(\rB*\xbaG'\x92\x02$动态标签刷新间隔，单位秒R\x16refreshIntervalSeconds\x12;\n" +
+	"confidence\x18\a \x01(\x01B-\xbaG*\x92\x02'置信度，算法打标时，范围0~1H\x06R\n" +
+	"confidence\x88\x01\x01\x12\x8c\x01\n" +
+	"\x06source\x18\b \x01(\x0e2\x19.uba.service.v1.TagSourceBT\xbaGQ\x92\x02N标签来源，如人工打标、规则引擎、算法模型、批量导入等H\aR\x06source\x88\x01\x01\x12h\n" +
+	"\x0esource_rule_id\x18\t \x01(\rB=\xbaG:\x92\x027来源规则ID，如果是规则计算，记录规则IDH\bR\fsourceRuleId\x88\x01\x01\x12o\n" +
+	"\x0eeffective_time\x18\n" +
+	" \x01(\v2\x1a.google.protobuf.TimestampB'\xbaG$\x92\x02!有效时间，标签生效时间H\tR\reffectiveTime\x88\x01\x01\x12i\n" +
+	"\vexpire_time\x18\v \x01(\v2\x1a.google.protobuf.TimestampB'\xbaG$\x92\x02!过期时间，标签失效时间H\n" +
+	"R\n" +
+	"expireTime\x88\x01\x01\x12;\n" +
 	"\n" +
-	"created_by\x18d \x01(\rB\x17\xbaG\x14\x92\x02\x11创建者用户IDH\x00R\tcreatedBy\x88\x01\x01\x12;\n" +
+	"created_by\x18d \x01(\rB\x17\xbaG\x14\x92\x02\x11创建者用户IDH\vR\tcreatedBy\x88\x01\x01\x12;\n" +
 	"\n" +
-	"updated_by\x18e \x01(\rB\x17\xbaG\x14\x92\x02\x11更新者用户IDH\x01R\tupdatedBy\x88\x01\x01\x12;\n" +
+	"updated_by\x18e \x01(\rB\x17\xbaG\x14\x92\x02\x11更新者用户IDH\fR\tupdatedBy\x88\x01\x01\x12;\n" +
 	"\n" +
-	"deleted_by\x18f \x01(\rB\x17\xbaG\x14\x92\x02\x11删除者用户IDH\x02R\tdeletedBy\x88\x01\x01\x12S\n" +
+	"deleted_by\x18f \x01(\rB\x17\xbaG\x14\x92\x02\x11删除者用户IDH\rR\tdeletedBy\x88\x01\x01\x12S\n" +
 	"\n" +
-	"created_at\x18\xc8\x01 \x01(\v2\x1a.google.protobuf.TimestampB\x12\xbaG\x0f\x92\x02\f创建时间H\x03R\tcreatedAt\x88\x01\x01\x12S\n" +
+	"created_at\x18\xc8\x01 \x01(\v2\x1a.google.protobuf.TimestampB\x12\xbaG\x0f\x92\x02\f创建时间H\x0eR\tcreatedAt\x88\x01\x01\x12S\n" +
 	"\n" +
-	"updated_at\x18\xc9\x01 \x01(\v2\x1a.google.protobuf.TimestampB\x12\xbaG\x0f\x92\x02\f更新时间H\x04R\tupdatedAt\x88\x01\x01\x12S\n" +
+	"updated_at\x18\xc9\x01 \x01(\v2\x1a.google.protobuf.TimestampB\x12\xbaG\x0f\x92\x02\f更新时间H\x0fR\tupdatedAt\x88\x01\x01\x12S\n" +
 	"\n" +
-	"deleted_at\x18\xca\x01 \x01(\v2\x1a.google.protobuf.TimestampB\x12\xbaG\x0f\x92\x02\f删除时间H\x05R\tdeletedAt\x88\x01\x01B\r\n" +
+	"deleted_at\x18\xca\x01 \x01(\v2\x1a.google.protobuf.TimestampB\x12\xbaG\x0f\x92\x02\f删除时间H\x10R\tdeletedAt\x88\x01\x01B\x05\n" +
+	"\x03_idB\f\n" +
+	"\n" +
+	"_tenant_idB\n" +
+	"\n" +
+	"\b_user_idB\t\n" +
+	"\a_tag_idB\b\n" +
+	"\x06_valueB\x0e\n" +
+	"\f_value_labelB\r\n" +
+	"\v_confidenceB\t\n" +
+	"\a_sourceB\x11\n" +
+	"\x0f_source_rule_idB\x11\n" +
+	"\x0f_effective_timeB\x0e\n" +
+	"\f_expire_timeB\r\n" +
 	"\v_created_byB\r\n" +
 	"\v_updated_byB\r\n" +
 	"\v_deleted_byB\r\n" +
 	"\v_created_atB\r\n" +
 	"\v_updated_atB\r\n" +
-	"\v_deleted_at\"\xc9\x02\n" +
-	"\aTagRule\x12\x87\x01\n" +
+	"\v_deleted_at\"Z\n" +
+	"\x13ListUserTagResponse\x12-\n" +
+	"\x05items\x18\x01 \x03(\v2\x17.uba.service.v1.UserTagR\x05items\x12\x14\n" +
+	"\x05total\x18\x02 \x01(\x04R\x05total\"\xc4\x01\n" +
+	"\x11GetUserTagRequest\x12\x1c\n" +
+	"\x02id\x18\x01 \x01(\rB\n" +
+	"\xbaG\a\x18\x01\x92\x02\x02IDH\x00R\x02id\x12w\n" +
+	"\tview_mask\x18d \x01(\v2\x1a.google.protobuf.FieldMaskB9\xbaG6\x92\x023视图字段过滤器，用于控制返回的字段H\x01R\bviewMask\x88\x01\x01B\n" +
 	"\n" +
-	"expression\x18\x01 \x01(\tBg\xbaGd\x92\x02a规则表达式，如 CEL/SQL，示例: 'total_pay_amount > 1000 AND last_pay_time > now() - 30d'R\n" +
-	"expression\x12y\n" +
-	"\x06params\x18\x02 \x03(\v2#.uba.service.v1.TagRule.ParamsEntryB<\xbaG9\x92\x026规则参数，键值对形式，支持自定义参数R\x06params\x1a9\n" +
-	"\vParamsEntry\x12\x10\n" +
-	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\xcd\x01\n" +
-	"\bTagValue\x127\n" +
-	"\x05value\x18\x01 \x01(\tB!\xbaG\x1e\x92\x02\x1b标签值，实际存储值R\x05value\x12@\n" +
-	"\x05label\x18\x02 \x01(\tB*\xbaG'\x92\x02$标签值显示名称，用于展示R\x05label\x12F\n" +
-	"\vdescription\x18\x03 \x01(\tB$\xbaG!\x92\x02\x1e标签值描述，详细说明R\vdescription\"\x93\b\n" +
-	"\aUserTag\x12R\n" +
-	"\ttenant_id\x18\x01 \x01(\rB5\xbaG2\x92\x02/租户ID，多租户隔离，支持 SaaS 场景R\btenantId\x12B\n" +
-	"\auser_id\x18\x02 \x01(\rB)\xbaG&\x92\x02#用户ID，唯一标识一个用户R\x06userId\x12@\n" +
-	"\x06tag_id\x18\x03 \x01(\rB)\xbaG&\x92\x02#标签ID，唯一标识一个标签R\x05tagId\x12P\n" +
-	"\x05value\x18\x04 \x01(\tB:\xbaG7\x92\x024标签值，根据 tag_type 解析，实际存储值R\x05value\x12W\n" +
-	"\vvalue_label\x18\x05 \x01(\tB6\xbaG3\x92\x020标签值显示名称，枚举值的展示名称R\n" +
-	"valueLabel\x12M\n" +
+	"\bquery_byB\f\n" +
 	"\n" +
-	"confidence\x18\x06 \x01(\x02B-\xbaG*\x92\x02'置信度，算法打标时，范围0~1R\n" +
-	"confidence\x12\x87\x01\n" +
-	"\x06source\x18\a \x01(\x0e2\x19.uba.service.v1.TagSourceBT\xbaGQ\x92\x02N标签来源，如人工打标、规则引擎、算法模型、批量导入等R\x06source\x12c\n" +
-	"\x0esource_rule_id\x18\b \x01(\tB=\xbaG:\x92\x027来源规则ID，如果是规则计算，记录规则IDR\fsourceRuleId\x12j\n" +
-	"\x0eeffective_time\x18\t \x01(\v2\x1a.google.protobuf.TimestampB'\xbaG$\x92\x02!有效时间，标签生效时间R\reffectiveTime\x12d\n" +
-	"\vexpire_time\x18\n" +
-	" \x01(\v2\x1a.google.protobuf.TimestampB'\xbaG$\x92\x02!过期时间，标签失效时间R\n" +
-	"expireTime\x12s\n" +
-	"\vupdate_time\x18\v \x01(\v2\x1a.google.protobuf.TimestampB6\xbaG3\x92\x020更新时间，标签最近一次更新的时间R\n" +
-	"updateTime*\x8f\x01\n" +
-	"\vTagCategory\x12\x1c\n" +
-	"\x18TAG_CATEGORY_UNSPECIFIED\x10\x00\x12\x15\n" +
-	"\x11TAG_CATEGORY_USER\x10\x01\x12\x19\n" +
-	"\x15TAG_CATEGORY_BEHAVIOR\x10\x02\x12\x15\n" +
-	"\x11TAG_CATEGORY_RISK\x10\x03\x12\x19\n" +
-	"\x15TAG_CATEGORY_BUSINESS\x10\x04*\x8a\x01\n" +
-	"\aTagType\x12\x18\n" +
-	"\x14TAG_TYPE_UNSPECIFIED\x10\x00\x12\x14\n" +
-	"\x10TAG_TYPE_BOOLEAN\x10\x01\x12\x11\n" +
-	"\rTAG_TYPE_ENUM\x10\x02\x12\x14\n" +
-	"\x10TAG_TYPE_NUMERIC\x10\x03\x12\x13\n" +
-	"\x0fTAG_TYPE_STRING\x10\x04\x12\x11\n" +
-	"\rTAG_TYPE_LIST\x10\x05*\x80\x01\n" +
+	"_view_mask\"C\n" +
+	"\x14CreateUserTagRequest\x12+\n" +
+	"\x04data\x18\x01 \x01(\v2\x17.uba.service.v1.UserTagR\x04data\"\x9f\x03\n" +
+	"\x14UpdateUserTagRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\rR\x02id\x129\n" +
+	"\x04data\x18\x02 \x01(\v2\x17.uba.service.v1.UserTagB\f\xbaG\t\x92\x02\x06数据R\x04data\x12s\n" +
+	"\vupdate_mask\x18\x03 \x01(\v2\x1a.google.protobuf.FieldMaskB6\xbaG3:\x16\x12\x14id,realname,username\x92\x02\x18要更新的字段列表R\n" +
+	"updateMask\x12\xb4\x01\n" +
+	"\rallow_missing\x18\x04 \x01(\bB\x89\x01\xbaG\x85\x01\x92\x02\x81\x01如果设置为true的时候，资源不存在则会新增(插入)，并且在这种情况下`updateMask`字段将会被忽略。H\x00R\fallowMissing\x88\x01\x01B\x10\n" +
+	"\x0e_allow_missing\"\x8c\x01\n" +
+	"\x14DeleteUserTagRequest\x12\x1c\n" +
+	"\x02id\x18\x01 \x01(\rB\n" +
+	"\xbaG\a\x18\x01\x92\x02\x02IDH\x00R\x02id\x12;\n" +
+	"\n" +
+	"deleted_by\x18d \x01(\rB\x17\xbaG\x14\x92\x02\x11删除者用户IDH\x01R\tdeletedBy\x88\x01\x01B\n" +
+	"\n" +
+	"\bquery_byB\r\n" +
+	"\v_deleted_by\",\n" +
+	"\x14CountUserTagResponse\x12\x14\n" +
+	"\x05count\x18\x01 \x01(\x04R\x05count*\x80\x01\n" +
 	"\tTagSource\x12\x1a\n" +
 	"\x16TAG_SOURCE_UNSPECIFIED\x10\x00\x12\x15\n" +
 	"\x11TAG_SOURCE_MANUAL\x10\x01\x12\x13\n" +
 	"\x0fTAG_SOURCE_RULE\x10\x02\x12\x14\n" +
 	"\x10TAG_SOURCE_MODEL\x10\x03\x12\x15\n" +
-	"\x11TAG_SOURCE_IMPORT\x10\x042\x10\n" +
-	"\x0eUserTagServiceB\xad\x01\n" +
+	"\x11TAG_SOURCE_IMPORT\x10\x042\xcb\x03\n" +
+	"\x0eUserTagService\x12H\n" +
+	"\x04List\x12\x19.pagination.PagingRequest\x1a#.uba.service.v1.ListUserTagResponse\"\x00\x12J\n" +
+	"\x05Count\x12\x19.pagination.PagingRequest\x1a$.uba.service.v1.CountUserTagResponse\"\x00\x12C\n" +
+	"\x03Get\x12!.uba.service.v1.GetUserTagRequest\x1a\x17.uba.service.v1.UserTag\"\x00\x12I\n" +
+	"\x06Create\x12$.uba.service.v1.CreateUserTagRequest\x1a\x17.uba.service.v1.UserTag\"\x00\x12I\n" +
+	"\x06Update\x12$.uba.service.v1.UpdateUserTagRequest\x1a\x17.uba.service.v1.UserTag\"\x00\x12H\n" +
+	"\x06Delete\x12$.uba.service.v1.DeleteUserTagRequest\x1a\x16.google.protobuf.Empty\"\x00B\xad\x01\n" +
 	"\x12com.uba.service.v1B\fUserTagProtoP\x01Z/go-wind-uba/api/gen/go/uba/service/v1;servicev1\xa2\x02\x03USX\xaa\x02\x0eUba.Service.V1\xca\x02\x0eUba\\Service\\V1\xe2\x02\x1aUba\\Service\\V1\\GPBMetadata\xea\x02\x10Uba::Service::V1b\x06proto3"
 
 var (
@@ -764,37 +743,51 @@ func file_uba_service_v1_user_tag_proto_rawDescGZIP() []byte {
 	return file_uba_service_v1_user_tag_proto_rawDescData
 }
 
-var file_uba_service_v1_user_tag_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
-var file_uba_service_v1_user_tag_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_uba_service_v1_user_tag_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_uba_service_v1_user_tag_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_uba_service_v1_user_tag_proto_goTypes = []any{
-	(TagCategory)(0),              // 0: uba.service.v1.TagCategory
-	(TagType)(0),                  // 1: uba.service.v1.TagType
-	(TagSource)(0),                // 2: uba.service.v1.TagSource
-	(*TagDefinition)(nil),         // 3: uba.service.v1.TagDefinition
-	(*TagRule)(nil),               // 4: uba.service.v1.TagRule
-	(*TagValue)(nil),              // 5: uba.service.v1.TagValue
-	(*UserTag)(nil),               // 6: uba.service.v1.UserTag
-	nil,                           // 7: uba.service.v1.TagRule.ParamsEntry
+	(TagSource)(0),                // 0: uba.service.v1.TagSource
+	(*UserTag)(nil),               // 1: uba.service.v1.UserTag
+	(*ListUserTagResponse)(nil),   // 2: uba.service.v1.ListUserTagResponse
+	(*GetUserTagRequest)(nil),     // 3: uba.service.v1.GetUserTagRequest
+	(*CreateUserTagRequest)(nil),  // 4: uba.service.v1.CreateUserTagRequest
+	(*UpdateUserTagRequest)(nil),  // 5: uba.service.v1.UpdateUserTagRequest
+	(*DeleteUserTagRequest)(nil),  // 6: uba.service.v1.DeleteUserTagRequest
+	(*CountUserTagResponse)(nil),  // 7: uba.service.v1.CountUserTagResponse
 	(*timestamppb.Timestamp)(nil), // 8: google.protobuf.Timestamp
+	(*fieldmaskpb.FieldMask)(nil), // 9: google.protobuf.FieldMask
+	(*v1.PagingRequest)(nil),      // 10: pagination.PagingRequest
+	(*emptypb.Empty)(nil),         // 11: google.protobuf.Empty
 }
 var file_uba_service_v1_user_tag_proto_depIdxs = []int32{
-	0,  // 0: uba.service.v1.TagDefinition.category:type_name -> uba.service.v1.TagCategory
-	1,  // 1: uba.service.v1.TagDefinition.tag_type:type_name -> uba.service.v1.TagType
-	4,  // 2: uba.service.v1.TagDefinition.rule:type_name -> uba.service.v1.TagRule
-	5,  // 3: uba.service.v1.TagDefinition.allowed_values:type_name -> uba.service.v1.TagValue
-	8,  // 4: uba.service.v1.TagDefinition.created_at:type_name -> google.protobuf.Timestamp
-	8,  // 5: uba.service.v1.TagDefinition.updated_at:type_name -> google.protobuf.Timestamp
-	8,  // 6: uba.service.v1.TagDefinition.deleted_at:type_name -> google.protobuf.Timestamp
-	7,  // 7: uba.service.v1.TagRule.params:type_name -> uba.service.v1.TagRule.ParamsEntry
-	2,  // 8: uba.service.v1.UserTag.source:type_name -> uba.service.v1.TagSource
-	8,  // 9: uba.service.v1.UserTag.effective_time:type_name -> google.protobuf.Timestamp
-	8,  // 10: uba.service.v1.UserTag.expire_time:type_name -> google.protobuf.Timestamp
-	8,  // 11: uba.service.v1.UserTag.update_time:type_name -> google.protobuf.Timestamp
-	12, // [12:12] is the sub-list for method output_type
-	12, // [12:12] is the sub-list for method input_type
-	12, // [12:12] is the sub-list for extension type_name
-	12, // [12:12] is the sub-list for extension extendee
-	0,  // [0:12] is the sub-list for field type_name
+	0,  // 0: uba.service.v1.UserTag.source:type_name -> uba.service.v1.TagSource
+	8,  // 1: uba.service.v1.UserTag.effective_time:type_name -> google.protobuf.Timestamp
+	8,  // 2: uba.service.v1.UserTag.expire_time:type_name -> google.protobuf.Timestamp
+	8,  // 3: uba.service.v1.UserTag.created_at:type_name -> google.protobuf.Timestamp
+	8,  // 4: uba.service.v1.UserTag.updated_at:type_name -> google.protobuf.Timestamp
+	8,  // 5: uba.service.v1.UserTag.deleted_at:type_name -> google.protobuf.Timestamp
+	1,  // 6: uba.service.v1.ListUserTagResponse.items:type_name -> uba.service.v1.UserTag
+	9,  // 7: uba.service.v1.GetUserTagRequest.view_mask:type_name -> google.protobuf.FieldMask
+	1,  // 8: uba.service.v1.CreateUserTagRequest.data:type_name -> uba.service.v1.UserTag
+	1,  // 9: uba.service.v1.UpdateUserTagRequest.data:type_name -> uba.service.v1.UserTag
+	9,  // 10: uba.service.v1.UpdateUserTagRequest.update_mask:type_name -> google.protobuf.FieldMask
+	10, // 11: uba.service.v1.UserTagService.List:input_type -> pagination.PagingRequest
+	10, // 12: uba.service.v1.UserTagService.Count:input_type -> pagination.PagingRequest
+	3,  // 13: uba.service.v1.UserTagService.Get:input_type -> uba.service.v1.GetUserTagRequest
+	4,  // 14: uba.service.v1.UserTagService.Create:input_type -> uba.service.v1.CreateUserTagRequest
+	5,  // 15: uba.service.v1.UserTagService.Update:input_type -> uba.service.v1.UpdateUserTagRequest
+	6,  // 16: uba.service.v1.UserTagService.Delete:input_type -> uba.service.v1.DeleteUserTagRequest
+	2,  // 17: uba.service.v1.UserTagService.List:output_type -> uba.service.v1.ListUserTagResponse
+	7,  // 18: uba.service.v1.UserTagService.Count:output_type -> uba.service.v1.CountUserTagResponse
+	1,  // 19: uba.service.v1.UserTagService.Get:output_type -> uba.service.v1.UserTag
+	1,  // 20: uba.service.v1.UserTagService.Create:output_type -> uba.service.v1.UserTag
+	1,  // 21: uba.service.v1.UserTagService.Update:output_type -> uba.service.v1.UserTag
+	11, // 22: uba.service.v1.UserTagService.Delete:output_type -> google.protobuf.Empty
+	17, // [17:23] is the sub-list for method output_type
+	11, // [11:17] is the sub-list for method input_type
+	11, // [11:11] is the sub-list for extension type_name
+	11, // [11:11] is the sub-list for extension extendee
+	0,  // [0:11] is the sub-list for field type_name
 }
 
 func init() { file_uba_service_v1_user_tag_proto_init() }
@@ -802,15 +795,21 @@ func file_uba_service_v1_user_tag_proto_init() {
 	if File_uba_service_v1_user_tag_proto != nil {
 		return
 	}
-	file_uba_service_v1_common_proto_init()
 	file_uba_service_v1_user_tag_proto_msgTypes[0].OneofWrappers = []any{}
+	file_uba_service_v1_user_tag_proto_msgTypes[2].OneofWrappers = []any{
+		(*GetUserTagRequest_Id)(nil),
+	}
+	file_uba_service_v1_user_tag_proto_msgTypes[4].OneofWrappers = []any{}
+	file_uba_service_v1_user_tag_proto_msgTypes[5].OneofWrappers = []any{
+		(*DeleteUserTagRequest_Id)(nil),
+	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_uba_service_v1_user_tag_proto_rawDesc), len(file_uba_service_v1_user_tag_proto_rawDesc)),
-			NumEnums:      3,
-			NumMessages:   5,
+			NumEnums:      1,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

@@ -4,7 +4,8 @@ package agent.service.v1;
 
 import "errors/errors.proto";
 
-enum AdminErrorReason {
+// 错误码定义
+enum CollectorErrorReason {
     option (errors.default_code) = 500;
 
     NOT_LOGGED_IN = 0 [(errors.code) = 401];// 401

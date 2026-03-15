@@ -2,21 +2,6 @@
 
 package uba.service.v1;
 
-// 风险等级（用于标识事件或用户的风险级别）
-enum RiskLevel {
-  // 未指定风险等级
-  RISK_LEVEL_UNSPECIFIED = 0;
-
-  // 正常风险
-  RISK_LEVEL_NORMAL = 1;
-  // 可疑风险
-  RISK_LEVEL_SUSPICIOUS = 2;
-  // 高风险
-  RISK_LEVEL_HIGH = 3;
-  // 危急风险
-  RISK_LEVEL_CRITICAL = 4;
-}
-
 // 事件分类（用于标识事件所属的业务类型）
 enum EventCategory {
   // 未指定事件分类
@@ -70,4 +55,51 @@ enum OpResult {
   OP_RESULT_TIMEOUT = 3;
   // 操作部分成功
   OP_RESULT_PARTIAL = 4;
+}
+
+// 风险等级（用于标识事件或用户的风险级别）
+enum RiskLevel {
+  // 未指定风险等级
+  RISK_LEVEL_UNSPECIFIED = 0;
+
+  // 正常风险
+  RISK_LEVEL_NORMAL = 1;
+  // 可疑风险
+  RISK_LEVEL_SUSPICIOUS = 2;
+  // 高风险
+  RISK_LEVEL_HIGH = 3;
+  // 危急风险
+  RISK_LEVEL_CRITICAL = 4;
+}
+
+// 风险等级
+enum RiskType {
+  // 未指定风险类型
+  RISK_TYPE_UNSPECIFIED = 0;
+
+  // 异常登录风险
+  RISK_TYPE_LOGIN_ANOMALY = 1;
+  // 暴力破解风险
+  RISK_TYPE_BRUTE_FORCE = 2;
+  // 撞库风险
+  RISK_TYPE_CREDENTIAL_STUFFING = 3;
+
+  // 高频操作风险
+  RISK_TYPE_FREQUENT_OPERATION = 4;
+  // 异常流程风险
+  RISK_TYPE_ABNORMAL_FLOW = 5;
+  // 数据泄露风险
+  RISK_TYPE_DATA_EXFILTRATION = 6;
+
+  // 设备突变风险
+  RISK_TYPE_DEVICE_CHANGE = 7;
+  // 异地登录风险
+  RISK_TYPE_LOCATION_ANOMALY = 8;
+  // 代理/VPN风险
+  RISK_TYPE_PROXY_DETECTED = 9;
+
+  // 欺诈支付风险
+  RISK_TYPE_FRAUD_PAYMENT = 10;
+  // 薅羊毛风险
+  RISK_TYPE_ABUSE_PROMOTION = 11;
 }

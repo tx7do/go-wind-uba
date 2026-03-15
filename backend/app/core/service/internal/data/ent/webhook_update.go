@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	servicev1 "go-wind-uba/api/gen/go/uba/service/v1"
 	"go-wind-uba/app/core/service/internal/data/ent/predicate"
 	"go-wind-uba/app/core/service/internal/data/ent/webhook"
 	"time"
@@ -165,6 +166,12 @@ func (_u *WebhookUpdate) SetNillableName(v *string) *WebhookUpdate {
 	return _u
 }
 
+// ClearName clears the value of the "name" field.
+func (_u *WebhookUpdate) ClearName() *WebhookUpdate {
+	_u.mutation.ClearName()
+	return _u
+}
+
 // SetURL sets the "url" field.
 func (_u *WebhookUpdate) SetURL(v string) *WebhookUpdate {
 	_u.mutation.SetURL(v)
@@ -176,6 +183,12 @@ func (_u *WebhookUpdate) SetNillableURL(v *string) *WebhookUpdate {
 	if v != nil {
 		_u.SetURL(*v)
 	}
+	return _u
+}
+
+// ClearURL clears the value of the "url" field.
+func (_u *WebhookUpdate) ClearURL() *WebhookUpdate {
+	_u.mutation.ClearURL()
 	return _u
 }
 
@@ -217,15 +230,15 @@ func (_u *WebhookUpdate) ClearEventTypes() *WebhookUpdate {
 	return _u
 }
 
-// SetFilters sets the "filters" field.
-func (_u *WebhookUpdate) SetFilters(v map[string]interface{}) *WebhookUpdate {
-	_u.mutation.SetFilters(v)
+// SetFilter sets the "filter" field.
+func (_u *WebhookUpdate) SetFilter(v *servicev1.WebhookFilter) *WebhookUpdate {
+	_u.mutation.SetFilter(v)
 	return _u
 }
 
-// ClearFilters clears the value of the "filters" field.
-func (_u *WebhookUpdate) ClearFilters() *WebhookUpdate {
-	_u.mutation.ClearFilters()
+// ClearFilter clears the value of the "filter" field.
+func (_u *WebhookUpdate) ClearFilter() *WebhookUpdate {
+	_u.mutation.ClearFilter()
 	return _u
 }
 
@@ -264,14 +277,14 @@ func (_u *WebhookUpdate) ClearLastTriggeredAt() *WebhookUpdate {
 }
 
 // SetFailureCount sets the "failure_count" field.
-func (_u *WebhookUpdate) SetFailureCount(v int) *WebhookUpdate {
+func (_u *WebhookUpdate) SetFailureCount(v uint32) *WebhookUpdate {
 	_u.mutation.ResetFailureCount()
 	_u.mutation.SetFailureCount(v)
 	return _u
 }
 
 // SetNillableFailureCount sets the "failure_count" field if the given value is not nil.
-func (_u *WebhookUpdate) SetNillableFailureCount(v *int) *WebhookUpdate {
+func (_u *WebhookUpdate) SetNillableFailureCount(v *uint32) *WebhookUpdate {
 	if v != nil {
 		_u.SetFailureCount(*v)
 	}
@@ -279,8 +292,35 @@ func (_u *WebhookUpdate) SetNillableFailureCount(v *int) *WebhookUpdate {
 }
 
 // AddFailureCount adds value to the "failure_count" field.
-func (_u *WebhookUpdate) AddFailureCount(v int) *WebhookUpdate {
+func (_u *WebhookUpdate) AddFailureCount(v int32) *WebhookUpdate {
 	_u.mutation.AddFailureCount(v)
+	return _u
+}
+
+// SetAppID sets the "app_id" field.
+func (_u *WebhookUpdate) SetAppID(v uint32) *WebhookUpdate {
+	_u.mutation.ResetAppID()
+	_u.mutation.SetAppID(v)
+	return _u
+}
+
+// SetNillableAppID sets the "app_id" field if the given value is not nil.
+func (_u *WebhookUpdate) SetNillableAppID(v *uint32) *WebhookUpdate {
+	if v != nil {
+		_u.SetAppID(*v)
+	}
+	return _u
+}
+
+// AddAppID adds value to the "app_id" field.
+func (_u *WebhookUpdate) AddAppID(v int32) *WebhookUpdate {
+	_u.mutation.AddAppID(v)
+	return _u
+}
+
+// ClearAppID clears the value of the "app_id" field.
+func (_u *WebhookUpdate) ClearAppID() *WebhookUpdate {
+	_u.mutation.ClearAppID()
 	return _u
 }
 
@@ -326,6 +366,11 @@ func (_u *WebhookUpdate) check() error {
 	if v, ok := _u.mutation.URL(); ok {
 		if err := webhook.URLValidator(v); err != nil {
 			return &ValidationError{Name: "url", err: fmt.Errorf(`ent: validator failed for field "Webhook.url": %w`, err)}
+		}
+	}
+	if v, ok := _u.mutation.Filter(); ok {
+		if err := v.Validate(); err != nil {
+			return &ValidationError{Name: "filter", err: fmt.Errorf(`ent: validator failed for field "Webhook.filter": %w`, err)}
 		}
 	}
 	return nil
@@ -397,8 +442,14 @@ func (_u *WebhookUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(webhook.FieldName, field.TypeString, value)
 	}
+	if _u.mutation.NameCleared() {
+		_spec.ClearField(webhook.FieldName, field.TypeString)
+	}
 	if value, ok := _u.mutation.URL(); ok {
 		_spec.SetField(webhook.FieldURL, field.TypeString, value)
+	}
+	if _u.mutation.URLCleared() {
+		_spec.ClearField(webhook.FieldURL, field.TypeString)
 	}
 	if value, ok := _u.mutation.Secret(); ok {
 		_spec.SetField(webhook.FieldSecret, field.TypeString, value)
@@ -417,11 +468,11 @@ func (_u *WebhookUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if _u.mutation.EventTypesCleared() {
 		_spec.ClearField(webhook.FieldEventTypes, field.TypeJSON)
 	}
-	if value, ok := _u.mutation.Filters(); ok {
-		_spec.SetField(webhook.FieldFilters, field.TypeJSON, value)
+	if value, ok := _u.mutation.Filter(); ok {
+		_spec.SetField(webhook.FieldFilter, field.TypeJSON, value)
 	}
-	if _u.mutation.FiltersCleared() {
-		_spec.ClearField(webhook.FieldFilters, field.TypeJSON)
+	if _u.mutation.FilterCleared() {
+		_spec.ClearField(webhook.FieldFilter, field.TypeJSON)
 	}
 	if value, ok := _u.mutation.Enabled(); ok {
 		_spec.SetField(webhook.FieldEnabled, field.TypeBool, value)
@@ -433,10 +484,19 @@ func (_u *WebhookUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		_spec.ClearField(webhook.FieldLastTriggeredAt, field.TypeTime)
 	}
 	if value, ok := _u.mutation.FailureCount(); ok {
-		_spec.SetField(webhook.FieldFailureCount, field.TypeInt, value)
+		_spec.SetField(webhook.FieldFailureCount, field.TypeUint32, value)
 	}
 	if value, ok := _u.mutation.AddedFailureCount(); ok {
-		_spec.AddField(webhook.FieldFailureCount, field.TypeInt, value)
+		_spec.AddField(webhook.FieldFailureCount, field.TypeUint32, value)
+	}
+	if value, ok := _u.mutation.AppID(); ok {
+		_spec.SetField(webhook.FieldAppID, field.TypeUint32, value)
+	}
+	if value, ok := _u.mutation.AddedAppID(); ok {
+		_spec.AddField(webhook.FieldAppID, field.TypeUint32, value)
+	}
+	if _u.mutation.AppIDCleared() {
+		_spec.ClearField(webhook.FieldAppID, field.TypeUint32)
 	}
 	_spec.AddModifiers(_u.modifiers...)
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
@@ -595,6 +655,12 @@ func (_u *WebhookUpdateOne) SetNillableName(v *string) *WebhookUpdateOne {
 	return _u
 }
 
+// ClearName clears the value of the "name" field.
+func (_u *WebhookUpdateOne) ClearName() *WebhookUpdateOne {
+	_u.mutation.ClearName()
+	return _u
+}
+
 // SetURL sets the "url" field.
 func (_u *WebhookUpdateOne) SetURL(v string) *WebhookUpdateOne {
 	_u.mutation.SetURL(v)
@@ -606,6 +672,12 @@ func (_u *WebhookUpdateOne) SetNillableURL(v *string) *WebhookUpdateOne {
 	if v != nil {
 		_u.SetURL(*v)
 	}
+	return _u
+}
+
+// ClearURL clears the value of the "url" field.
+func (_u *WebhookUpdateOne) ClearURL() *WebhookUpdateOne {
+	_u.mutation.ClearURL()
 	return _u
 }
 
@@ -647,15 +719,15 @@ func (_u *WebhookUpdateOne) ClearEventTypes() *WebhookUpdateOne {
 	return _u
 }
 
-// SetFilters sets the "filters" field.
-func (_u *WebhookUpdateOne) SetFilters(v map[string]interface{}) *WebhookUpdateOne {
-	_u.mutation.SetFilters(v)
+// SetFilter sets the "filter" field.
+func (_u *WebhookUpdateOne) SetFilter(v *servicev1.WebhookFilter) *WebhookUpdateOne {
+	_u.mutation.SetFilter(v)
 	return _u
 }
 
-// ClearFilters clears the value of the "filters" field.
-func (_u *WebhookUpdateOne) ClearFilters() *WebhookUpdateOne {
-	_u.mutation.ClearFilters()
+// ClearFilter clears the value of the "filter" field.
+func (_u *WebhookUpdateOne) ClearFilter() *WebhookUpdateOne {
+	_u.mutation.ClearFilter()
 	return _u
 }
 
@@ -694,14 +766,14 @@ func (_u *WebhookUpdateOne) ClearLastTriggeredAt() *WebhookUpdateOne {
 }
 
 // SetFailureCount sets the "failure_count" field.
-func (_u *WebhookUpdateOne) SetFailureCount(v int) *WebhookUpdateOne {
+func (_u *WebhookUpdateOne) SetFailureCount(v uint32) *WebhookUpdateOne {
 	_u.mutation.ResetFailureCount()
 	_u.mutation.SetFailureCount(v)
 	return _u
 }
 
 // SetNillableFailureCount sets the "failure_count" field if the given value is not nil.
-func (_u *WebhookUpdateOne) SetNillableFailureCount(v *int) *WebhookUpdateOne {
+func (_u *WebhookUpdateOne) SetNillableFailureCount(v *uint32) *WebhookUpdateOne {
 	if v != nil {
 		_u.SetFailureCount(*v)
 	}
@@ -709,8 +781,35 @@ func (_u *WebhookUpdateOne) SetNillableFailureCount(v *int) *WebhookUpdateOne {
 }
 
 // AddFailureCount adds value to the "failure_count" field.
-func (_u *WebhookUpdateOne) AddFailureCount(v int) *WebhookUpdateOne {
+func (_u *WebhookUpdateOne) AddFailureCount(v int32) *WebhookUpdateOne {
 	_u.mutation.AddFailureCount(v)
+	return _u
+}
+
+// SetAppID sets the "app_id" field.
+func (_u *WebhookUpdateOne) SetAppID(v uint32) *WebhookUpdateOne {
+	_u.mutation.ResetAppID()
+	_u.mutation.SetAppID(v)
+	return _u
+}
+
+// SetNillableAppID sets the "app_id" field if the given value is not nil.
+func (_u *WebhookUpdateOne) SetNillableAppID(v *uint32) *WebhookUpdateOne {
+	if v != nil {
+		_u.SetAppID(*v)
+	}
+	return _u
+}
+
+// AddAppID adds value to the "app_id" field.
+func (_u *WebhookUpdateOne) AddAppID(v int32) *WebhookUpdateOne {
+	_u.mutation.AddAppID(v)
+	return _u
+}
+
+// ClearAppID clears the value of the "app_id" field.
+func (_u *WebhookUpdateOne) ClearAppID() *WebhookUpdateOne {
+	_u.mutation.ClearAppID()
 	return _u
 }
 
@@ -769,6 +868,11 @@ func (_u *WebhookUpdateOne) check() error {
 	if v, ok := _u.mutation.URL(); ok {
 		if err := webhook.URLValidator(v); err != nil {
 			return &ValidationError{Name: "url", err: fmt.Errorf(`ent: validator failed for field "Webhook.url": %w`, err)}
+		}
+	}
+	if v, ok := _u.mutation.Filter(); ok {
+		if err := v.Validate(); err != nil {
+			return &ValidationError{Name: "filter", err: fmt.Errorf(`ent: validator failed for field "Webhook.filter": %w`, err)}
 		}
 	}
 	return nil
@@ -857,8 +961,14 @@ func (_u *WebhookUpdateOne) sqlSave(ctx context.Context) (_node *Webhook, err er
 	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(webhook.FieldName, field.TypeString, value)
 	}
+	if _u.mutation.NameCleared() {
+		_spec.ClearField(webhook.FieldName, field.TypeString)
+	}
 	if value, ok := _u.mutation.URL(); ok {
 		_spec.SetField(webhook.FieldURL, field.TypeString, value)
+	}
+	if _u.mutation.URLCleared() {
+		_spec.ClearField(webhook.FieldURL, field.TypeString)
 	}
 	if value, ok := _u.mutation.Secret(); ok {
 		_spec.SetField(webhook.FieldSecret, field.TypeString, value)
@@ -877,11 +987,11 @@ func (_u *WebhookUpdateOne) sqlSave(ctx context.Context) (_node *Webhook, err er
 	if _u.mutation.EventTypesCleared() {
 		_spec.ClearField(webhook.FieldEventTypes, field.TypeJSON)
 	}
-	if value, ok := _u.mutation.Filters(); ok {
-		_spec.SetField(webhook.FieldFilters, field.TypeJSON, value)
+	if value, ok := _u.mutation.Filter(); ok {
+		_spec.SetField(webhook.FieldFilter, field.TypeJSON, value)
 	}
-	if _u.mutation.FiltersCleared() {
-		_spec.ClearField(webhook.FieldFilters, field.TypeJSON)
+	if _u.mutation.FilterCleared() {
+		_spec.ClearField(webhook.FieldFilter, field.TypeJSON)
 	}
 	if value, ok := _u.mutation.Enabled(); ok {
 		_spec.SetField(webhook.FieldEnabled, field.TypeBool, value)
@@ -893,10 +1003,19 @@ func (_u *WebhookUpdateOne) sqlSave(ctx context.Context) (_node *Webhook, err er
 		_spec.ClearField(webhook.FieldLastTriggeredAt, field.TypeTime)
 	}
 	if value, ok := _u.mutation.FailureCount(); ok {
-		_spec.SetField(webhook.FieldFailureCount, field.TypeInt, value)
+		_spec.SetField(webhook.FieldFailureCount, field.TypeUint32, value)
 	}
 	if value, ok := _u.mutation.AddedFailureCount(); ok {
-		_spec.AddField(webhook.FieldFailureCount, field.TypeInt, value)
+		_spec.AddField(webhook.FieldFailureCount, field.TypeUint32, value)
+	}
+	if value, ok := _u.mutation.AppID(); ok {
+		_spec.SetField(webhook.FieldAppID, field.TypeUint32, value)
+	}
+	if value, ok := _u.mutation.AddedAppID(); ok {
+		_spec.AddField(webhook.FieldAppID, field.TypeUint32, value)
+	}
+	if _u.mutation.AppIDCleared() {
+		_spec.ClearField(webhook.FieldAppID, field.TypeUint32)
 	}
 	_spec.AddModifiers(_u.modifiers...)
 	_node = &Webhook{config: _u.config}

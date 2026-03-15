@@ -57,6 +57,17 @@ func (s *redactedIDMappingServiceServer) List(ctx context.Context, in *paginatio
 	return res, err
 }
 
+// Count is the redacted wrapper for the actual IDMappingServiceServer.Count method
+// Unary RPC
+func (s *redactedIDMappingServiceServer) Count(ctx context.Context, in *pagination.PagingRequest) (*CountIDMappingResponse, error) {
+	res, err := s.srv.Count(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
 // Get is the redacted wrapper for the actual IDMappingServiceServer.Get method
 // Unary RPC
 func (s *redactedIDMappingServiceServer) Get(ctx context.Context, in *GetIDMappingRequest) (*IDMapping, error) {
@@ -150,6 +161,8 @@ func (x *ListIDMappingResponse) Redact() string {
 	}
 
 	// Safe field: Items
+
+	// Safe field: Total
 	return x.String()
 }
 
@@ -196,5 +209,15 @@ func (x *DeleteIDMappingRequest) Redact() string {
 	}
 
 	// Safe field: DeletedBy
+	return x.String()
+}
+
+// Redact method implementation for CountIDMappingResponse
+func (x *CountIDMappingResponse) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Count
 	return x.String()
 }

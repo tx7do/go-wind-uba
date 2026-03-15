@@ -3,6 +3,7 @@
 package ent
 
 import (
+	"encoding/json"
 	"fmt"
 	"go-wind-uba/app/core/service/internal/data/ent/idmapping"
 	"strings"
@@ -20,28 +21,36 @@ type IDMapping struct {
 	ID uint32 `json:"id,omitempty"`
 	// 租户ID
 	TenantID *uint32 `json:"tenant_id,omitempty"`
+	// 创建者ID
+	CreatedBy *uint32 `json:"created_by,omitempty"`
+	// 更新者ID
+	UpdatedBy *uint32 `json:"updated_by,omitempty"`
+	// 删除者ID
+	DeletedBy *uint32 `json:"deleted_by,omitempty"`
 	// 创建时间
 	CreatedAt *time.Time `json:"created_at,omitempty"`
 	// 更新时间
 	UpdatedAt *time.Time `json:"updated_at,omitempty"`
 	// 删除时间
 	DeletedAt *time.Time `json:"deleted_at,omitempty"`
-	// 打通后的全局用户ID
-	GlobalUserID string `json:"global_user_id,omitempty"`
-	// 身份类型：user_id/device_id/cookie/email/phone
-	IDType string `json:"id_type,omitempty"`
-	// 身份值，具体的用户/设备/邮箱/手机号等标识
-	IDValue string `json:"id_value,omitempty"`
-	// 关联置信度，默认1.0
-	Confidence float64 `json:"confidence,omitempty"`
+	// 全局用户唯一标识
+	GlobalUserID *string `json:"global_user_id,omitempty"`
+	// ID类型
+	IDType *idmapping.IDType `json:"id_type,omitempty"`
+	// ID值
+	IDValue *string `json:"id_value,omitempty"`
+	// 置信度，映射关系可信度评分，范围0~1，默认1.0
+	Confidence *float32 `json:"confidence,omitempty"`
 	// 关联来源：login/bind/algorithm
-	LinkSource string `json:"link_source,omitempty"`
+	LinkSource *string `json:"link_source,omitempty"`
 	// 首次关联时间
 	FirstSeen *time.Time `json:"first_seen,omitempty"`
 	// 最近关联时间
 	LastSeen *time.Time `json:"last_seen,omitempty"`
 	// 是否激活，1为激活，0为未激活
-	IsActive     bool `json:"is_active,omitempty"`
+	IsActive *bool `json:"is_active,omitempty"`
+	// 扩展属性
+	Properties   map[string]string `json:"properties,omitempty"`
 	selectValues sql.SelectValues
 }
 
@@ -50,11 +59,13 @@ func (*IDMapping) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
+		case idmapping.FieldProperties:
+			values[i] = new([]byte)
 		case idmapping.FieldIsActive:
 			values[i] = new(sql.NullBool)
 		case idmapping.FieldConfidence:
 			values[i] = new(sql.NullFloat64)
-		case idmapping.FieldID, idmapping.FieldTenantID:
+		case idmapping.FieldID, idmapping.FieldTenantID, idmapping.FieldCreatedBy, idmapping.FieldUpdatedBy, idmapping.FieldDeletedBy:
 			values[i] = new(sql.NullInt64)
 		case idmapping.FieldGlobalUserID, idmapping.FieldIDType, idmapping.FieldIDValue, idmapping.FieldLinkSource:
 			values[i] = new(sql.NullString)
@@ -88,6 +99,27 @@ func (_m *IDMapping) assignValues(columns []string, values []any) error {
 				_m.TenantID = new(uint32)
 				*_m.TenantID = uint32(value.Int64)
 			}
+		case idmapping.FieldCreatedBy:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field created_by", values[i])
+			} else if value.Valid {
+				_m.CreatedBy = new(uint32)
+				*_m.CreatedBy = uint32(value.Int64)
+			}
+		case idmapping.FieldUpdatedBy:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field updated_by", values[i])
+			} else if value.Valid {
+				_m.UpdatedBy = new(uint32)
+				*_m.UpdatedBy = uint32(value.Int64)
+			}
+		case idmapping.FieldDeletedBy:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field deleted_by", values[i])
+			} else if value.Valid {
+				_m.DeletedBy = new(uint32)
+				*_m.DeletedBy = uint32(value.Int64)
+			}
 		case idmapping.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
@@ -113,31 +145,36 @@ func (_m *IDMapping) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field global_user_id", values[i])
 			} else if value.Valid {
-				_m.GlobalUserID = value.String
+				_m.GlobalUserID = new(string)
+				*_m.GlobalUserID = value.String
 			}
 		case idmapping.FieldIDType:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field id_type", values[i])
 			} else if value.Valid {
-				_m.IDType = value.String
+				_m.IDType = new(idmapping.IDType)
+				*_m.IDType = idmapping.IDType(value.String)
 			}
 		case idmapping.FieldIDValue:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field id_value", values[i])
 			} else if value.Valid {
-				_m.IDValue = value.String
+				_m.IDValue = new(string)
+				*_m.IDValue = value.String
 			}
 		case idmapping.FieldConfidence:
 			if value, ok := values[i].(*sql.NullFloat64); !ok {
 				return fmt.Errorf("unexpected type %T for field confidence", values[i])
 			} else if value.Valid {
-				_m.Confidence = value.Float64
+				_m.Confidence = new(float32)
+				*_m.Confidence = float32(value.Float64)
 			}
 		case idmapping.FieldLinkSource:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field link_source", values[i])
 			} else if value.Valid {
-				_m.LinkSource = value.String
+				_m.LinkSource = new(string)
+				*_m.LinkSource = value.String
 			}
 		case idmapping.FieldFirstSeen:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -157,7 +194,16 @@ func (_m *IDMapping) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field is_active", values[i])
 			} else if value.Valid {
-				_m.IsActive = value.Bool
+				_m.IsActive = new(bool)
+				*_m.IsActive = value.Bool
+			}
+		case idmapping.FieldProperties:
+			if value, ok := values[i].(*[]byte); !ok {
+				return fmt.Errorf("unexpected type %T for field properties", values[i])
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &_m.Properties); err != nil {
+					return fmt.Errorf("unmarshal field properties: %w", err)
+				}
 			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
@@ -200,6 +246,21 @@ func (_m *IDMapping) String() string {
 		builder.WriteString(fmt.Sprintf("%v", *v))
 	}
 	builder.WriteString(", ")
+	if v := _m.CreatedBy; v != nil {
+		builder.WriteString("created_by=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
+	builder.WriteString(", ")
+	if v := _m.UpdatedBy; v != nil {
+		builder.WriteString("updated_by=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
+	builder.WriteString(", ")
+	if v := _m.DeletedBy; v != nil {
+		builder.WriteString("deleted_by=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
+	builder.WriteString(", ")
 	if v := _m.CreatedAt; v != nil {
 		builder.WriteString("created_at=")
 		builder.WriteString(v.Format(time.ANSIC))
@@ -215,20 +276,30 @@ func (_m *IDMapping) String() string {
 		builder.WriteString(v.Format(time.ANSIC))
 	}
 	builder.WriteString(", ")
-	builder.WriteString("global_user_id=")
-	builder.WriteString(_m.GlobalUserID)
+	if v := _m.GlobalUserID; v != nil {
+		builder.WriteString("global_user_id=")
+		builder.WriteString(*v)
+	}
 	builder.WriteString(", ")
-	builder.WriteString("id_type=")
-	builder.WriteString(_m.IDType)
+	if v := _m.IDType; v != nil {
+		builder.WriteString("id_type=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
 	builder.WriteString(", ")
-	builder.WriteString("id_value=")
-	builder.WriteString(_m.IDValue)
+	if v := _m.IDValue; v != nil {
+		builder.WriteString("id_value=")
+		builder.WriteString(*v)
+	}
 	builder.WriteString(", ")
-	builder.WriteString("confidence=")
-	builder.WriteString(fmt.Sprintf("%v", _m.Confidence))
+	if v := _m.Confidence; v != nil {
+		builder.WriteString("confidence=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
 	builder.WriteString(", ")
-	builder.WriteString("link_source=")
-	builder.WriteString(_m.LinkSource)
+	if v := _m.LinkSource; v != nil {
+		builder.WriteString("link_source=")
+		builder.WriteString(*v)
+	}
 	builder.WriteString(", ")
 	if v := _m.FirstSeen; v != nil {
 		builder.WriteString("first_seen=")
@@ -240,8 +311,13 @@ func (_m *IDMapping) String() string {
 		builder.WriteString(v.Format(time.ANSIC))
 	}
 	builder.WriteString(", ")
-	builder.WriteString("is_active=")
-	builder.WriteString(fmt.Sprintf("%v", _m.IsActive))
+	if v := _m.IsActive; v != nil {
+		builder.WriteString("is_active=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
+	builder.WriteString(", ")
+	builder.WriteString("properties=")
+	builder.WriteString(fmt.Sprintf("%v", _m.Properties))
 	builder.WriteByte(')')
 	return builder.String()
 }

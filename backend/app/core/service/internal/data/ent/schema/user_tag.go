@@ -38,9 +38,11 @@ func (UserTag) Fields() []ent.Field {
 			Optional().
 			Nillable(),
 
-		field.String("tag_value").
+		field.String("value").
 			Comment("标签值，实际存储值").
-			NotEmpty(),
+			NotEmpty().
+			Optional().
+			Nillable(),
 
 		field.String("value_label").
 			Comment("显示名称").
@@ -49,11 +51,20 @@ func (UserTag) Fields() []ent.Field {
 
 		field.Float("confidence").
 			Comment("置信度，算法打标").
-			Default(1.0),
+			Default(1.0).
+			Optional().
+			Nillable(),
 
-		field.String("source").
-			Comment("来源：manual/rule/model/import").
-			Default("manual"),
+		field.Enum("source").
+			Comment("标签来源").
+			NamedValues(
+				"TagSourceManual", "TAG_SOURCE_MANUAL",
+				"TagSourceRule", "TAG_SOURCE_RULE",
+				"TagSourceModel", "TAG_SOURCE_MODEL",
+				"TagSourceImport", "TAG_SOURCE_IMPORT",
+			).
+			Optional().
+			Nillable(),
 
 		field.Uint32("source_rule_id").
 			Comment("来源规则ID，关联规则表").
@@ -72,7 +83,9 @@ func (UserTag) Fields() []ent.Field {
 
 		field.Bool("is_active").
 			Comment("是否激活，1为激活，0为未激活").
-			Default(true),
+			Default(true).
+			Optional().
+			Nillable(),
 	}
 }
 

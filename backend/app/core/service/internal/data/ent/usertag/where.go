@@ -99,9 +99,9 @@ func TagID(v uint32) predicate.UserTag {
 	return predicate.UserTag(sql.FieldEQ(FieldTagID, v))
 }
 
-// TagValue applies equality check predicate on the "tag_value" field. It's identical to TagValueEQ.
-func TagValue(v string) predicate.UserTag {
-	return predicate.UserTag(sql.FieldEQ(FieldTagValue, v))
+// Value applies equality check predicate on the "value" field. It's identical to ValueEQ.
+func Value(v string) predicate.UserTag {
+	return predicate.UserTag(sql.FieldEQ(FieldValue, v))
 }
 
 // ValueLabel applies equality check predicate on the "value_label" field. It's identical to ValueLabelEQ.
@@ -112,11 +112,6 @@ func ValueLabel(v string) predicate.UserTag {
 // Confidence applies equality check predicate on the "confidence" field. It's identical to ConfidenceEQ.
 func Confidence(v float64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldEQ(FieldConfidence, v))
-}
-
-// Source applies equality check predicate on the "source" field. It's identical to SourceEQ.
-func Source(v string) predicate.UserTag {
-	return predicate.UserTag(sql.FieldEQ(FieldSource, v))
 }
 
 // SourceRuleID applies equality check predicate on the "source_rule_id" field. It's identical to SourceRuleIDEQ.
@@ -589,69 +584,79 @@ func TagIDNotNil() predicate.UserTag {
 	return predicate.UserTag(sql.FieldNotNull(FieldTagID))
 }
 
-// TagValueEQ applies the EQ predicate on the "tag_value" field.
-func TagValueEQ(v string) predicate.UserTag {
-	return predicate.UserTag(sql.FieldEQ(FieldTagValue, v))
+// ValueEQ applies the EQ predicate on the "value" field.
+func ValueEQ(v string) predicate.UserTag {
+	return predicate.UserTag(sql.FieldEQ(FieldValue, v))
 }
 
-// TagValueNEQ applies the NEQ predicate on the "tag_value" field.
-func TagValueNEQ(v string) predicate.UserTag {
-	return predicate.UserTag(sql.FieldNEQ(FieldTagValue, v))
+// ValueNEQ applies the NEQ predicate on the "value" field.
+func ValueNEQ(v string) predicate.UserTag {
+	return predicate.UserTag(sql.FieldNEQ(FieldValue, v))
 }
 
-// TagValueIn applies the In predicate on the "tag_value" field.
-func TagValueIn(vs ...string) predicate.UserTag {
-	return predicate.UserTag(sql.FieldIn(FieldTagValue, vs...))
+// ValueIn applies the In predicate on the "value" field.
+func ValueIn(vs ...string) predicate.UserTag {
+	return predicate.UserTag(sql.FieldIn(FieldValue, vs...))
 }
 
-// TagValueNotIn applies the NotIn predicate on the "tag_value" field.
-func TagValueNotIn(vs ...string) predicate.UserTag {
-	return predicate.UserTag(sql.FieldNotIn(FieldTagValue, vs...))
+// ValueNotIn applies the NotIn predicate on the "value" field.
+func ValueNotIn(vs ...string) predicate.UserTag {
+	return predicate.UserTag(sql.FieldNotIn(FieldValue, vs...))
 }
 
-// TagValueGT applies the GT predicate on the "tag_value" field.
-func TagValueGT(v string) predicate.UserTag {
-	return predicate.UserTag(sql.FieldGT(FieldTagValue, v))
+// ValueGT applies the GT predicate on the "value" field.
+func ValueGT(v string) predicate.UserTag {
+	return predicate.UserTag(sql.FieldGT(FieldValue, v))
 }
 
-// TagValueGTE applies the GTE predicate on the "tag_value" field.
-func TagValueGTE(v string) predicate.UserTag {
-	return predicate.UserTag(sql.FieldGTE(FieldTagValue, v))
+// ValueGTE applies the GTE predicate on the "value" field.
+func ValueGTE(v string) predicate.UserTag {
+	return predicate.UserTag(sql.FieldGTE(FieldValue, v))
 }
 
-// TagValueLT applies the LT predicate on the "tag_value" field.
-func TagValueLT(v string) predicate.UserTag {
-	return predicate.UserTag(sql.FieldLT(FieldTagValue, v))
+// ValueLT applies the LT predicate on the "value" field.
+func ValueLT(v string) predicate.UserTag {
+	return predicate.UserTag(sql.FieldLT(FieldValue, v))
 }
 
-// TagValueLTE applies the LTE predicate on the "tag_value" field.
-func TagValueLTE(v string) predicate.UserTag {
-	return predicate.UserTag(sql.FieldLTE(FieldTagValue, v))
+// ValueLTE applies the LTE predicate on the "value" field.
+func ValueLTE(v string) predicate.UserTag {
+	return predicate.UserTag(sql.FieldLTE(FieldValue, v))
 }
 
-// TagValueContains applies the Contains predicate on the "tag_value" field.
-func TagValueContains(v string) predicate.UserTag {
-	return predicate.UserTag(sql.FieldContains(FieldTagValue, v))
+// ValueContains applies the Contains predicate on the "value" field.
+func ValueContains(v string) predicate.UserTag {
+	return predicate.UserTag(sql.FieldContains(FieldValue, v))
 }
 
-// TagValueHasPrefix applies the HasPrefix predicate on the "tag_value" field.
-func TagValueHasPrefix(v string) predicate.UserTag {
-	return predicate.UserTag(sql.FieldHasPrefix(FieldTagValue, v))
+// ValueHasPrefix applies the HasPrefix predicate on the "value" field.
+func ValueHasPrefix(v string) predicate.UserTag {
+	return predicate.UserTag(sql.FieldHasPrefix(FieldValue, v))
 }
 
-// TagValueHasSuffix applies the HasSuffix predicate on the "tag_value" field.
-func TagValueHasSuffix(v string) predicate.UserTag {
-	return predicate.UserTag(sql.FieldHasSuffix(FieldTagValue, v))
+// ValueHasSuffix applies the HasSuffix predicate on the "value" field.
+func ValueHasSuffix(v string) predicate.UserTag {
+	return predicate.UserTag(sql.FieldHasSuffix(FieldValue, v))
 }
 
-// TagValueEqualFold applies the EqualFold predicate on the "tag_value" field.
-func TagValueEqualFold(v string) predicate.UserTag {
-	return predicate.UserTag(sql.FieldEqualFold(FieldTagValue, v))
+// ValueIsNil applies the IsNil predicate on the "value" field.
+func ValueIsNil() predicate.UserTag {
+	return predicate.UserTag(sql.FieldIsNull(FieldValue))
 }
 
-// TagValueContainsFold applies the ContainsFold predicate on the "tag_value" field.
-func TagValueContainsFold(v string) predicate.UserTag {
-	return predicate.UserTag(sql.FieldContainsFold(FieldTagValue, v))
+// ValueNotNil applies the NotNil predicate on the "value" field.
+func ValueNotNil() predicate.UserTag {
+	return predicate.UserTag(sql.FieldNotNull(FieldValue))
+}
+
+// ValueEqualFold applies the EqualFold predicate on the "value" field.
+func ValueEqualFold(v string) predicate.UserTag {
+	return predicate.UserTag(sql.FieldEqualFold(FieldValue, v))
+}
+
+// ValueContainsFold applies the ContainsFold predicate on the "value" field.
+func ValueContainsFold(v string) predicate.UserTag {
+	return predicate.UserTag(sql.FieldContainsFold(FieldValue, v))
 }
 
 // ValueLabelEQ applies the EQ predicate on the "value_label" field.
@@ -769,69 +774,44 @@ func ConfidenceLTE(v float64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldLTE(FieldConfidence, v))
 }
 
+// ConfidenceIsNil applies the IsNil predicate on the "confidence" field.
+func ConfidenceIsNil() predicate.UserTag {
+	return predicate.UserTag(sql.FieldIsNull(FieldConfidence))
+}
+
+// ConfidenceNotNil applies the NotNil predicate on the "confidence" field.
+func ConfidenceNotNil() predicate.UserTag {
+	return predicate.UserTag(sql.FieldNotNull(FieldConfidence))
+}
+
 // SourceEQ applies the EQ predicate on the "source" field.
-func SourceEQ(v string) predicate.UserTag {
+func SourceEQ(v Source) predicate.UserTag {
 	return predicate.UserTag(sql.FieldEQ(FieldSource, v))
 }
 
 // SourceNEQ applies the NEQ predicate on the "source" field.
-func SourceNEQ(v string) predicate.UserTag {
+func SourceNEQ(v Source) predicate.UserTag {
 	return predicate.UserTag(sql.FieldNEQ(FieldSource, v))
 }
 
 // SourceIn applies the In predicate on the "source" field.
-func SourceIn(vs ...string) predicate.UserTag {
+func SourceIn(vs ...Source) predicate.UserTag {
 	return predicate.UserTag(sql.FieldIn(FieldSource, vs...))
 }
 
 // SourceNotIn applies the NotIn predicate on the "source" field.
-func SourceNotIn(vs ...string) predicate.UserTag {
+func SourceNotIn(vs ...Source) predicate.UserTag {
 	return predicate.UserTag(sql.FieldNotIn(FieldSource, vs...))
 }
 
-// SourceGT applies the GT predicate on the "source" field.
-func SourceGT(v string) predicate.UserTag {
-	return predicate.UserTag(sql.FieldGT(FieldSource, v))
+// SourceIsNil applies the IsNil predicate on the "source" field.
+func SourceIsNil() predicate.UserTag {
+	return predicate.UserTag(sql.FieldIsNull(FieldSource))
 }
 
-// SourceGTE applies the GTE predicate on the "source" field.
-func SourceGTE(v string) predicate.UserTag {
-	return predicate.UserTag(sql.FieldGTE(FieldSource, v))
-}
-
-// SourceLT applies the LT predicate on the "source" field.
-func SourceLT(v string) predicate.UserTag {
-	return predicate.UserTag(sql.FieldLT(FieldSource, v))
-}
-
-// SourceLTE applies the LTE predicate on the "source" field.
-func SourceLTE(v string) predicate.UserTag {
-	return predicate.UserTag(sql.FieldLTE(FieldSource, v))
-}
-
-// SourceContains applies the Contains predicate on the "source" field.
-func SourceContains(v string) predicate.UserTag {
-	return predicate.UserTag(sql.FieldContains(FieldSource, v))
-}
-
-// SourceHasPrefix applies the HasPrefix predicate on the "source" field.
-func SourceHasPrefix(v string) predicate.UserTag {
-	return predicate.UserTag(sql.FieldHasPrefix(FieldSource, v))
-}
-
-// SourceHasSuffix applies the HasSuffix predicate on the "source" field.
-func SourceHasSuffix(v string) predicate.UserTag {
-	return predicate.UserTag(sql.FieldHasSuffix(FieldSource, v))
-}
-
-// SourceEqualFold applies the EqualFold predicate on the "source" field.
-func SourceEqualFold(v string) predicate.UserTag {
-	return predicate.UserTag(sql.FieldEqualFold(FieldSource, v))
-}
-
-// SourceContainsFold applies the ContainsFold predicate on the "source" field.
-func SourceContainsFold(v string) predicate.UserTag {
-	return predicate.UserTag(sql.FieldContainsFold(FieldSource, v))
+// SourceNotNil applies the NotNil predicate on the "source" field.
+func SourceNotNil() predicate.UserTag {
+	return predicate.UserTag(sql.FieldNotNull(FieldSource))
 }
 
 // SourceRuleIDEQ applies the EQ predicate on the "source_rule_id" field.
@@ -992,6 +972,16 @@ func IsActiveEQ(v bool) predicate.UserTag {
 // IsActiveNEQ applies the NEQ predicate on the "is_active" field.
 func IsActiveNEQ(v bool) predicate.UserTag {
 	return predicate.UserTag(sql.FieldNEQ(FieldIsActive, v))
+}
+
+// IsActiveIsNil applies the IsNil predicate on the "is_active" field.
+func IsActiveIsNil() predicate.UserTag {
+	return predicate.UserTag(sql.FieldIsNull(FieldIsActive))
+}
+
+// IsActiveNotNil applies the NotNil predicate on the "is_active" field.
+func IsActiveNotNil() predicate.UserTag {
+	return predicate.UserTag(sql.FieldNotNull(FieldIsActive))
 }
 
 // And groups predicates with the AND operator between them.

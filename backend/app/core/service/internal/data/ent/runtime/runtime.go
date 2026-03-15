@@ -348,10 +348,6 @@ func init() {
 	idmappingDescGlobalUserID := idmappingFields[0].Descriptor()
 	// idmapping.GlobalUserIDValidator is a validator for the "global_user_id" field. It is called by the builders before save.
 	idmapping.GlobalUserIDValidator = idmappingDescGlobalUserID.Validators[0].(func(string) error)
-	// idmappingDescIDType is the schema descriptor for id_type field.
-	idmappingDescIDType := idmappingFields[1].Descriptor()
-	// idmapping.IDTypeValidator is a validator for the "id_type" field. It is called by the builders before save.
-	idmapping.IDTypeValidator = idmappingDescIDType.Validators[0].(func(string) error)
 	// idmappingDescIDValue is the schema descriptor for id_value field.
 	idmappingDescIDValue := idmappingFields[2].Descriptor()
 	// idmapping.IDValueValidator is a validator for the "id_value" field. It is called by the builders before save.
@@ -359,7 +355,7 @@ func init() {
 	// idmappingDescConfidence is the schema descriptor for confidence field.
 	idmappingDescConfidence := idmappingFields[3].Descriptor()
 	// idmapping.DefaultConfidence holds the default value on creation for the confidence field.
-	idmapping.DefaultConfidence = idmappingDescConfidence.Default.(float64)
+	idmapping.DefaultConfidence = idmappingDescConfidence.Default.(float32)
 	// idmappingDescLinkSource is the schema descriptor for link_source field.
 	idmappingDescLinkSource := idmappingFields[4].Descriptor()
 	// idmapping.DefaultLinkSource holds the default value on creation for the link_source field.
@@ -1378,18 +1374,14 @@ func init() {
 	usertagDescTenantID := usertagMixinFields1[0].Descriptor()
 	// usertag.DefaultTenantID holds the default value on creation for the tenant_id field.
 	usertag.DefaultTenantID = usertagDescTenantID.Default.(uint32)
-	// usertagDescTagValue is the schema descriptor for tag_value field.
-	usertagDescTagValue := usertagFields[2].Descriptor()
-	// usertag.TagValueValidator is a validator for the "tag_value" field. It is called by the builders before save.
-	usertag.TagValueValidator = usertagDescTagValue.Validators[0].(func(string) error)
+	// usertagDescValue is the schema descriptor for value field.
+	usertagDescValue := usertagFields[2].Descriptor()
+	// usertag.ValueValidator is a validator for the "value" field. It is called by the builders before save.
+	usertag.ValueValidator = usertagDescValue.Validators[0].(func(string) error)
 	// usertagDescConfidence is the schema descriptor for confidence field.
 	usertagDescConfidence := usertagFields[4].Descriptor()
 	// usertag.DefaultConfidence holds the default value on creation for the confidence field.
 	usertag.DefaultConfidence = usertagDescConfidence.Default.(float64)
-	// usertagDescSource is the schema descriptor for source field.
-	usertagDescSource := usertagFields[5].Descriptor()
-	// usertag.DefaultSource holds the default value on creation for the source field.
-	usertag.DefaultSource = usertagDescSource.Default.(string)
 	// usertagDescIsActive is the schema descriptor for is_active field.
 	usertagDescIsActive := usertagFields[9].Descriptor()
 	// usertag.DefaultIsActive holds the default value on creation for the is_active field.
@@ -1433,7 +1425,7 @@ func init() {
 	// webhookDescFailureCount is the schema descriptor for failure_count field.
 	webhookDescFailureCount := webhookFields[7].Descriptor()
 	// webhook.DefaultFailureCount holds the default value on creation for the failure_count field.
-	webhook.DefaultFailureCount = webhookDescFailureCount.Default.(int)
+	webhook.DefaultFailureCount = webhookDescFailureCount.Default.(uint32)
 	// webhookDescID is the schema descriptor for id field.
 	webhookDescID := webhookMixinFields0[0].Descriptor()
 	// webhook.IDValidator is a validator for the "id" field. It is called by the builders before save.

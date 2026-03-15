@@ -22,6 +22,7 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	IDMappingService_List_FullMethodName   = "/uba.service.v1.IDMappingService/List"
+	IDMappingService_Count_FullMethodName  = "/uba.service.v1.IDMappingService/Count"
 	IDMappingService_Get_FullMethodName    = "/uba.service.v1.IDMappingService/Get"
 	IDMappingService_Create_FullMethodName = "/uba.service.v1.IDMappingService/Create"
 	IDMappingService_Update_FullMethodName = "/uba.service.v1.IDMappingService/Update"
@@ -36,6 +37,8 @@ const (
 type IDMappingServiceClient interface {
 	// 查询ID映射列表
 	List(ctx context.Context, in *v1.PagingRequest, opts ...grpc.CallOption) (*ListIDMappingResponse, error)
+	// 查询ID映射数量
+	Count(ctx context.Context, in *v1.PagingRequest, opts ...grpc.CallOption) (*CountIDMappingResponse, error)
 	// 查询ID映射详情
 	Get(ctx context.Context, in *GetIDMappingRequest, opts ...grpc.CallOption) (*IDMapping, error)
 	// 创建ID映射
@@ -58,6 +61,16 @@ func (c *iDMappingServiceClient) List(ctx context.Context, in *v1.PagingRequest,
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ListIDMappingResponse)
 	err := c.cc.Invoke(ctx, IDMappingService_List_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *iDMappingServiceClient) Count(ctx context.Context, in *v1.PagingRequest, opts ...grpc.CallOption) (*CountIDMappingResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CountIDMappingResponse)
+	err := c.cc.Invoke(ctx, IDMappingService_Count_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -112,6 +125,8 @@ func (c *iDMappingServiceClient) Delete(ctx context.Context, in *DeleteIDMapping
 type IDMappingServiceServer interface {
 	// 查询ID映射列表
 	List(context.Context, *v1.PagingRequest) (*ListIDMappingResponse, error)
+	// 查询ID映射数量
+	Count(context.Context, *v1.PagingRequest) (*CountIDMappingResponse, error)
 	// 查询ID映射详情
 	Get(context.Context, *GetIDMappingRequest) (*IDMapping, error)
 	// 创建ID映射
@@ -132,6 +147,9 @@ type UnimplementedIDMappingServiceServer struct{}
 
 func (UnimplementedIDMappingServiceServer) List(context.Context, *v1.PagingRequest) (*ListIDMappingResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method List not implemented")
+}
+func (UnimplementedIDMappingServiceServer) Count(context.Context, *v1.PagingRequest) (*CountIDMappingResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method Count not implemented")
 }
 func (UnimplementedIDMappingServiceServer) Get(context.Context, *GetIDMappingRequest) (*IDMapping, error) {
 	return nil, status.Error(codes.Unimplemented, "method Get not implemented")
@@ -180,6 +198,24 @@ func _IDMappingService_List_Handler(srv interface{}, ctx context.Context, dec fu
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(IDMappingServiceServer).List(ctx, req.(*v1.PagingRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IDMappingService_Count_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(v1.PagingRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IDMappingServiceServer).Count(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IDMappingService_Count_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IDMappingServiceServer).Count(ctx, req.(*v1.PagingRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -266,6 +302,10 @@ var IDMappingService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "List",
 			Handler:    _IDMappingService_List_Handler,
+		},
+		{
+			MethodName: "Count",
+			Handler:    _IDMappingService_Count_Handler,
 		},
 		{
 			MethodName: "Get",
