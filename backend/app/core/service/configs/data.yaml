@@ -44,12 +44,12 @@ data:
     connection_open_strategy: "round_robin" # 连接打开策略：in_order、round_robin、random
 
   doris:
-    dsn: "http://localhost:8030/gw_uba"
+    dsn: "root:@tcp(localhost:9030)/gw_uba?charset=utf8mb4&parseTime=True&loc=Local"
     max_idle_connections: 25
     max_open_connections: 25
     connection_max_lifetime: 300s
     stream_load:
-      endpoint: "http://localhost:8030/api/gw_uba/_stream_load"
+      endpoint: "http://localhost:8040/api/gw_uba/_stream_load"
       username: "root"
       password: "*Abcd123456"
       method: "POST"

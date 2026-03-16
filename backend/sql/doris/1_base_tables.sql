@@ -16,12 +16,12 @@ USE gw_uba;
 CREATE TABLE IF NOT EXISTS events_fact (
     event_id VARCHAR(64) NOT NULL COMMENT '全局唯一事件ID',
     tenant_id INT NOT NULL COMMENT '租户ID',
-    event_date DATE NOT NULL COMMENT '事件日期',
+    event_time DATETIMEV2(3) NOT NULL COMMENT '客户端事件时间',
+
     user_id INT DEFAULT 0 COMMENT '登录用户ID',
     device_id VARCHAR(128) COMMENT '设备ID',
     account_id VARCHAR(128) COMMENT '业务账号ID',
     global_user_id VARCHAR(128) DEFAULT '' COMMENT '全局用户ID',
-    event_time DATETIMEV2(3) NOT NULL COMMENT '客户端事件时间',
     event_ts BIGINT GENERATED ALWAYS AS (UNIX_TIMESTAMP(event_time)*1000) COMMENT '事件时间戳',
     server_time DATETIMEV2(3) DEFAULT CURRENT_TIMESTAMP(3) COMMENT '服务端接收时间',
     event_category VARCHAR(64) COMMENT '事件大类',
@@ -57,8 +57,8 @@ CREATE TABLE IF NOT EXISTS events_fact (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间'
 )
-    UNIQUE KEY(event_id, tenant_id, event_date)
-    PARTITION BY RANGE(event_date) ()
+    UNIQUE KEY(event_id, tenant_id, event_time) -- 顺序必须和顶部字段一致
+    PARTITION BY RANGE(event_time) ()
     DISTRIBUTED BY HASH(event_id, tenant_id) BUCKETS 16
     PROPERTIES (
                    "replication_num" = "1",

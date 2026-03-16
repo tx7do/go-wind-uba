@@ -26,7 +26,7 @@ require (
 	github.com/stretchr/testify v1.11.1
 	github.com/tx7do/go-crud/api v0.0.7
 	github.com/tx7do/go-crud/clickhouse v0.0.17
-	github.com/tx7do/go-crud/doris v0.0.1
+	github.com/tx7do/go-crud/doris v0.0.5
 	github.com/tx7do/go-crud/entgo v0.0.47
 	github.com/tx7do/go-crud/pagination v0.0.13
 	github.com/tx7do/go-crud/viewer v0.0.6
@@ -47,7 +47,7 @@ require (
 	github.com/tx7do/kratos-bootstrap/api v0.0.36
 	github.com/tx7do/kratos-bootstrap/bootstrap v0.1.16
 	github.com/tx7do/kratos-bootstrap/cache/redis v0.1.1
-	github.com/tx7do/kratos-bootstrap/database/clickhouse v0.1.3
+	github.com/tx7do/kratos-bootstrap/database/clickhouse v0.1.4
 	github.com/tx7do/kratos-bootstrap/database/doris v0.1.1
 	github.com/tx7do/kratos-bootstrap/database/ent v0.1.4
 	github.com/tx7do/kratos-bootstrap/oss/minio v0.1.1
@@ -220,7 +220,7 @@ require (
 	github.com/yusufpapurcu/wmi v1.2.4 // indirect
 	github.com/zclconf/go-cty v1.18.0 // indirect
 	github.com/zclconf/go-cty-yaml v1.2.0 // indirect
-	go.einride.tech/aip v0.81.0 // indirect
+	go.einride.tech/aip v0.83.0 // indirect
 	go.etcd.io/etcd/api/v3 v3.6.8 // indirect
 	go.etcd.io/etcd/client/pkg/v3 v3.6.8 // indirect
 	go.etcd.io/etcd/client/v3 v3.6.8 // indirect
@@ -249,7 +249,7 @@ require (
 	golang.org/x/text v0.34.0 // indirect
 	golang.org/x/time v0.14.0 // indirect
 	golang.org/x/tools v0.42.0 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20260226221140-a57be14db171 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20260311181403-84a4fc48630c // indirect
 	gopkg.in/cenkalti/backoff.v1 v1.1.0 // indirect
 	gopkg.in/ini.v1 v1.67.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
