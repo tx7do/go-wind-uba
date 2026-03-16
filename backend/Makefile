@@ -38,7 +38,6 @@ plugin:
 	@go install github.com/go-kratos/protoc-gen-typescript-http@latest
 	@go install github.com/envoyproxy/protoc-gen-validate@latest
 	@go install github.com/menta2k/protoc-gen-redact/v3@latest
-	@go install github.com/favadi/protoc-go-inject-tag@latest
 	@go install github.com/srikrsna/protoc-gen-gotag@latest
 
 # install cli tools
@@ -98,7 +97,8 @@ gen: ent wire api openapi
 # generate protobuf api go code
 api:
 	@cd api && \
-	buf generate
+	buf generate && \
+	buf generate --template buf.go.tag.gen
 
 # generate protobuf api OpenAPI v3 docs.
 openapi:
