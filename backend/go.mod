@@ -25,7 +25,7 @@ require (
 	github.com/srikrsna/protoc-gen-gotag v1.0.2
 	github.com/stretchr/testify v1.11.1
 	github.com/tx7do/go-crud/api v0.0.7
-	github.com/tx7do/go-crud/clickhouse v0.0.12
+	github.com/tx7do/go-crud/clickhouse v0.0.17
 	github.com/tx7do/go-crud/doris v0.0.1
 	github.com/tx7do/go-crud/entgo v0.0.47
 	github.com/tx7do/go-crud/pagination v0.0.13
@@ -62,8 +62,8 @@ require (
 	github.com/tx7do/kratos-transport/transport/asynq v1.3.2
 	github.com/tx7do/kratos-transport/transport/sse v1.3.2
 	go.opentelemetry.io/otel/trace v1.42.0
-	google.golang.org/genproto v0.0.0-20260226221140-a57be14db171
-	google.golang.org/genproto/googleapis/api v0.0.0-20260226221140-a57be14db171
+	google.golang.org/genproto v0.0.0-20260311181403-84a4fc48630c
+	google.golang.org/genproto/googleapis/api v0.0.0-20260311181403-84a4fc48630c
 	google.golang.org/grpc v1.79.2
 	google.golang.org/protobuf v1.36.11
 )

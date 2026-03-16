@@ -52,7 +52,7 @@ func TestUserTokenCache_BasicOperations(t *testing.T) {
 	repo := NewUserTokenCache(bctx, rdb)
 	assert.NotNil(t, repo)
 
-	clientType := authenticationV1.ClientType_app
+	clientType := authenticationV1.ClientType_collector
 	var userId uint32 = 123
 
 	// 用于接收验证结果，避免重复短声明导致重定义

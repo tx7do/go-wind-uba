@@ -32,18 +32,18 @@ type BehaviorEvent struct {
 	EventId  string `protobuf:"bytes,1,opt,name=event_id,json=eventId,proto3" json:"event_id,omitempty" ch:"event_id"`      // 事件ID，建议使用 UUID，作为事件的唯一标识，同时也可用于路由和去重
 	TenantId uint32 `protobuf:"varint,2,opt,name=tenant_id,json=tenantId,proto3" json:"tenant_id,omitempty" ch:"tenant_id"` // 租户ID，事件所属的租户，用于多租户隔离
 	// 主体：Who
-	UserId       string `protobuf:"bytes,3,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty" ch:"user_id"`                            // 用户ID，事件的主体，可以是用户、设备、账号等，具体含义由业务定义
+	UserId       uint32 `protobuf:"varint,3,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty" ch:"user_id"`                           // 用户ID，事件的主体，可以是用户、设备、账号等，具体含义由业务定义
 	DeviceId     string `protobuf:"bytes,4,opt,name=device_id,json=deviceId,proto3" json:"device_id,omitempty" ch:"device_id"`                    // 设备ID，事件发生时使用的设备标识，可以用于分析设备相关的行为特征
 	AccountId    string `protobuf:"bytes,5,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty" ch:"account_id"`                // 账号ID，事件发生时使用的账号标识，可以用于分析账号相关的行为特征
 	GlobalUserId string `protobuf:"bytes,6,opt,name=global_user_id,json=globalUserId,proto3" json:"global_user_id,omitempty" ch:"global_user_id"` // 全局用户ID，结合 user_id、device_id、account_id 等多维度标识，通过算法生成的全局唯一用户标识，可以用于跨设备、跨账号的用户行为分析
 	// 时间
 	EventTime  *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=event_time,json=eventTime,proto3" json:"event_time,omitempty" ch:"event_time"`     // 事件发生时间，记录事件实际发生的时间点，通常由客户端上报，可能存在时钟偏差
-	EventTs    int64                  `protobuf:"varint,8,opt,name=event_ts,json=eventTs,proto3" json:"event_ts,omitempty" ch:"event_ts"`            // 事件时间戳，事件发生时间的 Unix 时间戳表示，单位毫秒，可以用于快速的时间范围查询和排序
+	EventTs    int64                  `protobuf:"varint,8,opt,name=event_ts,json=eventTs,proto3" json:"event_ts,omitempty" ch:"-"`                   // 事件时间戳，事件发生时间的 Unix 时间戳表示，单位毫秒，可以用于快速的时间范围查询和排序
 	ServerTime *timestamppb.Timestamp `protobuf:"bytes,9,opt,name=server_time,json=serverTime,proto3" json:"server_time,omitempty" ch:"server_time"` // 服务器接收时间，记录事件被服务器接收的时间点，可以用于分析事件的传输延迟和时序关系
 	// 行为：What
-	EventCategory EventCategory `protobuf:"varint,10,opt,name=event_category,json=eventCategory,proto3,enum=uba.service.v1.EventCategory" json:"event_category,omitempty" ch:"event_category"` // 事件类别，事件的类型或分类，用于对事件进行分组和分析，具体类别由业务定义
-	EventName     string        `protobuf:"bytes,11,opt,name=event_name,json=eventName,proto3" json:"event_name,omitempty" ch:"event_name"`                                                    // 事件名称，事件的具体名称或动作，用于描述事件的具体行为，通常与事件类别结合使用以提供更细粒度的行为描述
-	EventAction   string        `protobuf:"bytes,12,opt,name=event_action,json=eventAction,proto3" json:"event_action,omitempty" ch:"event_action"`                                            // 事件动作，事件的具体动作或结果，用于描述事件发生后的结果或状态变化，可以用于分析事件的效果和用户的反应
+	EventCategory *EventCategory `protobuf:"varint,10,opt,name=event_category,json=eventCategory,proto3,enum=uba.service.v1.EventCategory,oneof" json:"event_category,omitempty" ch:"-"` // 事件类别，事件的类型或分类，用于对事件进行分组和分析，具体类别由业务定义
+	EventName     string         `protobuf:"bytes,11,opt,name=event_name,json=eventName,proto3" json:"event_name,omitempty" ch:"event_name"`                                             // 事件名称，事件的具体名称或动作，用于描述事件的具体行为，通常与事件类别结合使用以提供更细粒度的行为描述
+	EventAction   string         `protobuf:"bytes,12,opt,name=event_action,json=eventAction,proto3" json:"event_action,omitempty" ch:"event_action"`                                     // 事件动作，事件的具体动作或结果，用于描述事件发生后的结果或状态变化，可以用于分析事件的效果和用户的反应
 	// 客体：Object
 	ObjectType string `protobuf:"bytes,13,opt,name=object_type,json=objectType,proto3" json:"object_type,omitempty" ch:"object_type"` // 对象类型，事件作用的对象类型，可以是商品、页面、功能等，具体含义由业务定义
 	ObjectId   string `protobuf:"bytes,14,opt,name=object_id,json=objectId,proto3" json:"object_id,omitempty" ch:"object_id"`         // 对象ID，事件作用的对象标识，可以用于分析特定对象的行为特征和受欢迎程度
@@ -52,10 +52,10 @@ type BehaviorEvent struct {
 	SessionId  string `protobuf:"bytes,16,opt,name=session_id,json=sessionId,proto3" json:"session_id,omitempty" ch:"session_id"`      // 会话ID，事件所属的会话标识，可以用于分析用户的会话行为和路径，通常由客户端上报，可能存在时钟偏差
 	SessionSeq uint32 `protobuf:"varint,17,opt,name=session_seq,json=sessionSeq,proto3" json:"session_seq,omitempty" ch:"session_seq"` // 会话内序列号，事件在所属会话中的序列号，用于分析事件的顺序和路径，可以由客户端上报，也可以由服务器根据 session_id 进行计算生成
 	// 环境
-	Platform   Platform `protobuf:"varint,18,opt,name=platform,proto3,enum=uba.service.v1.Platform" json:"platform,omitempty" ch:"platform"` // 平台，事件发生的环境平台，可以是 Web、iOS、Android、PC 等，具体类别由业务定义
-	Os         string   `protobuf:"bytes,19,opt,name=os,proto3" json:"os,omitempty" ch:"os"`                                                 // 操作系统，事件发生的操作系统信息，可以提供更细粒度的环境描述，便于分析不同操作系统上的行为差异
-	AppVersion string   `protobuf:"bytes,20,opt,name=app_version,json=appVersion,proto3" json:"app_version,omitempty" ch:"app_version"`      // 应用版本，事件发生的应用版本信息，可以用于分析不同版本上的行为差异和版本升级的影响
-	Channel    string   `protobuf:"bytes,21,opt,name=channel,proto3" json:"channel,omitempty" ch:"channel"`                                  // 渠道，事件发生的渠道信息，可以用于分析不同渠道上的行为差异和渠道推广的效果
+	Platform   *Platform `protobuf:"varint,18,opt,name=platform,proto3,enum=uba.service.v1.Platform,oneof" json:"platform,omitempty" ch:"platform"` // 平台，事件发生的环境平台，可以是 Web、iOS、Android、PC 等，具体类别由业务定义
+	Os         string    `protobuf:"bytes,19,opt,name=os,proto3" json:"os,omitempty" ch:"os"`                                                       // 操作系统，事件发生的操作系统信息，可以提供更细粒度的环境描述，便于分析不同操作系统上的行为差异
+	AppVersion string    `protobuf:"bytes,20,opt,name=app_version,json=appVersion,proto3" json:"app_version,omitempty" ch:"app_version"`            // 应用版本，事件发生的应用版本信息，可以用于分析不同版本上的行为差异和版本升级的影响
+	Channel    string    `protobuf:"bytes,21,opt,name=channel,proto3" json:"channel,omitempty" ch:"channel"`                                        // 渠道，事件发生的渠道信息，可以用于分析不同渠道上的行为差异和渠道推广的效果
 	// 网络 & 位置
 	Ip      string `protobuf:"bytes,22,opt,name=ip,proto3" json:"ip,omitempty" ch:"ip"`                            // IP地址，事件发生时的客户端IP地址，可以用于分析用户的地理位置和网络特征
 	IpCity  string `protobuf:"bytes,23,opt,name=ip_city,json=ipCity,proto3" json:"ip_city,omitempty" ch:"ip_city"` // IP城市，事件发生时的IP地址解析出的城市信息，可以用于分析用户的地理位置特征
@@ -68,23 +68,22 @@ type BehaviorEvent struct {
 	// 来源页面/地址
 	Referer string `protobuf:"bytes,41,opt,name=referer,proto3" json:"referer,omitempty" ch:"referer"` // 来源页面或来源地址，记录事件发生时的来源信息，便于分析流量来源和用户路径
 	// 业务上下文
-	Context map[string]string `protobuf:"bytes,26,rep,name=context,proto3" json:"context,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value" ch:"context"` // 业务上下文，事件的业务相关上下文信息，可以包含任意的键值对，由业务定义和使用，便于分析事件发生时的具体业务场景和条件
+	Context map[string]string `protobuf:"bytes,26,rep,name=context,proto3" json:"context,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value" ch:"-"` // 业务上下文，事件的业务相关上下文信息，可以包含任意的键值对，由业务定义和使用，便于分析事件发生时的具体业务场景和条件
 	// 指标：Metrics
-	DurationMs uint32             `protobuf:"varint,27,opt,name=duration_ms,json=durationMs,proto3" json:"duration_ms,omitempty" ch:"duration_ms"`                                                // 持续时间，事件持续的时间长度，单位毫秒，可以用于分析事件的持续时间分布和用户的停留时间特征
-	Amount     string             `protobuf:"bytes,28,opt,name=amount,proto3" json:"amount,omitempty" ch:"amount"`                                                                                // 金额，事件相关的金额信息，可以用于分析用户的支付行为和消费特征，具体格式由业务定义，可以包含货币单位等信息
-	Quantity   uint32             `protobuf:"varint,29,opt,name=quantity,proto3" json:"quantity,omitempty" ch:"quantity"`                                                                         // 数量，事件相关的数量信息，可以用于分析用户的购买行为和消费特征，具体含义由业务定义
-	Score      int32              `protobuf:"varint,30,opt,name=score,proto3" json:"score,omitempty" ch:"score"`                                                                                  // 评分，事件相关的评分信息，可以用于分析用户的评价行为和满意度特征，具体含义由业务定义
-	Metrics    map[string]float64 `protobuf:"bytes,31,rep,name=metrics,proto3" json:"metrics,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"fixed64,2,opt,name=value" ch:"metrics"` // 其他指标，事件的其他相关指标信息，可以包含任意的键值对，值为数值类型，由业务定义和使用，便于分析事件的其他量化特征
+	DurationMs uint32             `protobuf:"varint,27,opt,name=duration_ms,json=durationMs,proto3" json:"duration_ms,omitempty" ch:"duration_ms"`                                          // 持续时间，事件持续的时间长度，单位毫秒，可以用于分析事件的持续时间分布和用户的停留时间特征
+	Amount     string             `protobuf:"bytes,28,opt,name=amount,proto3" json:"amount,omitempty" ch:"amount"`                                                                          // 金额，事件相关的金额信息，可以用于分析用户的支付行为和消费特征，具体格式由业务定义，可以包含货币单位等信息
+	Quantity   uint32             `protobuf:"varint,29,opt,name=quantity,proto3" json:"quantity,omitempty" ch:"quantity"`                                                                   // 数量，事件相关的数量信息，可以用于分析用户的购买行为和消费特征，具体含义由业务定义
+	Score      int32              `protobuf:"varint,30,opt,name=score,proto3" json:"score,omitempty" ch:"score"`                                                                            // 评分，事件相关的评分信息，可以用于分析用户的评价行为和满意度特征，具体含义由业务定义
+	Metrics    map[string]float64 `protobuf:"bytes,31,rep,name=metrics,proto3" json:"metrics,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"fixed64,2,opt,name=value" ch:"-"` // 其他指标，事件的其他相关指标信息，可以包含任意的键值对，值为数值类型，由业务定义和使用，便于分析事件的其他量化特征
 	// 扩展属性
-	Properties map[string]string `protobuf:"bytes,32,rep,name=properties,proto3" json:"properties,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value" ch:"properties"` // 扩展属性，事件的其他相关属性信息，可以包含任意的键值对，由业务定义和使用，便于分析事件的其他特征和细节
+	Properties map[string]string `protobuf:"bytes,32,rep,name=properties,proto3" json:"properties,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value" ch:"-"` // 扩展属性，事件的其他相关属性信息，可以包含任意的键值对，由业务定义和使用，便于分析事件的其他特征和细节
 	// 企业级字段
-	OpResult  OpResult  `protobuf:"varint,33,opt,name=op_result,json=opResult,proto3,enum=uba.service.v1.OpResult" json:"op_result,omitempty" ch:"op_result"`      // 操作结果，事件相关的操作结果信息，可以用于分析事件的成功率和失败原因，具体含义由业务定义
-	ErrorCode string    `protobuf:"bytes,34,opt,name=error_code,json=errorCode,proto3" json:"error_code,omitempty" ch:"error_code"`                                // 错误码，事件相关的错误码信息，可以用于分析事件的失败原因和问题排查，具体含义由业务定义
-	RiskLevel RiskLevel `protobuf:"varint,35,opt,name=risk_level,json=riskLevel,proto3,enum=uba.service.v1.RiskLevel" json:"risk_level,omitempty" ch:"risk_level"` // 风险等级，事件相关的风险等级信息，可以用于分析事件的风险特征和安全问题，具体含义由业务定义
-	TraceId   string    `protobuf:"bytes,36,opt,name=trace_id,json=traceId,proto3" json:"trace_id,omitempty" ch:"trace_id"`                                        // Trace ID，事件相关的分布式追踪标识，可以用于分析事件的调用链和系统性能，通常由服务器生成并传递给客户端进行上报
-	// 系统字段
-	IngestTime    *timestamppb.Timestamp `protobuf:"bytes,37,opt,name=ingest_time,json=ingestTime,proto3" json:"ingest_time,omitempty" ch:"ingest_time"` // 接收时间，事件被系统接收的时间点，由服务器生成，记录事件进入系统的时间，可以用于分析事件的处理延迟和时序关系
-	Version       uint32                 `protobuf:"varint,38,opt,name=version,proto3" json:"version,omitempty" ch:"version"`                            // 版本号，事件数据的版本信息，可以用于数据格式的演进和兼容性处理，具体含义由业务定义
+	OpResult      *OpResult              `protobuf:"varint,33,opt,name=op_result,json=opResult,proto3,enum=uba.service.v1.OpResult,oneof" json:"op_result,omitempty" ch:"op_result"`      // 操作结果，事件相关的操作结果信息，可以用于分析事件的成功率和失败原因，具体含义由业务定义
+	ErrorCode     string                 `protobuf:"bytes,34,opt,name=error_code,json=errorCode,proto3" json:"error_code,omitempty" ch:"error_code"`                                      // 错误码，事件相关的错误码信息，可以用于分析事件的失败原因和问题排查，具体含义由业务定义
+	RiskLevel     *RiskLevel             `protobuf:"varint,35,opt,name=risk_level,json=riskLevel,proto3,enum=uba.service.v1.RiskLevel,oneof" json:"risk_level,omitempty" ch:"risk_level"` // 风险等级，事件相关的风险等级信息，可以用于分析事件的风险特征和安全问题，具体含义由业务定义
+	TraceId       string                 `protobuf:"bytes,36,opt,name=trace_id,json=traceId,proto3" json:"trace_id,omitempty" ch:"trace_id"`                                              // Trace ID，事件相关的分布式追踪标识，可以用于分析事件的调用链和系统性能，通常由服务器生成并传递给客户端进行上报
+	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,200,opt,name=created_at,json=createdAt,proto3,oneof" json:"created_at,omitempty" ch:"-"`                                        // 创建时间
+	UpdatedAt     *timestamppb.Timestamp `protobuf:"bytes,201,opt,name=updated_at,json=updatedAt,proto3,oneof" json:"updated_at,omitempty" ch:"-"`                                        // 更新时间
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -133,11 +132,11 @@ func (x *BehaviorEvent) GetTenantId() uint32 {
 	return 0
 }
 
-func (x *BehaviorEvent) GetUserId() string {
+func (x *BehaviorEvent) GetUserId() uint32 {
 	if x != nil {
 		return x.UserId
 	}
-	return ""
+	return 0
 }
 
 func (x *BehaviorEvent) GetDeviceId() string {
@@ -183,8 +182,8 @@ func (x *BehaviorEvent) GetServerTime() *timestamppb.Timestamp {
 }
 
 func (x *BehaviorEvent) GetEventCategory() EventCategory {
-	if x != nil {
-		return x.EventCategory
+	if x != nil && x.EventCategory != nil {
+		return *x.EventCategory
 	}
 	return EventCategory_EVENT_CATEGORY_UNSPECIFIED
 }
@@ -239,8 +238,8 @@ func (x *BehaviorEvent) GetSessionSeq() uint32 {
 }
 
 func (x *BehaviorEvent) GetPlatform() Platform {
-	if x != nil {
-		return x.Platform
+	if x != nil && x.Platform != nil {
+		return *x.Platform
 	}
 	return Platform_PLATFORM_UNSPECIFIED
 }
@@ -365,8 +364,8 @@ func (x *BehaviorEvent) GetProperties() map[string]string {
 }
 
 func (x *BehaviorEvent) GetOpResult() OpResult {
-	if x != nil {
-		return x.OpResult
+	if x != nil && x.OpResult != nil {
+		return *x.OpResult
 	}
 	return OpResult_OP_RESULT_UNSPECIFIED
 }
@@ -379,8 +378,8 @@ func (x *BehaviorEvent) GetErrorCode() string {
 }
 
 func (x *BehaviorEvent) GetRiskLevel() RiskLevel {
-	if x != nil {
-		return x.RiskLevel
+	if x != nil && x.RiskLevel != nil {
+		return *x.RiskLevel
 	}
 	return RiskLevel_RISK_LEVEL_UNSPECIFIED
 }
@@ -392,40 +391,40 @@ func (x *BehaviorEvent) GetTraceId() string {
 	return ""
 }
 
-func (x *BehaviorEvent) GetIngestTime() *timestamppb.Timestamp {
+func (x *BehaviorEvent) GetCreatedAt() *timestamppb.Timestamp {
 	if x != nil {
-		return x.IngestTime
+		return x.CreatedAt
 	}
 	return nil
 }
 
-func (x *BehaviorEvent) GetVersion() uint32 {
+func (x *BehaviorEvent) GetUpdatedAt() *timestamppb.Timestamp {
 	if x != nil {
-		return x.Version
+		return x.UpdatedAt
 	}
-	return 0
+	return nil
 }
 
 var File_uba_service_v1_behavior_event_proto protoreflect.FileDescriptor
 
 const file_uba_service_v1_behavior_event_proto_rawDesc = "" +
 	"\n" +
-	"#uba/service/v1/behavior_event.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x13tagger/tagger.proto\x1a\x1buba/service/v1/common.proto\"\x89=\n" +
+	"#uba/service/v1/behavior_event.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x13tagger/tagger.proto\x1a\x1buba/service/v1/common.proto\"\xde<\n" +
 	"\rBehaviorEvent\x12\x91\x01\n" +
 	"\bevent_id\x18\x01 \x01(\tBv\xbaGa\x92\x02^事件ID，建议使用 UUID，作为事件的唯一标识，同时也可用于路由和去重\x9a\x84\x9e\x03\rch:\"event_id\"R\aeventId\x12n\n" +
 	"\ttenant_id\x18\x02 \x01(\rBQ\xbaG;\x92\x028租户ID，事件所属的租户，用于多租户隔离\x9a\x84\x9e\x03\x0ech:\"tenant_id\"R\btenantId\x12\x8f\x01\n" +
-	"\auser_id\x18\x03 \x01(\tBv\xbaGb\x92\x02_用户ID，事件的主体，可以是用户、设备、账号等，具体含义由业务定义\x9a\x84\x9e\x03\fch:\"user_id\"R\x06userId\x123\n" +
+	"\auser_id\x18\x03 \x01(\rBv\xbaGb\x92\x02_用户ID，事件的主体，可以是用户、设备、账号等，具体含义由业务定义\x9a\x84\x9e\x03\fch:\"user_id\"R\x06userId\x123\n" +
 	"\tdevice_id\x18\x04 \x01(\tB\x16\xbaG\x00\x9a\x84\x9e\x03\x0ech:\"device_id\"R\bdeviceId\x12\x98\x01\n" +
 	"\n" +
 	"account_id\x18\x05 \x01(\tBy\xbaGb\x92\x02_账号ID，事件发生时使用的账号标识，可以用于分析账号相关的行为特征\x9a\x84\x9e\x03\x0fch:\"account_id\"R\taccountId\x12\xfb\x01\n" +
 	"\x0eglobal_user_id\x18\x06 \x01(\tB\xd4\x01\xbaG\xb8\x01\x92\x02\xb4\x01全局用户ID，结合 user_id、device_id、account_id 等多维度标识，通过算法生成的全局唯一用户标识，可以用于跨设备、跨账号的用户行为分析\x9a\x84\x9e\x03\x13ch:\"global_user_id\"R\fglobalUserId\x12\xc5\x01\n" +
 	"\n" +
-	"event_time\x18\a \x01(\v2\x1a.google.protobuf.TimestampB\x89\x01\xbaGr\x92\x02o事件发生时间，记录事件实际发生的时间点，通常由客户端上报，可能存在时钟偏差\x9a\x84\x9e\x03\x0fch:\"event_time\"R\teventTime\x12\xb3\x01\n" +
-	"\bevent_ts\x18\b \x01(\x03B\x97\x01\xbaG\x81\x01\x92\x02~事件时间戳，事件发生时间的 Unix 时间戳表示，单位毫秒，可以用于快速的时间范围查询和排序\x9a\x84\x9e\x03\rch:\"event_ts\"R\aeventTs\x12\xd4\x01\n" +
+	"event_time\x18\a \x01(\v2\x1a.google.protobuf.TimestampB\x89\x01\xbaGr\x92\x02o事件发生时间，记录事件实际发生的时间点，通常由客户端上报，可能存在时钟偏差\x9a\x84\x9e\x03\x0fch:\"event_time\"R\teventTime\x12\xac\x01\n" +
+	"\bevent_ts\x18\b \x01(\x03B\x90\x01\xbaG\x81\x01\x92\x02~事件时间戳，事件发生时间的 Unix 时间戳表示，单位毫秒，可以用于快速的时间范围查询和排序\x9a\x84\x9e\x03\x06ch:\"-\"R\aeventTs\x12\xd4\x01\n" +
 	"\vserver_time\x18\t \x01(\v2\x1a.google.protobuf.TimestampB\x96\x01\xbaG~\x92\x02{服务器接收时间，记录事件被服务器接收的时间点，可以用于分析事件的传输延迟和时序关系\x9a\x84\x9e\x03\x10ch:\"server_time\"R\n" +
-	"serverTime\x12\xd1\x01\n" +
+	"serverTime\x12\xc8\x01\n" +
 	"\x0eevent_category\x18\n" +
-	" \x01(\x0e2\x1d.uba.service.v1.EventCategoryB\x8a\x01\xbaGo\x92\x02l事件类别，事件的类型或分类，用于对事件进行分组和分析，具体类别由业务定义\x9a\x84\x9e\x03\x13ch:\"event_category\"R\reventCategory\x12\xd5\x01\n" +
+	" \x01(\x0e2\x1d.uba.service.v1.EventCategoryB}\xbaGo\x92\x02l事件类别，事件的类型或分类，用于对事件进行分组和分析，具体类别由业务定义\x9a\x84\x9e\x03\x06ch:\"-\"H\x00R\reventCategory\x88\x01\x01\x12\xd5\x01\n" +
 	"\n" +
 	"event_name\x18\v \x01(\tB\xb5\x01\xbaG\x9d\x01\x92\x02\x99\x01事件名称，事件的具体名称或动作，用于描述事件的具体行为，通常与事件类别结合使用以提供更细粒度的行为描述\x9a\x84\x9e\x03\x0fch:\"event_name\"R\teventName\x12\xdb\x01\n" +
 	"\fevent_action\x18\f \x01(\tB\xb7\x01\xbaG\x9d\x01\x92\x02\x99\x01事件动作，事件的具体动作或结果，用于描述事件发生后的结果或状态变化，可以用于分析事件的效果和用户的反应\x9a\x84\x9e\x03\x11ch:\"event_action\"R\veventAction\x12\xac\x01\n" +
@@ -437,8 +436,8 @@ const file_uba_service_v1_behavior_event_proto_rawDesc = "" +
 	"\n" +
 	"session_id\x18\x10 \x01(\tB\xab\x01\xbaG\x93\x01\x92\x02\x8f\x01会话ID，事件所属的会话标识，可以用于分析用户的会话行为和路径，通常由客户端上报，可能存在时钟偏差\x9a\x84\x9e\x03\x0fch:\"session_id\"R\tsessionId\x12\xf6\x01\n" +
 	"\vsession_seq\x18\x11 \x01(\rB\xd4\x01\xbaG\xbb\x01\x92\x02\xb7\x01会话内序列号，事件在所属会话中的序列号，用于分析事件的顺序和路径，可以由客户端上报，也可以由服务器根据 session_id 进行计算生成\x9a\x84\x9e\x03\x10ch:\"session_seq\"R\n" +
-	"sessionSeq\x12\xba\x01\n" +
-	"\bplatform\x18\x12 \x01(\x0e2\x18.uba.service.v1.PlatformB\x83\x01\xbaGn\x92\x02k平台，事件发生的环境平台，可以是 Web、iOS、Android、PC 等，具体类别由业务定义\x9a\x84\x9e\x03\rch:\"platform\"R\bplatform\x12\xb2\x01\n" +
+	"sessionSeq\x12\xbf\x01\n" +
+	"\bplatform\x18\x12 \x01(\x0e2\x18.uba.service.v1.PlatformB\x83\x01\xbaGn\x92\x02k平台，事件发生的环境平台，可以是 Web、iOS、Android、PC 等，具体类别由业务定义\x9a\x84\x9e\x03\rch:\"platform\"H\x01R\bplatform\x88\x01\x01\x12\xb2\x01\n" +
 	"\x02os\x18\x13 \x01(\tB\xa1\x01\xbaG\x91\x01\x92\x02\x8d\x01操作系统，事件发生的操作系统信息，可以提供更细粒度的环境描述，便于分析不同操作系统上的行为差异\x9a\x84\x9e\x03\ach:\"os\"R\x02os\x12\xb8\x01\n" +
 	"\vapp_version\x18\x14 \x01(\tB\x96\x01\xbaG~\x92\x02{应用版本，事件发生的应用版本信息，可以用于分析不同版本上的行为差异和版本升级的影响\x9a\x84\x9e\x03\x10ch:\"app_version\"R\n" +
 	"appVersion\x12\xa1\x01\n" +
@@ -450,27 +449,28 @@ const file_uba_service_v1_behavior_event_proto_rawDesc = "" +
 	"\x03geo\x18' \x01(\tBt\xbaGd\x92\x02a地理位置，经纬度信息，格式如 'lat,lng' 或 GeoJSON，用于更精细的地理分析\x9a\x84\x9e\x03\bch:\"geo\"R\x03geo\x12\xac\x01\n" +
 	"\n" +
 	"user_agent\x18( \x01(\tB\x8c\x01\xbaGu\x92\x02r客户端 User-Agent 信息，记录客户端类型、版本、操作系统等特征，便于分析设备和环境\x9a\x84\x9e\x03\x0fch:\"user_agent\"R\tuserAgent\x12\x9e\x01\n" +
-	"\areferer\x18) \x01(\tB\x83\x01\xbaGo\x92\x02l来源页面或来源地址，记录事件发生时的来源信息，便于分析流量来源和用户路径\x9a\x84\x9e\x03\fch:\"referer\"R\areferer\x12\x8e\x02\n" +
-	"\acontext\x18\x1a \x03(\v2*.uba.service.v1.BehaviorEvent.ContextEntryB\xc7\x01\xbaG\xb2\x01\x92\x02\xae\x01业务上下文，事件的业务相关上下文信息，可以包含任意的键值对，由业务定义和使用，便于分析事件发生时的具体业务场景和条件\x9a\x84\x9e\x03\fch:\"context\"R\acontext\x12\xc6\x01\n" +
+	"\areferer\x18) \x01(\tB\x83\x01\xbaGo\x92\x02l来源页面或来源地址，记录事件发生时的来源信息，便于分析流量来源和用户路径\x9a\x84\x9e\x03\fch:\"referer\"R\areferer\x12\x88\x02\n" +
+	"\acontext\x18\x1a \x03(\v2*.uba.service.v1.BehaviorEvent.ContextEntryB\xc1\x01\xbaG\xb2\x01\x92\x02\xae\x01业务上下文，事件的业务相关上下文信息，可以包含任意的键值对，由业务定义和使用，便于分析事件发生时的具体业务场景和条件\x9a\x84\x9e\x03\x06ch:\"-\"R\acontext\x12\xc6\x01\n" +
 	"\vduration_ms\x18\x1b \x01(\rB\xa4\x01\xbaG\x8b\x01\x92\x02\x87\x01持续时间，事件持续的时间长度，单位毫秒，可以用于分析事件的持续时间分布和用户的停留时间特征\x9a\x84\x9e\x03\x10ch:\"duration_ms\"R\n" +
 	"durationMs\x12\xd0\x01\n" +
 	"\x06amount\x18\x1c \x01(\tB\xb7\x01\xbaG\xa3\x01\x92\x02\x9f\x01金额，事件相关的金额信息，可以用于分析用户的支付行为和消费特征，具体格式由业务定义，可以包含货币单位等信息\x9a\x84\x9e\x03\vch:\"amount\"R\x06amount\x12\xb0\x01\n" +
 	"\bquantity\x18\x1d \x01(\rB\x93\x01\xbaG~\x92\x02{数量，事件相关的数量信息，可以用于分析用户的购买行为和消费特征，具体含义由业务定义\x9a\x84\x9e\x03\rch:\"quantity\"R\bquantity\x12\xab\x01\n" +
 	"\x05score\x18\x1e \x01(\x05B\x94\x01\xbaG\x81\x01\x92\x02~评分，事件相关的评分信息，可以用于分析用户的评价行为和满意度特征，具体含义由业务定义\x9a\x84\x9e\x03\n" +
-	"ch:\"score\"R\x05score\x12\x8b\x02\n" +
-	"\ametrics\x18\x1f \x03(\v2*.uba.service.v1.BehaviorEvent.MetricsEntryB\xc4\x01\xbaG\xaf\x01\x92\x02\xab\x01其他指标，事件的其他相关指标信息，可以包含任意的键值对，值为数值类型，由业务定义和使用，便于分析事件的其他量化特征\x9a\x84\x9e\x03\fch:\"metrics\"R\ametrics\x12\x85\x02\n" +
+	"ch:\"score\"R\x05score\x12\x85\x02\n" +
+	"\ametrics\x18\x1f \x03(\v2*.uba.service.v1.BehaviorEvent.MetricsEntryB\xbe\x01\xbaG\xaf\x01\x92\x02\xab\x01其他指标，事件的其他相关指标信息，可以包含任意的键值对，值为数值类型，由业务定义和使用，便于分析事件的其他量化特征\x9a\x84\x9e\x03\x06ch:\"-\"R\ametrics\x12\xfc\x01\n" +
 	"\n" +
-	"properties\x18  \x03(\v2-.uba.service.v1.BehaviorEvent.PropertiesEntryB\xb5\x01\xbaG\x9d\x01\x92\x02\x99\x01扩展属性，事件的其他相关属性信息，可以包含任意的键值对，由业务定义和使用，便于分析事件的其他特征和细节\x9a\x84\x9e\x03\x0fch:\"properties\"R\n" +
-	"properties\x12\xd7\x01\n" +
-	"\top_result\x18! \x01(\x0e2\x18.uba.service.v1.OpResultB\x9f\x01\xbaG\x88\x01\x92\x02\x84\x01操作结果，事件相关的操作结果信息，可以用于分析事件的成功率和失败原因，具体含义由业务定义\x9a\x84\x9e\x03\x0ech:\"op_result\"R\bopResult\x12\xbd\x01\n" +
+	"properties\x18  \x03(\v2-.uba.service.v1.BehaviorEvent.PropertiesEntryB\xac\x01\xbaG\x9d\x01\x92\x02\x99\x01扩展属性，事件的其他相关属性信息，可以包含任意的键值对，由业务定义和使用，便于分析事件的其他特征和细节\x9a\x84\x9e\x03\x06ch:\"-\"R\n" +
+	"properties\x12\xdc\x01\n" +
+	"\top_result\x18! \x01(\x0e2\x18.uba.service.v1.OpResultB\x9f\x01\xbaG\x88\x01\x92\x02\x84\x01操作结果，事件相关的操作结果信息，可以用于分析事件的成功率和失败原因，具体含义由业务定义\x9a\x84\x9e\x03\x0ech:\"op_result\"H\x02R\bopResult\x88\x01\x01\x12\xbd\x01\n" +
 	"\n" +
-	"error_code\x18\" \x01(\tB\x9d\x01\xbaG\x85\x01\x92\x02\x81\x01错误码，事件相关的错误码信息，可以用于分析事件的失败原因和问题排查，具体含义由业务定义\x9a\x84\x9e\x03\x0fch:\"error_code\"R\terrorCode\x12\xde\x01\n" +
+	"error_code\x18\" \x01(\tB\x9d\x01\xbaG\x85\x01\x92\x02\x81\x01错误码，事件相关的错误码信息，可以用于分析事件的失败原因和问题排查，具体含义由业务定义\x9a\x84\x9e\x03\x0fch:\"error_code\"R\terrorCode\x12\xe3\x01\n" +
 	"\n" +
-	"risk_level\x18# \x01(\x0e2\x19.uba.service.v1.RiskLevelB\xa3\x01\xbaG\x8b\x01\x92\x02\x87\x01风险等级，事件相关的风险等级信息，可以用于分析事件的风险特征和安全问题，具体含义由业务定义\x9a\x84\x9e\x03\x0fch:\"risk_level\"R\triskLevel\x12\xd7\x01\n" +
-	"\btrace_id\x18$ \x01(\tB\xbb\x01\xbaG\xa5\x01\x92\x02\xa1\x01Trace ID，事件相关的分布式追踪标识，可以用于分析事件的调用链和系统性能，通常由服务器生成并传递给客户端进行上报\x9a\x84\x9e\x03\rch:\"trace_id\"R\atraceId\x12\xfd\x01\n" +
-	"\vingest_time\x18% \x01(\v2\x1a.google.protobuf.TimestampB\xbf\x01\xbaG\xa6\x01\x92\x02\xa2\x01接收时间，事件被系统接收的时间点，由服务器生成，记录事件进入系统的时间，可以用于分析事件的处理延迟和时序关系\x9a\x84\x9e\x03\x10ch:\"ingest_time\"R\n" +
-	"ingestTime\x12.\n" +
-	"\aversion\x18& \x01(\rB\x14\xbaG\x00\x9a\x84\x9e\x03\fch:\"version\"R\aversion\x1a:\n" +
+	"risk_level\x18# \x01(\x0e2\x19.uba.service.v1.RiskLevelB\xa3\x01\xbaG\x8b\x01\x92\x02\x87\x01风险等级，事件相关的风险等级信息，可以用于分析事件的风险特征和安全问题，具体含义由业务定义\x9a\x84\x9e\x03\x0fch:\"risk_level\"H\x03R\triskLevel\x88\x01\x01\x12\xd7\x01\n" +
+	"\btrace_id\x18$ \x01(\tB\xbb\x01\xbaG\xa5\x01\x92\x02\xa1\x01Trace ID，事件相关的分布式追踪标识，可以用于分析事件的调用链和系统性能，通常由服务器生成并传递给客户端进行上报\x9a\x84\x9e\x03\rch:\"trace_id\"R\atraceId\x12^\n" +
+	"\n" +
+	"created_at\x18\xc8\x01 \x01(\v2\x1a.google.protobuf.TimestampB\x1d\xbaG\x0f\x92\x02\f创建时间\x9a\x84\x9e\x03\x06ch:\"-\"H\x04R\tcreatedAt\x88\x01\x01\x12^\n" +
+	"\n" +
+	"updated_at\x18\xc9\x01 \x01(\v2\x1a.google.protobuf.TimestampB\x1d\xbaG\x0f\x92\x02\f更新时间\x9a\x84\x9e\x03\x06ch:\"-\"H\x05R\tupdatedAt\x88\x01\x01\x1a:\n" +
 	"\fContextEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1a:\n" +
@@ -479,7 +479,14 @@ const file_uba_service_v1_behavior_event_proto_rawDesc = "" +
 	"\x05value\x18\x02 \x01(\x01R\x05value:\x028\x01\x1a=\n" +
 	"\x0fPropertiesEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x012Y\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\x11\n" +
+	"\x0f_event_categoryB\v\n" +
+	"\t_platformB\f\n" +
+	"\n" +
+	"_op_resultB\r\n" +
+	"\v_risk_levelB\r\n" +
+	"\v_created_atB\r\n" +
+	"\v_updated_at2Y\n" +
 	"\x14BehaviorEventService\x12A\n" +
 	"\x06Create\x12\x1d.uba.service.v1.BehaviorEvent\x1a\x16.google.protobuf.Empty\"\x00B\xaf\x01\n" +
 	"\x12com.uba.service.v1B\x12BehaviorEventProtoP\x01Z+go-wind-uba/api/gen/go/uba/service/v1;ubapb\xa2\x02\x03USX\xaa\x02\x0eUba.Service.V1\xca\x02\x0eUba\\Service\\V1\xe2\x02\x1aUba\\Service\\V1\\GPBMetadata\xea\x02\x10Uba::Service::V1b\x06proto3"
@@ -519,14 +526,15 @@ var file_uba_service_v1_behavior_event_proto_depIdxs = []int32{
 	3,  // 6: uba.service.v1.BehaviorEvent.properties:type_name -> uba.service.v1.BehaviorEvent.PropertiesEntry
 	7,  // 7: uba.service.v1.BehaviorEvent.op_result:type_name -> uba.service.v1.OpResult
 	8,  // 8: uba.service.v1.BehaviorEvent.risk_level:type_name -> uba.service.v1.RiskLevel
-	4,  // 9: uba.service.v1.BehaviorEvent.ingest_time:type_name -> google.protobuf.Timestamp
-	0,  // 10: uba.service.v1.BehaviorEventService.Create:input_type -> uba.service.v1.BehaviorEvent
-	9,  // 11: uba.service.v1.BehaviorEventService.Create:output_type -> google.protobuf.Empty
-	11, // [11:12] is the sub-list for method output_type
-	10, // [10:11] is the sub-list for method input_type
-	10, // [10:10] is the sub-list for extension type_name
-	10, // [10:10] is the sub-list for extension extendee
-	0,  // [0:10] is the sub-list for field type_name
+	4,  // 9: uba.service.v1.BehaviorEvent.created_at:type_name -> google.protobuf.Timestamp
+	4,  // 10: uba.service.v1.BehaviorEvent.updated_at:type_name -> google.protobuf.Timestamp
+	0,  // 11: uba.service.v1.BehaviorEventService.Create:input_type -> uba.service.v1.BehaviorEvent
+	9,  // 12: uba.service.v1.BehaviorEventService.Create:output_type -> google.protobuf.Empty
+	12, // [12:13] is the sub-list for method output_type
+	11, // [11:12] is the sub-list for method input_type
+	11, // [11:11] is the sub-list for extension type_name
+	11, // [11:11] is the sub-list for extension extendee
+	0,  // [0:11] is the sub-list for field type_name
 }
 
 func init() { file_uba_service_v1_behavior_event_proto_init() }
@@ -535,6 +543,7 @@ func file_uba_service_v1_behavior_event_proto_init() {
 		return
 	}
 	file_uba_service_v1_common_proto_init()
+	file_uba_service_v1_behavior_event_proto_msgTypes[0].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

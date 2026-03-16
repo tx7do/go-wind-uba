@@ -137,8 +137,8 @@ func (x *BehaviorEvent) Redact() string {
 
 	// Safe field: TraceId
 
-	// Safe field: IngestTime
+	// Safe field: CreatedAt
 
-	// Safe field: Version
+	// Safe field: UpdatedAt
 	return x.String()
 }

@@ -1,4 +1,4 @@
-package schema
+package clickhouse
 
 import _ "embed"
 

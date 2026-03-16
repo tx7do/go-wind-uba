@@ -1,4 +1,4 @@
-package schema
+package doris
 
 import _ "embed"
 

@@ -46,12 +46,15 @@ CREATE TABLE IF NOT EXISTS gw_uba.events_fact
     os             LowCardinality(String) COMMENT '操作系统（iOS 15.0/Android 12/Windows 11）',
     app_version    LowCardinality(String) COMMENT '应用版本（1.0.0/2.3.1，用于版本分析）',
     channel        String COMMENT '渠道来源（app_store/google_play/huawei/oppo 应用商店）',
+    user_agent     String COMMENT '用户代理字符串（原始 UA，用于解析详细浏览器版本/爬虫识别/设备型号）',
 
     -- 网络 & 位置上下文
     ip             String COMMENT '客户端 IP 地址（用于地理位置解析和风控识别）',
     ip_city        LowCardinality(String) COMMENT 'IP 所在城市（用于地域分析）',
     country        LowCardinality(String) COMMENT '国家/地区（用于国际化分析）',
+    geo            String COMMENT '地理位置信息（GeoHash 或 经纬度字符串 "lat,lon"，用于地图可视化及附近搜索）',
     network        LowCardinality(String) COMMENT '网络类型（WiFi/4G/5G/以太网）',
+    referer        String COMMENT '来源页面 URL（用于流量来源分析、防盗链、漏斗上游分析）',
 
     -- 业务上下文
     context        Map(String, String) COMMENT '通用业务上下文（扩展字段：{server_id: s1, zone: cn-east, ab_group: B}）',
@@ -81,7 +84,9 @@ CREATE TABLE IF NOT EXISTS gw_uba.events_fact
     -- ========== 跳数索引 ==========
     INDEX idx_object_id object_id TYPE bloom_filter(0.01) GRANULARITY 4,           -- 加速对象 ID 精确查询
     INDEX idx_context_keys mapKeys(context) TYPE bloom_filter(0.01) GRANULARITY 2, -- 加速上下文键名查询
-    INDEX idx_risk risk_level TYPE set(4) GRANULARITY 1                            -- 加速风险等级筛选
+    INDEX idx_risk risk_level TYPE set(4) GRANULARITY 1,                           -- 加速风险等级筛选
+    INDEX idx_geo geo TYPE bloom_filter(0.01) GRANULARITY 4,                       -- 加速地理位置/GeoHash 前缀查询
+    INDEX idx_referer referer TYPE bloom_filter(0.01) GRANULARITY 4                -- 加速来源域名/URL 过滤查询
 ) ENGINE = MergeTree -- 使用 MergeTree（事件只追加写入，不可变，无需去重）
       PARTITION BY toYYYYMM(event_date) -- 按月分区，平衡管理粒度和查询性能
       ORDER BY (tenant_id, event_category, event_date, event_name, event_ts) -- 按租户 + 分类 + 日期 + 事件名 + 时间戳排序，优化常见查询

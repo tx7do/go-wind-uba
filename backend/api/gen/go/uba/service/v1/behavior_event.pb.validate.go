@@ -129,8 +129,6 @@ func (m *BehaviorEvent) validate(all bool) error {
 		}
 	}
 
-	// no validation rules for EventCategory
-
 	// no validation rules for EventName
 
 	// no validation rules for EventAction
@@ -144,8 +142,6 @@ func (m *BehaviorEvent) validate(all bool) error {
 	// no validation rules for SessionId
 
 	// no validation rules for SessionSeq
-
-	// no validation rules for Platform
 
 	// no validation rules for Os
 
@@ -181,44 +177,91 @@ func (m *BehaviorEvent) validate(all bool) error {
 
 	// no validation rules for Properties
 
-	// no validation rules for OpResult
-
 	// no validation rules for ErrorCode
-
-	// no validation rules for RiskLevel
 
 	// no validation rules for TraceId
 
-	if all {
-		switch v := interface{}(m.GetIngestTime()).(type) {
-		case interface{ ValidateAll() error }:
-			if err := v.ValidateAll(); err != nil {
-				errors = append(errors, BehaviorEventValidationError{
-					field:  "IngestTime",
-					reason: "embedded message failed validation",
-					cause:  err,
-				})
-			}
-		case interface{ Validate() error }:
-			if err := v.Validate(); err != nil {
-				errors = append(errors, BehaviorEventValidationError{
-					field:  "IngestTime",
-					reason: "embedded message failed validation",
-					cause:  err,
-				})
-			}
-		}
-	} else if v, ok := interface{}(m.GetIngestTime()).(interface{ Validate() error }); ok {
-		if err := v.Validate(); err != nil {
-			return BehaviorEventValidationError{
-				field:  "IngestTime",
-				reason: "embedded message failed validation",
-				cause:  err,
-			}
-		}
+	if m.EventCategory != nil {
+		// no validation rules for EventCategory
 	}
 
-	// no validation rules for Version
+	if m.Platform != nil {
+		// no validation rules for Platform
+	}
+
+	if m.OpResult != nil {
+		// no validation rules for OpResult
+	}
+
+	if m.RiskLevel != nil {
+		// no validation rules for RiskLevel
+	}
+
+	if m.CreatedAt != nil {
+
+		if all {
+			switch v := interface{}(m.GetCreatedAt()).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, BehaviorEventValidationError{
+						field:  "CreatedAt",
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, BehaviorEventValidationError{
+						field:  "CreatedAt",
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(m.GetCreatedAt()).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return BehaviorEventValidationError{
+					field:  "CreatedAt",
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
+	if m.UpdatedAt != nil {
+
+		if all {
+			switch v := interface{}(m.GetUpdatedAt()).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, BehaviorEventValidationError{
+						field:  "UpdatedAt",
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, BehaviorEventValidationError{
+						field:  "UpdatedAt",
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(m.GetUpdatedAt()).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return BehaviorEventValidationError{
+					field:  "UpdatedAt",
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
 
 	if len(errors) > 0 {
 		return BehaviorEventMultiError(errors)

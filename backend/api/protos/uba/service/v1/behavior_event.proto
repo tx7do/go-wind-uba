@@ -6,13 +6,12 @@ import "gnostic/openapi/v3/annotations.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 import "tagger/tagger.proto";
-
 import "uba/service/v1/common.proto";
 
 // 行为事件服务
 service BehaviorEventService {
   // 创建行为事件
-  rpc Create (BehaviorEvent) returns (google.protobuf.Empty) {}
+  rpc Create(BehaviorEvent) returns (google.protobuf.Empty) {}
 }
 
 // 行为事件（对应 events_fact 表）
@@ -30,7 +29,7 @@ message BehaviorEvent {
   ]; // 租户ID，事件所属的租户，用于多租户隔离
 
   // 主体：Who
-  string user_id = 3 [
+  uint32 user_id = 3 [
     json_name = "userId",
     (tagger.tags) = "ch:\"user_id\"",
     (gnostic.openapi.v3.property) = {description: "用户ID，事件的主体，可以是用户、设备、账号等，具体含义由业务定义"}
@@ -59,9 +58,9 @@ message BehaviorEvent {
   ]; // 事件发生时间，记录事件实际发生的时间点，通常由客户端上报，可能存在时钟偏差
   int64 event_ts = 8 [
     json_name = "eventTs",
-    (tagger.tags) = "ch:\"event_ts\"",
+    (tagger.tags) = "ch:\"-\"",
     (gnostic.openapi.v3.property) = {description: "事件时间戳，事件发生时间的 Unix 时间戳表示，单位毫秒，可以用于快速的时间范围查询和排序"}
-  ];  // 事件时间戳，事件发生时间的 Unix 时间戳表示，单位毫秒，可以用于快速的时间范围查询和排序
+  ]; // 事件时间戳，事件发生时间的 Unix 时间戳表示，单位毫秒，可以用于快速的时间范围查询和排序
   google.protobuf.Timestamp server_time = 9 [
     json_name = "serverTime",
     (tagger.tags) = "ch:\"server_time\"",
@@ -69,9 +68,9 @@ message BehaviorEvent {
   ]; // 服务器接收时间，记录事件被服务器接收的时间点，可以用于分析事件的传输延迟和时序关系
 
   // 行为：What
-  EventCategory event_category = 10 [
+  optional EventCategory event_category = 10 [
     json_name = "eventCategory",
-    (tagger.tags) = "ch:\"event_category\"",
+    (tagger.tags) = "ch:\"-\"",
     (gnostic.openapi.v3.property) = {description: "事件类别，事件的类型或分类，用于对事件进行分组和分析，具体类别由业务定义"}
   ]; // 事件类别，事件的类型或分类，用于对事件进行分组和分析，具体类别由业务定义
   string event_name = 11 [
@@ -115,7 +114,7 @@ message BehaviorEvent {
   ]; // 会话内序列号，事件在所属会话中的序列号，用于分析事件的顺序和路径，可以由客户端上报，也可以由服务器根据 session_id 进行计算生成
 
   // 环境
-  Platform platform = 18 [
+  optional Platform platform = 18 [
     json_name = "platform",
     (tagger.tags) = "ch:\"platform\"",
     (gnostic.openapi.v3.property) = {description: "平台，事件发生的环境平台，可以是 Web、iOS、Android、PC 等，具体类别由业务定义"}
@@ -182,7 +181,7 @@ message BehaviorEvent {
   // 业务上下文
   map<string, string> context = 26 [
     json_name = "context",
-    (tagger.tags) = "ch:\"context\"",
+    (tagger.tags) = "ch:\"-\"",
     (gnostic.openapi.v3.property) = {description: "业务上下文，事件的业务相关上下文信息，可以包含任意的键值对，由业务定义和使用，便于分析事件发生时的具体业务场景和条件"}
   ]; // 业务上下文，事件的业务相关上下文信息，可以包含任意的键值对，由业务定义和使用，便于分析事件发生时的具体业务场景和条件
 
@@ -196,7 +195,7 @@ message BehaviorEvent {
     json_name = "amount",
     (tagger.tags) = "ch:\"amount\"",
     (gnostic.openapi.v3.property) = {description: "金额，事件相关的金额信息，可以用于分析用户的支付行为和消费特征，具体格式由业务定义，可以包含货币单位等信息"}
-  ];  // 金额，事件相关的金额信息，可以用于分析用户的支付行为和消费特征，具体格式由业务定义，可以包含货币单位等信息
+  ]; // 金额，事件相关的金额信息，可以用于分析用户的支付行为和消费特征，具体格式由业务定义，可以包含货币单位等信息
   uint32 quantity = 29 [
     json_name = "quantity",
     (tagger.tags) = "ch:\"quantity\"",
@@ -209,19 +208,19 @@ message BehaviorEvent {
   ]; // 评分，事件相关的评分信息，可以用于分析用户的评价行为和满意度特征，具体含义由业务定义
   map<string, double> metrics = 31 [
     json_name = "metrics",
-    (tagger.tags) = "ch:\"metrics\"",
+    (tagger.tags) = "ch:\"-\"",
     (gnostic.openapi.v3.property) = {description: "其他指标，事件的其他相关指标信息，可以包含任意的键值对，值为数值类型，由业务定义和使用，便于分析事件的其他量化特征"}
   ]; // 其他指标，事件的其他相关指标信息，可以包含任意的键值对，值为数值类型，由业务定义和使用，便于分析事件的其他量化特征
 
   // 扩展属性
   map<string, string> properties = 32 [
     json_name = "properties",
-    (tagger.tags) = "ch:\"properties\"",
+    (tagger.tags) = "ch:\"-\"",
     (gnostic.openapi.v3.property) = {description: "扩展属性，事件的其他相关属性信息，可以包含任意的键值对，由业务定义和使用，便于分析事件的其他特征和细节"}
   ]; // 扩展属性，事件的其他相关属性信息，可以包含任意的键值对，由业务定义和使用，便于分析事件的其他特征和细节
 
   // 企业级字段
-  OpResult op_result = 33 [
+  optional OpResult op_result = 33 [
     json_name = "opResult",
     (tagger.tags) = "ch:\"op_result\"",
     (gnostic.openapi.v3.property) = {description: "操作结果，事件相关的操作结果信息，可以用于分析事件的成功率和失败原因，具体含义由业务定义"}
@@ -231,7 +230,7 @@ message BehaviorEvent {
     (tagger.tags) = "ch:\"error_code\"",
     (gnostic.openapi.v3.property) = {description: "错误码，事件相关的错误码信息，可以用于分析事件的失败原因和问题排查，具体含义由业务定义"}
   ]; // 错误码，事件相关的错误码信息，可以用于分析事件的失败原因和问题排查，具体含义由业务定义
-  RiskLevel risk_level = 35 [
+  optional RiskLevel risk_level = 35 [
     json_name = "riskLevel",
     (tagger.tags) = "ch:\"risk_level\"",
     (gnostic.openapi.v3.property) = {description: "风险等级，事件相关的风险等级信息，可以用于分析事件的风险特征和安全问题，具体含义由业务定义"}
@@ -242,16 +241,14 @@ message BehaviorEvent {
     (gnostic.openapi.v3.property) = {description: "Trace ID，事件相关的分布式追踪标识，可以用于分析事件的调用链和系统性能，通常由服务器生成并传递给客户端进行上报"}
   ]; // Trace ID，事件相关的分布式追踪标识，可以用于分析事件的调用链和系统性能，通常由服务器生成并传递给客户端进行上报
 
-  // 系统字段
-  google.protobuf.Timestamp ingest_time = 37 [
-    json_name = "ingestTime",
-    (tagger.tags) = "ch:\"ingest_time\"",
-    (gnostic.openapi.v3.property) = {description: "接收时间，事件被系统接收的时间点，由服务器生成，记录事件进入系统的时间，可以用于分析事件的处理延迟和时序关系"}
-  ]; // 接收时间，事件被系统接收的时间点，由服务器生成，记录事件进入系统的时间，可以用于分析事件的处理延迟和时序关系
-  uint32 version = 38 [
-    json_name = "version",
-    (tagger.tags) = "ch:\"version\"",
-    (gnostic.openapi.v3.property) = {description: ""}
-  ]; // 版本号，事件数据的版本信息，可以用于数据格式的演进和兼容性处理，具体含义由业务定义
+  optional google.protobuf.Timestamp created_at = 200 [
+    json_name = "createdAt",
+    (tagger.tags) = "ch:\"-\"",
+    (gnostic.openapi.v3.property) = {description: "创建时间"}
+  ]; // 创建时间
+  optional google.protobuf.Timestamp updated_at = 201 [
+    json_name = "updatedAt",
+    (tagger.tags) = "ch:\"-\"",
+    (gnostic.openapi.v3.property) = {description: "更新时间"}
+  ]; // 更新时间
 }
-
