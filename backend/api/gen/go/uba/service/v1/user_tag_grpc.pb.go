@@ -4,7 +4,7 @@
 // - protoc             (unknown)
 // source: uba/service/v1/user_tag.proto
 
-package servicev1
+package ubapb
 
 import (
 	context "context"

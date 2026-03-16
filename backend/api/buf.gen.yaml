@@ -52,6 +52,9 @@ managed:
     - file_option: go_package
       path: resource/service/v1
       value: go-wind-uba/api/gen/go/resource/service/v1;resourcepb
+    - file_option: go_package
+      path: uba/service/v1
+      value: go-wind-uba/api/gen/go/uba/service/v1;ubapb
 
 plugins:
   # generate go code
@@ -93,3 +96,9 @@ plugins:
     opt:
       - paths=source_relative # use relative paths
       - lang=go
+
+  # generate code with custom tags
+#  - local: protoc-gen-gotag
+#    out: gen/go
+#    opt:
+#      - paths=source_relative # use relative paths

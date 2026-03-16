@@ -7,7 +7,7 @@ import (
 	context "context"
 	redact "github.com/menta2k/protoc-gen-redact/v3/redact/v3"
 	pagination "github.com/tx7do/go-crud/api/gen/go/pagination/v1"
-	servicev1 "go-wind-uba/api/gen/go/uba/service/v1"
+	ubapb "go-wind-uba/api/gen/go/uba/service/v1"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -23,7 +23,7 @@ var (
 	_ status.Status
 	_ emptypb.Empty
 	_ pagination.Sorting
-	_ servicev1.Application
+	_ ubapb.Application
 )
 
 // RegisterRedactedApplicationServiceServer wraps the ApplicationServiceServer with the redacted server and registers the service in GRPC
@@ -46,7 +46,7 @@ type redactedApplicationServiceServer struct {
 
 // ListApplication is the redacted wrapper for the actual ApplicationServiceServer.ListApplication method
 // Unary RPC
-func (s *redactedApplicationServiceServer) ListApplication(ctx context.Context, in *pagination.PagingRequest) (*servicev1.ListApplicationResponse, error) {
+func (s *redactedApplicationServiceServer) ListApplication(ctx context.Context, in *pagination.PagingRequest) (*ubapb.ListApplicationResponse, error) {
 	res, err := s.srv.ListApplication(ctx, in)
 	if !s.bypass.CheckInternal(ctx) {
 		// Apply redaction to the response
@@ -57,7 +57,7 @@ func (s *redactedApplicationServiceServer) ListApplication(ctx context.Context, 
 
 // GetApplication is the redacted wrapper for the actual ApplicationServiceServer.GetApplication method
 // Unary RPC
-func (s *redactedApplicationServiceServer) GetApplication(ctx context.Context, in *servicev1.GetApplicationRequest) (*servicev1.Application, error) {
+func (s *redactedApplicationServiceServer) GetApplication(ctx context.Context, in *ubapb.GetApplicationRequest) (*ubapb.Application, error) {
 	res, err := s.srv.GetApplication(ctx, in)
 	if !s.bypass.CheckInternal(ctx) {
 		// Apply redaction to the response
@@ -68,7 +68,7 @@ func (s *redactedApplicationServiceServer) GetApplication(ctx context.Context, i
 
 // CreateApplication is the redacted wrapper for the actual ApplicationServiceServer.CreateApplication method
 // Unary RPC
-func (s *redactedApplicationServiceServer) CreateApplication(ctx context.Context, in *servicev1.CreateApplicationRequest) (*servicev1.Application, error) {
+func (s *redactedApplicationServiceServer) CreateApplication(ctx context.Context, in *ubapb.CreateApplicationRequest) (*ubapb.Application, error) {
 	res, err := s.srv.CreateApplication(ctx, in)
 	if !s.bypass.CheckInternal(ctx) {
 		// Apply redaction to the response
@@ -79,7 +79,7 @@ func (s *redactedApplicationServiceServer) CreateApplication(ctx context.Context
 
 // UpdateApplication is the redacted wrapper for the actual ApplicationServiceServer.UpdateApplication method
 // Unary RPC
-func (s *redactedApplicationServiceServer) UpdateApplication(ctx context.Context, in *servicev1.UpdateApplicationRequest) (*servicev1.Application, error) {
+func (s *redactedApplicationServiceServer) UpdateApplication(ctx context.Context, in *ubapb.UpdateApplicationRequest) (*ubapb.Application, error) {
 	res, err := s.srv.UpdateApplication(ctx, in)
 	if !s.bypass.CheckInternal(ctx) {
 		// Apply redaction to the response
@@ -90,7 +90,7 @@ func (s *redactedApplicationServiceServer) UpdateApplication(ctx context.Context
 
 // DeleteApplication is the redacted wrapper for the actual ApplicationServiceServer.DeleteApplication method
 // Unary RPC
-func (s *redactedApplicationServiceServer) DeleteApplication(ctx context.Context, in *servicev1.DeleteApplicationRequest) (*emptypb.Empty, error) {
+func (s *redactedApplicationServiceServer) DeleteApplication(ctx context.Context, in *ubapb.DeleteApplicationRequest) (*emptypb.Empty, error) {
 	res, err := s.srv.DeleteApplication(ctx, in)
 	if !s.bypass.CheckInternal(ctx) {
 		// Apply redaction to the response

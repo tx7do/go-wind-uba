@@ -4,7 +4,7 @@
 // - protoc             (unknown)
 // source: uba/service/v1/aggregation.proto
 
-package servicev1
+package ubapb
 
 import (
 	grpc "google.golang.org/grpc"

@@ -4,7 +4,7 @@
 // 	protoc        (unknown)
 // source: uba/service/v1/common.proto
 
-package servicev1
+package ubapb
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -421,8 +421,8 @@ const file_uba_service_v1_common_proto_rawDesc = "" +
 	"\x18RISK_TYPE_PROXY_DETECTED\x10\t\x12\x1b\n" +
 	"\x17RISK_TYPE_FRAUD_PAYMENT\x10\n" +
 	"\x12\x1d\n" +
-	"\x19RISK_TYPE_ABUSE_PROMOTION\x10\vB\xac\x01\n" +
-	"\x12com.uba.service.v1B\vCommonProtoP\x01Z/go-wind-uba/api/gen/go/uba/service/v1;servicev1\xa2\x02\x03USX\xaa\x02\x0eUba.Service.V1\xca\x02\x0eUba\\Service\\V1\xe2\x02\x1aUba\\Service\\V1\\GPBMetadata\xea\x02\x10Uba::Service::V1b\x06proto3"
+	"\x19RISK_TYPE_ABUSE_PROMOTION\x10\vB\xa8\x01\n" +
+	"\x12com.uba.service.v1B\vCommonProtoP\x01Z+go-wind-uba/api/gen/go/uba/service/v1;ubapb\xa2\x02\x03USX\xaa\x02\x0eUba.Service.V1\xca\x02\x0eUba\\Service\\V1\xe2\x02\x1aUba\\Service\\V1\\GPBMetadata\xea\x02\x10Uba::Service::V1b\x06proto3"
 
 var (
 	file_uba_service_v1_common_proto_rawDescOnce sync.Once

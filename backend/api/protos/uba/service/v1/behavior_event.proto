@@ -5,6 +5,7 @@ package uba.service.v1;
 import "gnostic/openapi/v3/annotations.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
+import "tagger/tagger.proto";
 
 import "uba/service/v1/common.proto";
 
@@ -17,8 +18,10 @@ service BehaviorEventService {
 // 行为事件（对应 events_fact 表）
 message BehaviorEvent {
   // 主键 & 路由
+  // @gotags: ch:"event_id"
   string event_id = 1 [
     json_name = "eventId",
+    (tagger.tags) = "graphql:\"withNewTags,optional\"",
     (gnostic.openapi.v3.property) = {description: "事件ID，建议使用 UUID，作为事件的唯一标识，同时也可用于路由和去重"}
   ]; // 事件ID，建议使用 UUID，作为事件的唯一标识，同时也可用于路由和去重
   uint32 tenant_id = 2 [

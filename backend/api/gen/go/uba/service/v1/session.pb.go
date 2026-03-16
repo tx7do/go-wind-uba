@@ -4,7 +4,7 @@
 // 	protoc        (unknown)
 // source: uba/service/v1/session.proto
 
-package servicev1
+package ubapb
 
 import (
 	_ "github.com/google/gnostic/openapiv3"
@@ -296,8 +296,8 @@ const file_uba_service_v1_session_proto_rawDesc = "" +
 	"\trisk_tags\x18\x15 \x03(\tB9\xbaG6\x92\x023风险标签，会话风险标记，字符串列表R\briskTags\x12s\n" +
 	"\vupdate_time\x18\x16 \x01(\v2\x1a.google.protobuf.TimestampB6\xbaG3\x92\x020更新时间，会话最近一次更新的时间R\n" +
 	"updateTime2\x10\n" +
-	"\x0eSessionServiceB\xad\x01\n" +
-	"\x12com.uba.service.v1B\fSessionProtoP\x01Z/go-wind-uba/api/gen/go/uba/service/v1;servicev1\xa2\x02\x03USX\xaa\x02\x0eUba.Service.V1\xca\x02\x0eUba\\Service\\V1\xe2\x02\x1aUba\\Service\\V1\\GPBMetadata\xea\x02\x10Uba::Service::V1b\x06proto3"
+	"\x0eSessionServiceB\xa9\x01\n" +
+	"\x12com.uba.service.v1B\fSessionProtoP\x01Z+go-wind-uba/api/gen/go/uba/service/v1;ubapb\xa2\x02\x03USX\xaa\x02\x0eUba.Service.V1\xca\x02\x0eUba\\Service\\V1\xe2\x02\x1aUba\\Service\\V1\\GPBMetadata\xea\x02\x10Uba::Service::V1b\x06proto3"
 
 var (
 	file_uba_service_v1_session_proto_rawDescOnce sync.Once

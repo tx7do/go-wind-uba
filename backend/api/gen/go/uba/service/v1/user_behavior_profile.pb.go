@@ -4,7 +4,7 @@
 // 	protoc        (unknown)
 // source: uba/service/v1/user_behavior_profile.proto
 
-package servicev1
+package ubapb
 
 import (
 	_ "github.com/google/gnostic/openapiv3"
@@ -702,8 +702,8 @@ const file_uba_service_v1_user_behavior_profile_proto_rawDesc = "" +
 	"\x03Get\x12-.uba.service.v1.GetUserBehaviorProfileRequest\x1a#.uba.service.v1.UserBehaviorProfile\"\x00\x12a\n" +
 	"\x06Create\x120.uba.service.v1.CreateUserBehaviorProfileRequest\x1a#.uba.service.v1.UserBehaviorProfile\"\x00\x12a\n" +
 	"\x06Update\x120.uba.service.v1.UpdateUserBehaviorProfileRequest\x1a#.uba.service.v1.UserBehaviorProfile\"\x00\x12T\n" +
-	"\x06Delete\x120.uba.service.v1.DeleteUserBehaviorProfileRequest\x1a\x16.google.protobuf.Empty\"\x00B\xb9\x01\n" +
-	"\x12com.uba.service.v1B\x18UserBehaviorProfileProtoP\x01Z/go-wind-uba/api/gen/go/uba/service/v1;servicev1\xa2\x02\x03USX\xaa\x02\x0eUba.Service.V1\xca\x02\x0eUba\\Service\\V1\xe2\x02\x1aUba\\Service\\V1\\GPBMetadata\xea\x02\x10Uba::Service::V1b\x06proto3"
+	"\x06Delete\x120.uba.service.v1.DeleteUserBehaviorProfileRequest\x1a\x16.google.protobuf.Empty\"\x00B\xb5\x01\n" +
+	"\x12com.uba.service.v1B\x18UserBehaviorProfileProtoP\x01Z+go-wind-uba/api/gen/go/uba/service/v1;ubapb\xa2\x02\x03USX\xaa\x02\x0eUba.Service.V1\xca\x02\x0eUba\\Service\\V1\xe2\x02\x1aUba\\Service\\V1\\GPBMetadata\xea\x02\x10Uba::Service::V1b\x06proto3"
 
 var (
 	file_uba_service_v1_user_behavior_profile_proto_rawDescOnce sync.Once

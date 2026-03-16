@@ -4,10 +4,11 @@
 // 	protoc        (unknown)
 // source: uba/service/v1/behavior_event.proto
 
-package servicev1
+package ubapb
 
 import (
 	_ "github.com/google/gnostic/openapiv3"
+	_ "go-wind-uba/api/gen/go/tagger"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
@@ -28,6 +29,7 @@ const (
 type BehaviorEvent struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// 主键 & 路由
+	// @gotags: ch:"event_id"
 	EventId  string `protobuf:"bytes,1,opt,name=event_id,json=eventId,proto3" json:"event_id,omitempty"`     // 事件ID，建议使用 UUID，作为事件的唯一标识，同时也可用于路由和去重
 	TenantId uint32 `protobuf:"varint,2,opt,name=tenant_id,json=tenantId,proto3" json:"tenant_id,omitempty"` // 租户ID，事件所属的租户，用于多租户隔离
 	// 主体：Who
@@ -409,9 +411,9 @@ var File_uba_service_v1_behavior_event_proto protoreflect.FileDescriptor
 
 const file_uba_service_v1_behavior_event_proto_rawDesc = "" +
 	"\n" +
-	"#uba/service/v1/behavior_event.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1buba/service/v1/common.proto\"\xfd6\n" +
-	"\rBehaviorEvent\x12\x7f\n" +
-	"\bevent_id\x18\x01 \x01(\tBd\xbaGa\x92\x02^事件ID，建议使用 UUID，作为事件的唯一标识，同时也可用于路由和去重R\aeventId\x12[\n" +
+	"#uba/service/v1/behavior_event.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x13tagger/tagger.proto\x1a\x1buba/service/v1/common.proto\"\xa27\n" +
+	"\rBehaviorEvent\x12\xa3\x01\n" +
+	"\bevent_id\x18\x01 \x01(\tB\x87\x01\xbaGa\x92\x02^事件ID，建议使用 UUID，作为事件的唯一标识，同时也可用于路由和去重\x9a\x84\x9e\x03\x1egraphql:\"withNewTags,optional\"R\aeventId\x12[\n" +
 	"\ttenant_id\x18\x02 \x01(\rB>\xbaG;\x92\x028租户ID，事件所属的租户，用于多租户隔离R\btenantId\x12~\n" +
 	"\auser_id\x18\x03 \x01(\tBe\xbaGb\x92\x02_用户ID，事件的主体，可以是用户、设备、账号等，具体含义由业务定义R\x06userId\x12 \n" +
 	"\tdevice_id\x18\x04 \x01(\tB\x03\xbaG\x00R\bdeviceId\x12\x84\x01\n" +
@@ -479,8 +481,8 @@ const file_uba_service_v1_behavior_event_proto_rawDesc = "" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x012Y\n" +
 	"\x14BehaviorEventService\x12A\n" +
-	"\x06Create\x12\x1d.uba.service.v1.BehaviorEvent\x1a\x16.google.protobuf.Empty\"\x00B\xb3\x01\n" +
-	"\x12com.uba.service.v1B\x12BehaviorEventProtoP\x01Z/go-wind-uba/api/gen/go/uba/service/v1;servicev1\xa2\x02\x03USX\xaa\x02\x0eUba.Service.V1\xca\x02\x0eUba\\Service\\V1\xe2\x02\x1aUba\\Service\\V1\\GPBMetadata\xea\x02\x10Uba::Service::V1b\x06proto3"
+	"\x06Create\x12\x1d.uba.service.v1.BehaviorEvent\x1a\x16.google.protobuf.Empty\"\x00B\xaf\x01\n" +
+	"\x12com.uba.service.v1B\x12BehaviorEventProtoP\x01Z+go-wind-uba/api/gen/go/uba/service/v1;ubapb\xa2\x02\x03USX\xaa\x02\x0eUba.Service.V1\xca\x02\x0eUba\\Service\\V1\xe2\x02\x1aUba\\Service\\V1\\GPBMetadata\xea\x02\x10Uba::Service::V1b\x06proto3"
 
 var (
 	file_uba_service_v1_behavior_event_proto_rawDescOnce sync.Once

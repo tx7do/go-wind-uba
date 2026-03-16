@@ -8,7 +8,7 @@
 
 // 包名：uba.service.v1
 
-package servicev1
+package ubapb
 
 import (
 	context "context"

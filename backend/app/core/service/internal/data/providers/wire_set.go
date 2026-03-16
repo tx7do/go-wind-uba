@@ -14,6 +14,7 @@ import (
 	"github.com/google/wire"
 
 	"go-wind-uba/app/core/service/internal/data"
+	"go-wind-uba/app/core/service/internal/data/clickhouse"
 	"go-wind-uba/app/core/service/internal/data/client"
 
 	"go-wind-uba/pkg/authorizer"
@@ -89,4 +90,13 @@ var ProviderSet = wire.NewSet(
 	data.NewIDMappingRepo,
 	data.NewRiskRuleRepo,
 	data.NewTagValueRepo,
+
+	clickhouse.NewEventsFactRepo,
+	clickhouse.NewIdMappingRepo,
+	clickhouse.NewObjectsDimRepo,
+	clickhouse.NewPathFeaturesRepo,
+	clickhouse.NewRiskEventsRepo,
+	clickhouse.NewSessionsFactRepo,
+	clickhouse.NewUserTagsRepo,
+	clickhouse.NewUsersDimRepo,
 )

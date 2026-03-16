@@ -4,7 +4,7 @@
 // 	protoc        (unknown)
 // source: uba/service/v1/event_path.proto
 
-package servicev1
+package ubapb
 
 import (
 	_ "github.com/google/gnostic/openapiv3"
@@ -277,8 +277,8 @@ const file_uba_service_v1_event_path_proto_rawDesc = "" +
 	"\fis_converted\x18\n" +
 	" \x01(\bB<\xbaG9\x92\x026是否完成目标转化，如完成支付、注册等R\visConverted\x12g\n" +
 	"\x10conversion_event\x18\v \x01(\tB<\xbaG9\x92\x026转化事件名称，目标转化对应的事件名称R\x0fconversionEvent2\x12\n" +
-	"\x10EventPathServiceB\xaf\x01\n" +
-	"\x12com.uba.service.v1B\x0eEventPathProtoP\x01Z/go-wind-uba/api/gen/go/uba/service/v1;servicev1\xa2\x02\x03USX\xaa\x02\x0eUba.Service.V1\xca\x02\x0eUba\\Service\\V1\xe2\x02\x1aUba\\Service\\V1\\GPBMetadata\xea\x02\x10Uba::Service::V1b\x06proto3"
+	"\x10EventPathServiceB\xab\x01\n" +
+	"\x12com.uba.service.v1B\x0eEventPathProtoP\x01Z+go-wind-uba/api/gen/go/uba/service/v1;ubapb\xa2\x02\x03USX\xaa\x02\x0eUba.Service.V1\xca\x02\x0eUba\\Service\\V1\xe2\x02\x1aUba\\Service\\V1\\GPBMetadata\xea\x02\x10Uba::Service::V1b\x06proto3"
 
 var (
 	file_uba_service_v1_event_path_proto_rawDescOnce sync.Once

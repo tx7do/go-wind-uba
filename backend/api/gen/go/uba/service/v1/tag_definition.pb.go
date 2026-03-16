@@ -4,7 +4,7 @@
 // 	protoc        (unknown)
 // source: uba/service/v1/tag_definition.proto
 
-package servicev1
+package ubapb
 
 import (
 	_ "github.com/google/gnostic/openapiv3"
@@ -1043,8 +1043,8 @@ const file_uba_service_v1_tag_definition_proto_rawDesc = "" +
 	"\x03Get\x12'.uba.service.v1.GetTagDefinitionRequest\x1a\x1d.uba.service.v1.TagDefinition\"\x00\x12U\n" +
 	"\x06Create\x12*.uba.service.v1.CreateTagDefinitionRequest\x1a\x1d.uba.service.v1.TagDefinition\"\x00\x12U\n" +
 	"\x06Update\x12*.uba.service.v1.UpdateTagDefinitionRequest\x1a\x1d.uba.service.v1.TagDefinition\"\x00\x12N\n" +
-	"\x06Delete\x12*.uba.service.v1.DeleteTagDefinitionRequest\x1a\x16.google.protobuf.Empty\"\x00B\xb3\x01\n" +
-	"\x12com.uba.service.v1B\x12TagDefinitionProtoP\x01Z/go-wind-uba/api/gen/go/uba/service/v1;servicev1\xa2\x02\x03USX\xaa\x02\x0eUba.Service.V1\xca\x02\x0eUba\\Service\\V1\xe2\x02\x1aUba\\Service\\V1\\GPBMetadata\xea\x02\x10Uba::Service::V1b\x06proto3"
+	"\x06Delete\x12*.uba.service.v1.DeleteTagDefinitionRequest\x1a\x16.google.protobuf.Empty\"\x00B\xaf\x01\n" +
+	"\x12com.uba.service.v1B\x12TagDefinitionProtoP\x01Z+go-wind-uba/api/gen/go/uba/service/v1;ubapb\xa2\x02\x03USX\xaa\x02\x0eUba.Service.V1\xca\x02\x0eUba\\Service\\V1\xe2\x02\x1aUba\\Service\\V1\\GPBMetadata\xea\x02\x10Uba::Service::V1b\x06proto3"
 
 var (
 	file_uba_service_v1_tag_definition_proto_rawDescOnce sync.Once

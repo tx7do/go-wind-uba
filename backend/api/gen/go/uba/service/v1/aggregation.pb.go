@@ -4,7 +4,7 @@
 // 	protoc        (unknown)
 // source: uba/service/v1/aggregation.proto
 
-package servicev1
+package ubapb
 
 import (
 	_ "github.com/google/gnostic/openapiv3"
@@ -246,8 +246,8 @@ const file_uba_service_v1_aggregation_proto_rawDesc = "" +
 	"\fMetricsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x012\x14\n" +
-	"\x12AggregationServiceB\xb1\x01\n" +
-	"\x12com.uba.service.v1B\x10AggregationProtoP\x01Z/go-wind-uba/api/gen/go/uba/service/v1;servicev1\xa2\x02\x03USX\xaa\x02\x0eUba.Service.V1\xca\x02\x0eUba\\Service\\V1\xe2\x02\x1aUba\\Service\\V1\\GPBMetadata\xea\x02\x10Uba::Service::V1b\x06proto3"
+	"\x12AggregationServiceB\xad\x01\n" +
+	"\x12com.uba.service.v1B\x10AggregationProtoP\x01Z+go-wind-uba/api/gen/go/uba/service/v1;ubapb\xa2\x02\x03USX\xaa\x02\x0eUba.Service.V1\xca\x02\x0eUba\\Service\\V1\xe2\x02\x1aUba\\Service\\V1\\GPBMetadata\xea\x02\x10Uba::Service::V1b\x06proto3"
 
 var (
 	file_uba_service_v1_aggregation_proto_rawDescOnce sync.Once

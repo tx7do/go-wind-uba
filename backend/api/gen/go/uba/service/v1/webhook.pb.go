@@ -4,7 +4,7 @@
 // 	protoc        (unknown)
 // source: uba/service/v1/webhook.proto
 
-package servicev1
+package ubapb
 
 import (
 	_ "github.com/google/gnostic/openapiv3"
@@ -854,8 +854,8 @@ const file_uba_service_v1_webhook_proto_rawDesc = "" +
 	"\x03Get\x12!.uba.service.v1.GetWebhookRequest\x1a\x17.uba.service.v1.Webhook\"\x00\x12I\n" +
 	"\x06Create\x12$.uba.service.v1.CreateWebhookRequest\x1a\x17.uba.service.v1.Webhook\"\x00\x12I\n" +
 	"\x06Update\x12$.uba.service.v1.UpdateWebhookRequest\x1a\x17.uba.service.v1.Webhook\"\x00\x12H\n" +
-	"\x06Delete\x12$.uba.service.v1.DeleteWebhookRequest\x1a\x16.google.protobuf.Empty\"\x00B\xad\x01\n" +
-	"\x12com.uba.service.v1B\fWebhookProtoP\x01Z/go-wind-uba/api/gen/go/uba/service/v1;servicev1\xa2\x02\x03USX\xaa\x02\x0eUba.Service.V1\xca\x02\x0eUba\\Service\\V1\xe2\x02\x1aUba\\Service\\V1\\GPBMetadata\xea\x02\x10Uba::Service::V1b\x06proto3"
+	"\x06Delete\x12$.uba.service.v1.DeleteWebhookRequest\x1a\x16.google.protobuf.Empty\"\x00B\xa9\x01\n" +
+	"\x12com.uba.service.v1B\fWebhookProtoP\x01Z+go-wind-uba/api/gen/go/uba/service/v1;ubapb\xa2\x02\x03USX\xaa\x02\x0eUba.Service.V1\xca\x02\x0eUba\\Service\\V1\xe2\x02\x1aUba\\Service\\V1\\GPBMetadata\xea\x02\x10Uba::Service::V1b\x06proto3"
 
 var (
 	file_uba_service_v1_webhook_proto_rawDescOnce sync.Once
