@@ -2,5 +2,5 @@ package doris
 
 import _ "embed"
 
-//go:embed schema.sql
+//go:embed 1_base_tables.sql
 var SchemaData []byte
