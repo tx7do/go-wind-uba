@@ -1,6 +1,6 @@
 version: v2
 
-clean: true
+clean: false
 
 managed:
   enabled: true
@@ -57,42 +57,9 @@ managed:
       value: go-wind-uba/api/gen/go/uba/service/v1;ubapb
 
 plugins:
-  # generate go code
-  #- plugin: buf.build/protocolbuffers/go
-  - local: protoc-gen-go
-    out: gen/go
-    opt: paths=source_relative # use relative paths
-
-  # generate grpc service code
-  #- plugin: buf.build/grpc/go
-  - local: protoc-gen-go-grpc
+  # generate code with custom tags
+  - local: protoc-gen-gotag
     out: gen/go
     opt:
       - paths=source_relative # use relative paths
-
-  # generate rest service code
-  - local: protoc-gen-go-http
-    out: gen/go
-    opt:
-      - paths=source_relative # use relative paths
-
-  # generate kratos errors code
-  - local: protoc-gen-go-errors
-    out: gen/go
-    opt:
-      - paths=source_relative # use relative paths
-
-  # generate message validator code
-  #- plugin: buf.build/bufbuild/validate-go
-  - local: protoc-gen-validate
-    out: gen/go
-    opt:
-      - paths=source_relative # use relative paths
-      - lang=go
-
-  # generate redact code
-  - local: protoc-gen-redact
-    out: gen/go
-    opt:
-      - paths=source_relative # use relative paths
-      - lang=go
+      - outdir=./gen/go
