@@ -1,8 +1,79 @@
 package clickhouse
 
+import (
+	"context"
+
+	"github.com/go-kratos/kratos/v2/log"
+	clickhouseCrud "github.com/tx7do/go-crud/clickhouse"
+	"github.com/tx7do/go-utils/copierutil"
+	"github.com/tx7do/go-utils/mapper"
+	"github.com/tx7do/kratos-bootstrap/bootstrap"
+
+	"go-wind-uba/app/core/service/internal/data/clickhouse/schema"
+
+	ubaV1 "go-wind-uba/api/gen/go/uba/service/v1"
+)
+
 type SessionsFactRepo struct {
+	db                 *clickhouseCrud.Client
+	log                *log.Helper
+	tableName          string
+	mapper             *mapper.CopierMapper[ubaV1.Session, schema.SessionsFact]
+	platformConverter  *mapper.EnumTypeConverter[ubaV1.Platform, string]
+	riskLevelConverter *mapper.EnumTypeConverter[ubaV1.RiskLevel, string]
 }
 
-func NewSessionsFactRepo() *SessionsFactRepo {
-	return &SessionsFactRepo{}
+func NewSessionsFactRepo(
+	ctx *bootstrap.Context,
+	db *clickhouseCrud.Client,
+) *SessionsFactRepo {
+	repo := &SessionsFactRepo{
+		log:       ctx.NewLoggerHelper("sessions-fact/ck/repo/core-service"),
+		db:        db,
+		tableName: "sessions_fact",
+		mapper:    mapper.NewCopierMapper[ubaV1.Session, schema.SessionsFact](),
+		platformConverter: mapper.NewEnumTypeConverter[ubaV1.Platform, string](
+			ubaV1.Platform_name, ubaV1.Platform_value,
+		),
+		riskLevelConverter: mapper.NewEnumTypeConverter[ubaV1.RiskLevel, string](
+			ubaV1.RiskLevel_name, ubaV1.RiskLevel_value,
+		),
+	}
+	repo.init()
+	return repo
+}
+
+func (r *SessionsFactRepo) init() {
+	r.mapper.AppendConverters(copierutil.NewTimeStringConverterPair())
+	r.mapper.AppendConverters(copierutil.NewTimeTimestamppbConverterPair())
+	r.mapper.AppendConverters(r.platformConverter.NewConverterPair())
+	r.mapper.AppendConverters(r.riskLevelConverter.NewConverterPair())
+}
+
+func (r *SessionsFactRepo) Create(ctx context.Context, dto *ubaV1.Session) error {
+	if dto == nil {
+		return ubaV1.ErrorBadRequest("request data is required")
+	}
+	entity := r.mapper.ToEntity(dto)
+	if err := r.db.Insert(ctx, r.tableName, entity); err != nil {
+		r.log.Errorf("failed to insert sessions fact data: %v", err)
+		return ubaV1.ErrorInternalServerError("failed to insert sessions fact data")
+	}
+	return nil
+}
+
+func (r *SessionsFactRepo) BatchCreate(ctx context.Context, dtos []*ubaV1.Session) error {
+	if len(dtos) == 0 {
+		return ubaV1.ErrorBadRequest("request dtos is required")
+	}
+	var entities []any
+	for _, dto := range dtos {
+		entity := r.mapper.ToEntity(dto)
+		entities = append(entities, entity)
+	}
+	if err := r.db.BatchInsert(ctx, r.tableName, entities); err != nil {
+		r.log.Errorf("failed to batch insert sessions fact entities: %v", err)
+		return ubaV1.ErrorInternalServerError("failed to batch insert sessions fact entities")
+	}
+	return nil
 }
