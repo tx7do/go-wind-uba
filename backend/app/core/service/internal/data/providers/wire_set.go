@@ -16,6 +16,7 @@ import (
 	"go-wind-uba/app/core/service/internal/data"
 	"go-wind-uba/app/core/service/internal/data/clickhouse"
 	"go-wind-uba/app/core/service/internal/data/client"
+	"go-wind-uba/app/core/service/internal/data/doris"
 
 	"go-wind-uba/pkg/authorizer"
 )
@@ -99,4 +100,13 @@ var ProviderSet = wire.NewSet(
 	clickhouse.NewSessionsFactRepo,
 	clickhouse.NewUserTagsRepo,
 	clickhouse.NewUsersDimRepo,
+
+	doris.NewEventsFactRepo,
+	doris.NewIDMappingRepo,
+	doris.NewObjectsDimRepo,
+	doris.NewPathFeaturesRepo,
+	doris.NewRiskEventsRepo,
+	doris.NewSessionsFactRepo,
+	doris.NewUserTagsRepo,
+	doris.NewUsersDimRepo,
 )
