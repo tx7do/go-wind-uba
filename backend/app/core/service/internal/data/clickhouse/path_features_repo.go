@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/go-kratos/kratos/v2/log"
+	paginationV1 "github.com/tx7do/go-crud/api/gen/go/pagination/v1"
 	clickhouseCrud "github.com/tx7do/go-crud/clickhouse"
 	"github.com/tx7do/go-utils/copierutil"
 	"github.com/tx7do/go-utils/mapper"
@@ -15,10 +16,11 @@ import (
 )
 
 type PathFeaturesRepo struct {
-	db        *clickhouseCrud.Client
-	log       *log.Helper
-	tableName string
-	mapper    *mapper.CopierMapper[ubaV1.EventPath, schema.PathFeatures]
+	db         *clickhouseCrud.Client
+	log        *log.Helper
+	tableName  string
+	mapper     *mapper.CopierMapper[ubaV1.EventPath, schema.PathFeatures]
+	repository *clickhouseCrud.Repository[ubaV1.EventPath, schema.PathFeatures]
 }
 
 func NewPathFeaturesRepo(
@@ -36,6 +38,12 @@ func NewPathFeaturesRepo(
 }
 
 func (r *PathFeaturesRepo) init() {
+	r.repository = clickhouseCrud.NewRepository[ubaV1.EventPath, schema.PathFeatures](
+		r.db,
+		r.mapper,
+		r.tableName,
+		r.log,
+	)
 	r.mapper.AppendConverters(copierutil.NewTimeStringConverterPair())
 	r.mapper.AppendConverters(copierutil.NewTimeTimestamppbConverterPair())
 }
@@ -66,4 +74,16 @@ func (r *PathFeaturesRepo) BatchCreate(ctx context.Context, dtos []*ubaV1.EventP
 		return ubaV1.ErrorInternalServerError("failed to batch insert path features entities")
 	}
 	return nil
+}
+
+func (r *PathFeaturesRepo) List(ctx context.Context, req *paginationV1.PagingRequest) (*ubaV1.ListEventPathResponse, error) {
+	result, err := r.repository.ListWithPaging(ctx, req)
+	if err != nil {
+		r.log.Errorf("failed to list path features data: %v", err)
+		return nil, ubaV1.ErrorInternalServerError("failed to list path features data")
+	}
+	return &ubaV1.ListEventPathResponse{
+		Items: result.Items,
+		Total: result.Total,
+	}, nil
 }

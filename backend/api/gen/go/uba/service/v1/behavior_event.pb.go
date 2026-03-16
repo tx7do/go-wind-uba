@@ -405,6 +405,58 @@ func (x *BehaviorEvent) GetUpdatedAt() *timestamppb.Timestamp {
 	return nil
 }
 
+type ListBehaviorEventResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Items         []*BehaviorEvent       `protobuf:"bytes,1,rep,name=items,proto3" json:"items,omitempty"`
+	Total         uint64                 `protobuf:"varint,2,opt,name=total,proto3" json:"total,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListBehaviorEventResponse) Reset() {
+	*x = ListBehaviorEventResponse{}
+	mi := &file_uba_service_v1_behavior_event_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListBehaviorEventResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListBehaviorEventResponse) ProtoMessage() {}
+
+func (x *ListBehaviorEventResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_behavior_event_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListBehaviorEventResponse.ProtoReflect.Descriptor instead.
+func (*ListBehaviorEventResponse) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_behavior_event_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *ListBehaviorEventResponse) GetItems() []*BehaviorEvent {
+	if x != nil {
+		return x.Items
+	}
+	return nil
+}
+
+func (x *ListBehaviorEventResponse) GetTotal() uint64 {
+	if x != nil {
+		return x.Total
+	}
+	return 0
+}
+
 var File_uba_service_v1_behavior_event_proto protoreflect.FileDescriptor
 
 const file_uba_service_v1_behavior_event_proto_rawDesc = "" +
@@ -486,7 +538,10 @@ const file_uba_service_v1_behavior_event_proto_rawDesc = "" +
 	"_op_resultB\r\n" +
 	"\v_risk_levelB\r\n" +
 	"\v_created_atB\r\n" +
-	"\v_updated_at2Y\n" +
+	"\v_updated_at\"f\n" +
+	"\x19ListBehaviorEventResponse\x123\n" +
+	"\x05items\x18\x01 \x03(\v2\x1d.uba.service.v1.BehaviorEventR\x05items\x12\x14\n" +
+	"\x05total\x18\x02 \x01(\x04R\x05total2Y\n" +
 	"\x14BehaviorEventService\x12A\n" +
 	"\x06Create\x12\x1d.uba.service.v1.BehaviorEvent\x1a\x16.google.protobuf.Empty\"\x00B\xaf\x01\n" +
 	"\x12com.uba.service.v1B\x12BehaviorEventProtoP\x01Z+go-wind-uba/api/gen/go/uba/service/v1;ubapb\xa2\x02\x03USX\xaa\x02\x0eUba.Service.V1\xca\x02\x0eUba\\Service\\V1\xe2\x02\x1aUba\\Service\\V1\\GPBMetadata\xea\x02\x10Uba::Service::V1b\x06proto3"
@@ -503,38 +558,40 @@ func file_uba_service_v1_behavior_event_proto_rawDescGZIP() []byte {
 	return file_uba_service_v1_behavior_event_proto_rawDescData
 }
 
-var file_uba_service_v1_behavior_event_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_uba_service_v1_behavior_event_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_uba_service_v1_behavior_event_proto_goTypes = []any{
-	(*BehaviorEvent)(nil),         // 0: uba.service.v1.BehaviorEvent
-	nil,                           // 1: uba.service.v1.BehaviorEvent.ContextEntry
-	nil,                           // 2: uba.service.v1.BehaviorEvent.MetricsEntry
-	nil,                           // 3: uba.service.v1.BehaviorEvent.PropertiesEntry
-	(*timestamppb.Timestamp)(nil), // 4: google.protobuf.Timestamp
-	(EventCategory)(0),            // 5: uba.service.v1.EventCategory
-	(Platform)(0),                 // 6: uba.service.v1.Platform
-	(OpResult)(0),                 // 7: uba.service.v1.OpResult
-	(RiskLevel)(0),                // 8: uba.service.v1.RiskLevel
-	(*emptypb.Empty)(nil),         // 9: google.protobuf.Empty
+	(*BehaviorEvent)(nil),             // 0: uba.service.v1.BehaviorEvent
+	(*ListBehaviorEventResponse)(nil), // 1: uba.service.v1.ListBehaviorEventResponse
+	nil,                               // 2: uba.service.v1.BehaviorEvent.ContextEntry
+	nil,                               // 3: uba.service.v1.BehaviorEvent.MetricsEntry
+	nil,                               // 4: uba.service.v1.BehaviorEvent.PropertiesEntry
+	(*timestamppb.Timestamp)(nil),     // 5: google.protobuf.Timestamp
+	(EventCategory)(0),                // 6: uba.service.v1.EventCategory
+	(Platform)(0),                     // 7: uba.service.v1.Platform
+	(OpResult)(0),                     // 8: uba.service.v1.OpResult
+	(RiskLevel)(0),                    // 9: uba.service.v1.RiskLevel
+	(*emptypb.Empty)(nil),             // 10: google.protobuf.Empty
 }
 var file_uba_service_v1_behavior_event_proto_depIdxs = []int32{
-	4,  // 0: uba.service.v1.BehaviorEvent.event_time:type_name -> google.protobuf.Timestamp
-	4,  // 1: uba.service.v1.BehaviorEvent.server_time:type_name -> google.protobuf.Timestamp
-	5,  // 2: uba.service.v1.BehaviorEvent.event_category:type_name -> uba.service.v1.EventCategory
-	6,  // 3: uba.service.v1.BehaviorEvent.platform:type_name -> uba.service.v1.Platform
-	1,  // 4: uba.service.v1.BehaviorEvent.context:type_name -> uba.service.v1.BehaviorEvent.ContextEntry
-	2,  // 5: uba.service.v1.BehaviorEvent.metrics:type_name -> uba.service.v1.BehaviorEvent.MetricsEntry
-	3,  // 6: uba.service.v1.BehaviorEvent.properties:type_name -> uba.service.v1.BehaviorEvent.PropertiesEntry
-	7,  // 7: uba.service.v1.BehaviorEvent.op_result:type_name -> uba.service.v1.OpResult
-	8,  // 8: uba.service.v1.BehaviorEvent.risk_level:type_name -> uba.service.v1.RiskLevel
-	4,  // 9: uba.service.v1.BehaviorEvent.created_at:type_name -> google.protobuf.Timestamp
-	4,  // 10: uba.service.v1.BehaviorEvent.updated_at:type_name -> google.protobuf.Timestamp
-	0,  // 11: uba.service.v1.BehaviorEventService.Create:input_type -> uba.service.v1.BehaviorEvent
-	9,  // 12: uba.service.v1.BehaviorEventService.Create:output_type -> google.protobuf.Empty
-	12, // [12:13] is the sub-list for method output_type
-	11, // [11:12] is the sub-list for method input_type
-	11, // [11:11] is the sub-list for extension type_name
-	11, // [11:11] is the sub-list for extension extendee
-	0,  // [0:11] is the sub-list for field type_name
+	5,  // 0: uba.service.v1.BehaviorEvent.event_time:type_name -> google.protobuf.Timestamp
+	5,  // 1: uba.service.v1.BehaviorEvent.server_time:type_name -> google.protobuf.Timestamp
+	6,  // 2: uba.service.v1.BehaviorEvent.event_category:type_name -> uba.service.v1.EventCategory
+	7,  // 3: uba.service.v1.BehaviorEvent.platform:type_name -> uba.service.v1.Platform
+	2,  // 4: uba.service.v1.BehaviorEvent.context:type_name -> uba.service.v1.BehaviorEvent.ContextEntry
+	3,  // 5: uba.service.v1.BehaviorEvent.metrics:type_name -> uba.service.v1.BehaviorEvent.MetricsEntry
+	4,  // 6: uba.service.v1.BehaviorEvent.properties:type_name -> uba.service.v1.BehaviorEvent.PropertiesEntry
+	8,  // 7: uba.service.v1.BehaviorEvent.op_result:type_name -> uba.service.v1.OpResult
+	9,  // 8: uba.service.v1.BehaviorEvent.risk_level:type_name -> uba.service.v1.RiskLevel
+	5,  // 9: uba.service.v1.BehaviorEvent.created_at:type_name -> google.protobuf.Timestamp
+	5,  // 10: uba.service.v1.BehaviorEvent.updated_at:type_name -> google.protobuf.Timestamp
+	0,  // 11: uba.service.v1.ListBehaviorEventResponse.items:type_name -> uba.service.v1.BehaviorEvent
+	0,  // 12: uba.service.v1.BehaviorEventService.Create:input_type -> uba.service.v1.BehaviorEvent
+	10, // 13: uba.service.v1.BehaviorEventService.Create:output_type -> google.protobuf.Empty
+	13, // [13:14] is the sub-list for method output_type
+	12, // [12:13] is the sub-list for method input_type
+	12, // [12:12] is the sub-list for extension type_name
+	12, // [12:12] is the sub-list for extension extendee
+	0,  // [0:12] is the sub-list for field type_name
 }
 
 func init() { file_uba_service_v1_behavior_event_proto_init() }
@@ -550,7 +607,7 @@ func file_uba_service_v1_behavior_event_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_uba_service_v1_behavior_event_proto_rawDesc), len(file_uba_service_v1_behavior_event_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

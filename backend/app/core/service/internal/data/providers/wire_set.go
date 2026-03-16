@@ -92,7 +92,7 @@ var ProviderSet = wire.NewSet(
 	data.NewTagValueRepo,
 
 	clickhouse.NewEventsFactRepo,
-	clickhouse.NewIdMappingRepo,
+	clickhouse.NewIDMappingRepo,
 	clickhouse.NewObjectsDimRepo,
 	clickhouse.NewPathFeaturesRepo,
 	clickhouse.NewRiskEventsRepo,

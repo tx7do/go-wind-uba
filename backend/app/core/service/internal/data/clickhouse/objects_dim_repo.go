@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/go-kratos/kratos/v2/log"
+	paginationV1 "github.com/tx7do/go-crud/api/gen/go/pagination/v1"
 	clickhouseCrud "github.com/tx7do/go-crud/clickhouse"
 	"github.com/tx7do/go-utils/copierutil"
 	"github.com/tx7do/go-utils/mapper"
@@ -15,10 +16,11 @@ import (
 )
 
 type ObjectsDimRepo struct {
-	db        *clickhouseCrud.Client
-	log       *log.Helper
-	tableName string
-	mapper    *mapper.CopierMapper[ubaV1.ObjectDim, schema.ObjectsDim]
+	db         *clickhouseCrud.Client
+	log        *log.Helper
+	tableName  string
+	mapper     *mapper.CopierMapper[ubaV1.ObjectDim, schema.ObjectsDim]
+	repository *clickhouseCrud.Repository[ubaV1.ObjectDim, schema.ObjectsDim]
 }
 
 func NewObjectsDimRepo(
@@ -36,6 +38,12 @@ func NewObjectsDimRepo(
 }
 
 func (r *ObjectsDimRepo) init() {
+	r.repository = clickhouseCrud.NewRepository[ubaV1.ObjectDim, schema.ObjectsDim](
+		r.db,
+		r.mapper,
+		r.tableName,
+		r.log,
+	)
 	r.mapper.AppendConverters(copierutil.NewTimeStringConverterPair())
 	r.mapper.AppendConverters(copierutil.NewTimeTimestamppbConverterPair())
 }
@@ -66,4 +74,16 @@ func (r *ObjectsDimRepo) BatchCreate(ctx context.Context, dtos []*ubaV1.ObjectDi
 		return ubaV1.ErrorInternalServerError("failed to batch insert objects dim entities")
 	}
 	return nil
+}
+
+func (r *ObjectsDimRepo) List(ctx context.Context, req *paginationV1.PagingRequest) (*ubaV1.ListObjectDimResponse, error) {
+	result, err := r.repository.ListWithPaging(ctx, req)
+	if err != nil {
+		r.log.Errorf("failed to list objects dim data: %v", err)
+		return nil, ubaV1.ErrorInternalServerError("failed to list objects dim data")
+	}
+	return &ubaV1.ListObjectDimResponse{
+		Items: result.Items,
+		Total: result.Total,
+	}, nil
 }

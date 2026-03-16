@@ -261,11 +261,63 @@ func (x *Session) GetUpdateTime() *timestamppb.Timestamp {
 	return nil
 }
 
+type ListSessionResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Items         []*Session             `protobuf:"bytes,1,rep,name=items,proto3" json:"items,omitempty"`
+	Total         uint64                 `protobuf:"varint,2,opt,name=total,proto3" json:"total,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListSessionResponse) Reset() {
+	*x = ListSessionResponse{}
+	mi := &file_uba_service_v1_session_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListSessionResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListSessionResponse) ProtoMessage() {}
+
+func (x *ListSessionResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_session_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListSessionResponse.ProtoReflect.Descriptor instead.
+func (*ListSessionResponse) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_session_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *ListSessionResponse) GetItems() []*Session {
+	if x != nil {
+		return x.Items
+	}
+	return nil
+}
+
+func (x *ListSessionResponse) GetTotal() uint64 {
+	if x != nil {
+		return x.Total
+	}
+	return 0
+}
+
 var File_uba_service_v1_session_proto protoreflect.FileDescriptor
 
 const file_uba_service_v1_session_proto_rawDesc = "" +
 	"\n" +
-	"\x1cuba/service/v1/session.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1egoogle/protobuf/duration.proto\x1a google/protobuf/field_mask.proto\x1a\x1buba/service/v1/common.proto\"\xcd\x0f\n" +
+	"\x1cuba/service/v1/session.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a google/protobuf/field_mask.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1buba/service/v1/common.proto\"\xcd\x0f\n" +
 	"\aSession\x129\n" +
 	"\x02id\x18\x01 \x01(\rB)\xbaG&\x92\x02#会话ID，唯一标识一条会话R\x02id\x12R\n" +
 	"\ttenant_id\x18\x02 \x01(\rB5\xbaG2\x92\x02/租户ID，多租户隔离，支持 SaaS 场景R\btenantId\x12<\n" +
@@ -295,7 +347,10 @@ const file_uba_service_v1_session_proto_rawDesc = "" +
 	"risk_level\x18\x14 \x01(\x0e2\x19.uba.service.v1.RiskLevelB6\xbaG3\x92\x020风险等级，会话风险标记，枚举类型R\triskLevel\x12V\n" +
 	"\trisk_tags\x18\x15 \x03(\tB9\xbaG6\x92\x023风险标签，会话风险标记，字符串列表R\briskTags\x12s\n" +
 	"\vupdate_time\x18\x16 \x01(\v2\x1a.google.protobuf.TimestampB6\xbaG3\x92\x020更新时间，会话最近一次更新的时间R\n" +
-	"updateTime2\x10\n" +
+	"updateTime\"Z\n" +
+	"\x13ListSessionResponse\x12-\n" +
+	"\x05items\x18\x01 \x03(\v2\x17.uba.service.v1.SessionR\x05items\x12\x14\n" +
+	"\x05total\x18\x02 \x01(\x04R\x05total2\x10\n" +
 	"\x0eSessionServiceB\xa9\x01\n" +
 	"\x12com.uba.service.v1B\fSessionProtoP\x01Z+go-wind-uba/api/gen/go/uba/service/v1;ubapb\xa2\x02\x03USX\xaa\x02\x0eUba.Service.V1\xca\x02\x0eUba\\Service\\V1\xe2\x02\x1aUba\\Service\\V1\\GPBMetadata\xea\x02\x10Uba::Service::V1b\x06proto3"
 
@@ -311,26 +366,28 @@ func file_uba_service_v1_session_proto_rawDescGZIP() []byte {
 	return file_uba_service_v1_session_proto_rawDescData
 }
 
-var file_uba_service_v1_session_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_uba_service_v1_session_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_uba_service_v1_session_proto_goTypes = []any{
 	(*Session)(nil),               // 0: uba.service.v1.Session
-	(*timestamppb.Timestamp)(nil), // 1: google.protobuf.Timestamp
-	(*durationpb.Duration)(nil),   // 2: google.protobuf.Duration
-	(Platform)(0),                 // 3: uba.service.v1.Platform
-	(RiskLevel)(0),                // 4: uba.service.v1.RiskLevel
+	(*ListSessionResponse)(nil),   // 1: uba.service.v1.ListSessionResponse
+	(*timestamppb.Timestamp)(nil), // 2: google.protobuf.Timestamp
+	(*durationpb.Duration)(nil),   // 3: google.protobuf.Duration
+	(Platform)(0),                 // 4: uba.service.v1.Platform
+	(RiskLevel)(0),                // 5: uba.service.v1.RiskLevel
 }
 var file_uba_service_v1_session_proto_depIdxs = []int32{
-	1, // 0: uba.service.v1.Session.start_time:type_name -> google.protobuf.Timestamp
-	1, // 1: uba.service.v1.Session.end_time:type_name -> google.protobuf.Timestamp
-	2, // 2: uba.service.v1.Session.duration:type_name -> google.protobuf.Duration
-	3, // 3: uba.service.v1.Session.platform:type_name -> uba.service.v1.Platform
-	4, // 4: uba.service.v1.Session.risk_level:type_name -> uba.service.v1.RiskLevel
-	1, // 5: uba.service.v1.Session.update_time:type_name -> google.protobuf.Timestamp
-	6, // [6:6] is the sub-list for method output_type
-	6, // [6:6] is the sub-list for method input_type
-	6, // [6:6] is the sub-list for extension type_name
-	6, // [6:6] is the sub-list for extension extendee
-	0, // [0:6] is the sub-list for field type_name
+	2, // 0: uba.service.v1.Session.start_time:type_name -> google.protobuf.Timestamp
+	2, // 1: uba.service.v1.Session.end_time:type_name -> google.protobuf.Timestamp
+	3, // 2: uba.service.v1.Session.duration:type_name -> google.protobuf.Duration
+	4, // 3: uba.service.v1.Session.platform:type_name -> uba.service.v1.Platform
+	5, // 4: uba.service.v1.Session.risk_level:type_name -> uba.service.v1.RiskLevel
+	2, // 5: uba.service.v1.Session.update_time:type_name -> google.protobuf.Timestamp
+	0, // 6: uba.service.v1.ListSessionResponse.items:type_name -> uba.service.v1.Session
+	7, // [7:7] is the sub-list for method output_type
+	7, // [7:7] is the sub-list for method input_type
+	7, // [7:7] is the sub-list for extension type_name
+	7, // [7:7] is the sub-list for extension extendee
+	0, // [0:7] is the sub-list for field type_name
 }
 
 func init() { file_uba_service_v1_session_proto_init() }
@@ -345,7 +402,7 @@ func file_uba_service_v1_session_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_uba_service_v1_session_proto_rawDesc), len(file_uba_service_v1_session_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   1,
+			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

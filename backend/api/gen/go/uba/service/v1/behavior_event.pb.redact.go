@@ -142,3 +142,15 @@ func (x *BehaviorEvent) Redact() string {
 	// Safe field: UpdatedAt
 	return x.String()
 }
+
+// Redact method implementation for ListBehaviorEventResponse
+func (x *ListBehaviorEventResponse) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Items
+
+	// Safe field: Total
+	return x.String()
+}

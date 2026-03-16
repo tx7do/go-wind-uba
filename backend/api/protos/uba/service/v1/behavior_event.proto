@@ -252,3 +252,8 @@ message BehaviorEvent {
     (gnostic.openapi.v3.property) = {description: "更新时间"}
   ]; // 更新时间
 }
+
+message ListBehaviorEventResponse {
+  repeated BehaviorEvent items = 1;
+  uint64 total = 2;
+}

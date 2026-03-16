@@ -135,6 +135,7 @@ message ObjectDim {
 // 获取对象维度列表 - 答复
 message ListObjectDimResponse {
   repeated ObjectDim items = 1;
+  uint64 total = 2;
 }
 
 // 获取对象维度数据 - 请求

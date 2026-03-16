@@ -154,6 +154,8 @@ func (x *ListObjectDimResponse) Redact() string {
 	}
 
 	// Safe field: Items
+
+	// Safe field: Total
 	return x.String()
 }
 

@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/go-kratos/kratos/v2/log"
+	paginationV1 "github.com/tx7do/go-crud/api/gen/go/pagination/v1"
 	clickhouseCrud "github.com/tx7do/go-crud/clickhouse"
 	"github.com/tx7do/go-utils/copierutil"
 	"github.com/tx7do/go-utils/mapper"
@@ -15,10 +16,11 @@ import (
 )
 
 type UserTagsRepo struct {
-	db        *clickhouseCrud.Client
-	log       *log.Helper
-	tableName string
-	mapper    *mapper.CopierMapper[ubaV1.UserTag, schema.UserTags]
+	db         *clickhouseCrud.Client
+	log        *log.Helper
+	tableName  string
+	mapper     *mapper.CopierMapper[ubaV1.UserTag, schema.UserTags]
+	repository *clickhouseCrud.Repository[ubaV1.UserTag, schema.UserTags]
 }
 
 func NewUserTagsRepo(
@@ -36,6 +38,12 @@ func NewUserTagsRepo(
 }
 
 func (r *UserTagsRepo) init() {
+	r.repository = clickhouseCrud.NewRepository[ubaV1.UserTag, schema.UserTags](
+		r.db,
+		r.mapper,
+		r.tableName,
+		r.log,
+	)
 	r.mapper.AppendConverters(copierutil.NewTimeStringConverterPair())
 	r.mapper.AppendConverters(copierutil.NewTimeTimestamppbConverterPair())
 }
@@ -66,4 +74,16 @@ func (r *UserTagsRepo) BatchCreate(ctx context.Context, dtos []*ubaV1.UserTag) e
 		return ubaV1.ErrorInternalServerError("failed to batch insert user tags entities")
 	}
 	return nil
+}
+
+func (r *UserTagsRepo) List(ctx context.Context, req *paginationV1.PagingRequest) (*ubaV1.ListUserTagResponse, error) {
+	result, err := r.repository.ListWithPaging(ctx, req)
+	if err != nil {
+		r.log.Errorf("failed to list user tags data: %v", err)
+		return nil, ubaV1.ErrorInternalServerError("failed to list user tags data")
+	}
+	return &ubaV1.ListUserTagResponse{
+		Items: result.Items,
+		Total: result.Total,
+	}, nil
 }

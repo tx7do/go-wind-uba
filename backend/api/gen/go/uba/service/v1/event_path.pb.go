@@ -246,6 +246,58 @@ func (x *EventPath) GetConversionEvent() string {
 	return ""
 }
 
+type ListEventPathResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Items         []*EventPath           `protobuf:"bytes,1,rep,name=items,proto3" json:"items,omitempty"`
+	Total         uint64                 `protobuf:"varint,2,opt,name=total,proto3" json:"total,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListEventPathResponse) Reset() {
+	*x = ListEventPathResponse{}
+	mi := &file_uba_service_v1_event_path_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListEventPathResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListEventPathResponse) ProtoMessage() {}
+
+func (x *ListEventPathResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_event_path_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListEventPathResponse.ProtoReflect.Descriptor instead.
+func (*ListEventPathResponse) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_event_path_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *ListEventPathResponse) GetItems() []*EventPath {
+	if x != nil {
+		return x.Items
+	}
+	return nil
+}
+
+func (x *ListEventPathResponse) GetTotal() uint64 {
+	if x != nil {
+		return x.Total
+	}
+	return 0
+}
+
 var File_uba_service_v1_event_path_proto protoreflect.FileDescriptor
 
 const file_uba_service_v1_event_path_proto_rawDesc = "" +
@@ -276,7 +328,10 @@ const file_uba_service_v1_event_path_proto_rawDesc = "" +
 	"step_count\x18\t \x01(\rB$\xbaG!\x92\x02\x1e步骤数，路径节点总数R\tstepCount\x12_\n" +
 	"\fis_converted\x18\n" +
 	" \x01(\bB<\xbaG9\x92\x026是否完成目标转化，如完成支付、注册等R\visConverted\x12g\n" +
-	"\x10conversion_event\x18\v \x01(\tB<\xbaG9\x92\x026转化事件名称，目标转化对应的事件名称R\x0fconversionEvent2\x12\n" +
+	"\x10conversion_event\x18\v \x01(\tB<\xbaG9\x92\x026转化事件名称，目标转化对应的事件名称R\x0fconversionEvent\"^\n" +
+	"\x15ListEventPathResponse\x12/\n" +
+	"\x05items\x18\x01 \x03(\v2\x19.uba.service.v1.EventPathR\x05items\x12\x14\n" +
+	"\x05total\x18\x02 \x01(\x04R\x05total2\x12\n" +
 	"\x10EventPathServiceB\xab\x01\n" +
 	"\x12com.uba.service.v1B\x0eEventPathProtoP\x01Z+go-wind-uba/api/gen/go/uba/service/v1;ubapb\xa2\x02\x03USX\xaa\x02\x0eUba.Service.V1\xca\x02\x0eUba\\Service\\V1\xe2\x02\x1aUba\\Service\\V1\\GPBMetadata\xea\x02\x10Uba::Service::V1b\x06proto3"
 
@@ -292,22 +347,24 @@ func file_uba_service_v1_event_path_proto_rawDescGZIP() []byte {
 	return file_uba_service_v1_event_path_proto_rawDescData
 }
 
-var file_uba_service_v1_event_path_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_uba_service_v1_event_path_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_uba_service_v1_event_path_proto_goTypes = []any{
 	(*PathNode)(nil),              // 0: uba.service.v1.PathNode
 	(*EventPath)(nil),             // 1: uba.service.v1.EventPath
-	(*timestamppb.Timestamp)(nil), // 2: google.protobuf.Timestamp
+	(*ListEventPathResponse)(nil), // 2: uba.service.v1.ListEventPathResponse
+	(*timestamppb.Timestamp)(nil), // 3: google.protobuf.Timestamp
 }
 var file_uba_service_v1_event_path_proto_depIdxs = []int32{
-	2, // 0: uba.service.v1.PathNode.event_time:type_name -> google.protobuf.Timestamp
+	3, // 0: uba.service.v1.PathNode.event_time:type_name -> google.protobuf.Timestamp
 	0, // 1: uba.service.v1.EventPath.nodes:type_name -> uba.service.v1.PathNode
-	2, // 2: uba.service.v1.EventPath.start_time:type_name -> google.protobuf.Timestamp
-	2, // 3: uba.service.v1.EventPath.end_time:type_name -> google.protobuf.Timestamp
-	4, // [4:4] is the sub-list for method output_type
-	4, // [4:4] is the sub-list for method input_type
-	4, // [4:4] is the sub-list for extension type_name
-	4, // [4:4] is the sub-list for extension extendee
-	0, // [0:4] is the sub-list for field type_name
+	3, // 2: uba.service.v1.EventPath.start_time:type_name -> google.protobuf.Timestamp
+	3, // 3: uba.service.v1.EventPath.end_time:type_name -> google.protobuf.Timestamp
+	1, // 4: uba.service.v1.ListEventPathResponse.items:type_name -> uba.service.v1.EventPath
+	5, // [5:5] is the sub-list for method output_type
+	5, // [5:5] is the sub-list for method input_type
+	5, // [5:5] is the sub-list for extension type_name
+	5, // [5:5] is the sub-list for extension extendee
+	0, // [0:5] is the sub-list for field type_name
 }
 
 func init() { file_uba_service_v1_event_path_proto_init() }
@@ -322,7 +379,7 @@ func file_uba_service_v1_event_path_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_uba_service_v1_event_path_proto_rawDesc), len(file_uba_service_v1_event_path_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

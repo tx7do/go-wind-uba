@@ -235,6 +235,7 @@ func (x *ObjectDim) GetDeletedAt() *timestamppb.Timestamp {
 type ListObjectDimResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Items         []*ObjectDim           `protobuf:"bytes,1,rep,name=items,proto3" json:"items,omitempty"`
+	Total         uint64                 `protobuf:"varint,2,opt,name=total,proto3" json:"total,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -274,6 +275,13 @@ func (x *ListObjectDimResponse) GetItems() []*ObjectDim {
 		return x.Items
 	}
 	return nil
+}
+
+func (x *ListObjectDimResponse) GetTotal() uint64 {
+	if x != nil {
+		return x.Total
+	}
+	return 0
 }
 
 // 获取对象维度数据 - 请求
@@ -585,9 +593,10 @@ const file_uba_service_v1_object_proto_rawDesc = "" +
 	"\v_deleted_byB\r\n" +
 	"\v_created_atB\r\n" +
 	"\v_updated_atB\r\n" +
-	"\v_deleted_at\"H\n" +
+	"\v_deleted_at\"^\n" +
 	"\x15ListObjectDimResponse\x12/\n" +
-	"\x05items\x18\x01 \x03(\v2\x19.uba.service.v1.ObjectDimR\x05items\"\xc6\x01\n" +
+	"\x05items\x18\x01 \x03(\v2\x19.uba.service.v1.ObjectDimR\x05items\x12\x14\n" +
+	"\x05total\x18\x02 \x01(\x04R\x05total\"\xc6\x01\n" +
 	"\x13GetObjectDimRequest\x12\x1c\n" +
 	"\x02id\x18\x01 \x01(\rB\n" +
 	"\xbaG\a\x18\x01\x92\x02\x02IDH\x00R\x02id\x12w\n" +

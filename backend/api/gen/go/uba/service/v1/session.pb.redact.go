@@ -22,10 +22,10 @@ var (
 	_ redact.Redactor
 	_ codes.Code
 	_ status.Status
-	_ emptypb.Empty
-	_ timestamppb.Timestamp
 	_ durationpb.Duration
+	_ emptypb.Empty
 	_ fieldmaskpb.FieldMask
+	_ timestamppb.Timestamp
 )
 
 // RegisterRedactedSessionServiceServer wraps the SessionServiceServer with the redacted server and registers the service in GRPC
@@ -95,5 +95,17 @@ func (x *Session) Redact() string {
 	// Safe field: RiskTags
 
 	// Safe field: UpdateTime
+	return x.String()
+}
+
+// Redact method implementation for ListSessionResponse
+func (x *ListSessionResponse) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Items
+
+	// Safe field: Total
 	return x.String()
 }

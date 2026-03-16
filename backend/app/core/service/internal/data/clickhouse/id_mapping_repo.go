@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/go-kratos/kratos/v2/log"
+	paginationV1 "github.com/tx7do/go-crud/api/gen/go/pagination/v1"
 	clickhouseCrud "github.com/tx7do/go-crud/clickhouse"
 	"github.com/tx7do/go-utils/copierutil"
 	"github.com/tx7do/go-utils/mapper"
@@ -15,10 +16,11 @@ import (
 )
 
 type IDMappingRepo struct {
-	db        *clickhouseCrud.Client
-	log       *log.Helper
-	tableName string
-	mapper    *mapper.CopierMapper[ubaV1.IDMapping, schema.IDMapping]
+	db         *clickhouseCrud.Client
+	log        *log.Helper
+	tableName  string
+	mapper     *mapper.CopierMapper[ubaV1.IDMapping, schema.IDMapping]
+	repository *clickhouseCrud.Repository[ubaV1.IDMapping, schema.IDMapping]
 }
 
 func NewIDMappingRepo(
@@ -36,6 +38,12 @@ func NewIDMappingRepo(
 }
 
 func (r *IDMappingRepo) init() {
+	r.repository = clickhouseCrud.NewRepository[ubaV1.IDMapping, schema.IDMapping](
+		r.db,
+		r.mapper,
+		r.tableName,
+		r.log,
+	)
 	r.mapper.AppendConverters(copierutil.NewTimeStringConverterPair())
 	r.mapper.AppendConverters(copierutil.NewTimeTimestamppbConverterPair())
 }
@@ -66,4 +74,16 @@ func (r *IDMappingRepo) BatchCreate(ctx context.Context, dtos []*ubaV1.IDMapping
 		return ubaV1.ErrorInternalServerError("failed to batch insert id mapping entities")
 	}
 	return nil
+}
+
+func (r *IDMappingRepo) List(ctx context.Context, req *paginationV1.PagingRequest) (*ubaV1.ListIDMappingResponse, error) {
+	result, err := r.repository.ListWithPaging(ctx, req)
+	if err != nil {
+		r.log.Errorf("failed to list id mapping data: %v", err)
+		return nil, ubaV1.ErrorInternalServerError("failed to list id mapping data")
+	}
+	return &ubaV1.ListIDMappingResponse{
+		Items: result.Items,
+		Total: result.Total,
+	}, nil
 }

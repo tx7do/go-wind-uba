@@ -107,3 +107,8 @@ message EventPath {
     (gnostic.openapi.v3.property) = {description: "转化事件名称，目标转化对应的事件名称"}
   ];
 }
+
+message ListEventPathResponse {
+  repeated EventPath items = 1;
+  uint64 total = 2;
+}

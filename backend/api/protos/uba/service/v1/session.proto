@@ -3,16 +3,14 @@
 package uba.service.v1;
 
 import "gnostic/openapi/v3/annotations.proto";
-import "google/protobuf/empty.proto";
-import "google/protobuf/timestamp.proto";
 import "google/protobuf/duration.proto";
+import "google/protobuf/empty.proto";
 import "google/protobuf/field_mask.proto";
-
+import "google/protobuf/timestamp.proto";
 import "uba/service/v1/common.proto";
 
 // 会话服务
-service SessionService {
-}
+service SessionService {}
 
 // 会话（对应 sessions 表）
 message Session {
@@ -133,4 +131,9 @@ message Session {
     json_name = "updateTime",
     (gnostic.openapi.v3.property) = {description: "更新时间，会话最近一次更新的时间"}
   ];
+}
+
+message ListSessionResponse {
+  repeated Session items = 1;
+  uint64 total = 2;
 }

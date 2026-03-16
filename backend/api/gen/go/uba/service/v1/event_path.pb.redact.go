@@ -93,3 +93,15 @@ func (x *EventPath) Redact() string {
 	// Safe field: ConversionEvent
 	return x.String()
 }
+
+// Redact method implementation for ListEventPathResponse
+func (x *ListEventPathResponse) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Items
+
+	// Safe field: Total
+	return x.String()
+}
