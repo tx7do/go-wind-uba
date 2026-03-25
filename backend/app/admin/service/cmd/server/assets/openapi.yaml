@@ -1070,6 +1070,103 @@ paths:
                 "200":
                     description: OK
                     content: {}
+    /admin/v1/event-paths:
+        get:
+            tags:
+                - EventPathService
+            description: 分页查询事件路径
+            operationId: EventPathService_List
+            parameters:
+                - name: page
+                  in: query
+                  description: 当前页码（从1开始，默认1）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: pageSize
+                  in: query
+                  description: 每页条数（默认10，建议设置上限如100）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: offset
+                  in: query
+                  description: 跳过的记录数（从0开始，默认0）
+                  schema:
+                    type: string
+                - name: limit
+                  in: query
+                  description: 最多返回的记录数（默认10，建议设置上限如100）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: token
+                  in: query
+                  description: 上一页最后一条记录的游标（如ID/时间戳+ID，首次请求为空）
+                  schema:
+                    type: string
+                - name: noPaging
+                  in: query
+                  description: 是否不分页，如果为true，则page和pageSize参数无效。
+                  schema:
+                    type: boolean
+                - name: query
+                  in: query
+                  description: JSON字符串过滤条件，基础语法：{"field1":"val1", "field2___icontains":"val2"}，具体请参见：https://github.com/tx7do/go-crud/tree/main/pagination/filter/README.md
+                  schema:
+                    type: string
+                - name: filter
+                  in: query
+                  description: Google AIP规范字符串过滤条件
+                  schema:
+                    type: string
+                - name: filterExpr.type
+                  in: query
+                  description: 过滤表达式类型
+                  schema:
+                    enum:
+                        - EXPR_TYPE_UNSPECIFIED
+                        - AND
+                        - OR
+                    type: string
+                    format: enum
+                - name: orderBy
+                  in: query
+                  description: 排序条件
+                  schema:
+                    type: string
+                - name: fieldMask
+                  in: query
+                  description: 字段掩码，其作用为SELECT中的字段，其语法为使用逗号分隔字段名，例如：id,realName,userName。如果为空则选中所有字段，即SELECT *。
+                  schema:
+                    type: string
+                    format: field-mask
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListEventPathResponse'
+    /admin/v1/event-paths/{pathId}:
+        get:
+            tags:
+                - EventPathService
+            description: 查询单条事件路径详情
+            operationId: EventPathService_Get
+            parameters:
+                - name: pathId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/EventPath'
     /admin/v1/file/download:
         get:
             tags:
@@ -1324,6 +1421,84 @@ paths:
                 "200":
                     description: OK
                     content: {}
+    /admin/v1/id-mappings:
+        get:
+            tags:
+                - IDMappingService
+            description: 查询ID映射列表
+            operationId: IDMappingService_List
+            parameters:
+                - name: page
+                  in: query
+                  description: 当前页码（从1开始，默认1）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: pageSize
+                  in: query
+                  description: 每页条数（默认10，建议设置上限如100）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: offset
+                  in: query
+                  description: 跳过的记录数（从0开始，默认0）
+                  schema:
+                    type: string
+                - name: limit
+                  in: query
+                  description: 最多返回的记录数（默认10，建议设置上限如100）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: token
+                  in: query
+                  description: 上一页最后一条记录的游标（如ID/时间戳+ID，首次请求为空）
+                  schema:
+                    type: string
+                - name: noPaging
+                  in: query
+                  description: 是否不分页，如果为true，则page和pageSize参数无效。
+                  schema:
+                    type: boolean
+                - name: query
+                  in: query
+                  description: JSON字符串过滤条件，基础语法：{"field1":"val1", "field2___icontains":"val2"}，具体请参见：https://github.com/tx7do/go-crud/tree/main/pagination/filter/README.md
+                  schema:
+                    type: string
+                - name: filter
+                  in: query
+                  description: Google AIP规范字符串过滤条件
+                  schema:
+                    type: string
+                - name: filterExpr.type
+                  in: query
+                  description: 过滤表达式类型
+                  schema:
+                    enum:
+                        - EXPR_TYPE_UNSPECIFIED
+                        - AND
+                        - OR
+                    type: string
+                    format: enum
+                - name: orderBy
+                  in: query
+                  description: 排序条件
+                  schema:
+                    type: string
+                - name: fieldMask
+                  in: query
+                  description: 字段掩码，其作用为SELECT中的字段，其语法为使用逗号分隔字段名，例如：id,realName,userName。如果为空则选中所有字段，即SELECT *。
+                  schema:
+                    type: string
+                    format: field-mask
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListIDMappingResponse'
     /admin/v1/id-mappings/{id}:
         get:
             tags:
@@ -2363,6 +2538,127 @@ paths:
                 "200":
                     description: OK
                     content: {}
+    /admin/v1/object-dims:
+        get:
+            tags:
+                - ObjectService
+            description: 查询对象维度列表
+            operationId: ObjectService_List
+            parameters:
+                - name: page
+                  in: query
+                  description: 当前页码（从1开始，默认1）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: pageSize
+                  in: query
+                  description: 每页条数（默认10，建议设置上限如100）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: offset
+                  in: query
+                  description: 跳过的记录数（从0开始，默认0）
+                  schema:
+                    type: string
+                - name: limit
+                  in: query
+                  description: 最多返回的记录数（默认10，建议设置上限如100）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: token
+                  in: query
+                  description: 上一页最后一条记录的游标（如ID/时间戳+ID，首次请求为空）
+                  schema:
+                    type: string
+                - name: noPaging
+                  in: query
+                  description: 是否不分页，如果为true，则page和pageSize参数无效。
+                  schema:
+                    type: boolean
+                - name: query
+                  in: query
+                  description: JSON字符串过滤条件，基础语法：{"field1":"val1", "field2___icontains":"val2"}，具体请参见：https://github.com/tx7do/go-crud/tree/main/pagination/filter/README.md
+                  schema:
+                    type: string
+                - name: filter
+                  in: query
+                  description: Google AIP规范字符串过滤条件
+                  schema:
+                    type: string
+                - name: filterExpr.type
+                  in: query
+                  description: 过滤表达式类型
+                  schema:
+                    enum:
+                        - EXPR_TYPE_UNSPECIFIED
+                        - AND
+                        - OR
+                    type: string
+                    format: enum
+                - name: orderBy
+                  in: query
+                  description: 排序条件
+                  schema:
+                    type: string
+                - name: fieldMask
+                  in: query
+                  description: 字段掩码，其作用为SELECT中的字段，其语法为使用逗号分隔字段名，例如：id,realName,userName。如果为空则选中所有字段，即SELECT *。
+                  schema:
+                    type: string
+                    format: field-mask
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListObjectDimResponse'
+        post:
+            tags:
+                - ObjectService
+            description: 创建对象维度
+            operationId: ObjectService_Create
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreateObjectDimRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ObjectDim'
+    /admin/v1/object-dims/{id}:
+        get:
+            tags:
+                - ObjectService
+            description: 查询对象维度详情
+            operationId: ObjectService_Get
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: viewMask
+                  in: query
+                  schema:
+                    type: string
+                    format: field-mask
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ObjectDim'
     /admin/v1/operation-audit-logs:
         get:
             tags:
@@ -3363,6 +3659,205 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/LoginResponse'
+    /admin/v1/risk-events:
+        get:
+            tags:
+                - RiskEventService
+            description: 查询风险事件列表
+            operationId: RiskEventService_List
+            parameters:
+                - name: page
+                  in: query
+                  description: 当前页码（从1开始，默认1）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: pageSize
+                  in: query
+                  description: 每页条数（默认10，建议设置上限如100）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: offset
+                  in: query
+                  description: 跳过的记录数（从0开始，默认0）
+                  schema:
+                    type: string
+                - name: limit
+                  in: query
+                  description: 最多返回的记录数（默认10，建议设置上限如100）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: token
+                  in: query
+                  description: 上一页最后一条记录的游标（如ID/时间戳+ID，首次请求为空）
+                  schema:
+                    type: string
+                - name: noPaging
+                  in: query
+                  description: 是否不分页，如果为true，则page和pageSize参数无效。
+                  schema:
+                    type: boolean
+                - name: query
+                  in: query
+                  description: JSON字符串过滤条件，基础语法：{"field1":"val1", "field2___icontains":"val2"}，具体请参见：https://github.com/tx7do/go-crud/tree/main/pagination/filter/README.md
+                  schema:
+                    type: string
+                - name: filter
+                  in: query
+                  description: Google AIP规范字符串过滤条件
+                  schema:
+                    type: string
+                - name: filterExpr.type
+                  in: query
+                  description: 过滤表达式类型
+                  schema:
+                    enum:
+                        - EXPR_TYPE_UNSPECIFIED
+                        - AND
+                        - OR
+                    type: string
+                    format: enum
+                - name: orderBy
+                  in: query
+                  description: 排序条件
+                  schema:
+                    type: string
+                - name: fieldMask
+                  in: query
+                  description: 字段掩码，其作用为SELECT中的字段，其语法为使用逗号分隔字段名，例如：id,realName,userName。如果为空则选中所有字段，即SELECT *。
+                  schema:
+                    type: string
+                    format: field-mask
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListRiskEventResponse'
+        post:
+            tags:
+                - RiskEventService
+            description: 创建风险事件
+            operationId: RiskEventService_Create
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreateRiskEventRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/RiskEvent'
+    /admin/v1/risk-events/count:
+        get:
+            tags:
+                - RiskEventService
+            description: 查询风险事件数量
+            operationId: RiskEventService_Count
+            parameters:
+                - name: page
+                  in: query
+                  description: 当前页码（从1开始，默认1）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: pageSize
+                  in: query
+                  description: 每页条数（默认10，建议设置上限如100）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: offset
+                  in: query
+                  description: 跳过的记录数（从0开始，默认0）
+                  schema:
+                    type: string
+                - name: limit
+                  in: query
+                  description: 最多返回的记录数（默认10，建议设置上限如100）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: token
+                  in: query
+                  description: 上一页最后一条记录的游标（如ID/时间戳+ID，首次请求为空）
+                  schema:
+                    type: string
+                - name: noPaging
+                  in: query
+                  description: 是否不分页，如果为true，则page和pageSize参数无效。
+                  schema:
+                    type: boolean
+                - name: query
+                  in: query
+                  description: JSON字符串过滤条件，基础语法：{"field1":"val1", "field2___icontains":"val2"}，具体请参见：https://github.com/tx7do/go-crud/tree/main/pagination/filter/README.md
+                  schema:
+                    type: string
+                - name: filter
+                  in: query
+                  description: Google AIP规范字符串过滤条件
+                  schema:
+                    type: string
+                - name: filterExpr.type
+                  in: query
+                  description: 过滤表达式类型
+                  schema:
+                    enum:
+                        - EXPR_TYPE_UNSPECIFIED
+                        - AND
+                        - OR
+                    type: string
+                    format: enum
+                - name: orderBy
+                  in: query
+                  description: 排序条件
+                  schema:
+                    type: string
+                - name: fieldMask
+                  in: query
+                  description: 字段掩码，其作用为SELECT中的字段，其语法为使用逗号分隔字段名，例如：id,realName,userName。如果为空则选中所有字段，即SELECT *。
+                  schema:
+                    type: string
+                    format: field-mask
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CountRiskEventResponse'
+    /admin/v1/risk-events/{id}:
+        get:
+            tags:
+                - RiskEventService
+            description: 查询风险事件详情
+            operationId: RiskEventService_Get
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: viewMask
+                  in: query
+                  schema:
+                    type: string
+                    format: field-mask
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/RiskEvent'
     /admin/v1/risk-rules:
         get:
             tags:
@@ -3794,6 +4289,104 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ListRouteResponse'
+    /admin/v1/sessions:
+        get:
+            tags:
+                - SessionService
+            description: 分页查询会话
+            operationId: SessionService_List
+            parameters:
+                - name: page
+                  in: query
+                  description: 当前页码（从1开始，默认1）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: pageSize
+                  in: query
+                  description: 每页条数（默认10，建议设置上限如100）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: offset
+                  in: query
+                  description: 跳过的记录数（从0开始，默认0）
+                  schema:
+                    type: string
+                - name: limit
+                  in: query
+                  description: 最多返回的记录数（默认10，建议设置上限如100）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: token
+                  in: query
+                  description: 上一页最后一条记录的游标（如ID/时间戳+ID，首次请求为空）
+                  schema:
+                    type: string
+                - name: noPaging
+                  in: query
+                  description: 是否不分页，如果为true，则page和pageSize参数无效。
+                  schema:
+                    type: boolean
+                - name: query
+                  in: query
+                  description: JSON字符串过滤条件，基础语法：{"field1":"val1", "field2___icontains":"val2"}，具体请参见：https://github.com/tx7do/go-crud/tree/main/pagination/filter/README.md
+                  schema:
+                    type: string
+                - name: filter
+                  in: query
+                  description: Google AIP规范字符串过滤条件
+                  schema:
+                    type: string
+                - name: filterExpr.type
+                  in: query
+                  description: 过滤表达式类型
+                  schema:
+                    enum:
+                        - EXPR_TYPE_UNSPECIFIED
+                        - AND
+                        - OR
+                    type: string
+                    format: enum
+                - name: orderBy
+                  in: query
+                  description: 排序条件
+                  schema:
+                    type: string
+                - name: fieldMask
+                  in: query
+                  description: 字段掩码，其作用为SELECT中的字段，其语法为使用逗号分隔字段名，例如：id,realName,userName。如果为空则选中所有字段，即SELECT *。
+                  schema:
+                    type: string
+                    format: field-mask
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListSessionResponse'
+    /admin/v1/sessions/{id}:
+        get:
+            tags:
+                - SessionService
+            description: 查询单条会话详情
+            operationId: SessionService_Get
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: integer
+                    format: uint32
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Session'
     /admin/v1/tag-definitions:
         get:
             tags:
@@ -4508,6 +5101,109 @@ paths:
                 "200":
                     description: OK
                     content: {}
+    /admin/v1/user-behavior-profiles:
+        get:
+            tags:
+                - UserBehaviorProfileService
+            description: 查询用户画像列表
+            operationId: UserBehaviorProfileService_List
+            parameters:
+                - name: page
+                  in: query
+                  description: 当前页码（从1开始，默认1）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: pageSize
+                  in: query
+                  description: 每页条数（默认10，建议设置上限如100）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: offset
+                  in: query
+                  description: 跳过的记录数（从0开始，默认0）
+                  schema:
+                    type: string
+                - name: limit
+                  in: query
+                  description: 最多返回的记录数（默认10，建议设置上限如100）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: token
+                  in: query
+                  description: 上一页最后一条记录的游标（如ID/时间戳+ID，首次请求为空）
+                  schema:
+                    type: string
+                - name: noPaging
+                  in: query
+                  description: 是否不分页，如果为true，则page和pageSize参数无效。
+                  schema:
+                    type: boolean
+                - name: query
+                  in: query
+                  description: JSON字符串过滤条件，基础语法：{"field1":"val1", "field2___icontains":"val2"}，具体请参见：https://github.com/tx7do/go-crud/tree/main/pagination/filter/README.md
+                  schema:
+                    type: string
+                - name: filter
+                  in: query
+                  description: Google AIP规范字符串过滤条件
+                  schema:
+                    type: string
+                - name: filterExpr.type
+                  in: query
+                  description: 过滤表达式类型
+                  schema:
+                    enum:
+                        - EXPR_TYPE_UNSPECIFIED
+                        - AND
+                        - OR
+                    type: string
+                    format: enum
+                - name: orderBy
+                  in: query
+                  description: 排序条件
+                  schema:
+                    type: string
+                - name: fieldMask
+                  in: query
+                  description: 字段掩码，其作用为SELECT中的字段，其语法为使用逗号分隔字段名，例如：id,realName,userName。如果为空则选中所有字段，即SELECT *。
+                  schema:
+                    type: string
+                    format: field-mask
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListUserBehaviorProfileResponse'
+    /admin/v1/user-behavior-profiles/{id}:
+        get:
+            tags:
+                - UserBehaviorProfileService
+            description: 查询用户画像详情
+            operationId: UserBehaviorProfileService_Get
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: viewMask
+                  in: query
+                  schema:
+                    type: string
+                    format: field-mask
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UserBehaviorProfile'
     /admin/v1/user-tags:
         get:
             tags:
@@ -5575,6 +6271,11 @@ components:
                     type: string
                     description: 任务执行类型名，例如 "send_email"、"generate_report" 等，用于区分不同类型的任务
             description: 控制调度任务 - 请求
+        CountRiskEventResponse:
+            type: object
+            properties:
+                count:
+                    type: string
         CountRiskRuleResponse:
             type: object
             properties:
@@ -5648,6 +6349,12 @@ components:
                 data:
                     $ref: '#/components/schemas/Menu'
             description: 创建菜单 - 请求
+        CreateObjectDimRequest:
+            type: object
+            properties:
+                data:
+                    $ref: '#/components/schemas/ObjectDim'
+            description: 创建对象维度 - 请求
         CreateOrgUnitRequest:
             type: object
             properties:
@@ -5672,6 +6379,12 @@ components:
                 data:
                     $ref: '#/components/schemas/Position'
             description: 创建职位 - 请求
+        CreateRiskEventRequest:
+            type: object
+            properties:
+                data:
+                    $ref: '#/components/schemas/RiskEvent'
+            description: 创建风险事件 - 请求
         CreateRiskRuleRequest:
             type: object
             properties:
@@ -6157,6 +6870,51 @@ components:
                     type: string
                     description: 邮箱验证码
             description: 邮箱验证
+        EventPath:
+            type: object
+            properties:
+                pathId:
+                    type: string
+                    description: 路径ID，唯一标识一条事件路径，hash 或 UUID
+                tenantId:
+                    type: integer
+                    description: 租户ID，多租户隔离，支持 SaaS 场景
+                    format: uint32
+                userId:
+                    type: integer
+                    description: 用户ID，路径所属用户
+                    format: uint32
+                sessionId:
+                    type: string
+                    description: 会话ID，路径所属会话
+                nodes:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/PathNode'
+                    description: 有序事件序列，路径节点列表，按发生顺序排列
+                startTime:
+                    type: string
+                    description: 路径起始时间，第一个节点事件时间
+                    format: date-time
+                endTime:
+                    type: string
+                    description: 路径结束时间，最后一个节点事件时间
+                    format: date-time
+                totalDurationMs:
+                    type: integer
+                    description: 路径总时长，毫秒，start_time 到 end_time 的间隔
+                    format: uint32
+                stepCount:
+                    type: integer
+                    description: 步骤数，路径节点总数
+                    format: uint32
+                isConverted:
+                    type: boolean
+                    description: 是否完成目标转化，如完成支付、注册等
+                conversionEvent:
+                    type: string
+                    description: 转化事件名称，目标转化对应的事件名称
+            description: 事件路径（用户行为路径，包含有序事件序列和路径指标）
         File:
             type: object
             properties:
@@ -6691,6 +7449,15 @@ components:
                 total:
                     type: string
             description: 查询字典类型列表 - 回应
+        ListEventPathResponse:
+            type: object
+            properties:
+                items:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/EventPath'
+                total:
+                    type: string
         ListFileResponse:
             type: object
             properties:
@@ -6701,6 +7468,16 @@ components:
                 total:
                     type: string
             description: 查询列表 - 回应
+        ListIDMappingResponse:
+            type: object
+            properties:
+                items:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/IDMapping'
+                total:
+                    type: string
+            description: 获取ID映射列表 - 答复
         ListInternalMessageCategoryResponse:
             type: object
             properties:
@@ -6761,6 +7538,16 @@ components:
                 total:
                     type: string
             description: 查询菜单列表 - 回应
+        ListObjectDimResponse:
+            type: object
+            properties:
+                items:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ObjectDim'
+                total:
+                    type: string
+            description: 获取对象维度列表 - 答复
         ListOperationAuditLogResponse:
             type: object
             properties:
@@ -6839,6 +7626,16 @@ components:
                 total:
                     type: string
             description: 获取职位列表 - 答复
+        ListRiskEventResponse:
+            type: object
+            properties:
+                items:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/RiskEvent'
+                total:
+                    type: string
+            description: 获取风险事件列表 - 答复
         ListRiskRuleResponse:
             type: object
             properties:
@@ -6867,6 +7664,15 @@ components:
                     items:
                         $ref: '#/components/schemas/MenuRouteItem'
             description: 查询路由列表 - 回应
+        ListSessionResponse:
+            type: object
+            properties:
+                items:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Session'
+                total:
+                    type: string
         ListTagDefinitionResponse:
             type: object
             properties:
@@ -6908,6 +7714,16 @@ components:
                 total:
                     type: string
             description: 租户列表 - 答复
+        ListUserBehaviorProfileResponse:
+            type: object
+            properties:
+                items:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/UserBehaviorProfile'
+                total:
+                    type: string
+            description: 获取用户画像列表 - 答复
         ListUserInboxResponse:
             type: object
             properties:
@@ -7418,6 +8234,79 @@ components:
                 meta:
                     $ref: '#/components/schemas/MenuMeta'
             description: 路由项
+        ObjectDim:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: 自增长主键ID，唯一标识一条对象维度记录
+                    format: uint32
+                tenantId:
+                    type: integer
+                    description: 租户ID，多租户隔离，支持 SaaS 场景
+                    format: uint32
+                objectType:
+                    type: string
+                    description: 对象类型，如商品、道具、内容等
+                objectId:
+                    type: string
+                    description: 对象ID，唯一标识一个对象
+                objectName:
+                    type: string
+                    description: 对象名称，对象的显示名称
+                categoryPath:
+                    type: string
+                    description: 分类路径，对象所属的分类层级路径
+                price:
+                    type: string
+                    description: 价格，对象的价格，字符串类型，支持多币种格式
+                currency:
+                    type: string
+                    description: 币种，对象价格的币种，如 CNY、USD 等
+                rarity:
+                    type: string
+                    description: 稀有度，对象的稀有等级，如普通、稀有、史诗等
+                attributes:
+                    type: object
+                    additionalProperties:
+                        type: string
+                    description: 属性，对象的扩展属性，键值对形式，支持自定义属性
+                status:
+                    type: string
+                    description: 状态，对象当前状态，如上架、下架、有效、无效等
+                validFrom:
+                    type: string
+                    description: 有效期起始时间，对象有效期的开始时间
+                    format: date-time
+                validTo:
+                    type: string
+                    description: 有效期结束时间，对象有效期的结束时间
+                    format: date-time
+                createdBy:
+                    type: integer
+                    description: 创建者用户ID，记录创建该对象的用户
+                    format: uint32
+                updatedBy:
+                    type: integer
+                    description: 更新者用户ID，记录最近一次更新该对象的用户
+                    format: uint32
+                deletedBy:
+                    type: integer
+                    description: 删除者用户ID，记录删除该对象的用户
+                    format: uint32
+                createdAt:
+                    type: string
+                    description: 创建时间
+                    format: date-time
+                updatedAt:
+                    type: string
+                    description: 更新时间
+                    format: date-time
+                deletedAt:
+                    type: string
+                    description: 删除时间
+                    format: date-time
+            description: 对象维度（对应 objects_dim 表）
         OperationAuditLog:
             type: object
             properties:
@@ -7670,6 +8559,27 @@ components:
                     description: 删除时间
                     format: date-time
             description: 组织单元
+        PathNode:
+            type: object
+            properties:
+                eventName:
+                    type: string
+                    description: 事件名称，路径节点对应的行为事件名称
+                objectType:
+                    type: string
+                    description: 对象类型，节点关联的对象类型，如商品、内容等
+                objectId:
+                    type: string
+                    description: 对象ID，节点关联的对象唯一标识
+                eventTime:
+                    type: string
+                    description: 事件时间，节点对应事件发生的时间
+                    format: date-time
+                stepIndex:
+                    type: integer
+                    description: 步骤索引，节点在路径中的位置，从0开始
+                    format: uint32
+            description: 路径节点（事件路径中的单个事件节点，包含事件信息和对象信息）
         Permission:
             type: object
             properties:
@@ -8117,6 +9027,142 @@ components:
                     type: string
                     description: 动作原因，风险事件处置动作的原因说明
             description: 风险事件处置动作，定义规则触发后的处置方式
+        RiskEvent:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: ID
+                    format: uint32
+                tenantId:
+                    type: integer
+                    description: 租户ID，多租户隔离，支持 SaaS 场景
+                    format: uint32
+                userId:
+                    type: integer
+                    description: 用户ID，关联主体，风险事件涉及的用户
+                    format: uint32
+                deviceId:
+                    type: string
+                    description: 设备ID，关联主体，风险事件涉及的设备
+                globalUserId:
+                    type: string
+                    description: 全局用户ID，跨平台唯一标识用户
+                riskType:
+                    enum:
+                        - RISK_TYPE_UNSPECIFIED
+                        - RISK_TYPE_LOGIN_ANOMALY
+                        - RISK_TYPE_BRUTE_FORCE
+                        - RISK_TYPE_CREDENTIAL_STUFFING
+                        - RISK_TYPE_FREQUENT_OPERATION
+                        - RISK_TYPE_ABNORMAL_FLOW
+                        - RISK_TYPE_DATA_EXFILTRATION
+                        - RISK_TYPE_DEVICE_CHANGE
+                        - RISK_TYPE_LOCATION_ANOMALY
+                        - RISK_TYPE_PROXY_DETECTED
+                        - RISK_TYPE_FRAUD_PAYMENT
+                        - RISK_TYPE_ABUSE_PROMOTION
+                    type: string
+                    description: 风险类型，标识风险事件的类型
+                    format: enum
+                riskLevel:
+                    enum:
+                        - RISK_LEVEL_UNSPECIFIED
+                        - RISK_LEVEL_NORMAL
+                        - RISK_LEVEL_SUSPICIOUS
+                        - RISK_LEVEL_HIGH
+                        - RISK_LEVEL_CRITICAL
+                    type: string
+                    description: 风险等级，标识风险事件的严重程度
+                    format: enum
+                riskScore:
+                    type: number
+                    description: 风险评分，0-100，风险事件的评分
+                    format: float
+                ruleId:
+                    type: integer
+                    description: 触发规则ID，标识触发风险事件的规则
+                    format: uint32
+                ruleName:
+                    type: string
+                    description: 规则名称，触发风险事件的规则名称
+                ruleContext:
+                    type: object
+                    description: 规则上下文，触发条件，结构化信息
+                relatedEventIds:
+                    type: array
+                    items:
+                        type: integer
+                        format: uint32
+                    description: 关联行为事件ID列表，风险事件关联的行为事件
+                sessionId:
+                    type: integer
+                    description: 会话ID，风险事件发生时的会话标识
+                    format: uint32
+                description:
+                    type: string
+                    description: 风险详情描述，风险事件的详细说明
+                evidence:
+                    type: object
+                    additionalProperties:
+                        type: string
+                    description: 证据，风险事件相关证据，键值对形式
+                status:
+                    enum:
+                        - RISK_EVENT_STATUS_UNSPECIFIED
+                        - PENDING
+                        - INVESTIGATING
+                        - CONFIRMED
+                        - FALSE_POSITIVE
+                        - IGNORED
+                        - AUTO_BLOCKED
+                    type: string
+                    description: 处置状态，风险事件的处理状态
+                    format: enum
+                handlerId:
+                    type: integer
+                    description: 处理人ID，风险事件的处理人
+                    format: uint32
+                handledTime:
+                    type: string
+                    description: 处理时间，风险事件被处理的时间
+                    format: date-time
+                handleRemark:
+                    type: string
+                    description: 处理备注，风险事件处理的说明
+                occurTime:
+                    type: string
+                    description: 风险事件发生时间
+                    format: date-time
+                reportTime:
+                    type: string
+                    description: 风险事件上报时间
+                    format: date-time
+                createdBy:
+                    type: integer
+                    description: 创建者用户ID
+                    format: uint32
+                updatedBy:
+                    type: integer
+                    description: 更新者用户ID
+                    format: uint32
+                deletedBy:
+                    type: integer
+                    description: 删除者用户ID
+                    format: uint32
+                createdAt:
+                    type: string
+                    description: 创建时间
+                    format: date-time
+                updatedAt:
+                    type: string
+                    description: 更新时间
+                    format: date-time
+                deletedAt:
+                    type: string
+                    description: 删除时间
+                    format: date-time
+            description: 风险事件
         RiskRule:
             type: object
             properties:
@@ -8330,6 +9376,106 @@ components:
                     type: integer
                     description: 消息ID
                     format: uint32
+        Session:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: 会话ID，唯一标识一条会话
+                    format: uint32
+                tenantId:
+                    type: integer
+                    description: 租户ID，多租户隔离，支持 SaaS 场景
+                    format: uint32
+                userId:
+                    type: integer
+                    description: 用户ID，会话主体用户
+                    format: uint32
+                deviceId:
+                    type: string
+                    description: 设备ID，会话主体设备
+                globalUserId:
+                    type: string
+                    description: 全局用户ID，跨平台唯一标识用户
+                startTime:
+                    type: string
+                    description: 会话起始时间
+                    format: date-time
+                endTime:
+                    type: string
+                    description: 会话结束时间
+                    format: date-time
+                duration:
+                    pattern: ^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$
+                    type: string
+                    description: 会话时长，起止时间间隔，单位秒
+                eventCount:
+                    type: integer
+                    description: 会话事件数，本会话内发生的事件总数
+                    format: uint32
+                pageViewCount:
+                    type: integer
+                    description: 页面浏览数（PV），页面浏览次数
+                    format: uint32
+                actionCount:
+                    type: integer
+                    description: 交互次数，本会话内用户交互总次数
+                    format: uint32
+                entryPage:
+                    type: string
+                    description: 入口页面，会话起始页面
+                exitPage:
+                    type: string
+                    description: 出口页面，会话结束页面
+                isBounce:
+                    type: boolean
+                    description: 是否跳出，单页会话，true 表示跳出
+                platform:
+                    enum:
+                        - PLATFORM_UNSPECIFIED
+                        - PLATFORM_WEB
+                        - PLATFORM_IOS
+                        - PLATFORM_ANDROID
+                        - PLATFORM_WINDOWS
+                        - PLATFORM_MACOS
+                        - PLATFORM_LINUX
+                        - PLATFORM_MINI_PROGRAM
+                    type: string
+                    description: 平台类型，会话发生的平台，如 Web、iOS、Android 等
+                    format: enum
+                ipCity:
+                    type: string
+                    description: IP城市，会话发生时的地理位置城市
+                appVersion:
+                    type: string
+                    description: 应用版本，会话发生时的应用版本号
+                totalAmount:
+                    type: string
+                    description: 会话内总金额，本会话内发生的总金额，字符串类型，支持多币种
+                payEventCount:
+                    type: integer
+                    description: 支付事件数，本会话内发生的支付事件总数
+                    format: uint32
+                riskLevel:
+                    enum:
+                        - RISK_LEVEL_UNSPECIFIED
+                        - RISK_LEVEL_NORMAL
+                        - RISK_LEVEL_SUSPICIOUS
+                        - RISK_LEVEL_HIGH
+                        - RISK_LEVEL_CRITICAL
+                    type: string
+                    description: 风险等级，会话风险标记，枚举类型
+                    format: enum
+                riskTags:
+                    type: array
+                    items:
+                        type: string
+                    description: 风险标签，会话风险标记，字符串列表
+                updateTime:
+                    type: string
+                    description: 更新时间，会话最近一次更新的时间
+                    format: date-time
+            description: 会话（对应 sessions 表）
         StorageObject:
             type: object
             properties:
@@ -9272,6 +10418,133 @@ components:
                     description: 删除时间
                     format: date-time
             description: 用户
+        UserBehaviorProfile:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: 自增长主键ID，唯一标识一条用户画像记录
+                    format: uint32
+                tenantId:
+                    type: integer
+                    description: 租户ID
+                    format: uint32
+                userId:
+                    type: string
+                    description: 用户ID
+                ver:
+                    type: string
+                    description: 版本号
+                registerTime:
+                    type: string
+                    description: 注册时间
+                    format: date-time
+                registerChannel:
+                    type: string
+                    description: 注册渠道
+                firstActiveDate:
+                    type: string
+                    description: 首次活跃日期
+                    format: date-time
+                lastActiveDate:
+                    type: string
+                    description: 最后活跃日期
+                    format: date-time
+                userLevel:
+                    type: integer
+                    description: 用户等级
+                    format: uint32
+                vipLevel:
+                    type: integer
+                    description: VIP等级
+                    format: uint32
+                userRole:
+                    type: string
+                    description: 用户角色
+                totalEvents:
+                    type: string
+                    description: 总事件数
+                totalSessions:
+                    type: integer
+                    description: 总会话数
+                    format: uint32
+                totalPayAmount:
+                    type: string
+                    description: 总支付金额
+                lastPayTime:
+                    type: string
+                    description: 最后支付时间
+                    format: date-time
+                preferCategories:
+                    type: array
+                    items:
+                        type: string
+                    description: 偏好类别
+                preferObjects:
+                    type: array
+                    items:
+                        type: string
+                    description: 偏好对象
+                riskScore:
+                    type: integer
+                    description: 风险评分
+                    format: uint32
+                riskTags:
+                    type: array
+                    items:
+                        type: string
+                    description: 风险标签
+                riskLevel:
+                    enum:
+                        - RISK_LEVEL_UNSPECIFIED
+                        - RISK_LEVEL_NORMAL
+                        - RISK_LEVEL_SUSPICIOUS
+                        - RISK_LEVEL_HIGH
+                        - RISK_LEVEL_CRITICAL
+                    type: string
+                    description: 风险等级，枚举类型，标识用户当前的风险级别
+                    format: enum
+                lastRiskTime:
+                    type: string
+                    description: 最后风险时间，记录用户最近一次风险事件发生的时间
+                    format: date-time
+                profile:
+                    type: object
+                    additionalProperties:
+                        type: string
+                    description: 扩展属性
+                geo:
+                    type: string
+                    description: 地理位置，经纬度信息或 GeoJSON，便于分析用户地理分布
+                platform:
+                    enum:
+                        - PLATFORM_UNSPECIFIED
+                        - PLATFORM_WEB
+                        - PLATFORM_IOS
+                        - PLATFORM_ANDROID
+                        - PLATFORM_WINDOWS
+                        - PLATFORM_MACOS
+                        - PLATFORM_LINUX
+                        - PLATFORM_MINI_PROGRAM
+                    type: string
+                    description: 平台类型，枚举类型，标识用户主要活跃的平台（如 Web、iOS、Android 等）
+                    format: enum
+                deviceType:
+                    type: string
+                    description: 设备类型，记录用户主要使用的设备类型（如手机、平板、PC 等）
+                createdAt:
+                    type: string
+                    description: 创建时间
+                    format: date-time
+                updatedAt:
+                    type: string
+                    description: 更新时间
+                    format: date-time
+                deletedAt:
+                    type: string
+                    description: 删除时间
+                    format: date-time
+            description: 用户画像（对应 users_dim 表）
         UserExistsResponse:
             type: object
             properties:
@@ -9484,6 +10757,8 @@ tags:
       description: 数据字典条目管理服务
     - name: DictTypeService
       description: 数据字典分类管理服务
+    - name: EventPathService
+      description: 事件路径服务
     - name: FileService
       description: 文件管理服务
     - name: FileTransferService
@@ -9504,6 +10779,8 @@ tags:
       description: 登录策略管理服务
     - name: MenuService
       description: 后台菜单管理服务
+    - name: ObjectService
+      description: 对象维度服务
     - name: OperationAuditLogService
       description: 操作审计日志管理服务
     - name: OrgUnitService
@@ -9518,16 +10795,22 @@ tags:
       description: 策略评估日志服务
     - name: PositionService
       description: 职位管理服务
+    - name: RiskEventService
+      description: 风险事件服务
     - name: RiskRuleService
       description: 风险规则服务接口
     - name: RoleService
       description: 角色管理服务
+    - name: SessionService
+      description: 会话服务
     - name: TagDefinitionService
       description: 标签定义服务
     - name: TaskService
       description: 调度任务管理服务
     - name: TenantService
       description: 租户管理服务
+    - name: UserBehaviorProfileService
+      description: 用户画像服务
     - name: UserProfileService
       description: 用户个人资料服务
     - name: UserService

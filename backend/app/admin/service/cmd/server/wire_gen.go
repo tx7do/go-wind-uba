@@ -97,7 +97,17 @@ func initApp(context *bootstrap.Context) (*kratos.App, func(), error) {
 	userTagService := service.NewUserTagService(context, userTagServiceClient)
 	webhookServiceClient := data.NewWebhookServiceClient(context, discovery)
 	webhookService := service.NewWebhookService(context, webhookServiceClient)
-	httpServer := server.NewRestServer(context, v, userService, userProfileService, roleService, tenantService, orgUnitService, positionService, menuService, apiService, permissionGroupService, permissionService, adminPortalService, taskService, authenticationService, loginPolicyService, dictTypeService, dictEntryService, languageService, fileService, fileTransferService, internalMessageService, internalMessageCategoryService, internalMessageRecipientService, apiAuditLogService, dataAccessAuditLogService, loginAuditLogService, policyEvaluationLogService, operationAuditLogService, permissionAuditLogService, applicationService, idMappingService, riskRuleService, tagDefinitionService, userTagService, webhookService)
+	eventPathServiceClient := data.NewEventPathServiceClient(context, discovery)
+	eventPathService := service.NewEventPathService(context, eventPathServiceClient)
+	objectServiceClient := data.NewObjectServiceClient(context, discovery)
+	objectService := service.NewObjectService(context, objectServiceClient)
+	riskEventServiceClient := data.NewRiskEventServiceClient(context, discovery)
+	riskEventService := service.NewRiskEventService(context, riskEventServiceClient)
+	sessionServiceClient := data.NewSessionServiceClient(context, discovery)
+	sessionService := service.NewSessionService(context, sessionServiceClient)
+	userBehaviorProfileServiceClient := data.NewUserBehaviorProfileServiceClient(context, discovery)
+	userBehaviorProfileService := service.NewUserBehaviorProfileService(context, userBehaviorProfileServiceClient)
+	httpServer := server.NewRestServer(context, v, userService, userProfileService, roleService, tenantService, orgUnitService, positionService, menuService, apiService, permissionGroupService, permissionService, adminPortalService, taskService, authenticationService, loginPolicyService, dictTypeService, dictEntryService, languageService, fileService, fileTransferService, internalMessageService, internalMessageCategoryService, internalMessageRecipientService, apiAuditLogService, dataAccessAuditLogService, loginAuditLogService, policyEvaluationLogService, operationAuditLogService, permissionAuditLogService, applicationService, idMappingService, riskRuleService, tagDefinitionService, userTagService, webhookService, eventPathService, objectService, riskEventService, sessionService, userBehaviorProfileService)
 	app := newApp(context, httpServer, sseServer)
 	return app, func() {
 	}, nil

@@ -1,0 +1,32 @@
+﻿syntax = "proto3";
+
+package admin.service.v1;
+
+import "google/api/annotations.proto";
+import "pagination/v1/pagination.proto";
+import "uba/service/v1/object.proto";
+
+// 对象维度服务
+service ObjectService {
+  // 查询对象维度列表
+  rpc List (pagination.PagingRequest) returns (uba.service.v1.ListObjectDimResponse) {
+    option (google.api.http) = {
+      get: "/admin/v1/object-dims"
+    };
+  }
+
+  // 查询对象维度详情
+  rpc Get (uba.service.v1.GetObjectDimRequest) returns (uba.service.v1.ObjectDim) {
+    option (google.api.http) = {
+      get: "/admin/v1/object-dims/{id}"
+    };
+  }
+
+  // 创建对象维度
+  rpc Create (uba.service.v1.CreateObjectDimRequest) returns (uba.service.v1.ObjectDim) {
+    option (google.api.http) = {
+      post: "/admin/v1/object-dims"
+      body: "*"
+    };
+  }
+}

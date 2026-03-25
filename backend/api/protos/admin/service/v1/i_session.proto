@@ -1,0 +1,24 @@
+﻿syntax = "proto3";
+
+package admin.service.v1;
+
+import "google/api/annotations.proto";
+import "pagination/v1/pagination.proto";
+import "uba/service/v1/session.proto";
+
+// 会话服务
+service SessionService {
+  // 分页查询会话
+  rpc List(pagination.PagingRequest) returns (uba.service.v1.ListSessionResponse) {
+    option (google.api.http) = {
+      get: "/admin/v1/sessions"
+    };
+  }
+
+  // 查询单条会话详情
+  rpc Get(uba.service.v1.GetSessionRequest) returns (uba.service.v1.Session) {
+    option (google.api.http) = {
+      get: "/admin/v1/sessions/{id}"
+    };
+  }
+}

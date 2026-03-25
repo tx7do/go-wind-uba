@@ -3,10 +3,18 @@
 package admin.service.v1;
 
 import "google/api/annotations.proto";
+import "pagination/v1/pagination.proto";
 import "uba/service/v1/id_mapping.proto";
 
 // ID映射服务
 service IDMappingService {
+  // 查询ID映射列表
+  rpc List (pagination.PagingRequest) returns (uba.service.v1.ListIDMappingResponse) {
+    option (google.api.http) = {
+      get: "/admin/v1/id-mappings"
+    };
+  }
+
   // 查询ID映射详情
   rpc Get (uba.service.v1.GetIDMappingRequest) returns (uba.service.v1.IDMapping) {
     option (google.api.http) = {

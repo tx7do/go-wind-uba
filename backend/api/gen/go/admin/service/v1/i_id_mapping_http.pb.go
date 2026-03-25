@@ -10,7 +10,8 @@ import (
 	context "context"
 	http "github.com/go-kratos/kratos/v2/transport/http"
 	binding "github.com/go-kratos/kratos/v2/transport/http/binding"
-	v1 "go-wind-uba/api/gen/go/uba/service/v1"
+	v1 "github.com/tx7do/go-crud/api/gen/go/pagination/v1"
+	v11 "go-wind-uba/api/gen/go/uba/service/v1"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -21,20 +22,43 @@ var _ = binding.EncodeURL
 const _ = http.SupportPackageIsVersion1
 
 const OperationIDMappingServiceGet = "/admin.service.v1.IDMappingService/Get"
+const OperationIDMappingServiceList = "/admin.service.v1.IDMappingService/List"
 
 type IDMappingServiceHTTPServer interface {
 	// Get 查询ID映射详情
-	Get(context.Context, *v1.GetIDMappingRequest) (*v1.IDMapping, error)
+	Get(context.Context, *v11.GetIDMappingRequest) (*v11.IDMapping, error)
+	// List 查询ID映射列表
+	List(context.Context, *v1.PagingRequest) (*v11.ListIDMappingResponse, error)
 }
 
 func RegisterIDMappingServiceHTTPServer(s *http.Server, srv IDMappingServiceHTTPServer) {
 	r := s.Route("/")
-	r.GET("/admin/v1/id-mappings/{id}", _IDMappingService_Get6_HTTP_Handler(srv))
+	r.GET("/admin/v1/id-mappings", _IDMappingService_List7_HTTP_Handler(srv))
+	r.GET("/admin/v1/id-mappings/{id}", _IDMappingService_Get7_HTTP_Handler(srv))
 }
 
-func _IDMappingService_Get6_HTTP_Handler(srv IDMappingServiceHTTPServer) func(ctx http.Context) error {
+func _IDMappingService_List7_HTTP_Handler(srv IDMappingServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
-		var in v1.GetIDMappingRequest
+		var in v1.PagingRequest
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationIDMappingServiceList)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.List(ctx, req.(*v1.PagingRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*v11.ListIDMappingResponse)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _IDMappingService_Get7_HTTP_Handler(srv IDMappingServiceHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in v11.GetIDMappingRequest
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
@@ -43,20 +67,22 @@ func _IDMappingService_Get6_HTTP_Handler(srv IDMappingServiceHTTPServer) func(ct
 		}
 		http.SetOperation(ctx, OperationIDMappingServiceGet)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
-			return srv.Get(ctx, req.(*v1.GetIDMappingRequest))
+			return srv.Get(ctx, req.(*v11.GetIDMappingRequest))
 		})
 		out, err := h(ctx, &in)
 		if err != nil {
 			return err
 		}
-		reply := out.(*v1.IDMapping)
+		reply := out.(*v11.IDMapping)
 		return ctx.Result(200, reply)
 	}
 }
 
 type IDMappingServiceHTTPClient interface {
 	// Get 查询ID映射详情
-	Get(ctx context.Context, req *v1.GetIDMappingRequest, opts ...http.CallOption) (rsp *v1.IDMapping, err error)
+	Get(ctx context.Context, req *v11.GetIDMappingRequest, opts ...http.CallOption) (rsp *v11.IDMapping, err error)
+	// List 查询ID映射列表
+	List(ctx context.Context, req *v1.PagingRequest, opts ...http.CallOption) (rsp *v11.ListIDMappingResponse, err error)
 }
 
 type IDMappingServiceHTTPClientImpl struct {
@@ -68,11 +94,25 @@ func NewIDMappingServiceHTTPClient(client *http.Client) IDMappingServiceHTTPClie
 }
 
 // Get 查询ID映射详情
-func (c *IDMappingServiceHTTPClientImpl) Get(ctx context.Context, in *v1.GetIDMappingRequest, opts ...http.CallOption) (*v1.IDMapping, error) {
-	var out v1.IDMapping
+func (c *IDMappingServiceHTTPClientImpl) Get(ctx context.Context, in *v11.GetIDMappingRequest, opts ...http.CallOption) (*v11.IDMapping, error) {
+	var out v11.IDMapping
 	pattern := "/admin/v1/id-mappings/{id}"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationIDMappingServiceGet))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+// List 查询ID映射列表
+func (c *IDMappingServiceHTTPClientImpl) List(ctx context.Context, in *v1.PagingRequest, opts ...http.CallOption) (*v11.ListIDMappingResponse, error) {
+	var out v11.ListIDMappingResponse
+	pattern := "/admin/v1/id-mappings"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation(OperationIDMappingServiceList))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {

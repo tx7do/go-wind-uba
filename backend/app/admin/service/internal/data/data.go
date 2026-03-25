@@ -370,3 +370,57 @@ func NewWebhookServiceClient(ctx *bootstrap.Context, r registry.Discovery) ubaV1
 
 	return ubaV1.NewWebhookServiceClient(cli)
 }
+
+func NewBehaviorEventServiceClient(ctx *bootstrap.Context, r registry.Discovery) ubaV1.BehaviorEventServiceClient {
+	cli, err := rpc.CreateGrpcClient(ctx.Context(), r, serviceid.NewDiscoveryName(serviceid.CoreService), ctx.GetConfig())
+	if err != nil {
+		return nil
+	}
+
+	return ubaV1.NewBehaviorEventServiceClient(cli)
+}
+
+func NewEventPathServiceClient(ctx *bootstrap.Context, r registry.Discovery) ubaV1.EventPathServiceClient {
+	cli, err := rpc.CreateGrpcClient(ctx.Context(), r, serviceid.NewDiscoveryName(serviceid.CoreService), ctx.GetConfig())
+	if err != nil {
+		return nil
+	}
+
+	return ubaV1.NewEventPathServiceClient(cli)
+}
+
+func NewObjectServiceClient(ctx *bootstrap.Context, r registry.Discovery) ubaV1.ObjectServiceClient {
+	cli, err := rpc.CreateGrpcClient(ctx.Context(), r, serviceid.NewDiscoveryName(serviceid.CoreService), ctx.GetConfig())
+	if err != nil {
+		return nil
+	}
+
+	return ubaV1.NewObjectServiceClient(cli)
+}
+
+func NewRiskEventServiceClient(ctx *bootstrap.Context, r registry.Discovery) ubaV1.RiskEventServiceClient {
+	cli, err := rpc.CreateGrpcClient(ctx.Context(), r, serviceid.NewDiscoveryName(serviceid.CoreService), ctx.GetConfig())
+	if err != nil {
+		return nil
+	}
+
+	return ubaV1.NewRiskEventServiceClient(cli)
+}
+
+func NewSessionServiceClient(ctx *bootstrap.Context, r registry.Discovery) ubaV1.SessionServiceClient {
+	cli, err := rpc.CreateGrpcClient(ctx.Context(), r, serviceid.NewDiscoveryName(serviceid.CoreService), ctx.GetConfig())
+	if err != nil {
+		return nil
+	}
+
+	return ubaV1.NewSessionServiceClient(cli)
+}
+
+func NewUserBehaviorProfileServiceClient(ctx *bootstrap.Context, r registry.Discovery) ubaV1.UserBehaviorProfileServiceClient {
+	cli, err := rpc.CreateGrpcClient(ctx.Context(), r, serviceid.NewDiscoveryName(serviceid.CoreService), ctx.GetConfig())
+	if err != nil {
+		return nil
+	}
+
+	return ubaV1.NewUserBehaviorProfileServiceClient(cli)
+}

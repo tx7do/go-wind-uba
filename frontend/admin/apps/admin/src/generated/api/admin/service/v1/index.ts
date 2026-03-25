@@ -1952,6 +1952,171 @@ export type dictservicev1_DeleteDictTypeRequest = {
   ids: number[] | undefined;
 };
 
+// 事件路径服务
+export interface EventPathService {
+  // 分页查询事件路径
+  List(request: pagination_PagingRequest): Promise<ubaservicev1_ListEventPathResponse>;
+  // 查询单条事件路径详情
+  Get(request: ubaservicev1_GetEventPathRequest): Promise<ubaservicev1_EventPath>;
+}
+
+export function createEventPathServiceClient(
+  handler: RequestHandler
+): EventPathService {
+  return {
+    List(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+      const path = `admin/v1/event-paths`; // eslint-disable-line quotes
+      const body = null;
+      const queryParams: string[] = [];
+      if (request.page) {
+        queryParams.push(`page=${encodeURIComponent(request.page.toString())}`)
+      }
+      if (request.pageSize) {
+        queryParams.push(`pageSize=${encodeURIComponent(request.pageSize.toString())}`)
+      }
+      if (request.offset) {
+        queryParams.push(`offset=${encodeURIComponent(request.offset.toString())}`)
+      }
+      if (request.limit) {
+        queryParams.push(`limit=${encodeURIComponent(request.limit.toString())}`)
+      }
+      if (request.token) {
+        queryParams.push(`token=${encodeURIComponent(request.token.toString())}`)
+      }
+      if (request.noPaging) {
+        queryParams.push(`noPaging=${encodeURIComponent(request.noPaging.toString())}`)
+      }
+      if (request.query) {
+        queryParams.push(`query=${encodeURIComponent(request.query.toString())}`)
+      }
+      if (request.filter) {
+        queryParams.push(`filter=${encodeURIComponent(request.filter.toString())}`)
+      }
+      if (request.filterExpr?.type) {
+        queryParams.push(`filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.field) {
+        queryParams.push(`filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.op) {
+        queryParams.push(`filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.value) {
+        queryParams.push(`filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.jsonValue) {
+        queryParams.push(`filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.values) {
+        request.filterExpr.conditions.values.forEach((x) => {
+          queryParams.push(`filterExpr.conditions.values=${encodeURIComponent(x.toString())}`)
+        })
+      }
+      if (request.filterExpr?.conditions?.datePart) {
+        queryParams.push(`filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.jsonPath) {
+        queryParams.push(`filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`)
+      }
+      if (request.orderBy) {
+        queryParams.push(`orderBy=${encodeURIComponent(request.orderBy.toString())}`)
+      }
+      if (request.sorting?.field) {
+        queryParams.push(`sorting.field=${encodeURIComponent(request.sorting.field.toString())}`)
+      }
+      if (request.sorting?.direction) {
+        queryParams.push(`sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`)
+      }
+      if (request.fieldMask) {
+        queryParams.push(`fieldMask=${encodeURIComponent(request.fieldMask.toString())}`)
+      }
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join("&")}`
+      }
+      return handler({
+        path: uri,
+        method: "GET",
+        body,
+      }, {
+        service: "EventPathService",
+        method: "List",
+      }) as Promise<ubaservicev1_ListEventPathResponse>;
+    },
+    Get(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+      if (!request.pathId) {
+        throw new Error("missing required field request.path_id");
+      }
+      const path = `admin/v1/event-paths/${request.pathId}`; // eslint-disable-line quotes
+      const body = null;
+      const queryParams: string[] = [];
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join("&")}`
+      }
+      return handler({
+        path: uri,
+        method: "GET",
+        body,
+      }, {
+        service: "EventPathService",
+        method: "Get",
+      }) as Promise<ubaservicev1_EventPath>;
+    },
+  };
+}
+export type ubaservicev1_ListEventPathResponse = {
+  items: ubaservicev1_EventPath[] | undefined;
+  total: number | undefined;
+};
+
+// 事件路径（用户行为路径，包含有序事件序列和路径指标）
+export type ubaservicev1_EventPath = {
+  // 路径ID（唯一标识一条事件路径，hash 或 UUID）
+  pathId: string | undefined;
+  // 租户ID（多租户隔离，支持 SaaS 场景）
+  tenantId: number | undefined;
+  // 用户ID（路径所属用户）
+  userId: number | undefined;
+  // 会话ID（路径所属会话）
+  sessionId: number | undefined;
+  // 有序事件序列（路径节点列表，按发生顺序排列）
+  nodes: ubaservicev1_PathNode[] | undefined;
+  // 路径指标
+  // 路径起始时间（第一个节点事件时间）
+  startTime: wellKnownTimestamp | undefined;
+  // 路径结束时间（最后一个节点事件时间）
+  endTime: wellKnownTimestamp | undefined;
+  // 路径总时长（毫秒，start_time 到 end_time 的间隔）
+  totalDurationMs: number | undefined;
+  // 步骤数（路径节点总数）
+  stepCount: number | undefined;
+  // 转化标记
+  // 是否完成目标转化（如完成支付、注册等）
+  isConverted: boolean | undefined;
+  // 转化事件名称（目标转化对应的事件名称）
+  conversionEvent: string | undefined;
+};
+
+// 路径节点（事件路径中的单个事件节点，包含事件信息和对象信息）
+export type ubaservicev1_PathNode = {
+  // 事件名称（路径节点对应的行为事件名称）
+  eventName: string | undefined;
+  // 对象类型（节点关联的对象类型，如商品、内容等）
+  objectType: string | undefined;
+  // 对象ID（节点关联的对象唯一标识）
+  objectId: string | undefined;
+  // 事件时间（节点对应事件发生的时间）
+  eventTime: wellKnownTimestamp | undefined;
+  // 步骤索引（节点在路径中的位置，从0开始）
+  stepIndex: number | undefined;
+};
+
+// 查询事件路径详情请求
+export type ubaservicev1_GetEventPathRequest = {
+  pathId: string | undefined;
+};
+
 // 文件管理服务
 export interface FileService {
   // 查询文件列表
@@ -2357,6 +2522,8 @@ export type storageservicev1_UploadFileResponse = {
 
 // ID映射服务
 export interface IDMappingService {
+  // 查询ID映射列表
+  List(request: pagination_PagingRequest): Promise<ubaservicev1_ListIDMappingResponse>;
   // 查询ID映射详情
   Get(request: ubaservicev1_GetIDMappingRequest): Promise<ubaservicev1_IDMapping>;
 }
@@ -2365,6 +2532,85 @@ export function createIDMappingServiceClient(
   handler: RequestHandler
 ): IDMappingService {
   return {
+    List(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+      const path = `admin/v1/id-mappings`; // eslint-disable-line quotes
+      const body = null;
+      const queryParams: string[] = [];
+      if (request.page) {
+        queryParams.push(`page=${encodeURIComponent(request.page.toString())}`)
+      }
+      if (request.pageSize) {
+        queryParams.push(`pageSize=${encodeURIComponent(request.pageSize.toString())}`)
+      }
+      if (request.offset) {
+        queryParams.push(`offset=${encodeURIComponent(request.offset.toString())}`)
+      }
+      if (request.limit) {
+        queryParams.push(`limit=${encodeURIComponent(request.limit.toString())}`)
+      }
+      if (request.token) {
+        queryParams.push(`token=${encodeURIComponent(request.token.toString())}`)
+      }
+      if (request.noPaging) {
+        queryParams.push(`noPaging=${encodeURIComponent(request.noPaging.toString())}`)
+      }
+      if (request.query) {
+        queryParams.push(`query=${encodeURIComponent(request.query.toString())}`)
+      }
+      if (request.filter) {
+        queryParams.push(`filter=${encodeURIComponent(request.filter.toString())}`)
+      }
+      if (request.filterExpr?.type) {
+        queryParams.push(`filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.field) {
+        queryParams.push(`filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.op) {
+        queryParams.push(`filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.value) {
+        queryParams.push(`filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.jsonValue) {
+        queryParams.push(`filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.values) {
+        request.filterExpr.conditions.values.forEach((x) => {
+          queryParams.push(`filterExpr.conditions.values=${encodeURIComponent(x.toString())}`)
+        })
+      }
+      if (request.filterExpr?.conditions?.datePart) {
+        queryParams.push(`filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.jsonPath) {
+        queryParams.push(`filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`)
+      }
+      if (request.orderBy) {
+        queryParams.push(`orderBy=${encodeURIComponent(request.orderBy.toString())}`)
+      }
+      if (request.sorting?.field) {
+        queryParams.push(`sorting.field=${encodeURIComponent(request.sorting.field.toString())}`)
+      }
+      if (request.sorting?.direction) {
+        queryParams.push(`sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`)
+      }
+      if (request.fieldMask) {
+        queryParams.push(`fieldMask=${encodeURIComponent(request.fieldMask.toString())}`)
+      }
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join("&")}`
+      }
+      return handler({
+        path: uri,
+        method: "GET",
+        body,
+      }, {
+        service: "IDMappingService",
+        method: "List",
+      }) as Promise<ubaservicev1_ListIDMappingResponse>;
+    },
     Get(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
       if (!request.id) {
         throw new Error("missing required field request.id");
@@ -2390,10 +2636,10 @@ export function createIDMappingServiceClient(
     },
   };
 }
-// 获取ID映射数据 - 请求
-export type ubaservicev1_GetIDMappingRequest = {
-  id?: number;
-  viewMask?: wellKnownFieldMask;
+// 获取ID映射列表 - 答复
+export type ubaservicev1_ListIDMappingResponse = {
+  items: ubaservicev1_IDMapping[] | undefined;
+  total: number | undefined;
 };
 
 // ID 关联记录（对应 id_mapping 表）
@@ -2450,6 +2696,12 @@ export type ubaservicev1_IDType =
   | "ID_TYPE_PHONE"
   // OpenID（如第三方平台用户标识，微信、支付宝等）
   | "ID_TYPE_OPENID";
+// 获取ID映射数据 - 请求
+export type ubaservicev1_GetIDMappingRequest = {
+  id?: number;
+  viewMask?: wellKnownFieldMask;
+};
+
 // 站内信消息管理服务
 export interface InternalMessageService {
   // 查询站内信消息列表
@@ -4066,6 +4318,197 @@ export type resourceservicev1_DeleteMenuRequest = {
   id?: number;
 };
 
+// 对象维度服务
+export interface ObjectService {
+  // 查询对象维度列表
+  List(request: pagination_PagingRequest): Promise<ubaservicev1_ListObjectDimResponse>;
+  // 查询对象维度详情
+  Get(request: ubaservicev1_GetObjectDimRequest): Promise<ubaservicev1_ObjectDim>;
+  // 创建对象维度
+  Create(request: ubaservicev1_CreateObjectDimRequest): Promise<ubaservicev1_ObjectDim>;
+}
+
+export function createObjectServiceClient(
+  handler: RequestHandler
+): ObjectService {
+  return {
+    List(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+      const path = `admin/v1/object-dims`; // eslint-disable-line quotes
+      const body = null;
+      const queryParams: string[] = [];
+      if (request.page) {
+        queryParams.push(`page=${encodeURIComponent(request.page.toString())}`)
+      }
+      if (request.pageSize) {
+        queryParams.push(`pageSize=${encodeURIComponent(request.pageSize.toString())}`)
+      }
+      if (request.offset) {
+        queryParams.push(`offset=${encodeURIComponent(request.offset.toString())}`)
+      }
+      if (request.limit) {
+        queryParams.push(`limit=${encodeURIComponent(request.limit.toString())}`)
+      }
+      if (request.token) {
+        queryParams.push(`token=${encodeURIComponent(request.token.toString())}`)
+      }
+      if (request.noPaging) {
+        queryParams.push(`noPaging=${encodeURIComponent(request.noPaging.toString())}`)
+      }
+      if (request.query) {
+        queryParams.push(`query=${encodeURIComponent(request.query.toString())}`)
+      }
+      if (request.filter) {
+        queryParams.push(`filter=${encodeURIComponent(request.filter.toString())}`)
+      }
+      if (request.filterExpr?.type) {
+        queryParams.push(`filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.field) {
+        queryParams.push(`filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.op) {
+        queryParams.push(`filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.value) {
+        queryParams.push(`filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.jsonValue) {
+        queryParams.push(`filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.values) {
+        request.filterExpr.conditions.values.forEach((x) => {
+          queryParams.push(`filterExpr.conditions.values=${encodeURIComponent(x.toString())}`)
+        })
+      }
+      if (request.filterExpr?.conditions?.datePart) {
+        queryParams.push(`filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.jsonPath) {
+        queryParams.push(`filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`)
+      }
+      if (request.orderBy) {
+        queryParams.push(`orderBy=${encodeURIComponent(request.orderBy.toString())}`)
+      }
+      if (request.sorting?.field) {
+        queryParams.push(`sorting.field=${encodeURIComponent(request.sorting.field.toString())}`)
+      }
+      if (request.sorting?.direction) {
+        queryParams.push(`sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`)
+      }
+      if (request.fieldMask) {
+        queryParams.push(`fieldMask=${encodeURIComponent(request.fieldMask.toString())}`)
+      }
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join("&")}`
+      }
+      return handler({
+        path: uri,
+        method: "GET",
+        body,
+      }, {
+        service: "ObjectService",
+        method: "List",
+      }) as Promise<ubaservicev1_ListObjectDimResponse>;
+    },
+    Get(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+      if (!request.id) {
+        throw new Error("missing required field request.id");
+      }
+      const path = `admin/v1/object-dims/${request.id}`; // eslint-disable-line quotes
+      const body = null;
+      const queryParams: string[] = [];
+      if (request.viewMask) {
+        queryParams.push(`viewMask=${encodeURIComponent(request.viewMask.toString())}`)
+      }
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join("&")}`
+      }
+      return handler({
+        path: uri,
+        method: "GET",
+        body,
+      }, {
+        service: "ObjectService",
+        method: "Get",
+      }) as Promise<ubaservicev1_ObjectDim>;
+    },
+    Create(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+      const path = `admin/v1/object-dims`; // eslint-disable-line quotes
+      const body = JSON.stringify(request);
+      const queryParams: string[] = [];
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join("&")}`
+      }
+      return handler({
+        path: uri,
+        method: "POST",
+        body,
+      }, {
+        service: "ObjectService",
+        method: "Create",
+      }) as Promise<ubaservicev1_ObjectDim>;
+    },
+  };
+}
+// 获取对象维度列表 - 答复
+export type ubaservicev1_ListObjectDimResponse = {
+  items: ubaservicev1_ObjectDim[] | undefined;
+  total: number | undefined;
+};
+
+// 对象维度（对应 objects_dim 表）
+export type ubaservicev1_ObjectDim = {
+  // 自增长主键ID
+  id: number | undefined;
+  // 租户ID（多租户隔离，支持 SaaS 场景）
+  tenantId: number | undefined;
+  // 对象类型（如商品、道具、内容等）
+  objectType: string | undefined;
+  // 对象ID（唯一标识一个对象）
+  objectId: string | undefined;
+  // 对象名称（对象的显示名称）
+  objectName: string | undefined;
+  // 分类路径（对象所属的分类层级路径）
+  categoryPath: string | undefined;
+  // 价格（对象的价格，字符串类型，支持多币种格式）
+  price: string | undefined;
+  // 币种（对象价格的币种，如 CNY、USD 等）
+  currency: string | undefined;
+  // 稀有度（对象的稀有等级，如普通、稀有、史诗等）
+  rarity: string | undefined;
+  // 属性（对象的扩展属性，键值对形式，支持自定义属性）
+  attributes: { [key: string]: string } | undefined;
+  // 状态（对象当前状态，如上架、下架、有效、无效等）
+  status: string | undefined;
+  // 有效期起始时间（对象有效期的开始时间）
+  validFrom: wellKnownTimestamp | undefined;
+  // 有效期结束时间（对象有效期的结束时间）
+  validTo: wellKnownTimestamp | undefined;
+  // 创建者用户ID（记录创建该对象的用户）
+  createdBy?: number;
+  // 更新者用户ID（记录最近一次更新该对象的用户）
+  updatedBy?: number;
+  // 删除者用户ID（记录删除该对象的用户）
+  deletedBy?: number;
+  createdAt?: wellKnownTimestamp;
+  updatedAt?: wellKnownTimestamp;
+  deletedAt?: wellKnownTimestamp;
+};
+
+// 获取对象维度数据 - 请求
+export type ubaservicev1_GetObjectDimRequest = {
+  id?: number;
+  viewMask?: wellKnownFieldMask;
+};
+
+// 创建对象维度 - 请求
+export type ubaservicev1_CreateObjectDimRequest = {
+  data: ubaservicev1_ObjectDim | undefined;
+};
+
 // 操作审计日志管理服务
 export interface OperationAuditLogService {
   // 查询操作审计日志列表
@@ -5569,6 +6012,351 @@ export type identityservicev1_DeletePositionRequest = {
   id?: number;
 };
 
+// 风险事件服务
+export interface RiskEventService {
+  // 查询风险事件列表
+  List(request: pagination_PagingRequest): Promise<ubaservicev1_ListRiskEventResponse>;
+  // 查询风险事件数量
+  Count(request: pagination_PagingRequest): Promise<ubaservicev1_CountRiskEventResponse>;
+  // 查询风险事件详情
+  Get(request: ubaservicev1_GetRiskEventRequest): Promise<ubaservicev1_RiskEvent>;
+  // 创建风险事件
+  Create(request: ubaservicev1_CreateRiskEventRequest): Promise<ubaservicev1_RiskEvent>;
+}
+
+export function createRiskEventServiceClient(
+  handler: RequestHandler
+): RiskEventService {
+  return {
+    List(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+      const path = `admin/v1/risk-events`; // eslint-disable-line quotes
+      const body = null;
+      const queryParams: string[] = [];
+      if (request.page) {
+        queryParams.push(`page=${encodeURIComponent(request.page.toString())}`)
+      }
+      if (request.pageSize) {
+        queryParams.push(`pageSize=${encodeURIComponent(request.pageSize.toString())}`)
+      }
+      if (request.offset) {
+        queryParams.push(`offset=${encodeURIComponent(request.offset.toString())}`)
+      }
+      if (request.limit) {
+        queryParams.push(`limit=${encodeURIComponent(request.limit.toString())}`)
+      }
+      if (request.token) {
+        queryParams.push(`token=${encodeURIComponent(request.token.toString())}`)
+      }
+      if (request.noPaging) {
+        queryParams.push(`noPaging=${encodeURIComponent(request.noPaging.toString())}`)
+      }
+      if (request.query) {
+        queryParams.push(`query=${encodeURIComponent(request.query.toString())}`)
+      }
+      if (request.filter) {
+        queryParams.push(`filter=${encodeURIComponent(request.filter.toString())}`)
+      }
+      if (request.filterExpr?.type) {
+        queryParams.push(`filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.field) {
+        queryParams.push(`filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.op) {
+        queryParams.push(`filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.value) {
+        queryParams.push(`filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.jsonValue) {
+        queryParams.push(`filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.values) {
+        request.filterExpr.conditions.values.forEach((x) => {
+          queryParams.push(`filterExpr.conditions.values=${encodeURIComponent(x.toString())}`)
+        })
+      }
+      if (request.filterExpr?.conditions?.datePart) {
+        queryParams.push(`filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.jsonPath) {
+        queryParams.push(`filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`)
+      }
+      if (request.orderBy) {
+        queryParams.push(`orderBy=${encodeURIComponent(request.orderBy.toString())}`)
+      }
+      if (request.sorting?.field) {
+        queryParams.push(`sorting.field=${encodeURIComponent(request.sorting.field.toString())}`)
+      }
+      if (request.sorting?.direction) {
+        queryParams.push(`sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`)
+      }
+      if (request.fieldMask) {
+        queryParams.push(`fieldMask=${encodeURIComponent(request.fieldMask.toString())}`)
+      }
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join("&")}`
+      }
+      return handler({
+        path: uri,
+        method: "GET",
+        body,
+      }, {
+        service: "RiskEventService",
+        method: "List",
+      }) as Promise<ubaservicev1_ListRiskEventResponse>;
+    },
+    Count(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+      const path = `admin/v1/risk-events/count`; // eslint-disable-line quotes
+      const body = null;
+      const queryParams: string[] = [];
+      if (request.page) {
+        queryParams.push(`page=${encodeURIComponent(request.page.toString())}`)
+      }
+      if (request.pageSize) {
+        queryParams.push(`pageSize=${encodeURIComponent(request.pageSize.toString())}`)
+      }
+      if (request.offset) {
+        queryParams.push(`offset=${encodeURIComponent(request.offset.toString())}`)
+      }
+      if (request.limit) {
+        queryParams.push(`limit=${encodeURIComponent(request.limit.toString())}`)
+      }
+      if (request.token) {
+        queryParams.push(`token=${encodeURIComponent(request.token.toString())}`)
+      }
+      if (request.noPaging) {
+        queryParams.push(`noPaging=${encodeURIComponent(request.noPaging.toString())}`)
+      }
+      if (request.query) {
+        queryParams.push(`query=${encodeURIComponent(request.query.toString())}`)
+      }
+      if (request.filter) {
+        queryParams.push(`filter=${encodeURIComponent(request.filter.toString())}`)
+      }
+      if (request.filterExpr?.type) {
+        queryParams.push(`filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.field) {
+        queryParams.push(`filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.op) {
+        queryParams.push(`filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.value) {
+        queryParams.push(`filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.jsonValue) {
+        queryParams.push(`filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.values) {
+        request.filterExpr.conditions.values.forEach((x) => {
+          queryParams.push(`filterExpr.conditions.values=${encodeURIComponent(x.toString())}`)
+        })
+      }
+      if (request.filterExpr?.conditions?.datePart) {
+        queryParams.push(`filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.jsonPath) {
+        queryParams.push(`filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`)
+      }
+      if (request.orderBy) {
+        queryParams.push(`orderBy=${encodeURIComponent(request.orderBy.toString())}`)
+      }
+      if (request.sorting?.field) {
+        queryParams.push(`sorting.field=${encodeURIComponent(request.sorting.field.toString())}`)
+      }
+      if (request.sorting?.direction) {
+        queryParams.push(`sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`)
+      }
+      if (request.fieldMask) {
+        queryParams.push(`fieldMask=${encodeURIComponent(request.fieldMask.toString())}`)
+      }
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join("&")}`
+      }
+      return handler({
+        path: uri,
+        method: "GET",
+        body,
+      }, {
+        service: "RiskEventService",
+        method: "Count",
+      }) as Promise<ubaservicev1_CountRiskEventResponse>;
+    },
+    Get(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+      if (!request.id) {
+        throw new Error("missing required field request.id");
+      }
+      const path = `admin/v1/risk-events/${request.id}`; // eslint-disable-line quotes
+      const body = null;
+      const queryParams: string[] = [];
+      if (request.viewMask) {
+        queryParams.push(`viewMask=${encodeURIComponent(request.viewMask.toString())}`)
+      }
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join("&")}`
+      }
+      return handler({
+        path: uri,
+        method: "GET",
+        body,
+      }, {
+        service: "RiskEventService",
+        method: "Get",
+      }) as Promise<ubaservicev1_RiskEvent>;
+    },
+    Create(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+      const path = `admin/v1/risk-events`; // eslint-disable-line quotes
+      const body = JSON.stringify(request);
+      const queryParams: string[] = [];
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join("&")}`
+      }
+      return handler({
+        path: uri,
+        method: "POST",
+        body,
+      }, {
+        service: "RiskEventService",
+        method: "Create",
+      }) as Promise<ubaservicev1_RiskEvent>;
+    },
+  };
+}
+// 获取风险事件列表 - 答复
+export type ubaservicev1_ListRiskEventResponse = {
+  items: ubaservicev1_RiskEvent[] | undefined;
+  total: number | undefined;
+};
+
+// 风险事件
+export type ubaservicev1_RiskEvent = {
+  id: number | undefined;
+  // 租户ID（多租户隔离，支持 SaaS 场景）
+  tenantId?: number;
+  // 用户ID（关联主体，风险事件涉及的用户）
+  userId?: number;
+  // 设备ID（关联主体，风险事件涉及的设备）
+  deviceId?: string;
+  // 全局用户ID（跨平台唯一标识用户）
+  globalUserId?: string;
+  // 风险类型
+  riskType?: ubaservicev1_RiskType;
+  // 风险等级
+  riskLevel?: ubaservicev1_RiskLevel;
+  // 风险评分（0-100，风险事件的评分）
+  riskScore?: number;
+  // 触发规则ID
+  ruleId?: number;
+  // 规则名称
+  ruleName?: string;
+  // 规则上下文（触发条件，结构化信息）
+  ruleContext?: wellKnownStruct;
+  // 关联行为事件ID列表（风险事件关联的行为事件）
+  relatedEventIds: number[] | undefined;
+  // 会话ID（风险事件发生时的会话标识）
+  sessionId?: number;
+  // 风险详情描述
+  description?: string;
+  // 证据（风险事件相关证据，键值对形式）
+  evidence: { [key: string]: string } | undefined;
+  // 处置状态
+  status?: ubaservicev1_RiskEvent_Status;
+  // 处理人ID
+  handlerId?: number;
+  // 处理时间
+  handledTime?: wellKnownTimestamp;
+  // 处理备注
+  handleRemark?: string;
+  // 风险事件发生时间
+  occurTime?: wellKnownTimestamp;
+  // 风险事件上报时间
+  reportTime?: wellKnownTimestamp;
+  createdBy?: number;
+  updatedBy?: number;
+  deletedBy?: number;
+  createdAt?: wellKnownTimestamp;
+  updatedAt?: wellKnownTimestamp;
+  deletedAt?: wellKnownTimestamp;
+};
+
+// 风险等级
+export type ubaservicev1_RiskType =
+  // 未指定风险类型
+  | "RISK_TYPE_UNSPECIFIED"
+  // 异常登录风险
+  | "RISK_TYPE_LOGIN_ANOMALY"
+  // 暴力破解风险
+  | "RISK_TYPE_BRUTE_FORCE"
+  // 撞库风险
+  | "RISK_TYPE_CREDENTIAL_STUFFING"
+  // 高频操作风险
+  | "RISK_TYPE_FREQUENT_OPERATION"
+  // 异常流程风险
+  | "RISK_TYPE_ABNORMAL_FLOW"
+  // 数据泄露风险
+  | "RISK_TYPE_DATA_EXFILTRATION"
+  // 设备突变风险
+  | "RISK_TYPE_DEVICE_CHANGE"
+  // 异地登录风险
+  | "RISK_TYPE_LOCATION_ANOMALY"
+  // 代理/VPN风险
+  | "RISK_TYPE_PROXY_DETECTED"
+  // 欺诈支付风险
+  | "RISK_TYPE_FRAUD_PAYMENT"
+  // 薅羊毛风险
+  | "RISK_TYPE_ABUSE_PROMOTION";
+// 风险等级（用于标识事件或用户的风险级别）
+export type ubaservicev1_RiskLevel =
+  // 未指定风险等级
+  | "RISK_LEVEL_UNSPECIFIED"
+  // 正常风险
+  | "RISK_LEVEL_NORMAL"
+  // 可疑风险
+  | "RISK_LEVEL_SUSPICIOUS"
+  // 高风险
+  | "RISK_LEVEL_HIGH"
+  // 危急风险
+  | "RISK_LEVEL_CRITICAL";
+// Any JSON value.
+type wellKnownStruct = Record<string, unknown>;
+
+// 处置状态
+export type ubaservicev1_RiskEvent_Status =
+  // 未指定处置状态
+  | "RISK_EVENT_STATUS_UNSPECIFIED"
+  // 待处理
+  | "PENDING"
+  // 调查中
+  | "INVESTIGATING"
+  // 确认为风险
+  | "CONFIRMED"
+  // 误报
+  | "FALSE_POSITIVE"
+  // 忽略
+  | "IGNORED"
+  // 自动拦截
+  | "AUTO_BLOCKED";
+export type ubaservicev1_CountRiskEventResponse = {
+  count: number | undefined;
+};
+
+// 获取风险事件数据 - 请求
+export type ubaservicev1_GetRiskEventRequest = {
+  id?: number;
+  viewMask?: wellKnownFieldMask;
+};
+
+// 创建风险事件 - 请求
+export type ubaservicev1_CreateRiskEventRequest = {
+  data: ubaservicev1_RiskEvent | undefined;
+};
+
 // 风险规则服务接口
 export interface RiskRuleService {
   // 查询风险规则列表，支持分页
@@ -5875,47 +6663,6 @@ export type ubaservicev1_RiskRule = {
   // 删除时间
   deletedAt?: wellKnownTimestamp;
 };
-
-// 风险等级
-export type ubaservicev1_RiskType =
-  // 未指定风险类型
-  | "RISK_TYPE_UNSPECIFIED"
-  // 异常登录风险
-  | "RISK_TYPE_LOGIN_ANOMALY"
-  // 暴力破解风险
-  | "RISK_TYPE_BRUTE_FORCE"
-  // 撞库风险
-  | "RISK_TYPE_CREDENTIAL_STUFFING"
-  // 高频操作风险
-  | "RISK_TYPE_FREQUENT_OPERATION"
-  // 异常流程风险
-  | "RISK_TYPE_ABNORMAL_FLOW"
-  // 数据泄露风险
-  | "RISK_TYPE_DATA_EXFILTRATION"
-  // 设备突变风险
-  | "RISK_TYPE_DEVICE_CHANGE"
-  // 异地登录风险
-  | "RISK_TYPE_LOCATION_ANOMALY"
-  // 代理/VPN风险
-  | "RISK_TYPE_PROXY_DETECTED"
-  // 欺诈支付风险
-  | "RISK_TYPE_FRAUD_PAYMENT"
-  // 薅羊毛风险
-  | "RISK_TYPE_ABUSE_PROMOTION";
-// 风险等级（用于标识事件或用户的风险级别）
-export type ubaservicev1_RiskLevel =
-  // 未指定风险等级
-  | "RISK_LEVEL_UNSPECIFIED"
-  // 正常风险
-  | "RISK_LEVEL_NORMAL"
-  // 可疑风险
-  | "RISK_LEVEL_SUSPICIOUS"
-  // 高风险
-  | "RISK_LEVEL_HIGH"
-  // 危急风险
-  | "RISK_LEVEL_CRITICAL";
-// Any JSON value.
-type wellKnownStruct = Record<string, unknown>;
 
 // 风险事件处置动作，定义规则触发后的处置方式
 export type ubaservicev1_RiskAction = {
@@ -6224,6 +6971,177 @@ export type permissionservicev1_DeleteRoleRequest = {
   id?: number;
   code?: string;
   tenantId?: number;
+};
+
+// 会话服务
+export interface SessionService {
+  // 分页查询会话
+  List(request: pagination_PagingRequest): Promise<ubaservicev1_ListSessionResponse>;
+  // 查询单条会话详情
+  Get(request: ubaservicev1_GetSessionRequest): Promise<ubaservicev1_Session>;
+}
+
+export function createSessionServiceClient(
+  handler: RequestHandler
+): SessionService {
+  return {
+    List(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+      const path = `admin/v1/sessions`; // eslint-disable-line quotes
+      const body = null;
+      const queryParams: string[] = [];
+      if (request.page) {
+        queryParams.push(`page=${encodeURIComponent(request.page.toString())}`)
+      }
+      if (request.pageSize) {
+        queryParams.push(`pageSize=${encodeURIComponent(request.pageSize.toString())}`)
+      }
+      if (request.offset) {
+        queryParams.push(`offset=${encodeURIComponent(request.offset.toString())}`)
+      }
+      if (request.limit) {
+        queryParams.push(`limit=${encodeURIComponent(request.limit.toString())}`)
+      }
+      if (request.token) {
+        queryParams.push(`token=${encodeURIComponent(request.token.toString())}`)
+      }
+      if (request.noPaging) {
+        queryParams.push(`noPaging=${encodeURIComponent(request.noPaging.toString())}`)
+      }
+      if (request.query) {
+        queryParams.push(`query=${encodeURIComponent(request.query.toString())}`)
+      }
+      if (request.filter) {
+        queryParams.push(`filter=${encodeURIComponent(request.filter.toString())}`)
+      }
+      if (request.filterExpr?.type) {
+        queryParams.push(`filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.field) {
+        queryParams.push(`filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.op) {
+        queryParams.push(`filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.value) {
+        queryParams.push(`filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.jsonValue) {
+        queryParams.push(`filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.values) {
+        request.filterExpr.conditions.values.forEach((x) => {
+          queryParams.push(`filterExpr.conditions.values=${encodeURIComponent(x.toString())}`)
+        })
+      }
+      if (request.filterExpr?.conditions?.datePart) {
+        queryParams.push(`filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.jsonPath) {
+        queryParams.push(`filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`)
+      }
+      if (request.orderBy) {
+        queryParams.push(`orderBy=${encodeURIComponent(request.orderBy.toString())}`)
+      }
+      if (request.sorting?.field) {
+        queryParams.push(`sorting.field=${encodeURIComponent(request.sorting.field.toString())}`)
+      }
+      if (request.sorting?.direction) {
+        queryParams.push(`sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`)
+      }
+      if (request.fieldMask) {
+        queryParams.push(`fieldMask=${encodeURIComponent(request.fieldMask.toString())}`)
+      }
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join("&")}`
+      }
+      return handler({
+        path: uri,
+        method: "GET",
+        body,
+      }, {
+        service: "SessionService",
+        method: "List",
+      }) as Promise<ubaservicev1_ListSessionResponse>;
+    },
+    Get(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+      if (!request.id) {
+        throw new Error("missing required field request.id");
+      }
+      const path = `admin/v1/sessions/${request.id}`; // eslint-disable-line quotes
+      const body = null;
+      const queryParams: string[] = [];
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join("&")}`
+      }
+      return handler({
+        path: uri,
+        method: "GET",
+        body,
+      }, {
+        service: "SessionService",
+        method: "Get",
+      }) as Promise<ubaservicev1_Session>;
+    },
+  };
+}
+export type ubaservicev1_ListSessionResponse = {
+  items: ubaservicev1_Session[] | undefined;
+  total: number | undefined;
+};
+
+// 会话（对应 sessions 表）
+export type ubaservicev1_Session = {
+  // 会话ID（唯一标识一条会话）
+  id: number | undefined;
+  // 租户ID（多租户隔离，支持 SaaS 场景）
+  tenantId: number | undefined;
+  // 用户ID（会话主体用户）
+  userId: number | undefined;
+  // 设备ID（会话主体设备）
+  deviceId: string | undefined;
+  // 全局用户ID（跨平台唯一标识用户）
+  globalUserId: string | undefined;
+  // 会话起始时间
+  startTime: wellKnownTimestamp | undefined;
+  // 会话结束时间
+  endTime: wellKnownTimestamp | undefined;
+  // 会话时长（起止时间间隔，单位秒）
+  duration: wellKnownDuration | undefined;
+  // 会话事件数（本会话内发生的事件总数）
+  eventCount: number | undefined;
+  // 页面浏览数（PV，页面浏览次数）
+  pageViewCount: number | undefined;
+  // 交互次数（本会话内用户交互总次数）
+  actionCount: number | undefined;
+  // 入口页面（会话起始页面）
+  entryPage: string | undefined;
+  // 出口页面（会话结束页面）
+  exitPage: string | undefined;
+  // 是否跳出（单页会话，true 表示跳出）
+  isBounce: boolean | undefined;
+  // 平台类型（会话发生的平台，如 Web、iOS、Android 等）
+  platform: ubaservicev1_Platform | undefined;
+  // IP城市（会话发生时的地理位置城市）
+  ipCity: string | undefined;
+  // 应用版本（会话发生时的应用版本号）
+  appVersion: string | undefined;
+  // 会话内总金额（本会话内发生的总金额，字符串类型，支持多币种）
+  totalAmount: string | undefined;
+  // 支付事件数（本会话内发生的支付事件总数）
+  payEventCount: number | undefined;
+  // 风险等级（会话风险标记，枚举类型）
+  riskLevel: ubaservicev1_RiskLevel | undefined;
+  // 风险标签（会话风险标记，字符串列表）
+  riskTags: string[] | undefined;
+  // 更新时间（会话最近一次更新的时间）
+  updateTime: wellKnownTimestamp | undefined;
+};
+
+// 查询会话详情请求
+export type ubaservicev1_GetSessionRequest = {
+  id: number | undefined;
 };
 
 // 标签定义服务
@@ -7689,6 +8607,178 @@ export type identityservicev1_UserExistsResponse = {
 export type identityservicev1_EditUserPasswordRequest = {
   userId: number | undefined;
   newPassword: string | undefined;
+};
+
+// 用户画像服务
+export interface UserBehaviorProfileService {
+  // 查询用户画像列表
+  List(request: pagination_PagingRequest): Promise<ubaservicev1_ListUserBehaviorProfileResponse>;
+  // 查询用户画像详情
+  Get(request: ubaservicev1_GetUserBehaviorProfileRequest): Promise<ubaservicev1_UserBehaviorProfile>;
+}
+
+export function createUserBehaviorProfileServiceClient(
+  handler: RequestHandler
+): UserBehaviorProfileService {
+  return {
+    List(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+      const path = `admin/v1/user-behavior-profiles`; // eslint-disable-line quotes
+      const body = null;
+      const queryParams: string[] = [];
+      if (request.page) {
+        queryParams.push(`page=${encodeURIComponent(request.page.toString())}`)
+      }
+      if (request.pageSize) {
+        queryParams.push(`pageSize=${encodeURIComponent(request.pageSize.toString())}`)
+      }
+      if (request.offset) {
+        queryParams.push(`offset=${encodeURIComponent(request.offset.toString())}`)
+      }
+      if (request.limit) {
+        queryParams.push(`limit=${encodeURIComponent(request.limit.toString())}`)
+      }
+      if (request.token) {
+        queryParams.push(`token=${encodeURIComponent(request.token.toString())}`)
+      }
+      if (request.noPaging) {
+        queryParams.push(`noPaging=${encodeURIComponent(request.noPaging.toString())}`)
+      }
+      if (request.query) {
+        queryParams.push(`query=${encodeURIComponent(request.query.toString())}`)
+      }
+      if (request.filter) {
+        queryParams.push(`filter=${encodeURIComponent(request.filter.toString())}`)
+      }
+      if (request.filterExpr?.type) {
+        queryParams.push(`filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.field) {
+        queryParams.push(`filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.op) {
+        queryParams.push(`filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.value) {
+        queryParams.push(`filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.jsonValue) {
+        queryParams.push(`filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.values) {
+        request.filterExpr.conditions.values.forEach((x) => {
+          queryParams.push(`filterExpr.conditions.values=${encodeURIComponent(x.toString())}`)
+        })
+      }
+      if (request.filterExpr?.conditions?.datePart) {
+        queryParams.push(`filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.jsonPath) {
+        queryParams.push(`filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`)
+      }
+      if (request.orderBy) {
+        queryParams.push(`orderBy=${encodeURIComponent(request.orderBy.toString())}`)
+      }
+      if (request.sorting?.field) {
+        queryParams.push(`sorting.field=${encodeURIComponent(request.sorting.field.toString())}`)
+      }
+      if (request.sorting?.direction) {
+        queryParams.push(`sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`)
+      }
+      if (request.fieldMask) {
+        queryParams.push(`fieldMask=${encodeURIComponent(request.fieldMask.toString())}`)
+      }
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join("&")}`
+      }
+      return handler({
+        path: uri,
+        method: "GET",
+        body,
+      }, {
+        service: "UserBehaviorProfileService",
+        method: "List",
+      }) as Promise<ubaservicev1_ListUserBehaviorProfileResponse>;
+    },
+    Get(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+      if (!request.id) {
+        throw new Error("missing required field request.id");
+      }
+      const path = `admin/v1/user-behavior-profiles/${request.id}`; // eslint-disable-line quotes
+      const body = null;
+      const queryParams: string[] = [];
+      if (request.viewMask) {
+        queryParams.push(`viewMask=${encodeURIComponent(request.viewMask.toString())}`)
+      }
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join("&")}`
+      }
+      return handler({
+        path: uri,
+        method: "GET",
+        body,
+      }, {
+        service: "UserBehaviorProfileService",
+        method: "Get",
+      }) as Promise<ubaservicev1_UserBehaviorProfile>;
+    },
+  };
+}
+// 获取用户画像列表 - 答复
+export type ubaservicev1_ListUserBehaviorProfileResponse = {
+  items: ubaservicev1_UserBehaviorProfile[] | undefined;
+  total: number | undefined;
+};
+
+// 用户画像（对应 users_dim 表）
+export type ubaservicev1_UserBehaviorProfile = {
+  // 自增长主键ID
+  id: number | undefined;
+  tenantId: number | undefined;
+  userId: string | undefined;
+  ver: number | undefined;
+  // 基础属性
+  registerTime: wellKnownTimestamp | undefined;
+  registerChannel: string | undefined;
+  firstActiveDate: wellKnownTimestamp | undefined;
+  lastActiveDate: wellKnownTimestamp | undefined;
+  // 身份属性
+  userLevel: number | undefined;
+  vipLevel: number | undefined;
+  userRole: string | undefined;
+  // 行为画像
+  totalEvents: number | undefined;
+  totalSessions: number | undefined;
+  totalPayAmount: string | undefined;
+  lastPayTime: wellKnownTimestamp | undefined;
+  // 偏好标签
+  preferCategories: string[] | undefined;
+  preferObjects: string[] | undefined;
+  // 风险画像
+  riskScore: number | undefined;
+  riskTags: string[] | undefined;
+  // 风险等级
+  riskLevel?: ubaservicev1_RiskLevel;
+  // 最后风险时间
+  lastRiskTime?: wellKnownTimestamp;
+  // 扩展属性
+  profile: { [key: string]: string } | undefined;
+  // 地理位置
+  geo?: string;
+  // 平台类型
+  platform?: ubaservicev1_Platform;
+  // 设备类型
+  deviceType?: string;
+  createdAt?: wellKnownTimestamp;
+  updatedAt?: wellKnownTimestamp;
+  deletedAt?: wellKnownTimestamp;
+};
+
+// 获取用户画像数据 - 请求
+export type ubaservicev1_GetUserBehaviorProfileRequest = {
+  id?: number;
+  viewMask?: wellKnownFieldMask;
 };
 
 // 用户个人资料服务

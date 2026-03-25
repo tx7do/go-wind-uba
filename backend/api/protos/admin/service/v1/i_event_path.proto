@@ -1,0 +1,24 @@
+﻿syntax = "proto3";
+
+package admin.service.v1;
+
+import "google/api/annotations.proto";
+import "pagination/v1/pagination.proto";
+import "uba/service/v1/event_path.proto";
+
+// 事件路径服务
+service EventPathService {
+  // 分页查询事件路径
+  rpc List(pagination.PagingRequest) returns (uba.service.v1.ListEventPathResponse) {
+    option (google.api.http) = {
+      get: "/admin/v1/event-paths"
+    };
+  }
+
+  // 查询单条事件路径详情
+  rpc Get(uba.service.v1.GetEventPathRequest) returns (uba.service.v1.EventPath) {
+    option (google.api.http) = {
+      get: "/admin/v1/event-paths/{path_id}"
+    };
+  }
+}

@@ -1,0 +1,40 @@
+﻿syntax = "proto3";
+
+package admin.service.v1;
+
+import "google/api/annotations.proto";
+import "pagination/v1/pagination.proto";
+
+import "uba/service/v1/risk_event.proto";
+
+// 风险事件服务
+service RiskEventService {
+  // 查询风险事件列表
+  rpc List (pagination.PagingRequest) returns (uba.service.v1.ListRiskEventResponse) {
+    option (google.api.http) = {
+      get: "/admin/v1/risk-events"
+    };
+  }
+
+  // 查询风险事件数量
+  rpc Count (pagination.PagingRequest) returns (uba.service.v1.CountRiskEventResponse) {
+    option (google.api.http) = {
+      get: "/admin/v1/risk-events/count"
+    };
+  }
+
+  // 查询风险事件详情
+  rpc Get (uba.service.v1.GetRiskEventRequest) returns (uba.service.v1.RiskEvent) {
+    option (google.api.http) = {
+      get: "/admin/v1/risk-events/{id}"
+    };
+  }
+
+  // 创建风险事件
+  rpc Create (uba.service.v1.CreateRiskEventRequest) returns (uba.service.v1.RiskEvent) {
+    option (google.api.http) = {
+      post: "/admin/v1/risk-events"
+      body: "*"
+    };
+  }
+}

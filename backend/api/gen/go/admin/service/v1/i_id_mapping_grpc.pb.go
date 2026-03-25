@@ -8,7 +8,8 @@ package adminpb
 
 import (
 	context "context"
-	v1 "go-wind-uba/api/gen/go/uba/service/v1"
+	v1 "github.com/tx7do/go-crud/api/gen/go/pagination/v1"
+	v11 "go-wind-uba/api/gen/go/uba/service/v1"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -20,7 +21,8 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	IDMappingService_Get_FullMethodName = "/admin.service.v1.IDMappingService/Get"
+	IDMappingService_List_FullMethodName = "/admin.service.v1.IDMappingService/List"
+	IDMappingService_Get_FullMethodName  = "/admin.service.v1.IDMappingService/Get"
 )
 
 // IDMappingServiceClient is the client API for IDMappingService service.
@@ -29,8 +31,10 @@ const (
 //
 // ID映射服务
 type IDMappingServiceClient interface {
+	// 查询ID映射列表
+	List(ctx context.Context, in *v1.PagingRequest, opts ...grpc.CallOption) (*v11.ListIDMappingResponse, error)
 	// 查询ID映射详情
-	Get(ctx context.Context, in *v1.GetIDMappingRequest, opts ...grpc.CallOption) (*v1.IDMapping, error)
+	Get(ctx context.Context, in *v11.GetIDMappingRequest, opts ...grpc.CallOption) (*v11.IDMapping, error)
 }
 
 type iDMappingServiceClient struct {
@@ -41,9 +45,19 @@ func NewIDMappingServiceClient(cc grpc.ClientConnInterface) IDMappingServiceClie
 	return &iDMappingServiceClient{cc}
 }
 
-func (c *iDMappingServiceClient) Get(ctx context.Context, in *v1.GetIDMappingRequest, opts ...grpc.CallOption) (*v1.IDMapping, error) {
+func (c *iDMappingServiceClient) List(ctx context.Context, in *v1.PagingRequest, opts ...grpc.CallOption) (*v11.ListIDMappingResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(v1.IDMapping)
+	out := new(v11.ListIDMappingResponse)
+	err := c.cc.Invoke(ctx, IDMappingService_List_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *iDMappingServiceClient) Get(ctx context.Context, in *v11.GetIDMappingRequest, opts ...grpc.CallOption) (*v11.IDMapping, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(v11.IDMapping)
 	err := c.cc.Invoke(ctx, IDMappingService_Get_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -57,8 +71,10 @@ func (c *iDMappingServiceClient) Get(ctx context.Context, in *v1.GetIDMappingReq
 //
 // ID映射服务
 type IDMappingServiceServer interface {
+	// 查询ID映射列表
+	List(context.Context, *v1.PagingRequest) (*v11.ListIDMappingResponse, error)
 	// 查询ID映射详情
-	Get(context.Context, *v1.GetIDMappingRequest) (*v1.IDMapping, error)
+	Get(context.Context, *v11.GetIDMappingRequest) (*v11.IDMapping, error)
 	mustEmbedUnimplementedIDMappingServiceServer()
 }
 
@@ -69,7 +85,10 @@ type IDMappingServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedIDMappingServiceServer struct{}
 
-func (UnimplementedIDMappingServiceServer) Get(context.Context, *v1.GetIDMappingRequest) (*v1.IDMapping, error) {
+func (UnimplementedIDMappingServiceServer) List(context.Context, *v1.PagingRequest) (*v11.ListIDMappingResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method List not implemented")
+}
+func (UnimplementedIDMappingServiceServer) Get(context.Context, *v11.GetIDMappingRequest) (*v11.IDMapping, error) {
 	return nil, status.Error(codes.Unimplemented, "method Get not implemented")
 }
 func (UnimplementedIDMappingServiceServer) mustEmbedUnimplementedIDMappingServiceServer() {}
@@ -93,8 +112,26 @@ func RegisterIDMappingServiceServer(s grpc.ServiceRegistrar, srv IDMappingServic
 	s.RegisterService(&IDMappingService_ServiceDesc, srv)
 }
 
+func _IDMappingService_List_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(v1.PagingRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IDMappingServiceServer).List(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IDMappingService_List_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IDMappingServiceServer).List(ctx, req.(*v1.PagingRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _IDMappingService_Get_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(v1.GetIDMappingRequest)
+	in := new(v11.GetIDMappingRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -106,7 +143,7 @@ func _IDMappingService_Get_Handler(srv interface{}, ctx context.Context, dec fun
 		FullMethod: IDMappingService_Get_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(IDMappingServiceServer).Get(ctx, req.(*v1.GetIDMappingRequest))
+		return srv.(IDMappingServiceServer).Get(ctx, req.(*v11.GetIDMappingRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -118,6 +155,10 @@ var IDMappingService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "admin.service.v1.IDMappingService",
 	HandlerType: (*IDMappingServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "List",
+			Handler:    _IDMappingService_List_Handler,
+		},
 		{
 			MethodName: "Get",
 			Handler:    _IDMappingService_Get_Handler,

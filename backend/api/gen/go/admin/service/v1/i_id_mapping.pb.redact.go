@@ -6,6 +6,7 @@ package adminpb
 import (
 	context "context"
 	redact "github.com/menta2k/protoc-gen-redact/v3/redact/v3"
+	pagination "github.com/tx7do/go-crud/api/gen/go/pagination/v1"
 	ubapb "go-wind-uba/api/gen/go/uba/service/v1"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
@@ -19,6 +20,7 @@ var (
 	_ redact.Redactor
 	_ codes.Code
 	_ status.Status
+	_ pagination.Sorting
 	_ ubapb.IDMapping
 )
 
@@ -38,6 +40,17 @@ type redactedIDMappingServiceServer struct {
 	UnsafeIDMappingServiceServer
 	srv    IDMappingServiceServer
 	bypass redact.Bypass
+}
+
+// List is the redacted wrapper for the actual IDMappingServiceServer.List method
+// Unary RPC
+func (s *redactedIDMappingServiceServer) List(ctx context.Context, in *pagination.PagingRequest) (*ubapb.ListIDMappingResponse, error) {
+	res, err := s.srv.List(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
 }
 
 // Get is the redacted wrapper for the actual IDMappingServiceServer.Get method

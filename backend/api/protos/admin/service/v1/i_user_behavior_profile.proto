@@ -1,0 +1,24 @@
+﻿syntax = "proto3";
+
+package admin.service.v1;
+
+import "google/api/annotations.proto";
+import "pagination/v1/pagination.proto";
+import "uba/service/v1/user_behavior_profile.proto";
+
+// 用户画像服务
+service UserBehaviorProfileService {
+  // 查询用户画像列表
+  rpc List (pagination.PagingRequest) returns (uba.service.v1.ListUserBehaviorProfileResponse) {
+    option (google.api.http) = {
+      get: "/admin/v1/user-behavior-profiles"
+    };
+  }
+
+  // 查询用户画像详情
+  rpc Get (uba.service.v1.GetUserBehaviorProfileRequest) returns (uba.service.v1.UserBehaviorProfile) {
+    option (google.api.http) = {
+      get: "/admin/v1/user-behavior-profiles/{id}"
+    };
+  }
+}

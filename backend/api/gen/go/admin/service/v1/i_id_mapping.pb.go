@@ -7,7 +7,8 @@
 package adminpb
 
 import (
-	v1 "go-wind-uba/api/gen/go/uba/service/v1"
+	v1 "github.com/tx7do/go-crud/api/gen/go/pagination/v1"
+	v11 "go-wind-uba/api/gen/go/uba/service/v1"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
@@ -26,20 +27,25 @@ var File_admin_service_v1_i_id_mapping_proto protoreflect.FileDescriptor
 
 const file_admin_service_v1_i_id_mapping_proto_rawDesc = "" +
 	"\n" +
-	"#admin/service/v1/i_id_mapping.proto\x12\x10admin.service.v1\x1a\x1cgoogle/api/annotations.proto\x1a\x1fuba/service/v1/id_mapping.proto2}\n" +
-	"\x10IDMappingService\x12i\n" +
+	"#admin/service/v1/i_id_mapping.proto\x12\x10admin.service.v1\x1a\x1cgoogle/api/annotations.proto\x1a\x1epagination/v1/pagination.proto\x1a\x1fuba/service/v1/id_mapping.proto2\xe6\x01\n" +
+	"\x10IDMappingService\x12g\n" +
+	"\x04List\x12\x19.pagination.PagingRequest\x1a%.uba.service.v1.ListIDMappingResponse\"\x1d\x82\xd3\xe4\x93\x02\x17\x12\x15/admin/v1/id-mappings\x12i\n" +
 	"\x03Get\x12#.uba.service.v1.GetIDMappingRequest\x1a\x19.uba.service.v1.IDMapping\"\"\x82\xd3\xe4\x93\x02\x1c\x12\x1a/admin/v1/id-mappings/{id}B\xba\x01\n" +
 	"\x14com.admin.service.v1B\x0fIIdMappingProtoP\x01Z/go-wind-uba/api/gen/go/admin/service/v1;adminpb\xa2\x02\x03ASX\xaa\x02\x10Admin.Service.V1\xca\x02\x10Admin\\Service\\V1\xe2\x02\x1cAdmin\\Service\\V1\\GPBMetadata\xea\x02\x12Admin::Service::V1b\x06proto3"
 
 var file_admin_service_v1_i_id_mapping_proto_goTypes = []any{
-	(*v1.GetIDMappingRequest)(nil), // 0: uba.service.v1.GetIDMappingRequest
-	(*v1.IDMapping)(nil),           // 1: uba.service.v1.IDMapping
+	(*v1.PagingRequest)(nil),          // 0: pagination.PagingRequest
+	(*v11.GetIDMappingRequest)(nil),   // 1: uba.service.v1.GetIDMappingRequest
+	(*v11.ListIDMappingResponse)(nil), // 2: uba.service.v1.ListIDMappingResponse
+	(*v11.IDMapping)(nil),             // 3: uba.service.v1.IDMapping
 }
 var file_admin_service_v1_i_id_mapping_proto_depIdxs = []int32{
-	0, // 0: admin.service.v1.IDMappingService.Get:input_type -> uba.service.v1.GetIDMappingRequest
-	1, // 1: admin.service.v1.IDMappingService.Get:output_type -> uba.service.v1.IDMapping
-	1, // [1:2] is the sub-list for method output_type
-	0, // [0:1] is the sub-list for method input_type
+	0, // 0: admin.service.v1.IDMappingService.List:input_type -> pagination.PagingRequest
+	1, // 1: admin.service.v1.IDMappingService.Get:input_type -> uba.service.v1.GetIDMappingRequest
+	2, // 2: admin.service.v1.IDMappingService.List:output_type -> uba.service.v1.ListIDMappingResponse
+	3, // 3: admin.service.v1.IDMappingService.Get:output_type -> uba.service.v1.IDMapping
+	2, // [2:4] is the sub-list for method output_type
+	0, // [0:2] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
