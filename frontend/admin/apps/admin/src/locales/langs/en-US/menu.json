@@ -52,5 +52,61 @@
     "moduleName": "Internal Messages",
     "internalMessage": "Message Management",
     "internalMessageCategory": "Message Categories"
+  },
+  "dataAnalysis": {
+    "moduleName": "Data Analysis",
+    "behaviorEvent": "Behavior Event",
+    "session": "Session Analysis",
+    "eventPath": "Path Analysis",
+    "userBehaviorProfile": "User Profile"
+  },
+  "tagManagement": {
+    "moduleName": "Tag Management",
+    "tagDefinition": "Tag Definition",
+    "userTag": "User Tag",
+    "idMapping": "ID Mapping"
+  },
+  "riskManagement": {
+    "moduleName": "Risk Management",
+    "riskEvent": "Risk Event",
+    "riskRule": "Risk Rule",
+    "alertConfiguration": "Alert Configuration"
+  },
+  "objectManagement": {
+    "moduleName": "Object Management"
+  },
+  "object": {
+    "moduleName": "Object Management",
+    "objects": "Object List"
+  },
+  "risk": {
+    "moduleName": "Risk Management",
+    "event": "Risk Event",
+    "rule": "Risk Rule",
+    "webhook": "Webhook"
+  },
+  "risk": {
+    "moduleName": "Risk Management",
+    "event": "Risk Event",
+    "rule": "Risk Rule",
+    "webhook": "Webhook"
+  },
+  "tag": {
+    "moduleName": "Tag Management",
+    "tags": "Tag Definition",
+    "userTags": "User Tag",
+    "ids": "ID Mapping"
+  },
+  "page": {
+    "session": "Session Analysis",
+    "eventPath": "Event Path",
+    "userBehaviorProfile": "User Behavior Profile",
+    "riskEvent": "Risk Event",
+    "riskRule": "Risk Rule",
+    "webhook": "Webhook",
+    "tagDefinition": "Tag Definition",
+    "userTag": "User Tag",
+    "idMapping": "ID Mapping",
+    "object": "Object List"
   }
 }

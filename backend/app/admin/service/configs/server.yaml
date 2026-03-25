@@ -24,7 +24,7 @@ server:
         key: "some_api_key"
 
   sse:
-    addr: ":6601"
+    addr: ":5601"
     codec: "json"
     path: "/events"
     auto_stream: true

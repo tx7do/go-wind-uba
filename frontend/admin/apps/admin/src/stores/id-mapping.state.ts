@@ -12,7 +12,7 @@ import {
 import { makeOrderBy, makeQueryString } from '#/utils/query';
 import { type Paging, requestClientRequestHandler } from '#/utils/request';
 
-export const useIDMappingListStore = defineStore('id-mapping-list', () => {
+export const useIdMappingListStore = defineStore('id-mapping-list', () => {
   const service = createIDMappingServiceClient(requestClientRequestHandler);
   const userStore = useUserStore();
 
@@ -75,14 +75,14 @@ const ID_TYPE_COLOR_MAP = {
   DEFAULT: '#86909C',
 } as const;
 
-export function idTypeToColor(type?: IDType) {
+export function idMappingIdTypeToColor(type?: IDType) {
   return (
     ID_TYPE_COLOR_MAP[type as keyof typeof ID_TYPE_COLOR_MAP] ||
     ID_TYPE_COLOR_MAP.DEFAULT
   );
 }
 
-export function idTypeToName(type?: IDType) {
+export function idMappingIdTypeToName(type?: IDType) {
   const values = idTypeList.value;
   const matchedItem = values.find((item) => item.value === type);
   return matchedItem ? matchedItem.label : '';

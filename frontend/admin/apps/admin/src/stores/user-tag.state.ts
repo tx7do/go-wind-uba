@@ -110,14 +110,14 @@ const TAG_SOURCE_COLOR_MAP = {
   DEFAULT: '#86909C',
 } as const;
 
-export function tagSourceToColor(source?: TagSource) {
+export function userTagSourceToColor(source?: TagSource) {
   return (
     TAG_SOURCE_COLOR_MAP[source as keyof typeof TAG_SOURCE_COLOR_MAP] ||
     TAG_SOURCE_COLOR_MAP.DEFAULT
   );
 }
 
-export function tagSourceToName(source?: TagSource) {
+export function userTagSourceToName(source?: TagSource) {
   const values = tagSourceList.value;
   const matchedItem = values.find((item) => item.value === source);
   return matchedItem ? matchedItem.label : '';

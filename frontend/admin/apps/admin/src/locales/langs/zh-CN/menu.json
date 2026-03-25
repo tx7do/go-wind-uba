@@ -52,5 +52,55 @@
     "moduleName": "站内消息",
     "internalMessage": "消息管理",
     "internalMessageCategory": "消息分类"
+  },
+  "dataAnalysis": {
+    "moduleName": "数据分析",
+    "behaviorEvent": "行为事件",
+    "session": "会话分析",
+    "eventPath": "路径分析",
+    "userBehaviorProfile": "用户画像"
+  },
+  "tagManagement": {
+    "moduleName": "标签管理",
+    "tagDefinition": "标签定义",
+    "userTag": "用户标签",
+    "idMapping": "ID 映射"
+  },
+  "riskManagement": {
+    "moduleName": "风控管理",
+    "riskEvent": "风险事件",
+    "riskRule": "风险规则",
+    "alertConfiguration": "告警配置"
+  },
+  "objectManagement": {
+    "moduleName": "对象管理"
+  },
+  "object": {
+    "moduleName": "对象管理",
+    "objects": "对象列表"
+  },
+  "risk": {
+    "moduleName": "风控管理",
+    "event": "风险事件",
+    "rule": "风险规则",
+    "webhook": "网络钩子"
+  },
+  "tag": {
+    "moduleName": "标签管理",
+    "tags": "标签定义",
+    "userTags": "用户标签",
+    "ids": "ID 映射"
+  },
+  "page": {
+    "session": "会话分析",
+    "eventPath": "路径分析",
+    "userBehaviorProfile": "用户画像",
+    "riskEvent": "风险事件",
+    "riskRule": "风险规则",
+    "webhook": "网络钩子",
+    "tagDefinition": "标签定义",
+    "userTag": "用户标签",
+    "idMapping": "ID 映射",
+    "object": "对象列表"
   }
 }

@@ -3,14 +3,14 @@ import type { RouteRecordRaw } from 'vue-router';
 import { BasicLayout } from '#/layouts';
 import { $t } from '#/locales';
 
-const internal_message: RouteRecordRaw[] = [
+const internalMessage: RouteRecordRaw[] = [
   {
     path: '/internal-message',
     name: 'InternalMessageManagement',
     redirect: '/internal-message/messages',
     component: BasicLayout,
     meta: {
-      order: 2003,
+      order: 1100,
       icon: 'lucide:mail',
       title: $t('menu.internalMessage.moduleName'),
       keepAlive: true,
@@ -46,4 +46,4 @@ const internal_message: RouteRecordRaw[] = [
   },
 ];
 
-export default internal_message;
+export default internalMessage;
