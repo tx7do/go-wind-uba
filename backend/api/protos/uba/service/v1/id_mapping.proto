@@ -9,8 +9,6 @@ import "google/protobuf/field_mask.proto";
 
 import "pagination/v1/pagination.proto";
 
-import "uba/service/v1/common.proto";
-
 // ID映射服务
 service IDMappingService {
   // 查询ID映射列表

@@ -12,7 +12,6 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -25,8 +24,6 @@ const (
 	RiskEventService_Count_FullMethodName  = "/uba.service.v1.RiskEventService/Count"
 	RiskEventService_Get_FullMethodName    = "/uba.service.v1.RiskEventService/Get"
 	RiskEventService_Create_FullMethodName = "/uba.service.v1.RiskEventService/Create"
-	RiskEventService_Update_FullMethodName = "/uba.service.v1.RiskEventService/Update"
-	RiskEventService_Delete_FullMethodName = "/uba.service.v1.RiskEventService/Delete"
 )
 
 // RiskEventServiceClient is the client API for RiskEventService service.
@@ -43,10 +40,6 @@ type RiskEventServiceClient interface {
 	Get(ctx context.Context, in *GetRiskEventRequest, opts ...grpc.CallOption) (*RiskEvent, error)
 	// 创建风险事件
 	Create(ctx context.Context, in *CreateRiskEventRequest, opts ...grpc.CallOption) (*RiskEvent, error)
-	// 更新风险事件
-	Update(ctx context.Context, in *UpdateRiskEventRequest, opts ...grpc.CallOption) (*RiskEvent, error)
-	// 删除风险事件
-	Delete(ctx context.Context, in *DeleteRiskEventRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type riskEventServiceClient struct {
@@ -97,26 +90,6 @@ func (c *riskEventServiceClient) Create(ctx context.Context, in *CreateRiskEvent
 	return out, nil
 }
 
-func (c *riskEventServiceClient) Update(ctx context.Context, in *UpdateRiskEventRequest, opts ...grpc.CallOption) (*RiskEvent, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(RiskEvent)
-	err := c.cc.Invoke(ctx, RiskEventService_Update_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *riskEventServiceClient) Delete(ctx context.Context, in *DeleteRiskEventRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, RiskEventService_Delete_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // RiskEventServiceServer is the server API for RiskEventService service.
 // All implementations must embed UnimplementedRiskEventServiceServer
 // for forward compatibility.
@@ -131,10 +104,6 @@ type RiskEventServiceServer interface {
 	Get(context.Context, *GetRiskEventRequest) (*RiskEvent, error)
 	// 创建风险事件
 	Create(context.Context, *CreateRiskEventRequest) (*RiskEvent, error)
-	// 更新风险事件
-	Update(context.Context, *UpdateRiskEventRequest) (*RiskEvent, error)
-	// 删除风险事件
-	Delete(context.Context, *DeleteRiskEventRequest) (*emptypb.Empty, error)
 	mustEmbedUnimplementedRiskEventServiceServer()
 }
 
@@ -156,12 +125,6 @@ func (UnimplementedRiskEventServiceServer) Get(context.Context, *GetRiskEventReq
 }
 func (UnimplementedRiskEventServiceServer) Create(context.Context, *CreateRiskEventRequest) (*RiskEvent, error) {
 	return nil, status.Error(codes.Unimplemented, "method Create not implemented")
-}
-func (UnimplementedRiskEventServiceServer) Update(context.Context, *UpdateRiskEventRequest) (*RiskEvent, error) {
-	return nil, status.Error(codes.Unimplemented, "method Update not implemented")
-}
-func (UnimplementedRiskEventServiceServer) Delete(context.Context, *DeleteRiskEventRequest) (*emptypb.Empty, error) {
-	return nil, status.Error(codes.Unimplemented, "method Delete not implemented")
 }
 func (UnimplementedRiskEventServiceServer) mustEmbedUnimplementedRiskEventServiceServer() {}
 func (UnimplementedRiskEventServiceServer) testEmbeddedByValue()                          {}
@@ -256,42 +219,6 @@ func _RiskEventService_Create_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _RiskEventService_Update_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateRiskEventRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(RiskEventServiceServer).Update(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: RiskEventService_Update_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RiskEventServiceServer).Update(ctx, req.(*UpdateRiskEventRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _RiskEventService_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteRiskEventRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(RiskEventServiceServer).Delete(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: RiskEventService_Delete_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RiskEventServiceServer).Delete(ctx, req.(*DeleteRiskEventRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // RiskEventService_ServiceDesc is the grpc.ServiceDesc for RiskEventService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -314,14 +241,6 @@ var RiskEventService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Create",
 			Handler:    _RiskEventService_Create_Handler,
-		},
-		{
-			MethodName: "Update",
-			Handler:    _RiskEventService_Update_Handler,
-		},
-		{
-			MethodName: "Delete",
-			Handler:    _RiskEventService_Delete_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

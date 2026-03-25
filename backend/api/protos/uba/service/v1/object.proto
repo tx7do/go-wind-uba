@@ -3,7 +3,6 @@
 package uba.service.v1;
 
 import "gnostic/openapi/v3/annotations.proto";
-import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/field_mask.proto";
 
@@ -19,12 +18,6 @@ service ObjectService {
 
   // 创建对象维度
   rpc Create (CreateObjectDimRequest) returns (ObjectDim) {}
-
-  // 更新对象维度
-  rpc Update (UpdateObjectDimRequest) returns (ObjectDim) {}
-
-  // 删除对象维度
-  rpc Delete (DeleteObjectDimRequest) returns (google.protobuf.Empty) {}
 }
 
 // 对象维度（对应 objects_dim 表）

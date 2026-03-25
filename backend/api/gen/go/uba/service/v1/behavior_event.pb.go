@@ -8,9 +8,10 @@ package ubapb
 
 import (
 	_ "github.com/google/gnostic/openapiv3"
+	v1 "github.com/tx7do/go-crud/api/gen/go/pagination/v1"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	emptypb "google.golang.org/protobuf/types/known/emptypb"
+	_ "google.golang.org/protobuf/types/known/emptypb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	reflect "reflect"
 	sync "sync"
@@ -456,99 +457,6 @@ func (x *ListBehaviorEventResponse) GetTotal() uint64 {
 	return 0
 }
 
-// 分页查询行为事件请求
-type ListBehaviorEventRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	TenantId      uint32                 `protobuf:"varint,1,opt,name=tenant_id,json=tenantId,proto3" json:"tenant_id,omitempty"`
-	EventName     string                 `protobuf:"bytes,2,opt,name=event_name,json=eventName,proto3" json:"event_name,omitempty"`
-	UserId        uint32                 `protobuf:"varint,3,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	StartTime     *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=start_time,json=startTime,proto3" json:"start_time,omitempty"`
-	EndTime       *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=end_time,json=endTime,proto3" json:"end_time,omitempty"`
-	Page          uint32                 `protobuf:"varint,6,opt,name=page,proto3" json:"page,omitempty"`
-	PageSize      uint32                 `protobuf:"varint,7,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *ListBehaviorEventRequest) Reset() {
-	*x = ListBehaviorEventRequest{}
-	mi := &file_uba_service_v1_behavior_event_proto_msgTypes[2]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ListBehaviorEventRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ListBehaviorEventRequest) ProtoMessage() {}
-
-func (x *ListBehaviorEventRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_behavior_event_proto_msgTypes[2]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ListBehaviorEventRequest.ProtoReflect.Descriptor instead.
-func (*ListBehaviorEventRequest) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_behavior_event_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *ListBehaviorEventRequest) GetTenantId() uint32 {
-	if x != nil {
-		return x.TenantId
-	}
-	return 0
-}
-
-func (x *ListBehaviorEventRequest) GetEventName() string {
-	if x != nil {
-		return x.EventName
-	}
-	return ""
-}
-
-func (x *ListBehaviorEventRequest) GetUserId() uint32 {
-	if x != nil {
-		return x.UserId
-	}
-	return 0
-}
-
-func (x *ListBehaviorEventRequest) GetStartTime() *timestamppb.Timestamp {
-	if x != nil {
-		return x.StartTime
-	}
-	return nil
-}
-
-func (x *ListBehaviorEventRequest) GetEndTime() *timestamppb.Timestamp {
-	if x != nil {
-		return x.EndTime
-	}
-	return nil
-}
-
-func (x *ListBehaviorEventRequest) GetPage() uint32 {
-	if x != nil {
-		return x.Page
-	}
-	return 0
-}
-
-func (x *ListBehaviorEventRequest) GetPageSize() uint32 {
-	if x != nil {
-		return x.PageSize
-	}
-	return 0
-}
-
 // 查询行为事件详情请求
 type GetBehaviorEventRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
@@ -559,7 +467,7 @@ type GetBehaviorEventRequest struct {
 
 func (x *GetBehaviorEventRequest) Reset() {
 	*x = GetBehaviorEventRequest{}
-	mi := &file_uba_service_v1_behavior_event_proto_msgTypes[3]
+	mi := &file_uba_service_v1_behavior_event_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -571,7 +479,7 @@ func (x *GetBehaviorEventRequest) String() string {
 func (*GetBehaviorEventRequest) ProtoMessage() {}
 
 func (x *GetBehaviorEventRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_behavior_event_proto_msgTypes[3]
+	mi := &file_uba_service_v1_behavior_event_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -584,7 +492,7 @@ func (x *GetBehaviorEventRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetBehaviorEventRequest.ProtoReflect.Descriptor instead.
 func (*GetBehaviorEventRequest) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_behavior_event_proto_rawDescGZIP(), []int{3}
+	return file_uba_service_v1_behavior_event_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *GetBehaviorEventRequest) GetEventId() string {
@@ -604,7 +512,7 @@ type DeleteBehaviorEventRequest struct {
 
 func (x *DeleteBehaviorEventRequest) Reset() {
 	*x = DeleteBehaviorEventRequest{}
-	mi := &file_uba_service_v1_behavior_event_proto_msgTypes[4]
+	mi := &file_uba_service_v1_behavior_event_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -616,7 +524,7 @@ func (x *DeleteBehaviorEventRequest) String() string {
 func (*DeleteBehaviorEventRequest) ProtoMessage() {}
 
 func (x *DeleteBehaviorEventRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_behavior_event_proto_msgTypes[4]
+	mi := &file_uba_service_v1_behavior_event_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -629,7 +537,7 @@ func (x *DeleteBehaviorEventRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteBehaviorEventRequest.ProtoReflect.Descriptor instead.
 func (*DeleteBehaviorEventRequest) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_behavior_event_proto_rawDescGZIP(), []int{4}
+	return file_uba_service_v1_behavior_event_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *DeleteBehaviorEventRequest) GetEventId() string {
@@ -643,7 +551,7 @@ var File_uba_service_v1_behavior_event_proto protoreflect.FileDescriptor
 
 const file_uba_service_v1_behavior_event_proto_rawDesc = "" +
 	"\n" +
-	"#uba/service/v1/behavior_event.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1buba/service/v1/common.proto\"\x8c7\n" +
+	"#uba/service/v1/behavior_event.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1epagination/v1/pagination.proto\x1a\x1buba/service/v1/common.proto\"\x8c7\n" +
 	"\rBehaviorEvent\x12\x7f\n" +
 	"\bevent_id\x18\x01 \x01(\tBd\xbaGa\x92\x02^事件ID，建议使用 UUID，作为事件的唯一标识，同时也可用于路由和去重R\aeventId\x12[\n" +
 	"\ttenant_id\x18\x02 \x01(\rB>\xbaG;\x92\x028租户ID，事件所属的租户，用于多租户隔离R\btenantId\x12~\n" +
@@ -722,26 +630,15 @@ const file_uba_service_v1_behavior_event_proto_rawDesc = "" +
 	"\v_updated_at\"f\n" +
 	"\x19ListBehaviorEventResponse\x123\n" +
 	"\x05items\x18\x01 \x03(\v2\x1d.uba.service.v1.BehaviorEventR\x05items\x12\x14\n" +
-	"\x05total\x18\x02 \x01(\x04R\x05total\"\x90\x03\n" +
-	"\x18ListBehaviorEventRequest\x12+\n" +
-	"\ttenant_id\x18\x01 \x01(\rB\x0e\xbaG\v\x92\x02\b租户IDR\btenantId\x121\n" +
-	"\n" +
-	"event_name\x18\x02 \x01(\tB\x12\xbaG\x0f\x92\x02\f事件名称R\teventName\x12'\n" +
-	"\auser_id\x18\x03 \x01(\rB\x0e\xbaG\v\x92\x02\b用户IDR\x06userId\x12M\n" +
-	"\n" +
-	"start_time\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampB\x12\xbaG\x0f\x92\x02\f起始时间R\tstartTime\x12I\n" +
-	"\bend_time\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampB\x12\xbaG\x0f\x92\x02\f结束时间R\aendTime\x12 \n" +
-	"\x04page\x18\x06 \x01(\rB\f\xbaG\t\x92\x02\x06页码R\x04page\x12/\n" +
-	"\tpage_size\x18\a \x01(\rB\x12\xbaG\x0f\x92\x02\f每页数量R\bpageSize\"D\n" +
+	"\x05total\x18\x02 \x01(\x04R\x05total\"D\n" +
 	"\x17GetBehaviorEventRequest\x12)\n" +
 	"\bevent_id\x18\x01 \x01(\tB\x0e\xbaG\v\x92\x02\b事件IDR\aeventId\"G\n" +
 	"\x1aDeleteBehaviorEventRequest\x12)\n" +
-	"\bevent_id\x18\x01 \x01(\tB\x0e\xbaG\v\x92\x02\b事件IDR\aeventId2\xfb\x04\n" +
-	"\x14BehaviorEventService\x12x\n" +
-	"\x06Create\x12\x1d.uba.service.v1.BehaviorEvent\x1a\x16.google.protobuf.Empty\"7\xbaG4\x12\x12创建行为事件\x1a\x1e上报一条新的行为事件\x12\xad\x01\n" +
-	"\x11ListBehaviorEvent\x12(.uba.service.v1.ListBehaviorEventRequest\x1a).uba.service.v1.ListBehaviorEventResponse\"C\xbaG@\x12\x18分页查询行为事件\x1a$根据条件分页查询行为事件\x12\xa1\x01\n" +
-	"\x10GetBehaviorEvent\x12'.uba.service.v1.GetBehaviorEventRequest\x1a\x1d.uba.service.v1.BehaviorEvent\"E\xbaGB\x12\x18查询行为事件详情\x1a&根据事件ID查询行为事件详情\x12\x94\x01\n" +
-	"\x13DeleteBehaviorEvent\x12*.uba.service.v1.DeleteBehaviorEventRequest\x1a\x16.google.protobuf.Empty\"9\xbaG6\x12\x12删除行为事件\x1a 根据事件ID删除行为事件B\xaf\x01\n" +
+	"\bevent_id\x18\x01 \x01(\tB\x0e\xbaG\v\x92\x02\b事件IDR\aeventId2\xc2\x03\n" +
+	"\x14BehaviorEventService\x12\x7f\n" +
+	"\x06Create\x12\x1d.uba.service.v1.BehaviorEvent\x1a\x1d.uba.service.v1.BehaviorEvent\"7\xbaG4\x12\x12创建行为事件\x1a\x1e上报一条新的行为事件\x12\x91\x01\n" +
+	"\x04List\x12\x19.pagination.PagingRequest\x1a).uba.service.v1.ListBehaviorEventResponse\"C\xbaG@\x12\x18分页查询行为事件\x1a$根据条件分页查询行为事件\x12\x94\x01\n" +
+	"\x03Get\x12'.uba.service.v1.GetBehaviorEventRequest\x1a\x1d.uba.service.v1.BehaviorEvent\"E\xbaGB\x12\x18查询行为事件详情\x1a&根据事件ID查询行为事件详情B\xaf\x01\n" +
 	"\x12com.uba.service.v1B\x12BehaviorEventProtoP\x01Z+go-wind-uba/api/gen/go/uba/service/v1;ubapb\xa2\x02\x03USX\xaa\x02\x0eUba.Service.V1\xca\x02\x0eUba\\Service\\V1\xe2\x02\x1aUba\\Service\\V1\\GPBMetadata\xea\x02\x10Uba::Service::V1b\x06proto3"
 
 var (
@@ -756,51 +653,46 @@ func file_uba_service_v1_behavior_event_proto_rawDescGZIP() []byte {
 	return file_uba_service_v1_behavior_event_proto_rawDescData
 }
 
-var file_uba_service_v1_behavior_event_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
+var file_uba_service_v1_behavior_event_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_uba_service_v1_behavior_event_proto_goTypes = []any{
 	(*BehaviorEvent)(nil),              // 0: uba.service.v1.BehaviorEvent
 	(*ListBehaviorEventResponse)(nil),  // 1: uba.service.v1.ListBehaviorEventResponse
-	(*ListBehaviorEventRequest)(nil),   // 2: uba.service.v1.ListBehaviorEventRequest
-	(*GetBehaviorEventRequest)(nil),    // 3: uba.service.v1.GetBehaviorEventRequest
-	(*DeleteBehaviorEventRequest)(nil), // 4: uba.service.v1.DeleteBehaviorEventRequest
-	nil,                                // 5: uba.service.v1.BehaviorEvent.ContextEntry
-	nil,                                // 6: uba.service.v1.BehaviorEvent.MetricsEntry
-	nil,                                // 7: uba.service.v1.BehaviorEvent.PropertiesEntry
-	(*timestamppb.Timestamp)(nil),      // 8: google.protobuf.Timestamp
-	(EventCategory)(0),                 // 9: uba.service.v1.EventCategory
-	(Platform)(0),                      // 10: uba.service.v1.Platform
-	(OpResult)(0),                      // 11: uba.service.v1.OpResult
-	(RiskLevel)(0),                     // 12: uba.service.v1.RiskLevel
-	(*emptypb.Empty)(nil),              // 13: google.protobuf.Empty
+	(*GetBehaviorEventRequest)(nil),    // 2: uba.service.v1.GetBehaviorEventRequest
+	(*DeleteBehaviorEventRequest)(nil), // 3: uba.service.v1.DeleteBehaviorEventRequest
+	nil,                                // 4: uba.service.v1.BehaviorEvent.ContextEntry
+	nil,                                // 5: uba.service.v1.BehaviorEvent.MetricsEntry
+	nil,                                // 6: uba.service.v1.BehaviorEvent.PropertiesEntry
+	(*timestamppb.Timestamp)(nil),      // 7: google.protobuf.Timestamp
+	(EventCategory)(0),                 // 8: uba.service.v1.EventCategory
+	(Platform)(0),                      // 9: uba.service.v1.Platform
+	(OpResult)(0),                      // 10: uba.service.v1.OpResult
+	(RiskLevel)(0),                     // 11: uba.service.v1.RiskLevel
+	(*v1.PagingRequest)(nil),           // 12: pagination.PagingRequest
 }
 var file_uba_service_v1_behavior_event_proto_depIdxs = []int32{
-	8,  // 0: uba.service.v1.BehaviorEvent.event_time:type_name -> google.protobuf.Timestamp
-	8,  // 1: uba.service.v1.BehaviorEvent.server_time:type_name -> google.protobuf.Timestamp
-	9,  // 2: uba.service.v1.BehaviorEvent.event_category:type_name -> uba.service.v1.EventCategory
-	10, // 3: uba.service.v1.BehaviorEvent.platform:type_name -> uba.service.v1.Platform
-	5,  // 4: uba.service.v1.BehaviorEvent.context:type_name -> uba.service.v1.BehaviorEvent.ContextEntry
-	6,  // 5: uba.service.v1.BehaviorEvent.metrics:type_name -> uba.service.v1.BehaviorEvent.MetricsEntry
-	7,  // 6: uba.service.v1.BehaviorEvent.properties:type_name -> uba.service.v1.BehaviorEvent.PropertiesEntry
-	11, // 7: uba.service.v1.BehaviorEvent.op_result:type_name -> uba.service.v1.OpResult
-	12, // 8: uba.service.v1.BehaviorEvent.risk_level:type_name -> uba.service.v1.RiskLevel
-	8,  // 9: uba.service.v1.BehaviorEvent.created_at:type_name -> google.protobuf.Timestamp
-	8,  // 10: uba.service.v1.BehaviorEvent.updated_at:type_name -> google.protobuf.Timestamp
+	7,  // 0: uba.service.v1.BehaviorEvent.event_time:type_name -> google.protobuf.Timestamp
+	7,  // 1: uba.service.v1.BehaviorEvent.server_time:type_name -> google.protobuf.Timestamp
+	8,  // 2: uba.service.v1.BehaviorEvent.event_category:type_name -> uba.service.v1.EventCategory
+	9,  // 3: uba.service.v1.BehaviorEvent.platform:type_name -> uba.service.v1.Platform
+	4,  // 4: uba.service.v1.BehaviorEvent.context:type_name -> uba.service.v1.BehaviorEvent.ContextEntry
+	5,  // 5: uba.service.v1.BehaviorEvent.metrics:type_name -> uba.service.v1.BehaviorEvent.MetricsEntry
+	6,  // 6: uba.service.v1.BehaviorEvent.properties:type_name -> uba.service.v1.BehaviorEvent.PropertiesEntry
+	10, // 7: uba.service.v1.BehaviorEvent.op_result:type_name -> uba.service.v1.OpResult
+	11, // 8: uba.service.v1.BehaviorEvent.risk_level:type_name -> uba.service.v1.RiskLevel
+	7,  // 9: uba.service.v1.BehaviorEvent.created_at:type_name -> google.protobuf.Timestamp
+	7,  // 10: uba.service.v1.BehaviorEvent.updated_at:type_name -> google.protobuf.Timestamp
 	0,  // 11: uba.service.v1.ListBehaviorEventResponse.items:type_name -> uba.service.v1.BehaviorEvent
-	8,  // 12: uba.service.v1.ListBehaviorEventRequest.start_time:type_name -> google.protobuf.Timestamp
-	8,  // 13: uba.service.v1.ListBehaviorEventRequest.end_time:type_name -> google.protobuf.Timestamp
-	0,  // 14: uba.service.v1.BehaviorEventService.Create:input_type -> uba.service.v1.BehaviorEvent
-	2,  // 15: uba.service.v1.BehaviorEventService.ListBehaviorEvent:input_type -> uba.service.v1.ListBehaviorEventRequest
-	3,  // 16: uba.service.v1.BehaviorEventService.GetBehaviorEvent:input_type -> uba.service.v1.GetBehaviorEventRequest
-	4,  // 17: uba.service.v1.BehaviorEventService.DeleteBehaviorEvent:input_type -> uba.service.v1.DeleteBehaviorEventRequest
-	13, // 18: uba.service.v1.BehaviorEventService.Create:output_type -> google.protobuf.Empty
-	1,  // 19: uba.service.v1.BehaviorEventService.ListBehaviorEvent:output_type -> uba.service.v1.ListBehaviorEventResponse
-	0,  // 20: uba.service.v1.BehaviorEventService.GetBehaviorEvent:output_type -> uba.service.v1.BehaviorEvent
-	13, // 21: uba.service.v1.BehaviorEventService.DeleteBehaviorEvent:output_type -> google.protobuf.Empty
-	18, // [18:22] is the sub-list for method output_type
-	14, // [14:18] is the sub-list for method input_type
-	14, // [14:14] is the sub-list for extension type_name
-	14, // [14:14] is the sub-list for extension extendee
-	0,  // [0:14] is the sub-list for field type_name
+	0,  // 12: uba.service.v1.BehaviorEventService.Create:input_type -> uba.service.v1.BehaviorEvent
+	12, // 13: uba.service.v1.BehaviorEventService.List:input_type -> pagination.PagingRequest
+	2,  // 14: uba.service.v1.BehaviorEventService.Get:input_type -> uba.service.v1.GetBehaviorEventRequest
+	0,  // 15: uba.service.v1.BehaviorEventService.Create:output_type -> uba.service.v1.BehaviorEvent
+	1,  // 16: uba.service.v1.BehaviorEventService.List:output_type -> uba.service.v1.ListBehaviorEventResponse
+	0,  // 17: uba.service.v1.BehaviorEventService.Get:output_type -> uba.service.v1.BehaviorEvent
+	15, // [15:18] is the sub-list for method output_type
+	12, // [12:15] is the sub-list for method input_type
+	12, // [12:12] is the sub-list for extension type_name
+	12, // [12:12] is the sub-list for extension extendee
+	0,  // [0:12] is the sub-list for field type_name
 }
 
 func init() { file_uba_service_v1_behavior_event_proto_init() }
@@ -816,7 +708,7 @@ func file_uba_service_v1_behavior_event_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_uba_service_v1_behavior_event_proto_rawDesc), len(file_uba_service_v1_behavior_event_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   8,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

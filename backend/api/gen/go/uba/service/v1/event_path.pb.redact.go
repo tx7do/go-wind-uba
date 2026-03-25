@@ -6,10 +6,10 @@ package ubapb
 import (
 	context "context"
 	redact "github.com/menta2k/protoc-gen-redact/v3/redact/v3"
+	pagination "github.com/tx7do/go-crud/api/gen/go/pagination/v1"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -21,7 +21,7 @@ var (
 	_ codes.Code
 	_ status.Status
 	_ timestamppb.Timestamp
-	_ emptypb.Empty
+	_ pagination.Sorting
 )
 
 // RegisterRedactedEventPathServiceServer wraps the EventPathServiceServer with the redacted server and registers the service in GRPC
@@ -42,10 +42,10 @@ type redactedEventPathServiceServer struct {
 	bypass redact.Bypass
 }
 
-// ListEventPath is the redacted wrapper for the actual EventPathServiceServer.ListEventPath method
+// List is the redacted wrapper for the actual EventPathServiceServer.List method
 // Unary RPC
-func (s *redactedEventPathServiceServer) ListEventPath(ctx context.Context, in *ListEventPathRequest) (*ListEventPathResponse, error) {
-	res, err := s.srv.ListEventPath(ctx, in)
+func (s *redactedEventPathServiceServer) List(ctx context.Context, in *pagination.PagingRequest) (*ListEventPathResponse, error) {
+	res, err := s.srv.List(ctx, in)
 	if !s.bypass.CheckInternal(ctx) {
 		// Apply redaction to the response
 		redact.Apply(res)
@@ -53,10 +53,10 @@ func (s *redactedEventPathServiceServer) ListEventPath(ctx context.Context, in *
 	return res, err
 }
 
-// GetEventPath is the redacted wrapper for the actual EventPathServiceServer.GetEventPath method
+// Get is the redacted wrapper for the actual EventPathServiceServer.Get method
 // Unary RPC
-func (s *redactedEventPathServiceServer) GetEventPath(ctx context.Context, in *GetEventPathRequest) (*EventPath, error) {
-	res, err := s.srv.GetEventPath(ctx, in)
+func (s *redactedEventPathServiceServer) Get(ctx context.Context, in *GetEventPathRequest) (*EventPath, error) {
+	res, err := s.srv.Get(ctx, in)
 	if !s.bypass.CheckInternal(ctx) {
 		// Apply redaction to the response
 		redact.Apply(res)
@@ -64,21 +64,10 @@ func (s *redactedEventPathServiceServer) GetEventPath(ctx context.Context, in *G
 	return res, err
 }
 
-// CreateEventPath is the redacted wrapper for the actual EventPathServiceServer.CreateEventPath method
+// Create is the redacted wrapper for the actual EventPathServiceServer.Create method
 // Unary RPC
-func (s *redactedEventPathServiceServer) CreateEventPath(ctx context.Context, in *CreateEventPathRequest) (*EventPath, error) {
-	res, err := s.srv.CreateEventPath(ctx, in)
-	if !s.bypass.CheckInternal(ctx) {
-		// Apply redaction to the response
-		redact.Apply(res)
-	}
-	return res, err
-}
-
-// DeleteEventPath is the redacted wrapper for the actual EventPathServiceServer.DeleteEventPath method
-// Unary RPC
-func (s *redactedEventPathServiceServer) DeleteEventPath(ctx context.Context, in *DeleteEventPathRequest) (*emptypb.Empty, error) {
-	res, err := s.srv.DeleteEventPath(ctx, in)
+func (s *redactedEventPathServiceServer) Create(ctx context.Context, in *CreateEventPathRequest) (*EventPath, error) {
+	res, err := s.srv.Create(ctx, in)
 	if !s.bypass.CheckInternal(ctx) {
 		// Apply redaction to the response
 		redact.Apply(res)
@@ -143,24 +132,6 @@ func (x *ListEventPathResponse) Redact() string {
 	// Safe field: Items
 
 	// Safe field: Total
-	return x.String()
-}
-
-// Redact method implementation for ListEventPathRequest
-func (x *ListEventPathRequest) Redact() string {
-	if x == nil {
-		return ""
-	}
-
-	// Safe field: TenantId
-
-	// Safe field: UserId
-
-	// Safe field: SessionId
-
-	// Safe field: Page
-
-	// Safe field: PageSize
 	return x.String()
 }
 

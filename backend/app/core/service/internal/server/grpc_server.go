@@ -1,8 +1,6 @@
 package server
 
 import (
-	ubaV1 "go-wind-uba/api/gen/go/uba/service/v1"
-
 	"github.com/go-kratos/kratos/v2/middleware"
 	"github.com/go-kratos/kratos/v2/middleware/logging"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
@@ -21,6 +19,7 @@ import (
 	resourceV1 "go-wind-uba/api/gen/go/resource/service/v1"
 	storageV1 "go-wind-uba/api/gen/go/storage/service/v1"
 	taskV1 "go-wind-uba/api/gen/go/task/service/v1"
+	ubaV1 "go-wind-uba/api/gen/go/uba/service/v1"
 
 	"go-wind-uba/pkg/middleware/ent"
 )
@@ -76,6 +75,12 @@ func NewGrpcServer(
 	tagDefinitionService *service.TagDefinitionService,
 	userTagService *service.UserTagService,
 	webhookService *service.WebhookService,
+	behaviorEventService *service.BehaviorEventService,
+	eventPathService *service.EventPathService,
+	objectService *service.ObjectService,
+	riskEventService *service.RiskEventService,
+	sessionService *service.SessionService,
+	userBehaviorProfileService *service.UserBehaviorProfileService,
 ) (*grpc.Server, error) {
 	cfg := ctx.GetConfig()
 
@@ -128,6 +133,12 @@ func NewGrpcServer(
 	ubaV1.RegisterTagDefinitionServiceServer(srv, tagDefinitionService)
 	ubaV1.RegisterUserTagServiceServer(srv, userTagService)
 	ubaV1.RegisterWebhookServiceServer(srv, webhookService)
+	ubaV1.RegisterBehaviorEventServiceServer(srv, behaviorEventService)
+	ubaV1.RegisterEventPathServiceServer(srv, eventPathService)
+	ubaV1.RegisterObjectServiceServer(srv, objectService)
+	ubaV1.RegisterRiskEventServiceServer(srv, riskEventService)
+	ubaV1.RegisterSessionServiceServer(srv, sessionService)
+	ubaV1.RegisterUserBehaviorProfileServiceServer(srv, userBehaviorProfileService)
 
 	return srv, nil
 }

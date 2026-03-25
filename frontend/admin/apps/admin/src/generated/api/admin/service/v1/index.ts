@@ -2357,182 +2357,14 @@ export type storageservicev1_UploadFileResponse = {
 
 // ID映射服务
 export interface IDMappingService {
-  // 查询ID映射列表
-  List(request: pagination_PagingRequest): Promise<ubaservicev1_ListIDMappingResponse>;
-  // 查询ID映射数量
-  Count(request: pagination_PagingRequest): Promise<ubaservicev1_CountIDMappingResponse>;
   // 查询ID映射详情
   Get(request: ubaservicev1_GetIDMappingRequest): Promise<ubaservicev1_IDMapping>;
-  // 创建ID映射
-  Create(request: ubaservicev1_CreateIDMappingRequest): Promise<ubaservicev1_IDMapping>;
-  // 更新ID映射
-  Update(request: ubaservicev1_UpdateIDMappingRequest): Promise<ubaservicev1_IDMapping>;
-  // 删除ID映射
-  Delete(request: ubaservicev1_DeleteIDMappingRequest): Promise<wellKnownEmpty>;
 }
 
 export function createIDMappingServiceClient(
   handler: RequestHandler
 ): IDMappingService {
   return {
-    List(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
-      const path = `admin/v1/id-mappings`; // eslint-disable-line quotes
-      const body = null;
-      const queryParams: string[] = [];
-      if (request.page) {
-        queryParams.push(`page=${encodeURIComponent(request.page.toString())}`)
-      }
-      if (request.pageSize) {
-        queryParams.push(`pageSize=${encodeURIComponent(request.pageSize.toString())}`)
-      }
-      if (request.offset) {
-        queryParams.push(`offset=${encodeURIComponent(request.offset.toString())}`)
-      }
-      if (request.limit) {
-        queryParams.push(`limit=${encodeURIComponent(request.limit.toString())}`)
-      }
-      if (request.token) {
-        queryParams.push(`token=${encodeURIComponent(request.token.toString())}`)
-      }
-      if (request.noPaging) {
-        queryParams.push(`noPaging=${encodeURIComponent(request.noPaging.toString())}`)
-      }
-      if (request.query) {
-        queryParams.push(`query=${encodeURIComponent(request.query.toString())}`)
-      }
-      if (request.filter) {
-        queryParams.push(`filter=${encodeURIComponent(request.filter.toString())}`)
-      }
-      if (request.filterExpr?.type) {
-        queryParams.push(`filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`)
-      }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(`filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`)
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(`filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`)
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(`filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`)
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(`filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`)
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(`filterExpr.conditions.values=${encodeURIComponent(x.toString())}`)
-        })
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(`filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`)
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(`filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`)
-      }
-      if (request.orderBy) {
-        queryParams.push(`orderBy=${encodeURIComponent(request.orderBy.toString())}`)
-      }
-      if (request.sorting?.field) {
-        queryParams.push(`sorting.field=${encodeURIComponent(request.sorting.field.toString())}`)
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(`sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`)
-      }
-      if (request.fieldMask) {
-        queryParams.push(`fieldMask=${encodeURIComponent(request.fieldMask.toString())}`)
-      }
-      let uri = path;
-      if (queryParams.length > 0) {
-        uri += `?${queryParams.join("&")}`
-      }
-      return handler({
-        path: uri,
-        method: "GET",
-        body,
-      }, {
-        service: "IDMappingService",
-        method: "List",
-      }) as Promise<ubaservicev1_ListIDMappingResponse>;
-    },
-    Count(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
-      const path = `admin/v1/id-mappings/count`; // eslint-disable-line quotes
-      const body = null;
-      const queryParams: string[] = [];
-      if (request.page) {
-        queryParams.push(`page=${encodeURIComponent(request.page.toString())}`)
-      }
-      if (request.pageSize) {
-        queryParams.push(`pageSize=${encodeURIComponent(request.pageSize.toString())}`)
-      }
-      if (request.offset) {
-        queryParams.push(`offset=${encodeURIComponent(request.offset.toString())}`)
-      }
-      if (request.limit) {
-        queryParams.push(`limit=${encodeURIComponent(request.limit.toString())}`)
-      }
-      if (request.token) {
-        queryParams.push(`token=${encodeURIComponent(request.token.toString())}`)
-      }
-      if (request.noPaging) {
-        queryParams.push(`noPaging=${encodeURIComponent(request.noPaging.toString())}`)
-      }
-      if (request.query) {
-        queryParams.push(`query=${encodeURIComponent(request.query.toString())}`)
-      }
-      if (request.filter) {
-        queryParams.push(`filter=${encodeURIComponent(request.filter.toString())}`)
-      }
-      if (request.filterExpr?.type) {
-        queryParams.push(`filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`)
-      }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(`filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`)
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(`filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`)
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(`filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`)
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(`filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`)
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(`filterExpr.conditions.values=${encodeURIComponent(x.toString())}`)
-        })
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(`filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`)
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(`filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`)
-      }
-      if (request.orderBy) {
-        queryParams.push(`orderBy=${encodeURIComponent(request.orderBy.toString())}`)
-      }
-      if (request.sorting?.field) {
-        queryParams.push(`sorting.field=${encodeURIComponent(request.sorting.field.toString())}`)
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(`sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`)
-      }
-      if (request.fieldMask) {
-        queryParams.push(`fieldMask=${encodeURIComponent(request.fieldMask.toString())}`)
-      }
-      let uri = path;
-      if (queryParams.length > 0) {
-        uri += `?${queryParams.join("&")}`
-      }
-      return handler({
-        path: uri,
-        method: "GET",
-        body,
-      }, {
-        service: "IDMappingService",
-        method: "Count",
-      }) as Promise<ubaservicev1_CountIDMappingResponse>;
-    },
     Get(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
       if (!request.id) {
         throw new Error("missing required field request.id");
@@ -2556,72 +2388,12 @@ export function createIDMappingServiceClient(
         method: "Get",
       }) as Promise<ubaservicev1_IDMapping>;
     },
-    Create(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
-      const path = `admin/v1/id-mappings`; // eslint-disable-line quotes
-      const body = JSON.stringify(request);
-      const queryParams: string[] = [];
-      let uri = path;
-      if (queryParams.length > 0) {
-        uri += `?${queryParams.join("&")}`
-      }
-      return handler({
-        path: uri,
-        method: "POST",
-        body,
-      }, {
-        service: "IDMappingService",
-        method: "Create",
-      }) as Promise<ubaservicev1_IDMapping>;
-    },
-    Update(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
-      if (!request.id) {
-        throw new Error("missing required field request.id");
-      }
-      const path = `admin/v1/id-mappings/${request.id}`; // eslint-disable-line quotes
-      const body = JSON.stringify(request);
-      const queryParams: string[] = [];
-      let uri = path;
-      if (queryParams.length > 0) {
-        uri += `?${queryParams.join("&")}`
-      }
-      return handler({
-        path: uri,
-        method: "PUT",
-        body,
-      }, {
-        service: "IDMappingService",
-        method: "Update",
-      }) as Promise<ubaservicev1_IDMapping>;
-    },
-    Delete(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
-      if (!request.id) {
-        throw new Error("missing required field request.id");
-      }
-      const path = `admin/v1/id-mappings/${request.id}`; // eslint-disable-line quotes
-      const body = null;
-      const queryParams: string[] = [];
-      if (request.deletedBy) {
-        queryParams.push(`deletedBy=${encodeURIComponent(request.deletedBy.toString())}`)
-      }
-      let uri = path;
-      if (queryParams.length > 0) {
-        uri += `?${queryParams.join("&")}`
-      }
-      return handler({
-        path: uri,
-        method: "DELETE",
-        body,
-      }, {
-        service: "IDMappingService",
-        method: "Delete",
-      }) as Promise<wellKnownEmpty>;
-    },
   };
 }
-// 获取ID映射列表 - 答复
-export type ubaservicev1_ListIDMappingResponse = {
-  items: ubaservicev1_IDMapping[] | undefined;
-  total: number | undefined;
+// 获取ID映射数据 - 请求
+export type ubaservicev1_GetIDMappingRequest = {
+  id?: number;
+  viewMask?: wellKnownFieldMask;
 };
 
 // ID 关联记录（对应 id_mapping 表）
@@ -2678,35 +2450,6 @@ export type ubaservicev1_IDType =
   | "ID_TYPE_PHONE"
   // OpenID（如第三方平台用户标识，微信、支付宝等）
   | "ID_TYPE_OPENID";
-export type ubaservicev1_CountIDMappingResponse = {
-  count: number | undefined;
-};
-
-// 获取ID映射数据 - 请求
-export type ubaservicev1_GetIDMappingRequest = {
-  id?: number;
-  viewMask?: wellKnownFieldMask;
-};
-
-// 创建ID映射 - 请求
-export type ubaservicev1_CreateIDMappingRequest = {
-  data: ubaservicev1_IDMapping | undefined;
-};
-
-// 更新ID映射 - 请求
-export type ubaservicev1_UpdateIDMappingRequest = {
-  id: number | undefined;
-  data: ubaservicev1_IDMapping | undefined;
-  updateMask: wellKnownFieldMask | undefined;
-  allowMissing?: boolean;
-};
-
-// 删除ID映射 - 请求
-export type ubaservicev1_DeleteIDMappingRequest = {
-  id?: number;
-  deletedBy?: number;
-};
-
 // 站内信消息管理服务
 export interface InternalMessageService {
   // 查询站内信消息列表

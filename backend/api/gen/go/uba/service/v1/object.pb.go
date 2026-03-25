@@ -11,7 +11,6 @@ import (
 	v1 "github.com/tx7do/go-crud/api/gen/go/pagination/v1"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	fieldmaskpb "google.golang.org/protobuf/types/known/fieldmaskpb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	reflect "reflect"
@@ -552,7 +551,7 @@ var File_uba_service_v1_object_proto protoreflect.FileDescriptor
 
 const file_uba_service_v1_object_proto_rawDesc = "" +
 	"\n" +
-	"\x1buba/service/v1/object.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a google/protobuf/field_mask.proto\x1a\x1epagination/v1/pagination.proto\"\xbc\x0f\n" +
+	"\x1buba/service/v1/object.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a google/protobuf/field_mask.proto\x1a\x1epagination/v1/pagination.proto\"\xbc\x0f\n" +
 	"\tObjectDim\x12N\n" +
 	"\x02id\x18\x01 \x01(\rB>\xbaG;\x92\x028自增长主键ID，唯一标识一条对象维度记录R\x02id\x12R\n" +
 	"\ttenant_id\x18\x02 \x01(\rB5\xbaG2\x92\x02/租户ID，多租户隔离，支持 SaaS 场景R\btenantId\x12T\n" +
@@ -621,13 +620,11 @@ const file_uba_service_v1_object_proto_rawDesc = "" +
 	"deleted_by\x18d \x01(\rB\x17\xbaG\x14\x92\x02\x11删除者用户IDH\x01R\tdeletedBy\x88\x01\x01B\n" +
 	"\n" +
 	"\bquery_byB\r\n" +
-	"\v_deleted_by2\x8e\x03\n" +
+	"\v_deleted_by2\xf3\x01\n" +
 	"\rObjectService\x12J\n" +
 	"\x04List\x12\x19.pagination.PagingRequest\x1a%.uba.service.v1.ListObjectDimResponse\"\x00\x12G\n" +
 	"\x03Get\x12#.uba.service.v1.GetObjectDimRequest\x1a\x19.uba.service.v1.ObjectDim\"\x00\x12M\n" +
-	"\x06Create\x12&.uba.service.v1.CreateObjectDimRequest\x1a\x19.uba.service.v1.ObjectDim\"\x00\x12M\n" +
-	"\x06Update\x12&.uba.service.v1.UpdateObjectDimRequest\x1a\x19.uba.service.v1.ObjectDim\"\x00\x12J\n" +
-	"\x06Delete\x12&.uba.service.v1.DeleteObjectDimRequest\x1a\x16.google.protobuf.Empty\"\x00B\xa8\x01\n" +
+	"\x06Create\x12&.uba.service.v1.CreateObjectDimRequest\x1a\x19.uba.service.v1.ObjectDim\"\x00B\xa8\x01\n" +
 	"\x12com.uba.service.v1B\vObjectProtoP\x01Z+go-wind-uba/api/gen/go/uba/service/v1;ubapb\xa2\x02\x03USX\xaa\x02\x0eUba.Service.V1\xca\x02\x0eUba\\Service\\V1\xe2\x02\x1aUba\\Service\\V1\\GPBMetadata\xea\x02\x10Uba::Service::V1b\x06proto3"
 
 var (
@@ -654,7 +651,6 @@ var file_uba_service_v1_object_proto_goTypes = []any{
 	(*timestamppb.Timestamp)(nil),  // 7: google.protobuf.Timestamp
 	(*fieldmaskpb.FieldMask)(nil),  // 8: google.protobuf.FieldMask
 	(*v1.PagingRequest)(nil),       // 9: pagination.PagingRequest
-	(*emptypb.Empty)(nil),          // 10: google.protobuf.Empty
 }
 var file_uba_service_v1_object_proto_depIdxs = []int32{
 	6,  // 0: uba.service.v1.ObjectDim.attributes:type_name -> uba.service.v1.ObjectDim.AttributesEntry
@@ -671,15 +667,11 @@ var file_uba_service_v1_object_proto_depIdxs = []int32{
 	9,  // 11: uba.service.v1.ObjectService.List:input_type -> pagination.PagingRequest
 	2,  // 12: uba.service.v1.ObjectService.Get:input_type -> uba.service.v1.GetObjectDimRequest
 	3,  // 13: uba.service.v1.ObjectService.Create:input_type -> uba.service.v1.CreateObjectDimRequest
-	4,  // 14: uba.service.v1.ObjectService.Update:input_type -> uba.service.v1.UpdateObjectDimRequest
-	5,  // 15: uba.service.v1.ObjectService.Delete:input_type -> uba.service.v1.DeleteObjectDimRequest
-	1,  // 16: uba.service.v1.ObjectService.List:output_type -> uba.service.v1.ListObjectDimResponse
-	0,  // 17: uba.service.v1.ObjectService.Get:output_type -> uba.service.v1.ObjectDim
-	0,  // 18: uba.service.v1.ObjectService.Create:output_type -> uba.service.v1.ObjectDim
-	0,  // 19: uba.service.v1.ObjectService.Update:output_type -> uba.service.v1.ObjectDim
-	10, // 20: uba.service.v1.ObjectService.Delete:output_type -> google.protobuf.Empty
-	16, // [16:21] is the sub-list for method output_type
-	11, // [11:16] is the sub-list for method input_type
+	1,  // 14: uba.service.v1.ObjectService.List:output_type -> uba.service.v1.ListObjectDimResponse
+	0,  // 15: uba.service.v1.ObjectService.Get:output_type -> uba.service.v1.ObjectDim
+	0,  // 16: uba.service.v1.ObjectService.Create:output_type -> uba.service.v1.ObjectDim
+	14, // [14:17] is the sub-list for method output_type
+	11, // [11:14] is the sub-list for method input_type
 	11, // [11:11] is the sub-list for extension type_name
 	11, // [11:11] is the sub-list for extension extendee
 	0,  // [0:11] is the sub-list for field type_name

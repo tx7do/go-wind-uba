@@ -6,11 +6,11 @@ package ubapb
 import (
 	context "context"
 	redact "github.com/menta2k/protoc-gen-redact/v3/redact/v3"
+	pagination "github.com/tx7do/go-crud/api/gen/go/pagination/v1"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
 	durationpb "google.golang.org/protobuf/types/known/durationpb"
-	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -23,7 +23,7 @@ var (
 	_ status.Status
 	_ durationpb.Duration
 	_ timestamppb.Timestamp
-	_ emptypb.Empty
+	_ pagination.Sorting
 )
 
 // RegisterRedactedSessionServiceServer wraps the SessionServiceServer with the redacted server and registers the service in GRPC
@@ -44,10 +44,10 @@ type redactedSessionServiceServer struct {
 	bypass redact.Bypass
 }
 
-// ListSession is the redacted wrapper for the actual SessionServiceServer.ListSession method
+// List is the redacted wrapper for the actual SessionServiceServer.List method
 // Unary RPC
-func (s *redactedSessionServiceServer) ListSession(ctx context.Context, in *ListSessionRequest) (*ListSessionResponse, error) {
-	res, err := s.srv.ListSession(ctx, in)
+func (s *redactedSessionServiceServer) List(ctx context.Context, in *pagination.PagingRequest) (*ListSessionResponse, error) {
+	res, err := s.srv.List(ctx, in)
 	if !s.bypass.CheckInternal(ctx) {
 		// Apply redaction to the response
 		redact.Apply(res)
@@ -55,10 +55,10 @@ func (s *redactedSessionServiceServer) ListSession(ctx context.Context, in *List
 	return res, err
 }
 
-// GetSession is the redacted wrapper for the actual SessionServiceServer.GetSession method
+// Get is the redacted wrapper for the actual SessionServiceServer.Get method
 // Unary RPC
-func (s *redactedSessionServiceServer) GetSession(ctx context.Context, in *GetSessionRequest) (*Session, error) {
-	res, err := s.srv.GetSession(ctx, in)
+func (s *redactedSessionServiceServer) Get(ctx context.Context, in *GetSessionRequest) (*Session, error) {
+	res, err := s.srv.Get(ctx, in)
 	if !s.bypass.CheckInternal(ctx) {
 		// Apply redaction to the response
 		redact.Apply(res)
@@ -66,32 +66,10 @@ func (s *redactedSessionServiceServer) GetSession(ctx context.Context, in *GetSe
 	return res, err
 }
 
-// CreateSession is the redacted wrapper for the actual SessionServiceServer.CreateSession method
+// Create is the redacted wrapper for the actual SessionServiceServer.Create method
 // Unary RPC
-func (s *redactedSessionServiceServer) CreateSession(ctx context.Context, in *CreateSessionRequest) (*Session, error) {
-	res, err := s.srv.CreateSession(ctx, in)
-	if !s.bypass.CheckInternal(ctx) {
-		// Apply redaction to the response
-		redact.Apply(res)
-	}
-	return res, err
-}
-
-// UpdateSession is the redacted wrapper for the actual SessionServiceServer.UpdateSession method
-// Unary RPC
-func (s *redactedSessionServiceServer) UpdateSession(ctx context.Context, in *UpdateSessionRequest) (*Session, error) {
-	res, err := s.srv.UpdateSession(ctx, in)
-	if !s.bypass.CheckInternal(ctx) {
-		// Apply redaction to the response
-		redact.Apply(res)
-	}
-	return res, err
-}
-
-// DeleteSession is the redacted wrapper for the actual SessionServiceServer.DeleteSession method
-// Unary RPC
-func (s *redactedSessionServiceServer) DeleteSession(ctx context.Context, in *DeleteSessionRequest) (*emptypb.Empty, error) {
-	res, err := s.srv.DeleteSession(ctx, in)
+func (s *redactedSessionServiceServer) Create(ctx context.Context, in *CreateSessionRequest) (*Session, error) {
+	res, err := s.srv.Create(ctx, in)
 	if !s.bypass.CheckInternal(ctx) {
 		// Apply redaction to the response
 		redact.Apply(res)
@@ -160,22 +138,6 @@ func (x *ListSessionResponse) Redact() string {
 	// Safe field: Items
 
 	// Safe field: Total
-	return x.String()
-}
-
-// Redact method implementation for ListSessionRequest
-func (x *ListSessionRequest) Redact() string {
-	if x == nil {
-		return ""
-	}
-
-	// Safe field: TenantId
-
-	// Safe field: UserId
-
-	// Safe field: Page
-
-	// Safe field: PageSize
 	return x.String()
 }
 

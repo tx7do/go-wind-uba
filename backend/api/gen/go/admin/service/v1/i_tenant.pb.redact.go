@@ -24,7 +24,6 @@ var (
 	_ emptypb.Empty
 	_ pagination.Sorting
 	_ identitypb.Tenant
-	_ identitypb.User
 )
 
 // RegisterRedactedTenantServiceServer wraps the TenantServiceServer with the redacted server and registers the service in GRPC

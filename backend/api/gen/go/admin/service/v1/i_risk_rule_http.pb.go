@@ -46,15 +46,15 @@ type RiskRuleServiceHTTPServer interface {
 
 func RegisterRiskRuleServiceHTTPServer(s *http.Server, srv RiskRuleServiceHTTPServer) {
 	r := s.Route("/")
-	r.GET("/admin/v1/risk-rules", _RiskRuleService_List19_HTTP_Handler(srv))
-	r.GET("/admin/v1/risk-rules/count", _RiskRuleService_Count1_HTTP_Handler(srv))
+	r.GET("/admin/v1/risk-rules", _RiskRuleService_List18_HTTP_Handler(srv))
+	r.GET("/admin/v1/risk-rules/count", _RiskRuleService_Count0_HTTP_Handler(srv))
 	r.GET("/admin/v1/risk-rules/{id}", _RiskRuleService_Get19_HTTP_Handler(srv))
-	r.POST("/admin/v1/risk-rules", _RiskRuleService_Create13_HTTP_Handler(srv))
-	r.PUT("/admin/v1/risk-rules/{id}", _RiskRuleService_Update13_HTTP_Handler(srv))
-	r.DELETE("/admin/v1/risk-rules/{id}", _RiskRuleService_Delete13_HTTP_Handler(srv))
+	r.POST("/admin/v1/risk-rules", _RiskRuleService_Create12_HTTP_Handler(srv))
+	r.PUT("/admin/v1/risk-rules/{id}", _RiskRuleService_Update12_HTTP_Handler(srv))
+	r.DELETE("/admin/v1/risk-rules/{id}", _RiskRuleService_Delete12_HTTP_Handler(srv))
 }
 
-func _RiskRuleService_List19_HTTP_Handler(srv RiskRuleServiceHTTPServer) func(ctx http.Context) error {
+func _RiskRuleService_List18_HTTP_Handler(srv RiskRuleServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in v1.PagingRequest
 		if err := ctx.BindQuery(&in); err != nil {
@@ -73,7 +73,7 @@ func _RiskRuleService_List19_HTTP_Handler(srv RiskRuleServiceHTTPServer) func(ct
 	}
 }
 
-func _RiskRuleService_Count1_HTTP_Handler(srv RiskRuleServiceHTTPServer) func(ctx http.Context) error {
+func _RiskRuleService_Count0_HTTP_Handler(srv RiskRuleServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in v1.PagingRequest
 		if err := ctx.BindQuery(&in); err != nil {
@@ -114,7 +114,7 @@ func _RiskRuleService_Get19_HTTP_Handler(srv RiskRuleServiceHTTPServer) func(ctx
 	}
 }
 
-func _RiskRuleService_Create13_HTTP_Handler(srv RiskRuleServiceHTTPServer) func(ctx http.Context) error {
+func _RiskRuleService_Create12_HTTP_Handler(srv RiskRuleServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in v11.CreateRiskRuleRequest
 		if err := ctx.Bind(&in); err != nil {
@@ -136,7 +136,7 @@ func _RiskRuleService_Create13_HTTP_Handler(srv RiskRuleServiceHTTPServer) func(
 	}
 }
 
-func _RiskRuleService_Update13_HTTP_Handler(srv RiskRuleServiceHTTPServer) func(ctx http.Context) error {
+func _RiskRuleService_Update12_HTTP_Handler(srv RiskRuleServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in v11.UpdateRiskRuleRequest
 		if err := ctx.Bind(&in); err != nil {
@@ -161,7 +161,7 @@ func _RiskRuleService_Update13_HTTP_Handler(srv RiskRuleServiceHTTPServer) func(
 	}
 }
 
-func _RiskRuleService_Delete13_HTTP_Handler(srv RiskRuleServiceHTTPServer) func(ctx http.Context) error {
+func _RiskRuleService_Delete12_HTTP_Handler(srv RiskRuleServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in v11.DeleteRiskRuleRequest
 		if err := ctx.BindQuery(&in); err != nil {

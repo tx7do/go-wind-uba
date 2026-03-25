@@ -3,7 +3,6 @@
 package uba.service.v1;
 
 import "gnostic/openapi/v3/annotations.proto";
-import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/field_mask.proto";
 import "google/protobuf/struct.proto";
@@ -25,12 +24,6 @@ service RiskEventService {
 
   // 创建风险事件
   rpc Create (CreateRiskEventRequest) returns (RiskEvent) {}
-
-  // 更新风险事件
-  rpc Update (UpdateRiskEventRequest) returns (RiskEvent) {}
-
-  // 删除风险事件
-  rpc Delete (DeleteRiskEventRequest) returns (google.protobuf.Empty) {}
 }
 
 // 风险事件

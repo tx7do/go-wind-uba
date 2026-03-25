@@ -12,7 +12,6 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -24,8 +23,6 @@ const (
 	UserBehaviorProfileService_List_FullMethodName   = "/uba.service.v1.UserBehaviorProfileService/List"
 	UserBehaviorProfileService_Get_FullMethodName    = "/uba.service.v1.UserBehaviorProfileService/Get"
 	UserBehaviorProfileService_Create_FullMethodName = "/uba.service.v1.UserBehaviorProfileService/Create"
-	UserBehaviorProfileService_Update_FullMethodName = "/uba.service.v1.UserBehaviorProfileService/Update"
-	UserBehaviorProfileService_Delete_FullMethodName = "/uba.service.v1.UserBehaviorProfileService/Delete"
 )
 
 // UserBehaviorProfileServiceClient is the client API for UserBehaviorProfileService service.
@@ -40,10 +37,6 @@ type UserBehaviorProfileServiceClient interface {
 	Get(ctx context.Context, in *GetUserBehaviorProfileRequest, opts ...grpc.CallOption) (*UserBehaviorProfile, error)
 	// 创建用户画像
 	Create(ctx context.Context, in *CreateUserBehaviorProfileRequest, opts ...grpc.CallOption) (*UserBehaviorProfile, error)
-	// 更新用户画像
-	Update(ctx context.Context, in *UpdateUserBehaviorProfileRequest, opts ...grpc.CallOption) (*UserBehaviorProfile, error)
-	// 删除用户画像
-	Delete(ctx context.Context, in *DeleteUserBehaviorProfileRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type userBehaviorProfileServiceClient struct {
@@ -84,26 +77,6 @@ func (c *userBehaviorProfileServiceClient) Create(ctx context.Context, in *Creat
 	return out, nil
 }
 
-func (c *userBehaviorProfileServiceClient) Update(ctx context.Context, in *UpdateUserBehaviorProfileRequest, opts ...grpc.CallOption) (*UserBehaviorProfile, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(UserBehaviorProfile)
-	err := c.cc.Invoke(ctx, UserBehaviorProfileService_Update_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *userBehaviorProfileServiceClient) Delete(ctx context.Context, in *DeleteUserBehaviorProfileRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, UserBehaviorProfileService_Delete_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // UserBehaviorProfileServiceServer is the server API for UserBehaviorProfileService service.
 // All implementations must embed UnimplementedUserBehaviorProfileServiceServer
 // for forward compatibility.
@@ -116,10 +89,6 @@ type UserBehaviorProfileServiceServer interface {
 	Get(context.Context, *GetUserBehaviorProfileRequest) (*UserBehaviorProfile, error)
 	// 创建用户画像
 	Create(context.Context, *CreateUserBehaviorProfileRequest) (*UserBehaviorProfile, error)
-	// 更新用户画像
-	Update(context.Context, *UpdateUserBehaviorProfileRequest) (*UserBehaviorProfile, error)
-	// 删除用户画像
-	Delete(context.Context, *DeleteUserBehaviorProfileRequest) (*emptypb.Empty, error)
 	mustEmbedUnimplementedUserBehaviorProfileServiceServer()
 }
 
@@ -138,12 +107,6 @@ func (UnimplementedUserBehaviorProfileServiceServer) Get(context.Context, *GetUs
 }
 func (UnimplementedUserBehaviorProfileServiceServer) Create(context.Context, *CreateUserBehaviorProfileRequest) (*UserBehaviorProfile, error) {
 	return nil, status.Error(codes.Unimplemented, "method Create not implemented")
-}
-func (UnimplementedUserBehaviorProfileServiceServer) Update(context.Context, *UpdateUserBehaviorProfileRequest) (*UserBehaviorProfile, error) {
-	return nil, status.Error(codes.Unimplemented, "method Update not implemented")
-}
-func (UnimplementedUserBehaviorProfileServiceServer) Delete(context.Context, *DeleteUserBehaviorProfileRequest) (*emptypb.Empty, error) {
-	return nil, status.Error(codes.Unimplemented, "method Delete not implemented")
 }
 func (UnimplementedUserBehaviorProfileServiceServer) mustEmbedUnimplementedUserBehaviorProfileServiceServer() {
 }
@@ -221,42 +184,6 @@ func _UserBehaviorProfileService_Create_Handler(srv interface{}, ctx context.Con
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserBehaviorProfileService_Update_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateUserBehaviorProfileRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(UserBehaviorProfileServiceServer).Update(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: UserBehaviorProfileService_Update_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserBehaviorProfileServiceServer).Update(ctx, req.(*UpdateUserBehaviorProfileRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _UserBehaviorProfileService_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteUserBehaviorProfileRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(UserBehaviorProfileServiceServer).Delete(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: UserBehaviorProfileService_Delete_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserBehaviorProfileServiceServer).Delete(ctx, req.(*DeleteUserBehaviorProfileRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // UserBehaviorProfileService_ServiceDesc is the grpc.ServiceDesc for UserBehaviorProfileService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -275,14 +202,6 @@ var UserBehaviorProfileService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Create",
 			Handler:    _UserBehaviorProfileService_Create_Handler,
-		},
-		{
-			MethodName: "Update",
-			Handler:    _UserBehaviorProfileService_Update_Handler,
-		},
-		{
-			MethodName: "Delete",
-			Handler:    _UserBehaviorProfileService_Delete_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

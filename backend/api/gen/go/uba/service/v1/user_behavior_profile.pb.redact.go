@@ -10,7 +10,6 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	fieldmaskpb "google.golang.org/protobuf/types/known/fieldmaskpb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -22,7 +21,6 @@ var (
 	_ redact.Redactor
 	_ codes.Code
 	_ status.Status
-	_ emptypb.Empty
 	_ timestamppb.Timestamp
 	_ fieldmaskpb.FieldMask
 	_ pagination.Sorting
@@ -72,28 +70,6 @@ func (s *redactedUserBehaviorProfileServiceServer) Get(ctx context.Context, in *
 // Unary RPC
 func (s *redactedUserBehaviorProfileServiceServer) Create(ctx context.Context, in *CreateUserBehaviorProfileRequest) (*UserBehaviorProfile, error) {
 	res, err := s.srv.Create(ctx, in)
-	if !s.bypass.CheckInternal(ctx) {
-		// Apply redaction to the response
-		redact.Apply(res)
-	}
-	return res, err
-}
-
-// Update is the redacted wrapper for the actual UserBehaviorProfileServiceServer.Update method
-// Unary RPC
-func (s *redactedUserBehaviorProfileServiceServer) Update(ctx context.Context, in *UpdateUserBehaviorProfileRequest) (*UserBehaviorProfile, error) {
-	res, err := s.srv.Update(ctx, in)
-	if !s.bypass.CheckInternal(ctx) {
-		// Apply redaction to the response
-		redact.Apply(res)
-	}
-	return res, err
-}
-
-// Delete is the redacted wrapper for the actual UserBehaviorProfileServiceServer.Delete method
-// Unary RPC
-func (s *redactedUserBehaviorProfileServiceServer) Delete(ctx context.Context, in *DeleteUserBehaviorProfileRequest) (*emptypb.Empty, error) {
-	res, err := s.srv.Delete(ctx, in)
 	if !s.bypass.CheckInternal(ctx) {
 		// Apply redaction to the response
 		redact.Apply(res)

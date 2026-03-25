@@ -6,6 +6,7 @@ package ubapb
 import (
 	context "context"
 	redact "github.com/menta2k/protoc-gen-redact/v3/redact/v3"
+	pagination "github.com/tx7do/go-crud/api/gen/go/pagination/v1"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -22,6 +23,7 @@ var (
 	_ status.Status
 	_ emptypb.Empty
 	_ timestamppb.Timestamp
+	_ pagination.Sorting
 )
 
 // RegisterRedactedBehaviorEventServiceServer wraps the BehaviorEventServiceServer with the redacted server and registers the service in GRPC
@@ -44,7 +46,7 @@ type redactedBehaviorEventServiceServer struct {
 
 // Create is the redacted wrapper for the actual BehaviorEventServiceServer.Create method
 // Unary RPC
-func (s *redactedBehaviorEventServiceServer) Create(ctx context.Context, in *BehaviorEvent) (*emptypb.Empty, error) {
+func (s *redactedBehaviorEventServiceServer) Create(ctx context.Context, in *BehaviorEvent) (*BehaviorEvent, error) {
 	res, err := s.srv.Create(ctx, in)
 	if !s.bypass.CheckInternal(ctx) {
 		// Apply redaction to the response
@@ -53,10 +55,10 @@ func (s *redactedBehaviorEventServiceServer) Create(ctx context.Context, in *Beh
 	return res, err
 }
 
-// ListBehaviorEvent is the redacted wrapper for the actual BehaviorEventServiceServer.ListBehaviorEvent method
+// List is the redacted wrapper for the actual BehaviorEventServiceServer.List method
 // Unary RPC
-func (s *redactedBehaviorEventServiceServer) ListBehaviorEvent(ctx context.Context, in *ListBehaviorEventRequest) (*ListBehaviorEventResponse, error) {
-	res, err := s.srv.ListBehaviorEvent(ctx, in)
+func (s *redactedBehaviorEventServiceServer) List(ctx context.Context, in *pagination.PagingRequest) (*ListBehaviorEventResponse, error) {
+	res, err := s.srv.List(ctx, in)
 	if !s.bypass.CheckInternal(ctx) {
 		// Apply redaction to the response
 		redact.Apply(res)
@@ -64,21 +66,10 @@ func (s *redactedBehaviorEventServiceServer) ListBehaviorEvent(ctx context.Conte
 	return res, err
 }
 
-// GetBehaviorEvent is the redacted wrapper for the actual BehaviorEventServiceServer.GetBehaviorEvent method
+// Get is the redacted wrapper for the actual BehaviorEventServiceServer.Get method
 // Unary RPC
-func (s *redactedBehaviorEventServiceServer) GetBehaviorEvent(ctx context.Context, in *GetBehaviorEventRequest) (*BehaviorEvent, error) {
-	res, err := s.srv.GetBehaviorEvent(ctx, in)
-	if !s.bypass.CheckInternal(ctx) {
-		// Apply redaction to the response
-		redact.Apply(res)
-	}
-	return res, err
-}
-
-// DeleteBehaviorEvent is the redacted wrapper for the actual BehaviorEventServiceServer.DeleteBehaviorEvent method
-// Unary RPC
-func (s *redactedBehaviorEventServiceServer) DeleteBehaviorEvent(ctx context.Context, in *DeleteBehaviorEventRequest) (*emptypb.Empty, error) {
-	res, err := s.srv.DeleteBehaviorEvent(ctx, in)
+func (s *redactedBehaviorEventServiceServer) Get(ctx context.Context, in *GetBehaviorEventRequest) (*BehaviorEvent, error) {
+	res, err := s.srv.Get(ctx, in)
 	if !s.bypass.CheckInternal(ctx) {
 		// Apply redaction to the response
 		redact.Apply(res)
@@ -185,28 +176,6 @@ func (x *ListBehaviorEventResponse) Redact() string {
 	// Safe field: Items
 
 	// Safe field: Total
-	return x.String()
-}
-
-// Redact method implementation for ListBehaviorEventRequest
-func (x *ListBehaviorEventRequest) Redact() string {
-	if x == nil {
-		return ""
-	}
-
-	// Safe field: TenantId
-
-	// Safe field: EventName
-
-	// Safe field: UserId
-
-	// Safe field: StartTime
-
-	// Safe field: EndTime
-
-	// Safe field: Page
-
-	// Safe field: PageSize
 	return x.String()
 }
 

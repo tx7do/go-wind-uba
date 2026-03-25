@@ -650,7 +650,7 @@ var File_uba_service_v1_id_mapping_proto protoreflect.FileDescriptor
 
 const file_uba_service_v1_id_mapping_proto_rawDesc = "" +
 	"\n" +
-	"\x1fuba/service/v1/id_mapping.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a google/protobuf/field_mask.proto\x1a\x1epagination/v1/pagination.proto\x1a\x1buba/service/v1/common.proto\"\xde\x11\n" +
+	"\x1fuba/service/v1/id_mapping.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a google/protobuf/field_mask.proto\x1a\x1epagination/v1/pagination.proto\"\xde\x11\n" +
 	"\tIDMapping\x12J\n" +
 	"\x02id\x18\x01 \x01(\rB:\xbaG7\x92\x024自增长主键ID，唯一标识一条ID映射记录R\x02id\x12s\n" +
 	"\x0eglobal_user_id\x18\x02 \x01(\tBH\xbaGE\x92\x02B全局用户唯一标识，用于跨平台、跨租户用户关联H\x00R\fglobalUserId\x88\x01\x01\x12W\n" +
@@ -818,7 +818,6 @@ func file_uba_service_v1_id_mapping_proto_init() {
 	if File_uba_service_v1_id_mapping_proto != nil {
 		return
 	}
-	file_uba_service_v1_common_proto_init()
 	file_uba_service_v1_id_mapping_proto_msgTypes[0].OneofWrappers = []any{}
 	file_uba_service_v1_id_mapping_proto_msgTypes[2].OneofWrappers = []any{
 		(*GetIDMappingRequest_Id)(nil),

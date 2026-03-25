@@ -3,53 +3,14 @@
 package admin.service.v1;
 
 import "google/api/annotations.proto";
-import "google/protobuf/empty.proto";
-import "pagination/v1/pagination.proto";
 import "uba/service/v1/id_mapping.proto";
 
 // ID映射服务
 service IDMappingService {
-  // 查询ID映射列表
-  rpc List (pagination.PagingRequest) returns (uba.service.v1.ListIDMappingResponse) {
-    option (google.api.http) = {
-      get: "/admin/v1/id-mappings"
-    };
-  }
-
-  // 查询ID映射数量
-  rpc Count (pagination.PagingRequest) returns (uba.service.v1.CountIDMappingResponse) {
-    option (google.api.http) = {
-      get: "/admin/v1/id-mappings/count"
-    };
-  }
-
   // 查询ID映射详情
   rpc Get (uba.service.v1.GetIDMappingRequest) returns (uba.service.v1.IDMapping) {
     option (google.api.http) = {
       get: "/admin/v1/id-mappings/{id}"
-    };
-  }
-
-  // 创建ID映射
-  rpc Create (uba.service.v1.CreateIDMappingRequest) returns (uba.service.v1.IDMapping) {
-    option (google.api.http) = {
-      post: "/admin/v1/id-mappings"
-      body: "*"
-    };
-  }
-
-  // 更新ID映射
-  rpc Update (uba.service.v1.UpdateIDMappingRequest) returns (uba.service.v1.IDMapping) {
-    option (google.api.http) = {
-      put: "/admin/v1/id-mappings/{id}"
-      body: "*"
-    };
-  }
-
-  // 删除ID映射
-  rpc Delete (uba.service.v1.DeleteIDMappingRequest) returns (google.protobuf.Empty) {
-    option (google.api.http) = {
-      delete: "/admin/v1/id-mappings/{id}"
     };
   }
 }

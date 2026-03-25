@@ -10,7 +10,6 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	fieldmaskpb "google.golang.org/protobuf/types/known/fieldmaskpb"
 	structpb "google.golang.org/protobuf/types/known/structpb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
@@ -23,7 +22,6 @@ var (
 	_ redact.Redactor
 	_ codes.Code
 	_ status.Status
-	_ emptypb.Empty
 	_ timestamppb.Timestamp
 	_ fieldmaskpb.FieldMask
 	_ structpb.Struct
@@ -85,28 +83,6 @@ func (s *redactedRiskEventServiceServer) Get(ctx context.Context, in *GetRiskEve
 // Unary RPC
 func (s *redactedRiskEventServiceServer) Create(ctx context.Context, in *CreateRiskEventRequest) (*RiskEvent, error) {
 	res, err := s.srv.Create(ctx, in)
-	if !s.bypass.CheckInternal(ctx) {
-		// Apply redaction to the response
-		redact.Apply(res)
-	}
-	return res, err
-}
-
-// Update is the redacted wrapper for the actual RiskEventServiceServer.Update method
-// Unary RPC
-func (s *redactedRiskEventServiceServer) Update(ctx context.Context, in *UpdateRiskEventRequest) (*RiskEvent, error) {
-	res, err := s.srv.Update(ctx, in)
-	if !s.bypass.CheckInternal(ctx) {
-		// Apply redaction to the response
-		redact.Apply(res)
-	}
-	return res, err
-}
-
-// Delete is the redacted wrapper for the actual RiskEventServiceServer.Delete method
-// Unary RPC
-func (s *redactedRiskEventServiceServer) Delete(ctx context.Context, in *DeleteRiskEventRequest) (*emptypb.Empty, error) {
-	res, err := s.srv.Delete(ctx, in)
 	if !s.bypass.CheckInternal(ctx) {
 		// Apply redaction to the response
 		redact.Apply(res)

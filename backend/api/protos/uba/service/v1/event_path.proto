@@ -4,12 +4,12 @@ package uba.service.v1;
 
 import "gnostic/openapi/v3/annotations.proto";
 import "google/protobuf/timestamp.proto";
-import "google/protobuf/empty.proto";
+import "pagination/v1/pagination.proto";
 
 // 事件路径服务
 service EventPathService {
   // 分页查询事件路径
-  rpc ListEventPath(ListEventPathRequest) returns (ListEventPathResponse) {
+  rpc List(pagination.PagingRequest) returns (ListEventPathResponse) {
     option (gnostic.openapi.v3.operation) = {
       summary: "分页查询事件路径"
       description: "根据条件分页查询事件路径"
@@ -17,7 +17,7 @@ service EventPathService {
   }
 
   // 查询单条事件路径详情
-  rpc GetEventPath(GetEventPathRequest) returns (EventPath) {
+  rpc Get(GetEventPathRequest) returns (EventPath) {
     option (gnostic.openapi.v3.operation) = {
       summary: "查询事件路径详情"
       description: "根据路径ID查询事件路径详情"
@@ -25,18 +25,10 @@ service EventPathService {
   }
 
   // 创建事件路径（如有需要）
-  rpc CreateEventPath(CreateEventPathRequest) returns (EventPath) {
+  rpc Create(CreateEventPathRequest) returns (EventPath) {
     option (gnostic.openapi.v3.operation) = {
       summary: "创建事件路径"
       description: "创建一条新的事件路径"
-    };
-  }
-
-  // 删除事件路径（如有需要）
-  rpc DeleteEventPath(DeleteEventPathRequest) returns (google.protobuf.Empty) {
-    option (gnostic.openapi.v3.operation) = {
-      summary: "删除事件路径"
-      description: "根据路径ID删除事件路径"
     };
   }
 }
@@ -137,30 +129,6 @@ message EventPath {
 message ListEventPathResponse {
   repeated EventPath items = 1;
   uint64 total = 2;
-}
-
-// 分页查询事件路径请求
-message ListEventPathRequest {
-  uint32 tenant_id = 1 [
-    json_name = "tenantId",
-    (gnostic.openapi.v3.property) = {description: "租户ID"}
-  ];
-  uint32 user_id = 2 [
-    json_name = "userId",
-    (gnostic.openapi.v3.property) = {description: "用户ID"}
-  ];
-  uint64 session_id = 3 [
-    json_name = "sessionId",
-    (gnostic.openapi.v3.property) = {description: "会话ID"}
-  ];
-  uint32 page = 4 [
-    json_name = "page",
-    (gnostic.openapi.v3.property) = {description: "页码"}
-  ];
-  uint32 page_size = 5 [
-    json_name = "pageSize",
-    (gnostic.openapi.v3.property) = {description: "每页数量"}
-  ];
 }
 
 // 查询事件路径详情请求

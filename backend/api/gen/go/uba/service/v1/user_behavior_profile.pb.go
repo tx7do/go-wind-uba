@@ -11,7 +11,6 @@ import (
 	v1 "github.com/tx7do/go-crud/api/gen/go/pagination/v1"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	fieldmaskpb "google.golang.org/protobuf/types/known/fieldmaskpb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	reflect "reflect"
@@ -620,7 +619,7 @@ var File_uba_service_v1_user_behavior_profile_proto protoreflect.FileDescriptor
 
 const file_uba_service_v1_user_behavior_profile_proto_rawDesc = "" +
 	"\n" +
-	"*uba/service/v1/user_behavior_profile.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a google/protobuf/field_mask.proto\x1a\x1epagination/v1/pagination.proto\x1a\x1buba/service/v1/common.proto\"\xf4\x12\n" +
+	"*uba/service/v1/user_behavior_profile.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a google/protobuf/field_mask.proto\x1a\x1epagination/v1/pagination.proto\x1a\x1buba/service/v1/common.proto\"\xf4\x12\n" +
 	"\x13UserBehaviorProfile\x12N\n" +
 	"\x02id\x18\x01 \x01(\rB>\xbaG;\x92\x028自增长主键ID，唯一标识一条用户画像记录R\x02id\x12+\n" +
 	"\ttenant_id\x18\x02 \x01(\rB\x0e\xbaG\v\x92\x02\b租户IDR\btenantId\x12'\n" +
@@ -696,13 +695,11 @@ const file_uba_service_v1_user_behavior_profile_proto_rawDesc = "" +
 	"deleted_by\x18d \x01(\rB\x17\xbaG\x14\x92\x02\x11删除者用户IDH\x01R\tdeletedBy\x88\x01\x01B\n" +
 	"\n" +
 	"\bquery_byB\r\n" +
-	"\v_deleted_by2\xeb\x03\n" +
+	"\v_deleted_by2\xb2\x02\n" +
 	"\x1aUserBehaviorProfileService\x12T\n" +
 	"\x04List\x12\x19.pagination.PagingRequest\x1a/.uba.service.v1.ListUserBehaviorProfileResponse\"\x00\x12[\n" +
 	"\x03Get\x12-.uba.service.v1.GetUserBehaviorProfileRequest\x1a#.uba.service.v1.UserBehaviorProfile\"\x00\x12a\n" +
-	"\x06Create\x120.uba.service.v1.CreateUserBehaviorProfileRequest\x1a#.uba.service.v1.UserBehaviorProfile\"\x00\x12a\n" +
-	"\x06Update\x120.uba.service.v1.UpdateUserBehaviorProfileRequest\x1a#.uba.service.v1.UserBehaviorProfile\"\x00\x12T\n" +
-	"\x06Delete\x120.uba.service.v1.DeleteUserBehaviorProfileRequest\x1a\x16.google.protobuf.Empty\"\x00B\xb5\x01\n" +
+	"\x06Create\x120.uba.service.v1.CreateUserBehaviorProfileRequest\x1a#.uba.service.v1.UserBehaviorProfile\"\x00B\xb5\x01\n" +
 	"\x12com.uba.service.v1B\x18UserBehaviorProfileProtoP\x01Z+go-wind-uba/api/gen/go/uba/service/v1;ubapb\xa2\x02\x03USX\xaa\x02\x0eUba.Service.V1\xca\x02\x0eUba\\Service\\V1\xe2\x02\x1aUba\\Service\\V1\\GPBMetadata\xea\x02\x10Uba::Service::V1b\x06proto3"
 
 var (
@@ -731,7 +728,6 @@ var file_uba_service_v1_user_behavior_profile_proto_goTypes = []any{
 	(Platform)(0),                            // 9: uba.service.v1.Platform
 	(*fieldmaskpb.FieldMask)(nil),            // 10: google.protobuf.FieldMask
 	(*v1.PagingRequest)(nil),                 // 11: pagination.PagingRequest
-	(*emptypb.Empty)(nil),                    // 12: google.protobuf.Empty
 }
 var file_uba_service_v1_user_behavior_profile_proto_depIdxs = []int32{
 	7,  // 0: uba.service.v1.UserBehaviorProfile.register_time:type_name -> google.protobuf.Timestamp
@@ -753,15 +749,11 @@ var file_uba_service_v1_user_behavior_profile_proto_depIdxs = []int32{
 	11, // 16: uba.service.v1.UserBehaviorProfileService.List:input_type -> pagination.PagingRequest
 	2,  // 17: uba.service.v1.UserBehaviorProfileService.Get:input_type -> uba.service.v1.GetUserBehaviorProfileRequest
 	3,  // 18: uba.service.v1.UserBehaviorProfileService.Create:input_type -> uba.service.v1.CreateUserBehaviorProfileRequest
-	4,  // 19: uba.service.v1.UserBehaviorProfileService.Update:input_type -> uba.service.v1.UpdateUserBehaviorProfileRequest
-	5,  // 20: uba.service.v1.UserBehaviorProfileService.Delete:input_type -> uba.service.v1.DeleteUserBehaviorProfileRequest
-	1,  // 21: uba.service.v1.UserBehaviorProfileService.List:output_type -> uba.service.v1.ListUserBehaviorProfileResponse
-	0,  // 22: uba.service.v1.UserBehaviorProfileService.Get:output_type -> uba.service.v1.UserBehaviorProfile
-	0,  // 23: uba.service.v1.UserBehaviorProfileService.Create:output_type -> uba.service.v1.UserBehaviorProfile
-	0,  // 24: uba.service.v1.UserBehaviorProfileService.Update:output_type -> uba.service.v1.UserBehaviorProfile
-	12, // 25: uba.service.v1.UserBehaviorProfileService.Delete:output_type -> google.protobuf.Empty
-	21, // [21:26] is the sub-list for method output_type
-	16, // [16:21] is the sub-list for method input_type
+	1,  // 19: uba.service.v1.UserBehaviorProfileService.List:output_type -> uba.service.v1.ListUserBehaviorProfileResponse
+	0,  // 20: uba.service.v1.UserBehaviorProfileService.Get:output_type -> uba.service.v1.UserBehaviorProfile
+	0,  // 21: uba.service.v1.UserBehaviorProfileService.Create:output_type -> uba.service.v1.UserBehaviorProfile
+	19, // [19:22] is the sub-list for method output_type
+	16, // [16:19] is the sub-list for method input_type
 	16, // [16:16] is the sub-list for extension type_name
 	16, // [16:16] is the sub-list for extension extendee
 	0,  // [0:16] is the sub-list for field type_name

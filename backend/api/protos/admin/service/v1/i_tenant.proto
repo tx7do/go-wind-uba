@@ -7,7 +7,6 @@ import "google/protobuf/empty.proto";
 import "pagination/v1/pagination.proto";
 
 import "identity/service/v1/tenant.proto";
-import "identity/service/v1/user.proto";
 
 // 租户管理服务
 service TenantService {

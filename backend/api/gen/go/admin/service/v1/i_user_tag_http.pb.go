@@ -46,15 +46,15 @@ type UserTagServiceHTTPServer interface {
 
 func RegisterUserTagServiceHTTPServer(s *http.Server, srv UserTagServiceHTTPServer) {
 	r := s.Route("/")
-	r.GET("/admin/v1/user-tags", _UserTagService_List25_HTTP_Handler(srv))
-	r.GET("/admin/v1/user-tags/count", _UserTagService_Count3_HTTP_Handler(srv))
+	r.GET("/admin/v1/user-tags", _UserTagService_List24_HTTP_Handler(srv))
+	r.GET("/admin/v1/user-tags/count", _UserTagService_Count2_HTTP_Handler(srv))
 	r.GET("/admin/v1/user-tags/{id}", _UserTagService_Get27_HTTP_Handler(srv))
-	r.POST("/admin/v1/user-tags", _UserTagService_Create19_HTTP_Handler(srv))
-	r.PUT("/admin/v1/user-tags/{id}", _UserTagService_Update19_HTTP_Handler(srv))
-	r.DELETE("/admin/v1/user-tags/{id}", _UserTagService_Delete20_HTTP_Handler(srv))
+	r.POST("/admin/v1/user-tags", _UserTagService_Create18_HTTP_Handler(srv))
+	r.PUT("/admin/v1/user-tags/{id}", _UserTagService_Update18_HTTP_Handler(srv))
+	r.DELETE("/admin/v1/user-tags/{id}", _UserTagService_Delete19_HTTP_Handler(srv))
 }
 
-func _UserTagService_List25_HTTP_Handler(srv UserTagServiceHTTPServer) func(ctx http.Context) error {
+func _UserTagService_List24_HTTP_Handler(srv UserTagServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in v1.PagingRequest
 		if err := ctx.BindQuery(&in); err != nil {
@@ -73,7 +73,7 @@ func _UserTagService_List25_HTTP_Handler(srv UserTagServiceHTTPServer) func(ctx 
 	}
 }
 
-func _UserTagService_Count3_HTTP_Handler(srv UserTagServiceHTTPServer) func(ctx http.Context) error {
+func _UserTagService_Count2_HTTP_Handler(srv UserTagServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in v1.PagingRequest
 		if err := ctx.BindQuery(&in); err != nil {
@@ -114,7 +114,7 @@ func _UserTagService_Get27_HTTP_Handler(srv UserTagServiceHTTPServer) func(ctx h
 	}
 }
 
-func _UserTagService_Create19_HTTP_Handler(srv UserTagServiceHTTPServer) func(ctx http.Context) error {
+func _UserTagService_Create18_HTTP_Handler(srv UserTagServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in v11.CreateUserTagRequest
 		if err := ctx.Bind(&in); err != nil {
@@ -136,7 +136,7 @@ func _UserTagService_Create19_HTTP_Handler(srv UserTagServiceHTTPServer) func(ct
 	}
 }
 
-func _UserTagService_Update19_HTTP_Handler(srv UserTagServiceHTTPServer) func(ctx http.Context) error {
+func _UserTagService_Update18_HTTP_Handler(srv UserTagServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in v11.UpdateUserTagRequest
 		if err := ctx.Bind(&in); err != nil {
@@ -161,7 +161,7 @@ func _UserTagService_Update19_HTTP_Handler(srv UserTagServiceHTTPServer) func(ct
 	}
 }
 
-func _UserTagService_Delete20_HTTP_Handler(srv UserTagServiceHTTPServer) func(ctx http.Context) error {
+func _UserTagService_Delete19_HTTP_Handler(srv UserTagServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in v11.DeleteUserTagRequest
 		if err := ctx.BindQuery(&in); err != nil {

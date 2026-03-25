@@ -5,13 +5,14 @@ package uba.service.v1;
 import "gnostic/openapi/v3/annotations.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
+import "pagination/v1/pagination.proto";
 
 import "uba/service/v1/common.proto";
 
 // 行为事件服务
 service BehaviorEventService {
   // 创建行为事件
-  rpc Create(BehaviorEvent) returns (google.protobuf.Empty) {
+  rpc Create(BehaviorEvent) returns (BehaviorEvent) {
     option (gnostic.openapi.v3.operation) = {
       summary: "创建行为事件"
       description: "上报一条新的行为事件"
@@ -19,7 +20,7 @@ service BehaviorEventService {
   }
 
   // 分页查询行为事件
-  rpc ListBehaviorEvent(ListBehaviorEventRequest) returns (ListBehaviorEventResponse) {
+  rpc List(pagination.PagingRequest) returns (ListBehaviorEventResponse) {
     option (gnostic.openapi.v3.operation) = {
       summary: "分页查询行为事件"
       description: "根据条件分页查询行为事件"
@@ -27,18 +28,10 @@ service BehaviorEventService {
   }
 
   // 查询单条行为事件详情
-  rpc GetBehaviorEvent(GetBehaviorEventRequest) returns (BehaviorEvent) {
+  rpc Get(GetBehaviorEventRequest) returns (BehaviorEvent) {
     option (gnostic.openapi.v3.operation) = {
       summary: "查询行为事件详情"
       description: "根据事件ID查询行为事件详情"
-    };
-  }
-
-  // 删除行为事件（如有需要）
-  rpc DeleteBehaviorEvent(DeleteBehaviorEventRequest) returns (google.protobuf.Empty) {
-    option (gnostic.openapi.v3.operation) = {
-      summary: "删除行为事件"
-      description: "根据事件ID删除行为事件"
     };
   }
 }
@@ -244,38 +237,6 @@ message BehaviorEvent {
 message ListBehaviorEventResponse {
   repeated BehaviorEvent items = 1;
   uint64 total = 2;
-}
-
-// 分页查询行为事件请求
-message ListBehaviorEventRequest {
-  uint32 tenant_id = 1 [
-    json_name = "tenantId",
-    (gnostic.openapi.v3.property) = {description: "租户ID"}
-  ];
-  string event_name = 2 [
-    json_name = "eventName",
-    (gnostic.openapi.v3.property) = {description: "事件名称"}
-  ];
-  uint32 user_id = 3 [
-    json_name = "userId",
-    (gnostic.openapi.v3.property) = {description: "用户ID"}
-  ];
-  google.protobuf.Timestamp start_time = 4 [
-    json_name = "startTime",
-    (gnostic.openapi.v3.property) = {description: "起始时间"}
-  ];
-  google.protobuf.Timestamp end_time = 5 [
-    json_name = "endTime",
-    (gnostic.openapi.v3.property) = {description: "结束时间"}
-  ];
-  uint32 page = 6 [
-    json_name = "page",
-    (gnostic.openapi.v3.property) = {description: "页码"}
-  ];
-  uint32 page_size = 7 [
-    json_name = "pageSize",
-    (gnostic.openapi.v3.property) = {description: "每页数量"}
-  ];
 }
 
 // 查询行为事件详情请求

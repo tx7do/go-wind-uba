@@ -8,10 +8,10 @@ package ubapb
 
 import (
 	context "context"
+	v1 "github.com/tx7do/go-crud/api/gen/go/pagination/v1"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -20,10 +20,9 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	BehaviorEventService_Create_FullMethodName              = "/uba.service.v1.BehaviorEventService/Create"
-	BehaviorEventService_ListBehaviorEvent_FullMethodName   = "/uba.service.v1.BehaviorEventService/ListBehaviorEvent"
-	BehaviorEventService_GetBehaviorEvent_FullMethodName    = "/uba.service.v1.BehaviorEventService/GetBehaviorEvent"
-	BehaviorEventService_DeleteBehaviorEvent_FullMethodName = "/uba.service.v1.BehaviorEventService/DeleteBehaviorEvent"
+	BehaviorEventService_Create_FullMethodName = "/uba.service.v1.BehaviorEventService/Create"
+	BehaviorEventService_List_FullMethodName   = "/uba.service.v1.BehaviorEventService/List"
+	BehaviorEventService_Get_FullMethodName    = "/uba.service.v1.BehaviorEventService/Get"
 )
 
 // BehaviorEventServiceClient is the client API for BehaviorEventService service.
@@ -33,13 +32,11 @@ const (
 // 行为事件服务
 type BehaviorEventServiceClient interface {
 	// 创建行为事件
-	Create(ctx context.Context, in *BehaviorEvent, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	Create(ctx context.Context, in *BehaviorEvent, opts ...grpc.CallOption) (*BehaviorEvent, error)
 	// 分页查询行为事件
-	ListBehaviorEvent(ctx context.Context, in *ListBehaviorEventRequest, opts ...grpc.CallOption) (*ListBehaviorEventResponse, error)
+	List(ctx context.Context, in *v1.PagingRequest, opts ...grpc.CallOption) (*ListBehaviorEventResponse, error)
 	// 查询单条行为事件详情
-	GetBehaviorEvent(ctx context.Context, in *GetBehaviorEventRequest, opts ...grpc.CallOption) (*BehaviorEvent, error)
-	// 删除行为事件（如有需要）
-	DeleteBehaviorEvent(ctx context.Context, in *DeleteBehaviorEventRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	Get(ctx context.Context, in *GetBehaviorEventRequest, opts ...grpc.CallOption) (*BehaviorEvent, error)
 }
 
 type behaviorEventServiceClient struct {
@@ -50,9 +47,9 @@ func NewBehaviorEventServiceClient(cc grpc.ClientConnInterface) BehaviorEventSer
 	return &behaviorEventServiceClient{cc}
 }
 
-func (c *behaviorEventServiceClient) Create(ctx context.Context, in *BehaviorEvent, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *behaviorEventServiceClient) Create(ctx context.Context, in *BehaviorEvent, opts ...grpc.CallOption) (*BehaviorEvent, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(emptypb.Empty)
+	out := new(BehaviorEvent)
 	err := c.cc.Invoke(ctx, BehaviorEventService_Create_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -60,30 +57,20 @@ func (c *behaviorEventServiceClient) Create(ctx context.Context, in *BehaviorEve
 	return out, nil
 }
 
-func (c *behaviorEventServiceClient) ListBehaviorEvent(ctx context.Context, in *ListBehaviorEventRequest, opts ...grpc.CallOption) (*ListBehaviorEventResponse, error) {
+func (c *behaviorEventServiceClient) List(ctx context.Context, in *v1.PagingRequest, opts ...grpc.CallOption) (*ListBehaviorEventResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ListBehaviorEventResponse)
-	err := c.cc.Invoke(ctx, BehaviorEventService_ListBehaviorEvent_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, BehaviorEventService_List_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *behaviorEventServiceClient) GetBehaviorEvent(ctx context.Context, in *GetBehaviorEventRequest, opts ...grpc.CallOption) (*BehaviorEvent, error) {
+func (c *behaviorEventServiceClient) Get(ctx context.Context, in *GetBehaviorEventRequest, opts ...grpc.CallOption) (*BehaviorEvent, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(BehaviorEvent)
-	err := c.cc.Invoke(ctx, BehaviorEventService_GetBehaviorEvent_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *behaviorEventServiceClient) DeleteBehaviorEvent(ctx context.Context, in *DeleteBehaviorEventRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, BehaviorEventService_DeleteBehaviorEvent_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, BehaviorEventService_Get_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -97,13 +84,11 @@ func (c *behaviorEventServiceClient) DeleteBehaviorEvent(ctx context.Context, in
 // 行为事件服务
 type BehaviorEventServiceServer interface {
 	// 创建行为事件
-	Create(context.Context, *BehaviorEvent) (*emptypb.Empty, error)
+	Create(context.Context, *BehaviorEvent) (*BehaviorEvent, error)
 	// 分页查询行为事件
-	ListBehaviorEvent(context.Context, *ListBehaviorEventRequest) (*ListBehaviorEventResponse, error)
+	List(context.Context, *v1.PagingRequest) (*ListBehaviorEventResponse, error)
 	// 查询单条行为事件详情
-	GetBehaviorEvent(context.Context, *GetBehaviorEventRequest) (*BehaviorEvent, error)
-	// 删除行为事件（如有需要）
-	DeleteBehaviorEvent(context.Context, *DeleteBehaviorEventRequest) (*emptypb.Empty, error)
+	Get(context.Context, *GetBehaviorEventRequest) (*BehaviorEvent, error)
 	mustEmbedUnimplementedBehaviorEventServiceServer()
 }
 
@@ -114,17 +99,14 @@ type BehaviorEventServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedBehaviorEventServiceServer struct{}
 
-func (UnimplementedBehaviorEventServiceServer) Create(context.Context, *BehaviorEvent) (*emptypb.Empty, error) {
+func (UnimplementedBehaviorEventServiceServer) Create(context.Context, *BehaviorEvent) (*BehaviorEvent, error) {
 	return nil, status.Error(codes.Unimplemented, "method Create not implemented")
 }
-func (UnimplementedBehaviorEventServiceServer) ListBehaviorEvent(context.Context, *ListBehaviorEventRequest) (*ListBehaviorEventResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method ListBehaviorEvent not implemented")
+func (UnimplementedBehaviorEventServiceServer) List(context.Context, *v1.PagingRequest) (*ListBehaviorEventResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method List not implemented")
 }
-func (UnimplementedBehaviorEventServiceServer) GetBehaviorEvent(context.Context, *GetBehaviorEventRequest) (*BehaviorEvent, error) {
-	return nil, status.Error(codes.Unimplemented, "method GetBehaviorEvent not implemented")
-}
-func (UnimplementedBehaviorEventServiceServer) DeleteBehaviorEvent(context.Context, *DeleteBehaviorEventRequest) (*emptypb.Empty, error) {
-	return nil, status.Error(codes.Unimplemented, "method DeleteBehaviorEvent not implemented")
+func (UnimplementedBehaviorEventServiceServer) Get(context.Context, *GetBehaviorEventRequest) (*BehaviorEvent, error) {
+	return nil, status.Error(codes.Unimplemented, "method Get not implemented")
 }
 func (UnimplementedBehaviorEventServiceServer) mustEmbedUnimplementedBehaviorEventServiceServer() {}
 func (UnimplementedBehaviorEventServiceServer) testEmbeddedByValue()                              {}
@@ -165,56 +147,38 @@ func _BehaviorEventService_Create_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BehaviorEventService_ListBehaviorEvent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListBehaviorEventRequest)
+func _BehaviorEventService_List_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(v1.PagingRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BehaviorEventServiceServer).ListBehaviorEvent(ctx, in)
+		return srv.(BehaviorEventServiceServer).List(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BehaviorEventService_ListBehaviorEvent_FullMethodName,
+		FullMethod: BehaviorEventService_List_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BehaviorEventServiceServer).ListBehaviorEvent(ctx, req.(*ListBehaviorEventRequest))
+		return srv.(BehaviorEventServiceServer).List(ctx, req.(*v1.PagingRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BehaviorEventService_GetBehaviorEvent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _BehaviorEventService_Get_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetBehaviorEventRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BehaviorEventServiceServer).GetBehaviorEvent(ctx, in)
+		return srv.(BehaviorEventServiceServer).Get(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BehaviorEventService_GetBehaviorEvent_FullMethodName,
+		FullMethod: BehaviorEventService_Get_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BehaviorEventServiceServer).GetBehaviorEvent(ctx, req.(*GetBehaviorEventRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _BehaviorEventService_DeleteBehaviorEvent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteBehaviorEventRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(BehaviorEventServiceServer).DeleteBehaviorEvent(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: BehaviorEventService_DeleteBehaviorEvent_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BehaviorEventServiceServer).DeleteBehaviorEvent(ctx, req.(*DeleteBehaviorEventRequest))
+		return srv.(BehaviorEventServiceServer).Get(ctx, req.(*GetBehaviorEventRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -231,16 +195,12 @@ var BehaviorEventService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _BehaviorEventService_Create_Handler,
 		},
 		{
-			MethodName: "ListBehaviorEvent",
-			Handler:    _BehaviorEventService_ListBehaviorEvent_Handler,
+			MethodName: "List",
+			Handler:    _BehaviorEventService_List_Handler,
 		},
 		{
-			MethodName: "GetBehaviorEvent",
-			Handler:    _BehaviorEventService_GetBehaviorEvent_Handler,
-		},
-		{
-			MethodName: "DeleteBehaviorEvent",
-			Handler:    _BehaviorEventService_DeleteBehaviorEvent_Handler,
+			MethodName: "Get",
+			Handler:    _BehaviorEventService_Get_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -3,7 +3,6 @@
 package uba.service.v1;
 
 import "gnostic/openapi/v3/annotations.proto";
-import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/field_mask.proto";
 
@@ -21,12 +20,6 @@ service UserBehaviorProfileService {
 
   // 创建用户画像
   rpc Create (CreateUserBehaviorProfileRequest) returns (UserBehaviorProfile) {}
-
-  // 更新用户画像
-  rpc Update (UpdateUserBehaviorProfileRequest) returns (UserBehaviorProfile) {}
-
-  // 删除用户画像
-  rpc Delete (DeleteUserBehaviorProfileRequest) returns (google.protobuf.Empty) {}
 }
 
 // 用户画像（对应 users_dim 表）

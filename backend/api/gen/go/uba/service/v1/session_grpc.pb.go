@@ -8,10 +8,10 @@ package ubapb
 
 import (
 	context "context"
+	v1 "github.com/tx7do/go-crud/api/gen/go/pagination/v1"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -20,11 +20,9 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	SessionService_ListSession_FullMethodName   = "/uba.service.v1.SessionService/ListSession"
-	SessionService_GetSession_FullMethodName    = "/uba.service.v1.SessionService/GetSession"
-	SessionService_CreateSession_FullMethodName = "/uba.service.v1.SessionService/CreateSession"
-	SessionService_UpdateSession_FullMethodName = "/uba.service.v1.SessionService/UpdateSession"
-	SessionService_DeleteSession_FullMethodName = "/uba.service.v1.SessionService/DeleteSession"
+	SessionService_List_FullMethodName   = "/uba.service.v1.SessionService/List"
+	SessionService_Get_FullMethodName    = "/uba.service.v1.SessionService/Get"
+	SessionService_Create_FullMethodName = "/uba.service.v1.SessionService/Create"
 )
 
 // SessionServiceClient is the client API for SessionService service.
@@ -34,15 +32,11 @@ const (
 // 会话服务
 type SessionServiceClient interface {
 	// 分页查询会话
-	ListSession(ctx context.Context, in *ListSessionRequest, opts ...grpc.CallOption) (*ListSessionResponse, error)
+	List(ctx context.Context, in *v1.PagingRequest, opts ...grpc.CallOption) (*ListSessionResponse, error)
 	// 查询单条会话详情
-	GetSession(ctx context.Context, in *GetSessionRequest, opts ...grpc.CallOption) (*Session, error)
+	Get(ctx context.Context, in *GetSessionRequest, opts ...grpc.CallOption) (*Session, error)
 	// 创建会话
-	CreateSession(ctx context.Context, in *CreateSessionRequest, opts ...grpc.CallOption) (*Session, error)
-	// 更新会话
-	UpdateSession(ctx context.Context, in *UpdateSessionRequest, opts ...grpc.CallOption) (*Session, error)
-	// 删除会话
-	DeleteSession(ctx context.Context, in *DeleteSessionRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	Create(ctx context.Context, in *CreateSessionRequest, opts ...grpc.CallOption) (*Session, error)
 }
 
 type sessionServiceClient struct {
@@ -53,50 +47,30 @@ func NewSessionServiceClient(cc grpc.ClientConnInterface) SessionServiceClient {
 	return &sessionServiceClient{cc}
 }
 
-func (c *sessionServiceClient) ListSession(ctx context.Context, in *ListSessionRequest, opts ...grpc.CallOption) (*ListSessionResponse, error) {
+func (c *sessionServiceClient) List(ctx context.Context, in *v1.PagingRequest, opts ...grpc.CallOption) (*ListSessionResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ListSessionResponse)
-	err := c.cc.Invoke(ctx, SessionService_ListSession_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, SessionService_List_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *sessionServiceClient) GetSession(ctx context.Context, in *GetSessionRequest, opts ...grpc.CallOption) (*Session, error) {
+func (c *sessionServiceClient) Get(ctx context.Context, in *GetSessionRequest, opts ...grpc.CallOption) (*Session, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(Session)
-	err := c.cc.Invoke(ctx, SessionService_GetSession_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, SessionService_Get_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *sessionServiceClient) CreateSession(ctx context.Context, in *CreateSessionRequest, opts ...grpc.CallOption) (*Session, error) {
+func (c *sessionServiceClient) Create(ctx context.Context, in *CreateSessionRequest, opts ...grpc.CallOption) (*Session, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(Session)
-	err := c.cc.Invoke(ctx, SessionService_CreateSession_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *sessionServiceClient) UpdateSession(ctx context.Context, in *UpdateSessionRequest, opts ...grpc.CallOption) (*Session, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Session)
-	err := c.cc.Invoke(ctx, SessionService_UpdateSession_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *sessionServiceClient) DeleteSession(ctx context.Context, in *DeleteSessionRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, SessionService_DeleteSession_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, SessionService_Create_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -110,15 +84,11 @@ func (c *sessionServiceClient) DeleteSession(ctx context.Context, in *DeleteSess
 // 会话服务
 type SessionServiceServer interface {
 	// 分页查询会话
-	ListSession(context.Context, *ListSessionRequest) (*ListSessionResponse, error)
+	List(context.Context, *v1.PagingRequest) (*ListSessionResponse, error)
 	// 查询单条会话详情
-	GetSession(context.Context, *GetSessionRequest) (*Session, error)
+	Get(context.Context, *GetSessionRequest) (*Session, error)
 	// 创建会话
-	CreateSession(context.Context, *CreateSessionRequest) (*Session, error)
-	// 更新会话
-	UpdateSession(context.Context, *UpdateSessionRequest) (*Session, error)
-	// 删除会话
-	DeleteSession(context.Context, *DeleteSessionRequest) (*emptypb.Empty, error)
+	Create(context.Context, *CreateSessionRequest) (*Session, error)
 	mustEmbedUnimplementedSessionServiceServer()
 }
 
@@ -129,20 +99,14 @@ type SessionServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedSessionServiceServer struct{}
 
-func (UnimplementedSessionServiceServer) ListSession(context.Context, *ListSessionRequest) (*ListSessionResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method ListSession not implemented")
+func (UnimplementedSessionServiceServer) List(context.Context, *v1.PagingRequest) (*ListSessionResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method List not implemented")
 }
-func (UnimplementedSessionServiceServer) GetSession(context.Context, *GetSessionRequest) (*Session, error) {
-	return nil, status.Error(codes.Unimplemented, "method GetSession not implemented")
+func (UnimplementedSessionServiceServer) Get(context.Context, *GetSessionRequest) (*Session, error) {
+	return nil, status.Error(codes.Unimplemented, "method Get not implemented")
 }
-func (UnimplementedSessionServiceServer) CreateSession(context.Context, *CreateSessionRequest) (*Session, error) {
-	return nil, status.Error(codes.Unimplemented, "method CreateSession not implemented")
-}
-func (UnimplementedSessionServiceServer) UpdateSession(context.Context, *UpdateSessionRequest) (*Session, error) {
-	return nil, status.Error(codes.Unimplemented, "method UpdateSession not implemented")
-}
-func (UnimplementedSessionServiceServer) DeleteSession(context.Context, *DeleteSessionRequest) (*emptypb.Empty, error) {
-	return nil, status.Error(codes.Unimplemented, "method DeleteSession not implemented")
+func (UnimplementedSessionServiceServer) Create(context.Context, *CreateSessionRequest) (*Session, error) {
+	return nil, status.Error(codes.Unimplemented, "method Create not implemented")
 }
 func (UnimplementedSessionServiceServer) mustEmbedUnimplementedSessionServiceServer() {}
 func (UnimplementedSessionServiceServer) testEmbeddedByValue()                        {}
@@ -165,92 +129,56 @@ func RegisterSessionServiceServer(s grpc.ServiceRegistrar, srv SessionServiceSer
 	s.RegisterService(&SessionService_ServiceDesc, srv)
 }
 
-func _SessionService_ListSession_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListSessionRequest)
+func _SessionService_List_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(v1.PagingRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(SessionServiceServer).ListSession(ctx, in)
+		return srv.(SessionServiceServer).List(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: SessionService_ListSession_FullMethodName,
+		FullMethod: SessionService_List_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SessionServiceServer).ListSession(ctx, req.(*ListSessionRequest))
+		return srv.(SessionServiceServer).List(ctx, req.(*v1.PagingRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _SessionService_GetSession_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _SessionService_Get_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetSessionRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(SessionServiceServer).GetSession(ctx, in)
+		return srv.(SessionServiceServer).Get(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: SessionService_GetSession_FullMethodName,
+		FullMethod: SessionService_Get_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SessionServiceServer).GetSession(ctx, req.(*GetSessionRequest))
+		return srv.(SessionServiceServer).Get(ctx, req.(*GetSessionRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _SessionService_CreateSession_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _SessionService_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateSessionRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(SessionServiceServer).CreateSession(ctx, in)
+		return srv.(SessionServiceServer).Create(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: SessionService_CreateSession_FullMethodName,
+		FullMethod: SessionService_Create_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SessionServiceServer).CreateSession(ctx, req.(*CreateSessionRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _SessionService_UpdateSession_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateSessionRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(SessionServiceServer).UpdateSession(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: SessionService_UpdateSession_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SessionServiceServer).UpdateSession(ctx, req.(*UpdateSessionRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _SessionService_DeleteSession_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteSessionRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(SessionServiceServer).DeleteSession(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: SessionService_DeleteSession_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SessionServiceServer).DeleteSession(ctx, req.(*DeleteSessionRequest))
+		return srv.(SessionServiceServer).Create(ctx, req.(*CreateSessionRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -263,24 +191,16 @@ var SessionService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*SessionServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "ListSession",
-			Handler:    _SessionService_ListSession_Handler,
+			MethodName: "List",
+			Handler:    _SessionService_List_Handler,
 		},
 		{
-			MethodName: "GetSession",
-			Handler:    _SessionService_GetSession_Handler,
+			MethodName: "Get",
+			Handler:    _SessionService_Get_Handler,
 		},
 		{
-			MethodName: "CreateSession",
-			Handler:    _SessionService_CreateSession_Handler,
-		},
-		{
-			MethodName: "UpdateSession",
-			Handler:    _SessionService_UpdateSession_Handler,
-		},
-		{
-			MethodName: "DeleteSession",
-			Handler:    _SessionService_DeleteSession_Handler,
+			MethodName: "Create",
+			Handler:    _SessionService_Create_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

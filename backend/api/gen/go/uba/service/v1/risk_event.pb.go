@@ -11,7 +11,6 @@ import (
 	v1 "github.com/tx7do/go-crud/api/gen/go/pagination/v1"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	fieldmaskpb "google.golang.org/protobuf/types/known/fieldmaskpb"
 	structpb "google.golang.org/protobuf/types/known/structpb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
@@ -816,7 +815,7 @@ var File_uba_service_v1_risk_event_proto protoreflect.FileDescriptor
 
 const file_uba_service_v1_risk_event_proto_rawDesc = "" +
 	"\n" +
-	"\x1fuba/service/v1/risk_event.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a google/protobuf/field_mask.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1epagination/v1/pagination.proto\x1a\x1buba/service/v1/common.proto\"\xef\x17\n" +
+	"\x1fuba/service/v1/risk_event.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a google/protobuf/field_mask.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1epagination/v1/pagination.proto\x1a\x1buba/service/v1/common.proto\"\xef\x17\n" +
 	"\tRiskEvent\x12\x18\n" +
 	"\x02id\x18\x01 \x01(\rB\b\xbaG\x05\x92\x02\x02IDR\x02id\x12W\n" +
 	"\ttenant_id\x18\x02 \x01(\rB5\xbaG2\x92\x02/租户ID，多租户隔离，支持 SaaS 场景H\x00R\btenantId\x88\x01\x01\x12Y\n" +
@@ -945,14 +944,12 @@ const file_uba_service_v1_risk_event_proto_rawDesc = "" +
 	"\bquery_byB\r\n" +
 	"\v_deleted_by\".\n" +
 	"\x16CountRiskEventResponse\x12\x14\n" +
-	"\x05count\x18\x01 \x01(\x04R\x05count2\xdf\x03\n" +
+	"\x05count\x18\x01 \x01(\x04R\x05count2\xc4\x02\n" +
 	"\x10RiskEventService\x12J\n" +
 	"\x04List\x12\x19.pagination.PagingRequest\x1a%.uba.service.v1.ListRiskEventResponse\"\x00\x12L\n" +
 	"\x05Count\x12\x19.pagination.PagingRequest\x1a&.uba.service.v1.CountRiskEventResponse\"\x00\x12G\n" +
 	"\x03Get\x12#.uba.service.v1.GetRiskEventRequest\x1a\x19.uba.service.v1.RiskEvent\"\x00\x12M\n" +
-	"\x06Create\x12&.uba.service.v1.CreateRiskEventRequest\x1a\x19.uba.service.v1.RiskEvent\"\x00\x12M\n" +
-	"\x06Update\x12&.uba.service.v1.UpdateRiskEventRequest\x1a\x19.uba.service.v1.RiskEvent\"\x00\x12J\n" +
-	"\x06Delete\x12&.uba.service.v1.DeleteRiskEventRequest\x1a\x16.google.protobuf.Empty\"\x00B\xab\x01\n" +
+	"\x06Create\x12&.uba.service.v1.CreateRiskEventRequest\x1a\x19.uba.service.v1.RiskEvent\"\x00B\xab\x01\n" +
 	"\x12com.uba.service.v1B\x0eRiskEventProtoP\x01Z+go-wind-uba/api/gen/go/uba/service/v1;ubapb\xa2\x02\x03USX\xaa\x02\x0eUba.Service.V1\xca\x02\x0eUba\\Service\\V1\xe2\x02\x1aUba\\Service\\V1\\GPBMetadata\xea\x02\x10Uba::Service::V1b\x06proto3"
 
 var (
@@ -989,7 +986,6 @@ var file_uba_service_v1_risk_event_proto_goTypes = []any{
 	(*timestamppb.Timestamp)(nil),  // 16: google.protobuf.Timestamp
 	(*fieldmaskpb.FieldMask)(nil),  // 17: google.protobuf.FieldMask
 	(*v1.PagingRequest)(nil),       // 18: pagination.PagingRequest
-	(*emptypb.Empty)(nil),          // 19: google.protobuf.Empty
 }
 var file_uba_service_v1_risk_event_proto_depIdxs = []int32{
 	13, // 0: uba.service.v1.RiskEvent.risk_type:type_name -> uba.service.v1.RiskType
@@ -1015,16 +1011,12 @@ var file_uba_service_v1_risk_event_proto_depIdxs = []int32{
 	18, // 20: uba.service.v1.RiskEventService.Count:input_type -> pagination.PagingRequest
 	4,  // 21: uba.service.v1.RiskEventService.Get:input_type -> uba.service.v1.GetRiskEventRequest
 	5,  // 22: uba.service.v1.RiskEventService.Create:input_type -> uba.service.v1.CreateRiskEventRequest
-	6,  // 23: uba.service.v1.RiskEventService.Update:input_type -> uba.service.v1.UpdateRiskEventRequest
-	7,  // 24: uba.service.v1.RiskEventService.Delete:input_type -> uba.service.v1.DeleteRiskEventRequest
-	3,  // 25: uba.service.v1.RiskEventService.List:output_type -> uba.service.v1.ListRiskEventResponse
-	8,  // 26: uba.service.v1.RiskEventService.Count:output_type -> uba.service.v1.CountRiskEventResponse
-	1,  // 27: uba.service.v1.RiskEventService.Get:output_type -> uba.service.v1.RiskEvent
-	1,  // 28: uba.service.v1.RiskEventService.Create:output_type -> uba.service.v1.RiskEvent
-	1,  // 29: uba.service.v1.RiskEventService.Update:output_type -> uba.service.v1.RiskEvent
-	19, // 30: uba.service.v1.RiskEventService.Delete:output_type -> google.protobuf.Empty
-	25, // [25:31] is the sub-list for method output_type
-	19, // [19:25] is the sub-list for method input_type
+	3,  // 23: uba.service.v1.RiskEventService.List:output_type -> uba.service.v1.ListRiskEventResponse
+	8,  // 24: uba.service.v1.RiskEventService.Count:output_type -> uba.service.v1.CountRiskEventResponse
+	1,  // 25: uba.service.v1.RiskEventService.Get:output_type -> uba.service.v1.RiskEvent
+	1,  // 26: uba.service.v1.RiskEventService.Create:output_type -> uba.service.v1.RiskEvent
+	23, // [23:27] is the sub-list for method output_type
+	19, // [19:23] is the sub-list for method input_type
 	19, // [19:19] is the sub-list for extension type_name
 	19, // [19:19] is the sub-list for extension extendee
 	0,  // [0:19] is the sub-list for field type_name

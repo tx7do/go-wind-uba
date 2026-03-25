@@ -12,7 +12,6 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -24,8 +23,6 @@ const (
 	ObjectService_List_FullMethodName   = "/uba.service.v1.ObjectService/List"
 	ObjectService_Get_FullMethodName    = "/uba.service.v1.ObjectService/Get"
 	ObjectService_Create_FullMethodName = "/uba.service.v1.ObjectService/Create"
-	ObjectService_Update_FullMethodName = "/uba.service.v1.ObjectService/Update"
-	ObjectService_Delete_FullMethodName = "/uba.service.v1.ObjectService/Delete"
 )
 
 // ObjectServiceClient is the client API for ObjectService service.
@@ -40,10 +37,6 @@ type ObjectServiceClient interface {
 	Get(ctx context.Context, in *GetObjectDimRequest, opts ...grpc.CallOption) (*ObjectDim, error)
 	// 创建对象维度
 	Create(ctx context.Context, in *CreateObjectDimRequest, opts ...grpc.CallOption) (*ObjectDim, error)
-	// 更新对象维度
-	Update(ctx context.Context, in *UpdateObjectDimRequest, opts ...grpc.CallOption) (*ObjectDim, error)
-	// 删除对象维度
-	Delete(ctx context.Context, in *DeleteObjectDimRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type objectServiceClient struct {
@@ -84,26 +77,6 @@ func (c *objectServiceClient) Create(ctx context.Context, in *CreateObjectDimReq
 	return out, nil
 }
 
-func (c *objectServiceClient) Update(ctx context.Context, in *UpdateObjectDimRequest, opts ...grpc.CallOption) (*ObjectDim, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ObjectDim)
-	err := c.cc.Invoke(ctx, ObjectService_Update_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *objectServiceClient) Delete(ctx context.Context, in *DeleteObjectDimRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, ObjectService_Delete_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // ObjectServiceServer is the server API for ObjectService service.
 // All implementations must embed UnimplementedObjectServiceServer
 // for forward compatibility.
@@ -116,10 +89,6 @@ type ObjectServiceServer interface {
 	Get(context.Context, *GetObjectDimRequest) (*ObjectDim, error)
 	// 创建对象维度
 	Create(context.Context, *CreateObjectDimRequest) (*ObjectDim, error)
-	// 更新对象维度
-	Update(context.Context, *UpdateObjectDimRequest) (*ObjectDim, error)
-	// 删除对象维度
-	Delete(context.Context, *DeleteObjectDimRequest) (*emptypb.Empty, error)
 	mustEmbedUnimplementedObjectServiceServer()
 }
 
@@ -138,12 +107,6 @@ func (UnimplementedObjectServiceServer) Get(context.Context, *GetObjectDimReques
 }
 func (UnimplementedObjectServiceServer) Create(context.Context, *CreateObjectDimRequest) (*ObjectDim, error) {
 	return nil, status.Error(codes.Unimplemented, "method Create not implemented")
-}
-func (UnimplementedObjectServiceServer) Update(context.Context, *UpdateObjectDimRequest) (*ObjectDim, error) {
-	return nil, status.Error(codes.Unimplemented, "method Update not implemented")
-}
-func (UnimplementedObjectServiceServer) Delete(context.Context, *DeleteObjectDimRequest) (*emptypb.Empty, error) {
-	return nil, status.Error(codes.Unimplemented, "method Delete not implemented")
 }
 func (UnimplementedObjectServiceServer) mustEmbedUnimplementedObjectServiceServer() {}
 func (UnimplementedObjectServiceServer) testEmbeddedByValue()                       {}
@@ -220,42 +183,6 @@ func _ObjectService_Create_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ObjectService_Update_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateObjectDimRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ObjectServiceServer).Update(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: ObjectService_Update_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ObjectServiceServer).Update(ctx, req.(*UpdateObjectDimRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ObjectService_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteObjectDimRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ObjectServiceServer).Delete(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: ObjectService_Delete_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ObjectServiceServer).Delete(ctx, req.(*DeleteObjectDimRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // ObjectService_ServiceDesc is the grpc.ServiceDesc for ObjectService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -274,14 +201,6 @@ var ObjectService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Create",
 			Handler:    _ObjectService_Create_Handler,
-		},
-		{
-			MethodName: "Update",
-			Handler:    _ObjectService_Update_Handler,
-		},
-		{
-			MethodName: "Delete",
-			Handler:    _ObjectService_Delete_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

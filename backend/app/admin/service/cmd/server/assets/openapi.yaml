@@ -1324,180 +1324,6 @@ paths:
                 "200":
                     description: OK
                     content: {}
-    /admin/v1/id-mappings:
-        get:
-            tags:
-                - IDMappingService
-            description: 查询ID映射列表
-            operationId: IDMappingService_List
-            parameters:
-                - name: page
-                  in: query
-                  description: 当前页码（从1开始，默认1）
-                  schema:
-                    type: integer
-                    format: uint32
-                - name: pageSize
-                  in: query
-                  description: 每页条数（默认10，建议设置上限如100）
-                  schema:
-                    type: integer
-                    format: uint32
-                - name: offset
-                  in: query
-                  description: 跳过的记录数（从0开始，默认0）
-                  schema:
-                    type: string
-                - name: limit
-                  in: query
-                  description: 最多返回的记录数（默认10，建议设置上限如100）
-                  schema:
-                    type: integer
-                    format: uint32
-                - name: token
-                  in: query
-                  description: 上一页最后一条记录的游标（如ID/时间戳+ID，首次请求为空）
-                  schema:
-                    type: string
-                - name: noPaging
-                  in: query
-                  description: 是否不分页，如果为true，则page和pageSize参数无效。
-                  schema:
-                    type: boolean
-                - name: query
-                  in: query
-                  description: JSON字符串过滤条件，基础语法：{"field1":"val1", "field2___icontains":"val2"}，具体请参见：https://github.com/tx7do/go-crud/tree/main/pagination/filter/README.md
-                  schema:
-                    type: string
-                - name: filter
-                  in: query
-                  description: Google AIP规范字符串过滤条件
-                  schema:
-                    type: string
-                - name: filterExpr.type
-                  in: query
-                  description: 过滤表达式类型
-                  schema:
-                    enum:
-                        - EXPR_TYPE_UNSPECIFIED
-                        - AND
-                        - OR
-                    type: string
-                    format: enum
-                - name: orderBy
-                  in: query
-                  description: 排序条件
-                  schema:
-                    type: string
-                - name: fieldMask
-                  in: query
-                  description: 字段掩码，其作用为SELECT中的字段，其语法为使用逗号分隔字段名，例如：id,realName,userName。如果为空则选中所有字段，即SELECT *。
-                  schema:
-                    type: string
-                    format: field-mask
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ListIDMappingResponse'
-        post:
-            tags:
-                - IDMappingService
-            description: 创建ID映射
-            operationId: IDMappingService_Create
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/CreateIDMappingRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/IDMapping'
-    /admin/v1/id-mappings/count:
-        get:
-            tags:
-                - IDMappingService
-            description: 查询ID映射数量
-            operationId: IDMappingService_Count
-            parameters:
-                - name: page
-                  in: query
-                  description: 当前页码（从1开始，默认1）
-                  schema:
-                    type: integer
-                    format: uint32
-                - name: pageSize
-                  in: query
-                  description: 每页条数（默认10，建议设置上限如100）
-                  schema:
-                    type: integer
-                    format: uint32
-                - name: offset
-                  in: query
-                  description: 跳过的记录数（从0开始，默认0）
-                  schema:
-                    type: string
-                - name: limit
-                  in: query
-                  description: 最多返回的记录数（默认10，建议设置上限如100）
-                  schema:
-                    type: integer
-                    format: uint32
-                - name: token
-                  in: query
-                  description: 上一页最后一条记录的游标（如ID/时间戳+ID，首次请求为空）
-                  schema:
-                    type: string
-                - name: noPaging
-                  in: query
-                  description: 是否不分页，如果为true，则page和pageSize参数无效。
-                  schema:
-                    type: boolean
-                - name: query
-                  in: query
-                  description: JSON字符串过滤条件，基础语法：{"field1":"val1", "field2___icontains":"val2"}，具体请参见：https://github.com/tx7do/go-crud/tree/main/pagination/filter/README.md
-                  schema:
-                    type: string
-                - name: filter
-                  in: query
-                  description: Google AIP规范字符串过滤条件
-                  schema:
-                    type: string
-                - name: filterExpr.type
-                  in: query
-                  description: 过滤表达式类型
-                  schema:
-                    enum:
-                        - EXPR_TYPE_UNSPECIFIED
-                        - AND
-                        - OR
-                    type: string
-                    format: enum
-                - name: orderBy
-                  in: query
-                  description: 排序条件
-                  schema:
-                    type: string
-                - name: fieldMask
-                  in: query
-                  description: 字段掩码，其作用为SELECT中的字段，其语法为使用逗号分隔字段名，例如：id,realName,userName。如果为空则选中所有字段，即SELECT *。
-                  schema:
-                    type: string
-                    format: field-mask
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/CountIDMappingResponse'
     /admin/v1/id-mappings/{id}:
         get:
             tags:
@@ -1523,52 +1349,6 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/IDMapping'
-        put:
-            tags:
-                - IDMappingService
-            description: 更新ID映射
-            operationId: IDMappingService_Update
-            parameters:
-                - name: id
-                  in: path
-                  required: true
-                  schema:
-                    type: integer
-                    format: uint32
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/UpdateIDMappingRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/IDMapping'
-        delete:
-            tags:
-                - IDMappingService
-            description: 删除ID映射
-            operationId: IDMappingService_Delete
-            parameters:
-                - name: id
-                  in: path
-                  required: true
-                  schema:
-                    type: integer
-                    format: uint32
-                - name: deletedBy
-                  in: query
-                  schema:
-                    type: integer
-                    format: uint32
-            responses:
-                "200":
-                    description: OK
-                    content: {}
     /admin/v1/initial-context:
         get:
             tags:
@@ -5795,11 +5575,6 @@ components:
                     type: string
                     description: 任务执行类型名，例如 "send_email"、"generate_report" 等，用于区分不同类型的任务
             description: 控制调度任务 - 请求
-        CountIDMappingResponse:
-            type: object
-            properties:
-                count:
-                    type: string
         CountRiskRuleResponse:
             type: object
             properties:
@@ -5849,12 +5624,6 @@ components:
                 data:
                     $ref: '#/components/schemas/File'
             description: 创建 - 请求
-        CreateIDMappingRequest:
-            type: object
-            properties:
-                data:
-                    $ref: '#/components/schemas/IDMapping'
-            description: 创建ID映射 - 请求
         CreateInternalMessageCategoryRequest:
             type: object
             properties:
@@ -6932,16 +6701,6 @@ components:
                 total:
                     type: string
             description: 查询列表 - 回应
-        ListIDMappingResponse:
-            type: object
-            properties:
-                items:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/IDMapping'
-                total:
-                    type: string
-            description: 获取ID映射列表 - 答复
         ListInternalMessageCategoryResponse:
             type: object
             properties:
@@ -9007,23 +8766,6 @@ components:
                     type: boolean
                     description: 如果设置为true的时候，资源不存在则会新增(插入)，并且在这种情况下`updateMask`字段将会被忽略。
             description: 更新 - 请求
-        UpdateIDMappingRequest:
-            type: object
-            properties:
-                id:
-                    type: integer
-                    format: uint32
-                data:
-                    $ref: '#/components/schemas/IDMapping'
-                updateMask:
-                    example: id,realname,username
-                    type: string
-                    description: 要更新的字段列表
-                    format: field-mask
-                allowMissing:
-                    type: boolean
-                    description: 如果设置为true的时候，资源不存在则会新增(插入)，并且在这种情况下`updateMask`字段将会被忽略。
-            description: 更新ID映射 - 请求
         UpdateInternalMessageCategoryRequest:
             type: object
             properties:

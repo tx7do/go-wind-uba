@@ -11,7 +11,6 @@ import (
 	v1 "github.com/tx7do/go-crud/api/gen/go/pagination/v1"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	_ "google.golang.org/protobuf/types/known/durationpb"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	fieldmaskpb "google.golang.org/protobuf/types/known/fieldmaskpb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
@@ -746,7 +745,7 @@ var File_uba_service_v1_webhook_proto protoreflect.FileDescriptor
 
 const file_uba_service_v1_webhook_proto_rawDesc = "" +
 	"\n" +
-	"\x1cuba/service/v1/webhook.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1egoogle/protobuf/duration.proto\x1a google/protobuf/field_mask.proto\x1a\x1epagination/v1/pagination.proto\"\xb4\v\n" +
+	"\x1cuba/service/v1/webhook.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a google/protobuf/field_mask.proto\x1a\x1epagination/v1/pagination.proto\"\xb4\v\n" +
 	"\aWebhook\x12:\n" +
 	"\x02id\x18\x01 \x01(\rB*\xbaG'\x92\x02$主键ID，唯一标识Webhook配置R\x02id\x12U\n" +
 	"\ttenant_id\x18\x02 \x01(\rB3\xbaG0\x92\x02-租户ID，多租户隔离，支持SaaS场景H\x00R\btenantId\x88\x01\x01\x120\n" +
