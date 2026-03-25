@@ -11,7 +11,7 @@ import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { $t } from '#/locales';
 import {
   idMappingIdTypeToColor,
-  idMappingIdTypeToName,
+  idMappingIdTypeToName, idTypeList, tagTypeList,
   useIdMappingListStore,
 } from '#/stores';
 
@@ -33,11 +33,15 @@ const formOptions = {
     },
     {
       component: 'Select',
-      fieldName: 'source_type',
+      fieldName: 'idType',
       label: $t('ui.formLabel.sourceType'),
       componentProps: {
+        options: idTypeList,
         placeholder: $t('ui.placeholder.select'),
+        filterOption: (input: string, option: any) =>
+          option.label.toLowerCase().includes(input.toLowerCase()),
         allowClear: true,
+        showSearch: true,
       },
     },
   ],
@@ -77,29 +81,29 @@ const gridOptions: VxeGridProps<IDMapping> = {
     },
   },
   columns: [
-    { title: $t('ui.field.id'), field: 'id', width: 100 },
-    { title: $t('ui.field.sourceId'), field: 'sourceId', width: 150 },
-    { title: $t('ui.field.sourceType'), field: 'sourceType', width: 120 },
-    { title: $t('ui.field.targetId'), field: 'targetId', width: 150 },
-    { title: $t('ui.field.targetType'), field: 'targetType', width: 120 },
+    { title: $t('ui.field.id'), field: 'id', minWidth: 100 },
+    { title: $t('ui.field.targetType'), field: 'globalUserId', minWidth: 120 },
+    { title: $t('ui.field.sourceId'), field: 'idValue', minWidth: 150 },
+    { title: $t('ui.field.sourceType'), field: 'confidence', minWidth: 120 },
+    { title: $t('ui.field.targetId'), field: 'linkSource', minWidth: 150 },
     {
       title: $t('ui.field.idType'),
       field: 'idType',
-      width: 120,
+      minWidth: 120,
       slots: { default: 'idType' },
     },
     {
       title: $t('ui.table.createdAt'),
       field: 'createdAt',
       formatter: 'formatDateTime',
-      width: 160,
+      minWidth: 160,
     },
     {
       title: $t('ui.table.action'),
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      width: 120,
+      minWidth: 120,
     },
   ],
 };

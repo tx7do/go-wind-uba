@@ -317,43 +317,42 @@
   "tagDefinition": {
     "category": {
       "CATEGORY_UNSPECIFIED": "未指定",
-      "CATEGORY_USER": "用户",
-      "CATEGORY_BEHAVIOR": "行为",
-      "CATEGORY_DEVICE": "设备",
-      "CATEGORY_TRANSACTION": "交易",
-      "CATEGORY_RISK": "风险",
-      "CATEGORY_PREFERENCE": "偏好",
-      "CATEGORY_ATTRIBUTE": "属性"
+
+      "TAG_CATEGORY_USER": "用户",
+      "TAG_CATEGORY_BEHAVIOR": "行为",
+      "TAG_CATEGORY_RISK": "风险",
+      "TAG_CATEGORY_BUSINESS": "业务"
     },
     "type": {
       "TYPE_UNSPECIFIED": "未指定",
-      "TYPE_STRING": "字符串",
-      "TYPE_NUMBER": "数值",
-      "TYPE_BOOLEAN": "布尔",
-      "TYPE_DATETIME": "日期时间",
-      "TYPE_ENUM": "枚举",
-      "TYPE_ARRAY": "数组"
+
+      "TAG_TYPE_BOOLEAN": "布尔",
+      "TAG_TYPE_ENUM": "枚举",
+      "TAG_TYPE_NUMERIC": "数值",
+      "TAG_TYPE_STRING": "字符串",
+      "TAG_TYPE_LIST": "列表"
     }
   },
   "userTag": {
     "tagSource": {
       "SOURCE_UNSPECIFIED": "未指定",
-      "SOURCE_MANUAL": "手动",
-      "SOURCE_AUTO": "自动",
-      "SOURCE_IMPORT": "导入",
-      "SOURCE_RULE": "规则",
-      "SOURCE_ALGORITHM": "算法"
+
+      "TAG_SOURCE_MANUAL": "人工打标",
+      "TAG_SOURCE_MODEL": "算法模型",
+      "TAG_SOURCE_RULE": "规则引擎",
+      "TAG_SOURCE_IMPORT": "批量导入"
     }
   },
   "idMapping": {
     "idType": {
-      "TYPE_UNSPECIFIED": "未指定",
-      "TYPE_USER_ID": "用户 ID",
-      "TYPE_DEVICE_ID": "设备 ID",
-      "TYPE_ACCOUNT_ID": "账号 ID",
-      "TYPE_PHONE": "手机号",
-      "TYPE_EMAIL": "邮箱",
-      "TYPE_THIRD_PARTY": "第三方 ID"
+      "ID_TYPE_UNSPECIFIED": "未指定",
+
+      "ID_TYPE_USER_ID": "用户 ID",
+      "ID_TYPE_DEVICE_ID": "设备 ID",
+      "ID_TYPE_COOKIE": "Cookie",
+      "ID_TYPE_PHONE": "手机号",
+      "ID_TYPE_EMAIL": "邮箱",
+      "ID_TYPE_OPENID": "OpenID"
     }
   }
 }

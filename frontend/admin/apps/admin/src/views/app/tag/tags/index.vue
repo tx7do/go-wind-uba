@@ -12,8 +12,10 @@ import { notification } from 'ant-design-vue';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { $t } from '#/locales';
 import {
+  tagCategoryList,
   tagCategoryToColor,
   tagCategoryToName,
+  tagTypeList,
   tagTypeToColor,
   tagTypeToName,
   useTagDefinitionListStore,
@@ -22,7 +24,7 @@ import {
 const tagDefinitionListStore = useTagDefinitionListStore();
 
 const formOptions = {
-  collapsed: true,
+  collapsed: false,
   showCollapseButton: true,
   submitOnEnter: true,
   schema: [
@@ -40,8 +42,25 @@ const formOptions = {
       fieldName: 'category',
       label: $t('ui.field.category'),
       componentProps: {
+        options: tagCategoryList,
         placeholder: $t('ui.placeholder.select'),
+        filterOption: (input: string, option: any) =>
+          option.label.toLowerCase().includes(input.toLowerCase()),
         allowClear: true,
+        showSearch: true,
+      },
+    },
+    {
+      component: 'Select',
+      fieldName: 'tagType',
+      label: $t('ui.field.type'),
+      componentProps: {
+        options: tagTypeList,
+        placeholder: $t('ui.placeholder.select'),
+        filterOption: (input: string, option: any) =>
+          option.label.toLowerCase().includes(input.toLowerCase()),
+        allowClear: true,
+        showSearch: true,
       },
     },
   ],
@@ -81,34 +100,38 @@ const gridOptions: VxeGridProps<TagDefinition> = {
     },
   },
   columns: [
-    { title: $t('ui.field.id'), field: 'id', width: 100 },
-    { title: $t('ui.field.name'), field: 'name', width: 150 },
-    { title: $t('ui.field.code'), field: 'code', width: 150 },
+    { title: $t('ui.field.id'), field: 'id', minWidth: 100 },
+    { title: $t('ui.field.name'), field: 'name', minWidth: 150 },
+    { title: $t('ui.field.code'), field: 'code', minWidth: 150 },
     {
       title: $t('ui.field.category'),
       field: 'category',
-      width: 120,
+      minWidth: 120,
       slots: { default: 'category' },
     },
     {
       title: $t('ui.field.type'),
-      field: 'type',
-      width: 120,
+      field: 'tagType',
+      minWidth: 120,
       slots: { default: 'type' },
     },
-    { title: $t('ui.field.defaultValue'), field: 'defaultValue', width: 120 },
+    {
+      title: $t('ui.field.defaultValue'),
+      field: 'defaultValue',
+      minWidth: 120,
+    },
     {
       title: $t('ui.table.createdAt'),
       field: 'createdAt',
       formatter: 'formatDateTime',
-      width: 160,
+      minWidth: 160,
     },
     {
       title: $t('ui.table.action'),
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      width: 120,
+      minWidth: 120,
     },
   ],
 };
@@ -150,8 +173,8 @@ function handleEdit(row: any) {
         </a-tag>
       </template>
       <template #type="{ row }">
-        <a-tag :color="tagTypeToColor(row.type)">
-          {{ tagTypeToName(row.type) }}
+        <a-tag :color="tagTypeToColor(row.tagType)">
+          {{ tagTypeToName(row.tagType) }}
         </a-tag>
       </template>
       <template #action="{ row }">

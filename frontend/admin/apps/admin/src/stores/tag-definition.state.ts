@@ -104,13 +104,21 @@ export const useTagDefinitionListStore = defineStore(
 
 export const tagCategoryList = computed(() => [
   {
-    value: 'TAG_CATEGORY_UNSPECIFIED',
-    label: $t('enum.tag.category.UNSPECIFIED'),
+    value: 'TAG_CATEGORY_USER',
+    label: $t('enum.tagDefinition.category.TAG_CATEGORY_USER'),
   },
-  { value: 'TAG_CATEGORY_USER', label: $t('enum.tag.category.USER') },
-  { value: 'TAG_CATEGORY_BEHAVIOR', label: $t('enum.tag.category.BEHAVIOR') },
-  { value: 'TAG_CATEGORY_RISK', label: $t('enum.tag.category.RISK') },
-  { value: 'TAG_CATEGORY_BUSINESS', label: $t('enum.tag.category.BUSINESS') },
+  {
+    value: 'TAG_CATEGORY_BEHAVIOR',
+    label: $t('enum.tagDefinition.category.TAG_CATEGORY_BEHAVIOR'),
+  },
+  {
+    value: 'TAG_CATEGORY_RISK',
+    label: $t('enum.tagDefinition.category.TAG_CATEGORY_RISK'),
+  },
+  {
+    value: 'TAG_CATEGORY_BUSINESS',
+    label: $t('enum.tagDefinition.category.TAG_CATEGORY_BUSINESS'),
+  },
 ]);
 
 const TAG_CATEGORY_COLOR_MAP = {
@@ -136,12 +144,26 @@ export function tagCategoryToName(category?: TagCategory) {
 }
 
 export const tagTypeList = computed(() => [
-  { value: 'TAG_TYPE_UNSPECIFIED', label: $t('enum.tag.type.UNSPECIFIED') },
-  { value: 'TAG_TYPE_BOOLEAN', label: $t('enum.tag.type.BOOLEAN') },
-  { value: 'TAG_TYPE_ENUM', label: $t('enum.tag.type.ENUM') },
-  { value: 'TAG_TYPE_NUMERIC', label: $t('enum.tag.type.NUMERIC') },
-  { value: 'TAG_TYPE_STRING', label: $t('enum.tag.type.STRING') },
-  { value: 'TAG_TYPE_LIST', label: $t('enum.tag.type.LIST') },
+  {
+    value: 'TAG_TYPE_BOOLEAN',
+    label: $t('enum.tagDefinition.type.TAG_TYPE_BOOLEAN'),
+  },
+  {
+    value: 'TAG_TYPE_ENUM',
+    label: $t('enum.tagDefinition.type.TAG_TYPE_ENUM'),
+  },
+  {
+    value: 'TAG_TYPE_NUMERIC',
+    label: $t('enum.tagDefinition.type.TAG_TYPE_NUMERIC'),
+  },
+  {
+    value: 'TAG_TYPE_STRING',
+    label: $t('enum.tagDefinition.type.TAG_TYPE_STRING'),
+  },
+  {
+    value: 'TAG_TYPE_LIST',
+    label: $t('enum.tagDefinition.type.TAG_TYPE_LIST'),
+  },
 ]);
 
 const TAG_TYPE_COLOR_MAP = {

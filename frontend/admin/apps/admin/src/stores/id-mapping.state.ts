@@ -55,17 +55,27 @@ export const useIdMappingListStore = defineStore('id-mapping-list', () => {
 });
 
 export const idTypeList = computed(() => [
-  { value: 'ID_TYPE_UNSPECIFIED', label: $t('enum.id.type.UNSPECIFIED') },
-  { value: 'ID_TYPE_USER_ID', label: $t('enum.id.type.USER_ID') },
-  { value: 'ID_TYPE_DEVICE_ID', label: $t('enum.id.type.DEVICE_ID') },
-  { value: 'ID_TYPE_COOKIE', label: $t('enum.id.type.COOKIE') },
-  { value: 'ID_TYPE_EMAIL', label: $t('enum.id.type.EMAIL') },
-  { value: 'ID_TYPE_PHONE', label: $t('enum.id.type.PHONE') },
-  { value: 'ID_TYPE_OPENID', label: $t('enum.id.type.OPENID') },
+  {
+    value: 'ID_TYPE_USER_ID',
+    label: $t('enum.idMapping.idType.ID_TYPE_USER_ID'),
+  },
+  {
+    value: 'ID_TYPE_DEVICE_ID',
+    label: $t('enum.idMapping.idType.ID_TYPE_DEVICE_ID'),
+  },
+  {
+    value: 'ID_TYPE_COOKIE',
+    label: $t('enum.idMapping.idType.ID_TYPE_COOKIE'),
+  },
+  { value: 'ID_TYPE_EMAIL', label: $t('enum.idMapping.idType.ID_TYPE_EMAIL') },
+  { value: 'ID_TYPE_PHONE', label: $t('enum.idMapping.idType.ID_TYPE_PHONE') },
+  {
+    value: 'ID_TYPE_OPENID',
+    label: $t('enum.idMapping.idType.ID_TYPE_OPENID'),
+  },
 ]);
 
 const ID_TYPE_COLOR_MAP = {
-  ID_TYPE_UNSPECIFIED: '#86909C',
   ID_TYPE_USER_ID: '#4096FF',
   ID_TYPE_DEVICE_ID: '#00B42A',
   ID_TYPE_COOKIE: '#F77234',

@@ -12,6 +12,7 @@ import { notification } from 'ant-design-vue';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { $t } from '#/locales';
 import {
+  tagSourceList,
   userTagSourceToColor,
   userTagSourceToName,
   useUserTagListStore,
@@ -20,7 +21,7 @@ import {
 const userTagListStore = useUserTagListStore();
 
 const formOptions = {
-  collapsed: true,
+  collapsed: false,
   showCollapseButton: true,
   submitOnEnter: true,
   schema: [
@@ -35,11 +36,24 @@ const formOptions = {
     },
     {
       component: 'Input',
-      fieldName: 'tag_name',
+      fieldName: 'value_label',
       label: $t('ui.formLabel.tagName'),
       componentProps: {
         placeholder: $t('ui.placeholder.input'),
         allowClear: true,
+      },
+    },
+    {
+      component: 'Select',
+      fieldName: 'source',
+      label: $t('ui.field.source'),
+      componentProps: {
+        options: tagSourceList,
+        placeholder: $t('ui.placeholder.select'),
+        filterOption: (input: string, option: any) =>
+          option.label.toLowerCase().includes(input.toLowerCase()),
+        allowClear: true,
+        showSearch: true,
       },
     },
   ],
@@ -79,28 +93,28 @@ const gridOptions: VxeGridProps<UserTag> = {
     },
   },
   columns: [
-    { title: $t('ui.field.id'), field: 'id', width: 100 },
-    { title: $t('ui.field.userId'), field: 'userId', width: 100 },
-    { title: $t('ui.field.tagName'), field: 'tagName', width: 150 },
-    { title: $t('ui.field.tagValue'), field: 'tagValue', width: 150 },
+    { title: $t('ui.field.id'), field: 'id', minWidth: 100 },
+    { title: $t('ui.field.userId'), field: 'userId', minWidth: 100 },
+    { title: $t('ui.field.tagName'), field: 'valueLabel', minWidth: 150 },
+    { title: $t('ui.field.tagValue'), field: 'value', minWidth: 150 },
     {
       title: $t('ui.field.source'),
       field: 'source',
-      width: 120,
+      minWidth: 120,
       slots: { default: 'source' },
     },
     {
       title: $t('ui.table.createdAt'),
       field: 'createdAt',
       formatter: 'formatDateTime',
-      width: 160,
+      minWidth: 160,
     },
     {
       title: $t('ui.table.action'),
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      width: 120,
+      minWidth: 120,
     },
   ],
 };

@@ -94,15 +94,25 @@ export const useUserTagListStore = defineStore('user-tag-list', () => {
 });
 
 export const tagSourceList = computed(() => [
-  { value: 'TAG_SOURCE_UNSPECIFIED', label: $t('enum.tag.source.UNSPECIFIED') },
-  { value: 'TAG_SOURCE_MANUAL', label: $t('enum.tag.source.MANUAL') },
-  { value: 'TAG_SOURCE_RULE', label: $t('enum.tag.source.RULE') },
-  { value: 'TAG_SOURCE_MODEL', label: $t('enum.tag.source.MODEL') },
-  { value: 'TAG_SOURCE_IMPORT', label: $t('enum.tag.source.IMPORT') },
+  {
+    value: 'TAG_SOURCE_MANUAL',
+    label: $t('enum.userTag.tagSource.TAG_SOURCE_MANUAL'),
+  },
+  {
+    value: 'TAG_SOURCE_RULE',
+    label: $t('enum.userTag.tagSource.TAG_SOURCE_RULE'),
+  },
+  {
+    value: 'TAG_SOURCE_MODEL',
+    label: $t('enum.userTag.tagSource.TAG_SOURCE_MODEL'),
+  },
+  {
+    value: 'TAG_SOURCE_IMPORT',
+    label: $t('enum.userTag.tagSource.TAG_SOURCE_IMPORT'),
+  },
 ]);
 
 const TAG_SOURCE_COLOR_MAP = {
-  TAG_SOURCE_UNSPECIFIED: '#86909C',
   TAG_SOURCE_MANUAL: '#4096FF',
   TAG_SOURCE_RULE: '#00B42A',
   TAG_SOURCE_MODEL: '#F77234',
