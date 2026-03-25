@@ -10,6 +10,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	fieldmaskpb "google.golang.org/protobuf/types/known/fieldmaskpb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -23,6 +24,7 @@ var (
 	_ status.Status
 	_ timestamppb.Timestamp
 	_ fieldmaskpb.FieldMask
+	_ emptypb.Empty
 	_ pagination.Sorting
 )
 
@@ -68,8 +70,19 @@ func (s *redactedUserBehaviorProfileServiceServer) Get(ctx context.Context, in *
 
 // Create is the redacted wrapper for the actual UserBehaviorProfileServiceServer.Create method
 // Unary RPC
-func (s *redactedUserBehaviorProfileServiceServer) Create(ctx context.Context, in *CreateUserBehaviorProfileRequest) (*UserBehaviorProfile, error) {
+func (s *redactedUserBehaviorProfileServiceServer) Create(ctx context.Context, in *UserBehaviorProfile) (*emptypb.Empty, error) {
 	res, err := s.srv.Create(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
+// BatchCreate is the redacted wrapper for the actual UserBehaviorProfileServiceServer.BatchCreate method
+// Unary RPC
+func (s *redactedUserBehaviorProfileServiceServer) BatchCreate(ctx context.Context, in *BatchCreateUserBehaviorProfileRequest) (*emptypb.Empty, error) {
+	res, err := s.srv.BatchCreate(ctx, in)
 	if !s.bypass.CheckInternal(ctx) {
 		// Apply redaction to the response
 		redact.Apply(res)
@@ -170,6 +183,16 @@ func (x *CreateUserBehaviorProfileRequest) Redact() string {
 	}
 
 	// Safe field: Data
+	return x.String()
+}
+
+// Redact method implementation for BatchCreateUserBehaviorProfileRequest
+func (x *BatchCreateUserBehaviorProfileRequest) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Items
 	return x.String()
 }
 

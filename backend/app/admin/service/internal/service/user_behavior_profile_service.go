@@ -43,7 +43,3 @@ func (s *UserBehaviorProfileService) List(ctx context.Context, req *paginationV1
 func (s *UserBehaviorProfileService) Get(ctx context.Context, req *ubaV1.GetUserBehaviorProfileRequest) (*ubaV1.UserBehaviorProfile, error) {
 	return s.userBehaviorProfileServiceClient.Get(ctx, req)
 }
-
-func (s *UserBehaviorProfileService) Create(ctx context.Context, req *ubaV1.CreateUserBehaviorProfileRequest) (*ubaV1.UserBehaviorProfile, error) {
-	return s.userBehaviorProfileServiceClient.Create(ctx, req)
-}

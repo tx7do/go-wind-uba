@@ -5,6 +5,7 @@ package uba.service.v1;
 import "gnostic/openapi/v3/annotations.proto";
 import "google/protobuf/duration.proto";
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
 import "pagination/v1/pagination.proto";
 
 import "uba/service/v1/common.proto";
@@ -20,20 +21,13 @@ service SessionService {
   }
 
   // 查询单条会话详情
-  rpc Get(GetSessionRequest) returns (Session) {
-    option (gnostic.openapi.v3.operation) = {
-      summary: "查询会话详情"
-      description: "根据会话ID查询会话详情"
-    };
-  }
+  rpc Get(GetSessionRequest) returns (Session) {}
 
   // 创建会话
-  rpc Create(CreateSessionRequest) returns (Session) {
-    option (gnostic.openapi.v3.operation) = {
-      summary: "创建会话"
-      description: "创建一条新的会话"
-    };
-  }
+  rpc Create(Session) returns (google.protobuf.Empty) {}
+
+  // 批量创建会话
+  rpc BatchCreate (BatchCreateSessionRequest) returns (google.protobuf.Empty) {}
 }
 
 // 会话（对应 sessions 表）
@@ -172,10 +166,14 @@ message GetSessionRequest {
 
 // 创建会话请求
 message CreateSessionRequest {
-  Session session = 1 [
-    json_name = "session",
+  Session data = 1 [
+    json_name = "data",
     (gnostic.openapi.v3.property) = {description: "会话对象"}
   ];
+}
+
+message BatchCreateSessionRequest {
+  repeated Session items = 1;
 }
 
 // 更新会话请求

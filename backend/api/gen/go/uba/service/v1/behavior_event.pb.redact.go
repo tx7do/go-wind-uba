@@ -46,8 +46,19 @@ type redactedBehaviorEventServiceServer struct {
 
 // Create is the redacted wrapper for the actual BehaviorEventServiceServer.Create method
 // Unary RPC
-func (s *redactedBehaviorEventServiceServer) Create(ctx context.Context, in *BehaviorEvent) (*BehaviorEvent, error) {
+func (s *redactedBehaviorEventServiceServer) Create(ctx context.Context, in *BehaviorEvent) (*emptypb.Empty, error) {
 	res, err := s.srv.Create(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
+// BatchCreate is the redacted wrapper for the actual BehaviorEventServiceServer.BatchCreate method
+// Unary RPC
+func (s *redactedBehaviorEventServiceServer) BatchCreate(ctx context.Context, in *BatchCreateBehaviorEventRequest) (*emptypb.Empty, error) {
+	res, err := s.srv.BatchCreate(ctx, in)
 	if !s.bypass.CheckInternal(ctx) {
 		// Apply redaction to the response
 		redact.Apply(res)
@@ -196,5 +207,15 @@ func (x *DeleteBehaviorEventRequest) Redact() string {
 	}
 
 	// Safe field: EventId
+	return x.String()
+}
+
+// Redact method implementation for BatchCreateBehaviorEventRequest
+func (x *BatchCreateBehaviorEventRequest) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Items
 	return x.String()
 }

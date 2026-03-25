@@ -11,6 +11,7 @@ import (
 	v1 "github.com/tx7do/go-crud/api/gen/go/pagination/v1"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	fieldmaskpb "google.golang.org/protobuf/types/known/fieldmaskpb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	reflect "reflect"
@@ -403,6 +404,50 @@ func (x *CreateObjectDimRequest) GetData() *ObjectDim {
 	return nil
 }
 
+type BatchCreateObjectDimRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Items         []*ObjectDim           `protobuf:"bytes,1,rep,name=items,proto3" json:"items,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *BatchCreateObjectDimRequest) Reset() {
+	*x = BatchCreateObjectDimRequest{}
+	mi := &file_uba_service_v1_object_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *BatchCreateObjectDimRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*BatchCreateObjectDimRequest) ProtoMessage() {}
+
+func (x *BatchCreateObjectDimRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_object_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use BatchCreateObjectDimRequest.ProtoReflect.Descriptor instead.
+func (*BatchCreateObjectDimRequest) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_object_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *BatchCreateObjectDimRequest) GetItems() []*ObjectDim {
+	if x != nil {
+		return x.Items
+	}
+	return nil
+}
+
 // 更新对象维度 - 请求
 type UpdateObjectDimRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
@@ -416,7 +461,7 @@ type UpdateObjectDimRequest struct {
 
 func (x *UpdateObjectDimRequest) Reset() {
 	*x = UpdateObjectDimRequest{}
-	mi := &file_uba_service_v1_object_proto_msgTypes[4]
+	mi := &file_uba_service_v1_object_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -428,7 +473,7 @@ func (x *UpdateObjectDimRequest) String() string {
 func (*UpdateObjectDimRequest) ProtoMessage() {}
 
 func (x *UpdateObjectDimRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_object_proto_msgTypes[4]
+	mi := &file_uba_service_v1_object_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -441,7 +486,7 @@ func (x *UpdateObjectDimRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateObjectDimRequest.ProtoReflect.Descriptor instead.
 func (*UpdateObjectDimRequest) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_object_proto_rawDescGZIP(), []int{4}
+	return file_uba_service_v1_object_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *UpdateObjectDimRequest) GetId() uint32 {
@@ -486,7 +531,7 @@ type DeleteObjectDimRequest struct {
 
 func (x *DeleteObjectDimRequest) Reset() {
 	*x = DeleteObjectDimRequest{}
-	mi := &file_uba_service_v1_object_proto_msgTypes[5]
+	mi := &file_uba_service_v1_object_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -498,7 +543,7 @@ func (x *DeleteObjectDimRequest) String() string {
 func (*DeleteObjectDimRequest) ProtoMessage() {}
 
 func (x *DeleteObjectDimRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_object_proto_msgTypes[5]
+	mi := &file_uba_service_v1_object_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -511,7 +556,7 @@ func (x *DeleteObjectDimRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteObjectDimRequest.ProtoReflect.Descriptor instead.
 func (*DeleteObjectDimRequest) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_object_proto_rawDescGZIP(), []int{5}
+	return file_uba_service_v1_object_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *DeleteObjectDimRequest) GetQueryBy() isDeleteObjectDimRequest_QueryBy {
@@ -551,7 +596,7 @@ var File_uba_service_v1_object_proto protoreflect.FileDescriptor
 
 const file_uba_service_v1_object_proto_rawDesc = "" +
 	"\n" +
-	"\x1buba/service/v1/object.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a google/protobuf/field_mask.proto\x1a\x1epagination/v1/pagination.proto\"\xbc\x0f\n" +
+	"\x1buba/service/v1/object.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a google/protobuf/field_mask.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1epagination/v1/pagination.proto\"\xbc\x0f\n" +
 	"\tObjectDim\x12N\n" +
 	"\x02id\x18\x01 \x01(\rB>\xbaG;\x92\x028自增长主键ID，唯一标识一条对象维度记录R\x02id\x12R\n" +
 	"\ttenant_id\x18\x02 \x01(\rB5\xbaG2\x92\x02/租户ID，多租户隔离，支持 SaaS 场景R\btenantId\x12T\n" +
@@ -605,7 +650,9 @@ const file_uba_service_v1_object_proto_rawDesc = "" +
 	"\n" +
 	"_view_mask\"G\n" +
 	"\x16CreateObjectDimRequest\x12-\n" +
-	"\x04data\x18\x01 \x01(\v2\x19.uba.service.v1.ObjectDimR\x04data\"\xa3\x03\n" +
+	"\x04data\x18\x01 \x01(\v2\x19.uba.service.v1.ObjectDimR\x04data\"N\n" +
+	"\x1bBatchCreateObjectDimRequest\x12/\n" +
+	"\x05items\x18\x01 \x03(\v2\x19.uba.service.v1.ObjectDimR\x05items\"\xa3\x03\n" +
 	"\x16UpdateObjectDimRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\rR\x02id\x12;\n" +
 	"\x04data\x18\x02 \x01(\v2\x19.uba.service.v1.ObjectDimB\f\xbaG\t\x92\x02\x06数据R\x04data\x12s\n" +
@@ -620,11 +667,12 @@ const file_uba_service_v1_object_proto_rawDesc = "" +
 	"deleted_by\x18d \x01(\rB\x17\xbaG\x14\x92\x02\x11删除者用户IDH\x01R\tdeletedBy\x88\x01\x01B\n" +
 	"\n" +
 	"\bquery_byB\r\n" +
-	"\v_deleted_by2\xf3\x01\n" +
+	"\v_deleted_by2\xb9\x02\n" +
 	"\rObjectService\x12J\n" +
 	"\x04List\x12\x19.pagination.PagingRequest\x1a%.uba.service.v1.ListObjectDimResponse\"\x00\x12G\n" +
-	"\x03Get\x12#.uba.service.v1.GetObjectDimRequest\x1a\x19.uba.service.v1.ObjectDim\"\x00\x12M\n" +
-	"\x06Create\x12&.uba.service.v1.CreateObjectDimRequest\x1a\x19.uba.service.v1.ObjectDim\"\x00B\xa8\x01\n" +
+	"\x03Get\x12#.uba.service.v1.GetObjectDimRequest\x1a\x19.uba.service.v1.ObjectDim\"\x00\x12=\n" +
+	"\x06Create\x12\x19.uba.service.v1.ObjectDim\x1a\x16.google.protobuf.Empty\"\x00\x12T\n" +
+	"\vBatchCreate\x12+.uba.service.v1.BatchCreateObjectDimRequest\x1a\x16.google.protobuf.Empty\"\x00B\xa8\x01\n" +
 	"\x12com.uba.service.v1B\vObjectProtoP\x01Z+go-wind-uba/api/gen/go/uba/service/v1;ubapb\xa2\x02\x03USX\xaa\x02\x0eUba.Service.V1\xca\x02\x0eUba\\Service\\V1\xe2\x02\x1aUba\\Service\\V1\\GPBMetadata\xea\x02\x10Uba::Service::V1b\x06proto3"
 
 var (
@@ -639,42 +687,47 @@ func file_uba_service_v1_object_proto_rawDescGZIP() []byte {
 	return file_uba_service_v1_object_proto_rawDescData
 }
 
-var file_uba_service_v1_object_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_uba_service_v1_object_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_uba_service_v1_object_proto_goTypes = []any{
-	(*ObjectDim)(nil),              // 0: uba.service.v1.ObjectDim
-	(*ListObjectDimResponse)(nil),  // 1: uba.service.v1.ListObjectDimResponse
-	(*GetObjectDimRequest)(nil),    // 2: uba.service.v1.GetObjectDimRequest
-	(*CreateObjectDimRequest)(nil), // 3: uba.service.v1.CreateObjectDimRequest
-	(*UpdateObjectDimRequest)(nil), // 4: uba.service.v1.UpdateObjectDimRequest
-	(*DeleteObjectDimRequest)(nil), // 5: uba.service.v1.DeleteObjectDimRequest
-	nil,                            // 6: uba.service.v1.ObjectDim.AttributesEntry
-	(*timestamppb.Timestamp)(nil),  // 7: google.protobuf.Timestamp
-	(*fieldmaskpb.FieldMask)(nil),  // 8: google.protobuf.FieldMask
-	(*v1.PagingRequest)(nil),       // 9: pagination.PagingRequest
+	(*ObjectDim)(nil),                   // 0: uba.service.v1.ObjectDim
+	(*ListObjectDimResponse)(nil),       // 1: uba.service.v1.ListObjectDimResponse
+	(*GetObjectDimRequest)(nil),         // 2: uba.service.v1.GetObjectDimRequest
+	(*CreateObjectDimRequest)(nil),      // 3: uba.service.v1.CreateObjectDimRequest
+	(*BatchCreateObjectDimRequest)(nil), // 4: uba.service.v1.BatchCreateObjectDimRequest
+	(*UpdateObjectDimRequest)(nil),      // 5: uba.service.v1.UpdateObjectDimRequest
+	(*DeleteObjectDimRequest)(nil),      // 6: uba.service.v1.DeleteObjectDimRequest
+	nil,                                 // 7: uba.service.v1.ObjectDim.AttributesEntry
+	(*timestamppb.Timestamp)(nil),       // 8: google.protobuf.Timestamp
+	(*fieldmaskpb.FieldMask)(nil),       // 9: google.protobuf.FieldMask
+	(*v1.PagingRequest)(nil),            // 10: pagination.PagingRequest
+	(*emptypb.Empty)(nil),               // 11: google.protobuf.Empty
 }
 var file_uba_service_v1_object_proto_depIdxs = []int32{
-	6,  // 0: uba.service.v1.ObjectDim.attributes:type_name -> uba.service.v1.ObjectDim.AttributesEntry
-	7,  // 1: uba.service.v1.ObjectDim.valid_from:type_name -> google.protobuf.Timestamp
-	7,  // 2: uba.service.v1.ObjectDim.valid_to:type_name -> google.protobuf.Timestamp
-	7,  // 3: uba.service.v1.ObjectDim.created_at:type_name -> google.protobuf.Timestamp
-	7,  // 4: uba.service.v1.ObjectDim.updated_at:type_name -> google.protobuf.Timestamp
-	7,  // 5: uba.service.v1.ObjectDim.deleted_at:type_name -> google.protobuf.Timestamp
+	7,  // 0: uba.service.v1.ObjectDim.attributes:type_name -> uba.service.v1.ObjectDim.AttributesEntry
+	8,  // 1: uba.service.v1.ObjectDim.valid_from:type_name -> google.protobuf.Timestamp
+	8,  // 2: uba.service.v1.ObjectDim.valid_to:type_name -> google.protobuf.Timestamp
+	8,  // 3: uba.service.v1.ObjectDim.created_at:type_name -> google.protobuf.Timestamp
+	8,  // 4: uba.service.v1.ObjectDim.updated_at:type_name -> google.protobuf.Timestamp
+	8,  // 5: uba.service.v1.ObjectDim.deleted_at:type_name -> google.protobuf.Timestamp
 	0,  // 6: uba.service.v1.ListObjectDimResponse.items:type_name -> uba.service.v1.ObjectDim
-	8,  // 7: uba.service.v1.GetObjectDimRequest.view_mask:type_name -> google.protobuf.FieldMask
+	9,  // 7: uba.service.v1.GetObjectDimRequest.view_mask:type_name -> google.protobuf.FieldMask
 	0,  // 8: uba.service.v1.CreateObjectDimRequest.data:type_name -> uba.service.v1.ObjectDim
-	0,  // 9: uba.service.v1.UpdateObjectDimRequest.data:type_name -> uba.service.v1.ObjectDim
-	8,  // 10: uba.service.v1.UpdateObjectDimRequest.update_mask:type_name -> google.protobuf.FieldMask
-	9,  // 11: uba.service.v1.ObjectService.List:input_type -> pagination.PagingRequest
-	2,  // 12: uba.service.v1.ObjectService.Get:input_type -> uba.service.v1.GetObjectDimRequest
-	3,  // 13: uba.service.v1.ObjectService.Create:input_type -> uba.service.v1.CreateObjectDimRequest
-	1,  // 14: uba.service.v1.ObjectService.List:output_type -> uba.service.v1.ListObjectDimResponse
-	0,  // 15: uba.service.v1.ObjectService.Get:output_type -> uba.service.v1.ObjectDim
-	0,  // 16: uba.service.v1.ObjectService.Create:output_type -> uba.service.v1.ObjectDim
-	14, // [14:17] is the sub-list for method output_type
-	11, // [11:14] is the sub-list for method input_type
-	11, // [11:11] is the sub-list for extension type_name
-	11, // [11:11] is the sub-list for extension extendee
-	0,  // [0:11] is the sub-list for field type_name
+	0,  // 9: uba.service.v1.BatchCreateObjectDimRequest.items:type_name -> uba.service.v1.ObjectDim
+	0,  // 10: uba.service.v1.UpdateObjectDimRequest.data:type_name -> uba.service.v1.ObjectDim
+	9,  // 11: uba.service.v1.UpdateObjectDimRequest.update_mask:type_name -> google.protobuf.FieldMask
+	10, // 12: uba.service.v1.ObjectService.List:input_type -> pagination.PagingRequest
+	2,  // 13: uba.service.v1.ObjectService.Get:input_type -> uba.service.v1.GetObjectDimRequest
+	0,  // 14: uba.service.v1.ObjectService.Create:input_type -> uba.service.v1.ObjectDim
+	4,  // 15: uba.service.v1.ObjectService.BatchCreate:input_type -> uba.service.v1.BatchCreateObjectDimRequest
+	1,  // 16: uba.service.v1.ObjectService.List:output_type -> uba.service.v1.ListObjectDimResponse
+	0,  // 17: uba.service.v1.ObjectService.Get:output_type -> uba.service.v1.ObjectDim
+	11, // 18: uba.service.v1.ObjectService.Create:output_type -> google.protobuf.Empty
+	11, // 19: uba.service.v1.ObjectService.BatchCreate:output_type -> google.protobuf.Empty
+	16, // [16:20] is the sub-list for method output_type
+	12, // [12:16] is the sub-list for method input_type
+	12, // [12:12] is the sub-list for extension type_name
+	12, // [12:12] is the sub-list for extension extendee
+	0,  // [0:12] is the sub-list for field type_name
 }
 
 func init() { file_uba_service_v1_object_proto_init() }
@@ -686,8 +739,8 @@ func file_uba_service_v1_object_proto_init() {
 	file_uba_service_v1_object_proto_msgTypes[2].OneofWrappers = []any{
 		(*GetObjectDimRequest_Id)(nil),
 	}
-	file_uba_service_v1_object_proto_msgTypes[4].OneofWrappers = []any{}
-	file_uba_service_v1_object_proto_msgTypes[5].OneofWrappers = []any{
+	file_uba_service_v1_object_proto_msgTypes[5].OneofWrappers = []any{}
+	file_uba_service_v1_object_proto_msgTypes[6].OneofWrappers = []any{
 		(*DeleteObjectDimRequest_Id)(nil),
 	}
 	type x struct{}
@@ -696,7 +749,7 @@ func file_uba_service_v1_object_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_uba_service_v1_object_proto_rawDesc), len(file_uba_service_v1_object_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   7,
+			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

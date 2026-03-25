@@ -12,6 +12,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -20,9 +21,10 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	UserBehaviorProfileService_List_FullMethodName   = "/uba.service.v1.UserBehaviorProfileService/List"
-	UserBehaviorProfileService_Get_FullMethodName    = "/uba.service.v1.UserBehaviorProfileService/Get"
-	UserBehaviorProfileService_Create_FullMethodName = "/uba.service.v1.UserBehaviorProfileService/Create"
+	UserBehaviorProfileService_List_FullMethodName        = "/uba.service.v1.UserBehaviorProfileService/List"
+	UserBehaviorProfileService_Get_FullMethodName         = "/uba.service.v1.UserBehaviorProfileService/Get"
+	UserBehaviorProfileService_Create_FullMethodName      = "/uba.service.v1.UserBehaviorProfileService/Create"
+	UserBehaviorProfileService_BatchCreate_FullMethodName = "/uba.service.v1.UserBehaviorProfileService/BatchCreate"
 )
 
 // UserBehaviorProfileServiceClient is the client API for UserBehaviorProfileService service.
@@ -36,7 +38,9 @@ type UserBehaviorProfileServiceClient interface {
 	// 查询用户画像详情
 	Get(ctx context.Context, in *GetUserBehaviorProfileRequest, opts ...grpc.CallOption) (*UserBehaviorProfile, error)
 	// 创建用户画像
-	Create(ctx context.Context, in *CreateUserBehaviorProfileRequest, opts ...grpc.CallOption) (*UserBehaviorProfile, error)
+	Create(ctx context.Context, in *UserBehaviorProfile, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// 批量创建用户画像
+	BatchCreate(ctx context.Context, in *BatchCreateUserBehaviorProfileRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type userBehaviorProfileServiceClient struct {
@@ -67,10 +71,20 @@ func (c *userBehaviorProfileServiceClient) Get(ctx context.Context, in *GetUserB
 	return out, nil
 }
 
-func (c *userBehaviorProfileServiceClient) Create(ctx context.Context, in *CreateUserBehaviorProfileRequest, opts ...grpc.CallOption) (*UserBehaviorProfile, error) {
+func (c *userBehaviorProfileServiceClient) Create(ctx context.Context, in *UserBehaviorProfile, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(UserBehaviorProfile)
+	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, UserBehaviorProfileService_Create_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userBehaviorProfileServiceClient) BatchCreate(ctx context.Context, in *BatchCreateUserBehaviorProfileRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, UserBehaviorProfileService_BatchCreate_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -88,7 +102,9 @@ type UserBehaviorProfileServiceServer interface {
 	// 查询用户画像详情
 	Get(context.Context, *GetUserBehaviorProfileRequest) (*UserBehaviorProfile, error)
 	// 创建用户画像
-	Create(context.Context, *CreateUserBehaviorProfileRequest) (*UserBehaviorProfile, error)
+	Create(context.Context, *UserBehaviorProfile) (*emptypb.Empty, error)
+	// 批量创建用户画像
+	BatchCreate(context.Context, *BatchCreateUserBehaviorProfileRequest) (*emptypb.Empty, error)
 	mustEmbedUnimplementedUserBehaviorProfileServiceServer()
 }
 
@@ -105,8 +121,11 @@ func (UnimplementedUserBehaviorProfileServiceServer) List(context.Context, *v1.P
 func (UnimplementedUserBehaviorProfileServiceServer) Get(context.Context, *GetUserBehaviorProfileRequest) (*UserBehaviorProfile, error) {
 	return nil, status.Error(codes.Unimplemented, "method Get not implemented")
 }
-func (UnimplementedUserBehaviorProfileServiceServer) Create(context.Context, *CreateUserBehaviorProfileRequest) (*UserBehaviorProfile, error) {
+func (UnimplementedUserBehaviorProfileServiceServer) Create(context.Context, *UserBehaviorProfile) (*emptypb.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method Create not implemented")
+}
+func (UnimplementedUserBehaviorProfileServiceServer) BatchCreate(context.Context, *BatchCreateUserBehaviorProfileRequest) (*emptypb.Empty, error) {
+	return nil, status.Error(codes.Unimplemented, "method BatchCreate not implemented")
 }
 func (UnimplementedUserBehaviorProfileServiceServer) mustEmbedUnimplementedUserBehaviorProfileServiceServer() {
 }
@@ -167,7 +186,7 @@ func _UserBehaviorProfileService_Get_Handler(srv interface{}, ctx context.Contex
 }
 
 func _UserBehaviorProfileService_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateUserBehaviorProfileRequest)
+	in := new(UserBehaviorProfile)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -179,7 +198,25 @@ func _UserBehaviorProfileService_Create_Handler(srv interface{}, ctx context.Con
 		FullMethod: UserBehaviorProfileService_Create_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserBehaviorProfileServiceServer).Create(ctx, req.(*CreateUserBehaviorProfileRequest))
+		return srv.(UserBehaviorProfileServiceServer).Create(ctx, req.(*UserBehaviorProfile))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserBehaviorProfileService_BatchCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BatchCreateUserBehaviorProfileRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserBehaviorProfileServiceServer).BatchCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserBehaviorProfileService_BatchCreate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserBehaviorProfileServiceServer).BatchCreate(ctx, req.(*BatchCreateUserBehaviorProfileRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -202,6 +239,10 @@ var UserBehaviorProfileService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Create",
 			Handler:    _UserBehaviorProfileService_Create_Handler,
+		},
+		{
+			MethodName: "BatchCreate",
+			Handler:    _UserBehaviorProfileService_BatchCreate_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

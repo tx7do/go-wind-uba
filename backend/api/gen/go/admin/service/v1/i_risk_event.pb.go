@@ -12,6 +12,7 @@ import (
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	reflect "reflect"
 	unsafe "unsafe"
 )
@@ -27,12 +28,12 @@ var File_admin_service_v1_i_risk_event_proto protoreflect.FileDescriptor
 
 const file_admin_service_v1_i_risk_event_proto_rawDesc = "" +
 	"\n" +
-	"#admin/service/v1/i_risk_event.proto\x12\x10admin.service.v1\x1a\x1cgoogle/api/annotations.proto\x1a\x1epagination/v1/pagination.proto\x1a\x1fuba/service/v1/risk_event.proto2\xc6\x03\n" +
+	"#admin/service/v1/i_risk_event.proto\x12\x10admin.service.v1\x1a\x1cgoogle/api/annotations.proto\x1a\x1epagination/v1/pagination.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fuba/service/v1/risk_event.proto2\xc3\x03\n" +
 	"\x10RiskEventService\x12g\n" +
 	"\x04List\x12\x19.pagination.PagingRequest\x1a%.uba.service.v1.ListRiskEventResponse\"\x1d\x82\xd3\xe4\x93\x02\x17\x12\x15/admin/v1/risk-events\x12o\n" +
 	"\x05Count\x12\x19.pagination.PagingRequest\x1a&.uba.service.v1.CountRiskEventResponse\"#\x82\xd3\xe4\x93\x02\x1d\x12\x1b/admin/v1/risk-events/count\x12i\n" +
-	"\x03Get\x12#.uba.service.v1.GetRiskEventRequest\x1a\x19.uba.service.v1.RiskEvent\"\"\x82\xd3\xe4\x93\x02\x1c\x12\x1a/admin/v1/risk-events/{id}\x12m\n" +
-	"\x06Create\x12&.uba.service.v1.CreateRiskEventRequest\x1a\x19.uba.service.v1.RiskEvent\" \x82\xd3\xe4\x93\x02\x1a:\x01*\"\x15/admin/v1/risk-eventsB\xba\x01\n" +
+	"\x03Get\x12#.uba.service.v1.GetRiskEventRequest\x1a\x19.uba.service.v1.RiskEvent\"\"\x82\xd3\xe4\x93\x02\x1c\x12\x1a/admin/v1/risk-events/{id}\x12j\n" +
+	"\x06Create\x12&.uba.service.v1.CreateRiskEventRequest\x1a\x16.google.protobuf.Empty\" \x82\xd3\xe4\x93\x02\x1a:\x01*\"\x15/admin/v1/risk-eventsB\xba\x01\n" +
 	"\x14com.admin.service.v1B\x0fIRiskEventProtoP\x01Z/go-wind-uba/api/gen/go/admin/service/v1;adminpb\xa2\x02\x03ASX\xaa\x02\x10Admin.Service.V1\xca\x02\x10Admin\\Service\\V1\xe2\x02\x1cAdmin\\Service\\V1\\GPBMetadata\xea\x02\x12Admin::Service::V1b\x06proto3"
 
 var file_admin_service_v1_i_risk_event_proto_goTypes = []any{
@@ -42,6 +43,7 @@ var file_admin_service_v1_i_risk_event_proto_goTypes = []any{
 	(*v11.ListRiskEventResponse)(nil),  // 3: uba.service.v1.ListRiskEventResponse
 	(*v11.CountRiskEventResponse)(nil), // 4: uba.service.v1.CountRiskEventResponse
 	(*v11.RiskEvent)(nil),              // 5: uba.service.v1.RiskEvent
+	(*emptypb.Empty)(nil),              // 6: google.protobuf.Empty
 }
 var file_admin_service_v1_i_risk_event_proto_depIdxs = []int32{
 	0, // 0: admin.service.v1.RiskEventService.List:input_type -> pagination.PagingRequest
@@ -51,7 +53,7 @@ var file_admin_service_v1_i_risk_event_proto_depIdxs = []int32{
 	3, // 4: admin.service.v1.RiskEventService.List:output_type -> uba.service.v1.ListRiskEventResponse
 	4, // 5: admin.service.v1.RiskEventService.Count:output_type -> uba.service.v1.CountRiskEventResponse
 	5, // 6: admin.service.v1.RiskEventService.Get:output_type -> uba.service.v1.RiskEvent
-	5, // 7: admin.service.v1.RiskEventService.Create:output_type -> uba.service.v1.RiskEvent
+	6, // 7: admin.service.v1.RiskEventService.Create:output_type -> google.protobuf.Empty
 	4, // [4:8] is the sub-list for method output_type
 	0, // [0:4] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name

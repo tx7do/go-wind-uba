@@ -12,6 +12,7 @@ import (
 	binding "github.com/go-kratos/kratos/v2/transport/http/binding"
 	v1 "github.com/tx7do/go-crud/api/gen/go/pagination/v1"
 	v11 "go-wind-uba/api/gen/go/uba/service/v1"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -27,7 +28,7 @@ const OperationObjectServiceList = "/admin.service.v1.ObjectService/List"
 
 type ObjectServiceHTTPServer interface {
 	// Create 创建对象维度
-	Create(context.Context, *v11.CreateObjectDimRequest) (*v11.ObjectDim, error)
+	Create(context.Context, *v11.CreateObjectDimRequest) (*emptypb.Empty, error)
 	// Get 查询对象维度详情
 	Get(context.Context, *v11.GetObjectDimRequest) (*v11.ObjectDim, error)
 	// List 查询对象维度列表
@@ -99,14 +100,14 @@ func _ObjectService_Create8_HTTP_Handler(srv ObjectServiceHTTPServer) func(ctx h
 		if err != nil {
 			return err
 		}
-		reply := out.(*v11.ObjectDim)
+		reply := out.(*emptypb.Empty)
 		return ctx.Result(200, reply)
 	}
 }
 
 type ObjectServiceHTTPClient interface {
 	// Create 创建对象维度
-	Create(ctx context.Context, req *v11.CreateObjectDimRequest, opts ...http.CallOption) (rsp *v11.ObjectDim, err error)
+	Create(ctx context.Context, req *v11.CreateObjectDimRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 	// Get 查询对象维度详情
 	Get(ctx context.Context, req *v11.GetObjectDimRequest, opts ...http.CallOption) (rsp *v11.ObjectDim, err error)
 	// List 查询对象维度列表
@@ -122,8 +123,8 @@ func NewObjectServiceHTTPClient(client *http.Client) ObjectServiceHTTPClient {
 }
 
 // Create 创建对象维度
-func (c *ObjectServiceHTTPClientImpl) Create(ctx context.Context, in *v11.CreateObjectDimRequest, opts ...http.CallOption) (*v11.ObjectDim, error) {
-	var out v11.ObjectDim
+func (c *ObjectServiceHTTPClientImpl) Create(ctx context.Context, in *v11.CreateObjectDimRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
+	var out emptypb.Empty
 	pattern := "/admin/v1/object-dims"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationObjectServiceCreate))

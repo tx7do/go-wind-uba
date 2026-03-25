@@ -10,6 +10,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -21,6 +22,7 @@ var (
 	_ codes.Code
 	_ status.Status
 	_ timestamppb.Timestamp
+	_ emptypb.Empty
 	_ pagination.Sorting
 )
 
@@ -66,8 +68,19 @@ func (s *redactedEventPathServiceServer) Get(ctx context.Context, in *GetEventPa
 
 // Create is the redacted wrapper for the actual EventPathServiceServer.Create method
 // Unary RPC
-func (s *redactedEventPathServiceServer) Create(ctx context.Context, in *CreateEventPathRequest) (*EventPath, error) {
+func (s *redactedEventPathServiceServer) Create(ctx context.Context, in *EventPath) (*emptypb.Empty, error) {
 	res, err := s.srv.Create(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
+// BatchCreate is the redacted wrapper for the actual EventPathServiceServer.BatchCreate method
+// Unary RPC
+func (s *redactedEventPathServiceServer) BatchCreate(ctx context.Context, in *BatchCreateEventPathRequest) (*emptypb.Empty, error) {
+	res, err := s.srv.BatchCreate(ctx, in)
 	if !s.bypass.CheckInternal(ctx) {
 		// Apply redaction to the response
 		redact.Apply(res)
@@ -151,7 +164,17 @@ func (x *CreateEventPathRequest) Redact() string {
 		return ""
 	}
 
-	// Safe field: EventPath
+	// Safe field: Data
+	return x.String()
+}
+
+// Redact method implementation for BatchCreateEventPathRequest
+func (x *BatchCreateEventPathRequest) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Items
 	return x.String()
 }
 

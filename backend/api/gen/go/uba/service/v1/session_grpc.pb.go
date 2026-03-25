@@ -12,6 +12,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -20,9 +21,10 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	SessionService_List_FullMethodName   = "/uba.service.v1.SessionService/List"
-	SessionService_Get_FullMethodName    = "/uba.service.v1.SessionService/Get"
-	SessionService_Create_FullMethodName = "/uba.service.v1.SessionService/Create"
+	SessionService_List_FullMethodName        = "/uba.service.v1.SessionService/List"
+	SessionService_Get_FullMethodName         = "/uba.service.v1.SessionService/Get"
+	SessionService_Create_FullMethodName      = "/uba.service.v1.SessionService/Create"
+	SessionService_BatchCreate_FullMethodName = "/uba.service.v1.SessionService/BatchCreate"
 )
 
 // SessionServiceClient is the client API for SessionService service.
@@ -36,7 +38,9 @@ type SessionServiceClient interface {
 	// 查询单条会话详情
 	Get(ctx context.Context, in *GetSessionRequest, opts ...grpc.CallOption) (*Session, error)
 	// 创建会话
-	Create(ctx context.Context, in *CreateSessionRequest, opts ...grpc.CallOption) (*Session, error)
+	Create(ctx context.Context, in *Session, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// 批量创建会话
+	BatchCreate(ctx context.Context, in *BatchCreateSessionRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type sessionServiceClient struct {
@@ -67,10 +71,20 @@ func (c *sessionServiceClient) Get(ctx context.Context, in *GetSessionRequest, o
 	return out, nil
 }
 
-func (c *sessionServiceClient) Create(ctx context.Context, in *CreateSessionRequest, opts ...grpc.CallOption) (*Session, error) {
+func (c *sessionServiceClient) Create(ctx context.Context, in *Session, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Session)
+	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, SessionService_Create_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *sessionServiceClient) BatchCreate(ctx context.Context, in *BatchCreateSessionRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, SessionService_BatchCreate_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -88,7 +102,9 @@ type SessionServiceServer interface {
 	// 查询单条会话详情
 	Get(context.Context, *GetSessionRequest) (*Session, error)
 	// 创建会话
-	Create(context.Context, *CreateSessionRequest) (*Session, error)
+	Create(context.Context, *Session) (*emptypb.Empty, error)
+	// 批量创建会话
+	BatchCreate(context.Context, *BatchCreateSessionRequest) (*emptypb.Empty, error)
 	mustEmbedUnimplementedSessionServiceServer()
 }
 
@@ -105,8 +121,11 @@ func (UnimplementedSessionServiceServer) List(context.Context, *v1.PagingRequest
 func (UnimplementedSessionServiceServer) Get(context.Context, *GetSessionRequest) (*Session, error) {
 	return nil, status.Error(codes.Unimplemented, "method Get not implemented")
 }
-func (UnimplementedSessionServiceServer) Create(context.Context, *CreateSessionRequest) (*Session, error) {
+func (UnimplementedSessionServiceServer) Create(context.Context, *Session) (*emptypb.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method Create not implemented")
+}
+func (UnimplementedSessionServiceServer) BatchCreate(context.Context, *BatchCreateSessionRequest) (*emptypb.Empty, error) {
+	return nil, status.Error(codes.Unimplemented, "method BatchCreate not implemented")
 }
 func (UnimplementedSessionServiceServer) mustEmbedUnimplementedSessionServiceServer() {}
 func (UnimplementedSessionServiceServer) testEmbeddedByValue()                        {}
@@ -166,7 +185,7 @@ func _SessionService_Get_Handler(srv interface{}, ctx context.Context, dec func(
 }
 
 func _SessionService_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateSessionRequest)
+	in := new(Session)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -178,7 +197,25 @@ func _SessionService_Create_Handler(srv interface{}, ctx context.Context, dec fu
 		FullMethod: SessionService_Create_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SessionServiceServer).Create(ctx, req.(*CreateSessionRequest))
+		return srv.(SessionServiceServer).Create(ctx, req.(*Session))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _SessionService_BatchCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BatchCreateSessionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SessionServiceServer).BatchCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: SessionService_BatchCreate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SessionServiceServer).BatchCreate(ctx, req.(*BatchCreateSessionRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -201,6 +238,10 @@ var SessionService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Create",
 			Handler:    _SessionService_Create_Handler,
+		},
+		{
+			MethodName: "BatchCreate",
+			Handler:    _SessionService_BatchCreate_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

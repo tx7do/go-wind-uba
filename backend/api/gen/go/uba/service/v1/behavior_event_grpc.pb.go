@@ -12,6 +12,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -20,9 +21,10 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	BehaviorEventService_Create_FullMethodName = "/uba.service.v1.BehaviorEventService/Create"
-	BehaviorEventService_List_FullMethodName   = "/uba.service.v1.BehaviorEventService/List"
-	BehaviorEventService_Get_FullMethodName    = "/uba.service.v1.BehaviorEventService/Get"
+	BehaviorEventService_Create_FullMethodName      = "/uba.service.v1.BehaviorEventService/Create"
+	BehaviorEventService_BatchCreate_FullMethodName = "/uba.service.v1.BehaviorEventService/BatchCreate"
+	BehaviorEventService_List_FullMethodName        = "/uba.service.v1.BehaviorEventService/List"
+	BehaviorEventService_Get_FullMethodName         = "/uba.service.v1.BehaviorEventService/Get"
 )
 
 // BehaviorEventServiceClient is the client API for BehaviorEventService service.
@@ -32,7 +34,9 @@ const (
 // 行为事件服务
 type BehaviorEventServiceClient interface {
 	// 创建行为事件
-	Create(ctx context.Context, in *BehaviorEvent, opts ...grpc.CallOption) (*BehaviorEvent, error)
+	Create(ctx context.Context, in *BehaviorEvent, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// 批量创建会话
+	BatchCreate(ctx context.Context, in *BatchCreateBehaviorEventRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// 分页查询行为事件
 	List(ctx context.Context, in *v1.PagingRequest, opts ...grpc.CallOption) (*ListBehaviorEventResponse, error)
 	// 查询单条行为事件详情
@@ -47,10 +51,20 @@ func NewBehaviorEventServiceClient(cc grpc.ClientConnInterface) BehaviorEventSer
 	return &behaviorEventServiceClient{cc}
 }
 
-func (c *behaviorEventServiceClient) Create(ctx context.Context, in *BehaviorEvent, opts ...grpc.CallOption) (*BehaviorEvent, error) {
+func (c *behaviorEventServiceClient) Create(ctx context.Context, in *BehaviorEvent, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(BehaviorEvent)
+	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, BehaviorEventService_Create_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *behaviorEventServiceClient) BatchCreate(ctx context.Context, in *BatchCreateBehaviorEventRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, BehaviorEventService_BatchCreate_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -84,7 +98,9 @@ func (c *behaviorEventServiceClient) Get(ctx context.Context, in *GetBehaviorEve
 // 行为事件服务
 type BehaviorEventServiceServer interface {
 	// 创建行为事件
-	Create(context.Context, *BehaviorEvent) (*BehaviorEvent, error)
+	Create(context.Context, *BehaviorEvent) (*emptypb.Empty, error)
+	// 批量创建会话
+	BatchCreate(context.Context, *BatchCreateBehaviorEventRequest) (*emptypb.Empty, error)
 	// 分页查询行为事件
 	List(context.Context, *v1.PagingRequest) (*ListBehaviorEventResponse, error)
 	// 查询单条行为事件详情
@@ -99,8 +115,11 @@ type BehaviorEventServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedBehaviorEventServiceServer struct{}
 
-func (UnimplementedBehaviorEventServiceServer) Create(context.Context, *BehaviorEvent) (*BehaviorEvent, error) {
+func (UnimplementedBehaviorEventServiceServer) Create(context.Context, *BehaviorEvent) (*emptypb.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method Create not implemented")
+}
+func (UnimplementedBehaviorEventServiceServer) BatchCreate(context.Context, *BatchCreateBehaviorEventRequest) (*emptypb.Empty, error) {
+	return nil, status.Error(codes.Unimplemented, "method BatchCreate not implemented")
 }
 func (UnimplementedBehaviorEventServiceServer) List(context.Context, *v1.PagingRequest) (*ListBehaviorEventResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method List not implemented")
@@ -143,6 +162,24 @@ func _BehaviorEventService_Create_Handler(srv interface{}, ctx context.Context, 
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(BehaviorEventServiceServer).Create(ctx, req.(*BehaviorEvent))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BehaviorEventService_BatchCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BatchCreateBehaviorEventRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BehaviorEventServiceServer).BatchCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BehaviorEventService_BatchCreate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BehaviorEventServiceServer).BatchCreate(ctx, req.(*BatchCreateBehaviorEventRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -193,6 +230,10 @@ var BehaviorEventService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Create",
 			Handler:    _BehaviorEventService_Create_Handler,
+		},
+		{
+			MethodName: "BatchCreate",
+			Handler:    _BehaviorEventService_BatchCreate_Handler,
 		},
 		{
 			MethodName: "List",

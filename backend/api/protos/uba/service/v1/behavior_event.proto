@@ -12,28 +12,16 @@ import "uba/service/v1/common.proto";
 // 行为事件服务
 service BehaviorEventService {
   // 创建行为事件
-  rpc Create(BehaviorEvent) returns (BehaviorEvent) {
-    option (gnostic.openapi.v3.operation) = {
-      summary: "创建行为事件"
-      description: "上报一条新的行为事件"
-    };
-  }
+  rpc Create(BehaviorEvent) returns (google.protobuf.Empty) {}
+
+  // 批量创建会话
+  rpc BatchCreate (BatchCreateBehaviorEventRequest) returns (google.protobuf.Empty) {}
 
   // 分页查询行为事件
-  rpc List(pagination.PagingRequest) returns (ListBehaviorEventResponse) {
-    option (gnostic.openapi.v3.operation) = {
-      summary: "分页查询行为事件"
-      description: "根据条件分页查询行为事件"
-    };
-  }
+  rpc List(pagination.PagingRequest) returns (ListBehaviorEventResponse) {}
 
   // 查询单条行为事件详情
-  rpc Get(GetBehaviorEventRequest) returns (BehaviorEvent) {
-    option (gnostic.openapi.v3.operation) = {
-      summary: "查询行为事件详情"
-      description: "根据事件ID查询行为事件详情"
-    };
-  }
+  rpc Get(GetBehaviorEventRequest) returns (BehaviorEvent) {}
 }
 
 // 行为事件（对应 events_fact 表）
@@ -253,4 +241,8 @@ message DeleteBehaviorEventRequest {
     json_name = "eventId",
     (gnostic.openapi.v3.property) = {description: "事件ID"}
   ];
+}
+
+message BatchCreateBehaviorEventRequest {
+  repeated BehaviorEvent items = 1;
 }

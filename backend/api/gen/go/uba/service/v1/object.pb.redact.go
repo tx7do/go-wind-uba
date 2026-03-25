@@ -10,6 +10,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	fieldmaskpb "google.golang.org/protobuf/types/known/fieldmaskpb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -23,6 +24,7 @@ var (
 	_ status.Status
 	_ timestamppb.Timestamp
 	_ fieldmaskpb.FieldMask
+	_ emptypb.Empty
 	_ pagination.Sorting
 )
 
@@ -68,8 +70,19 @@ func (s *redactedObjectServiceServer) Get(ctx context.Context, in *GetObjectDimR
 
 // Create is the redacted wrapper for the actual ObjectServiceServer.Create method
 // Unary RPC
-func (s *redactedObjectServiceServer) Create(ctx context.Context, in *CreateObjectDimRequest) (*ObjectDim, error) {
+func (s *redactedObjectServiceServer) Create(ctx context.Context, in *ObjectDim) (*emptypb.Empty, error) {
 	res, err := s.srv.Create(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
+// BatchCreate is the redacted wrapper for the actual ObjectServiceServer.BatchCreate method
+// Unary RPC
+func (s *redactedObjectServiceServer) BatchCreate(ctx context.Context, in *BatchCreateObjectDimRequest) (*emptypb.Empty, error) {
+	res, err := s.srv.BatchCreate(ctx, in)
 	if !s.bypass.CheckInternal(ctx) {
 		// Apply redaction to the response
 		redact.Apply(res)
@@ -152,6 +165,16 @@ func (x *CreateObjectDimRequest) Redact() string {
 	}
 
 	// Safe field: Data
+	return x.String()
+}
+
+// Redact method implementation for BatchCreateObjectDimRequest
+func (x *BatchCreateObjectDimRequest) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Items
 	return x.String()
 }
 

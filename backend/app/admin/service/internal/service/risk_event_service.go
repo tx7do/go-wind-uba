@@ -7,6 +7,7 @@ import (
 	"github.com/go-kratos/kratos/v2/log"
 	paginationV1 "github.com/tx7do/go-crud/api/gen/go/pagination/v1"
 	"github.com/tx7do/kratos-bootstrap/bootstrap"
+	"google.golang.org/protobuf/types/known/emptypb"
 
 	ubaV1 "go-wind-uba/api/gen/go/uba/service/v1"
 )
@@ -43,6 +44,6 @@ func (s *RiskEventService) Get(ctx context.Context, req *ubaV1.GetRiskEventReque
 	return s.objectServiceClient.Get(ctx, req)
 }
 
-func (s *RiskEventService) Create(ctx context.Context, req *ubaV1.CreateRiskEventRequest) (*ubaV1.RiskEvent, error) {
-	return s.objectServiceClient.Create(ctx, req)
+func (s *RiskEventService) Create(ctx context.Context, req *ubaV1.CreateRiskEventRequest) (*emptypb.Empty, error) {
+	return s.objectServiceClient.Create(ctx, req.GetData())
 }

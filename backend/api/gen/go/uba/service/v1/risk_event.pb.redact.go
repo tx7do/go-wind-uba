@@ -10,6 +10,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	fieldmaskpb "google.golang.org/protobuf/types/known/fieldmaskpb"
 	structpb "google.golang.org/protobuf/types/known/structpb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
@@ -25,6 +26,7 @@ var (
 	_ timestamppb.Timestamp
 	_ fieldmaskpb.FieldMask
 	_ structpb.Struct
+	_ emptypb.Empty
 	_ pagination.Sorting
 )
 
@@ -81,8 +83,19 @@ func (s *redactedRiskEventServiceServer) Get(ctx context.Context, in *GetRiskEve
 
 // Create is the redacted wrapper for the actual RiskEventServiceServer.Create method
 // Unary RPC
-func (s *redactedRiskEventServiceServer) Create(ctx context.Context, in *CreateRiskEventRequest) (*RiskEvent, error) {
+func (s *redactedRiskEventServiceServer) Create(ctx context.Context, in *RiskEvent) (*emptypb.Empty, error) {
 	res, err := s.srv.Create(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
+// BatchCreate is the redacted wrapper for the actual RiskEventServiceServer.BatchCreate method
+// Unary RPC
+func (s *redactedRiskEventServiceServer) BatchCreate(ctx context.Context, in *BatchCreateRiskEventRequest) (*emptypb.Empty, error) {
+	res, err := s.srv.BatchCreate(ctx, in)
 	if !s.bypass.CheckInternal(ctx) {
 		// Apply redaction to the response
 		redact.Apply(res)
@@ -199,6 +212,16 @@ func (x *CreateRiskEventRequest) Redact() string {
 	}
 
 	// Safe field: Data
+	return x.String()
+}
+
+// Redact method implementation for BatchCreateRiskEventRequest
+func (x *BatchCreateRiskEventRequest) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Items
 	return x.String()
 }
 

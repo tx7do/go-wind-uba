@@ -2,6 +2,8 @@ package service
 
 import (
 	"context"
+	"go-wind-uba/app/core/service/internal/data/clickhouse"
+	"go-wind-uba/app/core/service/internal/data/doris"
 
 	"github.com/go-kratos/kratos/v2/log"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -19,16 +21,22 @@ type UserTagService struct {
 
 	log *log.Helper
 
-	userTagRepo *data.UserTagRepo
+	userTagRepo      *data.UserTagRepo
+	userTagDorisRepo *doris.UserTagsRepo
+	userTagCkRepo    *clickhouse.UserTagsRepo
 }
 
 func NewUserTagService(
 	ctx *bootstrap.Context,
 	userTagRepo *data.UserTagRepo,
+	userTagDorisRepo *doris.UserTagsRepo,
+	userTagCkRepo *clickhouse.UserTagsRepo,
 ) *UserTagService {
 	svc := &UserTagService{
-		log:         ctx.NewLoggerHelper("user-tag/service/core-service"),
-		userTagRepo: userTagRepo,
+		log:              ctx.NewLoggerHelper("user-tag/service/core-service"),
+		userTagRepo:      userTagRepo,
+		userTagDorisRepo: userTagDorisRepo,
+		userTagCkRepo:    userTagCkRepo,
 	}
 
 	svc.init()

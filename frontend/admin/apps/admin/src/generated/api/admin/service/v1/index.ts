@@ -4325,7 +4325,7 @@ export interface ObjectService {
   // 查询对象维度详情
   Get(request: ubaservicev1_GetObjectDimRequest): Promise<ubaservicev1_ObjectDim>;
   // 创建对象维度
-  Create(request: ubaservicev1_CreateObjectDimRequest): Promise<ubaservicev1_ObjectDim>;
+  Create(request: ubaservicev1_CreateObjectDimRequest): Promise<wellKnownEmpty>;
 }
 
 export function createObjectServiceClient(
@@ -4449,7 +4449,7 @@ export function createObjectServiceClient(
       }, {
         service: "ObjectService",
         method: "Create",
-      }) as Promise<ubaservicev1_ObjectDim>;
+      }) as Promise<wellKnownEmpty>;
     },
   };
 }
@@ -6021,7 +6021,7 @@ export interface RiskEventService {
   // 查询风险事件详情
   Get(request: ubaservicev1_GetRiskEventRequest): Promise<ubaservicev1_RiskEvent>;
   // 创建风险事件
-  Create(request: ubaservicev1_CreateRiskEventRequest): Promise<ubaservicev1_RiskEvent>;
+  Create(request: ubaservicev1_CreateRiskEventRequest): Promise<wellKnownEmpty>;
 }
 
 export function createRiskEventServiceClient(
@@ -6224,7 +6224,7 @@ export function createRiskEventServiceClient(
       }, {
         service: "RiskEventService",
         method: "Create",
-      }) as Promise<ubaservicev1_RiskEvent>;
+      }) as Promise<wellKnownEmpty>;
     },
   };
 }

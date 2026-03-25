@@ -42,7 +42,3 @@ func (s *SessionService) List(ctx context.Context, req *paginationV1.PagingReque
 func (s *SessionService) Get(ctx context.Context, req *ubaV1.GetSessionRequest) (*ubaV1.Session, error) {
 	return s.sessionServiceClient.Get(ctx, req)
 }
-
-func (s *SessionService) Create(ctx context.Context, req *ubaV1.CreateSessionRequest) (*ubaV1.Session, error) {
-	return s.sessionServiceClient.Create(ctx, req)
-}

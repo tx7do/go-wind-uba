@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/go-kratos/kratos/v2/log"
+	paginationV1 "github.com/tx7do/go-crud/api/gen/go/pagination/v1"
 	dorisCrud "github.com/tx7do/go-crud/doris"
 	"github.com/tx7do/go-utils/copierutil"
 	"github.com/tx7do/go-utils/mapper"
@@ -15,10 +16,11 @@ import (
 )
 
 type SessionsFactRepo struct {
-	db        *dorisCrud.Client
-	log       *log.Helper
-	tableName string
-	mapper    *mapper.CopierMapper[ubaV1.Session, schema.SessionsFact]
+	db         *dorisCrud.Client
+	log        *log.Helper
+	tableName  string
+	mapper     *mapper.CopierMapper[ubaV1.Session, schema.SessionsFact]
+	repository *dorisCrud.Repository[ubaV1.Session, schema.SessionsFact]
 }
 
 func NewSessionsFactRepo(
@@ -36,6 +38,13 @@ func NewSessionsFactRepo(
 }
 
 func (r *SessionsFactRepo) init() {
+	r.repository = dorisCrud.NewRepository[ubaV1.Session, schema.SessionsFact](
+		r.db,
+		r.mapper,
+		r.tableName,
+		r.log,
+	)
+
 	r.mapper.AppendConverters(copierutil.NewTimeStringConverterPair())
 	r.mapper.AppendConverters(copierutil.NewTimeTimestamppbConverterPair())
 }
@@ -66,4 +75,16 @@ func (r *SessionsFactRepo) BatchCreate(ctx context.Context, dtos []*ubaV1.Sessio
 		return ubaV1.ErrorInternalServerError("failed to batch insert sessions fact entities")
 	}
 	return nil
+}
+
+func (r *SessionsFactRepo) List(ctx context.Context, req *paginationV1.PagingRequest) (*ubaV1.ListSessionResponse, error) {
+	result, err := r.repository.ListWithPaging(ctx, req)
+	if err != nil {
+		r.log.Errorf("failed to list sessions fact data: %v", err)
+		return nil, ubaV1.ErrorInternalServerError("failed to list sessions fact data")
+	}
+	return &ubaV1.ListSessionResponse{
+		Items: result.Items,
+		Total: result.Total,
+	}, nil
 }

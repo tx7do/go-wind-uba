@@ -30,3 +30,6 @@ func NewPasswordCrypto() password.Crypto {
 	}
 	return crypto
 }
+
+// UseClickHouse 是否使用ClickHouse作为数据存储，否则使用Doris。
+const UseClickHouse bool = true

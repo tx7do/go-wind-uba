@@ -13,6 +13,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -40,7 +41,7 @@ type RiskEventServiceClient interface {
 	// 查询风险事件详情
 	Get(ctx context.Context, in *v11.GetRiskEventRequest, opts ...grpc.CallOption) (*v11.RiskEvent, error)
 	// 创建风险事件
-	Create(ctx context.Context, in *v11.CreateRiskEventRequest, opts ...grpc.CallOption) (*v11.RiskEvent, error)
+	Create(ctx context.Context, in *v11.CreateRiskEventRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type riskEventServiceClient struct {
@@ -81,9 +82,9 @@ func (c *riskEventServiceClient) Get(ctx context.Context, in *v11.GetRiskEventRe
 	return out, nil
 }
 
-func (c *riskEventServiceClient) Create(ctx context.Context, in *v11.CreateRiskEventRequest, opts ...grpc.CallOption) (*v11.RiskEvent, error) {
+func (c *riskEventServiceClient) Create(ctx context.Context, in *v11.CreateRiskEventRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(v11.RiskEvent)
+	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, RiskEventService_Create_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -104,7 +105,7 @@ type RiskEventServiceServer interface {
 	// 查询风险事件详情
 	Get(context.Context, *v11.GetRiskEventRequest) (*v11.RiskEvent, error)
 	// 创建风险事件
-	Create(context.Context, *v11.CreateRiskEventRequest) (*v11.RiskEvent, error)
+	Create(context.Context, *v11.CreateRiskEventRequest) (*emptypb.Empty, error)
 	mustEmbedUnimplementedRiskEventServiceServer()
 }
 
@@ -124,7 +125,7 @@ func (UnimplementedRiskEventServiceServer) Count(context.Context, *v1.PagingRequ
 func (UnimplementedRiskEventServiceServer) Get(context.Context, *v11.GetRiskEventRequest) (*v11.RiskEvent, error) {
 	return nil, status.Error(codes.Unimplemented, "method Get not implemented")
 }
-func (UnimplementedRiskEventServiceServer) Create(context.Context, *v11.CreateRiskEventRequest) (*v11.RiskEvent, error) {
+func (UnimplementedRiskEventServiceServer) Create(context.Context, *v11.CreateRiskEventRequest) (*emptypb.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method Create not implemented")
 }
 func (UnimplementedRiskEventServiceServer) mustEmbedUnimplementedRiskEventServiceServer() {}

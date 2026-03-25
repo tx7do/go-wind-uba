@@ -12,6 +12,7 @@ import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	durationpb "google.golang.org/protobuf/types/known/durationpb"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	reflect "reflect"
 	sync "sync"
@@ -360,7 +361,7 @@ func (x *GetSessionRequest) GetId() uint32 {
 // 创建会话请求
 type CreateSessionRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Session       *Session               `protobuf:"bytes,1,opt,name=session,proto3" json:"session,omitempty"`
+	Data          *Session               `protobuf:"bytes,1,opt,name=data,proto3" json:"data,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -395,9 +396,53 @@ func (*CreateSessionRequest) Descriptor() ([]byte, []int) {
 	return file_uba_service_v1_session_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *CreateSessionRequest) GetSession() *Session {
+func (x *CreateSessionRequest) GetData() *Session {
 	if x != nil {
-		return x.Session
+		return x.Data
+	}
+	return nil
+}
+
+type BatchCreateSessionRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Items         []*Session             `protobuf:"bytes,1,rep,name=items,proto3" json:"items,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *BatchCreateSessionRequest) Reset() {
+	*x = BatchCreateSessionRequest{}
+	mi := &file_uba_service_v1_session_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *BatchCreateSessionRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*BatchCreateSessionRequest) ProtoMessage() {}
+
+func (x *BatchCreateSessionRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_session_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use BatchCreateSessionRequest.ProtoReflect.Descriptor instead.
+func (*BatchCreateSessionRequest) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_session_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *BatchCreateSessionRequest) GetItems() []*Session {
+	if x != nil {
+		return x.Items
 	}
 	return nil
 }
@@ -412,7 +457,7 @@ type UpdateSessionRequest struct {
 
 func (x *UpdateSessionRequest) Reset() {
 	*x = UpdateSessionRequest{}
-	mi := &file_uba_service_v1_session_proto_msgTypes[4]
+	mi := &file_uba_service_v1_session_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -424,7 +469,7 @@ func (x *UpdateSessionRequest) String() string {
 func (*UpdateSessionRequest) ProtoMessage() {}
 
 func (x *UpdateSessionRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_session_proto_msgTypes[4]
+	mi := &file_uba_service_v1_session_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -437,7 +482,7 @@ func (x *UpdateSessionRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateSessionRequest.ProtoReflect.Descriptor instead.
 func (*UpdateSessionRequest) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_session_proto_rawDescGZIP(), []int{4}
+	return file_uba_service_v1_session_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *UpdateSessionRequest) GetSession() *Session {
@@ -457,7 +502,7 @@ type DeleteSessionRequest struct {
 
 func (x *DeleteSessionRequest) Reset() {
 	*x = DeleteSessionRequest{}
-	mi := &file_uba_service_v1_session_proto_msgTypes[5]
+	mi := &file_uba_service_v1_session_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -469,7 +514,7 @@ func (x *DeleteSessionRequest) String() string {
 func (*DeleteSessionRequest) ProtoMessage() {}
 
 func (x *DeleteSessionRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_session_proto_msgTypes[5]
+	mi := &file_uba_service_v1_session_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -482,7 +527,7 @@ func (x *DeleteSessionRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteSessionRequest.ProtoReflect.Descriptor instead.
 func (*DeleteSessionRequest) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_session_proto_rawDescGZIP(), []int{5}
+	return file_uba_service_v1_session_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *DeleteSessionRequest) GetId() uint32 {
@@ -496,7 +541,7 @@ var File_uba_service_v1_session_proto protoreflect.FileDescriptor
 
 const file_uba_service_v1_session_proto_rawDesc = "" +
 	"\n" +
-	"\x1cuba/service/v1/session.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1epagination/v1/pagination.proto\x1a\x1buba/service/v1/common.proto\"\xcd\x0f\n" +
+	"\x1cuba/service/v1/session.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1epagination/v1/pagination.proto\x1a\x1buba/service/v1/common.proto\"\xcd\x0f\n" +
 	"\aSession\x129\n" +
 	"\x02id\x18\x01 \x01(\rB)\xbaG&\x92\x02#会话ID，唯一标识一条会话R\x02id\x12R\n" +
 	"\ttenant_id\x18\x02 \x01(\rB5\xbaG2\x92\x02/租户ID，多租户隔离，支持 SaaS 场景R\btenantId\x12<\n" +
@@ -531,17 +576,20 @@ const file_uba_service_v1_session_proto_rawDesc = "" +
 	"\x05items\x18\x01 \x03(\v2\x17.uba.service.v1.SessionR\x05items\x12\x14\n" +
 	"\x05total\x18\x02 \x01(\x04R\x05total\"3\n" +
 	"\x11GetSessionRequest\x12\x1e\n" +
-	"\x02id\x18\x01 \x01(\rB\x0e\xbaG\v\x92\x02\b会话IDR\x02id\"]\n" +
-	"\x14CreateSessionRequest\x12E\n" +
-	"\asession\x18\x01 \x01(\v2\x17.uba.service.v1.SessionB\x12\xbaG\x0f\x92\x02\f会话对象R\asession\"]\n" +
+	"\x02id\x18\x01 \x01(\rB\x0e\xbaG\v\x92\x02\b会话IDR\x02id\"W\n" +
+	"\x14CreateSessionRequest\x12?\n" +
+	"\x04data\x18\x01 \x01(\v2\x17.uba.service.v1.SessionB\x12\xbaG\x0f\x92\x02\f会话对象R\x04data\"J\n" +
+	"\x19BatchCreateSessionRequest\x12-\n" +
+	"\x05items\x18\x01 \x03(\v2\x17.uba.service.v1.SessionR\x05items\"]\n" +
 	"\x14UpdateSessionRequest\x12E\n" +
 	"\asession\x18\x01 \x01(\v2\x17.uba.service.v1.SessionB\x12\xbaG\x0f\x92\x02\f会话对象R\asession\"6\n" +
 	"\x14DeleteSessionRequest\x12\x1e\n" +
-	"\x02id\x18\x01 \x01(\rB\x0e\xbaG\v\x92\x02\b会话IDR\x02id2\x85\x03\n" +
+	"\x02id\x18\x01 \x01(\rB\x0e\xbaG\v\x92\x02\b会话IDR\x02id2\xe7\x02\n" +
 	"\x0eSessionService\x12\x7f\n" +
-	"\x04List\x12\x19.pagination.PagingRequest\x1a#.uba.service.v1.ListSessionResponse\"7\xbaG4\x12\x12分页查询会话\x1a\x1e根据条件分页查询会话\x12|\n" +
-	"\x03Get\x12!.uba.service.v1.GetSessionRequest\x1a\x17.uba.service.v1.Session\"9\xbaG6\x12\x12查询会话详情\x1a 根据会话ID查询会话详情\x12t\n" +
-	"\x06Create\x12$.uba.service.v1.CreateSessionRequest\x1a\x17.uba.service.v1.Session\"+\xbaG(\x12\f创建会话\x1a\x18创建一条新的会话B\xa9\x01\n" +
+	"\x04List\x12\x19.pagination.PagingRequest\x1a#.uba.service.v1.ListSessionResponse\"7\xbaG4\x12\x12分页查询会话\x1a\x1e根据条件分页查询会话\x12C\n" +
+	"\x03Get\x12!.uba.service.v1.GetSessionRequest\x1a\x17.uba.service.v1.Session\"\x00\x12;\n" +
+	"\x06Create\x12\x17.uba.service.v1.Session\x1a\x16.google.protobuf.Empty\"\x00\x12R\n" +
+	"\vBatchCreate\x12).uba.service.v1.BatchCreateSessionRequest\x1a\x16.google.protobuf.Empty\"\x00B\xa9\x01\n" +
 	"\x12com.uba.service.v1B\fSessionProtoP\x01Z+go-wind-uba/api/gen/go/uba/service/v1;ubapb\xa2\x02\x03USX\xaa\x02\x0eUba.Service.V1\xca\x02\x0eUba\\Service\\V1\xe2\x02\x1aUba\\Service\\V1\\GPBMetadata\xea\x02\x10Uba::Service::V1b\x06proto3"
 
 var (
@@ -556,41 +604,46 @@ func file_uba_service_v1_session_proto_rawDescGZIP() []byte {
 	return file_uba_service_v1_session_proto_rawDescData
 }
 
-var file_uba_service_v1_session_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_uba_service_v1_session_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_uba_service_v1_session_proto_goTypes = []any{
-	(*Session)(nil),               // 0: uba.service.v1.Session
-	(*ListSessionResponse)(nil),   // 1: uba.service.v1.ListSessionResponse
-	(*GetSessionRequest)(nil),     // 2: uba.service.v1.GetSessionRequest
-	(*CreateSessionRequest)(nil),  // 3: uba.service.v1.CreateSessionRequest
-	(*UpdateSessionRequest)(nil),  // 4: uba.service.v1.UpdateSessionRequest
-	(*DeleteSessionRequest)(nil),  // 5: uba.service.v1.DeleteSessionRequest
-	(*timestamppb.Timestamp)(nil), // 6: google.protobuf.Timestamp
-	(*durationpb.Duration)(nil),   // 7: google.protobuf.Duration
-	(Platform)(0),                 // 8: uba.service.v1.Platform
-	(RiskLevel)(0),                // 9: uba.service.v1.RiskLevel
-	(*v1.PagingRequest)(nil),      // 10: pagination.PagingRequest
+	(*Session)(nil),                   // 0: uba.service.v1.Session
+	(*ListSessionResponse)(nil),       // 1: uba.service.v1.ListSessionResponse
+	(*GetSessionRequest)(nil),         // 2: uba.service.v1.GetSessionRequest
+	(*CreateSessionRequest)(nil),      // 3: uba.service.v1.CreateSessionRequest
+	(*BatchCreateSessionRequest)(nil), // 4: uba.service.v1.BatchCreateSessionRequest
+	(*UpdateSessionRequest)(nil),      // 5: uba.service.v1.UpdateSessionRequest
+	(*DeleteSessionRequest)(nil),      // 6: uba.service.v1.DeleteSessionRequest
+	(*timestamppb.Timestamp)(nil),     // 7: google.protobuf.Timestamp
+	(*durationpb.Duration)(nil),       // 8: google.protobuf.Duration
+	(Platform)(0),                     // 9: uba.service.v1.Platform
+	(RiskLevel)(0),                    // 10: uba.service.v1.RiskLevel
+	(*v1.PagingRequest)(nil),          // 11: pagination.PagingRequest
+	(*emptypb.Empty)(nil),             // 12: google.protobuf.Empty
 }
 var file_uba_service_v1_session_proto_depIdxs = []int32{
-	6,  // 0: uba.service.v1.Session.start_time:type_name -> google.protobuf.Timestamp
-	6,  // 1: uba.service.v1.Session.end_time:type_name -> google.protobuf.Timestamp
-	7,  // 2: uba.service.v1.Session.duration:type_name -> google.protobuf.Duration
-	8,  // 3: uba.service.v1.Session.platform:type_name -> uba.service.v1.Platform
-	9,  // 4: uba.service.v1.Session.risk_level:type_name -> uba.service.v1.RiskLevel
-	6,  // 5: uba.service.v1.Session.update_time:type_name -> google.protobuf.Timestamp
+	7,  // 0: uba.service.v1.Session.start_time:type_name -> google.protobuf.Timestamp
+	7,  // 1: uba.service.v1.Session.end_time:type_name -> google.protobuf.Timestamp
+	8,  // 2: uba.service.v1.Session.duration:type_name -> google.protobuf.Duration
+	9,  // 3: uba.service.v1.Session.platform:type_name -> uba.service.v1.Platform
+	10, // 4: uba.service.v1.Session.risk_level:type_name -> uba.service.v1.RiskLevel
+	7,  // 5: uba.service.v1.Session.update_time:type_name -> google.protobuf.Timestamp
 	0,  // 6: uba.service.v1.ListSessionResponse.items:type_name -> uba.service.v1.Session
-	0,  // 7: uba.service.v1.CreateSessionRequest.session:type_name -> uba.service.v1.Session
-	0,  // 8: uba.service.v1.UpdateSessionRequest.session:type_name -> uba.service.v1.Session
-	10, // 9: uba.service.v1.SessionService.List:input_type -> pagination.PagingRequest
-	2,  // 10: uba.service.v1.SessionService.Get:input_type -> uba.service.v1.GetSessionRequest
-	3,  // 11: uba.service.v1.SessionService.Create:input_type -> uba.service.v1.CreateSessionRequest
-	1,  // 12: uba.service.v1.SessionService.List:output_type -> uba.service.v1.ListSessionResponse
-	0,  // 13: uba.service.v1.SessionService.Get:output_type -> uba.service.v1.Session
-	0,  // 14: uba.service.v1.SessionService.Create:output_type -> uba.service.v1.Session
-	12, // [12:15] is the sub-list for method output_type
-	9,  // [9:12] is the sub-list for method input_type
-	9,  // [9:9] is the sub-list for extension type_name
-	9,  // [9:9] is the sub-list for extension extendee
-	0,  // [0:9] is the sub-list for field type_name
+	0,  // 7: uba.service.v1.CreateSessionRequest.data:type_name -> uba.service.v1.Session
+	0,  // 8: uba.service.v1.BatchCreateSessionRequest.items:type_name -> uba.service.v1.Session
+	0,  // 9: uba.service.v1.UpdateSessionRequest.session:type_name -> uba.service.v1.Session
+	11, // 10: uba.service.v1.SessionService.List:input_type -> pagination.PagingRequest
+	2,  // 11: uba.service.v1.SessionService.Get:input_type -> uba.service.v1.GetSessionRequest
+	0,  // 12: uba.service.v1.SessionService.Create:input_type -> uba.service.v1.Session
+	4,  // 13: uba.service.v1.SessionService.BatchCreate:input_type -> uba.service.v1.BatchCreateSessionRequest
+	1,  // 14: uba.service.v1.SessionService.List:output_type -> uba.service.v1.ListSessionResponse
+	0,  // 15: uba.service.v1.SessionService.Get:output_type -> uba.service.v1.Session
+	12, // 16: uba.service.v1.SessionService.Create:output_type -> google.protobuf.Empty
+	12, // 17: uba.service.v1.SessionService.BatchCreate:output_type -> google.protobuf.Empty
+	14, // [14:18] is the sub-list for method output_type
+	10, // [10:14] is the sub-list for method input_type
+	10, // [10:10] is the sub-list for extension type_name
+	10, // [10:10] is the sub-list for extension extendee
+	0,  // [0:10] is the sub-list for field type_name
 }
 
 func init() { file_uba_service_v1_session_proto_init() }
@@ -605,7 +658,7 @@ func file_uba_service_v1_session_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_uba_service_v1_session_proto_rawDesc), len(file_uba_service_v1_session_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   6,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

@@ -6,6 +6,7 @@ import "gnostic/openapi/v3/annotations.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/field_mask.proto";
 import "google/protobuf/struct.proto";
+import "google/protobuf/empty.proto";
 
 import "pagination/v1/pagination.proto";
 
@@ -23,7 +24,10 @@ service RiskEventService {
   rpc Get (GetRiskEventRequest) returns (RiskEvent) {}
 
   // 创建风险事件
-  rpc Create (CreateRiskEventRequest) returns (RiskEvent) {}
+  rpc Create (RiskEvent) returns (google.protobuf.Empty) {}
+
+  // 批量创建风险事件
+  rpc BatchCreate (BatchCreateRiskEventRequest) returns (google.protobuf.Empty) {}
 }
 
 // 风险事件
@@ -223,6 +227,10 @@ message GetRiskEventRequest {
 // 创建风险事件 - 请求
 message CreateRiskEventRequest {
   RiskEvent data = 1;
+}
+
+message BatchCreateRiskEventRequest {
+  repeated RiskEvent items = 1;
 }
 
 // 更新风险事件 - 请求

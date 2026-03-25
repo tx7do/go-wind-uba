@@ -853,6 +853,145 @@ var _ interface {
 	ErrorName() string
 } = CreateUserBehaviorProfileRequestValidationError{}
 
+// Validate checks the field values on BatchCreateUserBehaviorProfileRequest
+// with the rules defined in the proto definition for this message. If any
+// rules are violated, the first error encountered is returned, or nil if
+// there are no violations.
+func (m *BatchCreateUserBehaviorProfileRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on BatchCreateUserBehaviorProfileRequest
+// with the rules defined in the proto definition for this message. If any
+// rules are violated, the result is a list of violation errors wrapped in
+// BatchCreateUserBehaviorProfileRequestMultiError, or nil if none found.
+func (m *BatchCreateUserBehaviorProfileRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *BatchCreateUserBehaviorProfileRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	for idx, item := range m.GetItems() {
+		_, _ = idx, item
+
+		if all {
+			switch v := interface{}(item).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, BatchCreateUserBehaviorProfileRequestValidationError{
+						field:  fmt.Sprintf("Items[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, BatchCreateUserBehaviorProfileRequestValidationError{
+						field:  fmt.Sprintf("Items[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(item).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return BatchCreateUserBehaviorProfileRequestValidationError{
+					field:  fmt.Sprintf("Items[%v]", idx),
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
+	if len(errors) > 0 {
+		return BatchCreateUserBehaviorProfileRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// BatchCreateUserBehaviorProfileRequestMultiError is an error wrapping
+// multiple validation errors returned by
+// BatchCreateUserBehaviorProfileRequest.ValidateAll() if the designated
+// constraints aren't met.
+type BatchCreateUserBehaviorProfileRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m BatchCreateUserBehaviorProfileRequestMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m BatchCreateUserBehaviorProfileRequestMultiError) AllErrors() []error { return m }
+
+// BatchCreateUserBehaviorProfileRequestValidationError is the validation error
+// returned by BatchCreateUserBehaviorProfileRequest.Validate if the
+// designated constraints aren't met.
+type BatchCreateUserBehaviorProfileRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e BatchCreateUserBehaviorProfileRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e BatchCreateUserBehaviorProfileRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e BatchCreateUserBehaviorProfileRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e BatchCreateUserBehaviorProfileRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e BatchCreateUserBehaviorProfileRequestValidationError) ErrorName() string {
+	return "BatchCreateUserBehaviorProfileRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e BatchCreateUserBehaviorProfileRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sBatchCreateUserBehaviorProfileRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = BatchCreateUserBehaviorProfileRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = BatchCreateUserBehaviorProfileRequestValidationError{}
+
 // Validate checks the field values on UpdateUserBehaviorProfileRequest with
 // the rules defined in the proto definition for this message. If any rules
 // are violated, the first error encountered is returned, or nil if there are

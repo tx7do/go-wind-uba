@@ -11,6 +11,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -21,6 +22,7 @@ var (
 	_ codes.Code
 	_ status.Status
 	_ pagination.Sorting
+	_ emptypb.Empty
 	_ ubapb.RiskEvent
 )
 
@@ -77,7 +79,7 @@ func (s *redactedRiskEventServiceServer) Get(ctx context.Context, in *ubapb.GetR
 
 // Create is the redacted wrapper for the actual RiskEventServiceServer.Create method
 // Unary RPC
-func (s *redactedRiskEventServiceServer) Create(ctx context.Context, in *ubapb.CreateRiskEventRequest) (*ubapb.RiskEvent, error) {
+func (s *redactedRiskEventServiceServer) Create(ctx context.Context, in *ubapb.CreateRiskEventRequest) (*emptypb.Empty, error) {
 	res, err := s.srv.Create(ctx, in)
 	if !s.bypass.CheckInternal(ctx) {
 		// Apply redaction to the response

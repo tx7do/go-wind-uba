@@ -4,6 +4,7 @@ package admin.service.v1;
 
 import "google/api/annotations.proto";
 import "pagination/v1/pagination.proto";
+import "google/protobuf/empty.proto";
 import "uba/service/v1/object.proto";
 
 // 对象维度服务
@@ -23,7 +24,7 @@ service ObjectService {
   }
 
   // 创建对象维度
-  rpc Create (uba.service.v1.CreateObjectDimRequest) returns (uba.service.v1.ObjectDim) {
+  rpc Create (uba.service.v1.CreateObjectDimRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
       post: "/admin/v1/object-dims"
       body: "*"

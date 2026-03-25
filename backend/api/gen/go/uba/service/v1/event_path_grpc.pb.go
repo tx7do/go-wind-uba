@@ -12,6 +12,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -20,9 +21,10 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	EventPathService_List_FullMethodName   = "/uba.service.v1.EventPathService/List"
-	EventPathService_Get_FullMethodName    = "/uba.service.v1.EventPathService/Get"
-	EventPathService_Create_FullMethodName = "/uba.service.v1.EventPathService/Create"
+	EventPathService_List_FullMethodName        = "/uba.service.v1.EventPathService/List"
+	EventPathService_Get_FullMethodName         = "/uba.service.v1.EventPathService/Get"
+	EventPathService_Create_FullMethodName      = "/uba.service.v1.EventPathService/Create"
+	EventPathService_BatchCreate_FullMethodName = "/uba.service.v1.EventPathService/BatchCreate"
 )
 
 // EventPathServiceClient is the client API for EventPathService service.
@@ -36,7 +38,9 @@ type EventPathServiceClient interface {
 	// 查询单条事件路径详情
 	Get(ctx context.Context, in *GetEventPathRequest, opts ...grpc.CallOption) (*EventPath, error)
 	// 创建事件路径（如有需要）
-	Create(ctx context.Context, in *CreateEventPathRequest, opts ...grpc.CallOption) (*EventPath, error)
+	Create(ctx context.Context, in *EventPath, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// 批量创建会话
+	BatchCreate(ctx context.Context, in *BatchCreateEventPathRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type eventPathServiceClient struct {
@@ -67,10 +71,20 @@ func (c *eventPathServiceClient) Get(ctx context.Context, in *GetEventPathReques
 	return out, nil
 }
 
-func (c *eventPathServiceClient) Create(ctx context.Context, in *CreateEventPathRequest, opts ...grpc.CallOption) (*EventPath, error) {
+func (c *eventPathServiceClient) Create(ctx context.Context, in *EventPath, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(EventPath)
+	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, EventPathService_Create_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *eventPathServiceClient) BatchCreate(ctx context.Context, in *BatchCreateEventPathRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, EventPathService_BatchCreate_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -88,7 +102,9 @@ type EventPathServiceServer interface {
 	// 查询单条事件路径详情
 	Get(context.Context, *GetEventPathRequest) (*EventPath, error)
 	// 创建事件路径（如有需要）
-	Create(context.Context, *CreateEventPathRequest) (*EventPath, error)
+	Create(context.Context, *EventPath) (*emptypb.Empty, error)
+	// 批量创建会话
+	BatchCreate(context.Context, *BatchCreateEventPathRequest) (*emptypb.Empty, error)
 	mustEmbedUnimplementedEventPathServiceServer()
 }
 
@@ -105,8 +121,11 @@ func (UnimplementedEventPathServiceServer) List(context.Context, *v1.PagingReque
 func (UnimplementedEventPathServiceServer) Get(context.Context, *GetEventPathRequest) (*EventPath, error) {
 	return nil, status.Error(codes.Unimplemented, "method Get not implemented")
 }
-func (UnimplementedEventPathServiceServer) Create(context.Context, *CreateEventPathRequest) (*EventPath, error) {
+func (UnimplementedEventPathServiceServer) Create(context.Context, *EventPath) (*emptypb.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method Create not implemented")
+}
+func (UnimplementedEventPathServiceServer) BatchCreate(context.Context, *BatchCreateEventPathRequest) (*emptypb.Empty, error) {
+	return nil, status.Error(codes.Unimplemented, "method BatchCreate not implemented")
 }
 func (UnimplementedEventPathServiceServer) mustEmbedUnimplementedEventPathServiceServer() {}
 func (UnimplementedEventPathServiceServer) testEmbeddedByValue()                          {}
@@ -166,7 +185,7 @@ func _EventPathService_Get_Handler(srv interface{}, ctx context.Context, dec fun
 }
 
 func _EventPathService_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateEventPathRequest)
+	in := new(EventPath)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -178,7 +197,25 @@ func _EventPathService_Create_Handler(srv interface{}, ctx context.Context, dec 
 		FullMethod: EventPathService_Create_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(EventPathServiceServer).Create(ctx, req.(*CreateEventPathRequest))
+		return srv.(EventPathServiceServer).Create(ctx, req.(*EventPath))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _EventPathService_BatchCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BatchCreateEventPathRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(EventPathServiceServer).BatchCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: EventPathService_BatchCreate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(EventPathServiceServer).BatchCreate(ctx, req.(*BatchCreateEventPathRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -201,6 +238,10 @@ var EventPathService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Create",
 			Handler:    _EventPathService_Create_Handler,
+		},
+		{
+			MethodName: "BatchCreate",
+			Handler:    _EventPathService_BatchCreate_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

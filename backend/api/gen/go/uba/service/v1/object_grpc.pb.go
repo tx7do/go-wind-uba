@@ -12,6 +12,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -20,9 +21,10 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	ObjectService_List_FullMethodName   = "/uba.service.v1.ObjectService/List"
-	ObjectService_Get_FullMethodName    = "/uba.service.v1.ObjectService/Get"
-	ObjectService_Create_FullMethodName = "/uba.service.v1.ObjectService/Create"
+	ObjectService_List_FullMethodName        = "/uba.service.v1.ObjectService/List"
+	ObjectService_Get_FullMethodName         = "/uba.service.v1.ObjectService/Get"
+	ObjectService_Create_FullMethodName      = "/uba.service.v1.ObjectService/Create"
+	ObjectService_BatchCreate_FullMethodName = "/uba.service.v1.ObjectService/BatchCreate"
 )
 
 // ObjectServiceClient is the client API for ObjectService service.
@@ -36,7 +38,9 @@ type ObjectServiceClient interface {
 	// 查询对象维度详情
 	Get(ctx context.Context, in *GetObjectDimRequest, opts ...grpc.CallOption) (*ObjectDim, error)
 	// 创建对象维度
-	Create(ctx context.Context, in *CreateObjectDimRequest, opts ...grpc.CallOption) (*ObjectDim, error)
+	Create(ctx context.Context, in *ObjectDim, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// 批量创建对象维度
+	BatchCreate(ctx context.Context, in *BatchCreateObjectDimRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type objectServiceClient struct {
@@ -67,10 +71,20 @@ func (c *objectServiceClient) Get(ctx context.Context, in *GetObjectDimRequest, 
 	return out, nil
 }
 
-func (c *objectServiceClient) Create(ctx context.Context, in *CreateObjectDimRequest, opts ...grpc.CallOption) (*ObjectDim, error) {
+func (c *objectServiceClient) Create(ctx context.Context, in *ObjectDim, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ObjectDim)
+	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, ObjectService_Create_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *objectServiceClient) BatchCreate(ctx context.Context, in *BatchCreateObjectDimRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, ObjectService_BatchCreate_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -88,7 +102,9 @@ type ObjectServiceServer interface {
 	// 查询对象维度详情
 	Get(context.Context, *GetObjectDimRequest) (*ObjectDim, error)
 	// 创建对象维度
-	Create(context.Context, *CreateObjectDimRequest) (*ObjectDim, error)
+	Create(context.Context, *ObjectDim) (*emptypb.Empty, error)
+	// 批量创建对象维度
+	BatchCreate(context.Context, *BatchCreateObjectDimRequest) (*emptypb.Empty, error)
 	mustEmbedUnimplementedObjectServiceServer()
 }
 
@@ -105,8 +121,11 @@ func (UnimplementedObjectServiceServer) List(context.Context, *v1.PagingRequest)
 func (UnimplementedObjectServiceServer) Get(context.Context, *GetObjectDimRequest) (*ObjectDim, error) {
 	return nil, status.Error(codes.Unimplemented, "method Get not implemented")
 }
-func (UnimplementedObjectServiceServer) Create(context.Context, *CreateObjectDimRequest) (*ObjectDim, error) {
+func (UnimplementedObjectServiceServer) Create(context.Context, *ObjectDim) (*emptypb.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method Create not implemented")
+}
+func (UnimplementedObjectServiceServer) BatchCreate(context.Context, *BatchCreateObjectDimRequest) (*emptypb.Empty, error) {
+	return nil, status.Error(codes.Unimplemented, "method BatchCreate not implemented")
 }
 func (UnimplementedObjectServiceServer) mustEmbedUnimplementedObjectServiceServer() {}
 func (UnimplementedObjectServiceServer) testEmbeddedByValue()                       {}
@@ -166,7 +185,7 @@ func _ObjectService_Get_Handler(srv interface{}, ctx context.Context, dec func(i
 }
 
 func _ObjectService_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateObjectDimRequest)
+	in := new(ObjectDim)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -178,7 +197,25 @@ func _ObjectService_Create_Handler(srv interface{}, ctx context.Context, dec fun
 		FullMethod: ObjectService_Create_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ObjectServiceServer).Create(ctx, req.(*CreateObjectDimRequest))
+		return srv.(ObjectServiceServer).Create(ctx, req.(*ObjectDim))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ObjectService_BatchCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BatchCreateObjectDimRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ObjectServiceServer).BatchCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ObjectService_BatchCreate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ObjectServiceServer).BatchCreate(ctx, req.(*BatchCreateObjectDimRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -201,6 +238,10 @@ var ObjectService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Create",
 			Handler:    _ObjectService_Create_Handler,
+		},
+		{
+			MethodName: "BatchCreate",
+			Handler:    _ObjectService_BatchCreate_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

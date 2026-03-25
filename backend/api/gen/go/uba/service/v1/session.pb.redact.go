@@ -11,6 +11,7 @@ import (
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
 	durationpb "google.golang.org/protobuf/types/known/durationpb"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -23,6 +24,7 @@ var (
 	_ status.Status
 	_ durationpb.Duration
 	_ timestamppb.Timestamp
+	_ emptypb.Empty
 	_ pagination.Sorting
 )
 
@@ -68,8 +70,19 @@ func (s *redactedSessionServiceServer) Get(ctx context.Context, in *GetSessionRe
 
 // Create is the redacted wrapper for the actual SessionServiceServer.Create method
 // Unary RPC
-func (s *redactedSessionServiceServer) Create(ctx context.Context, in *CreateSessionRequest) (*Session, error) {
+func (s *redactedSessionServiceServer) Create(ctx context.Context, in *Session) (*emptypb.Empty, error) {
 	res, err := s.srv.Create(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
+// BatchCreate is the redacted wrapper for the actual SessionServiceServer.BatchCreate method
+// Unary RPC
+func (s *redactedSessionServiceServer) BatchCreate(ctx context.Context, in *BatchCreateSessionRequest) (*emptypb.Empty, error) {
+	res, err := s.srv.BatchCreate(ctx, in)
 	if !s.bypass.CheckInternal(ctx) {
 		// Apply redaction to the response
 		redact.Apply(res)
@@ -157,7 +170,17 @@ func (x *CreateSessionRequest) Redact() string {
 		return ""
 	}
 
-	// Safe field: Session
+	// Safe field: Data
+	return x.String()
+}
+
+// Redact method implementation for BatchCreateSessionRequest
+func (x *BatchCreateSessionRequest) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Items
 	return x.String()
 }
 

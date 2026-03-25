@@ -10,7 +10,9 @@ import (
 	"github.com/go-kratos/kratos/v2"
 	"github.com/tx7do/kratos-bootstrap/bootstrap"
 	"go-wind-uba/app/core/service/internal/data"
+	"go-wind-uba/app/core/service/internal/data/clickhouse"
 	"go-wind-uba/app/core/service/internal/data/client"
+	"go-wind-uba/app/core/service/internal/data/doris"
 	"go-wind-uba/app/core/service/internal/server"
 	"go-wind-uba/app/core/service/internal/service"
 )
@@ -101,23 +103,54 @@ func initApp(context *bootstrap.Context) (*kratos.App, func(), error) {
 	applicationRepo := data.NewApplicationRepo(context, entClient)
 	applicationService := service.NewApplicationService(context, applicationRepo)
 	idMappingRepo := data.NewIDMappingRepo(context, entClient)
-	idMappingService := service.NewIDMappingService(context, idMappingRepo)
+	dorisClient, cleanup3, err := client.NewDorisClient(context)
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	dorisIDMappingRepo := doris.NewIDMappingRepo(context, dorisClient)
+	clickhouseClient, cleanup4, err := client.NewClickHouseClient(context)
+	if err != nil {
+		cleanup3()
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	clickhouseIDMappingRepo := clickhouse.NewIDMappingRepo(context, clickhouseClient)
+	idMappingService := service.NewIDMappingService(context, idMappingRepo, dorisIDMappingRepo, clickhouseIDMappingRepo)
 	riskRuleRepo := data.NewRiskRuleRepo(context, entClient)
 	riskRuleService := service.NewRiskRuleService(context, riskRuleRepo)
 	tagDefinitionRepo := data.NewTagDefinitionRepo(context, entClient)
 	tagDefinitionService := service.NewTagDefinitionService(context, tagDefinitionRepo)
 	userTagRepo := data.NewUserTagRepo(context, entClient)
-	userTagService := service.NewUserTagService(context, userTagRepo)
+	userTagsRepo := doris.NewUserTagsRepo(context, dorisClient)
+	clickhouseUserTagsRepo := clickhouse.NewUserTagsRepo(context, clickhouseClient)
+	userTagService := service.NewUserTagService(context, userTagRepo, userTagsRepo, clickhouseUserTagsRepo)
 	webhookRepo := data.NewWebhookRepo(context, entClient)
 	webhookService := service.NewWebhookService(context, webhookRepo)
-	behaviorEventService := service.NewBehaviorEventService(context)
-	eventPathService := service.NewEventPathService(context)
-	objectService := service.NewObjectService(context)
-	riskEventService := service.NewRiskEventService(context)
-	sessionService := service.NewSessionService(context)
-	userBehaviorProfileService := service.NewUserBehaviorProfileService(context)
+	eventsFactRepo := doris.NewEventsFactRepo(context, dorisClient)
+	clickhouseEventsFactRepo := clickhouse.NewEventsFactRepo(context, clickhouseClient)
+	behaviorEventService := service.NewBehaviorEventService(context, eventsFactRepo, clickhouseEventsFactRepo)
+	pathFeaturesRepo := doris.NewPathFeaturesRepo(context, dorisClient)
+	clickhousePathFeaturesRepo := clickhouse.NewPathFeaturesRepo(context, clickhouseClient)
+	eventPathService := service.NewEventPathService(context, pathFeaturesRepo, clickhousePathFeaturesRepo)
+	objectsDimRepo := doris.NewObjectsDimRepo(context, dorisClient)
+	clickhouseObjectsDimRepo := clickhouse.NewObjectsDimRepo(context, clickhouseClient)
+	objectService := service.NewObjectService(context, objectsDimRepo, clickhouseObjectsDimRepo)
+	riskEventsRepo := doris.NewRiskEventsRepo(context, dorisClient)
+	clickhouseRiskEventsRepo := clickhouse.NewRiskEventsRepo(context, clickhouseClient)
+	riskEventService := service.NewRiskEventService(context, riskEventsRepo, clickhouseRiskEventsRepo)
+	sessionsFactRepo := doris.NewSessionsFactRepo(context, dorisClient)
+	clickhouseSessionsFactRepo := clickhouse.NewSessionsFactRepo(context, clickhouseClient)
+	sessionService := service.NewSessionService(context, sessionsFactRepo, clickhouseSessionsFactRepo)
+	usersDimRepo := doris.NewUsersDimRepo(context, dorisClient)
+	clickhouseUsersDimRepo := clickhouse.NewUsersDimRepo(context, clickhouseClient)
+	userBehaviorProfileService := service.NewUserBehaviorProfileService(context, usersDimRepo, clickhouseUsersDimRepo)
 	grpcServer, err := server.NewGrpcServer(context, v, authenticationService, loginPolicyService, taskService, fileService, dictTypeService, dictEntryService, languageService, tenantService, userService, roleService, positionService, orgUnitService, menuService, apiService, permissionService, permissionGroupService, permissionAuditLogService, policyEvaluationLogService, loginAuditLogService, apiAuditLogService, operationAuditLogService, dataAccessAuditLogService, internalMessageService, internalMessageCategoryService, internalMessageRecipientService, applicationService, idMappingService, riskRuleService, tagDefinitionService, userTagService, webhookService, behaviorEventService, eventPathService, objectService, riskEventService, sessionService, userBehaviorProfileService)
 	if err != nil {
+		cleanup4()
+		cleanup3()
 		cleanup2()
 		cleanup()
 		return nil, nil, err
@@ -125,6 +158,8 @@ func initApp(context *bootstrap.Context) (*kratos.App, func(), error) {
 	asynqServer := server.NewAsynqServer(context, taskService)
 	app := newApp(context, grpcServer, asynqServer)
 	return app, func() {
+		cleanup4()
+		cleanup3()
 		cleanup2()
 		cleanup()
 	}, nil

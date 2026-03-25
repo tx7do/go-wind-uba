@@ -11,6 +11,7 @@ import (
 	v1 "github.com/tx7do/go-crud/api/gen/go/pagination/v1"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	fieldmaskpb "google.golang.org/protobuf/types/known/fieldmaskpb"
 	structpb "google.golang.org/protobuf/types/known/structpb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
@@ -623,6 +624,50 @@ func (x *CreateRiskEventRequest) GetData() *RiskEvent {
 	return nil
 }
 
+type BatchCreateRiskEventRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Items         []*RiskEvent           `protobuf:"bytes,1,rep,name=items,proto3" json:"items,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *BatchCreateRiskEventRequest) Reset() {
+	*x = BatchCreateRiskEventRequest{}
+	mi := &file_uba_service_v1_risk_event_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *BatchCreateRiskEventRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*BatchCreateRiskEventRequest) ProtoMessage() {}
+
+func (x *BatchCreateRiskEventRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_risk_event_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use BatchCreateRiskEventRequest.ProtoReflect.Descriptor instead.
+func (*BatchCreateRiskEventRequest) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_risk_event_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *BatchCreateRiskEventRequest) GetItems() []*RiskEvent {
+	if x != nil {
+		return x.Items
+	}
+	return nil
+}
+
 // 更新风险事件 - 请求
 type UpdateRiskEventRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
@@ -636,7 +681,7 @@ type UpdateRiskEventRequest struct {
 
 func (x *UpdateRiskEventRequest) Reset() {
 	*x = UpdateRiskEventRequest{}
-	mi := &file_uba_service_v1_risk_event_proto_msgTypes[5]
+	mi := &file_uba_service_v1_risk_event_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -648,7 +693,7 @@ func (x *UpdateRiskEventRequest) String() string {
 func (*UpdateRiskEventRequest) ProtoMessage() {}
 
 func (x *UpdateRiskEventRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_risk_event_proto_msgTypes[5]
+	mi := &file_uba_service_v1_risk_event_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -661,7 +706,7 @@ func (x *UpdateRiskEventRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateRiskEventRequest.ProtoReflect.Descriptor instead.
 func (*UpdateRiskEventRequest) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_risk_event_proto_rawDescGZIP(), []int{5}
+	return file_uba_service_v1_risk_event_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *UpdateRiskEventRequest) GetId() uint32 {
@@ -706,7 +751,7 @@ type DeleteRiskEventRequest struct {
 
 func (x *DeleteRiskEventRequest) Reset() {
 	*x = DeleteRiskEventRequest{}
-	mi := &file_uba_service_v1_risk_event_proto_msgTypes[6]
+	mi := &file_uba_service_v1_risk_event_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -718,7 +763,7 @@ func (x *DeleteRiskEventRequest) String() string {
 func (*DeleteRiskEventRequest) ProtoMessage() {}
 
 func (x *DeleteRiskEventRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_risk_event_proto_msgTypes[6]
+	mi := &file_uba_service_v1_risk_event_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -731,7 +776,7 @@ func (x *DeleteRiskEventRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteRiskEventRequest.ProtoReflect.Descriptor instead.
 func (*DeleteRiskEventRequest) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_risk_event_proto_rawDescGZIP(), []int{6}
+	return file_uba_service_v1_risk_event_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *DeleteRiskEventRequest) GetQueryBy() isDeleteRiskEventRequest_QueryBy {
@@ -776,7 +821,7 @@ type CountRiskEventResponse struct {
 
 func (x *CountRiskEventResponse) Reset() {
 	*x = CountRiskEventResponse{}
-	mi := &file_uba_service_v1_risk_event_proto_msgTypes[7]
+	mi := &file_uba_service_v1_risk_event_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -788,7 +833,7 @@ func (x *CountRiskEventResponse) String() string {
 func (*CountRiskEventResponse) ProtoMessage() {}
 
 func (x *CountRiskEventResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_risk_event_proto_msgTypes[7]
+	mi := &file_uba_service_v1_risk_event_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -801,7 +846,7 @@ func (x *CountRiskEventResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CountRiskEventResponse.ProtoReflect.Descriptor instead.
 func (*CountRiskEventResponse) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_risk_event_proto_rawDescGZIP(), []int{7}
+	return file_uba_service_v1_risk_event_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *CountRiskEventResponse) GetCount() uint64 {
@@ -815,7 +860,7 @@ var File_uba_service_v1_risk_event_proto protoreflect.FileDescriptor
 
 const file_uba_service_v1_risk_event_proto_rawDesc = "" +
 	"\n" +
-	"\x1fuba/service/v1/risk_event.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a google/protobuf/field_mask.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1epagination/v1/pagination.proto\x1a\x1buba/service/v1/common.proto\"\xef\x17\n" +
+	"\x1fuba/service/v1/risk_event.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a google/protobuf/field_mask.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1epagination/v1/pagination.proto\x1a\x1buba/service/v1/common.proto\"\xef\x17\n" +
 	"\tRiskEvent\x12\x18\n" +
 	"\x02id\x18\x01 \x01(\rB\b\xbaG\x05\x92\x02\x02IDR\x02id\x12W\n" +
 	"\ttenant_id\x18\x02 \x01(\rB5\xbaG2\x92\x02/租户ID，多租户隔离，支持 SaaS 场景H\x00R\btenantId\x88\x01\x01\x12Y\n" +
@@ -927,7 +972,9 @@ const file_uba_service_v1_risk_event_proto_rawDesc = "" +
 	"\n" +
 	"_view_mask\"G\n" +
 	"\x16CreateRiskEventRequest\x12-\n" +
-	"\x04data\x18\x01 \x01(\v2\x19.uba.service.v1.RiskEventR\x04data\"\xa3\x03\n" +
+	"\x04data\x18\x01 \x01(\v2\x19.uba.service.v1.RiskEventR\x04data\"N\n" +
+	"\x1bBatchCreateRiskEventRequest\x12/\n" +
+	"\x05items\x18\x01 \x03(\v2\x19.uba.service.v1.RiskEventR\x05items\"\xa3\x03\n" +
 	"\x16UpdateRiskEventRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\rR\x02id\x12;\n" +
 	"\x04data\x18\x02 \x01(\v2\x19.uba.service.v1.RiskEventB\f\xbaG\t\x92\x02\x06数据R\x04data\x12s\n" +
@@ -944,12 +991,13 @@ const file_uba_service_v1_risk_event_proto_rawDesc = "" +
 	"\bquery_byB\r\n" +
 	"\v_deleted_by\".\n" +
 	"\x16CountRiskEventResponse\x12\x14\n" +
-	"\x05count\x18\x01 \x01(\x04R\x05count2\xc4\x02\n" +
+	"\x05count\x18\x01 \x01(\x04R\x05count2\x8a\x03\n" +
 	"\x10RiskEventService\x12J\n" +
 	"\x04List\x12\x19.pagination.PagingRequest\x1a%.uba.service.v1.ListRiskEventResponse\"\x00\x12L\n" +
 	"\x05Count\x12\x19.pagination.PagingRequest\x1a&.uba.service.v1.CountRiskEventResponse\"\x00\x12G\n" +
-	"\x03Get\x12#.uba.service.v1.GetRiskEventRequest\x1a\x19.uba.service.v1.RiskEvent\"\x00\x12M\n" +
-	"\x06Create\x12&.uba.service.v1.CreateRiskEventRequest\x1a\x19.uba.service.v1.RiskEvent\"\x00B\xab\x01\n" +
+	"\x03Get\x12#.uba.service.v1.GetRiskEventRequest\x1a\x19.uba.service.v1.RiskEvent\"\x00\x12=\n" +
+	"\x06Create\x12\x19.uba.service.v1.RiskEvent\x1a\x16.google.protobuf.Empty\"\x00\x12T\n" +
+	"\vBatchCreate\x12+.uba.service.v1.BatchCreateRiskEventRequest\x1a\x16.google.protobuf.Empty\"\x00B\xab\x01\n" +
 	"\x12com.uba.service.v1B\x0eRiskEventProtoP\x01Z+go-wind-uba/api/gen/go/uba/service/v1;ubapb\xa2\x02\x03USX\xaa\x02\x0eUba.Service.V1\xca\x02\x0eUba\\Service\\V1\xe2\x02\x1aUba\\Service\\V1\\GPBMetadata\xea\x02\x10Uba::Service::V1b\x06proto3"
 
 var (
@@ -965,61 +1013,66 @@ func file_uba_service_v1_risk_event_proto_rawDescGZIP() []byte {
 }
 
 var file_uba_service_v1_risk_event_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_uba_service_v1_risk_event_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
+var file_uba_service_v1_risk_event_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
 var file_uba_service_v1_risk_event_proto_goTypes = []any{
-	(RiskEvent_Status)(0),          // 0: uba.service.v1.RiskEvent.Status
-	(*RiskEvent)(nil),              // 1: uba.service.v1.RiskEvent
-	(*RiskEventSummary)(nil),       // 2: uba.service.v1.RiskEventSummary
-	(*ListRiskEventResponse)(nil),  // 3: uba.service.v1.ListRiskEventResponse
-	(*GetRiskEventRequest)(nil),    // 4: uba.service.v1.GetRiskEventRequest
-	(*CreateRiskEventRequest)(nil), // 5: uba.service.v1.CreateRiskEventRequest
-	(*UpdateRiskEventRequest)(nil), // 6: uba.service.v1.UpdateRiskEventRequest
-	(*DeleteRiskEventRequest)(nil), // 7: uba.service.v1.DeleteRiskEventRequest
-	(*CountRiskEventResponse)(nil), // 8: uba.service.v1.CountRiskEventResponse
-	nil,                            // 9: uba.service.v1.RiskEvent.EvidenceEntry
-	nil,                            // 10: uba.service.v1.RiskEventSummary.ByLevelEntry
-	nil,                            // 11: uba.service.v1.RiskEventSummary.ByTypeEntry
-	nil,                            // 12: uba.service.v1.RiskEventSummary.ByStatusEntry
-	(RiskType)(0),                  // 13: uba.service.v1.RiskType
-	(RiskLevel)(0),                 // 14: uba.service.v1.RiskLevel
-	(*structpb.Struct)(nil),        // 15: google.protobuf.Struct
-	(*timestamppb.Timestamp)(nil),  // 16: google.protobuf.Timestamp
-	(*fieldmaskpb.FieldMask)(nil),  // 17: google.protobuf.FieldMask
-	(*v1.PagingRequest)(nil),       // 18: pagination.PagingRequest
+	(RiskEvent_Status)(0),               // 0: uba.service.v1.RiskEvent.Status
+	(*RiskEvent)(nil),                   // 1: uba.service.v1.RiskEvent
+	(*RiskEventSummary)(nil),            // 2: uba.service.v1.RiskEventSummary
+	(*ListRiskEventResponse)(nil),       // 3: uba.service.v1.ListRiskEventResponse
+	(*GetRiskEventRequest)(nil),         // 4: uba.service.v1.GetRiskEventRequest
+	(*CreateRiskEventRequest)(nil),      // 5: uba.service.v1.CreateRiskEventRequest
+	(*BatchCreateRiskEventRequest)(nil), // 6: uba.service.v1.BatchCreateRiskEventRequest
+	(*UpdateRiskEventRequest)(nil),      // 7: uba.service.v1.UpdateRiskEventRequest
+	(*DeleteRiskEventRequest)(nil),      // 8: uba.service.v1.DeleteRiskEventRequest
+	(*CountRiskEventResponse)(nil),      // 9: uba.service.v1.CountRiskEventResponse
+	nil,                                 // 10: uba.service.v1.RiskEvent.EvidenceEntry
+	nil,                                 // 11: uba.service.v1.RiskEventSummary.ByLevelEntry
+	nil,                                 // 12: uba.service.v1.RiskEventSummary.ByTypeEntry
+	nil,                                 // 13: uba.service.v1.RiskEventSummary.ByStatusEntry
+	(RiskType)(0),                       // 14: uba.service.v1.RiskType
+	(RiskLevel)(0),                      // 15: uba.service.v1.RiskLevel
+	(*structpb.Struct)(nil),             // 16: google.protobuf.Struct
+	(*timestamppb.Timestamp)(nil),       // 17: google.protobuf.Timestamp
+	(*fieldmaskpb.FieldMask)(nil),       // 18: google.protobuf.FieldMask
+	(*v1.PagingRequest)(nil),            // 19: pagination.PagingRequest
+	(*emptypb.Empty)(nil),               // 20: google.protobuf.Empty
 }
 var file_uba_service_v1_risk_event_proto_depIdxs = []int32{
-	13, // 0: uba.service.v1.RiskEvent.risk_type:type_name -> uba.service.v1.RiskType
-	14, // 1: uba.service.v1.RiskEvent.risk_level:type_name -> uba.service.v1.RiskLevel
-	15, // 2: uba.service.v1.RiskEvent.rule_context:type_name -> google.protobuf.Struct
-	9,  // 3: uba.service.v1.RiskEvent.evidence:type_name -> uba.service.v1.RiskEvent.EvidenceEntry
+	14, // 0: uba.service.v1.RiskEvent.risk_type:type_name -> uba.service.v1.RiskType
+	15, // 1: uba.service.v1.RiskEvent.risk_level:type_name -> uba.service.v1.RiskLevel
+	16, // 2: uba.service.v1.RiskEvent.rule_context:type_name -> google.protobuf.Struct
+	10, // 3: uba.service.v1.RiskEvent.evidence:type_name -> uba.service.v1.RiskEvent.EvidenceEntry
 	0,  // 4: uba.service.v1.RiskEvent.status:type_name -> uba.service.v1.RiskEvent.Status
-	16, // 5: uba.service.v1.RiskEvent.handled_time:type_name -> google.protobuf.Timestamp
-	16, // 6: uba.service.v1.RiskEvent.occur_time:type_name -> google.protobuf.Timestamp
-	16, // 7: uba.service.v1.RiskEvent.report_time:type_name -> google.protobuf.Timestamp
-	16, // 8: uba.service.v1.RiskEvent.created_at:type_name -> google.protobuf.Timestamp
-	16, // 9: uba.service.v1.RiskEvent.updated_at:type_name -> google.protobuf.Timestamp
-	16, // 10: uba.service.v1.RiskEvent.deleted_at:type_name -> google.protobuf.Timestamp
-	10, // 11: uba.service.v1.RiskEventSummary.by_level:type_name -> uba.service.v1.RiskEventSummary.ByLevelEntry
-	11, // 12: uba.service.v1.RiskEventSummary.by_type:type_name -> uba.service.v1.RiskEventSummary.ByTypeEntry
-	12, // 13: uba.service.v1.RiskEventSummary.by_status:type_name -> uba.service.v1.RiskEventSummary.ByStatusEntry
+	17, // 5: uba.service.v1.RiskEvent.handled_time:type_name -> google.protobuf.Timestamp
+	17, // 6: uba.service.v1.RiskEvent.occur_time:type_name -> google.protobuf.Timestamp
+	17, // 7: uba.service.v1.RiskEvent.report_time:type_name -> google.protobuf.Timestamp
+	17, // 8: uba.service.v1.RiskEvent.created_at:type_name -> google.protobuf.Timestamp
+	17, // 9: uba.service.v1.RiskEvent.updated_at:type_name -> google.protobuf.Timestamp
+	17, // 10: uba.service.v1.RiskEvent.deleted_at:type_name -> google.protobuf.Timestamp
+	11, // 11: uba.service.v1.RiskEventSummary.by_level:type_name -> uba.service.v1.RiskEventSummary.ByLevelEntry
+	12, // 12: uba.service.v1.RiskEventSummary.by_type:type_name -> uba.service.v1.RiskEventSummary.ByTypeEntry
+	13, // 13: uba.service.v1.RiskEventSummary.by_status:type_name -> uba.service.v1.RiskEventSummary.ByStatusEntry
 	1,  // 14: uba.service.v1.ListRiskEventResponse.items:type_name -> uba.service.v1.RiskEvent
-	17, // 15: uba.service.v1.GetRiskEventRequest.view_mask:type_name -> google.protobuf.FieldMask
+	18, // 15: uba.service.v1.GetRiskEventRequest.view_mask:type_name -> google.protobuf.FieldMask
 	1,  // 16: uba.service.v1.CreateRiskEventRequest.data:type_name -> uba.service.v1.RiskEvent
-	1,  // 17: uba.service.v1.UpdateRiskEventRequest.data:type_name -> uba.service.v1.RiskEvent
-	17, // 18: uba.service.v1.UpdateRiskEventRequest.update_mask:type_name -> google.protobuf.FieldMask
-	18, // 19: uba.service.v1.RiskEventService.List:input_type -> pagination.PagingRequest
-	18, // 20: uba.service.v1.RiskEventService.Count:input_type -> pagination.PagingRequest
-	4,  // 21: uba.service.v1.RiskEventService.Get:input_type -> uba.service.v1.GetRiskEventRequest
-	5,  // 22: uba.service.v1.RiskEventService.Create:input_type -> uba.service.v1.CreateRiskEventRequest
-	3,  // 23: uba.service.v1.RiskEventService.List:output_type -> uba.service.v1.ListRiskEventResponse
-	8,  // 24: uba.service.v1.RiskEventService.Count:output_type -> uba.service.v1.CountRiskEventResponse
-	1,  // 25: uba.service.v1.RiskEventService.Get:output_type -> uba.service.v1.RiskEvent
-	1,  // 26: uba.service.v1.RiskEventService.Create:output_type -> uba.service.v1.RiskEvent
-	23, // [23:27] is the sub-list for method output_type
-	19, // [19:23] is the sub-list for method input_type
-	19, // [19:19] is the sub-list for extension type_name
-	19, // [19:19] is the sub-list for extension extendee
-	0,  // [0:19] is the sub-list for field type_name
+	1,  // 17: uba.service.v1.BatchCreateRiskEventRequest.items:type_name -> uba.service.v1.RiskEvent
+	1,  // 18: uba.service.v1.UpdateRiskEventRequest.data:type_name -> uba.service.v1.RiskEvent
+	18, // 19: uba.service.v1.UpdateRiskEventRequest.update_mask:type_name -> google.protobuf.FieldMask
+	19, // 20: uba.service.v1.RiskEventService.List:input_type -> pagination.PagingRequest
+	19, // 21: uba.service.v1.RiskEventService.Count:input_type -> pagination.PagingRequest
+	4,  // 22: uba.service.v1.RiskEventService.Get:input_type -> uba.service.v1.GetRiskEventRequest
+	1,  // 23: uba.service.v1.RiskEventService.Create:input_type -> uba.service.v1.RiskEvent
+	6,  // 24: uba.service.v1.RiskEventService.BatchCreate:input_type -> uba.service.v1.BatchCreateRiskEventRequest
+	3,  // 25: uba.service.v1.RiskEventService.List:output_type -> uba.service.v1.ListRiskEventResponse
+	9,  // 26: uba.service.v1.RiskEventService.Count:output_type -> uba.service.v1.CountRiskEventResponse
+	1,  // 27: uba.service.v1.RiskEventService.Get:output_type -> uba.service.v1.RiskEvent
+	20, // 28: uba.service.v1.RiskEventService.Create:output_type -> google.protobuf.Empty
+	20, // 29: uba.service.v1.RiskEventService.BatchCreate:output_type -> google.protobuf.Empty
+	25, // [25:30] is the sub-list for method output_type
+	20, // [20:25] is the sub-list for method input_type
+	20, // [20:20] is the sub-list for extension type_name
+	20, // [20:20] is the sub-list for extension extendee
+	0,  // [0:20] is the sub-list for field type_name
 }
 
 func init() { file_uba_service_v1_risk_event_proto_init() }
@@ -1032,8 +1085,8 @@ func file_uba_service_v1_risk_event_proto_init() {
 	file_uba_service_v1_risk_event_proto_msgTypes[3].OneofWrappers = []any{
 		(*GetRiskEventRequest_Id)(nil),
 	}
-	file_uba_service_v1_risk_event_proto_msgTypes[5].OneofWrappers = []any{}
-	file_uba_service_v1_risk_event_proto_msgTypes[6].OneofWrappers = []any{
+	file_uba_service_v1_risk_event_proto_msgTypes[6].OneofWrappers = []any{}
+	file_uba_service_v1_risk_event_proto_msgTypes[7].OneofWrappers = []any{
 		(*DeleteRiskEventRequest_Id)(nil),
 	}
 	type x struct{}
@@ -1042,7 +1095,7 @@ func file_uba_service_v1_risk_event_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_uba_service_v1_risk_event_proto_rawDesc), len(file_uba_service_v1_risk_event_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   12,
+			NumMessages:   13,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

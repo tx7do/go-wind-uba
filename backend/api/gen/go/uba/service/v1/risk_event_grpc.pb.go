@@ -12,6 +12,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -20,10 +21,11 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	RiskEventService_List_FullMethodName   = "/uba.service.v1.RiskEventService/List"
-	RiskEventService_Count_FullMethodName  = "/uba.service.v1.RiskEventService/Count"
-	RiskEventService_Get_FullMethodName    = "/uba.service.v1.RiskEventService/Get"
-	RiskEventService_Create_FullMethodName = "/uba.service.v1.RiskEventService/Create"
+	RiskEventService_List_FullMethodName        = "/uba.service.v1.RiskEventService/List"
+	RiskEventService_Count_FullMethodName       = "/uba.service.v1.RiskEventService/Count"
+	RiskEventService_Get_FullMethodName         = "/uba.service.v1.RiskEventService/Get"
+	RiskEventService_Create_FullMethodName      = "/uba.service.v1.RiskEventService/Create"
+	RiskEventService_BatchCreate_FullMethodName = "/uba.service.v1.RiskEventService/BatchCreate"
 )
 
 // RiskEventServiceClient is the client API for RiskEventService service.
@@ -39,7 +41,9 @@ type RiskEventServiceClient interface {
 	// 查询风险事件详情
 	Get(ctx context.Context, in *GetRiskEventRequest, opts ...grpc.CallOption) (*RiskEvent, error)
 	// 创建风险事件
-	Create(ctx context.Context, in *CreateRiskEventRequest, opts ...grpc.CallOption) (*RiskEvent, error)
+	Create(ctx context.Context, in *RiskEvent, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// 批量创建风险事件
+	BatchCreate(ctx context.Context, in *BatchCreateRiskEventRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type riskEventServiceClient struct {
@@ -80,10 +84,20 @@ func (c *riskEventServiceClient) Get(ctx context.Context, in *GetRiskEventReques
 	return out, nil
 }
 
-func (c *riskEventServiceClient) Create(ctx context.Context, in *CreateRiskEventRequest, opts ...grpc.CallOption) (*RiskEvent, error) {
+func (c *riskEventServiceClient) Create(ctx context.Context, in *RiskEvent, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(RiskEvent)
+	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, RiskEventService_Create_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *riskEventServiceClient) BatchCreate(ctx context.Context, in *BatchCreateRiskEventRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, RiskEventService_BatchCreate_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -103,7 +117,9 @@ type RiskEventServiceServer interface {
 	// 查询风险事件详情
 	Get(context.Context, *GetRiskEventRequest) (*RiskEvent, error)
 	// 创建风险事件
-	Create(context.Context, *CreateRiskEventRequest) (*RiskEvent, error)
+	Create(context.Context, *RiskEvent) (*emptypb.Empty, error)
+	// 批量创建风险事件
+	BatchCreate(context.Context, *BatchCreateRiskEventRequest) (*emptypb.Empty, error)
 	mustEmbedUnimplementedRiskEventServiceServer()
 }
 
@@ -123,8 +139,11 @@ func (UnimplementedRiskEventServiceServer) Count(context.Context, *v1.PagingRequ
 func (UnimplementedRiskEventServiceServer) Get(context.Context, *GetRiskEventRequest) (*RiskEvent, error) {
 	return nil, status.Error(codes.Unimplemented, "method Get not implemented")
 }
-func (UnimplementedRiskEventServiceServer) Create(context.Context, *CreateRiskEventRequest) (*RiskEvent, error) {
+func (UnimplementedRiskEventServiceServer) Create(context.Context, *RiskEvent) (*emptypb.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method Create not implemented")
+}
+func (UnimplementedRiskEventServiceServer) BatchCreate(context.Context, *BatchCreateRiskEventRequest) (*emptypb.Empty, error) {
+	return nil, status.Error(codes.Unimplemented, "method BatchCreate not implemented")
 }
 func (UnimplementedRiskEventServiceServer) mustEmbedUnimplementedRiskEventServiceServer() {}
 func (UnimplementedRiskEventServiceServer) testEmbeddedByValue()                          {}
@@ -202,7 +221,7 @@ func _RiskEventService_Get_Handler(srv interface{}, ctx context.Context, dec fun
 }
 
 func _RiskEventService_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateRiskEventRequest)
+	in := new(RiskEvent)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -214,7 +233,25 @@ func _RiskEventService_Create_Handler(srv interface{}, ctx context.Context, dec 
 		FullMethod: RiskEventService_Create_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RiskEventServiceServer).Create(ctx, req.(*CreateRiskEventRequest))
+		return srv.(RiskEventServiceServer).Create(ctx, req.(*RiskEvent))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RiskEventService_BatchCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BatchCreateRiskEventRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RiskEventServiceServer).BatchCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: RiskEventService_BatchCreate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RiskEventServiceServer).BatchCreate(ctx, req.(*BatchCreateRiskEventRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -241,6 +278,10 @@ var RiskEventService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Create",
 			Handler:    _RiskEventService_Create_Handler,
+		},
+		{
+			MethodName: "BatchCreate",
+			Handler:    _RiskEventService_BatchCreate_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

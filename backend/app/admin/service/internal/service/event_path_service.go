@@ -6,6 +6,7 @@ import (
 	"github.com/go-kratos/kratos/v2/log"
 	paginationV1 "github.com/tx7do/go-crud/api/gen/go/pagination/v1"
 	"github.com/tx7do/kratos-bootstrap/bootstrap"
+	"google.golang.org/protobuf/types/known/emptypb"
 
 	adminV1 "go-wind-uba/api/gen/go/admin/service/v1"
 	ubaV1 "go-wind-uba/api/gen/go/uba/service/v1"
@@ -44,6 +45,6 @@ func (s *EventPathService) Get(ctx context.Context, req *ubaV1.GetEventPathReque
 	return s.eventPathServiceClient.Get(ctx, req)
 }
 
-func (s *EventPathService) Create(ctx context.Context, req *ubaV1.CreateEventPathRequest) (*ubaV1.EventPath, error) {
-	return s.eventPathServiceClient.Create(ctx, req)
+func (s *EventPathService) Create(ctx context.Context, req *ubaV1.CreateEventPathRequest) (*emptypb.Empty, error) {
+	return s.eventPathServiceClient.Create(ctx, req.GetData())
 }

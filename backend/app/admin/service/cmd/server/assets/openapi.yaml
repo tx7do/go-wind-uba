@@ -2630,10 +2630,7 @@ paths:
             responses:
                 "200":
                     description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ObjectDim'
+                    content: {}
     /admin/v1/object-dims/{id}:
         get:
             tags:
@@ -3751,10 +3748,7 @@ paths:
             responses:
                 "200":
                     description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/RiskEvent'
+                    content: {}
     /admin/v1/risk-events/count:
         get:
             tags:

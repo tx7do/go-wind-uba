@@ -10,6 +10,8 @@ import (
 	"github.com/tx7do/kratos-bootstrap/bootstrap"
 
 	"go-wind-uba/app/core/service/internal/data"
+	"go-wind-uba/app/core/service/internal/data/clickhouse"
+	"go-wind-uba/app/core/service/internal/data/doris"
 
 	ubaV1 "go-wind-uba/api/gen/go/uba/service/v1"
 )
@@ -19,16 +21,22 @@ type IDMappingService struct {
 
 	log *log.Helper
 
-	idMappingRepo *data.IDMappingRepo
+	idMappingRepo      *data.IDMappingRepo
+	idMappingDorisRepo *doris.IDMappingRepo
+	idMappingCkRepo    *clickhouse.IDMappingRepo
 }
 
 func NewIDMappingService(
 	ctx *bootstrap.Context,
 	idMappingRepo *data.IDMappingRepo,
+	idMappingDorisRepo *doris.IDMappingRepo,
+	idMappingCkRepo *clickhouse.IDMappingRepo,
 ) *IDMappingService {
 	svc := &IDMappingService{
-		log:           ctx.NewLoggerHelper("id-mapping/service/core-service"),
-		idMappingRepo: idMappingRepo,
+		log:                ctx.NewLoggerHelper("id-mapping/service/core-service"),
+		idMappingRepo:      idMappingRepo,
+		idMappingDorisRepo: idMappingDorisRepo,
+		idMappingCkRepo:    idMappingCkRepo,
 	}
 
 	svc.init()
@@ -66,7 +74,23 @@ func (s *IDMappingService) Create(ctx context.Context, req *ubaV1.CreateIDMappin
 		return nil, ubaV1.ErrorBadRequest("invalid parameter")
 	}
 
-	return s.idMappingRepo.Create(ctx, req)
+	var dto *ubaV1.IDMapping
+	var err error
+	if dto, err = s.idMappingRepo.Create(ctx, req); err != nil {
+		return nil, err
+	}
+
+	if data.UseClickHouse {
+		if err = s.idMappingCkRepo.Create(ctx, req.GetData()); err != nil {
+			return nil, err
+		}
+	} else {
+		if err = s.idMappingDorisRepo.Create(ctx, req.GetData()); err != nil {
+			return nil, err
+		}
+	}
+
+	return dto, nil
 }
 
 func (s *IDMappingService) Update(ctx context.Context, req *ubaV1.UpdateIDMappingRequest) (*ubaV1.IDMapping, error) {

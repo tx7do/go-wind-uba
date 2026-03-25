@@ -4,6 +4,7 @@ package uba.service.v1;
 
 import "gnostic/openapi/v3/annotations.proto";
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
 import "pagination/v1/pagination.proto";
 
 // 事件路径服务
@@ -17,20 +18,13 @@ service EventPathService {
   }
 
   // 查询单条事件路径详情
-  rpc Get(GetEventPathRequest) returns (EventPath) {
-    option (gnostic.openapi.v3.operation) = {
-      summary: "查询事件路径详情"
-      description: "根据路径ID查询事件路径详情"
-    };
-  }
+  rpc Get(GetEventPathRequest) returns (EventPath) {}
 
   // 创建事件路径（如有需要）
-  rpc Create(CreateEventPathRequest) returns (EventPath) {
-    option (gnostic.openapi.v3.operation) = {
-      summary: "创建事件路径"
-      description: "创建一条新的事件路径"
-    };
-  }
+  rpc Create(EventPath) returns (google.protobuf.Empty) {}
+
+  // 批量创建会话
+  rpc BatchCreate (BatchCreateEventPathRequest) returns (google.protobuf.Empty) {}
 }
 
 // 路径节点（事件路径中的单个事件节点，包含事件信息和对象信息）
@@ -141,10 +135,11 @@ message GetEventPathRequest {
 
 // 创建事件路径请求
 message CreateEventPathRequest {
-  EventPath event_path = 1 [
-    json_name = "eventPath",
-    (gnostic.openapi.v3.property) = {description: "事件路径对象"}
-  ];
+  EventPath data = 1;
+}
+
+message BatchCreateEventPathRequest {
+  repeated EventPath items = 1;
 }
 
 // 删除事件路径请求

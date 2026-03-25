@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/go-kratos/kratos/v2/log"
+	paginationV1 "github.com/tx7do/go-crud/api/gen/go/pagination/v1"
 	dorisCrud "github.com/tx7do/go-crud/doris"
 	"github.com/tx7do/go-utils/copierutil"
 	"github.com/tx7do/go-utils/mapper"
@@ -15,10 +16,11 @@ import (
 )
 
 type RiskEventsRepo struct {
-	db        *dorisCrud.Client
-	log       *log.Helper
-	tableName string
-	mapper    *mapper.CopierMapper[ubaV1.RiskEvent, schema.RiskEvents]
+	db         *dorisCrud.Client
+	log        *log.Helper
+	tableName  string
+	mapper     *mapper.CopierMapper[ubaV1.RiskEvent, schema.RiskEvents]
+	repository *dorisCrud.Repository[ubaV1.RiskEvent, schema.RiskEvents]
 }
 
 func NewRiskEventsRepo(
@@ -36,6 +38,13 @@ func NewRiskEventsRepo(
 }
 
 func (r *RiskEventsRepo) init() {
+	r.repository = dorisCrud.NewRepository[ubaV1.RiskEvent, schema.RiskEvents](
+		r.db,
+		r.mapper,
+		r.tableName,
+		r.log,
+	)
+
 	r.mapper.AppendConverters(copierutil.NewTimeStringConverterPair())
 	r.mapper.AppendConverters(copierutil.NewTimeTimestamppbConverterPair())
 }
@@ -66,4 +75,16 @@ func (r *RiskEventsRepo) BatchCreate(ctx context.Context, dtos []*ubaV1.RiskEven
 		return ubaV1.ErrorInternalServerError("failed to batch insert risk events entities")
 	}
 	return nil
+}
+
+func (r *RiskEventsRepo) List(ctx context.Context, req *paginationV1.PagingRequest) (*ubaV1.ListRiskEventResponse, error) {
+	result, err := r.repository.ListWithPaging(ctx, req)
+	if err != nil {
+		r.log.Errorf("failed to list risk events data: %v", err)
+		return nil, ubaV1.ErrorInternalServerError("failed to list risk events data")
+	}
+	return &ubaV1.ListRiskEventResponse{
+		Items: result.Items,
+		Total: result.Total,
+	}, nil
 }

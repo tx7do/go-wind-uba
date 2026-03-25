@@ -13,6 +13,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -37,7 +38,7 @@ type ObjectServiceClient interface {
 	// 查询对象维度详情
 	Get(ctx context.Context, in *v11.GetObjectDimRequest, opts ...grpc.CallOption) (*v11.ObjectDim, error)
 	// 创建对象维度
-	Create(ctx context.Context, in *v11.CreateObjectDimRequest, opts ...grpc.CallOption) (*v11.ObjectDim, error)
+	Create(ctx context.Context, in *v11.CreateObjectDimRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type objectServiceClient struct {
@@ -68,9 +69,9 @@ func (c *objectServiceClient) Get(ctx context.Context, in *v11.GetObjectDimReque
 	return out, nil
 }
 
-func (c *objectServiceClient) Create(ctx context.Context, in *v11.CreateObjectDimRequest, opts ...grpc.CallOption) (*v11.ObjectDim, error) {
+func (c *objectServiceClient) Create(ctx context.Context, in *v11.CreateObjectDimRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(v11.ObjectDim)
+	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, ObjectService_Create_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -89,7 +90,7 @@ type ObjectServiceServer interface {
 	// 查询对象维度详情
 	Get(context.Context, *v11.GetObjectDimRequest) (*v11.ObjectDim, error)
 	// 创建对象维度
-	Create(context.Context, *v11.CreateObjectDimRequest) (*v11.ObjectDim, error)
+	Create(context.Context, *v11.CreateObjectDimRequest) (*emptypb.Empty, error)
 	mustEmbedUnimplementedObjectServiceServer()
 }
 
@@ -106,7 +107,7 @@ func (UnimplementedObjectServiceServer) List(context.Context, *v1.PagingRequest)
 func (UnimplementedObjectServiceServer) Get(context.Context, *v11.GetObjectDimRequest) (*v11.ObjectDim, error) {
 	return nil, status.Error(codes.Unimplemented, "method Get not implemented")
 }
-func (UnimplementedObjectServiceServer) Create(context.Context, *v11.CreateObjectDimRequest) (*v11.ObjectDim, error) {
+func (UnimplementedObjectServiceServer) Create(context.Context, *v11.CreateObjectDimRequest) (*emptypb.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method Create not implemented")
 }
 func (UnimplementedObjectServiceServer) mustEmbedUnimplementedObjectServiceServer() {}

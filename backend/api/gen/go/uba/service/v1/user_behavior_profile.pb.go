@@ -11,6 +11,7 @@ import (
 	v1 "github.com/tx7do/go-crud/api/gen/go/pagination/v1"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	fieldmaskpb "google.golang.org/protobuf/types/known/fieldmaskpb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	reflect "reflect"
@@ -471,6 +472,50 @@ func (x *CreateUserBehaviorProfileRequest) GetData() *UserBehaviorProfile {
 	return nil
 }
 
+type BatchCreateUserBehaviorProfileRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Items         []*UserBehaviorProfile `protobuf:"bytes,1,rep,name=items,proto3" json:"items,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *BatchCreateUserBehaviorProfileRequest) Reset() {
+	*x = BatchCreateUserBehaviorProfileRequest{}
+	mi := &file_uba_service_v1_user_behavior_profile_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *BatchCreateUserBehaviorProfileRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*BatchCreateUserBehaviorProfileRequest) ProtoMessage() {}
+
+func (x *BatchCreateUserBehaviorProfileRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_user_behavior_profile_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use BatchCreateUserBehaviorProfileRequest.ProtoReflect.Descriptor instead.
+func (*BatchCreateUserBehaviorProfileRequest) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_user_behavior_profile_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *BatchCreateUserBehaviorProfileRequest) GetItems() []*UserBehaviorProfile {
+	if x != nil {
+		return x.Items
+	}
+	return nil
+}
+
 // 更新用户画像 - 请求
 type UpdateUserBehaviorProfileRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
@@ -484,7 +529,7 @@ type UpdateUserBehaviorProfileRequest struct {
 
 func (x *UpdateUserBehaviorProfileRequest) Reset() {
 	*x = UpdateUserBehaviorProfileRequest{}
-	mi := &file_uba_service_v1_user_behavior_profile_proto_msgTypes[4]
+	mi := &file_uba_service_v1_user_behavior_profile_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -496,7 +541,7 @@ func (x *UpdateUserBehaviorProfileRequest) String() string {
 func (*UpdateUserBehaviorProfileRequest) ProtoMessage() {}
 
 func (x *UpdateUserBehaviorProfileRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_user_behavior_profile_proto_msgTypes[4]
+	mi := &file_uba_service_v1_user_behavior_profile_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -509,7 +554,7 @@ func (x *UpdateUserBehaviorProfileRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateUserBehaviorProfileRequest.ProtoReflect.Descriptor instead.
 func (*UpdateUserBehaviorProfileRequest) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_user_behavior_profile_proto_rawDescGZIP(), []int{4}
+	return file_uba_service_v1_user_behavior_profile_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *UpdateUserBehaviorProfileRequest) GetId() uint32 {
@@ -554,7 +599,7 @@ type DeleteUserBehaviorProfileRequest struct {
 
 func (x *DeleteUserBehaviorProfileRequest) Reset() {
 	*x = DeleteUserBehaviorProfileRequest{}
-	mi := &file_uba_service_v1_user_behavior_profile_proto_msgTypes[5]
+	mi := &file_uba_service_v1_user_behavior_profile_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -566,7 +611,7 @@ func (x *DeleteUserBehaviorProfileRequest) String() string {
 func (*DeleteUserBehaviorProfileRequest) ProtoMessage() {}
 
 func (x *DeleteUserBehaviorProfileRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_user_behavior_profile_proto_msgTypes[5]
+	mi := &file_uba_service_v1_user_behavior_profile_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -579,7 +624,7 @@ func (x *DeleteUserBehaviorProfileRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteUserBehaviorProfileRequest.ProtoReflect.Descriptor instead.
 func (*DeleteUserBehaviorProfileRequest) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_user_behavior_profile_proto_rawDescGZIP(), []int{5}
+	return file_uba_service_v1_user_behavior_profile_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *DeleteUserBehaviorProfileRequest) GetQueryBy() isDeleteUserBehaviorProfileRequest_QueryBy {
@@ -619,7 +664,7 @@ var File_uba_service_v1_user_behavior_profile_proto protoreflect.FileDescriptor
 
 const file_uba_service_v1_user_behavior_profile_proto_rawDesc = "" +
 	"\n" +
-	"*uba/service/v1/user_behavior_profile.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a google/protobuf/field_mask.proto\x1a\x1epagination/v1/pagination.proto\x1a\x1buba/service/v1/common.proto\"\xf4\x12\n" +
+	"*uba/service/v1/user_behavior_profile.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a google/protobuf/field_mask.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1epagination/v1/pagination.proto\x1a\x1buba/service/v1/common.proto\"\xf4\x12\n" +
 	"\x13UserBehaviorProfile\x12N\n" +
 	"\x02id\x18\x01 \x01(\rB>\xbaG;\x92\x028自增长主键ID，唯一标识一条用户画像记录R\x02id\x12+\n" +
 	"\ttenant_id\x18\x02 \x01(\rB\x0e\xbaG\v\x92\x02\b租户IDR\btenantId\x12'\n" +
@@ -680,7 +725,9 @@ const file_uba_service_v1_user_behavior_profile_proto_rawDesc = "" +
 	"\n" +
 	"_view_mask\"[\n" +
 	" CreateUserBehaviorProfileRequest\x127\n" +
-	"\x04data\x18\x01 \x01(\v2#.uba.service.v1.UserBehaviorProfileR\x04data\"\xc0\x03\n" +
+	"\x04data\x18\x01 \x01(\v2#.uba.service.v1.UserBehaviorProfileR\x04data\"b\n" +
+	"%BatchCreateUserBehaviorProfileRequest\x129\n" +
+	"\x05items\x18\x01 \x03(\v2#.uba.service.v1.UserBehaviorProfileR\x05items\"\xc0\x03\n" +
 	" UpdateUserBehaviorProfileRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\rR\x02id\x12N\n" +
 	"\x04data\x18\x02 \x01(\v2#.uba.service.v1.UserBehaviorProfileB\x15\xbaG\x12\x92\x02\x0f用户的数据R\x04data\x12s\n" +
@@ -695,11 +742,12 @@ const file_uba_service_v1_user_behavior_profile_proto_rawDesc = "" +
 	"deleted_by\x18d \x01(\rB\x17\xbaG\x14\x92\x02\x11删除者用户IDH\x01R\tdeletedBy\x88\x01\x01B\n" +
 	"\n" +
 	"\bquery_byB\r\n" +
-	"\v_deleted_by2\xb2\x02\n" +
+	"\v_deleted_by2\xf8\x02\n" +
 	"\x1aUserBehaviorProfileService\x12T\n" +
 	"\x04List\x12\x19.pagination.PagingRequest\x1a/.uba.service.v1.ListUserBehaviorProfileResponse\"\x00\x12[\n" +
-	"\x03Get\x12-.uba.service.v1.GetUserBehaviorProfileRequest\x1a#.uba.service.v1.UserBehaviorProfile\"\x00\x12a\n" +
-	"\x06Create\x120.uba.service.v1.CreateUserBehaviorProfileRequest\x1a#.uba.service.v1.UserBehaviorProfile\"\x00B\xb5\x01\n" +
+	"\x03Get\x12-.uba.service.v1.GetUserBehaviorProfileRequest\x1a#.uba.service.v1.UserBehaviorProfile\"\x00\x12G\n" +
+	"\x06Create\x12#.uba.service.v1.UserBehaviorProfile\x1a\x16.google.protobuf.Empty\"\x00\x12^\n" +
+	"\vBatchCreate\x125.uba.service.v1.BatchCreateUserBehaviorProfileRequest\x1a\x16.google.protobuf.Empty\"\x00B\xb5\x01\n" +
 	"\x12com.uba.service.v1B\x18UserBehaviorProfileProtoP\x01Z+go-wind-uba/api/gen/go/uba/service/v1;ubapb\xa2\x02\x03USX\xaa\x02\x0eUba.Service.V1\xca\x02\x0eUba\\Service\\V1\xe2\x02\x1aUba\\Service\\V1\\GPBMetadata\xea\x02\x10Uba::Service::V1b\x06proto3"
 
 var (
@@ -714,49 +762,54 @@ func file_uba_service_v1_user_behavior_profile_proto_rawDescGZIP() []byte {
 	return file_uba_service_v1_user_behavior_profile_proto_rawDescData
 }
 
-var file_uba_service_v1_user_behavior_profile_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_uba_service_v1_user_behavior_profile_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_uba_service_v1_user_behavior_profile_proto_goTypes = []any{
-	(*UserBehaviorProfile)(nil),              // 0: uba.service.v1.UserBehaviorProfile
-	(*ListUserBehaviorProfileResponse)(nil),  // 1: uba.service.v1.ListUserBehaviorProfileResponse
-	(*GetUserBehaviorProfileRequest)(nil),    // 2: uba.service.v1.GetUserBehaviorProfileRequest
-	(*CreateUserBehaviorProfileRequest)(nil), // 3: uba.service.v1.CreateUserBehaviorProfileRequest
-	(*UpdateUserBehaviorProfileRequest)(nil), // 4: uba.service.v1.UpdateUserBehaviorProfileRequest
-	(*DeleteUserBehaviorProfileRequest)(nil), // 5: uba.service.v1.DeleteUserBehaviorProfileRequest
-	nil,                                      // 6: uba.service.v1.UserBehaviorProfile.ProfileEntry
-	(*timestamppb.Timestamp)(nil),            // 7: google.protobuf.Timestamp
-	(RiskLevel)(0),                           // 8: uba.service.v1.RiskLevel
-	(Platform)(0),                            // 9: uba.service.v1.Platform
-	(*fieldmaskpb.FieldMask)(nil),            // 10: google.protobuf.FieldMask
-	(*v1.PagingRequest)(nil),                 // 11: pagination.PagingRequest
+	(*UserBehaviorProfile)(nil),                   // 0: uba.service.v1.UserBehaviorProfile
+	(*ListUserBehaviorProfileResponse)(nil),       // 1: uba.service.v1.ListUserBehaviorProfileResponse
+	(*GetUserBehaviorProfileRequest)(nil),         // 2: uba.service.v1.GetUserBehaviorProfileRequest
+	(*CreateUserBehaviorProfileRequest)(nil),      // 3: uba.service.v1.CreateUserBehaviorProfileRequest
+	(*BatchCreateUserBehaviorProfileRequest)(nil), // 4: uba.service.v1.BatchCreateUserBehaviorProfileRequest
+	(*UpdateUserBehaviorProfileRequest)(nil),      // 5: uba.service.v1.UpdateUserBehaviorProfileRequest
+	(*DeleteUserBehaviorProfileRequest)(nil),      // 6: uba.service.v1.DeleteUserBehaviorProfileRequest
+	nil,                                           // 7: uba.service.v1.UserBehaviorProfile.ProfileEntry
+	(*timestamppb.Timestamp)(nil),                 // 8: google.protobuf.Timestamp
+	(RiskLevel)(0),                                // 9: uba.service.v1.RiskLevel
+	(Platform)(0),                                 // 10: uba.service.v1.Platform
+	(*fieldmaskpb.FieldMask)(nil),                 // 11: google.protobuf.FieldMask
+	(*v1.PagingRequest)(nil),                      // 12: pagination.PagingRequest
+	(*emptypb.Empty)(nil),                         // 13: google.protobuf.Empty
 }
 var file_uba_service_v1_user_behavior_profile_proto_depIdxs = []int32{
-	7,  // 0: uba.service.v1.UserBehaviorProfile.register_time:type_name -> google.protobuf.Timestamp
-	7,  // 1: uba.service.v1.UserBehaviorProfile.first_active_date:type_name -> google.protobuf.Timestamp
-	7,  // 2: uba.service.v1.UserBehaviorProfile.last_active_date:type_name -> google.protobuf.Timestamp
-	7,  // 3: uba.service.v1.UserBehaviorProfile.last_pay_time:type_name -> google.protobuf.Timestamp
-	8,  // 4: uba.service.v1.UserBehaviorProfile.risk_level:type_name -> uba.service.v1.RiskLevel
-	7,  // 5: uba.service.v1.UserBehaviorProfile.last_risk_time:type_name -> google.protobuf.Timestamp
-	6,  // 6: uba.service.v1.UserBehaviorProfile.profile:type_name -> uba.service.v1.UserBehaviorProfile.ProfileEntry
-	9,  // 7: uba.service.v1.UserBehaviorProfile.platform:type_name -> uba.service.v1.Platform
-	7,  // 8: uba.service.v1.UserBehaviorProfile.created_at:type_name -> google.protobuf.Timestamp
-	7,  // 9: uba.service.v1.UserBehaviorProfile.updated_at:type_name -> google.protobuf.Timestamp
-	7,  // 10: uba.service.v1.UserBehaviorProfile.deleted_at:type_name -> google.protobuf.Timestamp
+	8,  // 0: uba.service.v1.UserBehaviorProfile.register_time:type_name -> google.protobuf.Timestamp
+	8,  // 1: uba.service.v1.UserBehaviorProfile.first_active_date:type_name -> google.protobuf.Timestamp
+	8,  // 2: uba.service.v1.UserBehaviorProfile.last_active_date:type_name -> google.protobuf.Timestamp
+	8,  // 3: uba.service.v1.UserBehaviorProfile.last_pay_time:type_name -> google.protobuf.Timestamp
+	9,  // 4: uba.service.v1.UserBehaviorProfile.risk_level:type_name -> uba.service.v1.RiskLevel
+	8,  // 5: uba.service.v1.UserBehaviorProfile.last_risk_time:type_name -> google.protobuf.Timestamp
+	7,  // 6: uba.service.v1.UserBehaviorProfile.profile:type_name -> uba.service.v1.UserBehaviorProfile.ProfileEntry
+	10, // 7: uba.service.v1.UserBehaviorProfile.platform:type_name -> uba.service.v1.Platform
+	8,  // 8: uba.service.v1.UserBehaviorProfile.created_at:type_name -> google.protobuf.Timestamp
+	8,  // 9: uba.service.v1.UserBehaviorProfile.updated_at:type_name -> google.protobuf.Timestamp
+	8,  // 10: uba.service.v1.UserBehaviorProfile.deleted_at:type_name -> google.protobuf.Timestamp
 	0,  // 11: uba.service.v1.ListUserBehaviorProfileResponse.items:type_name -> uba.service.v1.UserBehaviorProfile
-	10, // 12: uba.service.v1.GetUserBehaviorProfileRequest.view_mask:type_name -> google.protobuf.FieldMask
+	11, // 12: uba.service.v1.GetUserBehaviorProfileRequest.view_mask:type_name -> google.protobuf.FieldMask
 	0,  // 13: uba.service.v1.CreateUserBehaviorProfileRequest.data:type_name -> uba.service.v1.UserBehaviorProfile
-	0,  // 14: uba.service.v1.UpdateUserBehaviorProfileRequest.data:type_name -> uba.service.v1.UserBehaviorProfile
-	10, // 15: uba.service.v1.UpdateUserBehaviorProfileRequest.update_mask:type_name -> google.protobuf.FieldMask
-	11, // 16: uba.service.v1.UserBehaviorProfileService.List:input_type -> pagination.PagingRequest
-	2,  // 17: uba.service.v1.UserBehaviorProfileService.Get:input_type -> uba.service.v1.GetUserBehaviorProfileRequest
-	3,  // 18: uba.service.v1.UserBehaviorProfileService.Create:input_type -> uba.service.v1.CreateUserBehaviorProfileRequest
-	1,  // 19: uba.service.v1.UserBehaviorProfileService.List:output_type -> uba.service.v1.ListUserBehaviorProfileResponse
-	0,  // 20: uba.service.v1.UserBehaviorProfileService.Get:output_type -> uba.service.v1.UserBehaviorProfile
-	0,  // 21: uba.service.v1.UserBehaviorProfileService.Create:output_type -> uba.service.v1.UserBehaviorProfile
-	19, // [19:22] is the sub-list for method output_type
-	16, // [16:19] is the sub-list for method input_type
-	16, // [16:16] is the sub-list for extension type_name
-	16, // [16:16] is the sub-list for extension extendee
-	0,  // [0:16] is the sub-list for field type_name
+	0,  // 14: uba.service.v1.BatchCreateUserBehaviorProfileRequest.items:type_name -> uba.service.v1.UserBehaviorProfile
+	0,  // 15: uba.service.v1.UpdateUserBehaviorProfileRequest.data:type_name -> uba.service.v1.UserBehaviorProfile
+	11, // 16: uba.service.v1.UpdateUserBehaviorProfileRequest.update_mask:type_name -> google.protobuf.FieldMask
+	12, // 17: uba.service.v1.UserBehaviorProfileService.List:input_type -> pagination.PagingRequest
+	2,  // 18: uba.service.v1.UserBehaviorProfileService.Get:input_type -> uba.service.v1.GetUserBehaviorProfileRequest
+	0,  // 19: uba.service.v1.UserBehaviorProfileService.Create:input_type -> uba.service.v1.UserBehaviorProfile
+	4,  // 20: uba.service.v1.UserBehaviorProfileService.BatchCreate:input_type -> uba.service.v1.BatchCreateUserBehaviorProfileRequest
+	1,  // 21: uba.service.v1.UserBehaviorProfileService.List:output_type -> uba.service.v1.ListUserBehaviorProfileResponse
+	0,  // 22: uba.service.v1.UserBehaviorProfileService.Get:output_type -> uba.service.v1.UserBehaviorProfile
+	13, // 23: uba.service.v1.UserBehaviorProfileService.Create:output_type -> google.protobuf.Empty
+	13, // 24: uba.service.v1.UserBehaviorProfileService.BatchCreate:output_type -> google.protobuf.Empty
+	21, // [21:25] is the sub-list for method output_type
+	17, // [17:21] is the sub-list for method input_type
+	17, // [17:17] is the sub-list for extension type_name
+	17, // [17:17] is the sub-list for extension extendee
+	0,  // [0:17] is the sub-list for field type_name
 }
 
 func init() { file_uba_service_v1_user_behavior_profile_proto_init() }
@@ -769,8 +822,8 @@ func file_uba_service_v1_user_behavior_profile_proto_init() {
 	file_uba_service_v1_user_behavior_profile_proto_msgTypes[2].OneofWrappers = []any{
 		(*GetUserBehaviorProfileRequest_Id)(nil),
 	}
-	file_uba_service_v1_user_behavior_profile_proto_msgTypes[4].OneofWrappers = []any{}
-	file_uba_service_v1_user_behavior_profile_proto_msgTypes[5].OneofWrappers = []any{
+	file_uba_service_v1_user_behavior_profile_proto_msgTypes[5].OneofWrappers = []any{}
+	file_uba_service_v1_user_behavior_profile_proto_msgTypes[6].OneofWrappers = []any{
 		(*DeleteUserBehaviorProfileRequest_Id)(nil),
 	}
 	type x struct{}
@@ -779,7 +832,7 @@ func file_uba_service_v1_user_behavior_profile_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_uba_service_v1_user_behavior_profile_proto_rawDesc), len(file_uba_service_v1_user_behavior_profile_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   7,
+			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

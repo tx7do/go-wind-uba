@@ -5,6 +5,7 @@ package uba.service.v1;
 import "gnostic/openapi/v3/annotations.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/field_mask.proto";
+import "google/protobuf/empty.proto";
 
 import "pagination/v1/pagination.proto";
 
@@ -19,7 +20,10 @@ service UserBehaviorProfileService {
   rpc Get (GetUserBehaviorProfileRequest) returns (UserBehaviorProfile) {}
 
   // 创建用户画像
-  rpc Create (CreateUserBehaviorProfileRequest) returns (UserBehaviorProfile) {}
+  rpc Create (UserBehaviorProfile) returns (google.protobuf.Empty) {}
+
+  // 批量创建用户画像
+  rpc BatchCreate (BatchCreateUserBehaviorProfileRequest) returns (google.protobuf.Empty) {}
 }
 
 // 用户画像（对应 users_dim 表）
@@ -178,6 +182,9 @@ message GetUserBehaviorProfileRequest {
 // 创建用户画像 - 请求
 message CreateUserBehaviorProfileRequest {
   UserBehaviorProfile data = 1;
+}
+message BatchCreateUserBehaviorProfileRequest {
+  repeated UserBehaviorProfile items = 1;
 }
 
 // 更新用户画像 - 请求

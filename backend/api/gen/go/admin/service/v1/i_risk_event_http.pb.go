@@ -12,6 +12,7 @@ import (
 	binding "github.com/go-kratos/kratos/v2/transport/http/binding"
 	v1 "github.com/tx7do/go-crud/api/gen/go/pagination/v1"
 	v11 "go-wind-uba/api/gen/go/uba/service/v1"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -30,7 +31,7 @@ type RiskEventServiceHTTPServer interface {
 	// Count 查询风险事件数量
 	Count(context.Context, *v1.PagingRequest) (*v11.CountRiskEventResponse, error)
 	// Create 创建风险事件
-	Create(context.Context, *v11.CreateRiskEventRequest) (*v11.RiskEvent, error)
+	Create(context.Context, *v11.CreateRiskEventRequest) (*emptypb.Empty, error)
 	// Get 查询风险事件详情
 	Get(context.Context, *v11.GetRiskEventRequest) (*v11.RiskEvent, error)
 	// List 查询风险事件列表
@@ -122,7 +123,7 @@ func _RiskEventService_Create13_HTTP_Handler(srv RiskEventServiceHTTPServer) fun
 		if err != nil {
 			return err
 		}
-		reply := out.(*v11.RiskEvent)
+		reply := out.(*emptypb.Empty)
 		return ctx.Result(200, reply)
 	}
 }
@@ -131,7 +132,7 @@ type RiskEventServiceHTTPClient interface {
 	// Count 查询风险事件数量
 	Count(ctx context.Context, req *v1.PagingRequest, opts ...http.CallOption) (rsp *v11.CountRiskEventResponse, err error)
 	// Create 创建风险事件
-	Create(ctx context.Context, req *v11.CreateRiskEventRequest, opts ...http.CallOption) (rsp *v11.RiskEvent, err error)
+	Create(ctx context.Context, req *v11.CreateRiskEventRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 	// Get 查询风险事件详情
 	Get(ctx context.Context, req *v11.GetRiskEventRequest, opts ...http.CallOption) (rsp *v11.RiskEvent, err error)
 	// List 查询风险事件列表
@@ -161,8 +162,8 @@ func (c *RiskEventServiceHTTPClientImpl) Count(ctx context.Context, in *v1.Pagin
 }
 
 // Create 创建风险事件
-func (c *RiskEventServiceHTTPClientImpl) Create(ctx context.Context, in *v11.CreateRiskEventRequest, opts ...http.CallOption) (*v11.RiskEvent, error) {
-	var out v11.RiskEvent
+func (c *RiskEventServiceHTTPClientImpl) Create(ctx context.Context, in *v11.CreateRiskEventRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
+	var out emptypb.Empty
 	pattern := "/admin/v1/risk-events"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationRiskEventServiceCreate))

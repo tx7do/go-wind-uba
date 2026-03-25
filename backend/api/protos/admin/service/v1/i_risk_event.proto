@@ -4,6 +4,7 @@ package admin.service.v1;
 
 import "google/api/annotations.proto";
 import "pagination/v1/pagination.proto";
+import "google/protobuf/empty.proto";
 
 import "uba/service/v1/risk_event.proto";
 
@@ -31,7 +32,7 @@ service RiskEventService {
   }
 
   // 创建风险事件
-  rpc Create (uba.service.v1.CreateRiskEventRequest) returns (uba.service.v1.RiskEvent) {
+  rpc Create (uba.service.v1.CreateRiskEventRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
       post: "/admin/v1/risk-events"
       body: "*"

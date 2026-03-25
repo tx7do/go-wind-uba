@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/go-kratos/kratos/v2/log"
+	paginationV1 "github.com/tx7do/go-crud/api/gen/go/pagination/v1"
 	dorisCrud "github.com/tx7do/go-crud/doris"
 	"github.com/tx7do/go-utils/copierutil"
 	"github.com/tx7do/go-utils/mapper"
@@ -25,6 +26,8 @@ type EventsFactRepo struct {
 	platformConverter  *mapper.EnumTypeConverter[ubaV1.Platform, string]
 	opResultConverter  *mapper.EnumTypeConverter[ubaV1.OpResult, string]
 	riskLevelConverter *mapper.EnumTypeConverter[ubaV1.RiskLevel, string]
+
+	repository *dorisCrud.Repository[ubaV1.BehaviorEvent, schema.EventsFact]
 }
 
 func NewEventsFactRepo(
@@ -56,6 +59,13 @@ func NewEventsFactRepo(
 }
 
 func (r *EventsFactRepo) init() {
+	r.repository = dorisCrud.NewRepository[ubaV1.BehaviorEvent, schema.EventsFact](
+		r.db,
+		r.mapper,
+		r.tableName,
+		r.log,
+	)
+
 	r.mapper.AppendConverters(copierutil.NewTimeStringConverterPair())
 	r.mapper.AppendConverters(copierutil.NewTimeTimestamppbConverterPair())
 
@@ -97,4 +107,17 @@ func (r *EventsFactRepo) BatchCreate(ctx context.Context, dtos []*ubaV1.Behavior
 	}
 
 	return nil
+}
+
+func (r *EventsFactRepo) List(ctx context.Context, req *paginationV1.PagingRequest) (*ubaV1.ListBehaviorEventResponse, error) {
+	result, err := r.repository.ListWithPaging(ctx, req)
+	if err != nil {
+		r.log.Errorf("failed to list events fact data: %v", err)
+		return nil, ubaV1.ErrorInternalServerError("failed to list events fact data")
+	}
+
+	return &ubaV1.ListBehaviorEventResponse{
+		Items: result.Items,
+		Total: result.Total,
+	}, nil
 }

@@ -5,6 +5,7 @@ package uba.service.v1;
 import "gnostic/openapi/v3/annotations.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/field_mask.proto";
+import "google/protobuf/empty.proto";
 
 import "pagination/v1/pagination.proto";
 
@@ -17,7 +18,10 @@ service ObjectService {
   rpc Get (GetObjectDimRequest) returns (ObjectDim) {}
 
   // 创建对象维度
-  rpc Create (CreateObjectDimRequest) returns (ObjectDim) {}
+  rpc Create (ObjectDim) returns (google.protobuf.Empty) {}
+
+  // 批量创建对象维度
+  rpc BatchCreate (BatchCreateObjectDimRequest) returns (google.protobuf.Empty) {}
 }
 
 // 对象维度（对应 objects_dim 表）
@@ -149,6 +153,10 @@ message GetObjectDimRequest {
 // 创建对象维度 - 请求
 message CreateObjectDimRequest {
   ObjectDim data = 1;
+}
+
+message BatchCreateObjectDimRequest {
+  repeated ObjectDim items = 1;
 }
 
 // 更新对象维度 - 请求
