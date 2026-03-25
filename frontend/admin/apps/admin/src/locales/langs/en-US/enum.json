@@ -239,5 +239,117 @@
     "AWS": "Amazon S3",
     "AZURE": "Azure Blob Storage",
     "GOOGLE": "Google Cloud Storage"
+  },
+  "application": {
+    "status": {
+      "STATUS_UNSPECIFIED": "Unspecified",
+      "STATUS_ACTIVE": "Active",
+      "STATUS_INACTIVE": "Inactive",
+      "STATUS_DISABLED": "Disabled"
+    },
+    "platform": {
+      "PLATFORM_UNSPECIFIED": "Unspecified",
+      "PLATFORM_WEB": "Web",
+      "PLATFORM_ANDROID": "Android",
+      "PLATFORM_IOS": "iOS",
+      "PLATFORM_WINDOWS": "Windows",
+      "PLATFORM_MACOS": "macOS",
+      "PLATFORM_LINUX": "Linux",
+      "PLATFORM_WECHAT": "WeChat Mini Program",
+      "PLATFORM_DINGTALK": "DingTalk",
+      "PLATFORM_FEISHU": "Feishu",
+      "PLATFORM_UNITY": "Unity",
+      "PLATFORM_UNREAL": "Unreal"
+    }
+  },
+  "riskEvent": {
+    "type": {
+      "TYPE_UNSPECIFIED": "Unspecified",
+      "TYPE_LOGIN_ABNORMAL": "Login Abnormal",
+      "TYPE_PERMISSION_CHANGE": "Permission Change",
+      "TYPE_DATA_ACCESS": "Data Access",
+      "TYPE_OPERATION_AUDIT": "Operation Audit",
+      "TYPE_RISK_CONTROL": "Risk Control",
+      "TYPE_ACCOUNT_SECURITY": "Account Security",
+      "TYPE_CONTENT_SECURITY": "Content Security",
+      "TYPE_FINANCIAL_RISK": "Financial Risk",
+      "TYPE_COMPLIANCE_RISK": "Compliance Risk",
+      "TYPE_SYSTEM_SECURITY": "System Security",
+      "TYPE_BUSINESS_RISK": "Business Risk"
+    },
+    "level": {
+      "LEVEL_UNSPECIFIED": "Unspecified",
+      "LEVEL_LOW": "Low",
+      "LEVEL_MEDIUM": "Medium",
+      "LEVEL_HIGH": "High",
+      "LEVEL_CRITICAL": "Critical"
+    },
+    "status": {
+      "STATUS_UNSPECIFIED": "Unspecified",
+      "STATUS_PENDING": "Pending",
+      "STATUS_PROCESSING": "Processing",
+      "STATUS_RESOLVED": "Resolved",
+      "STATUS_CLOSED": "Closed",
+      "STATUS_FALSE_POSITIVE": "False Positive",
+      "STATUS_ESCALATED": "Escalated"
+    }
+  },
+  "riskRule": {
+    "riskActionType": {
+      "ACTION_TYPE_UNSPECIFIED": "Unspecified",
+      "ACTION_TYPE_WARNING": "Warning",
+      "ACTION_TYPE_BLOCK": "Block",
+      "ACTION_TYPE_NOTIFY": "Notify",
+      "ACTION_TYPE_AUDIT": "Audit",
+      "ACTION_TYPE_LIMIT": "Limit",
+      "ACTION_TYPE_BLACKLIST": "Blacklist",
+      "ACTION_TYPE_WHITELIST": "Whitelist",
+      "ACTION_TYPE_ENHANCED_AUTH": "Enhanced Authentication",
+      "ACTION_TYPE_ACCOUNT_FREEZE": "Account Freeze",
+      "ACTION_TYPE_DATA_EXPORT": "Data Export",
+      "ACTION_TYPE_SESSION_TERMINATE": "Session Terminate"
+    }
+  },
+  "tagDefinition": {
+    "category": {
+      "CATEGORY_UNSPECIFIED": "Unspecified",
+      "CATEGORY_USER": "User",
+      "CATEGORY_BEHAVIOR": "Behavior",
+      "CATEGORY_DEVICE": "Device",
+      "CATEGORY_TRANSACTION": "Transaction",
+      "CATEGORY_RISK": "Risk",
+      "CATEGORY_PREFERENCE": "Preference",
+      "CATEGORY_ATTRIBUTE": "Attribute"
+    },
+    "type": {
+      "TYPE_UNSPECIFIED": "Unspecified",
+      "TYPE_STRING": "String",
+      "TYPE_NUMBER": "Number",
+      "TYPE_BOOLEAN": "Boolean",
+      "TYPE_DATETIME": "Datetime",
+      "TYPE_ENUM": "Enum",
+      "TYPE_ARRAY": "Array"
+    }
+  },
+  "userTag": {
+    "tagSource": {
+      "SOURCE_UNSPECIFIED": "Unspecified",
+      "SOURCE_MANUAL": "Manual",
+      "SOURCE_AUTO": "Automatic",
+      "SOURCE_IMPORT": "Import",
+      "SOURCE_RULE": "Rule",
+      "SOURCE_ALGORITHM": "Algorithm"
+    }
+  },
+  "idMapping": {
+    "idType": {
+      "TYPE_UNSPECIFIED": "Unspecified",
+      "TYPE_USER_ID": "User ID",
+      "TYPE_DEVICE_ID": "Device ID",
+      "TYPE_ACCOUNT_ID": "Account ID",
+      "TYPE_PHONE": "Phone",
+      "TYPE_EMAIL": "Email",
+      "TYPE_THIRD_PARTY": "Third-party ID"
+    }
   }
 }

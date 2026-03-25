@@ -231,13 +231,125 @@
   "ossProvider": {
     "LOCAL": "本地存储",
     "MINIO": "MinIO",
-    "ALIYUN": "阿里云OSS",
+    "ALIYUN": "阿里云 OSS",
     "QINIU": "七牛云存储",
-    "TENCENT": "腾讯云COS",
-    "BAIDU": "百度云BOS",
-    "HUAWEI": "华为云OBS",
-    "AWS": "亚马逊S3",
-    "AZURE": "微软AzureBlob",
+    "TENCENT": "腾讯云 Cos",
+    "BAIDU": "百度云 BOS",
+    "HUAWEI": "华为云 OBS",
+    "AWS": "亚马逊 S3",
+    "AZURE": "微软 AzureBlob",
     "GOOGLE": "谷歌云存储"
+  },
+  "application": {
+    "status": {
+      "STATUS_UNSPECIFIED": "未指定",
+      "STATUS_ACTIVE": "活跃",
+      "STATUS_INACTIVE": "不活跃",
+      "STATUS_DISABLED": "已禁用"
+    },
+    "platform": {
+      "PLATFORM_UNSPECIFIED": "未指定",
+      "PLATFORM_WEB": "Web",
+      "PLATFORM_ANDROID": "Android",
+      "PLATFORM_IOS": "iOS",
+      "PLATFORM_WINDOWS": "Windows",
+      "PLATFORM_MACOS": "macOS",
+      "PLATFORM_LINUX": "Linux",
+      "PLATFORM_WECHAT": "微信小程序",
+      "PLATFORM_DINGTALK": "钉钉",
+      "PLATFORM_FEISHU": "飞书",
+      "PLATFORM_UNITY": "Unity",
+      "PLATFORM_UNREAL": "Unreal"
+    }
+  },
+  "riskEvent": {
+    "type": {
+      "TYPE_UNSPECIFIED": "未指定",
+      "TYPE_LOGIN_ABNORMAL": "登录异常",
+      "TYPE_PERMISSION_CHANGE": "权限变更",
+      "TYPE_DATA_ACCESS": "数据访问",
+      "TYPE_OPERATION_AUDIT": "操作审计",
+      "TYPE_RISK_CONTROL": "风控规则",
+      "TYPE_ACCOUNT_SECURITY": "账号安全",
+      "TYPE_CONTENT_SECURITY": "内容安全",
+      "TYPE_FINANCIAL_RISK": "财务风险",
+      "TYPE_COMPLIANCE_RISK": "合规风险",
+      "TYPE_SYSTEM_SECURITY": "系统安全",
+      "TYPE_BUSINESS_RISK": "业务风险"
+    },
+    "level": {
+      "LEVEL_UNSPECIFIED": "未指定",
+      "LEVEL_LOW": "低",
+      "LEVEL_MEDIUM": "中",
+      "LEVEL_HIGH": "高",
+      "LEVEL_CRITICAL": "严重"
+    },
+    "status": {
+      "STATUS_UNSPECIFIED": "未指定",
+      "STATUS_PENDING": "待处理",
+      "STATUS_PROCESSING": "处理中",
+      "STATUS_RESOLVED": "已解决",
+      "STATUS_CLOSED": "已关闭",
+      "STATUS_FALSE_POSITIVE": "误报",
+      "STATUS_ESCALATED": "已升级"
+    }
+  },
+  "riskRule": {
+    "riskActionType": {
+      "ACTION_TYPE_UNSPECIFIED": "未指定",
+      "ACTION_TYPE_WARNING": "警告",
+      "ACTION_TYPE_BLOCK": "阻断",
+      "ACTION_TYPE_NOTIFY": "通知",
+      "ACTION_TYPE_AUDIT": "审计",
+      "ACTION_TYPE_LIMIT": "限制",
+      "ACTION_TYPE_BLACKLIST": "黑名单",
+      "ACTION_TYPE_WHITELIST": "白名单",
+      "ACTION_TYPE_ENHANCED_AUTH": "增强认证",
+      "ACTION_TYPE_ACCOUNT_FREEZE": "账号冻结",
+      "ACTION_TYPE_DATA_EXPORT": "数据导出",
+      "ACTION_TYPE_SESSION_TERMINATE": "会话终止"
+    }
+  },
+  "tagDefinition": {
+    "category": {
+      "CATEGORY_UNSPECIFIED": "未指定",
+      "CATEGORY_USER": "用户",
+      "CATEGORY_BEHAVIOR": "行为",
+      "CATEGORY_DEVICE": "设备",
+      "CATEGORY_TRANSACTION": "交易",
+      "CATEGORY_RISK": "风险",
+      "CATEGORY_PREFERENCE": "偏好",
+      "CATEGORY_ATTRIBUTE": "属性"
+    },
+    "type": {
+      "TYPE_UNSPECIFIED": "未指定",
+      "TYPE_STRING": "字符串",
+      "TYPE_NUMBER": "数值",
+      "TYPE_BOOLEAN": "布尔",
+      "TYPE_DATETIME": "日期时间",
+      "TYPE_ENUM": "枚举",
+      "TYPE_ARRAY": "数组"
+    }
+  },
+  "userTag": {
+    "tagSource": {
+      "SOURCE_UNSPECIFIED": "未指定",
+      "SOURCE_MANUAL": "手动",
+      "SOURCE_AUTO": "自动",
+      "SOURCE_IMPORT": "导入",
+      "SOURCE_RULE": "规则",
+      "SOURCE_ALGORITHM": "算法"
+    }
+  },
+  "idMapping": {
+    "idType": {
+      "TYPE_UNSPECIFIED": "未指定",
+      "TYPE_USER_ID": "用户 ID",
+      "TYPE_DEVICE_ID": "设备 ID",
+      "TYPE_ACCOUNT_ID": "账号 ID",
+      "TYPE_PHONE": "手机号",
+      "TYPE_EMAIL": "邮箱",
+      "TYPE_THIRD_PARTY": "第三方 ID"
+    }
   }
 }
