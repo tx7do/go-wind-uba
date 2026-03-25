@@ -7,11 +7,11 @@
 package servicev1
 
 import (
-	_ "github.com/google/gnostic/openapiv3"
+	v1 "go-wind-uba/api/gen/go/uba/service/v1"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	_ "google.golang.org/protobuf/types/known/emptypb"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -24,32 +24,80 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type PostReportRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	ReportType    string                 `protobuf:"bytes,1,opt,name=reportType,proto3" json:"reportType,omitempty"` // 类型
-	AppId         string                 `protobuf:"bytes,2,opt,name=appId,proto3" json:"appId,omitempty"`           // 应用ID
-	AppKey        string                 `protobuf:"bytes,3,opt,name=appKey,proto3" json:"appKey,omitempty"`         // 应用Key
-	EventName     string                 `protobuf:"bytes,4,opt,name=eventName,proto3" json:"eventName,omitempty"`   // 事件名
-	Debug         int32                  `protobuf:"varint,5,opt,name=debug,proto3" json:"debug,omitempty"`          // 调试
-	Content       string                 `protobuf:"bytes,6,opt,name=content,proto3" json:"content,omitempty"`       // 事件内容
+type HealthCheckResponse_Status int32
+
+const (
+	HealthCheckResponse_STATUS_UNSPECIFIED HealthCheckResponse_Status = 0
+	HealthCheckResponse_OK                 HealthCheckResponse_Status = 1 // 正常
+	HealthCheckResponse_DEGRADED           HealthCheckResponse_Status = 2 // 降级
+	HealthCheckResponse_DOWN               HealthCheckResponse_Status = 3 // 不可用
+)
+
+// Enum value maps for HealthCheckResponse_Status.
+var (
+	HealthCheckResponse_Status_name = map[int32]string{
+		0: "STATUS_UNSPECIFIED",
+		1: "OK",
+		2: "DEGRADED",
+		3: "DOWN",
+	}
+	HealthCheckResponse_Status_value = map[string]int32{
+		"STATUS_UNSPECIFIED": 0,
+		"OK":                 1,
+		"DEGRADED":           2,
+		"DOWN":               3,
+	}
+)
+
+func (x HealthCheckResponse_Status) Enum() *HealthCheckResponse_Status {
+	p := new(HealthCheckResponse_Status)
+	*p = x
+	return p
+}
+
+func (x HealthCheckResponse_Status) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (HealthCheckResponse_Status) Descriptor() protoreflect.EnumDescriptor {
+	return file_collector_service_v1_i_report_proto_enumTypes[0].Descriptor()
+}
+
+func (HealthCheckResponse_Status) Type() protoreflect.EnumType {
+	return &file_collector_service_v1_i_report_proto_enumTypes[0]
+}
+
+func (x HealthCheckResponse_Status) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use HealthCheckResponse_Status.Descriptor instead.
+func (HealthCheckResponse_Status) EnumDescriptor() ([]byte, []int) {
+	return file_collector_service_v1_i_report_proto_rawDescGZIP(), []int{0, 0}
+}
+
+type HealthCheckResponse struct {
+	state         protoimpl.MessageState     `protogen:"open.v1"`
+	Status        HealthCheckResponse_Status `protobuf:"varint,1,opt,name=status,proto3,enum=collector.service.v1.HealthCheckResponse_Status" json:"status,omitempty"`
+	Timestamp     int64                      `protobuf:"varint,2,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *PostReportRequest) Reset() {
-	*x = PostReportRequest{}
+func (x *HealthCheckResponse) Reset() {
+	*x = HealthCheckResponse{}
 	mi := &file_collector_service_v1_i_report_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *PostReportRequest) String() string {
+func (x *HealthCheckResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*PostReportRequest) ProtoMessage() {}
+func (*HealthCheckResponse) ProtoMessage() {}
 
-func (x *PostReportRequest) ProtoReflect() protoreflect.Message {
+func (x *HealthCheckResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_collector_service_v1_i_report_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,125 +109,42 @@ func (x *PostReportRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use PostReportRequest.ProtoReflect.Descriptor instead.
-func (*PostReportRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use HealthCheckResponse.ProtoReflect.Descriptor instead.
+func (*HealthCheckResponse) Descriptor() ([]byte, []int) {
 	return file_collector_service_v1_i_report_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *PostReportRequest) GetReportType() string {
+func (x *HealthCheckResponse) GetStatus() HealthCheckResponse_Status {
 	if x != nil {
-		return x.ReportType
+		return x.Status
 	}
-	return ""
+	return HealthCheckResponse_STATUS_UNSPECIFIED
 }
 
-func (x *PostReportRequest) GetAppId() string {
+func (x *HealthCheckResponse) GetTimestamp() int64 {
 	if x != nil {
-		return x.AppId
-	}
-	return ""
-}
-
-func (x *PostReportRequest) GetAppKey() string {
-	if x != nil {
-		return x.AppKey
-	}
-	return ""
-}
-
-func (x *PostReportRequest) GetEventName() string {
-	if x != nil {
-		return x.EventName
-	}
-	return ""
-}
-
-func (x *PostReportRequest) GetDebug() int32 {
-	if x != nil {
-		return x.Debug
+		return x.Timestamp
 	}
 	return 0
-}
-
-func (x *PostReportRequest) GetContent() string {
-	if x != nil {
-		return x.Content
-	}
-	return ""
-}
-
-type PostReportResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Code          int32                  `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
-	Msg           string                 `protobuf:"bytes,2,opt,name=msg,proto3" json:"msg,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *PostReportResponse) Reset() {
-	*x = PostReportResponse{}
-	mi := &file_collector_service_v1_i_report_proto_msgTypes[1]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *PostReportResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*PostReportResponse) ProtoMessage() {}
-
-func (x *PostReportResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_collector_service_v1_i_report_proto_msgTypes[1]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use PostReportResponse.ProtoReflect.Descriptor instead.
-func (*PostReportResponse) Descriptor() ([]byte, []int) {
-	return file_collector_service_v1_i_report_proto_rawDescGZIP(), []int{1}
-}
-
-func (x *PostReportResponse) GetCode() int32 {
-	if x != nil {
-		return x.Code
-	}
-	return 0
-}
-
-func (x *PostReportResponse) GetMsg() string {
-	if x != nil {
-		return x.Msg
-	}
-	return ""
 }
 
 var File_collector_service_v1_i_report_proto protoreflect.FileDescriptor
 
 const file_collector_service_v1_i_report_proto_rawDesc = "" +
 	"\n" +
-	"#collector/service/v1/i_report.proto\x12\x14collector.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\"\xaf\x01\n" +
-	"\x11PostReportRequest\x12\x1e\n" +
+	"#collector/service/v1/i_report.proto\x12\x14collector.service.v1\x1a\x1cgoogle/api/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1buba/service/v1/report.proto\"\xbf\x01\n" +
+	"\x13HealthCheckResponse\x12H\n" +
+	"\x06status\x18\x01 \x01(\x0e20.collector.service.v1.HealthCheckResponse.StatusR\x06status\x12\x1c\n" +
+	"\ttimestamp\x18\x02 \x01(\x03R\ttimestamp\"@\n" +
+	"\x06Status\x12\x16\n" +
+	"\x12STATUS_UNSPECIFIED\x10\x00\x12\x06\n" +
+	"\x02OK\x10\x01\x12\f\n" +
+	"\bDEGRADED\x10\x02\x12\b\n" +
+	"\x04DOWN\x10\x032\xe9\x01\n" +
+	"\rReportService\x12n\n" +
 	"\n" +
-	"reportType\x18\x01 \x01(\tR\n" +
-	"reportType\x12\x14\n" +
-	"\x05appId\x18\x02 \x01(\tR\x05appId\x12\x16\n" +
-	"\x06appKey\x18\x03 \x01(\tR\x06appKey\x12\x1c\n" +
-	"\teventName\x18\x04 \x01(\tR\teventName\x12\x14\n" +
-	"\x05debug\x18\x05 \x01(\x05R\x05debug\x12\x18\n" +
-	"\acontent\x18\x06 \x01(\tR\acontent\":\n" +
-	"\x12PostReportResponse\x12\x12\n" +
-	"\x04code\x18\x01 \x01(\x05R\x04code\x12\x10\n" +
-	"\x03msg\x18\x02 \x01(\tR\x03msg2\x8b\x01\n" +
-	"\rReportService\x12z\n" +
-	"\n" +
-	"PostReport\x12'.collector.service.v1.PostReportRequest\x1a(.collector.service.v1.PostReportResponse\"\x19\x82\xd3\xe4\x93\x02\x13:\x01*\"\x0e/uba/v1/reportB\xd1\x01\n" +
+	"PostReport\x12!.uba.service.v1.PostReportRequest\x1a\".uba.service.v1.PostReportResponse\"\x19\x82\xd3\xe4\x93\x02\x13:\x01*\"\x0e/uba/v1/report\x12h\n" +
+	"\vHealthCheck\x12\x16.google.protobuf.Empty\x1a).collector.service.v1.HealthCheckResponse\"\x16\x82\xd3\xe4\x93\x02\x10\x12\x0e/uba/v1/healthB\xd1\x01\n" +
 	"\x18com.collector.service.v1B\fIReportProtoP\x01Z5go-wind-uba/api/gen/go/collector/service/v1;servicev1\xa2\x02\x03CSX\xaa\x02\x14Collector.Service.V1\xca\x02\x14Collector\\Service\\V1\xe2\x02 Collector\\Service\\V1\\GPBMetadata\xea\x02\x16Collector::Service::V1b\x06proto3"
 
 var (
@@ -194,19 +159,26 @@ func file_collector_service_v1_i_report_proto_rawDescGZIP() []byte {
 	return file_collector_service_v1_i_report_proto_rawDescData
 }
 
-var file_collector_service_v1_i_report_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_collector_service_v1_i_report_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_collector_service_v1_i_report_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_collector_service_v1_i_report_proto_goTypes = []any{
-	(*PostReportRequest)(nil),  // 0: collector.service.v1.PostReportRequest
-	(*PostReportResponse)(nil), // 1: collector.service.v1.PostReportResponse
+	(HealthCheckResponse_Status)(0), // 0: collector.service.v1.HealthCheckResponse.Status
+	(*HealthCheckResponse)(nil),     // 1: collector.service.v1.HealthCheckResponse
+	(*v1.PostReportRequest)(nil),    // 2: uba.service.v1.PostReportRequest
+	(*emptypb.Empty)(nil),           // 3: google.protobuf.Empty
+	(*v1.PostReportResponse)(nil),   // 4: uba.service.v1.PostReportResponse
 }
 var file_collector_service_v1_i_report_proto_depIdxs = []int32{
-	0, // 0: collector.service.v1.ReportService.PostReport:input_type -> collector.service.v1.PostReportRequest
-	1, // 1: collector.service.v1.ReportService.PostReport:output_type -> collector.service.v1.PostReportResponse
-	1, // [1:2] is the sub-list for method output_type
-	0, // [0:1] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	0, // 0: collector.service.v1.HealthCheckResponse.status:type_name -> collector.service.v1.HealthCheckResponse.Status
+	2, // 1: collector.service.v1.ReportService.PostReport:input_type -> uba.service.v1.PostReportRequest
+	3, // 2: collector.service.v1.ReportService.HealthCheck:input_type -> google.protobuf.Empty
+	4, // 3: collector.service.v1.ReportService.PostReport:output_type -> uba.service.v1.PostReportResponse
+	1, // 4: collector.service.v1.ReportService.HealthCheck:output_type -> collector.service.v1.HealthCheckResponse
+	3, // [3:5] is the sub-list for method output_type
+	1, // [1:3] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_collector_service_v1_i_report_proto_init() }
@@ -219,13 +191,14 @@ func file_collector_service_v1_i_report_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_collector_service_v1_i_report_proto_rawDesc), len(file_collector_service_v1_i_report_proto_rawDesc)),
-			NumEnums:      0,
-			NumMessages:   2,
+			NumEnums:      1,
+			NumMessages:   1,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
 		GoTypes:           file_collector_service_v1_i_report_proto_goTypes,
 		DependencyIndexes: file_collector_service_v1_i_report_proto_depIdxs,
+		EnumInfos:         file_collector_service_v1_i_report_proto_enumTypes,
 		MessageInfos:      file_collector_service_v1_i_report_proto_msgTypes,
 	}.Build()
 	File_collector_service_v1_i_report_proto = out.File

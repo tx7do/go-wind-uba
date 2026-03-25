@@ -72,17 +72,22 @@ func (r *IDMappingRepo) init() {
 }
 
 // Count 统计ID映射数量
-func (r *IDMappingRepo) Count(ctx context.Context, whereCond []func(s *sql.Selector)) (int, error) {
+func (r *IDMappingRepo) Count(ctx context.Context, req *paginationV1.PagingRequest) (*ubaV1.CountIDMappingResponse, error) {
 	builder := r.entClient.Client().IDMapping.Query()
-	if len(whereCond) != 0 {
-		builder.Modify(whereCond...)
+	whereSelectors, _, err := r.repository.BuildListSelectorWithPaging(builder, req)
+	if len(whereSelectors) != 0 {
+		builder.Modify(whereSelectors...)
 	}
+
 	count, err := builder.Count(ctx)
 	if err != nil {
-		r.log.Errorf("query count failed: %s", err.Error())
-		return 0, ubaV1.ErrorInternalServerError("query count failed")
+		r.log.Errorf("query id-mapping count failed: %s", err.Error())
+		return nil, ubaV1.ErrorInternalServerError("query id-mapping count failed")
 	}
-	return count, nil
+
+	return &ubaV1.CountIDMappingResponse{
+		Count: uint64(count),
+	}, nil
 }
 
 // List ID映射列表
@@ -158,33 +163,32 @@ func (r *IDMappingRepo) Create(ctx context.Context, req *ubaV1.CreateIDMappingRe
 	var err error
 	var entity *ent.IDMapping
 	if entity, err = builder.Save(ctx); err != nil {
-		r.log.Errorf("insert idmapping failed: %s", err.Error())
-		return nil, ubaV1.ErrorInternalServerError("insert idmapping failed")
+		r.log.Errorf("insert id-mapping failed: %s", err.Error())
+		return nil, ubaV1.ErrorInternalServerError("insert id-mapping failed")
 	}
 	return r.mapper.ToDTO(entity), nil
 }
 
 // Update 更新ID映射
-func (r *IDMappingRepo) Update(ctx context.Context, req *ubaV1.UpdateIDMappingRequest) error {
+func (r *IDMappingRepo) Update(ctx context.Context, req *ubaV1.UpdateIDMappingRequest) (*ubaV1.IDMapping, error) {
 	if req == nil || req.Data == nil {
-		return ubaV1.ErrorBadRequest("invalid parameter")
+		return nil, ubaV1.ErrorBadRequest("invalid parameter")
 	}
 	// 如果不存在则创建
 	if req.GetAllowMissing() {
 		exist, err := r.IsExist(ctx, req.GetId())
 		if err != nil {
-			return err
+			return nil, err
 		}
 		if !exist {
 			createReq := &ubaV1.CreateIDMappingRequest{Data: req.Data}
 			createReq.Data.CreatedBy = createReq.Data.UpdatedBy
 			createReq.Data.UpdatedBy = nil
-			_, err = r.Create(ctx, createReq)
-			return err
+			return r.Create(ctx, createReq)
 		}
 	}
 	builder := r.entClient.Client().IDMapping.UpdateOneID(req.GetId())
-	_, err := r.repository.UpdateOne(ctx, builder, req.Data, req.GetUpdateMask(),
+	dto, err := r.repository.UpdateOne(ctx, builder, req.Data, req.GetUpdateMask(),
 		func(dto *ubaV1.IDMapping) {
 			builder.
 				SetNillableGlobalUserID(req.Data.GlobalUserId).
@@ -205,7 +209,7 @@ func (r *IDMappingRepo) Update(ctx context.Context, req *ubaV1.UpdateIDMappingRe
 			s.Where(sql.EQ(idmapping.FieldID, req.GetId()))
 		},
 	)
-	return err
+	return dto, err
 }
 
 // Delete 删除ID映射
@@ -215,9 +219,9 @@ func (r *IDMappingRepo) Delete(ctx context.Context, req *ubaV1.DeleteIDMappingRe
 	}
 	if err := r.entClient.Client().IDMapping.DeleteOneID(req.GetId()).Exec(ctx); err != nil {
 		if ent.IsNotFound(err) {
-			return ubaV1.ErrorNotFound("idmapping not found")
+			return ubaV1.ErrorNotFound("id-mapping not found")
 		}
-		r.log.Errorf("delete one idmapping failed: %s", err.Error())
+		r.log.Errorf("delete one id-mapping failed: %s", err.Error())
 		return ubaV1.ErrorInternalServerError("delete failed")
 	}
 	return nil

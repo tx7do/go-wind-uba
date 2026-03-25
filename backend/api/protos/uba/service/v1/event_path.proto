@@ -3,16 +3,42 @@
 package uba.service.v1;
 
 import "gnostic/openapi/v3/annotations.proto";
-import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
-import "google/protobuf/duration.proto";
-import "google/protobuf/field_mask.proto";
-
-import "uba/service/v1/common.proto";
+import "google/protobuf/empty.proto";
 
 // 事件路径服务
 service EventPathService {
+  // 分页查询事件路径
+  rpc ListEventPath(ListEventPathRequest) returns (ListEventPathResponse) {
+    option (gnostic.openapi.v3.operation) = {
+      summary: "分页查询事件路径"
+      description: "根据条件分页查询事件路径"
+    };
+  }
 
+  // 查询单条事件路径详情
+  rpc GetEventPath(GetEventPathRequest) returns (EventPath) {
+    option (gnostic.openapi.v3.operation) = {
+      summary: "查询事件路径详情"
+      description: "根据路径ID查询事件路径详情"
+    };
+  }
+
+  // 创建事件路径（如有需要）
+  rpc CreateEventPath(CreateEventPathRequest) returns (EventPath) {
+    option (gnostic.openapi.v3.operation) = {
+      summary: "创建事件路径"
+      description: "创建一条新的事件路径"
+    };
+  }
+
+  // 删除事件路径（如有需要）
+  rpc DeleteEventPath(DeleteEventPathRequest) returns (google.protobuf.Empty) {
+    option (gnostic.openapi.v3.operation) = {
+      summary: "删除事件路径"
+      description: "根据路径ID删除事件路径"
+    };
+  }
 }
 
 // 路径节点（事件路径中的单个事件节点，包含事件信息和对象信息）
@@ -62,7 +88,7 @@ message EventPath {
     (gnostic.openapi.v3.property) = {description: "用户ID，路径所属用户"}
   ];
   // 会话ID（路径所属会话）
-  uint32 session_id = 4 [
+  uint64 session_id = 4 [
     json_name = "sessionId",
     (gnostic.openapi.v3.property) = {description: "会话ID，路径所属会话"}
   ];
@@ -111,4 +137,52 @@ message EventPath {
 message ListEventPathResponse {
   repeated EventPath items = 1;
   uint64 total = 2;
+}
+
+// 分页查询事件路径请求
+message ListEventPathRequest {
+  uint32 tenant_id = 1 [
+    json_name = "tenantId",
+    (gnostic.openapi.v3.property) = {description: "租户ID"}
+  ];
+  uint32 user_id = 2 [
+    json_name = "userId",
+    (gnostic.openapi.v3.property) = {description: "用户ID"}
+  ];
+  uint64 session_id = 3 [
+    json_name = "sessionId",
+    (gnostic.openapi.v3.property) = {description: "会话ID"}
+  ];
+  uint32 page = 4 [
+    json_name = "page",
+    (gnostic.openapi.v3.property) = {description: "页码"}
+  ];
+  uint32 page_size = 5 [
+    json_name = "pageSize",
+    (gnostic.openapi.v3.property) = {description: "每页数量"}
+  ];
+}
+
+// 查询事件路径详情请求
+message GetEventPathRequest {
+  string path_id = 1 [
+    json_name = "pathId",
+    (gnostic.openapi.v3.property) = {description: "路径ID"}
+  ];
+}
+
+// 创建事件路径请求
+message CreateEventPathRequest {
+  EventPath event_path = 1 [
+    json_name = "eventPath",
+    (gnostic.openapi.v3.property) = {description: "事件路径对象"}
+  ];
+}
+
+// 删除事件路径请求
+message DeleteEventPathRequest {
+  string path_id = 1 [
+    json_name = "pathId",
+    (gnostic.openapi.v3.property) = {description: "路径ID"}
+  ];
 }

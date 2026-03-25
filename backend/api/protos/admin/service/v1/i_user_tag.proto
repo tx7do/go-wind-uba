@@ -1,0 +1,55 @@
+﻿syntax = "proto3";
+
+package admin.service.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "pagination/v1/pagination.proto";
+import "uba/service/v1/user_tag.proto";
+
+// 用户标签服务
+service UserTagService {
+  // 查询用户标签列表
+  rpc List (pagination.PagingRequest) returns (uba.service.v1.ListUserTagResponse) {
+    option (google.api.http) = {
+      get: "/admin/v1/user-tags"
+    };
+  }
+
+  // 查询用户标签数量
+  rpc Count (pagination.PagingRequest) returns (uba.service.v1.CountUserTagResponse) {
+    option (google.api.http) = {
+      get: "/admin/v1/user-tags/count"
+    };
+  }
+
+  // 查询用户标签详情
+  rpc Get (uba.service.v1.GetUserTagRequest) returns (uba.service.v1.UserTag) {
+    option (google.api.http) = {
+      get: "/admin/v1/user-tags/{id}"
+    };
+  }
+
+  // 创建用户标签
+  rpc Create (uba.service.v1.CreateUserTagRequest) returns (uba.service.v1.UserTag) {
+    option (google.api.http) = {
+      post: "/admin/v1/user-tags"
+      body: "*"
+    };
+  }
+
+  // 更新用户标签
+  rpc Update (uba.service.v1.UpdateUserTagRequest) returns (uba.service.v1.UserTag) {
+    option (google.api.http) = {
+      put: "/admin/v1/user-tags/{id}"
+      body: "*"
+    };
+  }
+
+  // 删除用户标签
+  rpc Delete (uba.service.v1.DeleteUserTagRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/admin/v1/user-tags/{id}"
+    };
+  }
+}

@@ -10,7 +10,7 @@ import (
 	permissionpb "go-wind-uba/api/gen/go/permission/service/v1"
 	resourcepb "go-wind-uba/api/gen/go/resource/service/v1"
 	taskpb "go-wind-uba/api/gen/go/task/service/v1"
-	servicev1 "go-wind-uba/api/gen/go/uba/service/v1"
+	ubapb "go-wind-uba/api/gen/go/uba/service/v1"
 	"go-wind-uba/app/core/service/internal/data/ent/api"
 	"go-wind-uba/app/core/service/internal/data/ent/apiauditlog"
 	"go-wind-uba/app/core/service/internal/data/ent/application"
@@ -42580,8 +42580,8 @@ type RiskRuleMutation struct {
 	risk_type         *riskrule.RiskType
 	default_level     *riskrule.DefaultLevel
 	condition         *map[string]interface{}
-	actions           *[]*servicev1.RiskAction
-	appendactions     []*servicev1.RiskAction
+	actions           *[]*ubapb.RiskAction
+	appendactions     []*ubapb.RiskAction
 	enabled           *bool
 	priority          *uint32
 	addpriority       *int32
@@ -43375,13 +43375,13 @@ func (m *RiskRuleMutation) ResetCondition() {
 }
 
 // SetActions sets the "actions" field.
-func (m *RiskRuleMutation) SetActions(sa []*servicev1.RiskAction) {
-	m.actions = &sa
+func (m *RiskRuleMutation) SetActions(ua []*ubapb.RiskAction) {
+	m.actions = &ua
 	m.appendactions = nil
 }
 
 // Actions returns the value of the "actions" field in the mutation.
-func (m *RiskRuleMutation) Actions() (r []*servicev1.RiskAction, exists bool) {
+func (m *RiskRuleMutation) Actions() (r []*ubapb.RiskAction, exists bool) {
 	v := m.actions
 	if v == nil {
 		return
@@ -43392,7 +43392,7 @@ func (m *RiskRuleMutation) Actions() (r []*servicev1.RiskAction, exists bool) {
 // OldActions returns the old "actions" field's value of the RiskRule entity.
 // If the RiskRule object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *RiskRuleMutation) OldActions(ctx context.Context) (v []*servicev1.RiskAction, err error) {
+func (m *RiskRuleMutation) OldActions(ctx context.Context) (v []*ubapb.RiskAction, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldActions is only allowed on UpdateOne operations")
 	}
@@ -43406,13 +43406,13 @@ func (m *RiskRuleMutation) OldActions(ctx context.Context) (v []*servicev1.RiskA
 	return oldValue.Actions, nil
 }
 
-// AppendActions adds sa to the "actions" field.
-func (m *RiskRuleMutation) AppendActions(sa []*servicev1.RiskAction) {
-	m.appendactions = append(m.appendactions, sa...)
+// AppendActions adds ua to the "actions" field.
+func (m *RiskRuleMutation) AppendActions(ua []*ubapb.RiskAction) {
+	m.appendactions = append(m.appendactions, ua...)
 }
 
 // AppendedActions returns the list of values that were appended to the "actions" field in this mutation.
-func (m *RiskRuleMutation) AppendedActions() ([]*servicev1.RiskAction, bool) {
+func (m *RiskRuleMutation) AppendedActions() ([]*ubapb.RiskAction, bool) {
 	if len(m.appendactions) == 0 {
 		return nil, false
 	}
@@ -44166,7 +44166,7 @@ func (m *RiskRuleMutation) SetField(name string, value ent.Value) error {
 		m.SetCondition(v)
 		return nil
 	case riskrule.FieldActions:
-		v, ok := value.([]*servicev1.RiskAction)
+		v, ok := value.([]*ubapb.RiskAction)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -52416,9 +52416,9 @@ type TagDefinitionMutation struct {
 	description                 *string
 	category                    *tagdefinition.Category
 	tag_type                    *tagdefinition.TagType
-	rule                        **servicev1.TagRule
-	allowed_values              *[]*servicev1.TagValue
-	appendallowed_values        []*servicev1.TagValue
+	rule                        **ubapb.TagRule
+	allowed_values              *[]*ubapb.TagValue
+	appendallowed_values        []*ubapb.TagValue
 	is_system                   *bool
 	is_dynamic                  *bool
 	refresh_interval_seconds    *uint32
@@ -53158,12 +53158,12 @@ func (m *TagDefinitionMutation) ResetTagType() {
 }
 
 // SetRule sets the "rule" field.
-func (m *TagDefinitionMutation) SetRule(sr *servicev1.TagRule) {
-	m.rule = &sr
+func (m *TagDefinitionMutation) SetRule(ur *ubapb.TagRule) {
+	m.rule = &ur
 }
 
 // Rule returns the value of the "rule" field in the mutation.
-func (m *TagDefinitionMutation) Rule() (r *servicev1.TagRule, exists bool) {
+func (m *TagDefinitionMutation) Rule() (r *ubapb.TagRule, exists bool) {
 	v := m.rule
 	if v == nil {
 		return
@@ -53174,7 +53174,7 @@ func (m *TagDefinitionMutation) Rule() (r *servicev1.TagRule, exists bool) {
 // OldRule returns the old "rule" field's value of the TagDefinition entity.
 // If the TagDefinition object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TagDefinitionMutation) OldRule(ctx context.Context) (v *servicev1.TagRule, err error) {
+func (m *TagDefinitionMutation) OldRule(ctx context.Context) (v *ubapb.TagRule, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldRule is only allowed on UpdateOne operations")
 	}
@@ -53207,13 +53207,13 @@ func (m *TagDefinitionMutation) ResetRule() {
 }
 
 // SetAllowedValues sets the "allowed_values" field.
-func (m *TagDefinitionMutation) SetAllowedValues(sv []*servicev1.TagValue) {
-	m.allowed_values = &sv
+func (m *TagDefinitionMutation) SetAllowedValues(uv []*ubapb.TagValue) {
+	m.allowed_values = &uv
 	m.appendallowed_values = nil
 }
 
 // AllowedValues returns the value of the "allowed_values" field in the mutation.
-func (m *TagDefinitionMutation) AllowedValues() (r []*servicev1.TagValue, exists bool) {
+func (m *TagDefinitionMutation) AllowedValues() (r []*ubapb.TagValue, exists bool) {
 	v := m.allowed_values
 	if v == nil {
 		return
@@ -53224,7 +53224,7 @@ func (m *TagDefinitionMutation) AllowedValues() (r []*servicev1.TagValue, exists
 // OldAllowedValues returns the old "allowed_values" field's value of the TagDefinition entity.
 // If the TagDefinition object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TagDefinitionMutation) OldAllowedValues(ctx context.Context) (v []*servicev1.TagValue, err error) {
+func (m *TagDefinitionMutation) OldAllowedValues(ctx context.Context) (v []*ubapb.TagValue, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldAllowedValues is only allowed on UpdateOne operations")
 	}
@@ -53238,13 +53238,13 @@ func (m *TagDefinitionMutation) OldAllowedValues(ctx context.Context) (v []*serv
 	return oldValue.AllowedValues, nil
 }
 
-// AppendAllowedValues adds sv to the "allowed_values" field.
-func (m *TagDefinitionMutation) AppendAllowedValues(sv []*servicev1.TagValue) {
-	m.appendallowed_values = append(m.appendallowed_values, sv...)
+// AppendAllowedValues adds uv to the "allowed_values" field.
+func (m *TagDefinitionMutation) AppendAllowedValues(uv []*ubapb.TagValue) {
+	m.appendallowed_values = append(m.appendallowed_values, uv...)
 }
 
 // AppendedAllowedValues returns the list of values that were appended to the "allowed_values" field in this mutation.
-func (m *TagDefinitionMutation) AppendedAllowedValues() ([]*servicev1.TagValue, bool) {
+func (m *TagDefinitionMutation) AppendedAllowedValues() ([]*ubapb.TagValue, bool) {
 	if len(m.appendallowed_values) == 0 {
 		return nil, false
 	}
@@ -53746,14 +53746,14 @@ func (m *TagDefinitionMutation) SetField(name string, value ent.Value) error {
 		m.SetTagType(v)
 		return nil
 	case tagdefinition.FieldRule:
-		v, ok := value.(*servicev1.TagRule)
+		v, ok := value.(*ubapb.TagRule)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetRule(v)
 		return nil
 	case tagdefinition.FieldAllowedValues:
-		v, ok := value.([]*servicev1.TagValue)
+		v, ok := value.([]*ubapb.TagValue)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}

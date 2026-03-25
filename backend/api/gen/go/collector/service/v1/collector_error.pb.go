@@ -127,7 +127,7 @@ var File_collector_service_v1_collector_error_proto protoreflect.FileDescriptor
 
 const file_collector_service_v1_collector_error_proto_rawDesc = "" +
 	"\n" +
-	"*collector/service/v1/collector_error.proto\x12\x10agent.service.v1\x1a\x13errors/errors.proto*\xbc\x04\n" +
+	"*collector/service/v1/collector_error.proto\x12\x14collector.service.v1\x1a\x13errors/errors.proto*\xbc\x04\n" +
 	"\x14CollectorErrorReason\x12\x17\n" +
 	"\rNOT_LOGGED_IN\x10\x00\x1a\x04\xa8E\x91\x03\x12\x1a\n" +
 	"\x10ACCESS_FORBIDDEN\x10\x01\x1a\x04\xa8E\x93\x03\x12\x1c\n" +
@@ -149,8 +149,8 @@ const file_collector_service_v1_collector_error_proto_rawDesc = "" +
 	"\rTOKEN_EXPIRED\x10\x10\x1a\x03\xa8Eg\x12\x16\n" +
 	"\rINVALID_TOKEN\x10\x11\x1a\x03\xa8Eh\x12\x18\n" +
 	"\x0fTOKEN_NOT_EXIST\x10\x12\x1a\x03\xa8Ei\x12\x17\n" +
-	"\x0eUSER_NOT_EXIST\x10\x13\x1a\x03\xa8Ej\x1a\x04\xa0E\xf4\x03B\xc4\x01\n" +
-	"\x14com.agent.service.v1B\x13CollectorErrorProtoP\x01Z5go-wind-uba/api/gen/go/collector/service/v1;servicev1\xa2\x02\x03ASX\xaa\x02\x10Agent.Service.V1\xca\x02\x10Agent\\Service\\V1\xe2\x02\x1cAgent\\Service\\V1\\GPBMetadata\xea\x02\x12Agent::Service::V1b\x06proto3"
+	"\x0eUSER_NOT_EXIST\x10\x13\x1a\x03\xa8Ej\x1a\x04\xa0E\xf4\x03B\xd8\x01\n" +
+	"\x18com.collector.service.v1B\x13CollectorErrorProtoP\x01Z5go-wind-uba/api/gen/go/collector/service/v1;servicev1\xa2\x02\x03CSX\xaa\x02\x14Collector.Service.V1\xca\x02\x14Collector\\Service\\V1\xe2\x02 Collector\\Service\\V1\\GPBMetadata\xea\x02\x16Collector::Service::V1b\x06proto3"
 
 var (
 	file_collector_service_v1_collector_error_proto_rawDescOnce sync.Once
@@ -166,7 +166,7 @@ func file_collector_service_v1_collector_error_proto_rawDescGZIP() []byte {
 
 var file_collector_service_v1_collector_error_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_collector_service_v1_collector_error_proto_goTypes = []any{
-	(CollectorErrorReason)(0), // 0: agent.service.v1.CollectorErrorReason
+	(CollectorErrorReason)(0), // 0: collector.service.v1.CollectorErrorReason
 }
 var file_collector_service_v1_collector_error_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS events_fact (
     object_type VARCHAR(64) COMMENT '对象类型',
     object_id VARCHAR(128) COMMENT '对象ID',
     object_name VARCHAR(256) COMMENT '对象名称',
-    session_id INT DEFAULT 0 COMMENT '会话ID',
+    session_id BIGINT DEFAULT 0 COMMENT '会话ID',
     session_seq INT DEFAULT 0 COMMENT '会话内序号',
     platform VARCHAR(64) COMMENT '平台',
     os VARCHAR(128) COMMENT '系统',
@@ -83,7 +83,7 @@ ALTER TABLE events_fact ADD INDEX idx_event_name (event_name) USING INVERTED;
 -- 2. 用户会话事实表
 -- ============================================================
 CREATE TABLE IF NOT EXISTS sessions_fact (
-    session_id      INT NOT NULL COMMENT '会话唯一ID',
+    session_id      BIGINT NOT NULL COMMENT '会话唯一ID',
     tenant_id       INT NOT NULL COMMENT '租户ID',
     session_date    DATE NOT NULL COMMENT '会话日期',
     user_id         INT DEFAULT 0 COMMENT '登录用户ID',
@@ -147,7 +147,7 @@ CREATE TABLE IF NOT EXISTS risk_events (
     rule_name       VARCHAR(256) COMMENT '触发规则名称',
     rule_context    MAP<STRING,STRING> COMMENT '规则触发上下文',
     related_event_ids ARRAY<STRING> COMMENT '关联行为事件ID数组',
-    session_id      INT DEFAULT 0 COMMENT '关联会话ID',
+    session_id      BIGINT DEFAULT 0 COMMENT '关联会话ID',
     description     VARCHAR(1024) COMMENT '风险描述',
     evidence        MAP<STRING,STRING> COMMENT '证据键值对',
     status          VARCHAR(64) COMMENT '处置状态',
@@ -326,7 +326,7 @@ CREATE TABLE IF NOT EXISTS path_features (
     tenant_id         INT NOT NULL COMMENT '租户ID',
     event_date        DATE NOT NULL COMMENT '路径日期',
     user_id           INT DEFAULT 0 COMMENT '登录用户ID',
-    session_id        INT DEFAULT 0 COMMENT '会话ID',
+    session_id        BIGINT DEFAULT 0 COMMENT '会话ID',
     path_hash         VARCHAR(128) COMMENT '路径序列哈希值',
     first_event       VARCHAR(128) COMMENT '入口事件',
     last_event        VARCHAR(128) COMMENT '出口事件',

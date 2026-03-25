@@ -18,7 +18,7 @@ type EventsFact struct {
 	ObjectType    *string            `json:"object_type"`
 	ObjectID      *string            `json:"object_id"`
 	ObjectName    *string            `json:"object_name"`
-	SessionID     *uint32            `json:"session_id"`
+	SessionID     *uint64            `json:"session_id"`
 	SessionSeq    *uint32            `json:"session_seq"`
 	Platform      *string            `json:"platform"`
 	Os            *string            `json:"os"`

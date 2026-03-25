@@ -25,7 +25,9 @@ import (
 func initApp(context *bootstrap.Context) (*kratos.App, func(), error) {
 	v := server.NewRestMiddleware(context)
 	broker := data.NewKafkaBroker(context)
-	reportService := service.NewReportService(context, broker)
+	discovery := data.NewDiscovery(context)
+	applicationServiceClient := data.NewApplicationServiceClient(context, discovery)
+	reportService := service.NewReportService(context, broker, applicationServiceClient)
 	httpServer := server.NewRestServer(context, v, reportService)
 	app := newApp(context, httpServer)
 	return app, func() {

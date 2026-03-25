@@ -25,7 +25,7 @@ var File_collector_service_v1_collector_doc_proto protoreflect.FileDescriptor
 
 const file_collector_service_v1_collector_doc_proto_rawDesc = "" +
 	"\n" +
-	"(collector/service/v1/collector_doc.proto\x12\x10admin.service.v1\x1a$gnostic/openapi/v3/annotations.protoB\xaa\x05\xbaG\xe4\x03\x121\n" +
+	"(collector/service/v1/collector_doc.proto\x12\x14collector.service.v1\x1a$gnostic/openapi/v3/annotations.protoB\xbe\x05\xbaG\xe4\x03\x121\n" +
 	"\x14UBA 埋点服务 API\x12\x14UBA 埋点服务 API2\x031.0*\x92\x03\n" +
 	"\xd4\x01\n" +
 	"\xd1\x01\n" +
@@ -57,7 +57,7 @@ const file_collector_service_v1_collector_doc_proto_rawDesc = "" +
 	"\x06oauth2:*\x12(\x12\r/uba/v1/login\x1a\x15/uba/v1/refresh_token\"\x002\x1a\n" +
 	"\x18\n" +
 	"\x14OAuth2PasswordBearer\x12\x00\n" +
-	"\x14com.admin.service.v1B\x11CollectorDocProtoP\x01Z5go-wind-uba/api/gen/go/collector/service/v1;servicev1\xa2\x02\x03ASX\xaa\x02\x10Admin.Service.V1\xca\x02\x10Admin\\Service\\V1\xe2\x02\x1cAdmin\\Service\\V1\\GPBMetadata\xea\x02\x12Admin::Service::V1b\x06proto3"
+	"\x18com.collector.service.v1B\x11CollectorDocProtoP\x01Z5go-wind-uba/api/gen/go/collector/service/v1;servicev1\xa2\x02\x03CSX\xaa\x02\x14Collector.Service.V1\xca\x02\x14Collector\\Service\\V1\xe2\x02 Collector\\Service\\V1\\GPBMetadata\xea\x02\x16Collector::Service::V1b\x06proto3"
 
 var file_collector_service_v1_collector_doc_proto_goTypes = []any{}
 var file_collector_service_v1_collector_doc_proto_depIdxs = []int32{

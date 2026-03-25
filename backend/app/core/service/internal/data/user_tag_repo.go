@@ -71,17 +71,23 @@ func (r *UserTagRepo) init() {
 }
 
 // Count 统计用户标签数量
-func (r *UserTagRepo) Count(ctx context.Context, whereCond []func(s *sql.Selector)) (int, error) {
+func (r *UserTagRepo) Count(ctx context.Context, req *paginationV1.PagingRequest) (*ubaV1.CountUserTagResponse, error) {
 	builder := r.entClient.Client().UserTag.Query()
-	if len(whereCond) != 0 {
-		builder.Modify(whereCond...)
+
+	whereSelectors, _, err := r.repository.BuildListSelectorWithPaging(builder, req)
+	if len(whereSelectors) != 0 {
+		builder.Modify(whereSelectors...)
 	}
+
 	count, err := builder.Count(ctx)
 	if err != nil {
-		r.log.Errorf("query count failed: %s", err.Error())
-		return 0, ubaV1.ErrorInternalServerError("query count failed")
+		r.log.Errorf("query user-tag count failed: %s", err.Error())
+		return nil, ubaV1.ErrorInternalServerError("query user-tag count failed")
 	}
-	return count, nil
+
+	return &ubaV1.CountUserTagResponse{
+		Count: uint64(count),
+	}, nil
 }
 
 // List 用户标签列表
@@ -164,26 +170,25 @@ func (r *UserTagRepo) Create(ctx context.Context, req *ubaV1.CreateUserTagReques
 }
 
 // Update 更新用户标签
-func (r *UserTagRepo) Update(ctx context.Context, req *ubaV1.UpdateUserTagRequest) error {
+func (r *UserTagRepo) Update(ctx context.Context, req *ubaV1.UpdateUserTagRequest) (*ubaV1.UserTag, error) {
 	if req == nil || req.Data == nil {
-		return ubaV1.ErrorBadRequest("invalid parameter")
+		return nil, ubaV1.ErrorBadRequest("invalid parameter")
 	}
 	// 如果不存在则创建
 	if req.GetAllowMissing() {
 		exist, err := r.IsExist(ctx, req.GetId())
 		if err != nil {
-			return err
+			return nil, err
 		}
 		if !exist {
 			createReq := &ubaV1.CreateUserTagRequest{Data: req.Data}
 			createReq.Data.CreatedBy = createReq.Data.UpdatedBy
 			createReq.Data.UpdatedBy = nil
-			_, err = r.Create(ctx, createReq)
-			return err
+			return r.Create(ctx, createReq)
 		}
 	}
 	builder := r.entClient.Client().UserTag.UpdateOneID(req.GetId())
-	_, err := r.repository.UpdateOne(ctx, builder, req.Data, req.GetUpdateMask(),
+	dto, err := r.repository.UpdateOne(ctx, builder, req.Data, req.GetUpdateMask(),
 		func(dto *ubaV1.UserTag) {
 			builder.
 				SetNillableUserID(req.Data.UserId).
@@ -203,7 +208,8 @@ func (r *UserTagRepo) Update(ctx context.Context, req *ubaV1.UpdateUserTagReques
 			s.Where(sql.EQ(usertag.FieldID, req.GetId()))
 		},
 	)
-	return err
+
+	return dto, err
 }
 
 // Delete 删除用户标签

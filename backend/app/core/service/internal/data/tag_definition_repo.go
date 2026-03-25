@@ -75,17 +75,23 @@ func (r *TagDefinitionRepo) init() {
 }
 
 // Count 统计标签数量
-func (r *TagDefinitionRepo) Count(ctx context.Context, whereCond []func(s *sql.Selector)) (int, error) {
+func (r *TagDefinitionRepo) Count(ctx context.Context, req *paginationV1.PagingRequest) (*ubaV1.CountTagDefinitionResponse, error) {
 	builder := r.entClient.Client().TagDefinition.Query()
-	if len(whereCond) != 0 {
-		builder.Modify(whereCond...)
+
+	whereSelectors, _, err := r.repository.BuildListSelectorWithPaging(builder, req)
+	if len(whereSelectors) != 0 {
+		builder.Modify(whereSelectors...)
 	}
+
 	count, err := builder.Count(ctx)
 	if err != nil {
-		r.log.Errorf("query count failed: %s", err.Error())
-		return 0, ubaV1.ErrorInternalServerError("query count failed")
+		r.log.Errorf("query tag-definition count failed: %s", err.Error())
+		return nil, ubaV1.ErrorInternalServerError("query tag-definition count failed")
 	}
-	return count, nil
+
+	return &ubaV1.CountTagDefinitionResponse{
+		Count: uint64(count),
+	}, nil
 }
 
 // List 标签列表
@@ -173,26 +179,25 @@ func (r *TagDefinitionRepo) Create(ctx context.Context, req *ubaV1.CreateTagDefi
 }
 
 // Update 更新标签
-func (r *TagDefinitionRepo) Update(ctx context.Context, req *ubaV1.UpdateTagDefinitionRequest) error {
+func (r *TagDefinitionRepo) Update(ctx context.Context, req *ubaV1.UpdateTagDefinitionRequest) (*ubaV1.TagDefinition, error) {
 	if req == nil || req.Data == nil {
-		return ubaV1.ErrorBadRequest("invalid parameter")
+		return nil, ubaV1.ErrorBadRequest("invalid parameter")
 	}
 	// 如果不存在则创建
 	if req.GetAllowMissing() {
 		exist, err := r.IsExist(ctx, req.GetId())
 		if err != nil {
-			return err
+			return nil, err
 		}
 		if !exist {
 			createReq := &ubaV1.CreateTagDefinitionRequest{Data: req.Data}
 			createReq.Data.CreatedBy = createReq.Data.UpdatedBy
 			createReq.Data.UpdatedBy = nil
-			_, err = r.Create(ctx, createReq)
-			return err
+			return r.Create(ctx, createReq)
 		}
 	}
 	builder := r.entClient.Client().TagDefinition.UpdateOneID(req.GetId())
-	_, err := r.repository.UpdateOne(ctx, builder, req.Data, req.GetUpdateMask(),
+	dto, err := r.repository.UpdateOne(ctx, builder, req.Data, req.GetUpdateMask(),
 		func(dto *ubaV1.TagDefinition) {
 			builder.
 				SetNillableName(req.Data.Name).
@@ -217,7 +222,8 @@ func (r *TagDefinitionRepo) Update(ctx context.Context, req *ubaV1.UpdateTagDefi
 			s.Where(sql.EQ(tagdefinition.FieldID, req.GetId()))
 		},
 	)
-	return err
+
+	return dto, err
 }
 
 // Delete 删除标签

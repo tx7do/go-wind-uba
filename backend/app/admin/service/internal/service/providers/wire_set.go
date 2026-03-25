@@ -54,4 +54,11 @@ var ProviderSet = wire.NewSet(
 	service.NewInternalMessageService,
 	service.NewInternalMessageCategoryService,
 	service.NewInternalMessageRecipientService,
+
+	service.NewApplicationService,
+	service.NewIDMappingService,
+	service.NewRiskRuleService,
+	service.NewTagDefinitionService,
+	service.NewUserTagService,
+	service.NewWebhookService,
 )

@@ -76,17 +76,23 @@ func (r *RiskRuleRepo) init() {
 }
 
 // Count 统计风险规则数量
-func (r *RiskRuleRepo) Count(ctx context.Context, whereCond []func(s *sql.Selector)) (int, error) {
+func (r *RiskRuleRepo) Count(ctx context.Context, req *paginationV1.PagingRequest) (*ubaV1.CountRiskRuleResponse, error) {
 	builder := r.entClient.Client().RiskRule.Query()
-	if len(whereCond) != 0 {
-		builder.Modify(whereCond...)
+
+	whereSelectors, _, err := r.repository.BuildListSelectorWithPaging(builder, req)
+	if len(whereSelectors) != 0 {
+		builder.Modify(whereSelectors...)
 	}
+
 	count, err := builder.Count(ctx)
 	if err != nil {
-		r.log.Errorf("query count failed: %s", err.Error())
-		return 0, ubaV1.ErrorInternalServerError("query count failed")
+		r.log.Errorf("query risk-rule count failed: %s", err.Error())
+		return nil, ubaV1.ErrorInternalServerError("query risk-rule count failed")
 	}
-	return count, nil
+
+	return &ubaV1.CountRiskRuleResponse{
+		Count: uint64(count),
+	}, nil
 }
 
 // List 风险规则列表
@@ -173,26 +179,25 @@ func (r *RiskRuleRepo) Create(ctx context.Context, req *ubaV1.CreateRiskRuleRequ
 }
 
 // Update 更新风险规则
-func (r *RiskRuleRepo) Update(ctx context.Context, req *ubaV1.UpdateRiskRuleRequest) error {
+func (r *RiskRuleRepo) Update(ctx context.Context, req *ubaV1.UpdateRiskRuleRequest) (*ubaV1.RiskRule, error) {
 	if req == nil || req.Data == nil {
-		return ubaV1.ErrorBadRequest("invalid parameter")
+		return nil, ubaV1.ErrorBadRequest("invalid parameter")
 	}
 	// 如果不存在则创建
 	if req.GetAllowMissing() {
 		exist, err := r.IsExist(ctx, req.GetId())
 		if err != nil {
-			return err
+			return nil, err
 		}
 		if !exist {
 			createReq := &ubaV1.CreateRiskRuleRequest{Data: req.Data}
 			createReq.Data.CreatedBy = createReq.Data.UpdatedBy
 			createReq.Data.UpdatedBy = nil
-			_, err = r.Create(ctx, createReq)
-			return err
+			return r.Create(ctx, createReq)
 		}
 	}
 	builder := r.entClient.Client().RiskRule.UpdateOneID(req.GetId())
-	_, err := r.repository.UpdateOne(ctx, builder, req.Data, req.GetUpdateMask(),
+	dto, err := r.repository.UpdateOne(ctx, builder, req.Data, req.GetUpdateMask(),
 		func(dto *ubaV1.RiskRule) {
 			builder.
 				SetNillableName(req.Data.Name).
@@ -216,7 +221,7 @@ func (r *RiskRuleRepo) Update(ctx context.Context, req *ubaV1.UpdateRiskRuleRequ
 			s.Where(sql.EQ(riskrule.FieldID, req.GetId()))
 		},
 	)
-	return err
+	return dto, err
 }
 
 // Delete 删除风险规则

@@ -1324,6 +1324,251 @@ paths:
                 "200":
                     description: OK
                     content: {}
+    /admin/v1/id-mappings:
+        get:
+            tags:
+                - IDMappingService
+            description: 查询ID映射列表
+            operationId: IDMappingService_List
+            parameters:
+                - name: page
+                  in: query
+                  description: 当前页码（从1开始，默认1）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: pageSize
+                  in: query
+                  description: 每页条数（默认10，建议设置上限如100）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: offset
+                  in: query
+                  description: 跳过的记录数（从0开始，默认0）
+                  schema:
+                    type: string
+                - name: limit
+                  in: query
+                  description: 最多返回的记录数（默认10，建议设置上限如100）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: token
+                  in: query
+                  description: 上一页最后一条记录的游标（如ID/时间戳+ID，首次请求为空）
+                  schema:
+                    type: string
+                - name: noPaging
+                  in: query
+                  description: 是否不分页，如果为true，则page和pageSize参数无效。
+                  schema:
+                    type: boolean
+                - name: query
+                  in: query
+                  description: JSON字符串过滤条件，基础语法：{"field1":"val1", "field2___icontains":"val2"}，具体请参见：https://github.com/tx7do/go-crud/tree/main/pagination/filter/README.md
+                  schema:
+                    type: string
+                - name: filter
+                  in: query
+                  description: Google AIP规范字符串过滤条件
+                  schema:
+                    type: string
+                - name: filterExpr.type
+                  in: query
+                  description: 过滤表达式类型
+                  schema:
+                    enum:
+                        - EXPR_TYPE_UNSPECIFIED
+                        - AND
+                        - OR
+                    type: string
+                    format: enum
+                - name: orderBy
+                  in: query
+                  description: 排序条件
+                  schema:
+                    type: string
+                - name: fieldMask
+                  in: query
+                  description: 字段掩码，其作用为SELECT中的字段，其语法为使用逗号分隔字段名，例如：id,realName,userName。如果为空则选中所有字段，即SELECT *。
+                  schema:
+                    type: string
+                    format: field-mask
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListIDMappingResponse'
+        post:
+            tags:
+                - IDMappingService
+            description: 创建ID映射
+            operationId: IDMappingService_Create
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreateIDMappingRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/IDMapping'
+    /admin/v1/id-mappings/count:
+        get:
+            tags:
+                - IDMappingService
+            description: 查询ID映射数量
+            operationId: IDMappingService_Count
+            parameters:
+                - name: page
+                  in: query
+                  description: 当前页码（从1开始，默认1）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: pageSize
+                  in: query
+                  description: 每页条数（默认10，建议设置上限如100）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: offset
+                  in: query
+                  description: 跳过的记录数（从0开始，默认0）
+                  schema:
+                    type: string
+                - name: limit
+                  in: query
+                  description: 最多返回的记录数（默认10，建议设置上限如100）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: token
+                  in: query
+                  description: 上一页最后一条记录的游标（如ID/时间戳+ID，首次请求为空）
+                  schema:
+                    type: string
+                - name: noPaging
+                  in: query
+                  description: 是否不分页，如果为true，则page和pageSize参数无效。
+                  schema:
+                    type: boolean
+                - name: query
+                  in: query
+                  description: JSON字符串过滤条件，基础语法：{"field1":"val1", "field2___icontains":"val2"}，具体请参见：https://github.com/tx7do/go-crud/tree/main/pagination/filter/README.md
+                  schema:
+                    type: string
+                - name: filter
+                  in: query
+                  description: Google AIP规范字符串过滤条件
+                  schema:
+                    type: string
+                - name: filterExpr.type
+                  in: query
+                  description: 过滤表达式类型
+                  schema:
+                    enum:
+                        - EXPR_TYPE_UNSPECIFIED
+                        - AND
+                        - OR
+                    type: string
+                    format: enum
+                - name: orderBy
+                  in: query
+                  description: 排序条件
+                  schema:
+                    type: string
+                - name: fieldMask
+                  in: query
+                  description: 字段掩码，其作用为SELECT中的字段，其语法为使用逗号分隔字段名，例如：id,realName,userName。如果为空则选中所有字段，即SELECT *。
+                  schema:
+                    type: string
+                    format: field-mask
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CountIDMappingResponse'
+    /admin/v1/id-mappings/{id}:
+        get:
+            tags:
+                - IDMappingService
+            description: 查询ID映射详情
+            operationId: IDMappingService_Get
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: viewMask
+                  in: query
+                  schema:
+                    type: string
+                    format: field-mask
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/IDMapping'
+        put:
+            tags:
+                - IDMappingService
+            description: 更新ID映射
+            operationId: IDMappingService_Update
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: integer
+                    format: uint32
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UpdateIDMappingRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/IDMapping'
+        delete:
+            tags:
+                - IDMappingService
+            description: 删除ID映射
+            operationId: IDMappingService_Delete
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: deletedBy
+                  in: query
+                  schema:
+                    type: integer
+                    format: uint32
+            responses:
+                "200":
+                    description: OK
+                    content: {}
     /admin/v1/initial-context:
         get:
             tags:
@@ -3338,6 +3583,251 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/LoginResponse'
+    /admin/v1/risk-rules:
+        get:
+            tags:
+                - RiskRuleService
+            description: 查询风险规则列表，支持分页
+            operationId: RiskRuleService_List
+            parameters:
+                - name: page
+                  in: query
+                  description: 当前页码（从1开始，默认1）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: pageSize
+                  in: query
+                  description: 每页条数（默认10，建议设置上限如100）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: offset
+                  in: query
+                  description: 跳过的记录数（从0开始，默认0）
+                  schema:
+                    type: string
+                - name: limit
+                  in: query
+                  description: 最多返回的记录数（默认10，建议设置上限如100）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: token
+                  in: query
+                  description: 上一页最后一条记录的游标（如ID/时间戳+ID，首次请求为空）
+                  schema:
+                    type: string
+                - name: noPaging
+                  in: query
+                  description: 是否不分页，如果为true，则page和pageSize参数无效。
+                  schema:
+                    type: boolean
+                - name: query
+                  in: query
+                  description: JSON字符串过滤条件，基础语法：{"field1":"val1", "field2___icontains":"val2"}，具体请参见：https://github.com/tx7do/go-crud/tree/main/pagination/filter/README.md
+                  schema:
+                    type: string
+                - name: filter
+                  in: query
+                  description: Google AIP规范字符串过滤条件
+                  schema:
+                    type: string
+                - name: filterExpr.type
+                  in: query
+                  description: 过滤表达式类型
+                  schema:
+                    enum:
+                        - EXPR_TYPE_UNSPECIFIED
+                        - AND
+                        - OR
+                    type: string
+                    format: enum
+                - name: orderBy
+                  in: query
+                  description: 排序条件
+                  schema:
+                    type: string
+                - name: fieldMask
+                  in: query
+                  description: 字段掩码，其作用为SELECT中的字段，其语法为使用逗号分隔字段名，例如：id,realName,userName。如果为空则选中所有字段，即SELECT *。
+                  schema:
+                    type: string
+                    format: field-mask
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListRiskRuleResponse'
+        post:
+            tags:
+                - RiskRuleService
+            description: 创建风险规则，返回新建的规则对象
+            operationId: RiskRuleService_Create
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreateRiskRuleRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/RiskRule'
+    /admin/v1/risk-rules/count:
+        get:
+            tags:
+                - RiskRuleService
+            description: 查询风险规则数量，返回总数
+            operationId: RiskRuleService_Count
+            parameters:
+                - name: page
+                  in: query
+                  description: 当前页码（从1开始，默认1）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: pageSize
+                  in: query
+                  description: 每页条数（默认10，建议设置上限如100）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: offset
+                  in: query
+                  description: 跳过的记录数（从0开始，默认0）
+                  schema:
+                    type: string
+                - name: limit
+                  in: query
+                  description: 最多返回的记录数（默认10，建议设置上限如100）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: token
+                  in: query
+                  description: 上一页最后一条记录的游标（如ID/时间戳+ID，首次请求为空）
+                  schema:
+                    type: string
+                - name: noPaging
+                  in: query
+                  description: 是否不分页，如果为true，则page和pageSize参数无效。
+                  schema:
+                    type: boolean
+                - name: query
+                  in: query
+                  description: JSON字符串过滤条件，基础语法：{"field1":"val1", "field2___icontains":"val2"}，具体请参见：https://github.com/tx7do/go-crud/tree/main/pagination/filter/README.md
+                  schema:
+                    type: string
+                - name: filter
+                  in: query
+                  description: Google AIP规范字符串过滤条件
+                  schema:
+                    type: string
+                - name: filterExpr.type
+                  in: query
+                  description: 过滤表达式类型
+                  schema:
+                    enum:
+                        - EXPR_TYPE_UNSPECIFIED
+                        - AND
+                        - OR
+                    type: string
+                    format: enum
+                - name: orderBy
+                  in: query
+                  description: 排序条件
+                  schema:
+                    type: string
+                - name: fieldMask
+                  in: query
+                  description: 字段掩码，其作用为SELECT中的字段，其语法为使用逗号分隔字段名，例如：id,realName,userName。如果为空则选中所有字段，即SELECT *。
+                  schema:
+                    type: string
+                    format: field-mask
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CountRiskRuleResponse'
+    /admin/v1/risk-rules/{id}:
+        get:
+            tags:
+                - RiskRuleService
+            description: 查询风险规则详情，根据ID获取单条规则
+            operationId: RiskRuleService_Get
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: viewMask
+                  in: query
+                  schema:
+                    type: string
+                    format: field-mask
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/RiskRule'
+        put:
+            tags:
+                - RiskRuleService
+            description: 更新风险规则，根据ID和字段掩码更新规则
+            operationId: RiskRuleService_Update
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: integer
+                    format: uint32
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UpdateRiskRuleRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/RiskRule'
+        delete:
+            tags:
+                - RiskRuleService
+            description: 删除风险规则，根据ID删除规则
+            operationId: RiskRuleService_Delete
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: deletedBy
+                  in: query
+                  schema:
+                    type: integer
+                    format: uint32
+            responses:
+                "200":
+                    description: OK
+                    content: {}
     /admin/v1/roles:
         get:
             tags:
@@ -3524,6 +4014,251 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ListRouteResponse'
+    /admin/v1/tag-definitions:
+        get:
+            tags:
+                - TagDefinitionService
+            description: 查询标签定义列表
+            operationId: TagDefinitionService_List
+            parameters:
+                - name: page
+                  in: query
+                  description: 当前页码（从1开始，默认1）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: pageSize
+                  in: query
+                  description: 每页条数（默认10，建议设置上限如100）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: offset
+                  in: query
+                  description: 跳过的记录数（从0开始，默认0）
+                  schema:
+                    type: string
+                - name: limit
+                  in: query
+                  description: 最多返回的记录数（默认10，建议设置上限如100）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: token
+                  in: query
+                  description: 上一页最后一条记录的游标（如ID/时间戳+ID，首次请求为空）
+                  schema:
+                    type: string
+                - name: noPaging
+                  in: query
+                  description: 是否不分页，如果为true，则page和pageSize参数无效。
+                  schema:
+                    type: boolean
+                - name: query
+                  in: query
+                  description: JSON字符串过滤条件，基础语法：{"field1":"val1", "field2___icontains":"val2"}，具体请参见：https://github.com/tx7do/go-crud/tree/main/pagination/filter/README.md
+                  schema:
+                    type: string
+                - name: filter
+                  in: query
+                  description: Google AIP规范字符串过滤条件
+                  schema:
+                    type: string
+                - name: filterExpr.type
+                  in: query
+                  description: 过滤表达式类型
+                  schema:
+                    enum:
+                        - EXPR_TYPE_UNSPECIFIED
+                        - AND
+                        - OR
+                    type: string
+                    format: enum
+                - name: orderBy
+                  in: query
+                  description: 排序条件
+                  schema:
+                    type: string
+                - name: fieldMask
+                  in: query
+                  description: 字段掩码，其作用为SELECT中的字段，其语法为使用逗号分隔字段名，例如：id,realName,userName。如果为空则选中所有字段，即SELECT *。
+                  schema:
+                    type: string
+                    format: field-mask
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListTagDefinitionResponse'
+        post:
+            tags:
+                - TagDefinitionService
+            description: 创建标签定义
+            operationId: TagDefinitionService_Create
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreateTagDefinitionRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/TagDefinition'
+    /admin/v1/tag-definitions/count:
+        get:
+            tags:
+                - TagDefinitionService
+            description: 查询标签定义数量
+            operationId: TagDefinitionService_Count
+            parameters:
+                - name: page
+                  in: query
+                  description: 当前页码（从1开始，默认1）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: pageSize
+                  in: query
+                  description: 每页条数（默认10，建议设置上限如100）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: offset
+                  in: query
+                  description: 跳过的记录数（从0开始，默认0）
+                  schema:
+                    type: string
+                - name: limit
+                  in: query
+                  description: 最多返回的记录数（默认10，建议设置上限如100）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: token
+                  in: query
+                  description: 上一页最后一条记录的游标（如ID/时间戳+ID，首次请求为空）
+                  schema:
+                    type: string
+                - name: noPaging
+                  in: query
+                  description: 是否不分页，如果为true，则page和pageSize参数无效。
+                  schema:
+                    type: boolean
+                - name: query
+                  in: query
+                  description: JSON字符串过滤条件，基础语法：{"field1":"val1", "field2___icontains":"val2"}，具体请参见：https://github.com/tx7do/go-crud/tree/main/pagination/filter/README.md
+                  schema:
+                    type: string
+                - name: filter
+                  in: query
+                  description: Google AIP规范字符串过滤条件
+                  schema:
+                    type: string
+                - name: filterExpr.type
+                  in: query
+                  description: 过滤表达式类型
+                  schema:
+                    enum:
+                        - EXPR_TYPE_UNSPECIFIED
+                        - AND
+                        - OR
+                    type: string
+                    format: enum
+                - name: orderBy
+                  in: query
+                  description: 排序条件
+                  schema:
+                    type: string
+                - name: fieldMask
+                  in: query
+                  description: 字段掩码，其作用为SELECT中的字段，其语法为使用逗号分隔字段名，例如：id,realName,userName。如果为空则选中所有字段，即SELECT *。
+                  schema:
+                    type: string
+                    format: field-mask
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CountTagDefinitionResponse'
+    /admin/v1/tag-definitions/{id}:
+        get:
+            tags:
+                - TagDefinitionService
+            description: 查询标签定义详情
+            operationId: TagDefinitionService_Get
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: viewMask
+                  in: query
+                  schema:
+                    type: string
+                    format: field-mask
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/TagDefinition'
+        put:
+            tags:
+                - TagDefinitionService
+            description: 更新标签定义
+            operationId: TagDefinitionService_Update
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: integer
+                    format: uint32
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UpdateTagDefinitionRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/TagDefinition'
+        delete:
+            tags:
+                - TagDefinitionService
+            description: 删除标签定义
+            operationId: TagDefinitionService_Delete
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: deletedBy
+                  in: query
+                  schema:
+                    type: integer
+                    format: uint32
+            responses:
+                "200":
+                    description: OK
+                    content: {}
     /admin/v1/tasks:
         get:
             tags:
@@ -3993,6 +4728,251 @@ paths:
                 "200":
                     description: OK
                     content: {}
+    /admin/v1/user-tags:
+        get:
+            tags:
+                - UserTagService
+            description: 查询用户标签列表
+            operationId: UserTagService_List
+            parameters:
+                - name: page
+                  in: query
+                  description: 当前页码（从1开始，默认1）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: pageSize
+                  in: query
+                  description: 每页条数（默认10，建议设置上限如100）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: offset
+                  in: query
+                  description: 跳过的记录数（从0开始，默认0）
+                  schema:
+                    type: string
+                - name: limit
+                  in: query
+                  description: 最多返回的记录数（默认10，建议设置上限如100）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: token
+                  in: query
+                  description: 上一页最后一条记录的游标（如ID/时间戳+ID，首次请求为空）
+                  schema:
+                    type: string
+                - name: noPaging
+                  in: query
+                  description: 是否不分页，如果为true，则page和pageSize参数无效。
+                  schema:
+                    type: boolean
+                - name: query
+                  in: query
+                  description: JSON字符串过滤条件，基础语法：{"field1":"val1", "field2___icontains":"val2"}，具体请参见：https://github.com/tx7do/go-crud/tree/main/pagination/filter/README.md
+                  schema:
+                    type: string
+                - name: filter
+                  in: query
+                  description: Google AIP规范字符串过滤条件
+                  schema:
+                    type: string
+                - name: filterExpr.type
+                  in: query
+                  description: 过滤表达式类型
+                  schema:
+                    enum:
+                        - EXPR_TYPE_UNSPECIFIED
+                        - AND
+                        - OR
+                    type: string
+                    format: enum
+                - name: orderBy
+                  in: query
+                  description: 排序条件
+                  schema:
+                    type: string
+                - name: fieldMask
+                  in: query
+                  description: 字段掩码，其作用为SELECT中的字段，其语法为使用逗号分隔字段名，例如：id,realName,userName。如果为空则选中所有字段，即SELECT *。
+                  schema:
+                    type: string
+                    format: field-mask
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListUserTagResponse'
+        post:
+            tags:
+                - UserTagService
+            description: 创建用户标签
+            operationId: UserTagService_Create
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreateUserTagRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UserTag'
+    /admin/v1/user-tags/count:
+        get:
+            tags:
+                - UserTagService
+            description: 查询用户标签数量
+            operationId: UserTagService_Count
+            parameters:
+                - name: page
+                  in: query
+                  description: 当前页码（从1开始，默认1）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: pageSize
+                  in: query
+                  description: 每页条数（默认10，建议设置上限如100）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: offset
+                  in: query
+                  description: 跳过的记录数（从0开始，默认0）
+                  schema:
+                    type: string
+                - name: limit
+                  in: query
+                  description: 最多返回的记录数（默认10，建议设置上限如100）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: token
+                  in: query
+                  description: 上一页最后一条记录的游标（如ID/时间戳+ID，首次请求为空）
+                  schema:
+                    type: string
+                - name: noPaging
+                  in: query
+                  description: 是否不分页，如果为true，则page和pageSize参数无效。
+                  schema:
+                    type: boolean
+                - name: query
+                  in: query
+                  description: JSON字符串过滤条件，基础语法：{"field1":"val1", "field2___icontains":"val2"}，具体请参见：https://github.com/tx7do/go-crud/tree/main/pagination/filter/README.md
+                  schema:
+                    type: string
+                - name: filter
+                  in: query
+                  description: Google AIP规范字符串过滤条件
+                  schema:
+                    type: string
+                - name: filterExpr.type
+                  in: query
+                  description: 过滤表达式类型
+                  schema:
+                    enum:
+                        - EXPR_TYPE_UNSPECIFIED
+                        - AND
+                        - OR
+                    type: string
+                    format: enum
+                - name: orderBy
+                  in: query
+                  description: 排序条件
+                  schema:
+                    type: string
+                - name: fieldMask
+                  in: query
+                  description: 字段掩码，其作用为SELECT中的字段，其语法为使用逗号分隔字段名，例如：id,realName,userName。如果为空则选中所有字段，即SELECT *。
+                  schema:
+                    type: string
+                    format: field-mask
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CountUserTagResponse'
+    /admin/v1/user-tags/{id}:
+        get:
+            tags:
+                - UserTagService
+            description: 查询用户标签详情
+            operationId: UserTagService_Get
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: viewMask
+                  in: query
+                  schema:
+                    type: string
+                    format: field-mask
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UserTag'
+        put:
+            tags:
+                - UserTagService
+            description: 更新用户标签
+            operationId: UserTagService_Update
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: integer
+                    format: uint32
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UpdateUserTagRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UserTag'
+        delete:
+            tags:
+                - UserTagService
+            description: 删除用户标签
+            operationId: UserTagService_Delete
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: deletedBy
+                  in: query
+                  schema:
+                    type: integer
+                    format: uint32
+            responses:
+                "200":
+                    description: OK
+                    content: {}
     /admin/v1/users:
         get:
             tags:
@@ -4265,6 +5245,251 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/UserExistsResponse'
+    /admin/v1/webhooks:
+        get:
+            tags:
+                - WebhookService
+            description: 查询网络钩子列表
+            operationId: WebhookService_List
+            parameters:
+                - name: page
+                  in: query
+                  description: 当前页码（从1开始，默认1）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: pageSize
+                  in: query
+                  description: 每页条数（默认10，建议设置上限如100）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: offset
+                  in: query
+                  description: 跳过的记录数（从0开始，默认0）
+                  schema:
+                    type: string
+                - name: limit
+                  in: query
+                  description: 最多返回的记录数（默认10，建议设置上限如100）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: token
+                  in: query
+                  description: 上一页最后一条记录的游标（如ID/时间戳+ID，首次请求为空）
+                  schema:
+                    type: string
+                - name: noPaging
+                  in: query
+                  description: 是否不分页，如果为true，则page和pageSize参数无效。
+                  schema:
+                    type: boolean
+                - name: query
+                  in: query
+                  description: JSON字符串过滤条件，基础语法：{"field1":"val1", "field2___icontains":"val2"}，具体请参见：https://github.com/tx7do/go-crud/tree/main/pagination/filter/README.md
+                  schema:
+                    type: string
+                - name: filter
+                  in: query
+                  description: Google AIP规范字符串过滤条件
+                  schema:
+                    type: string
+                - name: filterExpr.type
+                  in: query
+                  description: 过滤表达式类型
+                  schema:
+                    enum:
+                        - EXPR_TYPE_UNSPECIFIED
+                        - AND
+                        - OR
+                    type: string
+                    format: enum
+                - name: orderBy
+                  in: query
+                  description: 排序条件
+                  schema:
+                    type: string
+                - name: fieldMask
+                  in: query
+                  description: 字段掩码，其作用为SELECT中的字段，其语法为使用逗号分隔字段名，例如：id,realName,userName。如果为空则选中所有字段，即SELECT *。
+                  schema:
+                    type: string
+                    format: field-mask
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListWebhookResponse'
+        post:
+            tags:
+                - WebhookService
+            description: 创建网络钩子
+            operationId: WebhookService_Create
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreateWebhookRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Webhook'
+    /admin/v1/webhooks/count:
+        get:
+            tags:
+                - WebhookService
+            description: 查询网络钩子数量
+            operationId: WebhookService_Count
+            parameters:
+                - name: page
+                  in: query
+                  description: 当前页码（从1开始，默认1）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: pageSize
+                  in: query
+                  description: 每页条数（默认10，建议设置上限如100）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: offset
+                  in: query
+                  description: 跳过的记录数（从0开始，默认0）
+                  schema:
+                    type: string
+                - name: limit
+                  in: query
+                  description: 最多返回的记录数（默认10，建议设置上限如100）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: token
+                  in: query
+                  description: 上一页最后一条记录的游标（如ID/时间戳+ID，首次请求为空）
+                  schema:
+                    type: string
+                - name: noPaging
+                  in: query
+                  description: 是否不分页，如果为true，则page和pageSize参数无效。
+                  schema:
+                    type: boolean
+                - name: query
+                  in: query
+                  description: JSON字符串过滤条件，基础语法：{"field1":"val1", "field2___icontains":"val2"}，具体请参见：https://github.com/tx7do/go-crud/tree/main/pagination/filter/README.md
+                  schema:
+                    type: string
+                - name: filter
+                  in: query
+                  description: Google AIP规范字符串过滤条件
+                  schema:
+                    type: string
+                - name: filterExpr.type
+                  in: query
+                  description: 过滤表达式类型
+                  schema:
+                    enum:
+                        - EXPR_TYPE_UNSPECIFIED
+                        - AND
+                        - OR
+                    type: string
+                    format: enum
+                - name: orderBy
+                  in: query
+                  description: 排序条件
+                  schema:
+                    type: string
+                - name: fieldMask
+                  in: query
+                  description: 字段掩码，其作用为SELECT中的字段，其语法为使用逗号分隔字段名，例如：id,realName,userName。如果为空则选中所有字段，即SELECT *。
+                  schema:
+                    type: string
+                    format: field-mask
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CountWebhookResponse'
+    /admin/v1/webhooks/{id}:
+        get:
+            tags:
+                - WebhookService
+            description: 查询网络钩子详情
+            operationId: WebhookService_Get
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: viewMask
+                  in: query
+                  schema:
+                    type: string
+                    format: field-mask
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Webhook'
+        put:
+            tags:
+                - WebhookService
+            description: 更新网络钩子
+            operationId: WebhookService_Update
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: integer
+                    format: uint32
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UpdateWebhookRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Webhook'
+        delete:
+            tags:
+                - WebhookService
+            description: 删除网络钩子
+            operationId: WebhookService_Delete
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: deletedBy
+                  in: query
+                  schema:
+                    type: integer
+                    format: uint32
+            responses:
+                "200":
+                    description: OK
+                    content: {}
 components:
     schemas:
         Api:
@@ -4570,6 +5795,36 @@ components:
                     type: string
                     description: 任务执行类型名，例如 "send_email"、"generate_report" 等，用于区分不同类型的任务
             description: 控制调度任务 - 请求
+        CountIDMappingResponse:
+            type: object
+            properties:
+                count:
+                    type: string
+        CountRiskRuleResponse:
+            type: object
+            properties:
+                count:
+                    type: string
+            description: 获取风险规则数量 - 答复
+        CountTagDefinitionResponse:
+            type: object
+            properties:
+                count:
+                    type: string
+                    description: 数量
+            description: 标签定义数量 - 答复
+        CountUserTagResponse:
+            type: object
+            properties:
+                count:
+                    type: string
+        CountWebhookResponse:
+            type: object
+            properties:
+                count:
+                    type: string
+                    description: 数量
+            description: 网络钩子数量 - 答复
         CreateApiRequest:
             type: object
             properties:
@@ -4594,6 +5849,12 @@ components:
                 data:
                     $ref: '#/components/schemas/File'
             description: 创建 - 请求
+        CreateIDMappingRequest:
+            type: object
+            properties:
+                data:
+                    $ref: '#/components/schemas/IDMapping'
+            description: 创建ID映射 - 请求
         CreateInternalMessageCategoryRequest:
             type: object
             properties:
@@ -4642,12 +5903,24 @@ components:
                 data:
                     $ref: '#/components/schemas/Position'
             description: 创建职位 - 请求
+        CreateRiskRuleRequest:
+            type: object
+            properties:
+                data:
+                    $ref: '#/components/schemas/RiskRule'
+            description: 创建风险规则 - 请求
         CreateRoleRequest:
             type: object
             properties:
                 data:
                     $ref: '#/components/schemas/Role'
             description: 创建角色 - 请求
+        CreateTagDefinitionRequest:
+            type: object
+            properties:
+                data:
+                    $ref: '#/components/schemas/TagDefinition'
+            description: 创建标签定义 - 请求
         CreateTaskRequest:
             type: object
             properties:
@@ -4684,6 +5957,18 @@ components:
                     type: string
                     description: 用户登录密码
             description: 创建用户 - 请求
+        CreateUserTagRequest:
+            type: object
+            properties:
+                data:
+                    $ref: '#/components/schemas/UserTag'
+            description: 创建用户标签 - 请求
+        CreateWebhookRequest:
+            type: object
+            properties:
+                data:
+                    $ref: '#/components/schemas/Webhook'
+            description: 创建网络钩子 - 请求
         DataAccessAuditLog:
             type: object
             properties:
@@ -5217,6 +6502,83 @@ components:
                     type: string
                     description: 经度（微度）
             description: 地理位置
+        IDMapping:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: 自增长主键ID，唯一标识一条ID映射记录
+                    format: uint32
+                globalUserId:
+                    type: string
+                    description: 全局用户唯一标识，用于跨平台、跨租户用户关联
+                tenantId:
+                    type: integer
+                    description: 租户ID，多租户隔离，支持 SaaS 场景
+                    format: uint32
+                idType:
+                    enum:
+                        - ID_TYPE_UNSPECIFIED
+                        - ID_TYPE_USER_ID
+                        - ID_TYPE_DEVICE_ID
+                        - ID_TYPE_COOKIE
+                        - ID_TYPE_EMAIL
+                        - ID_TYPE_PHONE
+                        - ID_TYPE_OPENID
+                    type: string
+                    description: ID类型，标识不同类型的用户、设备、账号等标识符
+                    format: enum
+                idValue:
+                    type: string
+                    description: ID值，具体的标识符，如用户ID、设备ID、邮箱等
+                confidence:
+                    type: number
+                    description: 置信度，映射关系可信度评分，范围0~1
+                    format: float
+                linkSource:
+                    type: string
+                    description: 关联来源，记录映射关系的来源，如系统、人工、第三方平台等
+                firstSeen:
+                    type: string
+                    description: 首次出现时间，映射关系首次被发现或建立的时间
+                    format: date-time
+                lastSeen:
+                    type: string
+                    description: 最后出现时间，映射关系最近一次被使用或更新的时间
+                    format: date-time
+                isActive:
+                    type: boolean
+                    description: 是否激活，映射关系当前是否有效
+                properties:
+                    type: object
+                    additionalProperties:
+                        type: string
+                    description: 扩展属性，存储自定义的业务特征或附加信息，便于业务灵活扩展
+                createdBy:
+                    type: integer
+                    description: 创建者用户ID，记录创建该映射关系的用户
+                    format: uint32
+                updatedBy:
+                    type: integer
+                    description: 更新者用户ID，记录最近一次更新该映射关系的用户
+                    format: uint32
+                deletedBy:
+                    type: integer
+                    description: 删除者用户ID，记录删除该映射关系的用户
+                    format: uint32
+                createdAt:
+                    type: string
+                    description: 创建时间，记录映射关系创建的时间
+                    format: date-time
+                updatedAt:
+                    type: string
+                    description: 更新时间，记录映射关系最近一次更新的时间
+                    format: date-time
+                deletedAt:
+                    type: string
+                    description: 删除时间，记录映射关系被删除的时间
+                    format: date-time
+            description: ID 关联记录（对应 id_mapping 表）
         InitialContextResponse:
             type: object
             properties:
@@ -5570,6 +6932,16 @@ components:
                 total:
                     type: string
             description: 查询列表 - 回应
+        ListIDMappingResponse:
+            type: object
+            properties:
+                items:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/IDMapping'
+                total:
+                    type: string
+            description: 获取ID映射列表 - 答复
         ListInternalMessageCategoryResponse:
             type: object
             properties:
@@ -5708,6 +7080,16 @@ components:
                 total:
                     type: string
             description: 获取职位列表 - 答复
+        ListRiskRuleResponse:
+            type: object
+            properties:
+                items:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/RiskRule'
+                total:
+                    type: string
+            description: 获取风险规则列表 - 答复
         ListRoleResponse:
             type: object
             properties:
@@ -5726,6 +7108,18 @@ components:
                     items:
                         $ref: '#/components/schemas/MenuRouteItem'
             description: 查询路由列表 - 回应
+        ListTagDefinitionResponse:
+            type: object
+            properties:
+                items:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/TagDefinition'
+                    description: TagDefinition列表
+                total:
+                    type: string
+                    description: 总数
+            description: 获取标签定义列表 - 答复
         ListTaskResponse:
             type: object
             properties:
@@ -5774,6 +7168,28 @@ components:
                 total:
                     type: string
             description: 获取用户列表 - 答复
+        ListUserTagResponse:
+            type: object
+            properties:
+                items:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/UserTag'
+                total:
+                    type: string
+            description: 获取用户标签列表 - 答复
+        ListWebhookResponse:
+            type: object
+            properties:
+                items:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Webhook'
+                    description: Webhook列表
+                total:
+                    type: string
+                    description: 总数
+            description: 获取网络钩子列表 - 答复
         LoginAuditLog:
             type: object
             properties:
@@ -6920,6 +8336,115 @@ components:
                     type: integer
                     description: 用户ID
                     format: uint32
+        RiskAction:
+            type: object
+            properties:
+                type:
+                    enum:
+                        - ACTION_UNSPECIFIED
+                        - BLOCK_USER
+                        - BLOCK_DEVICE
+                        - REQUIRE_MFA
+                        - LIMIT_RATE
+                        - NOTIFY_ADMIN
+                    type: string
+                    description: 动作类型，风险事件处置的动作类型
+                    format: enum
+                duration:
+                    pattern: ^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$
+                    type: string
+                    description: 动作持续时间，风险事件处置动作的持续时间
+                reason:
+                    type: string
+                    description: 动作原因，风险事件处置动作的原因说明
+            description: 风险事件处置动作，定义规则触发后的处置方式
+        RiskRule:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: 规则ID，唯一标识一条风险规则
+                    format: uint32
+                tenantId:
+                    type: integer
+                    description: 租户ID，多租户隔离，支持 SaaS 场景
+                    format: uint32
+                name:
+                    type: string
+                    description: 规则名称
+                code:
+                    type: string
+                    description: 规则编码
+                description:
+                    type: string
+                    description: 规则描述
+                riskType:
+                    enum:
+                        - RISK_TYPE_UNSPECIFIED
+                        - RISK_TYPE_LOGIN_ANOMALY
+                        - RISK_TYPE_BRUTE_FORCE
+                        - RISK_TYPE_CREDENTIAL_STUFFING
+                        - RISK_TYPE_FREQUENT_OPERATION
+                        - RISK_TYPE_ABNORMAL_FLOW
+                        - RISK_TYPE_DATA_EXFILTRATION
+                        - RISK_TYPE_DEVICE_CHANGE
+                        - RISK_TYPE_LOCATION_ANOMALY
+                        - RISK_TYPE_PROXY_DETECTED
+                        - RISK_TYPE_FRAUD_PAYMENT
+                        - RISK_TYPE_ABUSE_PROMOTION
+                    type: string
+                    description: 风险类型，规则对应的风险类型
+                    format: enum
+                defaultLevel:
+                    enum:
+                        - RISK_LEVEL_UNSPECIFIED
+                        - RISK_LEVEL_NORMAL
+                        - RISK_LEVEL_SUSPICIOUS
+                        - RISK_LEVEL_HIGH
+                        - RISK_LEVEL_CRITICAL
+                    type: string
+                    description: 默认风险等级，规则对应的默认风险等级
+                    format: enum
+                condition:
+                    type: object
+                    description: 规则条件，简化版，实际可用 CEL/JSON Schema
+                actions:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/RiskAction'
+                    description: 动作配置，规则触发时的处置动作列表
+                enabled:
+                    type: boolean
+                    description: '是否启用，true: 启用，false: 禁用'
+                priority:
+                    type: integer
+                    description: 优先级，越小优先级越高
+                    format: uint32
+                createdBy:
+                    type: integer
+                    description: 创建者用户ID
+                    format: uint32
+                updatedBy:
+                    type: integer
+                    description: 更新者用户ID
+                    format: uint32
+                deletedBy:
+                    type: integer
+                    description: 删除者用户ID
+                    format: uint32
+                createdAt:
+                    type: string
+                    description: 创建时间
+                    format: date-time
+                updatedAt:
+                    type: string
+                    description: 更新时间
+                    format: date-time
+                deletedAt:
+                    type: string
+                    description: 删除时间
+                    format: date-time
+            description: 风险规则定义，描述一条风险规则的所有属性
         Role:
             type: object
             properties:
@@ -7061,6 +8586,149 @@ components:
                     type: string
                     description: OSS 对象键（完整路径，如 'user/1001/avatar.jpg'）。若未提供，服务端将自动生成。
             description: 对象存储对象
+        TagDefinition:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: 标签ID，唯一标识一个标签
+                    format: uint32
+                tenantId:
+                    type: integer
+                    description: 租户ID，多租户隔离，支持 SaaS 场景
+                    format: uint32
+                name:
+                    type: string
+                    description: 标签名称，显示名称
+                code:
+                    type: string
+                    description: 标签唯一代码，业务唯一标识，支持英文、数字、下划线
+                description:
+                    type: string
+                    description: 标签描述，详细说明
+                category:
+                    enum:
+                        - TAG_CATEGORY_UNSPECIFIED
+                        - TAG_CATEGORY_USER
+                        - TAG_CATEGORY_BEHAVIOR
+                        - TAG_CATEGORY_RISK
+                        - TAG_CATEGORY_BUSINESS
+                    type: string
+                    description: 标签分类，如用户属性、行为偏好、风险、业务等
+                    format: enum
+                tagType:
+                    enum:
+                        - TAG_TYPE_UNSPECIFIED
+                        - TAG_TYPE_BOOLEAN
+                        - TAG_TYPE_ENUM
+                        - TAG_TYPE_NUMERIC
+                        - TAG_TYPE_STRING
+                        - TAG_TYPE_LIST
+                    type: string
+                    description: 标签类型，如布尔、枚举、数值、字符串、列表等
+                    format: enum
+                rule:
+                    allOf:
+                        - $ref: '#/components/schemas/TagRule'
+                    description: 计算规则，简化，实际可用表达式引擎，如 CEL/SQL
+                allowedValues:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/TagValue'
+                    description: 取值范围，枚举型标签的允许值列表
+                isSystem:
+                    type: boolean
+                    description: '是否系统预置，true: 系统预置，false: 用户自定义'
+                isDynamic:
+                    type: boolean
+                    description: '是否动态标签，true: 动态计算，false: 静态打标'
+                refreshIntervalSeconds:
+                    type: integer
+                    description: 动态标签刷新间隔，单位秒
+                    format: uint32
+                createdBy:
+                    type: integer
+                    description: 创建者用户ID
+                    format: uint32
+                updatedBy:
+                    type: integer
+                    description: 更新者用户ID
+                    format: uint32
+                deletedBy:
+                    type: integer
+                    description: 删除者用户ID
+                    format: uint32
+                createdAt:
+                    type: string
+                    description: 创建时间
+                    format: date-time
+                updatedAt:
+                    type: string
+                    description: 更新时间
+                    format: date-time
+                deletedAt:
+                    type: string
+                    description: 删除时间
+                    format: date-time
+            description: 标签定义（对应 tag_definition 表）
+        TagRule:
+            type: object
+            properties:
+                expression:
+                    type: string
+                    description: '规则表达式，如 CEL/SQL，示例: ''total_pay_amount > 1000 AND last_pay_time > now() - 30d'''
+                params:
+                    type: object
+                    additionalProperties:
+                        type: string
+                    description: 规则参数，键值对形式，支持自定义参数
+            description: 标签规则定义（简化，实际可根据需求扩展为更复杂的表达式结构）
+        TagValue:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    format: uint32
+                value:
+                    type: string
+                    description: 标签值，实际存储值
+                label:
+                    type: string
+                    description: 标签值显示名称，用于展示
+                description:
+                    type: string
+                    description: 标签值描述，详细说明
+                sortOrder:
+                    type: integer
+                    description: 排序
+                    format: uint32
+                color:
+                    type: string
+                    description: UI 颜色
+                icon:
+                    type: string
+                    description: 图标
+                tenantId:
+                    type: integer
+                    description: 租户ID，多租户隔离，支持 SaaS 场景
+                    format: uint32
+                tagId:
+                    type: integer
+                    description: 标签ID（所属标签ID，关联 TagDefinition.id）
+                    format: uint32
+                createdAt:
+                    type: string
+                    description: 创建时间
+                    format: date-time
+                updatedAt:
+                    type: string
+                    description: 更新时间
+                    format: date-time
+                deletedAt:
+                    type: string
+                    description: 删除时间
+                    format: date-time
+            description: 标签值定义（用于枚举型标签的取值范围）
         Task:
             type: object
             properties:
@@ -7339,6 +9007,23 @@ components:
                     type: boolean
                     description: 如果设置为true的时候，资源不存在则会新增(插入)，并且在这种情况下`updateMask`字段将会被忽略。
             description: 更新 - 请求
+        UpdateIDMappingRequest:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    format: uint32
+                data:
+                    $ref: '#/components/schemas/IDMapping'
+                updateMask:
+                    example: id,realname,username
+                    type: string
+                    description: 要更新的字段列表
+                    format: field-mask
+                allowMissing:
+                    type: boolean
+                    description: 如果设置为true的时候，资源不存在则会新增(插入)，并且在这种情况下`updateMask`字段将会被忽略。
+            description: 更新ID映射 - 请求
         UpdateInternalMessageCategoryRequest:
             type: object
             properties:
@@ -7492,6 +9177,23 @@ components:
                     type: boolean
                     description: 如果设置为true的时候，资源不存在则会新增(插入)，并且在这种情况下`updateMask`字段将会被忽略。
             description: 更新职位 - 请求
+        UpdateRiskRuleRequest:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    format: uint32
+                data:
+                    $ref: '#/components/schemas/RiskRule'
+                updateMask:
+                    example: id,realname,username
+                    type: string
+                    description: 要更新的字段列表
+                    format: field-mask
+                allowMissing:
+                    type: boolean
+                    description: 如果设置为true的时候，资源不存在则会新增(插入)，并且在这种情况下`updateMask`字段将会被忽略。
+            description: 更新风险规则 - 请求
         UpdateRoleRequest:
             type: object
             properties:
@@ -7509,6 +9211,24 @@ components:
                     type: boolean
                     description: 如果设置为true的时候，资源不存在则会新增(插入)，并且在这种情况下`updateMask`字段将会被忽略。
             description: 更新角色 - 请求
+        UpdateTagDefinitionRequest:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: TagDefinition配置ID
+                    format: uint32
+                data:
+                    $ref: '#/components/schemas/TagDefinition'
+                updateMask:
+                    example: id,name,url
+                    type: string
+                    description: 要更新的字段列表
+                    format: field-mask
+                allowMissing:
+                    type: boolean
+                    description: 如果设置为true，资源不存在则会新增(插入)，并且在这种情况下`updateMask`字段将会被忽略。
+            description: 更新标签定义 - 请求
         UpdateTaskRequest:
             type: object
             properties:
@@ -7566,6 +9286,41 @@ components:
                     type: boolean
                     description: 如果设置为true的时候，资源不存在则会新增(插入)，并且在这种情况下`updateMask`字段将会被忽略。
             description: 更新用户 - 请求
+        UpdateUserTagRequest:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    format: uint32
+                data:
+                    $ref: '#/components/schemas/UserTag'
+                updateMask:
+                    example: id,realname,username
+                    type: string
+                    description: 要更新的字段列表
+                    format: field-mask
+                allowMissing:
+                    type: boolean
+                    description: 如果设置为true的时候，资源不存在则会新增(插入)，并且在这种情况下`updateMask`字段将会被忽略。
+            description: 更新用户标签 - 请求
+        UpdateWebhookRequest:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: Webhook配置ID
+                    format: uint32
+                data:
+                    $ref: '#/components/schemas/Webhook'
+                updateMask:
+                    example: id,name,url
+                    type: string
+                    description: 要更新的字段列表
+                    format: field-mask
+                allowMissing:
+                    type: boolean
+                    description: 如果设置为true，资源不存在则会新增(插入)，并且在这种情况下`updateMask`字段将会被忽略。
+            description: 更新网络钩子 - 请求
         UploadAvatarRequest:
             type: object
             properties:
@@ -7781,6 +9536,82 @@ components:
                 exist:
                     type: boolean
             description: 用户是否存在 - 答复
+        UserTag:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: 主键ID，自增长，唯一标识一条用户标签记录
+                    format: uint32
+                tenantId:
+                    type: integer
+                    description: 租户ID，多租户隔离，支持 SaaS 场景
+                    format: uint32
+                userId:
+                    type: integer
+                    description: 用户ID，唯一标识一个用户
+                    format: uint32
+                tagId:
+                    type: integer
+                    description: 标签ID，唯一标识一个标签
+                    format: uint32
+                value:
+                    type: string
+                    description: 标签值，根据 tag_type 解析，实际存储值
+                valueLabel:
+                    type: string
+                    description: 标签值显示名称，枚举值的展示名称
+                confidence:
+                    type: number
+                    description: 置信度，算法打标时，范围0~1
+                    format: double
+                source:
+                    enum:
+                        - TAG_SOURCE_UNSPECIFIED
+                        - TAG_SOURCE_MANUAL
+                        - TAG_SOURCE_RULE
+                        - TAG_SOURCE_MODEL
+                        - TAG_SOURCE_IMPORT
+                    type: string
+                    description: 标签来源，如人工打标、规则引擎、算法模型、批量导入等
+                    format: enum
+                sourceRuleId:
+                    type: integer
+                    description: 来源规则ID，如果是规则计算，记录规则ID
+                    format: uint32
+                effectiveTime:
+                    type: string
+                    description: 有效时间，标签生效时间
+                    format: date-time
+                expireTime:
+                    type: string
+                    description: 过期时间，标签失效时间
+                    format: date-time
+                createdBy:
+                    type: integer
+                    description: 创建者用户ID
+                    format: uint32
+                updatedBy:
+                    type: integer
+                    description: 更新者用户ID
+                    format: uint32
+                deletedBy:
+                    type: integer
+                    description: 删除者用户ID
+                    format: uint32
+                createdAt:
+                    type: string
+                    description: 创建时间
+                    format: date-time
+                updatedAt:
+                    type: string
+                    description: 更新时间
+                    format: date-time
+                deletedAt:
+                    type: string
+                    description: 删除时间
+                    format: date-time
+            description: 用户标签记录（对应 user_tag 表）
         VerifyContactRequest:
             type: object
             properties:
@@ -7791,6 +9622,92 @@ components:
                 verificationId:
                     type: string
                     description: 服务端生成的验证码会话ID（可选）
+        Webhook:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: 主键ID，唯一标识Webhook配置
+                    format: uint32
+                tenantId:
+                    type: integer
+                    description: 租户ID，多租户隔离，支持SaaS场景
+                    format: uint32
+                appId:
+                    type: integer
+                    description: 关联应用ID
+                    format: uint32
+                name:
+                    type: string
+                    description: Webhook名称
+                url:
+                    type: string
+                    description: 回调URL
+                secret:
+                    type: string
+                    description: 签名密钥（写入时返回，读取时脱敏）
+                eventTypes:
+                    type: array
+                    items:
+                        type: string
+                    description: 触发事件类型列表，如["risk.high", "risk.critical"]
+                filter:
+                    $ref: '#/components/schemas/WebhookFilter'
+                enabled:
+                    type: boolean
+                    description: 是否启用，true为启用，false为禁用
+                failureCount:
+                    type: integer
+                    description: 失败次数
+                    format: uint32
+                lastTriggeredAt:
+                    type: string
+                    description: 最后触发时间
+                    format: date-time
+                createdBy:
+                    type: integer
+                    description: 创建者用户ID
+                    format: uint32
+                updatedBy:
+                    type: integer
+                    description: 更新者用户ID
+                    format: uint32
+                deletedBy:
+                    type: integer
+                    description: 删除者用户ID
+                    format: uint32
+                createdAt:
+                    type: string
+                    description: 创建时间
+                    format: date-time
+                updatedAt:
+                    type: string
+                    description: 更新时间
+                    format: date-time
+                deletedAt:
+                    type: string
+                    description: 删除时间
+                    format: date-time
+            description: 网络钩子配置
+        WebhookFilter:
+            type: object
+            properties:
+                riskLevels:
+                    type: array
+                    items:
+                        type: string
+                    description: 风险等级过滤
+                riskTypes:
+                    type: array
+                    items:
+                        type: string
+                    description: 风险类型过滤
+                properties:
+                    type: object
+                    additionalProperties:
+                        type: string
+                    description: 事件属性过滤，键值对
+            description: 网络钩子过滤器
     responses:
         default:
             description: default kratos response
@@ -7829,6 +9746,8 @@ tags:
       description: 文件管理服务
     - name: FileTransferService
       description: 文件传输服务
+    - name: IDMappingService
+      description: ID映射服务
     - name: InternalMessageCategoryService
       description: 站内信消息分类管理服务
     - name: InternalMessageRecipientService
@@ -7857,8 +9776,12 @@ tags:
       description: 策略评估日志服务
     - name: PositionService
       description: 职位管理服务
+    - name: RiskRuleService
+      description: 风险规则服务接口
     - name: RoleService
       description: 角色管理服务
+    - name: TagDefinitionService
+      description: 标签定义服务
     - name: TaskService
       description: 调度任务管理服务
     - name: TenantService
@@ -7867,3 +9790,7 @@ tags:
       description: 用户个人资料服务
     - name: UserService
       description: 用户管理服务
+    - name: UserTagService
+      description: 用户标签服务
+    - name: WebhookService
+      description: 网络钩子服务

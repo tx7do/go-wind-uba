@@ -1,6 +1,8 @@
 package server
 
 import (
+	ubaV1 "go-wind-uba/api/gen/go/uba/service/v1"
+
 	"github.com/go-kratos/kratos/v2/middleware"
 	"github.com/go-kratos/kratos/v2/middleware/logging"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
@@ -67,6 +69,13 @@ func NewGrpcServer(
 	internalMessageService *service.InternalMessageService,
 	internalMessageCategoryService *service.InternalMessageCategoryService,
 	internalMessageRecipientService *service.InternalMessageRecipientService,
+
+	applicationService *service.ApplicationService,
+	idMappingService *service.IDMappingService,
+	riskRuleService *service.RiskRuleService,
+	tagDefinitionService *service.TagDefinitionService,
+	userTagService *service.UserTagService,
+	webhookService *service.WebhookService,
 ) (*grpc.Server, error) {
 	cfg := ctx.GetConfig()
 
@@ -112,6 +121,13 @@ func NewGrpcServer(
 	internalMessageV1.RegisterInternalMessageServiceServer(srv, internalMessageService)
 	internalMessageV1.RegisterInternalMessageCategoryServiceServer(srv, internalMessageCategoryService)
 	internalMessageV1.RegisterInternalMessageRecipientServiceServer(srv, internalMessageRecipientService)
+
+	ubaV1.RegisterApplicationServiceServer(srv, applicationService)
+	ubaV1.RegisterIDMappingServiceServer(srv, idMappingService)
+	ubaV1.RegisterRiskRuleServiceServer(srv, riskRuleService)
+	ubaV1.RegisterTagDefinitionServiceServer(srv, tagDefinitionService)
+	ubaV1.RegisterUserTagServiceServer(srv, userTagService)
+	ubaV1.RegisterWebhookServiceServer(srv, webhookService)
 
 	return srv, nil
 }

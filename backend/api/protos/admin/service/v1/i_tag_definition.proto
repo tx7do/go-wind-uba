@@ -1,0 +1,55 @@
+﻿syntax = "proto3";
+
+package admin.service.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "pagination/v1/pagination.proto";
+import "uba/service/v1/tag_definition.proto";
+
+// 标签定义服务
+service TagDefinitionService {
+  // 查询标签定义列表
+  rpc List (pagination.PagingRequest) returns (uba.service.v1.ListTagDefinitionResponse) {
+    option (google.api.http) = {
+      get: "/admin/v1/tag-definitions"
+    };
+  }
+
+  // 查询标签定义数量
+  rpc Count (pagination.PagingRequest) returns (uba.service.v1.CountTagDefinitionResponse) {
+    option (google.api.http) = {
+      get: "/admin/v1/tag-definitions/count"
+    };
+  }
+
+  // 查询标签定义详情
+  rpc Get (uba.service.v1.GetTagDefinitionRequest) returns (uba.service.v1.TagDefinition) {
+    option (google.api.http) = {
+      get: "/admin/v1/tag-definitions/{id}"
+    };
+  }
+
+  // 创建标签定义
+  rpc Create (uba.service.v1.CreateTagDefinitionRequest) returns (uba.service.v1.TagDefinition) {
+    option (google.api.http) = {
+      post: "/admin/v1/tag-definitions"
+      body: "*"
+    };
+  }
+
+  // 更新标签定义
+  rpc Update (uba.service.v1.UpdateTagDefinitionRequest) returns (uba.service.v1.TagDefinition) {
+    option (google.api.http) = {
+      put: "/admin/v1/tag-definitions/{id}"
+      body: "*"
+    };
+  }
+
+  // 删除标签定义
+  rpc Delete (uba.service.v1.DeleteTagDefinitionRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/admin/v1/tag-definitions/{id}"
+    };
+  }
+}

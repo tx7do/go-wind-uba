@@ -3,7 +3,7 @@ package schema
 import "time"
 
 type SessionsFact struct {
-	SessionID     *uint32           `json:"session_id"`
+	SessionID     *uint64           `json:"session_id"`
 	TenantID      *uint32           `json:"tenant_id"`
 	UserID        *uint32           `json:"user_id"`
 	DeviceID      *string           `json:"device_id"`

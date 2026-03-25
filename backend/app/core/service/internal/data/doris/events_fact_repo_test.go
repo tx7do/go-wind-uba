@@ -57,7 +57,7 @@ func TestEventsFactRepo(t *testing.T) {
 		ObjectType:    "page",
 		ObjectId:      "page-001",
 		ObjectName:    "首页",
-		SessionId:     "session-001",
+		SessionId:     1,
 		SessionSeq:    1,
 		Platform:      trans.Ptr(ubaV1.Platform_PLATFORM_WEB),
 		Os:            "Windows",

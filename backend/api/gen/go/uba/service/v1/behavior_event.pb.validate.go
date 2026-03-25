@@ -478,3 +478,381 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = ListBehaviorEventResponseValidationError{}
+
+// Validate checks the field values on ListBehaviorEventRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *ListBehaviorEventRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on ListBehaviorEventRequest with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// ListBehaviorEventRequestMultiError, or nil if none found.
+func (m *ListBehaviorEventRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *ListBehaviorEventRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for TenantId
+
+	// no validation rules for EventName
+
+	// no validation rules for UserId
+
+	if all {
+		switch v := interface{}(m.GetStartTime()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, ListBehaviorEventRequestValidationError{
+					field:  "StartTime",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, ListBehaviorEventRequestValidationError{
+					field:  "StartTime",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetStartTime()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return ListBehaviorEventRequestValidationError{
+				field:  "StartTime",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if all {
+		switch v := interface{}(m.GetEndTime()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, ListBehaviorEventRequestValidationError{
+					field:  "EndTime",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, ListBehaviorEventRequestValidationError{
+					field:  "EndTime",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetEndTime()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return ListBehaviorEventRequestValidationError{
+				field:  "EndTime",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	// no validation rules for Page
+
+	// no validation rules for PageSize
+
+	if len(errors) > 0 {
+		return ListBehaviorEventRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// ListBehaviorEventRequestMultiError is an error wrapping multiple validation
+// errors returned by ListBehaviorEventRequest.ValidateAll() if the designated
+// constraints aren't met.
+type ListBehaviorEventRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m ListBehaviorEventRequestMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m ListBehaviorEventRequestMultiError) AllErrors() []error { return m }
+
+// ListBehaviorEventRequestValidationError is the validation error returned by
+// ListBehaviorEventRequest.Validate if the designated constraints aren't met.
+type ListBehaviorEventRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e ListBehaviorEventRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e ListBehaviorEventRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e ListBehaviorEventRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e ListBehaviorEventRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e ListBehaviorEventRequestValidationError) ErrorName() string {
+	return "ListBehaviorEventRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e ListBehaviorEventRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sListBehaviorEventRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = ListBehaviorEventRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = ListBehaviorEventRequestValidationError{}
+
+// Validate checks the field values on GetBehaviorEventRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *GetBehaviorEventRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on GetBehaviorEventRequest with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// GetBehaviorEventRequestMultiError, or nil if none found.
+func (m *GetBehaviorEventRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *GetBehaviorEventRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for EventId
+
+	if len(errors) > 0 {
+		return GetBehaviorEventRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// GetBehaviorEventRequestMultiError is an error wrapping multiple validation
+// errors returned by GetBehaviorEventRequest.ValidateAll() if the designated
+// constraints aren't met.
+type GetBehaviorEventRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m GetBehaviorEventRequestMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m GetBehaviorEventRequestMultiError) AllErrors() []error { return m }
+
+// GetBehaviorEventRequestValidationError is the validation error returned by
+// GetBehaviorEventRequest.Validate if the designated constraints aren't met.
+type GetBehaviorEventRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e GetBehaviorEventRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e GetBehaviorEventRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e GetBehaviorEventRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e GetBehaviorEventRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e GetBehaviorEventRequestValidationError) ErrorName() string {
+	return "GetBehaviorEventRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e GetBehaviorEventRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sGetBehaviorEventRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = GetBehaviorEventRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = GetBehaviorEventRequestValidationError{}
+
+// Validate checks the field values on DeleteBehaviorEventRequest with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *DeleteBehaviorEventRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on DeleteBehaviorEventRequest with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// DeleteBehaviorEventRequestMultiError, or nil if none found.
+func (m *DeleteBehaviorEventRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *DeleteBehaviorEventRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for EventId
+
+	if len(errors) > 0 {
+		return DeleteBehaviorEventRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// DeleteBehaviorEventRequestMultiError is an error wrapping multiple
+// validation errors returned by DeleteBehaviorEventRequest.ValidateAll() if
+// the designated constraints aren't met.
+type DeleteBehaviorEventRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m DeleteBehaviorEventRequestMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m DeleteBehaviorEventRequestMultiError) AllErrors() []error { return m }
+
+// DeleteBehaviorEventRequestValidationError is the validation error returned
+// by DeleteBehaviorEventRequest.Validate if the designated constraints aren't met.
+type DeleteBehaviorEventRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e DeleteBehaviorEventRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e DeleteBehaviorEventRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e DeleteBehaviorEventRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e DeleteBehaviorEventRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e DeleteBehaviorEventRequestValidationError) ErrorName() string {
+	return "DeleteBehaviorEventRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e DeleteBehaviorEventRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sDeleteBehaviorEventRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = DeleteBehaviorEventRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = DeleteBehaviorEventRequestValidationError{}

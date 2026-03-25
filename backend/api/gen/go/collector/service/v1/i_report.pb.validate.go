@@ -35,160 +35,46 @@ var (
 	_ = sort.Sort
 )
 
-// Validate checks the field values on PostReportRequest with the rules defined
-// in the proto definition for this message. If any rules are violated, the
-// first error encountered is returned, or nil if there are no violations.
-func (m *PostReportRequest) Validate() error {
-	return m.validate(false)
-}
-
-// ValidateAll checks the field values on PostReportRequest with the rules
-// defined in the proto definition for this message. If any rules are
-// violated, the result is a list of violation errors wrapped in
-// PostReportRequestMultiError, or nil if none found.
-func (m *PostReportRequest) ValidateAll() error {
-	return m.validate(true)
-}
-
-func (m *PostReportRequest) validate(all bool) error {
-	if m == nil {
-		return nil
-	}
-
-	var errors []error
-
-	// no validation rules for ReportType
-
-	// no validation rules for AppId
-
-	// no validation rules for AppKey
-
-	// no validation rules for EventName
-
-	// no validation rules for Debug
-
-	// no validation rules for Content
-
-	if len(errors) > 0 {
-		return PostReportRequestMultiError(errors)
-	}
-
-	return nil
-}
-
-// PostReportRequestMultiError is an error wrapping multiple validation errors
-// returned by PostReportRequest.ValidateAll() if the designated constraints
-// aren't met.
-type PostReportRequestMultiError []error
-
-// Error returns a concatenation of all the error messages it wraps.
-func (m PostReportRequestMultiError) Error() string {
-	msgs := make([]string, 0, len(m))
-	for _, err := range m {
-		msgs = append(msgs, err.Error())
-	}
-	return strings.Join(msgs, "; ")
-}
-
-// AllErrors returns a list of validation violation errors.
-func (m PostReportRequestMultiError) AllErrors() []error { return m }
-
-// PostReportRequestValidationError is the validation error returned by
-// PostReportRequest.Validate if the designated constraints aren't met.
-type PostReportRequestValidationError struct {
-	field  string
-	reason string
-	cause  error
-	key    bool
-}
-
-// Field function returns field value.
-func (e PostReportRequestValidationError) Field() string { return e.field }
-
-// Reason function returns reason value.
-func (e PostReportRequestValidationError) Reason() string { return e.reason }
-
-// Cause function returns cause value.
-func (e PostReportRequestValidationError) Cause() error { return e.cause }
-
-// Key function returns key value.
-func (e PostReportRequestValidationError) Key() bool { return e.key }
-
-// ErrorName returns error name.
-func (e PostReportRequestValidationError) ErrorName() string {
-	return "PostReportRequestValidationError"
-}
-
-// Error satisfies the builtin error interface
-func (e PostReportRequestValidationError) Error() string {
-	cause := ""
-	if e.cause != nil {
-		cause = fmt.Sprintf(" | caused by: %v", e.cause)
-	}
-
-	key := ""
-	if e.key {
-		key = "key for "
-	}
-
-	return fmt.Sprintf(
-		"invalid %sPostReportRequest.%s: %s%s",
-		key,
-		e.field,
-		e.reason,
-		cause)
-}
-
-var _ error = PostReportRequestValidationError{}
-
-var _ interface {
-	Field() string
-	Reason() string
-	Key() bool
-	Cause() error
-	ErrorName() string
-} = PostReportRequestValidationError{}
-
-// Validate checks the field values on PostReportResponse with the rules
+// Validate checks the field values on HealthCheckResponse with the rules
 // defined in the proto definition for this message. If any rules are
 // violated, the first error encountered is returned, or nil if there are no violations.
-func (m *PostReportResponse) Validate() error {
+func (m *HealthCheckResponse) Validate() error {
 	return m.validate(false)
 }
 
-// ValidateAll checks the field values on PostReportResponse with the rules
+// ValidateAll checks the field values on HealthCheckResponse with the rules
 // defined in the proto definition for this message. If any rules are
 // violated, the result is a list of violation errors wrapped in
-// PostReportResponseMultiError, or nil if none found.
-func (m *PostReportResponse) ValidateAll() error {
+// HealthCheckResponseMultiError, or nil if none found.
+func (m *HealthCheckResponse) ValidateAll() error {
 	return m.validate(true)
 }
 
-func (m *PostReportResponse) validate(all bool) error {
+func (m *HealthCheckResponse) validate(all bool) error {
 	if m == nil {
 		return nil
 	}
 
 	var errors []error
 
-	// no validation rules for Code
+	// no validation rules for Status
 
-	// no validation rules for Msg
+	// no validation rules for Timestamp
 
 	if len(errors) > 0 {
-		return PostReportResponseMultiError(errors)
+		return HealthCheckResponseMultiError(errors)
 	}
 
 	return nil
 }
 
-// PostReportResponseMultiError is an error wrapping multiple validation errors
-// returned by PostReportResponse.ValidateAll() if the designated constraints
-// aren't met.
-type PostReportResponseMultiError []error
+// HealthCheckResponseMultiError is an error wrapping multiple validation
+// errors returned by HealthCheckResponse.ValidateAll() if the designated
+// constraints aren't met.
+type HealthCheckResponseMultiError []error
 
 // Error returns a concatenation of all the error messages it wraps.
-func (m PostReportResponseMultiError) Error() string {
+func (m HealthCheckResponseMultiError) Error() string {
 	msgs := make([]string, 0, len(m))
 	for _, err := range m {
 		msgs = append(msgs, err.Error())
@@ -197,11 +83,11 @@ func (m PostReportResponseMultiError) Error() string {
 }
 
 // AllErrors returns a list of validation violation errors.
-func (m PostReportResponseMultiError) AllErrors() []error { return m }
+func (m HealthCheckResponseMultiError) AllErrors() []error { return m }
 
-// PostReportResponseValidationError is the validation error returned by
-// PostReportResponse.Validate if the designated constraints aren't met.
-type PostReportResponseValidationError struct {
+// HealthCheckResponseValidationError is the validation error returned by
+// HealthCheckResponse.Validate if the designated constraints aren't met.
+type HealthCheckResponseValidationError struct {
 	field  string
 	reason string
 	cause  error
@@ -209,24 +95,24 @@ type PostReportResponseValidationError struct {
 }
 
 // Field function returns field value.
-func (e PostReportResponseValidationError) Field() string { return e.field }
+func (e HealthCheckResponseValidationError) Field() string { return e.field }
 
 // Reason function returns reason value.
-func (e PostReportResponseValidationError) Reason() string { return e.reason }
+func (e HealthCheckResponseValidationError) Reason() string { return e.reason }
 
 // Cause function returns cause value.
-func (e PostReportResponseValidationError) Cause() error { return e.cause }
+func (e HealthCheckResponseValidationError) Cause() error { return e.cause }
 
 // Key function returns key value.
-func (e PostReportResponseValidationError) Key() bool { return e.key }
+func (e HealthCheckResponseValidationError) Key() bool { return e.key }
 
 // ErrorName returns error name.
-func (e PostReportResponseValidationError) ErrorName() string {
-	return "PostReportResponseValidationError"
+func (e HealthCheckResponseValidationError) ErrorName() string {
+	return "HealthCheckResponseValidationError"
 }
 
 // Error satisfies the builtin error interface
-func (e PostReportResponseValidationError) Error() string {
+func (e HealthCheckResponseValidationError) Error() string {
 	cause := ""
 	if e.cause != nil {
 		cause = fmt.Sprintf(" | caused by: %v", e.cause)
@@ -238,14 +124,14 @@ func (e PostReportResponseValidationError) Error() string {
 	}
 
 	return fmt.Sprintf(
-		"invalid %sPostReportResponse.%s: %s%s",
+		"invalid %sHealthCheckResponse.%s: %s%s",
 		key,
 		e.field,
 		e.reason,
 		cause)
 }
 
-var _ error = PostReportResponseValidationError{}
+var _ error = HealthCheckResponseValidationError{}
 
 var _ interface {
 	Field() string
@@ -253,4 +139,4 @@ var _ interface {
 	Key() bool
 	Cause() error
 	ErrorName() string
-} = PostReportResponseValidationError{}
+} = HealthCheckResponseValidationError{}

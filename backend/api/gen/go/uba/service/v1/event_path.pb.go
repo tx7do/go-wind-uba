@@ -10,9 +10,7 @@ import (
 	_ "github.com/google/gnostic/openapiv3"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	_ "google.golang.org/protobuf/types/known/durationpb"
-	_ "google.golang.org/protobuf/types/known/emptypb"
-	_ "google.golang.org/protobuf/types/known/fieldmaskpb"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	reflect "reflect"
 	sync "sync"
@@ -118,7 +116,7 @@ type EventPath struct {
 	// 用户ID（路径所属用户）
 	UserId uint32 `protobuf:"varint,3,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	// 会话ID（路径所属会话）
-	SessionId uint32 `protobuf:"varint,4,opt,name=session_id,json=sessionId,proto3" json:"session_id,omitempty"`
+	SessionId uint64 `protobuf:"varint,4,opt,name=session_id,json=sessionId,proto3" json:"session_id,omitempty"`
 	// 有序事件序列（路径节点列表，按发生顺序排列）
 	Nodes []*PathNode `protobuf:"bytes,5,rep,name=nodes,proto3" json:"nodes,omitempty"`
 	// 路径指标
@@ -190,7 +188,7 @@ func (x *EventPath) GetUserId() uint32 {
 	return 0
 }
 
-func (x *EventPath) GetSessionId() uint32 {
+func (x *EventPath) GetSessionId() uint64 {
 	if x != nil {
 		return x.SessionId
 	}
@@ -298,11 +296,223 @@ func (x *ListEventPathResponse) GetTotal() uint64 {
 	return 0
 }
 
+// 分页查询事件路径请求
+type ListEventPathRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	TenantId      uint32                 `protobuf:"varint,1,opt,name=tenant_id,json=tenantId,proto3" json:"tenant_id,omitempty"`
+	UserId        uint32                 `protobuf:"varint,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	SessionId     uint64                 `protobuf:"varint,3,opt,name=session_id,json=sessionId,proto3" json:"session_id,omitempty"`
+	Page          uint32                 `protobuf:"varint,4,opt,name=page,proto3" json:"page,omitempty"`
+	PageSize      uint32                 `protobuf:"varint,5,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListEventPathRequest) Reset() {
+	*x = ListEventPathRequest{}
+	mi := &file_uba_service_v1_event_path_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListEventPathRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListEventPathRequest) ProtoMessage() {}
+
+func (x *ListEventPathRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_event_path_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListEventPathRequest.ProtoReflect.Descriptor instead.
+func (*ListEventPathRequest) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_event_path_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *ListEventPathRequest) GetTenantId() uint32 {
+	if x != nil {
+		return x.TenantId
+	}
+	return 0
+}
+
+func (x *ListEventPathRequest) GetUserId() uint32 {
+	if x != nil {
+		return x.UserId
+	}
+	return 0
+}
+
+func (x *ListEventPathRequest) GetSessionId() uint64 {
+	if x != nil {
+		return x.SessionId
+	}
+	return 0
+}
+
+func (x *ListEventPathRequest) GetPage() uint32 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+func (x *ListEventPathRequest) GetPageSize() uint32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
+// 查询事件路径详情请求
+type GetEventPathRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	PathId        string                 `protobuf:"bytes,1,opt,name=path_id,json=pathId,proto3" json:"path_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetEventPathRequest) Reset() {
+	*x = GetEventPathRequest{}
+	mi := &file_uba_service_v1_event_path_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetEventPathRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetEventPathRequest) ProtoMessage() {}
+
+func (x *GetEventPathRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_event_path_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetEventPathRequest.ProtoReflect.Descriptor instead.
+func (*GetEventPathRequest) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_event_path_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *GetEventPathRequest) GetPathId() string {
+	if x != nil {
+		return x.PathId
+	}
+	return ""
+}
+
+// 创建事件路径请求
+type CreateEventPathRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	EventPath     *EventPath             `protobuf:"bytes,1,opt,name=event_path,json=eventPath,proto3" json:"event_path,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateEventPathRequest) Reset() {
+	*x = CreateEventPathRequest{}
+	mi := &file_uba_service_v1_event_path_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateEventPathRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateEventPathRequest) ProtoMessage() {}
+
+func (x *CreateEventPathRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_event_path_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateEventPathRequest.ProtoReflect.Descriptor instead.
+func (*CreateEventPathRequest) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_event_path_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *CreateEventPathRequest) GetEventPath() *EventPath {
+	if x != nil {
+		return x.EventPath
+	}
+	return nil
+}
+
+// 删除事件路径请求
+type DeleteEventPathRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	PathId        string                 `protobuf:"bytes,1,opt,name=path_id,json=pathId,proto3" json:"path_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteEventPathRequest) Reset() {
+	*x = DeleteEventPathRequest{}
+	mi := &file_uba_service_v1_event_path_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteEventPathRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteEventPathRequest) ProtoMessage() {}
+
+func (x *DeleteEventPathRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_event_path_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteEventPathRequest.ProtoReflect.Descriptor instead.
+func (*DeleteEventPathRequest) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_event_path_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *DeleteEventPathRequest) GetPathId() string {
+	if x != nil {
+		return x.PathId
+	}
+	return ""
+}
+
 var File_uba_service_v1_event_path_proto protoreflect.FileDescriptor
 
 const file_uba_service_v1_event_path_proto_rawDesc = "" +
 	"\n" +
-	"\x1fuba/service/v1/event_path.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1egoogle/protobuf/duration.proto\x1a google/protobuf/field_mask.proto\x1a\x1buba/service/v1/common.proto\"\xf4\x03\n" +
+	"\x1fuba/service/v1/event_path.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1bgoogle/protobuf/empty.proto\"\xf4\x03\n" +
 	"\bPathNode\x12[\n" +
 	"\n" +
 	"event_name\x18\x01 \x01(\tB<\xbaG9\x92\x026事件名称，路径节点对应的行为事件名称R\teventName\x12i\n" +
@@ -318,7 +528,7 @@ const file_uba_service_v1_event_path_proto_rawDesc = "" +
 	"\ttenant_id\x18\x02 \x01(\rB5\xbaG2\x92\x02/租户ID，多租户隔离，支持 SaaS 场景R\btenantId\x12<\n" +
 	"\auser_id\x18\x03 \x01(\rB#\xbaG \x92\x02\x1d用户ID，路径所属用户R\x06userId\x12B\n" +
 	"\n" +
-	"session_id\x18\x04 \x01(\rB#\xbaG \x92\x02\x1d会话ID，路径所属会话R\tsessionId\x12u\n" +
+	"session_id\x18\x04 \x01(\x04B#\xbaG \x92\x02\x1d会话ID，路径所属会话R\tsessionId\x12u\n" +
 	"\x05nodes\x18\x05 \x03(\v2\x18.uba.service.v1.PathNodeBE\xbaGB\x92\x02?有序事件序列，路径节点列表，按发生顺序排列R\x05nodes\x12q\n" +
 	"\n" +
 	"start_time\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampB6\xbaG3\x92\x020路径起始时间，第一个节点事件时间R\tstartTime\x12p\n" +
@@ -331,8 +541,26 @@ const file_uba_service_v1_event_path_proto_rawDesc = "" +
 	"\x10conversion_event\x18\v \x01(\tB<\xbaG9\x92\x026转化事件名称，目标转化对应的事件名称R\x0fconversionEvent\"^\n" +
 	"\x15ListEventPathResponse\x12/\n" +
 	"\x05items\x18\x01 \x03(\v2\x19.uba.service.v1.EventPathR\x05items\x12\x14\n" +
-	"\x05total\x18\x02 \x01(\x04R\x05total2\x12\n" +
-	"\x10EventPathServiceB\xab\x01\n" +
+	"\x05total\x18\x02 \x01(\x04R\x05total\"\xee\x01\n" +
+	"\x14ListEventPathRequest\x12+\n" +
+	"\ttenant_id\x18\x01 \x01(\rB\x0e\xbaG\v\x92\x02\b租户IDR\btenantId\x12'\n" +
+	"\auser_id\x18\x02 \x01(\rB\x0e\xbaG\v\x92\x02\b用户IDR\x06userId\x12-\n" +
+	"\n" +
+	"session_id\x18\x03 \x01(\x04B\x0e\xbaG\v\x92\x02\b会话IDR\tsessionId\x12 \n" +
+	"\x04page\x18\x04 \x01(\rB\f\xbaG\t\x92\x02\x06页码R\x04page\x12/\n" +
+	"\tpage_size\x18\x05 \x01(\rB\x12\xbaG\x0f\x92\x02\f每页数量R\bpageSize\">\n" +
+	"\x13GetEventPathRequest\x12'\n" +
+	"\apath_id\x18\x01 \x01(\tB\x0e\xbaG\v\x92\x02\b路径IDR\x06pathId\"l\n" +
+	"\x16CreateEventPathRequest\x12R\n" +
+	"\n" +
+	"event_path\x18\x01 \x01(\v2\x19.uba.service.v1.EventPathB\x18\xbaG\x15\x92\x02\x12事件路径对象R\teventPath\"A\n" +
+	"\x16DeleteEventPathRequest\x12'\n" +
+	"\apath_id\x18\x01 \x01(\tB\x0e\xbaG\v\x92\x02\b路径IDR\x06pathId2\xed\x04\n" +
+	"\x10EventPathService\x12\xa1\x01\n" +
+	"\rListEventPath\x12$.uba.service.v1.ListEventPathRequest\x1a%.uba.service.v1.ListEventPathResponse\"C\xbaG@\x12\x18分页查询事件路径\x1a$根据条件分页查询事件路径\x12\x95\x01\n" +
+	"\fGetEventPath\x12#.uba.service.v1.GetEventPathRequest\x1a\x19.uba.service.v1.EventPath\"E\xbaGB\x12\x18查询事件路径详情\x1a&根据路径ID查询事件路径详情\x12\x8d\x01\n" +
+	"\x0fCreateEventPath\x12&.uba.service.v1.CreateEventPathRequest\x1a\x19.uba.service.v1.EventPath\"7\xbaG4\x12\x12创建事件路径\x1a\x1e创建一条新的事件路径\x12\x8c\x01\n" +
+	"\x0fDeleteEventPath\x12&.uba.service.v1.DeleteEventPathRequest\x1a\x16.google.protobuf.Empty\"9\xbaG6\x12\x12删除事件路径\x1a 根据路径ID删除事件路径B\xab\x01\n" +
 	"\x12com.uba.service.v1B\x0eEventPathProtoP\x01Z+go-wind-uba/api/gen/go/uba/service/v1;ubapb\xa2\x02\x03USX\xaa\x02\x0eUba.Service.V1\xca\x02\x0eUba\\Service\\V1\xe2\x02\x1aUba\\Service\\V1\\GPBMetadata\xea\x02\x10Uba::Service::V1b\x06proto3"
 
 var (
@@ -347,24 +575,38 @@ func file_uba_service_v1_event_path_proto_rawDescGZIP() []byte {
 	return file_uba_service_v1_event_path_proto_rawDescData
 }
 
-var file_uba_service_v1_event_path_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_uba_service_v1_event_path_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_uba_service_v1_event_path_proto_goTypes = []any{
-	(*PathNode)(nil),              // 0: uba.service.v1.PathNode
-	(*EventPath)(nil),             // 1: uba.service.v1.EventPath
-	(*ListEventPathResponse)(nil), // 2: uba.service.v1.ListEventPathResponse
-	(*timestamppb.Timestamp)(nil), // 3: google.protobuf.Timestamp
+	(*PathNode)(nil),               // 0: uba.service.v1.PathNode
+	(*EventPath)(nil),              // 1: uba.service.v1.EventPath
+	(*ListEventPathResponse)(nil),  // 2: uba.service.v1.ListEventPathResponse
+	(*ListEventPathRequest)(nil),   // 3: uba.service.v1.ListEventPathRequest
+	(*GetEventPathRequest)(nil),    // 4: uba.service.v1.GetEventPathRequest
+	(*CreateEventPathRequest)(nil), // 5: uba.service.v1.CreateEventPathRequest
+	(*DeleteEventPathRequest)(nil), // 6: uba.service.v1.DeleteEventPathRequest
+	(*timestamppb.Timestamp)(nil),  // 7: google.protobuf.Timestamp
+	(*emptypb.Empty)(nil),          // 8: google.protobuf.Empty
 }
 var file_uba_service_v1_event_path_proto_depIdxs = []int32{
-	3, // 0: uba.service.v1.PathNode.event_time:type_name -> google.protobuf.Timestamp
-	0, // 1: uba.service.v1.EventPath.nodes:type_name -> uba.service.v1.PathNode
-	3, // 2: uba.service.v1.EventPath.start_time:type_name -> google.protobuf.Timestamp
-	3, // 3: uba.service.v1.EventPath.end_time:type_name -> google.protobuf.Timestamp
-	1, // 4: uba.service.v1.ListEventPathResponse.items:type_name -> uba.service.v1.EventPath
-	5, // [5:5] is the sub-list for method output_type
-	5, // [5:5] is the sub-list for method input_type
-	5, // [5:5] is the sub-list for extension type_name
-	5, // [5:5] is the sub-list for extension extendee
-	0, // [0:5] is the sub-list for field type_name
+	7,  // 0: uba.service.v1.PathNode.event_time:type_name -> google.protobuf.Timestamp
+	0,  // 1: uba.service.v1.EventPath.nodes:type_name -> uba.service.v1.PathNode
+	7,  // 2: uba.service.v1.EventPath.start_time:type_name -> google.protobuf.Timestamp
+	7,  // 3: uba.service.v1.EventPath.end_time:type_name -> google.protobuf.Timestamp
+	1,  // 4: uba.service.v1.ListEventPathResponse.items:type_name -> uba.service.v1.EventPath
+	1,  // 5: uba.service.v1.CreateEventPathRequest.event_path:type_name -> uba.service.v1.EventPath
+	3,  // 6: uba.service.v1.EventPathService.ListEventPath:input_type -> uba.service.v1.ListEventPathRequest
+	4,  // 7: uba.service.v1.EventPathService.GetEventPath:input_type -> uba.service.v1.GetEventPathRequest
+	5,  // 8: uba.service.v1.EventPathService.CreateEventPath:input_type -> uba.service.v1.CreateEventPathRequest
+	6,  // 9: uba.service.v1.EventPathService.DeleteEventPath:input_type -> uba.service.v1.DeleteEventPathRequest
+	2,  // 10: uba.service.v1.EventPathService.ListEventPath:output_type -> uba.service.v1.ListEventPathResponse
+	1,  // 11: uba.service.v1.EventPathService.GetEventPath:output_type -> uba.service.v1.EventPath
+	1,  // 12: uba.service.v1.EventPathService.CreateEventPath:output_type -> uba.service.v1.EventPath
+	8,  // 13: uba.service.v1.EventPathService.DeleteEventPath:output_type -> google.protobuf.Empty
+	10, // [10:14] is the sub-list for method output_type
+	6,  // [6:10] is the sub-list for method input_type
+	6,  // [6:6] is the sub-list for extension type_name
+	6,  // [6:6] is the sub-list for extension extendee
+	0,  // [0:6] is the sub-list for field type_name
 }
 
 func init() { file_uba_service_v1_event_path_proto_init() }
@@ -372,14 +614,13 @@ func file_uba_service_v1_event_path_proto_init() {
 	if File_uba_service_v1_event_path_proto != nil {
 		return
 	}
-	file_uba_service_v1_common_proto_init()
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_uba_service_v1_event_path_proto_rawDesc), len(file_uba_service_v1_event_path_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

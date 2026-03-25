@@ -1,0 +1,56 @@
+﻿syntax = "proto3";
+
+package admin.service.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "pagination/v1/pagination.proto";
+import "uba/service/v1/webhook.proto";
+
+
+// 网络钩子服务
+service WebhookService {
+  // 查询网络钩子列表
+  rpc List (pagination.PagingRequest) returns (uba.service.v1.ListWebhookResponse) {
+    option (google.api.http) = {
+      get: "/admin/v1/webhooks"
+    };
+  }
+
+  // 查询网络钩子数量
+  rpc Count (pagination.PagingRequest) returns (uba.service.v1.CountWebhookResponse) {
+    option (google.api.http) = {
+      get: "/admin/v1/webhooks/count"
+    };
+  }
+
+  // 查询网络钩子详情
+  rpc Get (uba.service.v1.GetWebhookRequest) returns (uba.service.v1.Webhook) {
+    option (google.api.http) = {
+      get: "/admin/v1/webhooks/{id}"
+    };
+  }
+
+  // 创建网络钩子
+  rpc Create (uba.service.v1.CreateWebhookRequest) returns (uba.service.v1.Webhook) {
+    option (google.api.http) = {
+      post: "/admin/v1/webhooks"
+      body: "*"
+    };
+  }
+
+  // 更新网络钩子
+  rpc Update (uba.service.v1.UpdateWebhookRequest) returns (uba.service.v1.Webhook) {
+    option (google.api.http) = {
+      put: "/admin/v1/webhooks/{id}"
+      body: "*"
+    };
+  }
+
+  // 删除网络钩子
+  rpc Delete (uba.service.v1.DeleteWebhookRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/admin/v1/webhooks/{id}"
+    };
+  }
+}

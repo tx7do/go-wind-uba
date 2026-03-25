@@ -1,6 +1,8 @@
 package data
 
 import (
+	ubaV1 "go-wind-uba/api/gen/go/uba/service/v1"
+
 	"github.com/redis/go-redis/v9"
 	authzEngine "github.com/tx7do/kratos-authz/engine"
 	"github.com/tx7do/kratos-authz/engine/noop"
@@ -313,4 +315,58 @@ func NewTaskServiceClient(ctx *bootstrap.Context, r registry.Discovery) taskV1.T
 	}
 
 	return taskV1.NewTaskServiceClient(cli)
+}
+
+func NewApplicationServiceClient(ctx *bootstrap.Context, r registry.Discovery) ubaV1.ApplicationServiceClient {
+	cli, err := rpc.CreateGrpcClient(ctx.Context(), r, serviceid.NewDiscoveryName(serviceid.CoreService), ctx.GetConfig())
+	if err != nil {
+		return nil
+	}
+
+	return ubaV1.NewApplicationServiceClient(cli)
+}
+
+func NewIDMappingServiceClient(ctx *bootstrap.Context, r registry.Discovery) ubaV1.IDMappingServiceClient {
+	cli, err := rpc.CreateGrpcClient(ctx.Context(), r, serviceid.NewDiscoveryName(serviceid.CoreService), ctx.GetConfig())
+	if err != nil {
+		return nil
+	}
+
+	return ubaV1.NewIDMappingServiceClient(cli)
+}
+
+func NewRiskRuleServiceClient(ctx *bootstrap.Context, r registry.Discovery) ubaV1.RiskRuleServiceClient {
+	cli, err := rpc.CreateGrpcClient(ctx.Context(), r, serviceid.NewDiscoveryName(serviceid.CoreService), ctx.GetConfig())
+	if err != nil {
+		return nil
+	}
+
+	return ubaV1.NewRiskRuleServiceClient(cli)
+}
+
+func NewTagDefinitionServiceClient(ctx *bootstrap.Context, r registry.Discovery) ubaV1.TagDefinitionServiceClient {
+	cli, err := rpc.CreateGrpcClient(ctx.Context(), r, serviceid.NewDiscoveryName(serviceid.CoreService), ctx.GetConfig())
+	if err != nil {
+		return nil
+	}
+
+	return ubaV1.NewTagDefinitionServiceClient(cli)
+}
+
+func NewUserTagServiceClient(ctx *bootstrap.Context, r registry.Discovery) ubaV1.UserTagServiceClient {
+	cli, err := rpc.CreateGrpcClient(ctx.Context(), r, serviceid.NewDiscoveryName(serviceid.CoreService), ctx.GetConfig())
+	if err != nil {
+		return nil
+	}
+
+	return ubaV1.NewUserTagServiceClient(cli)
+}
+
+func NewWebhookServiceClient(ctx *bootstrap.Context, r registry.Discovery) ubaV1.WebhookServiceClient {
+	cli, err := rpc.CreateGrpcClient(ctx.Context(), r, serviceid.NewDiscoveryName(serviceid.CoreService), ctx.GetConfig())
+	if err != nil {
+		return nil
+	}
+
+	return ubaV1.NewWebhookServiceClient(cli)
 }

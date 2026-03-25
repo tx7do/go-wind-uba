@@ -9,8 +9,6 @@ import "google/protobuf/field_mask.proto";
 
 import "pagination/v1/pagination.proto";
 
-import "uba/service/v1/common.proto";
-
 // 对象维度服务
 service ObjectService {
   // 查询对象维度列表

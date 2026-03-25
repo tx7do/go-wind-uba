@@ -10,6 +10,8 @@ import (
 	context "context"
 	http "github.com/go-kratos/kratos/v2/transport/http"
 	binding "github.com/go-kratos/kratos/v2/transport/http/binding"
+	v1 "go-wind-uba/api/gen/go/uba/service/v1"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -19,21 +21,25 @@ var _ = binding.EncodeURL
 
 const _ = http.SupportPackageIsVersion1
 
+const OperationReportServiceHealthCheck = "/collector.service.v1.ReportService/HealthCheck"
 const OperationReportServicePostReport = "/collector.service.v1.ReportService/PostReport"
 
 type ReportServiceHTTPServer interface {
-	// PostReport 提交事件
-	PostReport(context.Context, *PostReportRequest) (*PostReportResponse, error)
+	// HealthCheck 健康检查
+	HealthCheck(context.Context, *emptypb.Empty) (*HealthCheckResponse, error)
+	// PostReport 提交事件（单条/批量）
+	PostReport(context.Context, *v1.PostReportRequest) (*v1.PostReportResponse, error)
 }
 
 func RegisterReportServiceHTTPServer(s *http.Server, srv ReportServiceHTTPServer) {
 	r := s.Route("/")
 	r.POST("/uba/v1/report", _ReportService_PostReport0_HTTP_Handler(srv))
+	r.GET("/uba/v1/health", _ReportService_HealthCheck0_HTTP_Handler(srv))
 }
 
 func _ReportService_PostReport0_HTTP_Handler(srv ReportServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
-		var in PostReportRequest
+		var in v1.PostReportRequest
 		if err := ctx.Bind(&in); err != nil {
 			return err
 		}
@@ -42,20 +48,41 @@ func _ReportService_PostReport0_HTTP_Handler(srv ReportServiceHTTPServer) func(c
 		}
 		http.SetOperation(ctx, OperationReportServicePostReport)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
-			return srv.PostReport(ctx, req.(*PostReportRequest))
+			return srv.PostReport(ctx, req.(*v1.PostReportRequest))
 		})
 		out, err := h(ctx, &in)
 		if err != nil {
 			return err
 		}
-		reply := out.(*PostReportResponse)
+		reply := out.(*v1.PostReportResponse)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _ReportService_HealthCheck0_HTTP_Handler(srv ReportServiceHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in emptypb.Empty
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationReportServiceHealthCheck)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.HealthCheck(ctx, req.(*emptypb.Empty))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*HealthCheckResponse)
 		return ctx.Result(200, reply)
 	}
 }
 
 type ReportServiceHTTPClient interface {
-	// PostReport 提交事件
-	PostReport(ctx context.Context, req *PostReportRequest, opts ...http.CallOption) (rsp *PostReportResponse, err error)
+	// HealthCheck 健康检查
+	HealthCheck(ctx context.Context, req *emptypb.Empty, opts ...http.CallOption) (rsp *HealthCheckResponse, err error)
+	// PostReport 提交事件（单条/批量）
+	PostReport(ctx context.Context, req *v1.PostReportRequest, opts ...http.CallOption) (rsp *v1.PostReportResponse, err error)
 }
 
 type ReportServiceHTTPClientImpl struct {
@@ -66,9 +93,23 @@ func NewReportServiceHTTPClient(client *http.Client) ReportServiceHTTPClient {
 	return &ReportServiceHTTPClientImpl{client}
 }
 
-// PostReport 提交事件
-func (c *ReportServiceHTTPClientImpl) PostReport(ctx context.Context, in *PostReportRequest, opts ...http.CallOption) (*PostReportResponse, error) {
-	var out PostReportResponse
+// HealthCheck 健康检查
+func (c *ReportServiceHTTPClientImpl) HealthCheck(ctx context.Context, in *emptypb.Empty, opts ...http.CallOption) (*HealthCheckResponse, error) {
+	var out HealthCheckResponse
+	pattern := "/uba/v1/health"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation(OperationReportServiceHealthCheck))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+// PostReport 提交事件（单条/批量）
+func (c *ReportServiceHTTPClientImpl) PostReport(ctx context.Context, in *v1.PostReportRequest, opts ...http.CallOption) (*v1.PostReportResponse, error) {
+	var out v1.PostReportResponse
 	pattern := "/uba/v1/report"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationReportServicePostReport))

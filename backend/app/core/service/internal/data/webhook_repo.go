@@ -138,19 +138,21 @@ func (r *WebhookRepo) Get(ctx context.Context, req *ubaV1.GetWebhookRequest) (*u
 	return dto, err
 }
 
-func (r *WebhookRepo) Create(ctx context.Context, req *ubaV1.CreateWebhookRequest) error {
+func (r *WebhookRepo) Create(ctx context.Context, req *ubaV1.CreateWebhookRequest) (*ubaV1.Webhook, error) {
 	if req == nil || req.Data == nil {
-		return ubaV1.ErrorBadRequest("invalid parameter")
+		return nil, ubaV1.ErrorBadRequest("invalid parameter")
 	}
 
 	builder := r.newWebhookCreate(req.Data)
 
-	if err := builder.Exec(ctx); err != nil {
+	var entity *ent.Webhook
+	var err error
+	if entity, err = builder.Save(ctx); err != nil {
 		r.log.Errorf("insert webhook failed: %s", err.Error())
-		return ubaV1.ErrorInternalServerError("insert webhook failed")
+		return nil, ubaV1.ErrorInternalServerError("insert webhook failed")
 	}
 
-	return nil
+	return r.mapper.ToDTO(entity), nil
 }
 
 func (r *WebhookRepo) newWebhookCreate(w *ubaV1.Webhook) *ent.WebhookCreate {
@@ -197,15 +199,15 @@ func (r *WebhookRepo) BatchCreate(ctx context.Context, webhooks []*ubaV1.Webhook
 	return nil
 }
 
-func (r *WebhookRepo) Update(ctx context.Context, req *ubaV1.UpdateWebhookRequest) error {
+func (r *WebhookRepo) Update(ctx context.Context, req *ubaV1.UpdateWebhookRequest) (*ubaV1.Webhook, error) {
 	if req == nil || req.Data == nil {
-		return ubaV1.ErrorBadRequest("invalid parameter")
+		return nil, ubaV1.ErrorBadRequest("invalid parameter")
 	}
 
 	if req.GetAllowMissing() {
 		exist, err := r.IsExist(ctx, req.GetId())
 		if err != nil {
-			return err
+			return nil, err
 		}
 		if !exist {
 			createReq := &ubaV1.CreateWebhookRequest{Data: req.Data}
@@ -215,8 +217,8 @@ func (r *WebhookRepo) Update(ctx context.Context, req *ubaV1.UpdateWebhookReques
 		}
 	}
 
-	builder := r.entClient.Client().Debug().Webhook.Update()
-	err := r.repository.UpdateX(ctx, builder, req.Data, req.GetUpdateMask(),
+	builder := r.entClient.Client().Debug().Webhook.UpdateOneID(req.GetId())
+	dto, err := r.repository.UpdateOne(ctx, builder, req.Data, req.GetUpdateMask(),
 		func(dto *ubaV1.Webhook) {
 			builder.
 				SetNillableAppID(req.Data.AppId).
@@ -241,7 +243,7 @@ func (r *WebhookRepo) Update(ctx context.Context, req *ubaV1.UpdateWebhookReques
 		},
 	)
 
-	return err
+	return dto, err
 }
 
 func (r *WebhookRepo) Delete(ctx context.Context, req *ubaV1.DeleteWebhookRequest) error {

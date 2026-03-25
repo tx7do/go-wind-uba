@@ -6,7 +6,7 @@ import "time"
 // 对应表：gw_uba.sessions_fact
 
 type SessionsFact struct {
-	SessionID     *uint32           `ch:"session_id"`
+	SessionID     *uint64           `ch:"session_id"`
 	TenantID      *uint32           `ch:"tenant_id"`
 	UserID        *uint32           `ch:"user_id"`
 	DeviceID      *string           `ch:"device_id"`

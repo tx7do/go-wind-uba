@@ -22,7 +22,6 @@ require (
 	github.com/mileusna/useragent v1.3.5
 	github.com/minio/minio-go/v7 v7.0.99
 	github.com/redis/go-redis/v9 v9.18.0
-	github.com/srikrsna/protoc-gen-gotag v1.0.2
 	github.com/stretchr/testify v1.11.1
 	github.com/tx7do/go-crud/api v0.0.7
 	github.com/tx7do/go-crud/clickhouse v0.0.17

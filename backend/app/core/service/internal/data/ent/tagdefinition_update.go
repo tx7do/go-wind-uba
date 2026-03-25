@@ -6,7 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	servicev1 "go-wind-uba/api/gen/go/uba/service/v1"
+	ubapb "go-wind-uba/api/gen/go/uba/service/v1"
 	"go-wind-uba/app/core/service/internal/data/ent/predicate"
 	"go-wind-uba/app/core/service/internal/data/ent/tagdefinition"
 	"time"
@@ -233,7 +233,7 @@ func (_u *TagDefinitionUpdate) ClearTagType() *TagDefinitionUpdate {
 }
 
 // SetRule sets the "rule" field.
-func (_u *TagDefinitionUpdate) SetRule(v *servicev1.TagRule) *TagDefinitionUpdate {
+func (_u *TagDefinitionUpdate) SetRule(v *ubapb.TagRule) *TagDefinitionUpdate {
 	_u.mutation.SetRule(v)
 	return _u
 }
@@ -245,13 +245,13 @@ func (_u *TagDefinitionUpdate) ClearRule() *TagDefinitionUpdate {
 }
 
 // SetAllowedValues sets the "allowed_values" field.
-func (_u *TagDefinitionUpdate) SetAllowedValues(v []*servicev1.TagValue) *TagDefinitionUpdate {
+func (_u *TagDefinitionUpdate) SetAllowedValues(v []*ubapb.TagValue) *TagDefinitionUpdate {
 	_u.mutation.SetAllowedValues(v)
 	return _u
 }
 
 // AppendAllowedValues appends value to the "allowed_values" field.
-func (_u *TagDefinitionUpdate) AppendAllowedValues(v []*servicev1.TagValue) *TagDefinitionUpdate {
+func (_u *TagDefinitionUpdate) AppendAllowedValues(v []*ubapb.TagValue) *TagDefinitionUpdate {
 	_u.mutation.AppendAllowedValues(v)
 	return _u
 }
@@ -766,7 +766,7 @@ func (_u *TagDefinitionUpdateOne) ClearTagType() *TagDefinitionUpdateOne {
 }
 
 // SetRule sets the "rule" field.
-func (_u *TagDefinitionUpdateOne) SetRule(v *servicev1.TagRule) *TagDefinitionUpdateOne {
+func (_u *TagDefinitionUpdateOne) SetRule(v *ubapb.TagRule) *TagDefinitionUpdateOne {
 	_u.mutation.SetRule(v)
 	return _u
 }
@@ -778,13 +778,13 @@ func (_u *TagDefinitionUpdateOne) ClearRule() *TagDefinitionUpdateOne {
 }
 
 // SetAllowedValues sets the "allowed_values" field.
-func (_u *TagDefinitionUpdateOne) SetAllowedValues(v []*servicev1.TagValue) *TagDefinitionUpdateOne {
+func (_u *TagDefinitionUpdateOne) SetAllowedValues(v []*ubapb.TagValue) *TagDefinitionUpdateOne {
 	_u.mutation.SetAllowedValues(v)
 	return _u
 }
 
 // AppendAllowedValues appends value to the "allowed_values" field.
-func (_u *TagDefinitionUpdateOne) AppendAllowedValues(v []*servicev1.TagValue) *TagDefinitionUpdateOne {
+func (_u *TagDefinitionUpdateOne) AppendAllowedValues(v []*ubapb.TagValue) *TagDefinitionUpdateOne {
 	_u.mutation.AppendAllowedValues(v)
 	return _u
 }

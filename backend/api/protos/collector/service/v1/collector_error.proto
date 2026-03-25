@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package agent.service.v1;
+package collector.service.v1;
 
 import "errors/errors.proto";
 

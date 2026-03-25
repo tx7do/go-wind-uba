@@ -2355,6 +2355,358 @@ export type storageservicev1_UploadFileResponse = {
   presignedUrl?: string;
 };
 
+// ID映射服务
+export interface IDMappingService {
+  // 查询ID映射列表
+  List(request: pagination_PagingRequest): Promise<ubaservicev1_ListIDMappingResponse>;
+  // 查询ID映射数量
+  Count(request: pagination_PagingRequest): Promise<ubaservicev1_CountIDMappingResponse>;
+  // 查询ID映射详情
+  Get(request: ubaservicev1_GetIDMappingRequest): Promise<ubaservicev1_IDMapping>;
+  // 创建ID映射
+  Create(request: ubaservicev1_CreateIDMappingRequest): Promise<ubaservicev1_IDMapping>;
+  // 更新ID映射
+  Update(request: ubaservicev1_UpdateIDMappingRequest): Promise<ubaservicev1_IDMapping>;
+  // 删除ID映射
+  Delete(request: ubaservicev1_DeleteIDMappingRequest): Promise<wellKnownEmpty>;
+}
+
+export function createIDMappingServiceClient(
+  handler: RequestHandler
+): IDMappingService {
+  return {
+    List(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+      const path = `admin/v1/id-mappings`; // eslint-disable-line quotes
+      const body = null;
+      const queryParams: string[] = [];
+      if (request.page) {
+        queryParams.push(`page=${encodeURIComponent(request.page.toString())}`)
+      }
+      if (request.pageSize) {
+        queryParams.push(`pageSize=${encodeURIComponent(request.pageSize.toString())}`)
+      }
+      if (request.offset) {
+        queryParams.push(`offset=${encodeURIComponent(request.offset.toString())}`)
+      }
+      if (request.limit) {
+        queryParams.push(`limit=${encodeURIComponent(request.limit.toString())}`)
+      }
+      if (request.token) {
+        queryParams.push(`token=${encodeURIComponent(request.token.toString())}`)
+      }
+      if (request.noPaging) {
+        queryParams.push(`noPaging=${encodeURIComponent(request.noPaging.toString())}`)
+      }
+      if (request.query) {
+        queryParams.push(`query=${encodeURIComponent(request.query.toString())}`)
+      }
+      if (request.filter) {
+        queryParams.push(`filter=${encodeURIComponent(request.filter.toString())}`)
+      }
+      if (request.filterExpr?.type) {
+        queryParams.push(`filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.field) {
+        queryParams.push(`filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.op) {
+        queryParams.push(`filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.value) {
+        queryParams.push(`filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.jsonValue) {
+        queryParams.push(`filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.values) {
+        request.filterExpr.conditions.values.forEach((x) => {
+          queryParams.push(`filterExpr.conditions.values=${encodeURIComponent(x.toString())}`)
+        })
+      }
+      if (request.filterExpr?.conditions?.datePart) {
+        queryParams.push(`filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.jsonPath) {
+        queryParams.push(`filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`)
+      }
+      if (request.orderBy) {
+        queryParams.push(`orderBy=${encodeURIComponent(request.orderBy.toString())}`)
+      }
+      if (request.sorting?.field) {
+        queryParams.push(`sorting.field=${encodeURIComponent(request.sorting.field.toString())}`)
+      }
+      if (request.sorting?.direction) {
+        queryParams.push(`sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`)
+      }
+      if (request.fieldMask) {
+        queryParams.push(`fieldMask=${encodeURIComponent(request.fieldMask.toString())}`)
+      }
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join("&")}`
+      }
+      return handler({
+        path: uri,
+        method: "GET",
+        body,
+      }, {
+        service: "IDMappingService",
+        method: "List",
+      }) as Promise<ubaservicev1_ListIDMappingResponse>;
+    },
+    Count(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+      const path = `admin/v1/id-mappings/count`; // eslint-disable-line quotes
+      const body = null;
+      const queryParams: string[] = [];
+      if (request.page) {
+        queryParams.push(`page=${encodeURIComponent(request.page.toString())}`)
+      }
+      if (request.pageSize) {
+        queryParams.push(`pageSize=${encodeURIComponent(request.pageSize.toString())}`)
+      }
+      if (request.offset) {
+        queryParams.push(`offset=${encodeURIComponent(request.offset.toString())}`)
+      }
+      if (request.limit) {
+        queryParams.push(`limit=${encodeURIComponent(request.limit.toString())}`)
+      }
+      if (request.token) {
+        queryParams.push(`token=${encodeURIComponent(request.token.toString())}`)
+      }
+      if (request.noPaging) {
+        queryParams.push(`noPaging=${encodeURIComponent(request.noPaging.toString())}`)
+      }
+      if (request.query) {
+        queryParams.push(`query=${encodeURIComponent(request.query.toString())}`)
+      }
+      if (request.filter) {
+        queryParams.push(`filter=${encodeURIComponent(request.filter.toString())}`)
+      }
+      if (request.filterExpr?.type) {
+        queryParams.push(`filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.field) {
+        queryParams.push(`filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.op) {
+        queryParams.push(`filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.value) {
+        queryParams.push(`filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.jsonValue) {
+        queryParams.push(`filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.values) {
+        request.filterExpr.conditions.values.forEach((x) => {
+          queryParams.push(`filterExpr.conditions.values=${encodeURIComponent(x.toString())}`)
+        })
+      }
+      if (request.filterExpr?.conditions?.datePart) {
+        queryParams.push(`filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.jsonPath) {
+        queryParams.push(`filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`)
+      }
+      if (request.orderBy) {
+        queryParams.push(`orderBy=${encodeURIComponent(request.orderBy.toString())}`)
+      }
+      if (request.sorting?.field) {
+        queryParams.push(`sorting.field=${encodeURIComponent(request.sorting.field.toString())}`)
+      }
+      if (request.sorting?.direction) {
+        queryParams.push(`sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`)
+      }
+      if (request.fieldMask) {
+        queryParams.push(`fieldMask=${encodeURIComponent(request.fieldMask.toString())}`)
+      }
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join("&")}`
+      }
+      return handler({
+        path: uri,
+        method: "GET",
+        body,
+      }, {
+        service: "IDMappingService",
+        method: "Count",
+      }) as Promise<ubaservicev1_CountIDMappingResponse>;
+    },
+    Get(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+      if (!request.id) {
+        throw new Error("missing required field request.id");
+      }
+      const path = `admin/v1/id-mappings/${request.id}`; // eslint-disable-line quotes
+      const body = null;
+      const queryParams: string[] = [];
+      if (request.viewMask) {
+        queryParams.push(`viewMask=${encodeURIComponent(request.viewMask.toString())}`)
+      }
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join("&")}`
+      }
+      return handler({
+        path: uri,
+        method: "GET",
+        body,
+      }, {
+        service: "IDMappingService",
+        method: "Get",
+      }) as Promise<ubaservicev1_IDMapping>;
+    },
+    Create(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+      const path = `admin/v1/id-mappings`; // eslint-disable-line quotes
+      const body = JSON.stringify(request);
+      const queryParams: string[] = [];
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join("&")}`
+      }
+      return handler({
+        path: uri,
+        method: "POST",
+        body,
+      }, {
+        service: "IDMappingService",
+        method: "Create",
+      }) as Promise<ubaservicev1_IDMapping>;
+    },
+    Update(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+      if (!request.id) {
+        throw new Error("missing required field request.id");
+      }
+      const path = `admin/v1/id-mappings/${request.id}`; // eslint-disable-line quotes
+      const body = JSON.stringify(request);
+      const queryParams: string[] = [];
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join("&")}`
+      }
+      return handler({
+        path: uri,
+        method: "PUT",
+        body,
+      }, {
+        service: "IDMappingService",
+        method: "Update",
+      }) as Promise<ubaservicev1_IDMapping>;
+    },
+    Delete(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+      if (!request.id) {
+        throw new Error("missing required field request.id");
+      }
+      const path = `admin/v1/id-mappings/${request.id}`; // eslint-disable-line quotes
+      const body = null;
+      const queryParams: string[] = [];
+      if (request.deletedBy) {
+        queryParams.push(`deletedBy=${encodeURIComponent(request.deletedBy.toString())}`)
+      }
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join("&")}`
+      }
+      return handler({
+        path: uri,
+        method: "DELETE",
+        body,
+      }, {
+        service: "IDMappingService",
+        method: "Delete",
+      }) as Promise<wellKnownEmpty>;
+    },
+  };
+}
+// 获取ID映射列表 - 答复
+export type ubaservicev1_ListIDMappingResponse = {
+  items: ubaservicev1_IDMapping[] | undefined;
+  total: number | undefined;
+};
+
+// ID 关联记录（对应 id_mapping 表）
+export type ubaservicev1_IDMapping = {
+  // 自增长主键ID
+  id: number | undefined;
+  // 全局用户唯一标识（用于跨平台、跨租户用户关联）
+  globalUserId?: string;
+  // 租户ID（多租户隔离，支持 SaaS 场景）
+  tenantId?: number;
+  // ID类型（如用户ID、设备ID、Cookie、邮箱、手机号、OpenID 等）
+  idType?: ubaservicev1_IDType;
+  // ID值（具体的标识符，如用户ID、设备ID、邮箱等）
+  idValue?: string;
+  // 置信度（映射关系可信度评分，范围0~1）
+  confidence?: number;
+  // 关联来源（如系统、人工、第三方平台等）
+  linkSource?: string;
+  // 首次出现时间（映射关系首次被发现或建立的时间）
+  firstSeen?: wellKnownTimestamp;
+  // 最后出现时间（映射关系最近一次被使用或更新的时间）
+  lastSeen?: wellKnownTimestamp;
+  // 是否激活（映射关系当前是否有效）
+  isActive?: boolean;
+  // 扩展属性（用于存储自定义的业务特征或附加信息）
+  properties: { [key: string]: string } | undefined;
+  // 创建者用户ID（记录创建该映射关系的用户）
+  createdBy?: number;
+  // 更新者用户ID（记录最近一次更新该映射关系的用户）
+  updatedBy?: number;
+  // 删除者用户ID（记录删除该映射关系的用户）
+  deletedBy?: number;
+  // 创建时间（记录映射关系创建的时间）
+  createdAt?: wellKnownTimestamp;
+  // 更新时间（记录映射关系最近一次更新的时间）
+  updatedAt?: wellKnownTimestamp;
+  // 删除时间（记录映射关系被删除的时间）
+  deletedAt?: wellKnownTimestamp;
+};
+
+// ID类型枚举（用于标识不同类型的用户、设备、账号等标识符）
+export type ubaservicev1_IDType =
+  // 未指定ID类型
+  | "ID_TYPE_UNSPECIFIED"
+  // 用户ID（如系统内唯一用户标识）
+  | "ID_TYPE_USER_ID"
+  // 设备ID（如设备序列号、IMEI、MAC地址等）
+  | "ID_TYPE_DEVICE_ID"
+  // Cookie（如 Web 端唯一标识）
+  | "ID_TYPE_COOKIE"
+  // 邮箱（如用户邮箱地址）
+  | "ID_TYPE_EMAIL"
+  // 手机号（如用户手机号码）
+  | "ID_TYPE_PHONE"
+  // OpenID（如第三方平台用户标识，微信、支付宝等）
+  | "ID_TYPE_OPENID";
+export type ubaservicev1_CountIDMappingResponse = {
+  count: number | undefined;
+};
+
+// 获取ID映射数据 - 请求
+export type ubaservicev1_GetIDMappingRequest = {
+  id?: number;
+  viewMask?: wellKnownFieldMask;
+};
+
+// 创建ID映射 - 请求
+export type ubaservicev1_CreateIDMappingRequest = {
+  data: ubaservicev1_IDMapping | undefined;
+};
+
+// 更新ID映射 - 请求
+export type ubaservicev1_UpdateIDMappingRequest = {
+  id: number | undefined;
+  data: ubaservicev1_IDMapping | undefined;
+  updateMask: wellKnownFieldMask | undefined;
+  allowMissing?: boolean;
+};
+
+// 删除ID映射 - 请求
+export type ubaservicev1_DeleteIDMappingRequest = {
+  id?: number;
+  deletedBy?: number;
+};
+
 // 站内信消息管理服务
 export interface InternalMessageService {
   // 查询站内信消息列表
@@ -5474,6 +5826,408 @@ export type identityservicev1_DeletePositionRequest = {
   id?: number;
 };
 
+// 风险规则服务接口
+export interface RiskRuleService {
+  // 查询风险规则列表，支持分页
+  List(request: pagination_PagingRequest): Promise<ubaservicev1_ListRiskRuleResponse>;
+  // 查询风险规则数量，返回总数
+  Count(request: pagination_PagingRequest): Promise<ubaservicev1_CountRiskRuleResponse>;
+  // 查询风险规则详情，根据ID获取单条规则
+  Get(request: ubaservicev1_GetRiskRuleRequest): Promise<ubaservicev1_RiskRule>;
+  // 创建风险规则，返回新建的规则对象
+  Create(request: ubaservicev1_CreateRiskRuleRequest): Promise<ubaservicev1_RiskRule>;
+  // 更新风险规则，根据ID和字段掩码更新规则
+  Update(request: ubaservicev1_UpdateRiskRuleRequest): Promise<ubaservicev1_RiskRule>;
+  // 删除风险规则，根据ID删除规则
+  Delete(request: ubaservicev1_DeleteRiskRuleRequest): Promise<wellKnownEmpty>;
+}
+
+export function createRiskRuleServiceClient(
+  handler: RequestHandler
+): RiskRuleService {
+  return {
+    List(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+      const path = `admin/v1/risk-rules`; // eslint-disable-line quotes
+      const body = null;
+      const queryParams: string[] = [];
+      if (request.page) {
+        queryParams.push(`page=${encodeURIComponent(request.page.toString())}`)
+      }
+      if (request.pageSize) {
+        queryParams.push(`pageSize=${encodeURIComponent(request.pageSize.toString())}`)
+      }
+      if (request.offset) {
+        queryParams.push(`offset=${encodeURIComponent(request.offset.toString())}`)
+      }
+      if (request.limit) {
+        queryParams.push(`limit=${encodeURIComponent(request.limit.toString())}`)
+      }
+      if (request.token) {
+        queryParams.push(`token=${encodeURIComponent(request.token.toString())}`)
+      }
+      if (request.noPaging) {
+        queryParams.push(`noPaging=${encodeURIComponent(request.noPaging.toString())}`)
+      }
+      if (request.query) {
+        queryParams.push(`query=${encodeURIComponent(request.query.toString())}`)
+      }
+      if (request.filter) {
+        queryParams.push(`filter=${encodeURIComponent(request.filter.toString())}`)
+      }
+      if (request.filterExpr?.type) {
+        queryParams.push(`filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.field) {
+        queryParams.push(`filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.op) {
+        queryParams.push(`filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.value) {
+        queryParams.push(`filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.jsonValue) {
+        queryParams.push(`filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.values) {
+        request.filterExpr.conditions.values.forEach((x) => {
+          queryParams.push(`filterExpr.conditions.values=${encodeURIComponent(x.toString())}`)
+        })
+      }
+      if (request.filterExpr?.conditions?.datePart) {
+        queryParams.push(`filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.jsonPath) {
+        queryParams.push(`filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`)
+      }
+      if (request.orderBy) {
+        queryParams.push(`orderBy=${encodeURIComponent(request.orderBy.toString())}`)
+      }
+      if (request.sorting?.field) {
+        queryParams.push(`sorting.field=${encodeURIComponent(request.sorting.field.toString())}`)
+      }
+      if (request.sorting?.direction) {
+        queryParams.push(`sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`)
+      }
+      if (request.fieldMask) {
+        queryParams.push(`fieldMask=${encodeURIComponent(request.fieldMask.toString())}`)
+      }
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join("&")}`
+      }
+      return handler({
+        path: uri,
+        method: "GET",
+        body,
+      }, {
+        service: "RiskRuleService",
+        method: "List",
+      }) as Promise<ubaservicev1_ListRiskRuleResponse>;
+    },
+    Count(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+      const path = `admin/v1/risk-rules/count`; // eslint-disable-line quotes
+      const body = null;
+      const queryParams: string[] = [];
+      if (request.page) {
+        queryParams.push(`page=${encodeURIComponent(request.page.toString())}`)
+      }
+      if (request.pageSize) {
+        queryParams.push(`pageSize=${encodeURIComponent(request.pageSize.toString())}`)
+      }
+      if (request.offset) {
+        queryParams.push(`offset=${encodeURIComponent(request.offset.toString())}`)
+      }
+      if (request.limit) {
+        queryParams.push(`limit=${encodeURIComponent(request.limit.toString())}`)
+      }
+      if (request.token) {
+        queryParams.push(`token=${encodeURIComponent(request.token.toString())}`)
+      }
+      if (request.noPaging) {
+        queryParams.push(`noPaging=${encodeURIComponent(request.noPaging.toString())}`)
+      }
+      if (request.query) {
+        queryParams.push(`query=${encodeURIComponent(request.query.toString())}`)
+      }
+      if (request.filter) {
+        queryParams.push(`filter=${encodeURIComponent(request.filter.toString())}`)
+      }
+      if (request.filterExpr?.type) {
+        queryParams.push(`filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.field) {
+        queryParams.push(`filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.op) {
+        queryParams.push(`filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.value) {
+        queryParams.push(`filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.jsonValue) {
+        queryParams.push(`filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.values) {
+        request.filterExpr.conditions.values.forEach((x) => {
+          queryParams.push(`filterExpr.conditions.values=${encodeURIComponent(x.toString())}`)
+        })
+      }
+      if (request.filterExpr?.conditions?.datePart) {
+        queryParams.push(`filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.jsonPath) {
+        queryParams.push(`filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`)
+      }
+      if (request.orderBy) {
+        queryParams.push(`orderBy=${encodeURIComponent(request.orderBy.toString())}`)
+      }
+      if (request.sorting?.field) {
+        queryParams.push(`sorting.field=${encodeURIComponent(request.sorting.field.toString())}`)
+      }
+      if (request.sorting?.direction) {
+        queryParams.push(`sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`)
+      }
+      if (request.fieldMask) {
+        queryParams.push(`fieldMask=${encodeURIComponent(request.fieldMask.toString())}`)
+      }
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join("&")}`
+      }
+      return handler({
+        path: uri,
+        method: "GET",
+        body,
+      }, {
+        service: "RiskRuleService",
+        method: "Count",
+      }) as Promise<ubaservicev1_CountRiskRuleResponse>;
+    },
+    Get(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+      if (!request.id) {
+        throw new Error("missing required field request.id");
+      }
+      const path = `admin/v1/risk-rules/${request.id}`; // eslint-disable-line quotes
+      const body = null;
+      const queryParams: string[] = [];
+      if (request.viewMask) {
+        queryParams.push(`viewMask=${encodeURIComponent(request.viewMask.toString())}`)
+      }
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join("&")}`
+      }
+      return handler({
+        path: uri,
+        method: "GET",
+        body,
+      }, {
+        service: "RiskRuleService",
+        method: "Get",
+      }) as Promise<ubaservicev1_RiskRule>;
+    },
+    Create(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+      const path = `admin/v1/risk-rules`; // eslint-disable-line quotes
+      const body = JSON.stringify(request);
+      const queryParams: string[] = [];
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join("&")}`
+      }
+      return handler({
+        path: uri,
+        method: "POST",
+        body,
+      }, {
+        service: "RiskRuleService",
+        method: "Create",
+      }) as Promise<ubaservicev1_RiskRule>;
+    },
+    Update(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+      if (!request.id) {
+        throw new Error("missing required field request.id");
+      }
+      const path = `admin/v1/risk-rules/${request.id}`; // eslint-disable-line quotes
+      const body = JSON.stringify(request);
+      const queryParams: string[] = [];
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join("&")}`
+      }
+      return handler({
+        path: uri,
+        method: "PUT",
+        body,
+      }, {
+        service: "RiskRuleService",
+        method: "Update",
+      }) as Promise<ubaservicev1_RiskRule>;
+    },
+    Delete(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+      if (!request.id) {
+        throw new Error("missing required field request.id");
+      }
+      const path = `admin/v1/risk-rules/${request.id}`; // eslint-disable-line quotes
+      const body = null;
+      const queryParams: string[] = [];
+      if (request.deletedBy) {
+        queryParams.push(`deletedBy=${encodeURIComponent(request.deletedBy.toString())}`)
+      }
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join("&")}`
+      }
+      return handler({
+        path: uri,
+        method: "DELETE",
+        body,
+      }, {
+        service: "RiskRuleService",
+        method: "Delete",
+      }) as Promise<wellKnownEmpty>;
+    },
+  };
+}
+// 获取风险规则列表 - 答复
+export type ubaservicev1_ListRiskRuleResponse = {
+  items: ubaservicev1_RiskRule[] | undefined;
+  total: number | undefined;
+};
+
+// 风险规则定义，描述一条风险规则的所有属性
+export type ubaservicev1_RiskRule = {
+  // 规则ID（唯一标识一条风险规则）
+  id: number | undefined;
+  // 租户ID（多租户隔离，支持 SaaS 场景）
+  tenantId?: number;
+  // 规则名称（规则的显示名称）
+  name?: string;
+  // 规则编码（规则的唯一编码）
+  code?: string;
+  // 规则描述（规则的详细说明）
+  description?: string;
+  // 风险类型（规则对应的风险类型）
+  riskType?: ubaservicev1_RiskType;
+  // 默认风险等级（规则对应的默认风险等级）
+  defaultLevel?: ubaservicev1_RiskLevel;
+  // 规则条件（简化版，实际可用 CEL/JSON Schema，支持复杂表达式）
+  condition?: wellKnownStruct;
+  // 动作配置（规则触发时的处置动作列表，支持多种动作）
+  actions: ubaservicev1_RiskAction[] | undefined;
+  // 是否启用（true: 启用，false: 禁用，控制规则生效状态）
+  enabled?: boolean;
+  // 优先级（越小优先级越高，控制规则执行顺序）
+  priority?: number;
+  // 创建者用户ID
+  createdBy?: number;
+  // 更新者用户ID
+  updatedBy?: number;
+  // 删除者用户ID
+  deletedBy?: number;
+  // 创建时间
+  createdAt?: wellKnownTimestamp;
+  // 更新时间
+  updatedAt?: wellKnownTimestamp;
+  // 删除时间
+  deletedAt?: wellKnownTimestamp;
+};
+
+// 风险等级
+export type ubaservicev1_RiskType =
+  // 未指定风险类型
+  | "RISK_TYPE_UNSPECIFIED"
+  // 异常登录风险
+  | "RISK_TYPE_LOGIN_ANOMALY"
+  // 暴力破解风险
+  | "RISK_TYPE_BRUTE_FORCE"
+  // 撞库风险
+  | "RISK_TYPE_CREDENTIAL_STUFFING"
+  // 高频操作风险
+  | "RISK_TYPE_FREQUENT_OPERATION"
+  // 异常流程风险
+  | "RISK_TYPE_ABNORMAL_FLOW"
+  // 数据泄露风险
+  | "RISK_TYPE_DATA_EXFILTRATION"
+  // 设备突变风险
+  | "RISK_TYPE_DEVICE_CHANGE"
+  // 异地登录风险
+  | "RISK_TYPE_LOCATION_ANOMALY"
+  // 代理/VPN风险
+  | "RISK_TYPE_PROXY_DETECTED"
+  // 欺诈支付风险
+  | "RISK_TYPE_FRAUD_PAYMENT"
+  // 薅羊毛风险
+  | "RISK_TYPE_ABUSE_PROMOTION";
+// 风险等级（用于标识事件或用户的风险级别）
+export type ubaservicev1_RiskLevel =
+  // 未指定风险等级
+  | "RISK_LEVEL_UNSPECIFIED"
+  // 正常风险
+  | "RISK_LEVEL_NORMAL"
+  // 可疑风险
+  | "RISK_LEVEL_SUSPICIOUS"
+  // 高风险
+  | "RISK_LEVEL_HIGH"
+  // 危急风险
+  | "RISK_LEVEL_CRITICAL";
+// Any JSON value.
+type wellKnownStruct = Record<string, unknown>;
+
+// 风险事件处置动作，定义规则触发后的处置方式
+export type ubaservicev1_RiskAction = {
+  // 动作类型（风险事件处置的动作类型）
+  type?: ubaservicev1_RiskAction_ActionType;
+  // 动作持续时间（风险事件处置动作的持续时间）
+  duration?: wellKnownDuration;
+  // 动作原因（风险事件处置动作的原因说明）
+  reason?: string;
+};
+
+// 动作类型枚举，定义风险事件处置的动作类型
+export type ubaservicev1_RiskAction_ActionType =
+  | "ACTION_UNSPECIFIED"
+  | "BLOCK_USER"
+  | "BLOCK_DEVICE"
+  | "REQUIRE_MFA"
+  | "LIMIT_RATE"
+  | "NOTIFY_ADMIN";
+// Generated output always contains 0, 3, 6, or 9 fractional digits,
+// depending on required precision, followed by the suffix "s".
+// Accepted are any fractional digits (also none) as long as they fit
+// into nano-seconds precision and the suffix "s" is required.
+type wellKnownDuration = string;
+
+// 获取风险规则数量 - 答复
+export type ubaservicev1_CountRiskRuleResponse = {
+  count: number | undefined;
+};
+
+// 获取风险规则数据 - 请求
+export type ubaservicev1_GetRiskRuleRequest = {
+  id?: number;
+  viewMask?: wellKnownFieldMask;
+};
+
+// 创建风险规则 - 请求
+export type ubaservicev1_CreateRiskRuleRequest = {
+  data: ubaservicev1_RiskRule | undefined;
+};
+
+// 更新风险规则 - 请求
+export type ubaservicev1_UpdateRiskRuleRequest = {
+  id: number | undefined;
+  data: ubaservicev1_RiskRule | undefined;
+  updateMask: wellKnownFieldMask | undefined;
+  allowMissing?: boolean;
+};
+
+// 删除风险规则 - 请求
+export type ubaservicev1_DeleteRiskRuleRequest = {
+  id?: number;
+  deletedBy?: number;
+};
+
 // 角色管理服务
 export interface RoleService {
   // 查询角色列表
@@ -5727,6 +6481,397 @@ export type permissionservicev1_DeleteRoleRequest = {
   id?: number;
   code?: string;
   tenantId?: number;
+};
+
+// 标签定义服务
+export interface TagDefinitionService {
+  // 查询标签定义列表
+  List(request: pagination_PagingRequest): Promise<ubaservicev1_ListTagDefinitionResponse>;
+  // 查询标签定义数量
+  Count(request: pagination_PagingRequest): Promise<ubaservicev1_CountTagDefinitionResponse>;
+  // 查询标签定义详情
+  Get(request: ubaservicev1_GetTagDefinitionRequest): Promise<ubaservicev1_TagDefinition>;
+  // 创建标签定义
+  Create(request: ubaservicev1_CreateTagDefinitionRequest): Promise<ubaservicev1_TagDefinition>;
+  // 更新标签定义
+  Update(request: ubaservicev1_UpdateTagDefinitionRequest): Promise<ubaservicev1_TagDefinition>;
+  // 删除标签定义
+  Delete(request: ubaservicev1_DeleteTagDefinitionRequest): Promise<wellKnownEmpty>;
+}
+
+export function createTagDefinitionServiceClient(
+  handler: RequestHandler
+): TagDefinitionService {
+  return {
+    List(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+      const path = `admin/v1/tag-definitions`; // eslint-disable-line quotes
+      const body = null;
+      const queryParams: string[] = [];
+      if (request.page) {
+        queryParams.push(`page=${encodeURIComponent(request.page.toString())}`)
+      }
+      if (request.pageSize) {
+        queryParams.push(`pageSize=${encodeURIComponent(request.pageSize.toString())}`)
+      }
+      if (request.offset) {
+        queryParams.push(`offset=${encodeURIComponent(request.offset.toString())}`)
+      }
+      if (request.limit) {
+        queryParams.push(`limit=${encodeURIComponent(request.limit.toString())}`)
+      }
+      if (request.token) {
+        queryParams.push(`token=${encodeURIComponent(request.token.toString())}`)
+      }
+      if (request.noPaging) {
+        queryParams.push(`noPaging=${encodeURIComponent(request.noPaging.toString())}`)
+      }
+      if (request.query) {
+        queryParams.push(`query=${encodeURIComponent(request.query.toString())}`)
+      }
+      if (request.filter) {
+        queryParams.push(`filter=${encodeURIComponent(request.filter.toString())}`)
+      }
+      if (request.filterExpr?.type) {
+        queryParams.push(`filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.field) {
+        queryParams.push(`filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.op) {
+        queryParams.push(`filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.value) {
+        queryParams.push(`filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.jsonValue) {
+        queryParams.push(`filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.values) {
+        request.filterExpr.conditions.values.forEach((x) => {
+          queryParams.push(`filterExpr.conditions.values=${encodeURIComponent(x.toString())}`)
+        })
+      }
+      if (request.filterExpr?.conditions?.datePart) {
+        queryParams.push(`filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.jsonPath) {
+        queryParams.push(`filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`)
+      }
+      if (request.orderBy) {
+        queryParams.push(`orderBy=${encodeURIComponent(request.orderBy.toString())}`)
+      }
+      if (request.sorting?.field) {
+        queryParams.push(`sorting.field=${encodeURIComponent(request.sorting.field.toString())}`)
+      }
+      if (request.sorting?.direction) {
+        queryParams.push(`sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`)
+      }
+      if (request.fieldMask) {
+        queryParams.push(`fieldMask=${encodeURIComponent(request.fieldMask.toString())}`)
+      }
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join("&")}`
+      }
+      return handler({
+        path: uri,
+        method: "GET",
+        body,
+      }, {
+        service: "TagDefinitionService",
+        method: "List",
+      }) as Promise<ubaservicev1_ListTagDefinitionResponse>;
+    },
+    Count(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+      const path = `admin/v1/tag-definitions/count`; // eslint-disable-line quotes
+      const body = null;
+      const queryParams: string[] = [];
+      if (request.page) {
+        queryParams.push(`page=${encodeURIComponent(request.page.toString())}`)
+      }
+      if (request.pageSize) {
+        queryParams.push(`pageSize=${encodeURIComponent(request.pageSize.toString())}`)
+      }
+      if (request.offset) {
+        queryParams.push(`offset=${encodeURIComponent(request.offset.toString())}`)
+      }
+      if (request.limit) {
+        queryParams.push(`limit=${encodeURIComponent(request.limit.toString())}`)
+      }
+      if (request.token) {
+        queryParams.push(`token=${encodeURIComponent(request.token.toString())}`)
+      }
+      if (request.noPaging) {
+        queryParams.push(`noPaging=${encodeURIComponent(request.noPaging.toString())}`)
+      }
+      if (request.query) {
+        queryParams.push(`query=${encodeURIComponent(request.query.toString())}`)
+      }
+      if (request.filter) {
+        queryParams.push(`filter=${encodeURIComponent(request.filter.toString())}`)
+      }
+      if (request.filterExpr?.type) {
+        queryParams.push(`filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.field) {
+        queryParams.push(`filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.op) {
+        queryParams.push(`filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.value) {
+        queryParams.push(`filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.jsonValue) {
+        queryParams.push(`filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.values) {
+        request.filterExpr.conditions.values.forEach((x) => {
+          queryParams.push(`filterExpr.conditions.values=${encodeURIComponent(x.toString())}`)
+        })
+      }
+      if (request.filterExpr?.conditions?.datePart) {
+        queryParams.push(`filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.jsonPath) {
+        queryParams.push(`filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`)
+      }
+      if (request.orderBy) {
+        queryParams.push(`orderBy=${encodeURIComponent(request.orderBy.toString())}`)
+      }
+      if (request.sorting?.field) {
+        queryParams.push(`sorting.field=${encodeURIComponent(request.sorting.field.toString())}`)
+      }
+      if (request.sorting?.direction) {
+        queryParams.push(`sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`)
+      }
+      if (request.fieldMask) {
+        queryParams.push(`fieldMask=${encodeURIComponent(request.fieldMask.toString())}`)
+      }
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join("&")}`
+      }
+      return handler({
+        path: uri,
+        method: "GET",
+        body,
+      }, {
+        service: "TagDefinitionService",
+        method: "Count",
+      }) as Promise<ubaservicev1_CountTagDefinitionResponse>;
+    },
+    Get(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+      if (!request.id) {
+        throw new Error("missing required field request.id");
+      }
+      const path = `admin/v1/tag-definitions/${request.id}`; // eslint-disable-line quotes
+      const body = null;
+      const queryParams: string[] = [];
+      if (request.viewMask) {
+        queryParams.push(`viewMask=${encodeURIComponent(request.viewMask.toString())}`)
+      }
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join("&")}`
+      }
+      return handler({
+        path: uri,
+        method: "GET",
+        body,
+      }, {
+        service: "TagDefinitionService",
+        method: "Get",
+      }) as Promise<ubaservicev1_TagDefinition>;
+    },
+    Create(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+      const path = `admin/v1/tag-definitions`; // eslint-disable-line quotes
+      const body = JSON.stringify(request);
+      const queryParams: string[] = [];
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join("&")}`
+      }
+      return handler({
+        path: uri,
+        method: "POST",
+        body,
+      }, {
+        service: "TagDefinitionService",
+        method: "Create",
+      }) as Promise<ubaservicev1_TagDefinition>;
+    },
+    Update(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+      if (!request.id) {
+        throw new Error("missing required field request.id");
+      }
+      const path = `admin/v1/tag-definitions/${request.id}`; // eslint-disable-line quotes
+      const body = JSON.stringify(request);
+      const queryParams: string[] = [];
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join("&")}`
+      }
+      return handler({
+        path: uri,
+        method: "PUT",
+        body,
+      }, {
+        service: "TagDefinitionService",
+        method: "Update",
+      }) as Promise<ubaservicev1_TagDefinition>;
+    },
+    Delete(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+      if (!request.id) {
+        throw new Error("missing required field request.id");
+      }
+      const path = `admin/v1/tag-definitions/${request.id}`; // eslint-disable-line quotes
+      const body = null;
+      const queryParams: string[] = [];
+      if (request.deletedBy) {
+        queryParams.push(`deletedBy=${encodeURIComponent(request.deletedBy.toString())}`)
+      }
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join("&")}`
+      }
+      return handler({
+        path: uri,
+        method: "DELETE",
+        body,
+      }, {
+        service: "TagDefinitionService",
+        method: "Delete",
+      }) as Promise<wellKnownEmpty>;
+    },
+  };
+}
+// 获取标签定义列表 - 答复
+export type ubaservicev1_ListTagDefinitionResponse = {
+  items: ubaservicev1_TagDefinition[] | undefined;
+  total: number | undefined;
+};
+
+// 标签定义（对应 tag_definition 表）
+export type ubaservicev1_TagDefinition = {
+  // 标签ID（唯一标识一个标签）
+  id: number | undefined;
+  // 租户ID（多租户隔离，支持 SaaS 场景）
+  tenantId?: number;
+  // 标签名称（显示名称）
+  name?: string;
+  // 标签唯一代码，业务唯一标识，支持英文、数字、下划线
+  code?: string;
+  // 标签描述（详细说明）
+  description?: string;
+  // 标签分类（如用户属性、行为偏好、风险、业务等）
+  category?: ubaservicev1_TagCategory;
+  // 标签类型（如布尔、枚举、数值、字符串、列表等）
+  tagType?: ubaservicev1_TagType;
+  // 计算规则（简化，实际可用表达式引擎，如 CEL/SQL）
+  rule?: ubaservicev1_TagRule;
+  // 取值范围（枚举型标签的允许值列表）
+  allowedValues: ubaservicev1_TagValue[] | undefined;
+  // 是否系统预置（true: 系统预置，false: 用户自定义）
+  isSystem?: boolean;
+  // 是否动态标签（true: 动态计算，false: 静态打标）
+  isDynamic?: boolean;
+  // 动态标签刷新间隔（单位秒）
+  refreshIntervalSeconds?: number;
+  createdBy?: number;
+  updatedBy?: number;
+  deletedBy?: number;
+  createdAt?: wellKnownTimestamp;
+  updatedAt?: wellKnownTimestamp;
+  deletedAt?: wellKnownTimestamp;
+};
+
+// 标签分类枚举
+export type ubaservicev1_TagCategory =
+  // 未指定标签分类
+  | "TAG_CATEGORY_UNSPECIFIED"
+  // 用户属性标签
+  | "TAG_CATEGORY_USER"
+  // 行为偏好标签
+  | "TAG_CATEGORY_BEHAVIOR"
+  // 风险标签
+  | "TAG_CATEGORY_RISK"
+  // 业务标签
+  | "TAG_CATEGORY_BUSINESS";
+// 标签类型枚举
+export type ubaservicev1_TagType =
+  // 未指定标签类型
+  | "TAG_TYPE_UNSPECIFIED"
+  // 布尔型标签（是/否）
+  | "TAG_TYPE_BOOLEAN"
+  // 枚举型标签
+  | "TAG_TYPE_ENUM"
+  // 数值型标签
+  | "TAG_TYPE_NUMERIC"
+  // 字符串型标签
+  | "TAG_TYPE_STRING"
+  // 列表型标签
+  | "TAG_TYPE_LIST";
+// 标签规则定义（简化，实际可根据需求扩展为更复杂的表达式结构）
+export type ubaservicev1_TagRule = {
+  // 规则表达式（如 CEL/SQL，示例: "total_pay_amount > 1000 AND last_pay_time > now() - 30d"）
+  expression: string | undefined;
+  // 规则参数（键值对形式，支持自定义参数）
+  params: { [key: string]: string } | undefined;
+};
+
+// 标签值定义（用于枚举型标签的取值范围）
+export type ubaservicev1_TagValue = {
+  id?: number;
+  // 标签值（实际存储值）
+  value?: string;
+  // 标签值显示名称（用于展示）
+  label?: string;
+  // 标签值描述（详细说明）
+  description?: string;
+  // 排序
+  sortOrder?: number;
+  // UI 颜色
+  color?: string;
+  // 图标
+  icon?: string;
+  // 租户ID（多租户隔离，支持 SaaS 场景）
+  tenantId?: number;
+  // 标签ID（所属标签ID，关联 TagDefinition.id）
+  tagId?: number;
+  createdAt?: wellKnownTimestamp;
+  updatedAt?: wellKnownTimestamp;
+  deletedAt?: wellKnownTimestamp;
+};
+
+// 标签定义数量 - 答复
+export type ubaservicev1_CountTagDefinitionResponse = {
+  count: number | undefined;
+};
+
+// 获取标签定义数据 - 请求
+export type ubaservicev1_GetTagDefinitionRequest = {
+  id?: number;
+  viewMask?: wellKnownFieldMask;
+};
+
+// 创建标签定义 - 请求
+export type ubaservicev1_CreateTagDefinitionRequest = {
+  data: ubaservicev1_TagDefinition | undefined;
+};
+
+// 更新标签定义 - 请求
+export type ubaservicev1_UpdateTagDefinitionRequest = {
+  id: number | undefined;
+  data: ubaservicev1_TagDefinition | undefined;
+  updateMask: wellKnownFieldMask | undefined;
+  allowMissing?: boolean;
+};
+
+// 删除标签定义 - 请求
+export type ubaservicev1_DeleteTagDefinitionRequest = {
+  id?: number;
+  deletedBy?: number;
 };
 
 // 调度任务管理服务
@@ -6078,12 +7223,6 @@ export type taskservicev1_TaskOption = {
   // Behaviors: OPTIONAL
   taskID?: string;
 };
-
-// Generated output always contains 0, 3, 6, or 9 fractional digits,
-// depending on required precision, followed by the suffix "s".
-// Accepted are any fractional digits (also none) as long as they fit
-// into nano-seconds precision and the suffix "s" is required.
-type wellKnownDuration = string;
 
 // 查询调度任务详情 - 请求
 export type taskservicev1_GetTaskRequest = {
@@ -7003,6 +8142,677 @@ export type identityservicev1_EmailVerification = {
   //
   // Behaviors: REQUIRED
   code: string | undefined;
+};
+
+// 用户标签服务
+export interface UserTagService {
+  // 查询用户标签列表
+  List(request: pagination_PagingRequest): Promise<ubaservicev1_ListUserTagResponse>;
+  // 查询用户标签数量
+  Count(request: pagination_PagingRequest): Promise<ubaservicev1_CountUserTagResponse>;
+  // 查询用户标签详情
+  Get(request: ubaservicev1_GetUserTagRequest): Promise<ubaservicev1_UserTag>;
+  // 创建用户标签
+  Create(request: ubaservicev1_CreateUserTagRequest): Promise<ubaservicev1_UserTag>;
+  // 更新用户标签
+  Update(request: ubaservicev1_UpdateUserTagRequest): Promise<ubaservicev1_UserTag>;
+  // 删除用户标签
+  Delete(request: ubaservicev1_DeleteUserTagRequest): Promise<wellKnownEmpty>;
+}
+
+export function createUserTagServiceClient(
+  handler: RequestHandler
+): UserTagService {
+  return {
+    List(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+      const path = `admin/v1/user-tags`; // eslint-disable-line quotes
+      const body = null;
+      const queryParams: string[] = [];
+      if (request.page) {
+        queryParams.push(`page=${encodeURIComponent(request.page.toString())}`)
+      }
+      if (request.pageSize) {
+        queryParams.push(`pageSize=${encodeURIComponent(request.pageSize.toString())}`)
+      }
+      if (request.offset) {
+        queryParams.push(`offset=${encodeURIComponent(request.offset.toString())}`)
+      }
+      if (request.limit) {
+        queryParams.push(`limit=${encodeURIComponent(request.limit.toString())}`)
+      }
+      if (request.token) {
+        queryParams.push(`token=${encodeURIComponent(request.token.toString())}`)
+      }
+      if (request.noPaging) {
+        queryParams.push(`noPaging=${encodeURIComponent(request.noPaging.toString())}`)
+      }
+      if (request.query) {
+        queryParams.push(`query=${encodeURIComponent(request.query.toString())}`)
+      }
+      if (request.filter) {
+        queryParams.push(`filter=${encodeURIComponent(request.filter.toString())}`)
+      }
+      if (request.filterExpr?.type) {
+        queryParams.push(`filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.field) {
+        queryParams.push(`filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.op) {
+        queryParams.push(`filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.value) {
+        queryParams.push(`filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.jsonValue) {
+        queryParams.push(`filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.values) {
+        request.filterExpr.conditions.values.forEach((x) => {
+          queryParams.push(`filterExpr.conditions.values=${encodeURIComponent(x.toString())}`)
+        })
+      }
+      if (request.filterExpr?.conditions?.datePart) {
+        queryParams.push(`filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.jsonPath) {
+        queryParams.push(`filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`)
+      }
+      if (request.orderBy) {
+        queryParams.push(`orderBy=${encodeURIComponent(request.orderBy.toString())}`)
+      }
+      if (request.sorting?.field) {
+        queryParams.push(`sorting.field=${encodeURIComponent(request.sorting.field.toString())}`)
+      }
+      if (request.sorting?.direction) {
+        queryParams.push(`sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`)
+      }
+      if (request.fieldMask) {
+        queryParams.push(`fieldMask=${encodeURIComponent(request.fieldMask.toString())}`)
+      }
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join("&")}`
+      }
+      return handler({
+        path: uri,
+        method: "GET",
+        body,
+      }, {
+        service: "UserTagService",
+        method: "List",
+      }) as Promise<ubaservicev1_ListUserTagResponse>;
+    },
+    Count(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+      const path = `admin/v1/user-tags/count`; // eslint-disable-line quotes
+      const body = null;
+      const queryParams: string[] = [];
+      if (request.page) {
+        queryParams.push(`page=${encodeURIComponent(request.page.toString())}`)
+      }
+      if (request.pageSize) {
+        queryParams.push(`pageSize=${encodeURIComponent(request.pageSize.toString())}`)
+      }
+      if (request.offset) {
+        queryParams.push(`offset=${encodeURIComponent(request.offset.toString())}`)
+      }
+      if (request.limit) {
+        queryParams.push(`limit=${encodeURIComponent(request.limit.toString())}`)
+      }
+      if (request.token) {
+        queryParams.push(`token=${encodeURIComponent(request.token.toString())}`)
+      }
+      if (request.noPaging) {
+        queryParams.push(`noPaging=${encodeURIComponent(request.noPaging.toString())}`)
+      }
+      if (request.query) {
+        queryParams.push(`query=${encodeURIComponent(request.query.toString())}`)
+      }
+      if (request.filter) {
+        queryParams.push(`filter=${encodeURIComponent(request.filter.toString())}`)
+      }
+      if (request.filterExpr?.type) {
+        queryParams.push(`filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.field) {
+        queryParams.push(`filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.op) {
+        queryParams.push(`filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.value) {
+        queryParams.push(`filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.jsonValue) {
+        queryParams.push(`filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.values) {
+        request.filterExpr.conditions.values.forEach((x) => {
+          queryParams.push(`filterExpr.conditions.values=${encodeURIComponent(x.toString())}`)
+        })
+      }
+      if (request.filterExpr?.conditions?.datePart) {
+        queryParams.push(`filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.jsonPath) {
+        queryParams.push(`filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`)
+      }
+      if (request.orderBy) {
+        queryParams.push(`orderBy=${encodeURIComponent(request.orderBy.toString())}`)
+      }
+      if (request.sorting?.field) {
+        queryParams.push(`sorting.field=${encodeURIComponent(request.sorting.field.toString())}`)
+      }
+      if (request.sorting?.direction) {
+        queryParams.push(`sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`)
+      }
+      if (request.fieldMask) {
+        queryParams.push(`fieldMask=${encodeURIComponent(request.fieldMask.toString())}`)
+      }
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join("&")}`
+      }
+      return handler({
+        path: uri,
+        method: "GET",
+        body,
+      }, {
+        service: "UserTagService",
+        method: "Count",
+      }) as Promise<ubaservicev1_CountUserTagResponse>;
+    },
+    Get(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+      if (!request.id) {
+        throw new Error("missing required field request.id");
+      }
+      const path = `admin/v1/user-tags/${request.id}`; // eslint-disable-line quotes
+      const body = null;
+      const queryParams: string[] = [];
+      if (request.viewMask) {
+        queryParams.push(`viewMask=${encodeURIComponent(request.viewMask.toString())}`)
+      }
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join("&")}`
+      }
+      return handler({
+        path: uri,
+        method: "GET",
+        body,
+      }, {
+        service: "UserTagService",
+        method: "Get",
+      }) as Promise<ubaservicev1_UserTag>;
+    },
+    Create(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+      const path = `admin/v1/user-tags`; // eslint-disable-line quotes
+      const body = JSON.stringify(request);
+      const queryParams: string[] = [];
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join("&")}`
+      }
+      return handler({
+        path: uri,
+        method: "POST",
+        body,
+      }, {
+        service: "UserTagService",
+        method: "Create",
+      }) as Promise<ubaservicev1_UserTag>;
+    },
+    Update(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+      if (!request.id) {
+        throw new Error("missing required field request.id");
+      }
+      const path = `admin/v1/user-tags/${request.id}`; // eslint-disable-line quotes
+      const body = JSON.stringify(request);
+      const queryParams: string[] = [];
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join("&")}`
+      }
+      return handler({
+        path: uri,
+        method: "PUT",
+        body,
+      }, {
+        service: "UserTagService",
+        method: "Update",
+      }) as Promise<ubaservicev1_UserTag>;
+    },
+    Delete(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+      if (!request.id) {
+        throw new Error("missing required field request.id");
+      }
+      const path = `admin/v1/user-tags/${request.id}`; // eslint-disable-line quotes
+      const body = null;
+      const queryParams: string[] = [];
+      if (request.deletedBy) {
+        queryParams.push(`deletedBy=${encodeURIComponent(request.deletedBy.toString())}`)
+      }
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join("&")}`
+      }
+      return handler({
+        path: uri,
+        method: "DELETE",
+        body,
+      }, {
+        service: "UserTagService",
+        method: "Delete",
+      }) as Promise<wellKnownEmpty>;
+    },
+  };
+}
+// 获取用户标签列表 - 答复
+export type ubaservicev1_ListUserTagResponse = {
+  items: ubaservicev1_UserTag[] | undefined;
+  total: number | undefined;
+};
+
+// 用户标签记录（对应 user_tag 表）
+export type ubaservicev1_UserTag = {
+  // 主键ID（自增长，唯一标识一条用户标签记录）
+  id?: number;
+  // 租户ID（多租户隔离，支持 SaaS 场景）
+  tenantId?: number;
+  // 用户ID（唯一标识一个用户）
+  userId?: number;
+  // 标签ID（唯一标识一个标签）
+  tagId?: number;
+  // 标签值（根据 tag_type 解析，实际存储值）
+  value?: string;
+  // 标签值显示名称（枚举值的展示名称）
+  valueLabel?: string;
+  // 置信度（算法打标时，范围0~1）
+  confidence?: number;
+  // 标签来源（如人工打标、规则引擎、算法模型、批量导入等）
+  source?: ubaservicev1_TagSource;
+  // 来源规则ID（如果是规则计算，记录规则ID）
+  sourceRuleId?: number;
+  // 有效时间（标签生效时间）
+  effectiveTime?: wellKnownTimestamp;
+  // 过期时间（标签失效时间）
+  expireTime?: wellKnownTimestamp;
+  createdBy?: number;
+  updatedBy?: number;
+  deletedBy?: number;
+  createdAt?: wellKnownTimestamp;
+  updatedAt?: wellKnownTimestamp;
+  deletedAt?: wellKnownTimestamp;
+};
+
+// 标签来源枚举
+export type ubaservicev1_TagSource =
+  // 未指定标签来源
+  | "TAG_SOURCE_UNSPECIFIED"
+  // 人工打标
+  | "TAG_SOURCE_MANUAL"
+  // 规则引擎
+  | "TAG_SOURCE_RULE"
+  // 算法模型
+  | "TAG_SOURCE_MODEL"
+  // 批量导入
+  | "TAG_SOURCE_IMPORT";
+export type ubaservicev1_CountUserTagResponse = {
+  count: number | undefined;
+};
+
+// 获取用户标签数据 - 请求
+export type ubaservicev1_GetUserTagRequest = {
+  id?: number;
+  viewMask?: wellKnownFieldMask;
+};
+
+// 创建用户标签 - 请求
+export type ubaservicev1_CreateUserTagRequest = {
+  data: ubaservicev1_UserTag | undefined;
+};
+
+// 更新用户标签 - 请求
+export type ubaservicev1_UpdateUserTagRequest = {
+  id: number | undefined;
+  data: ubaservicev1_UserTag | undefined;
+  updateMask: wellKnownFieldMask | undefined;
+  allowMissing?: boolean;
+};
+
+// 删除用户标签 - 请求
+export type ubaservicev1_DeleteUserTagRequest = {
+  id?: number;
+  deletedBy?: number;
+};
+
+// 网络钩子服务
+export interface WebhookService {
+  // 查询网络钩子列表
+  List(request: pagination_PagingRequest): Promise<ubaservicev1_ListWebhookResponse>;
+  // 查询网络钩子数量
+  Count(request: pagination_PagingRequest): Promise<ubaservicev1_CountWebhookResponse>;
+  // 查询网络钩子详情
+  Get(request: ubaservicev1_GetWebhookRequest): Promise<ubaservicev1_Webhook>;
+  // 创建网络钩子
+  Create(request: ubaservicev1_CreateWebhookRequest): Promise<ubaservicev1_Webhook>;
+  // 更新网络钩子
+  Update(request: ubaservicev1_UpdateWebhookRequest): Promise<ubaservicev1_Webhook>;
+  // 删除网络钩子
+  Delete(request: ubaservicev1_DeleteWebhookRequest): Promise<wellKnownEmpty>;
+}
+
+export function createWebhookServiceClient(
+  handler: RequestHandler
+): WebhookService {
+  return {
+    List(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+      const path = `admin/v1/webhooks`; // eslint-disable-line quotes
+      const body = null;
+      const queryParams: string[] = [];
+      if (request.page) {
+        queryParams.push(`page=${encodeURIComponent(request.page.toString())}`)
+      }
+      if (request.pageSize) {
+        queryParams.push(`pageSize=${encodeURIComponent(request.pageSize.toString())}`)
+      }
+      if (request.offset) {
+        queryParams.push(`offset=${encodeURIComponent(request.offset.toString())}`)
+      }
+      if (request.limit) {
+        queryParams.push(`limit=${encodeURIComponent(request.limit.toString())}`)
+      }
+      if (request.token) {
+        queryParams.push(`token=${encodeURIComponent(request.token.toString())}`)
+      }
+      if (request.noPaging) {
+        queryParams.push(`noPaging=${encodeURIComponent(request.noPaging.toString())}`)
+      }
+      if (request.query) {
+        queryParams.push(`query=${encodeURIComponent(request.query.toString())}`)
+      }
+      if (request.filter) {
+        queryParams.push(`filter=${encodeURIComponent(request.filter.toString())}`)
+      }
+      if (request.filterExpr?.type) {
+        queryParams.push(`filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.field) {
+        queryParams.push(`filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.op) {
+        queryParams.push(`filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.value) {
+        queryParams.push(`filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.jsonValue) {
+        queryParams.push(`filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.values) {
+        request.filterExpr.conditions.values.forEach((x) => {
+          queryParams.push(`filterExpr.conditions.values=${encodeURIComponent(x.toString())}`)
+        })
+      }
+      if (request.filterExpr?.conditions?.datePart) {
+        queryParams.push(`filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.jsonPath) {
+        queryParams.push(`filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`)
+      }
+      if (request.orderBy) {
+        queryParams.push(`orderBy=${encodeURIComponent(request.orderBy.toString())}`)
+      }
+      if (request.sorting?.field) {
+        queryParams.push(`sorting.field=${encodeURIComponent(request.sorting.field.toString())}`)
+      }
+      if (request.sorting?.direction) {
+        queryParams.push(`sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`)
+      }
+      if (request.fieldMask) {
+        queryParams.push(`fieldMask=${encodeURIComponent(request.fieldMask.toString())}`)
+      }
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join("&")}`
+      }
+      return handler({
+        path: uri,
+        method: "GET",
+        body,
+      }, {
+        service: "WebhookService",
+        method: "List",
+      }) as Promise<ubaservicev1_ListWebhookResponse>;
+    },
+    Count(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+      const path = `admin/v1/webhooks/count`; // eslint-disable-line quotes
+      const body = null;
+      const queryParams: string[] = [];
+      if (request.page) {
+        queryParams.push(`page=${encodeURIComponent(request.page.toString())}`)
+      }
+      if (request.pageSize) {
+        queryParams.push(`pageSize=${encodeURIComponent(request.pageSize.toString())}`)
+      }
+      if (request.offset) {
+        queryParams.push(`offset=${encodeURIComponent(request.offset.toString())}`)
+      }
+      if (request.limit) {
+        queryParams.push(`limit=${encodeURIComponent(request.limit.toString())}`)
+      }
+      if (request.token) {
+        queryParams.push(`token=${encodeURIComponent(request.token.toString())}`)
+      }
+      if (request.noPaging) {
+        queryParams.push(`noPaging=${encodeURIComponent(request.noPaging.toString())}`)
+      }
+      if (request.query) {
+        queryParams.push(`query=${encodeURIComponent(request.query.toString())}`)
+      }
+      if (request.filter) {
+        queryParams.push(`filter=${encodeURIComponent(request.filter.toString())}`)
+      }
+      if (request.filterExpr?.type) {
+        queryParams.push(`filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.field) {
+        queryParams.push(`filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.op) {
+        queryParams.push(`filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.value) {
+        queryParams.push(`filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.jsonValue) {
+        queryParams.push(`filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.values) {
+        request.filterExpr.conditions.values.forEach((x) => {
+          queryParams.push(`filterExpr.conditions.values=${encodeURIComponent(x.toString())}`)
+        })
+      }
+      if (request.filterExpr?.conditions?.datePart) {
+        queryParams.push(`filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`)
+      }
+      if (request.filterExpr?.conditions?.jsonPath) {
+        queryParams.push(`filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`)
+      }
+      if (request.orderBy) {
+        queryParams.push(`orderBy=${encodeURIComponent(request.orderBy.toString())}`)
+      }
+      if (request.sorting?.field) {
+        queryParams.push(`sorting.field=${encodeURIComponent(request.sorting.field.toString())}`)
+      }
+      if (request.sorting?.direction) {
+        queryParams.push(`sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`)
+      }
+      if (request.fieldMask) {
+        queryParams.push(`fieldMask=${encodeURIComponent(request.fieldMask.toString())}`)
+      }
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join("&")}`
+      }
+      return handler({
+        path: uri,
+        method: "GET",
+        body,
+      }, {
+        service: "WebhookService",
+        method: "Count",
+      }) as Promise<ubaservicev1_CountWebhookResponse>;
+    },
+    Get(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+      if (!request.id) {
+        throw new Error("missing required field request.id");
+      }
+      const path = `admin/v1/webhooks/${request.id}`; // eslint-disable-line quotes
+      const body = null;
+      const queryParams: string[] = [];
+      if (request.viewMask) {
+        queryParams.push(`viewMask=${encodeURIComponent(request.viewMask.toString())}`)
+      }
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join("&")}`
+      }
+      return handler({
+        path: uri,
+        method: "GET",
+        body,
+      }, {
+        service: "WebhookService",
+        method: "Get",
+      }) as Promise<ubaservicev1_Webhook>;
+    },
+    Create(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+      const path = `admin/v1/webhooks`; // eslint-disable-line quotes
+      const body = JSON.stringify(request);
+      const queryParams: string[] = [];
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join("&")}`
+      }
+      return handler({
+        path: uri,
+        method: "POST",
+        body,
+      }, {
+        service: "WebhookService",
+        method: "Create",
+      }) as Promise<ubaservicev1_Webhook>;
+    },
+    Update(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+      if (!request.id) {
+        throw new Error("missing required field request.id");
+      }
+      const path = `admin/v1/webhooks/${request.id}`; // eslint-disable-line quotes
+      const body = JSON.stringify(request);
+      const queryParams: string[] = [];
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join("&")}`
+      }
+      return handler({
+        path: uri,
+        method: "PUT",
+        body,
+      }, {
+        service: "WebhookService",
+        method: "Update",
+      }) as Promise<ubaservicev1_Webhook>;
+    },
+    Delete(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+      if (!request.id) {
+        throw new Error("missing required field request.id");
+      }
+      const path = `admin/v1/webhooks/${request.id}`; // eslint-disable-line quotes
+      const body = null;
+      const queryParams: string[] = [];
+      if (request.deletedBy) {
+        queryParams.push(`deletedBy=${encodeURIComponent(request.deletedBy.toString())}`)
+      }
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join("&")}`
+      }
+      return handler({
+        path: uri,
+        method: "DELETE",
+        body,
+      }, {
+        service: "WebhookService",
+        method: "Delete",
+      }) as Promise<wellKnownEmpty>;
+    },
+  };
+}
+// 获取网络钩子列表 - 答复
+export type ubaservicev1_ListWebhookResponse = {
+  items: ubaservicev1_Webhook[] | undefined;
+  total: number | undefined;
+};
+
+// 网络钩子配置
+export type ubaservicev1_Webhook = {
+  id: number | undefined;
+  tenantId?: number;
+  appId?: number;
+  name?: string;
+  url?: string;
+  secret?: string;
+  // 触发条件
+  eventTypes: string[] | undefined;
+  filter?: ubaservicev1_WebhookFilter;
+  // 状态
+  enabled?: boolean;
+  failureCount?: number;
+  lastTriggeredAt?: wellKnownTimestamp;
+  createdBy?: number;
+  updatedBy?: number;
+  deletedBy?: number;
+  createdAt?: wellKnownTimestamp;
+  updatedAt?: wellKnownTimestamp;
+  deletedAt?: wellKnownTimestamp;
+};
+
+// 网络钩子过滤器
+export type ubaservicev1_WebhookFilter = {
+  riskLevels: string[] | undefined;
+  riskTypes: string[] | undefined;
+  properties: { [key: string]: string } | undefined;
+};
+
+// 网络钩子数量 - 答复
+export type ubaservicev1_CountWebhookResponse = {
+  count: number | undefined;
+};
+
+// 获取网络钩子数据 - 请求
+export type ubaservicev1_GetWebhookRequest = {
+  id?: number;
+  viewMask?: wellKnownFieldMask;
+};
+
+// 创建网络钩子 - 请求
+export type ubaservicev1_CreateWebhookRequest = {
+  data: ubaservicev1_Webhook | undefined;
+};
+
+// 更新网络钩子 - 请求
+export type ubaservicev1_UpdateWebhookRequest = {
+  id: number | undefined;
+  data: ubaservicev1_Webhook | undefined;
+  updateMask: wellKnownFieldMask | undefined;
+  allowMissing?: boolean;
+};
+
+// 删除网络钩子 - 请求
+export type ubaservicev1_DeleteWebhookRequest = {
+  id?: number;
+  deletedBy?: number;
 };
 
 

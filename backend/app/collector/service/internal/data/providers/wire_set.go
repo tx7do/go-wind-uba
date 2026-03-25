@@ -25,4 +25,6 @@ var ProviderSet = wire.NewSet(
 	data.NewDiscovery,
 	data.NewAuthorizer,
 	data.NewKafkaBroker,
+
+	data.NewApplicationServiceClient,
 )

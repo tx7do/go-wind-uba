@@ -7,7 +7,11 @@
 package ubapb
 
 import (
+	context "context"
 	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -15,12 +19,27 @@ import (
 // Requires gRPC-Go v1.64.0 or later.
 const _ = grpc.SupportPackageIsVersion9
 
+const (
+	EventPathService_ListEventPath_FullMethodName   = "/uba.service.v1.EventPathService/ListEventPath"
+	EventPathService_GetEventPath_FullMethodName    = "/uba.service.v1.EventPathService/GetEventPath"
+	EventPathService_CreateEventPath_FullMethodName = "/uba.service.v1.EventPathService/CreateEventPath"
+	EventPathService_DeleteEventPath_FullMethodName = "/uba.service.v1.EventPathService/DeleteEventPath"
+)
+
 // EventPathServiceClient is the client API for EventPathService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 //
 // 事件路径服务
 type EventPathServiceClient interface {
+	// 分页查询事件路径
+	ListEventPath(ctx context.Context, in *ListEventPathRequest, opts ...grpc.CallOption) (*ListEventPathResponse, error)
+	// 查询单条事件路径详情
+	GetEventPath(ctx context.Context, in *GetEventPathRequest, opts ...grpc.CallOption) (*EventPath, error)
+	// 创建事件路径（如有需要）
+	CreateEventPath(ctx context.Context, in *CreateEventPathRequest, opts ...grpc.CallOption) (*EventPath, error)
+	// 删除事件路径（如有需要）
+	DeleteEventPath(ctx context.Context, in *DeleteEventPathRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type eventPathServiceClient struct {
@@ -31,12 +50,60 @@ func NewEventPathServiceClient(cc grpc.ClientConnInterface) EventPathServiceClie
 	return &eventPathServiceClient{cc}
 }
 
+func (c *eventPathServiceClient) ListEventPath(ctx context.Context, in *ListEventPathRequest, opts ...grpc.CallOption) (*ListEventPathResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListEventPathResponse)
+	err := c.cc.Invoke(ctx, EventPathService_ListEventPath_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *eventPathServiceClient) GetEventPath(ctx context.Context, in *GetEventPathRequest, opts ...grpc.CallOption) (*EventPath, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(EventPath)
+	err := c.cc.Invoke(ctx, EventPathService_GetEventPath_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *eventPathServiceClient) CreateEventPath(ctx context.Context, in *CreateEventPathRequest, opts ...grpc.CallOption) (*EventPath, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(EventPath)
+	err := c.cc.Invoke(ctx, EventPathService_CreateEventPath_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *eventPathServiceClient) DeleteEventPath(ctx context.Context, in *DeleteEventPathRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, EventPathService_DeleteEventPath_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // EventPathServiceServer is the server API for EventPathService service.
 // All implementations must embed UnimplementedEventPathServiceServer
 // for forward compatibility.
 //
 // 事件路径服务
 type EventPathServiceServer interface {
+	// 分页查询事件路径
+	ListEventPath(context.Context, *ListEventPathRequest) (*ListEventPathResponse, error)
+	// 查询单条事件路径详情
+	GetEventPath(context.Context, *GetEventPathRequest) (*EventPath, error)
+	// 创建事件路径（如有需要）
+	CreateEventPath(context.Context, *CreateEventPathRequest) (*EventPath, error)
+	// 删除事件路径（如有需要）
+	DeleteEventPath(context.Context, *DeleteEventPathRequest) (*emptypb.Empty, error)
 	mustEmbedUnimplementedEventPathServiceServer()
 }
 
@@ -47,6 +114,18 @@ type EventPathServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedEventPathServiceServer struct{}
 
+func (UnimplementedEventPathServiceServer) ListEventPath(context.Context, *ListEventPathRequest) (*ListEventPathResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ListEventPath not implemented")
+}
+func (UnimplementedEventPathServiceServer) GetEventPath(context.Context, *GetEventPathRequest) (*EventPath, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetEventPath not implemented")
+}
+func (UnimplementedEventPathServiceServer) CreateEventPath(context.Context, *CreateEventPathRequest) (*EventPath, error) {
+	return nil, status.Error(codes.Unimplemented, "method CreateEventPath not implemented")
+}
+func (UnimplementedEventPathServiceServer) DeleteEventPath(context.Context, *DeleteEventPathRequest) (*emptypb.Empty, error) {
+	return nil, status.Error(codes.Unimplemented, "method DeleteEventPath not implemented")
+}
 func (UnimplementedEventPathServiceServer) mustEmbedUnimplementedEventPathServiceServer() {}
 func (UnimplementedEventPathServiceServer) testEmbeddedByValue()                          {}
 
@@ -68,13 +147,102 @@ func RegisterEventPathServiceServer(s grpc.ServiceRegistrar, srv EventPathServic
 	s.RegisterService(&EventPathService_ServiceDesc, srv)
 }
 
+func _EventPathService_ListEventPath_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListEventPathRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(EventPathServiceServer).ListEventPath(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: EventPathService_ListEventPath_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(EventPathServiceServer).ListEventPath(ctx, req.(*ListEventPathRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _EventPathService_GetEventPath_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetEventPathRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(EventPathServiceServer).GetEventPath(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: EventPathService_GetEventPath_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(EventPathServiceServer).GetEventPath(ctx, req.(*GetEventPathRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _EventPathService_CreateEventPath_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateEventPathRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(EventPathServiceServer).CreateEventPath(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: EventPathService_CreateEventPath_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(EventPathServiceServer).CreateEventPath(ctx, req.(*CreateEventPathRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _EventPathService_DeleteEventPath_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteEventPathRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(EventPathServiceServer).DeleteEventPath(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: EventPathService_DeleteEventPath_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(EventPathServiceServer).DeleteEventPath(ctx, req.(*DeleteEventPathRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // EventPathService_ServiceDesc is the grpc.ServiceDesc for EventPathService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var EventPathService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "uba.service.v1.EventPathService",
 	HandlerType: (*EventPathServiceServer)(nil),
-	Methods:     []grpc.MethodDesc{},
-	Streams:     []grpc.StreamDesc{},
-	Metadata:    "uba/service/v1/event_path.proto",
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "ListEventPath",
+			Handler:    _EventPathService_ListEventPath_Handler,
+		},
+		{
+			MethodName: "GetEventPath",
+			Handler:    _EventPathService_GetEventPath_Handler,
+		},
+		{
+			MethodName: "CreateEventPath",
+			Handler:    _EventPathService_CreateEventPath_Handler,
+		},
+		{
+			MethodName: "DeleteEventPath",
+			Handler:    _EventPathService_DeleteEventPath_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "uba/service/v1/event_path.proto",
 }

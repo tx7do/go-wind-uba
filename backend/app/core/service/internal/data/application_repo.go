@@ -149,19 +149,21 @@ func (r *ApplicationRepo) Get(ctx context.Context, req *ubaV1.GetApplicationRequ
 	return dto, err
 }
 
-func (r *ApplicationRepo) Create(ctx context.Context, req *ubaV1.CreateApplicationRequest) error {
+func (r *ApplicationRepo) Create(ctx context.Context, req *ubaV1.CreateApplicationRequest) (*ubaV1.Application, error) {
 	if req == nil || req.Data == nil {
-		return ubaV1.ErrorBadRequest("invalid parameter")
+		return nil, ubaV1.ErrorBadRequest("invalid parameter")
 	}
 
 	builder := r.newApplicationCreate(req.Data)
 
-	if err := builder.Exec(ctx); err != nil {
+	var err error
+	var entity *ent.Application
+	if entity, err = builder.Save(ctx); err != nil {
 		r.log.Errorf("insert application failed: %s", err.Error())
-		return ubaV1.ErrorInternalServerError("insert application failed")
+		return nil, ubaV1.ErrorInternalServerError("insert application failed")
 	}
 
-	return nil
+	return r.mapper.ToDTO(entity), nil
 }
 
 func (r *ApplicationRepo) newApplicationCreate(data *ubaV1.Application) *ent.ApplicationCreate {
@@ -203,26 +205,27 @@ func (r *ApplicationRepo) BatchCreate(ctx context.Context, apps []*ubaV1.Applica
 	return nil
 }
 
-func (r *ApplicationRepo) Update(ctx context.Context, req *ubaV1.UpdateApplicationRequest) error {
+func (r *ApplicationRepo) Update(ctx context.Context, req *ubaV1.UpdateApplicationRequest) (*ubaV1.Application, error) {
 	if req == nil || req.Data == nil {
-		return ubaV1.ErrorBadRequest("invalid parameter")
+		return nil, ubaV1.ErrorBadRequest("invalid parameter")
 	}
 
 	if req.GetAllowMissing() {
 		exist, err := r.IsExist(ctx, req.GetId())
 		if err != nil {
-			return err
+			return nil, err
 		}
 		if !exist {
 			createReq := &ubaV1.CreateApplicationRequest{Data: req.Data}
 			createReq.Data.CreatedBy = createReq.Data.UpdatedBy
 			createReq.Data.UpdatedBy = nil
-			return r.Create(ctx, createReq)
+			dto, err := r.Create(ctx, createReq)
+			return dto, err
 		}
 	}
 
-	builder := r.entClient.Client().Debug().Application.Update()
-	err := r.repository.UpdateX(ctx, builder, req.Data, req.GetUpdateMask(),
+	builder := r.entClient.Client().Debug().Application.UpdateOneID(req.GetId())
+	dto, err := r.repository.UpdateOne(ctx, builder, req.Data, req.GetUpdateMask(),
 		func(dto *ubaV1.Application) {
 			builder.
 				SetNillableName(req.Data.Name).
@@ -243,7 +246,7 @@ func (r *ApplicationRepo) Update(ctx context.Context, req *ubaV1.UpdateApplicati
 		},
 	)
 
-	return err
+	return dto, err
 }
 
 func (r *ApplicationRepo) Delete(ctx context.Context, req *ubaV1.DeleteApplicationRequest) error {

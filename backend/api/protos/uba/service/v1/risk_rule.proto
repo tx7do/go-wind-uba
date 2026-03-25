@@ -1,10 +1,7 @@
-﻿// 风险规则相关 proto 定义
-syntax = "proto3";
+﻿syntax = "proto3";
 
-// 包名：uba.service.v1
 package uba.service.v1;
 
-// 导入依赖 proto
 import "gnostic/openapi/v3/annotations.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";

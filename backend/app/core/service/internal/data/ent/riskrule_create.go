@@ -6,7 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	servicev1 "go-wind-uba/api/gen/go/uba/service/v1"
+	ubapb "go-wind-uba/api/gen/go/uba/service/v1"
 	"go-wind-uba/app/core/service/internal/data/ent/riskrule"
 	"time"
 
@@ -184,7 +184,7 @@ func (_c *RiskRuleCreate) SetCondition(v map[string]interface{}) *RiskRuleCreate
 }
 
 // SetActions sets the "actions" field.
-func (_c *RiskRuleCreate) SetActions(v []*servicev1.RiskAction) *RiskRuleCreate {
+func (_c *RiskRuleCreate) SetActions(v []*ubapb.RiskAction) *RiskRuleCreate {
 	_c.mutation.SetActions(v)
 	return _c
 }
@@ -759,7 +759,7 @@ func (u *RiskRuleUpsert) ClearCondition() *RiskRuleUpsert {
 }
 
 // SetActions sets the "actions" field.
-func (u *RiskRuleUpsert) SetActions(v []*servicev1.RiskAction) *RiskRuleUpsert {
+func (u *RiskRuleUpsert) SetActions(v []*ubapb.RiskAction) *RiskRuleUpsert {
 	u.Set(riskrule.FieldActions, v)
 	return u
 }
@@ -1218,7 +1218,7 @@ func (u *RiskRuleUpsertOne) ClearCondition() *RiskRuleUpsertOne {
 }
 
 // SetActions sets the "actions" field.
-func (u *RiskRuleUpsertOne) SetActions(v []*servicev1.RiskAction) *RiskRuleUpsertOne {
+func (u *RiskRuleUpsertOne) SetActions(v []*ubapb.RiskAction) *RiskRuleUpsertOne {
 	return u.Update(func(s *RiskRuleUpsert) {
 		s.SetActions(v)
 	})
@@ -1872,7 +1872,7 @@ func (u *RiskRuleUpsertBulk) ClearCondition() *RiskRuleUpsertBulk {
 }
 
 // SetActions sets the "actions" field.
-func (u *RiskRuleUpsertBulk) SetActions(v []*servicev1.RiskAction) *RiskRuleUpsertBulk {
+func (u *RiskRuleUpsertBulk) SetActions(v []*ubapb.RiskAction) *RiskRuleUpsertBulk {
 	return u.Update(func(s *RiskRuleUpsert) {
 		s.SetActions(v)
 	})

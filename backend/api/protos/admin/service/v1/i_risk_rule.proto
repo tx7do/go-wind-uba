@@ -1,0 +1,55 @@
+﻿syntax = "proto3";
+
+package admin.service.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "pagination/v1/pagination.proto";
+import "uba/service/v1/risk_rule.proto";
+
+// 风险规则服务接口
+service RiskRuleService {
+  // 查询风险规则列表，支持分页
+  rpc List (pagination.PagingRequest) returns (uba.service.v1.ListRiskRuleResponse) {
+    option (google.api.http) = {
+      get: "/admin/v1/risk-rules"
+    };
+  }
+
+  // 查询风险规则数量，返回总数
+  rpc Count (pagination.PagingRequest) returns (uba.service.v1.CountRiskRuleResponse) {
+    option (google.api.http) = {
+      get: "/admin/v1/risk-rules/count"
+    };
+  }
+
+  // 查询风险规则详情，根据ID获取单条规则
+  rpc Get (uba.service.v1.GetRiskRuleRequest) returns (uba.service.v1.RiskRule) {
+    option (google.api.http) = {
+      get: "/admin/v1/risk-rules/{id}"
+    };
+  }
+
+  // 创建风险规则，返回新建的规则对象
+  rpc Create (uba.service.v1.CreateRiskRuleRequest) returns (uba.service.v1.RiskRule) {
+    option (google.api.http) = {
+      post: "/admin/v1/risk-rules"
+      body: "*"
+    };
+  }
+
+  // 更新风险规则，根据ID和字段掩码更新规则
+  rpc Update (uba.service.v1.UpdateRiskRuleRequest) returns (uba.service.v1.RiskRule) {
+    option (google.api.http) = {
+      put: "/admin/v1/risk-rules/{id}"
+      body: "*"
+    };
+  }
+
+  // 删除风险规则，根据ID删除规则
+  rpc Delete (uba.service.v1.DeleteRiskRuleRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/admin/v1/risk-rules/{id}"
+    };
+  }
+}

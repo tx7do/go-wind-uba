@@ -11,13 +11,16 @@ import (
 
 	"github.com/go-kratos/kratos/v2/registry"
 
-	authenticationV1 "go-wind-uba/api/gen/go/authentication/service/v1"
-
 	"github.com/tx7do/kratos-bootstrap/bootstrap"
 	redisClient "github.com/tx7do/kratos-bootstrap/cache/redis"
 	bRegistry "github.com/tx7do/kratos-bootstrap/registry"
+	"github.com/tx7do/kratos-bootstrap/rpc"
+
+	authenticationV1 "go-wind-uba/api/gen/go/authentication/service/v1"
+	ubaV1 "go-wind-uba/api/gen/go/uba/service/v1"
 
 	"go-wind-uba/pkg/middleware/metadata"
+	"go-wind-uba/pkg/serviceid"
 )
 
 func NewClientType() authenticationV1.ClientType {
@@ -92,4 +95,13 @@ func NewKafkaBroker(ctx *bootstrap.Context) broker.Broker {
 	}
 
 	return b
+}
+
+func NewApplicationServiceClient(ctx *bootstrap.Context, r registry.Discovery) ubaV1.ApplicationServiceClient {
+	cli, err := rpc.CreateGrpcClient(ctx.Context(), r, serviceid.NewDiscoveryName(serviceid.CoreService), ctx.GetConfig())
+	if err != nil {
+		return nil
+	}
+
+	return ubaV1.NewApplicationServiceClient(cli)
 }

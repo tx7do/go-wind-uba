@@ -6,7 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	servicev1 "go-wind-uba/api/gen/go/uba/service/v1"
+	ubapb "go-wind-uba/api/gen/go/uba/service/v1"
 	"go-wind-uba/app/core/service/internal/data/ent/predicate"
 	"go-wind-uba/app/core/service/internal/data/ent/riskrule"
 	"time"
@@ -245,13 +245,13 @@ func (_u *RiskRuleUpdate) ClearCondition() *RiskRuleUpdate {
 }
 
 // SetActions sets the "actions" field.
-func (_u *RiskRuleUpdate) SetActions(v []*servicev1.RiskAction) *RiskRuleUpdate {
+func (_u *RiskRuleUpdate) SetActions(v []*ubapb.RiskAction) *RiskRuleUpdate {
 	_u.mutation.SetActions(v)
 	return _u
 }
 
 // AppendActions appends value to the "actions" field.
-func (_u *RiskRuleUpdate) AppendActions(v []*servicev1.RiskAction) *RiskRuleUpdate {
+func (_u *RiskRuleUpdate) AppendActions(v []*ubapb.RiskAction) *RiskRuleUpdate {
 	_u.mutation.AppendActions(v)
 	return _u
 }
@@ -884,13 +884,13 @@ func (_u *RiskRuleUpdateOne) ClearCondition() *RiskRuleUpdateOne {
 }
 
 // SetActions sets the "actions" field.
-func (_u *RiskRuleUpdateOne) SetActions(v []*servicev1.RiskAction) *RiskRuleUpdateOne {
+func (_u *RiskRuleUpdateOne) SetActions(v []*ubapb.RiskAction) *RiskRuleUpdateOne {
 	_u.mutation.SetActions(v)
 	return _u
 }
 
 // AppendActions appends value to the "actions" field.
-func (_u *RiskRuleUpdateOne) AppendActions(v []*servicev1.RiskAction) *RiskRuleUpdateOne {
+func (_u *RiskRuleUpdateOne) AppendActions(v []*ubapb.RiskAction) *RiskRuleUpdateOne {
 	_u.mutation.AppendActions(v)
 	return _u
 }

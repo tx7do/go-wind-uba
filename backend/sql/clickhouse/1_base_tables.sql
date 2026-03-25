@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS gw_uba.events_fact
 
     -- ========== 上下文：Context（事件上下文信息）==========
     -- 会话上下文
-    session_id     UInt32 COMMENT '会话 ID（写入层生成，关联 sessions_fact.session_id，用于会话内事件序列分析）',
+    session_id     UInt64 COMMENT '会话 ID（写入层生成，关联 sessions_fact.session_id，用于会话内事件序列分析）',
     session_seq    UInt32 COMMENT '会话内事件序号（事件在会话中的顺序号，用于还原事件序列）',
 
     -- 环境上下文
@@ -105,7 +105,7 @@ CREATE TABLE IF NOT EXISTS gw_uba.events_fact
 CREATE TABLE IF NOT EXISTS gw_uba.sessions_fact
 (
     -- ========== 主键 & 路由字段 ==========
-    session_id      UInt32 COMMENT '会话唯一 ID（写入层生成，用于关联 events_fact.session_id）',
+    session_id      UInt64 COMMENT '会话唯一 ID（写入层生成，用于关联 events_fact.session_id）',
     tenant_id       UInt32 COMMENT '租户 ID（SaaS 多租户隔离，所有查询必须带此条件）',
 
     -- ========== 主体：Who（谁的会话）==========
@@ -194,7 +194,7 @@ CREATE TABLE IF NOT EXISTS gw_uba.risk_events
 
     -- ========== 关联行为事件：Evidence（证据链）==========
     related_event_ids Array(String) COMMENT '关联行为事件 ID 数组（触发风险的行为事件 ID 列表，用于证据追溯）',
-    session_id        UInt32 COMMENT '关联会话 ID（关联 sessions_fact.session_id，用于会话内风险分析）',
+    session_id        UInt64 COMMENT '关联会话 ID（关联 sessions_fact.session_id，用于会话内风险分析）',
 
     -- ========== 风险详情：Detail（风险详细信息）==========
     description       String COMMENT '风险描述（人类可读的风险说明，如"1 小时内登录失败 8 次"）',
@@ -431,7 +431,7 @@ CREATE TABLE IF NOT EXISTS gw_uba.path_features
 
     -- ========== 关联主体字段 ==========
     user_id           UInt32 COMMENT '登录用户 ID（可为 0 表示匿名用户）',
-    session_id        UInt32 COMMENT '会话 ID（关联 sessions_fact.session_id，用于会话内路径分析）',
+    session_id        UInt64 COMMENT '会话 ID（关联 sessions_fact.session_id，用于会话内路径分析）',
 
     -- ========== 路径摘要字段 ==========
     path_hash         String COMMENT '路径序列哈希值（用于去重和聚合，相同路径有相同 hash）',

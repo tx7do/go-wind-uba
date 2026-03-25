@@ -7,11 +7,24 @@ info:
     description: UBA 埋点服务 API
     version: "1.0"
 paths:
+    /uba/v1/health:
+        get:
+            tags:
+                - ReportService
+            description: 健康检查
+            operationId: ReportService_HealthCheck
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/HealthCheckResponse'
     /uba/v1/report:
         post:
             tags:
                 - ReportService
-            description: 提交事件
+            description: 提交事件（单条/批量）
             operationId: ReportService_PostReport
             requestBody:
                 content:
@@ -28,6 +41,266 @@ paths:
                                 $ref: '#/components/schemas/PostReportResponse'
 components:
     schemas:
+        BehaviorEvent:
+            type: object
+            properties:
+                eventId:
+                    type: string
+                    description: 事件ID，建议使用 UUID，作为事件的唯一标识，同时也可用于路由和去重
+                tenantId:
+                    type: integer
+                    description: 租户ID，事件所属的租户，用于多租户隔离
+                    format: uint32
+                userId:
+                    type: integer
+                    description: 用户ID，事件的主体，可以是用户、设备、账号等，具体含义由业务定义
+                    format: uint32
+                deviceId:
+                    type: string
+                accountId:
+                    type: string
+                    description: 账号ID，事件发生时使用的账号标识，可以用于分析账号相关的行为特征
+                globalUserId:
+                    type: string
+                    description: 全局用户ID，结合 user_id、device_id、account_id 等多维度标识，通过算法生成的全局唯一用户标识，可以用于跨设备、跨账号的用户行为分析
+                eventTime:
+                    type: string
+                    description: 事件发生时间，记录事件实际发生的时间点，通常由客户端上报，可能存在时钟偏差
+                    format: date-time
+                eventTs:
+                    type: string
+                    description: 事件时间戳，事件发生时间的 Unix 时间戳表示，单位毫秒，可以用于快速的时间范围查询和排序
+                serverTime:
+                    type: string
+                    description: 服务器接收时间，记录事件被服务器接收的时间点，可以用于分析事件的传输延迟和时序关系
+                    format: date-time
+                eventCategory:
+                    enum:
+                        - EVENT_CATEGORY_UNSPECIFIED
+                        - EVENT_CATEGORY_AUTH
+                        - EVENT_CATEGORY_PAY
+                        - EVENT_CATEGORY_GAME
+                        - EVENT_CATEGORY_CONTENT
+                        - EVENT_CATEGORY_SECURITY
+                        - EVENT_CATEGORY_SYSTEM
+                    type: string
+                    description: 事件类别，事件的类型或分类，用于对事件进行分组和分析，具体类别由业务定义
+                    format: enum
+                eventName:
+                    type: string
+                    description: 事件名称，事件的具体名称或动作，用于描述事件的具体行为，通常与事件类别结合使用以提供更细粒度的行为描述
+                eventAction:
+                    type: string
+                    description: 事件动作，事件的具体动作或结果，用于描述事件发生后的结果或状态变化，可以用于分析事件的效果和用户的反应
+                objectType:
+                    type: string
+                    description: 对象类型，事件作用的对象类型，可以是商品、页面、功能等，具体含义由业务定义
+                objectId:
+                    type: string
+                    description: 对象ID，事件作用的对象标识，可以用于分析特定对象的行为特征和受欢迎程度
+                objectName:
+                    type: string
+                    description: 对象名称，事件作用的对象名称，可以提供更友好的对象描述，便于分析和展示
+                sessionId:
+                    type: string
+                    description: 会话ID，事件所属的会话标识，可以用于分析用户的会话行为和路径，通常由客户端上报，可能存在时钟偏差
+                sessionSeq:
+                    type: integer
+                    description: 会话内序列号，事件在所属会话中的序列号，用于分析事件的顺序和路径，可以由客户端上报，也可以由服务器根据 session_id 进行计算生成
+                    format: uint32
+                platform:
+                    enum:
+                        - PLATFORM_UNSPECIFIED
+                        - PLATFORM_WEB
+                        - PLATFORM_IOS
+                        - PLATFORM_ANDROID
+                        - PLATFORM_WINDOWS
+                        - PLATFORM_MACOS
+                        - PLATFORM_LINUX
+                        - PLATFORM_MINI_PROGRAM
+                    type: string
+                    description: 平台，事件发生的环境平台，可以是 Web、iOS、Android、PC 等，具体类别由业务定义
+                    format: enum
+                os:
+                    type: string
+                    description: 操作系统，事件发生的操作系统信息，可以提供更细粒度的环境描述，便于分析不同操作系统上的行为差异
+                appVersion:
+                    type: string
+                    description: 应用版本，事件发生的应用版本信息，可以用于分析不同版本上的行为差异和版本升级的影响
+                channel:
+                    type: string
+                    description: 渠道，事件发生的渠道信息，可以用于分析不同渠道上的行为差异和渠道推广的效果
+                ip:
+                    type: string
+                    description: IP地址，事件发生时的客户端IP地址，可以用于分析用户的地理位置和网络特征
+                ipCity:
+                    type: string
+                    description: IP城市，事件发生时的IP地址解析出的城市信息，可以用于分析用户的地理位置特征
+                country:
+                    type: string
+                    description: 国家，事件发生时的IP地址解析出的国家信息，可以用于分析用户的地理位置特征
+                network:
+                    type: string
+                    description: 网络类型，事件发生时的网络类型，可以是 WiFi、4G、5G 等，具体类别由业务定义
+                geo:
+                    type: string
+                    description: 地理位置，经纬度信息，格式如 'lat,lng' 或 GeoJSON，用于更精细的地理分析
+                userAgent:
+                    type: string
+                    description: 客户端 User-Agent 信息，记录客户端类型、版本、操作系统等特征，便于分析设备和环境
+                referer:
+                    type: string
+                    description: 来源页面或来源地址，记录事件发生时的来源信息，便于分析流量来源和用户路径
+                context:
+                    type: object
+                    additionalProperties:
+                        type: string
+                    description: 业务上下文，事件的业务相关上下文信息，可以包含任意的键值对，由业务定义和使用，便于分析事件发生时的具体业务场景和条件
+                durationMs:
+                    type: integer
+                    description: 持续时间，事件持续的时间长度，单位毫秒，可以用于分析事件的持续时间分布和用户的停留时间特征
+                    format: uint32
+                amount:
+                    type: string
+                    description: 金额，事件相关的金额信息，可以用于分析用户的支付行为和消费特征，具体格式由业务定义，可以包含货币单位等信息
+                quantity:
+                    type: integer
+                    description: 数量，事件相关的数量信息，可以用于分析用户的购买行为和消费特征，具体含义由业务定义
+                    format: uint32
+                score:
+                    type: integer
+                    description: 评分，事件相关的评分信息，可以用于分析用户的评价行为和满意度特征，具体含义由业务定义
+                    format: int32
+                metrics:
+                    type: object
+                    additionalProperties:
+                        type: number
+                        format: double
+                    description: 其他指标，事件的其他相关指标信息，可以包含任意的键值对，值为数值类型，由业务定义和使用，便于分析事件的其他量化特征
+                properties:
+                    type: object
+                    additionalProperties:
+                        type: string
+                    description: 扩展属性，事件的其他相关属性信息，可以包含任意的键值对，由业务定义和使用，便于分析事件的其他特征和细节
+                opResult:
+                    enum:
+                        - OP_RESULT_UNSPECIFIED
+                        - OP_RESULT_SUCCESS
+                        - OP_RESULT_FAILED
+                        - OP_RESULT_TIMEOUT
+                        - OP_RESULT_PARTIAL
+                    type: string
+                    description: 操作结果，事件相关的操作结果信息，可以用于分析事件的成功率和失败原因，具体含义由业务定义
+                    format: enum
+                errorCode:
+                    type: string
+                    description: 错误码，事件相关的错误码信息，可以用于分析事件的失败原因和问题排查，具体含义由业务定义
+                riskLevel:
+                    enum:
+                        - RISK_LEVEL_UNSPECIFIED
+                        - RISK_LEVEL_NORMAL
+                        - RISK_LEVEL_SUSPICIOUS
+                        - RISK_LEVEL_HIGH
+                        - RISK_LEVEL_CRITICAL
+                    type: string
+                    description: 风险等级，事件相关的风险等级信息，可以用于分析事件的风险特征和安全问题，具体含义由业务定义
+                    format: enum
+                traceId:
+                    type: string
+                    description: Trace ID，事件相关的分布式追踪标识，可以用于分析事件的调用链和系统性能，通常由服务器生成并传递给客户端进行上报
+                createdAt:
+                    type: string
+                    description: 创建时间
+                    format: date-time
+                updatedAt:
+                    type: string
+                    description: 更新时间
+                    format: date-time
+            description: 行为事件（对应 events_fact 表）
+        ClientInfo:
+            type: object
+            properties:
+                userAgent:
+                    type: string
+                    description: 用户代理字符串，包含浏览器/客户端信息
+                referer:
+                    type: string
+                    description: 来源 URL，用户访问的上一跳 URL
+                country:
+                    type: string
+                    description: 国家，基于 IP 地址解析的用户所在国家
+                city:
+                    type: string
+                    description: 城市，基于 IP 地址解析的用户所在城市
+        ErrorDetail:
+            type: object
+            properties:
+                code:
+                    type: string
+                message:
+                    type: string
+                eventId:
+                    type: string
+                    description: 失败的事件 ID，便于定位具体哪条事件上报失败
+            description: 错误详情
+        EventPath:
+            type: object
+            properties:
+                pathId:
+                    type: string
+                    description: 路径ID，唯一标识一条事件路径，hash 或 UUID
+                tenantId:
+                    type: integer
+                    description: 租户ID，多租户隔离，支持 SaaS 场景
+                    format: uint32
+                userId:
+                    type: integer
+                    description: 用户ID，路径所属用户
+                    format: uint32
+                sessionId:
+                    type: string
+                    description: 会话ID，路径所属会话
+                nodes:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/PathNode'
+                    description: 有序事件序列，路径节点列表，按发生顺序排列
+                startTime:
+                    type: string
+                    description: 路径起始时间，第一个节点事件时间
+                    format: date-time
+                endTime:
+                    type: string
+                    description: 路径结束时间，最后一个节点事件时间
+                    format: date-time
+                totalDurationMs:
+                    type: integer
+                    description: 路径总时长，毫秒，start_time 到 end_time 的间隔
+                    format: uint32
+                stepCount:
+                    type: integer
+                    description: 步骤数，路径节点总数
+                    format: uint32
+                isConverted:
+                    type: boolean
+                    description: 是否完成目标转化，如完成支付、注册等
+                conversionEvent:
+                    type: string
+                    description: 转化事件名称，目标转化对应的事件名称
+            description: 事件路径（用户行为路径，包含有序事件序列和路径指标）
+        HealthCheckResponse:
+            type: object
+            properties:
+                status:
+                    enum:
+                        - STATUS_UNSPECIFIED
+                        - OK
+                        - DEGRADED
+                        - DOWN
+                    type: string
+                    format: enum
+                timestamp:
+                    type: string
         KratosStatus:
             type: object
             properties:
@@ -45,30 +318,308 @@ components:
                     type: object
                     description: 元数据
             description: Kratos错误返回
+        PathNode:
+            type: object
+            properties:
+                eventName:
+                    type: string
+                    description: 事件名称，路径节点对应的行为事件名称
+                objectType:
+                    type: string
+                    description: 对象类型，节点关联的对象类型，如商品、内容等
+                objectId:
+                    type: string
+                    description: 对象ID，节点关联的对象唯一标识
+                eventTime:
+                    type: string
+                    description: 事件时间，节点对应事件发生的时间
+                    format: date-time
+                stepIndex:
+                    type: integer
+                    description: 步骤索引，节点在路径中的位置，从0开始
+                    format: uint32
+            description: 路径节点（事件路径中的单个事件节点，包含事件信息和对象信息）
         PostReportRequest:
             type: object
             properties:
-                reportType:
-                    type: string
                 appId:
                     type: string
-                appKey:
+                    description: UBA应用唯一标识，关联应用维度，鉴权/路由关键字段
+                appSecret:
                     type: string
-                eventName:
-                    type: string
-                debug:
-                    type: integer
-                    format: int32
-                content:
-                    type: string
+                    description: 密钥，鉴权使用，鉴权/路由关键字段
+                events:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ReportEvent'
+                    description: 支持混合上报（不同事件类型可在同一请求）
+                clientInfo:
+                    $ref: '#/components/schemas/ClientInfo'
         PostReportResponse:
             type: object
             properties:
-                code:
+                success:
+                    type: boolean
+                message:
+                    type: string
+                errorsByType:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/TypeErrorDetail'
+                    description: 按事件类型分组的错误详情，包含事件类型和对应的错误列表
+                requestId:
+                    type: string
+                    description: 请求追踪 ID，服务端生成的唯一标识一个请求的 ID，便于日志追踪和问题排查
+                serverTime:
+                    type: string
+                    description: 服务端时间戳，服务端处理请求的时间，单位毫秒
+                riskAction:
+                    allOf:
+                        - $ref: '#/components/schemas/RiskAction'
+                    description: 风险事件的实时处置建议，只有风险事件上报时才会返回，表示服务端对该风险事件的处置建议
+                totalCount:
                     type: integer
                     format: int32
-                msg:
+                successCount:
+                    type: integer
+                    format: int32
+                failedCount:
+                    type: integer
+                    format: int32
+        ReportEvent:
+            type: object
+            properties:
+                eventType:
+                    enum:
+                        - EVENT_TYPE_UNSPECIFIED
+                        - EVENT_TYPE_BEHAVIOR
+                        - EVENT_TYPE_PATH
+                        - EVENT_TYPE_RISK
+                        - EVENT_TYPE_SESSION
+                        - EVENT_TYPE_FUNNEL
                     type: string
+                    description: 事件类型，区分不同事件结构和处理逻辑，路由关键字段
+                    format: enum
+                eventId:
+                    type: string
+                    description: 事件ID，全局唯一标识一条事件记录，建议使用ULID或Snowflake生成
+                userId:
+                    type: integer
+                    description: 登录用户ID，唯一标识一个用户，未登录可不填或填0
+                    format: uint32
+                deviceId:
+                    type: string
+                    description: 设备指纹，标识用户使用的设备，未登录用户可通过设备ID进行关联分析
+                eventTime:
+                    type: string
+                    description: 事件时间，客户端事件发生的时间，建议使用ISO 8601格式的UTC时间
+                    format: date-time
+                eventName:
+                    type: string
+                    description: 事件名称，具体事件的标识，如登录、点击、购买等
+                eventCategory:
+                    type: string
+                    description: 事件大类，事件的分类标识，如行为事件、路径事件、风险事件等
+                sessionId:
+                    type: string
+                    description: 会话ID，事件所属会话的唯一标识，关联分析关键字段
+                platform:
+                    type: string
+                    description: 平台，事件发生的平台或渠道，如Web、iOS、Android等
+                ip:
+                    type: string
+                    description: IP地址，事件发生时的客户端IP地址，服务端可解析为地理位置等信息
+                properties:
+                    type: object
+                    additionalProperties:
+                        type: string
+                    description: 事件属性，键值对形式的扩展字段，用于记录事件的业务上下文信息
+                tenantId:
+                    type: integer
+                    description: 租户 ID，SaaS 多租户隔离关键字段
+                    format: uint32
+                traceId:
+                    type: string
+                    description: 链路追踪 ID，关联微服务调用链
+                serverTime:
+                    type: string
+                    description: 服务端接收时间，服务端处理事件的时间，单位毫秒
+                    format: date-time
+                behavior:
+                    $ref: '#/components/schemas/BehaviorEvent'
+                path:
+                    $ref: '#/components/schemas/EventPath'
+                risk:
+                    $ref: '#/components/schemas/RiskEvent'
+            description: 统一事件结构，包含通用字段和不同事件类型的特有字段
+        RiskAction:
+            type: object
+            properties:
+                type:
+                    enum:
+                        - ACTION_UNSPECIFIED
+                        - BLOCK_USER
+                        - BLOCK_DEVICE
+                        - REQUIRE_MFA
+                        - LIMIT_RATE
+                        - NOTIFY_ADMIN
+                    type: string
+                    description: 动作类型，风险事件处置的动作类型
+                    format: enum
+                duration:
+                    pattern: ^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$
+                    type: string
+                    description: 动作持续时间，风险事件处置动作的持续时间
+                reason:
+                    type: string
+                    description: 动作原因，风险事件处置动作的原因说明
+            description: 风险事件处置动作，定义规则触发后的处置方式
+        RiskEvent:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: ID
+                    format: uint32
+                tenantId:
+                    type: integer
+                    description: 租户ID，多租户隔离，支持 SaaS 场景
+                    format: uint32
+                userId:
+                    type: integer
+                    description: 用户ID，关联主体，风险事件涉及的用户
+                    format: uint32
+                deviceId:
+                    type: string
+                    description: 设备ID，关联主体，风险事件涉及的设备
+                globalUserId:
+                    type: string
+                    description: 全局用户ID，跨平台唯一标识用户
+                riskType:
+                    enum:
+                        - RISK_TYPE_UNSPECIFIED
+                        - RISK_TYPE_LOGIN_ANOMALY
+                        - RISK_TYPE_BRUTE_FORCE
+                        - RISK_TYPE_CREDENTIAL_STUFFING
+                        - RISK_TYPE_FREQUENT_OPERATION
+                        - RISK_TYPE_ABNORMAL_FLOW
+                        - RISK_TYPE_DATA_EXFILTRATION
+                        - RISK_TYPE_DEVICE_CHANGE
+                        - RISK_TYPE_LOCATION_ANOMALY
+                        - RISK_TYPE_PROXY_DETECTED
+                        - RISK_TYPE_FRAUD_PAYMENT
+                        - RISK_TYPE_ABUSE_PROMOTION
+                    type: string
+                    description: 风险类型，标识风险事件的类型
+                    format: enum
+                riskLevel:
+                    enum:
+                        - RISK_LEVEL_UNSPECIFIED
+                        - RISK_LEVEL_NORMAL
+                        - RISK_LEVEL_SUSPICIOUS
+                        - RISK_LEVEL_HIGH
+                        - RISK_LEVEL_CRITICAL
+                    type: string
+                    description: 风险等级，标识风险事件的严重程度
+                    format: enum
+                riskScore:
+                    type: number
+                    description: 风险评分，0-100，风险事件的评分
+                    format: float
+                ruleId:
+                    type: integer
+                    description: 触发规则ID，标识触发风险事件的规则
+                    format: uint32
+                ruleName:
+                    type: string
+                    description: 规则名称，触发风险事件的规则名称
+                ruleContext:
+                    type: object
+                    description: 规则上下文，触发条件，结构化信息
+                relatedEventIds:
+                    type: array
+                    items:
+                        type: integer
+                        format: uint32
+                    description: 关联行为事件ID列表，风险事件关联的行为事件
+                sessionId:
+                    type: integer
+                    description: 会话ID，风险事件发生时的会话标识
+                    format: uint32
+                description:
+                    type: string
+                    description: 风险详情描述，风险事件的详细说明
+                evidence:
+                    type: object
+                    additionalProperties:
+                        type: string
+                    description: 证据，风险事件相关证据，键值对形式
+                status:
+                    enum:
+                        - RISK_EVENT_STATUS_UNSPECIFIED
+                        - PENDING
+                        - INVESTIGATING
+                        - CONFIRMED
+                        - FALSE_POSITIVE
+                        - IGNORED
+                        - AUTO_BLOCKED
+                    type: string
+                    description: 处置状态，风险事件的处理状态
+                    format: enum
+                handlerId:
+                    type: integer
+                    description: 处理人ID，风险事件的处理人
+                    format: uint32
+                handledTime:
+                    type: string
+                    description: 处理时间，风险事件被处理的时间
+                    format: date-time
+                handleRemark:
+                    type: string
+                    description: 处理备注，风险事件处理的说明
+                occurTime:
+                    type: string
+                    description: 风险事件发生时间
+                    format: date-time
+                reportTime:
+                    type: string
+                    description: 风险事件上报时间
+                    format: date-time
+                createdBy:
+                    type: integer
+                    description: 创建者用户ID
+                    format: uint32
+                updatedBy:
+                    type: integer
+                    description: 更新者用户ID
+                    format: uint32
+                deletedBy:
+                    type: integer
+                    description: 删除者用户ID
+                    format: uint32
+                createdAt:
+                    type: string
+                    description: 创建时间
+                    format: date-time
+                updatedAt:
+                    type: string
+                    description: 更新时间
+                    format: date-time
+                deletedAt:
+                    type: string
+                    description: 删除时间
+                    format: date-time
+            description: 风险事件
+        TypeErrorDetail:
+            type: object
+            properties:
+                type:
+                    type: string
+                errors:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ErrorDetail'
+            description: 按类型分组的错误详情
     responses:
         default:
             description: default kratos response

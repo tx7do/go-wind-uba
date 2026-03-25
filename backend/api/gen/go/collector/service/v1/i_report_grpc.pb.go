@@ -8,9 +8,11 @@ package servicev1
 
 import (
 	context "context"
+	v1 "go-wind-uba/api/gen/go/uba/service/v1"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -19,7 +21,8 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	ReportService_PostReport_FullMethodName = "/collector.service.v1.ReportService/PostReport"
+	ReportService_PostReport_FullMethodName  = "/collector.service.v1.ReportService/PostReport"
+	ReportService_HealthCheck_FullMethodName = "/collector.service.v1.ReportService/HealthCheck"
 )
 
 // ReportServiceClient is the client API for ReportService service.
@@ -28,8 +31,10 @@ const (
 //
 // 上报数据服务
 type ReportServiceClient interface {
-	// 提交事件
-	PostReport(ctx context.Context, in *PostReportRequest, opts ...grpc.CallOption) (*PostReportResponse, error)
+	// 提交事件（单条/批量）
+	PostReport(ctx context.Context, in *v1.PostReportRequest, opts ...grpc.CallOption) (*v1.PostReportResponse, error)
+	// 健康检查
+	HealthCheck(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*HealthCheckResponse, error)
 }
 
 type reportServiceClient struct {
@@ -40,10 +45,20 @@ func NewReportServiceClient(cc grpc.ClientConnInterface) ReportServiceClient {
 	return &reportServiceClient{cc}
 }
 
-func (c *reportServiceClient) PostReport(ctx context.Context, in *PostReportRequest, opts ...grpc.CallOption) (*PostReportResponse, error) {
+func (c *reportServiceClient) PostReport(ctx context.Context, in *v1.PostReportRequest, opts ...grpc.CallOption) (*v1.PostReportResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(PostReportResponse)
+	out := new(v1.PostReportResponse)
 	err := c.cc.Invoke(ctx, ReportService_PostReport_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *reportServiceClient) HealthCheck(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*HealthCheckResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(HealthCheckResponse)
+	err := c.cc.Invoke(ctx, ReportService_HealthCheck_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -56,8 +71,10 @@ func (c *reportServiceClient) PostReport(ctx context.Context, in *PostReportRequ
 //
 // 上报数据服务
 type ReportServiceServer interface {
-	// 提交事件
-	PostReport(context.Context, *PostReportRequest) (*PostReportResponse, error)
+	// 提交事件（单条/批量）
+	PostReport(context.Context, *v1.PostReportRequest) (*v1.PostReportResponse, error)
+	// 健康检查
+	HealthCheck(context.Context, *emptypb.Empty) (*HealthCheckResponse, error)
 	mustEmbedUnimplementedReportServiceServer()
 }
 
@@ -68,8 +85,11 @@ type ReportServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedReportServiceServer struct{}
 
-func (UnimplementedReportServiceServer) PostReport(context.Context, *PostReportRequest) (*PostReportResponse, error) {
+func (UnimplementedReportServiceServer) PostReport(context.Context, *v1.PostReportRequest) (*v1.PostReportResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method PostReport not implemented")
+}
+func (UnimplementedReportServiceServer) HealthCheck(context.Context, *emptypb.Empty) (*HealthCheckResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method HealthCheck not implemented")
 }
 func (UnimplementedReportServiceServer) mustEmbedUnimplementedReportServiceServer() {}
 func (UnimplementedReportServiceServer) testEmbeddedByValue()                       {}
@@ -93,7 +113,7 @@ func RegisterReportServiceServer(s grpc.ServiceRegistrar, srv ReportServiceServe
 }
 
 func _ReportService_PostReport_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PostReportRequest)
+	in := new(v1.PostReportRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -105,7 +125,25 @@ func _ReportService_PostReport_Handler(srv interface{}, ctx context.Context, dec
 		FullMethod: ReportService_PostReport_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ReportServiceServer).PostReport(ctx, req.(*PostReportRequest))
+		return srv.(ReportServiceServer).PostReport(ctx, req.(*v1.PostReportRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ReportService_HealthCheck_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ReportServiceServer).HealthCheck(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ReportService_HealthCheck_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ReportServiceServer).HealthCheck(ctx, req.(*emptypb.Empty))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -120,6 +158,10 @@ var ReportService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "PostReport",
 			Handler:    _ReportService_PostReport_Handler,
+		},
+		{
+			MethodName: "HealthCheck",
+			Handler:    _ReportService_HealthCheck_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

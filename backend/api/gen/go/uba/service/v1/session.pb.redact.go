@@ -11,7 +11,6 @@ import (
 	status "google.golang.org/grpc/status"
 	durationpb "google.golang.org/protobuf/types/known/durationpb"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
-	fieldmaskpb "google.golang.org/protobuf/types/known/fieldmaskpb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -23,9 +22,8 @@ var (
 	_ codes.Code
 	_ status.Status
 	_ durationpb.Duration
-	_ emptypb.Empty
-	_ fieldmaskpb.FieldMask
 	_ timestamppb.Timestamp
+	_ emptypb.Empty
 )
 
 // RegisterRedactedSessionServiceServer wraps the SessionServiceServer with the redacted server and registers the service in GRPC
@@ -44,6 +42,61 @@ type redactedSessionServiceServer struct {
 	UnsafeSessionServiceServer
 	srv    SessionServiceServer
 	bypass redact.Bypass
+}
+
+// ListSession is the redacted wrapper for the actual SessionServiceServer.ListSession method
+// Unary RPC
+func (s *redactedSessionServiceServer) ListSession(ctx context.Context, in *ListSessionRequest) (*ListSessionResponse, error) {
+	res, err := s.srv.ListSession(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
+// GetSession is the redacted wrapper for the actual SessionServiceServer.GetSession method
+// Unary RPC
+func (s *redactedSessionServiceServer) GetSession(ctx context.Context, in *GetSessionRequest) (*Session, error) {
+	res, err := s.srv.GetSession(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
+// CreateSession is the redacted wrapper for the actual SessionServiceServer.CreateSession method
+// Unary RPC
+func (s *redactedSessionServiceServer) CreateSession(ctx context.Context, in *CreateSessionRequest) (*Session, error) {
+	res, err := s.srv.CreateSession(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
+// UpdateSession is the redacted wrapper for the actual SessionServiceServer.UpdateSession method
+// Unary RPC
+func (s *redactedSessionServiceServer) UpdateSession(ctx context.Context, in *UpdateSessionRequest) (*Session, error) {
+	res, err := s.srv.UpdateSession(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
+// DeleteSession is the redacted wrapper for the actual SessionServiceServer.DeleteSession method
+// Unary RPC
+func (s *redactedSessionServiceServer) DeleteSession(ctx context.Context, in *DeleteSessionRequest) (*emptypb.Empty, error) {
+	res, err := s.srv.DeleteSession(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
 }
 
 // Redact method implementation for Session
@@ -107,5 +160,61 @@ func (x *ListSessionResponse) Redact() string {
 	// Safe field: Items
 
 	// Safe field: Total
+	return x.String()
+}
+
+// Redact method implementation for ListSessionRequest
+func (x *ListSessionRequest) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: TenantId
+
+	// Safe field: UserId
+
+	// Safe field: Page
+
+	// Safe field: PageSize
+	return x.String()
+}
+
+// Redact method implementation for GetSessionRequest
+func (x *GetSessionRequest) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Id
+	return x.String()
+}
+
+// Redact method implementation for CreateSessionRequest
+func (x *CreateSessionRequest) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Session
+	return x.String()
+}
+
+// Redact method implementation for UpdateSessionRequest
+func (x *UpdateSessionRequest) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Session
+	return x.String()
+}
+
+// Redact method implementation for DeleteSessionRequest
+func (x *DeleteSessionRequest) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Id
 	return x.String()
 }

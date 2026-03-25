@@ -552,7 +552,7 @@ var File_uba_service_v1_object_proto protoreflect.FileDescriptor
 
 const file_uba_service_v1_object_proto_rawDesc = "" +
 	"\n" +
-	"\x1buba/service/v1/object.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a google/protobuf/field_mask.proto\x1a\x1epagination/v1/pagination.proto\x1a\x1buba/service/v1/common.proto\"\xbc\x0f\n" +
+	"\x1buba/service/v1/object.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a google/protobuf/field_mask.proto\x1a\x1epagination/v1/pagination.proto\"\xbc\x0f\n" +
 	"\tObjectDim\x12N\n" +
 	"\x02id\x18\x01 \x01(\rB>\xbaG;\x92\x028自增长主键ID，唯一标识一条对象维度记录R\x02id\x12R\n" +
 	"\ttenant_id\x18\x02 \x01(\rB5\xbaG2\x92\x02/租户ID，多租户隔离，支持 SaaS 场景R\btenantId\x12T\n" +
@@ -690,7 +690,6 @@ func file_uba_service_v1_object_proto_init() {
 	if File_uba_service_v1_object_proto != nil {
 		return
 	}
-	file_uba_service_v1_common_proto_init()
 	file_uba_service_v1_object_proto_msgTypes[0].OneofWrappers = []any{}
 	file_uba_service_v1_object_proto_msgTypes[2].OneofWrappers = []any{
 		(*GetObjectDimRequest_Id)(nil),

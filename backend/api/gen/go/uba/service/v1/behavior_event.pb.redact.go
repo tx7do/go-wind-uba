@@ -53,6 +53,39 @@ func (s *redactedBehaviorEventServiceServer) Create(ctx context.Context, in *Beh
 	return res, err
 }
 
+// ListBehaviorEvent is the redacted wrapper for the actual BehaviorEventServiceServer.ListBehaviorEvent method
+// Unary RPC
+func (s *redactedBehaviorEventServiceServer) ListBehaviorEvent(ctx context.Context, in *ListBehaviorEventRequest) (*ListBehaviorEventResponse, error) {
+	res, err := s.srv.ListBehaviorEvent(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
+// GetBehaviorEvent is the redacted wrapper for the actual BehaviorEventServiceServer.GetBehaviorEvent method
+// Unary RPC
+func (s *redactedBehaviorEventServiceServer) GetBehaviorEvent(ctx context.Context, in *GetBehaviorEventRequest) (*BehaviorEvent, error) {
+	res, err := s.srv.GetBehaviorEvent(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
+// DeleteBehaviorEvent is the redacted wrapper for the actual BehaviorEventServiceServer.DeleteBehaviorEvent method
+// Unary RPC
+func (s *redactedBehaviorEventServiceServer) DeleteBehaviorEvent(ctx context.Context, in *DeleteBehaviorEventRequest) (*emptypb.Empty, error) {
+	res, err := s.srv.DeleteBehaviorEvent(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
 // Redact method implementation for BehaviorEvent
 func (x *BehaviorEvent) Redact() string {
 	if x == nil {
@@ -152,5 +185,47 @@ func (x *ListBehaviorEventResponse) Redact() string {
 	// Safe field: Items
 
 	// Safe field: Total
+	return x.String()
+}
+
+// Redact method implementation for ListBehaviorEventRequest
+func (x *ListBehaviorEventRequest) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: TenantId
+
+	// Safe field: EventName
+
+	// Safe field: UserId
+
+	// Safe field: StartTime
+
+	// Safe field: EndTime
+
+	// Safe field: Page
+
+	// Safe field: PageSize
+	return x.String()
+}
+
+// Redact method implementation for GetBehaviorEventRequest
+func (x *GetBehaviorEventRequest) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: EventId
+	return x.String()
+}
+
+// Redact method implementation for DeleteBehaviorEventRequest
+func (x *DeleteBehaviorEventRequest) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: EventId
 	return x.String()
 }

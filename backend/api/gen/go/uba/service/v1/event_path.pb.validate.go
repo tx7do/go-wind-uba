@@ -515,3 +515,454 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = ListEventPathResponseValidationError{}
+
+// Validate checks the field values on ListEventPathRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *ListEventPathRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on ListEventPathRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// ListEventPathRequestMultiError, or nil if none found.
+func (m *ListEventPathRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *ListEventPathRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for TenantId
+
+	// no validation rules for UserId
+
+	// no validation rules for SessionId
+
+	// no validation rules for Page
+
+	// no validation rules for PageSize
+
+	if len(errors) > 0 {
+		return ListEventPathRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// ListEventPathRequestMultiError is an error wrapping multiple validation
+// errors returned by ListEventPathRequest.ValidateAll() if the designated
+// constraints aren't met.
+type ListEventPathRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m ListEventPathRequestMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m ListEventPathRequestMultiError) AllErrors() []error { return m }
+
+// ListEventPathRequestValidationError is the validation error returned by
+// ListEventPathRequest.Validate if the designated constraints aren't met.
+type ListEventPathRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e ListEventPathRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e ListEventPathRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e ListEventPathRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e ListEventPathRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e ListEventPathRequestValidationError) ErrorName() string {
+	return "ListEventPathRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e ListEventPathRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sListEventPathRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = ListEventPathRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = ListEventPathRequestValidationError{}
+
+// Validate checks the field values on GetEventPathRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *GetEventPathRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on GetEventPathRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// GetEventPathRequestMultiError, or nil if none found.
+func (m *GetEventPathRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *GetEventPathRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for PathId
+
+	if len(errors) > 0 {
+		return GetEventPathRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// GetEventPathRequestMultiError is an error wrapping multiple validation
+// errors returned by GetEventPathRequest.ValidateAll() if the designated
+// constraints aren't met.
+type GetEventPathRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m GetEventPathRequestMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m GetEventPathRequestMultiError) AllErrors() []error { return m }
+
+// GetEventPathRequestValidationError is the validation error returned by
+// GetEventPathRequest.Validate if the designated constraints aren't met.
+type GetEventPathRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e GetEventPathRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e GetEventPathRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e GetEventPathRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e GetEventPathRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e GetEventPathRequestValidationError) ErrorName() string {
+	return "GetEventPathRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e GetEventPathRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sGetEventPathRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = GetEventPathRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = GetEventPathRequestValidationError{}
+
+// Validate checks the field values on CreateEventPathRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *CreateEventPathRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on CreateEventPathRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// CreateEventPathRequestMultiError, or nil if none found.
+func (m *CreateEventPathRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *CreateEventPathRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if all {
+		switch v := interface{}(m.GetEventPath()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, CreateEventPathRequestValidationError{
+					field:  "EventPath",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, CreateEventPathRequestValidationError{
+					field:  "EventPath",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetEventPath()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return CreateEventPathRequestValidationError{
+				field:  "EventPath",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if len(errors) > 0 {
+		return CreateEventPathRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// CreateEventPathRequestMultiError is an error wrapping multiple validation
+// errors returned by CreateEventPathRequest.ValidateAll() if the designated
+// constraints aren't met.
+type CreateEventPathRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m CreateEventPathRequestMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m CreateEventPathRequestMultiError) AllErrors() []error { return m }
+
+// CreateEventPathRequestValidationError is the validation error returned by
+// CreateEventPathRequest.Validate if the designated constraints aren't met.
+type CreateEventPathRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e CreateEventPathRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e CreateEventPathRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e CreateEventPathRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e CreateEventPathRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e CreateEventPathRequestValidationError) ErrorName() string {
+	return "CreateEventPathRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e CreateEventPathRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sCreateEventPathRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = CreateEventPathRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = CreateEventPathRequestValidationError{}
+
+// Validate checks the field values on DeleteEventPathRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *DeleteEventPathRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on DeleteEventPathRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// DeleteEventPathRequestMultiError, or nil if none found.
+func (m *DeleteEventPathRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *DeleteEventPathRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for PathId
+
+	if len(errors) > 0 {
+		return DeleteEventPathRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// DeleteEventPathRequestMultiError is an error wrapping multiple validation
+// errors returned by DeleteEventPathRequest.ValidateAll() if the designated
+// constraints aren't met.
+type DeleteEventPathRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m DeleteEventPathRequestMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m DeleteEventPathRequestMultiError) AllErrors() []error { return m }
+
+// DeleteEventPathRequestValidationError is the validation error returned by
+// DeleteEventPathRequest.Validate if the designated constraints aren't met.
+type DeleteEventPathRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e DeleteEventPathRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e DeleteEventPathRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e DeleteEventPathRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e DeleteEventPathRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e DeleteEventPathRequestValidationError) ErrorName() string {
+	return "DeleteEventPathRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e DeleteEventPathRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sDeleteEventPathRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = DeleteEventPathRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = DeleteEventPathRequestValidationError{}

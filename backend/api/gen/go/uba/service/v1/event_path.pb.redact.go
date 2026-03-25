@@ -9,9 +9,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	durationpb "google.golang.org/protobuf/types/known/durationpb"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
-	fieldmaskpb "google.golang.org/protobuf/types/known/fieldmaskpb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -22,10 +20,8 @@ var (
 	_ redact.Redactor
 	_ codes.Code
 	_ status.Status
-	_ emptypb.Empty
 	_ timestamppb.Timestamp
-	_ durationpb.Duration
-	_ fieldmaskpb.FieldMask
+	_ emptypb.Empty
 )
 
 // RegisterRedactedEventPathServiceServer wraps the EventPathServiceServer with the redacted server and registers the service in GRPC
@@ -44,6 +40,50 @@ type redactedEventPathServiceServer struct {
 	UnsafeEventPathServiceServer
 	srv    EventPathServiceServer
 	bypass redact.Bypass
+}
+
+// ListEventPath is the redacted wrapper for the actual EventPathServiceServer.ListEventPath method
+// Unary RPC
+func (s *redactedEventPathServiceServer) ListEventPath(ctx context.Context, in *ListEventPathRequest) (*ListEventPathResponse, error) {
+	res, err := s.srv.ListEventPath(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
+// GetEventPath is the redacted wrapper for the actual EventPathServiceServer.GetEventPath method
+// Unary RPC
+func (s *redactedEventPathServiceServer) GetEventPath(ctx context.Context, in *GetEventPathRequest) (*EventPath, error) {
+	res, err := s.srv.GetEventPath(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
+// CreateEventPath is the redacted wrapper for the actual EventPathServiceServer.CreateEventPath method
+// Unary RPC
+func (s *redactedEventPathServiceServer) CreateEventPath(ctx context.Context, in *CreateEventPathRequest) (*EventPath, error) {
+	res, err := s.srv.CreateEventPath(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
+// DeleteEventPath is the redacted wrapper for the actual EventPathServiceServer.DeleteEventPath method
+// Unary RPC
+func (s *redactedEventPathServiceServer) DeleteEventPath(ctx context.Context, in *DeleteEventPathRequest) (*emptypb.Empty, error) {
+	res, err := s.srv.DeleteEventPath(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
 }
 
 // Redact method implementation for PathNode
@@ -103,5 +143,53 @@ func (x *ListEventPathResponse) Redact() string {
 	// Safe field: Items
 
 	// Safe field: Total
+	return x.String()
+}
+
+// Redact method implementation for ListEventPathRequest
+func (x *ListEventPathRequest) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: TenantId
+
+	// Safe field: UserId
+
+	// Safe field: SessionId
+
+	// Safe field: Page
+
+	// Safe field: PageSize
+	return x.String()
+}
+
+// Redact method implementation for GetEventPathRequest
+func (x *GetEventPathRequest) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: PathId
+	return x.String()
+}
+
+// Redact method implementation for CreateEventPathRequest
+func (x *CreateEventPathRequest) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: EventPath
+	return x.String()
+}
+
+// Redact method implementation for DeleteEventPathRequest
+func (x *DeleteEventPathRequest) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: PathId
 	return x.String()
 }

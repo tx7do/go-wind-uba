@@ -113,6 +113,12 @@ func NewRestServer(
 	operationAuditLogService *service.OperationAuditLogService,
 	permissionAuditLogService *service.PermissionAuditLogService,
 
+	applicationService *service.ApplicationService,
+	idMappingService *service.IDMappingService,
+	riskRuleService *service.RiskRuleService,
+	tagDefinitionService *service.TagDefinitionService,
+	userTagService *service.UserTagService,
+	webhookService *service.WebhookService,
 ) *http.Server {
 	cfg := ctx.GetConfig()
 
@@ -157,6 +163,13 @@ func NewRestServer(
 	adminV1.RegisterInternalMessageServiceHTTPServer(srv, internalMessageService)
 	adminV1.RegisterInternalMessageCategoryServiceHTTPServer(srv, internalMessageCategoryService)
 	adminV1.RegisterInternalMessageRecipientServiceHTTPServer(srv, internalMessageRecipientService)
+
+	adminV1.RegisterApplicationServiceHTTPServer(srv, applicationService)
+	adminV1.RegisterIDMappingServiceHTTPServer(srv, idMappingService)
+	adminV1.RegisterRiskRuleServiceHTTPServer(srv, riskRuleService)
+	adminV1.RegisterTagDefinitionServiceHTTPServer(srv, tagDefinitionService)
+	adminV1.RegisterUserTagServiceHTTPServer(srv, userTagService)
+	adminV1.RegisterWebhookServiceHTTPServer(srv, webhookService)
 
 	// 注册文件传输服务，用于处理文件上传下载等功能
 	// TODO 它不能够使用代码生成器生成的Handler，需要手动注册。代码生成器生成的Handler无法处理文件上传下载的请求。

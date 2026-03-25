@@ -63,4 +63,11 @@ var ProviderSet = wire.NewSet(
 	data.NewDataAccessAuditLogServiceClient,
 	data.NewLoginAuditLogServiceClient,
 	data.NewOperationAuditLogServiceClient,
+
+	data.NewApplicationServiceClient,
+	data.NewIDMappingServiceClient,
+	data.NewRiskRuleServiceClient,
+	data.NewTagDefinitionServiceClient,
+	data.NewUserTagServiceClient,
+	data.NewWebhookServiceClient,
 )

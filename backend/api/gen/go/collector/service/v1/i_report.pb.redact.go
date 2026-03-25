@@ -6,6 +6,7 @@ package servicev1
 import (
 	context "context"
 	redact "github.com/menta2k/protoc-gen-redact/v3/redact/v3"
+	ubapb "go-wind-uba/api/gen/go/uba/service/v1"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -20,6 +21,7 @@ var (
 	_ codes.Code
 	_ status.Status
 	_ emptypb.Empty
+	_ ubapb.PostReportRequest
 )
 
 // RegisterRedactedReportServiceServer wraps the ReportServiceServer with the redacted server and registers the service in GRPC
@@ -42,7 +44,7 @@ type redactedReportServiceServer struct {
 
 // PostReport is the redacted wrapper for the actual ReportServiceServer.PostReport method
 // Unary RPC
-func (s *redactedReportServiceServer) PostReport(ctx context.Context, in *PostReportRequest) (*PostReportResponse, error) {
+func (s *redactedReportServiceServer) PostReport(ctx context.Context, in *ubapb.PostReportRequest) (*ubapb.PostReportResponse, error) {
 	res, err := s.srv.PostReport(ctx, in)
 	if !s.bypass.CheckInternal(ctx) {
 		// Apply redaction to the response
@@ -51,34 +53,25 @@ func (s *redactedReportServiceServer) PostReport(ctx context.Context, in *PostRe
 	return res, err
 }
 
-// Redact method implementation for PostReportRequest
-func (x *PostReportRequest) Redact() string {
-	if x == nil {
-		return ""
+// HealthCheck is the redacted wrapper for the actual ReportServiceServer.HealthCheck method
+// Unary RPC
+func (s *redactedReportServiceServer) HealthCheck(ctx context.Context, in *emptypb.Empty) (*HealthCheckResponse, error) {
+	res, err := s.srv.HealthCheck(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
 	}
-
-	// Safe field: ReportType
-
-	// Safe field: AppId
-
-	// Safe field: AppKey
-
-	// Safe field: EventName
-
-	// Safe field: Debug
-
-	// Safe field: Content
-	return x.String()
+	return res, err
 }
 
-// Redact method implementation for PostReportResponse
-func (x *PostReportResponse) Redact() string {
+// Redact method implementation for HealthCheckResponse
+func (x *HealthCheckResponse) Redact() string {
 	if x == nil {
 		return ""
 	}
 
-	// Safe field: Code
+	// Safe field: Status
 
-	// Safe field: Msg
+	// Safe field: Timestamp
 	return x.String()
 }

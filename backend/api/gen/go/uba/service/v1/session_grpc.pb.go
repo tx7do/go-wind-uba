@@ -7,7 +7,11 @@
 package ubapb
 
 import (
+	context "context"
 	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -15,12 +19,30 @@ import (
 // Requires gRPC-Go v1.64.0 or later.
 const _ = grpc.SupportPackageIsVersion9
 
+const (
+	SessionService_ListSession_FullMethodName   = "/uba.service.v1.SessionService/ListSession"
+	SessionService_GetSession_FullMethodName    = "/uba.service.v1.SessionService/GetSession"
+	SessionService_CreateSession_FullMethodName = "/uba.service.v1.SessionService/CreateSession"
+	SessionService_UpdateSession_FullMethodName = "/uba.service.v1.SessionService/UpdateSession"
+	SessionService_DeleteSession_FullMethodName = "/uba.service.v1.SessionService/DeleteSession"
+)
+
 // SessionServiceClient is the client API for SessionService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 //
 // 会话服务
 type SessionServiceClient interface {
+	// 分页查询会话
+	ListSession(ctx context.Context, in *ListSessionRequest, opts ...grpc.CallOption) (*ListSessionResponse, error)
+	// 查询单条会话详情
+	GetSession(ctx context.Context, in *GetSessionRequest, opts ...grpc.CallOption) (*Session, error)
+	// 创建会话
+	CreateSession(ctx context.Context, in *CreateSessionRequest, opts ...grpc.CallOption) (*Session, error)
+	// 更新会话
+	UpdateSession(ctx context.Context, in *UpdateSessionRequest, opts ...grpc.CallOption) (*Session, error)
+	// 删除会话
+	DeleteSession(ctx context.Context, in *DeleteSessionRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type sessionServiceClient struct {
@@ -31,12 +53,72 @@ func NewSessionServiceClient(cc grpc.ClientConnInterface) SessionServiceClient {
 	return &sessionServiceClient{cc}
 }
 
+func (c *sessionServiceClient) ListSession(ctx context.Context, in *ListSessionRequest, opts ...grpc.CallOption) (*ListSessionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListSessionResponse)
+	err := c.cc.Invoke(ctx, SessionService_ListSession_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *sessionServiceClient) GetSession(ctx context.Context, in *GetSessionRequest, opts ...grpc.CallOption) (*Session, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Session)
+	err := c.cc.Invoke(ctx, SessionService_GetSession_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *sessionServiceClient) CreateSession(ctx context.Context, in *CreateSessionRequest, opts ...grpc.CallOption) (*Session, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Session)
+	err := c.cc.Invoke(ctx, SessionService_CreateSession_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *sessionServiceClient) UpdateSession(ctx context.Context, in *UpdateSessionRequest, opts ...grpc.CallOption) (*Session, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Session)
+	err := c.cc.Invoke(ctx, SessionService_UpdateSession_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *sessionServiceClient) DeleteSession(ctx context.Context, in *DeleteSessionRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, SessionService_DeleteSession_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // SessionServiceServer is the server API for SessionService service.
 // All implementations must embed UnimplementedSessionServiceServer
 // for forward compatibility.
 //
 // 会话服务
 type SessionServiceServer interface {
+	// 分页查询会话
+	ListSession(context.Context, *ListSessionRequest) (*ListSessionResponse, error)
+	// 查询单条会话详情
+	GetSession(context.Context, *GetSessionRequest) (*Session, error)
+	// 创建会话
+	CreateSession(context.Context, *CreateSessionRequest) (*Session, error)
+	// 更新会话
+	UpdateSession(context.Context, *UpdateSessionRequest) (*Session, error)
+	// 删除会话
+	DeleteSession(context.Context, *DeleteSessionRequest) (*emptypb.Empty, error)
 	mustEmbedUnimplementedSessionServiceServer()
 }
 
@@ -47,6 +129,21 @@ type SessionServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedSessionServiceServer struct{}
 
+func (UnimplementedSessionServiceServer) ListSession(context.Context, *ListSessionRequest) (*ListSessionResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ListSession not implemented")
+}
+func (UnimplementedSessionServiceServer) GetSession(context.Context, *GetSessionRequest) (*Session, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetSession not implemented")
+}
+func (UnimplementedSessionServiceServer) CreateSession(context.Context, *CreateSessionRequest) (*Session, error) {
+	return nil, status.Error(codes.Unimplemented, "method CreateSession not implemented")
+}
+func (UnimplementedSessionServiceServer) UpdateSession(context.Context, *UpdateSessionRequest) (*Session, error) {
+	return nil, status.Error(codes.Unimplemented, "method UpdateSession not implemented")
+}
+func (UnimplementedSessionServiceServer) DeleteSession(context.Context, *DeleteSessionRequest) (*emptypb.Empty, error) {
+	return nil, status.Error(codes.Unimplemented, "method DeleteSession not implemented")
+}
 func (UnimplementedSessionServiceServer) mustEmbedUnimplementedSessionServiceServer() {}
 func (UnimplementedSessionServiceServer) testEmbeddedByValue()                        {}
 
@@ -68,13 +165,124 @@ func RegisterSessionServiceServer(s grpc.ServiceRegistrar, srv SessionServiceSer
 	s.RegisterService(&SessionService_ServiceDesc, srv)
 }
 
+func _SessionService_ListSession_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListSessionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SessionServiceServer).ListSession(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: SessionService_ListSession_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SessionServiceServer).ListSession(ctx, req.(*ListSessionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _SessionService_GetSession_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetSessionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SessionServiceServer).GetSession(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: SessionService_GetSession_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SessionServiceServer).GetSession(ctx, req.(*GetSessionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _SessionService_CreateSession_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateSessionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SessionServiceServer).CreateSession(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: SessionService_CreateSession_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SessionServiceServer).CreateSession(ctx, req.(*CreateSessionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _SessionService_UpdateSession_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateSessionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SessionServiceServer).UpdateSession(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: SessionService_UpdateSession_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SessionServiceServer).UpdateSession(ctx, req.(*UpdateSessionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _SessionService_DeleteSession_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteSessionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SessionServiceServer).DeleteSession(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: SessionService_DeleteSession_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SessionServiceServer).DeleteSession(ctx, req.(*DeleteSessionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // SessionService_ServiceDesc is the grpc.ServiceDesc for SessionService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var SessionService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "uba.service.v1.SessionService",
 	HandlerType: (*SessionServiceServer)(nil),
-	Methods:     []grpc.MethodDesc{},
-	Streams:     []grpc.StreamDesc{},
-	Metadata:    "uba/service/v1/session.proto",
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "ListSession",
+			Handler:    _SessionService_ListSession_Handler,
+		},
+		{
+			MethodName: "GetSession",
+			Handler:    _SessionService_GetSession_Handler,
+		},
+		{
+			MethodName: "CreateSession",
+			Handler:    _SessionService_CreateSession_Handler,
+		},
+		{
+			MethodName: "UpdateSession",
+			Handler:    _SessionService_UpdateSession_Handler,
+		},
+		{
+			MethodName: "DeleteSession",
+			Handler:    _SessionService_DeleteSession_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "uba/service/v1/session.proto",
 }
