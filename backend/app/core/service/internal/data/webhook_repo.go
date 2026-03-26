@@ -217,7 +217,7 @@ func (r *WebhookRepo) Update(ctx context.Context, req *ubaV1.UpdateWebhookReques
 		}
 	}
 
-	builder := r.entClient.Client().Debug().Webhook.UpdateOneID(req.GetId())
+	builder := r.entClient.Client().Webhook.UpdateOneID(req.GetId())
 	dto, err := r.repository.UpdateOne(ctx, builder, req.Data, req.GetUpdateMask(),
 		func(dto *ubaV1.Webhook) {
 			builder.
@@ -251,7 +251,7 @@ func (r *WebhookRepo) Delete(ctx context.Context, req *ubaV1.DeleteWebhookReques
 		return ubaV1.ErrorBadRequest("invalid parameter")
 	}
 
-	builder := r.entClient.Client().Debug().Webhook.Delete()
+	builder := r.entClient.Client().Webhook.Delete()
 
 	_, err := r.repository.Delete(ctx, builder, func(s *sql.Selector) {
 		s.Where(sql.EQ(webhook.FieldID, req.GetId()))

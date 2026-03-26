@@ -201,7 +201,7 @@ func (r *InternalMessageCategoryRepo) Update(ctx context.Context, req *internalM
 		}
 	}
 
-	builder := r.entClient.Client().Debug().InternalMessageCategory.Update()
+	builder := r.entClient.Client().InternalMessageCategory.Update()
 	err := r.repository.UpdateX(ctx, builder, req.Data, req.GetUpdateMask(),
 		func(dto *internalMessageV1.InternalMessageCategory) {
 			builder.
@@ -240,7 +240,7 @@ func (r *InternalMessageCategoryRepo) Delete(ctx context.Context, req *internalM
 		ids = append(ids, id)
 	}
 
-	builder := r.entClient.Client().Debug().InternalMessageCategory.Delete()
+	builder := r.entClient.Client().InternalMessageCategory.Delete()
 
 	_, err = r.repository.Delete(ctx, builder, func(s *sql.Selector) {
 		s.Where(sql.In(internalmessagecategory.FieldID, ids...))

@@ -181,7 +181,7 @@ func (r *InternalMessageRecipientRepo) Update(ctx context.Context, req *internal
 		}
 	}
 
-	builder := r.entClient.Client().Debug().InternalMessageRecipient.Update()
+	builder := r.entClient.Client().InternalMessageRecipient.Update()
 	err := r.repository.UpdateX(ctx, builder, req.Data, req.GetUpdateMask(),
 		func(dto *internalMessageV1.InternalMessageRecipient) {
 			builder.

@@ -26,6 +26,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// 应用状态
 type Application_Status int32
 
 const (
@@ -75,22 +76,92 @@ func (Application_Status) EnumDescriptor() ([]byte, []int) {
 	return file_uba_service_v1_application_proto_rawDescGZIP(), []int{0, 0}
 }
 
+// 应用类型
+type Application_Type int32
+
+const (
+	Application_APPLICATION_TYPE_UNSPECIFIED Application_Type = 0
+	Application_GAME                         Application_Type = 1 // 游戏
+	Application_ECOMMERCE                    Application_Type = 2 // 电商
+	Application_CONTENT                      Application_Type = 3 // 内容
+	Application_TOOL                         Application_Type = 4 // 工具
+	Application_FINANCE                      Application_Type = 5 // 金融
+	Application_SOCIAL                       Application_Type = 6 // 社交
+	Application_EDUCATION                    Application_Type = 7 // 教育
+	Application_OTHER                        Application_Type = 8 // 其他
+)
+
+// Enum value maps for Application_Type.
+var (
+	Application_Type_name = map[int32]string{
+		0: "APPLICATION_TYPE_UNSPECIFIED",
+		1: "GAME",
+		2: "ECOMMERCE",
+		3: "CONTENT",
+		4: "TOOL",
+		5: "FINANCE",
+		6: "SOCIAL",
+		7: "EDUCATION",
+		8: "OTHER",
+	}
+	Application_Type_value = map[string]int32{
+		"APPLICATION_TYPE_UNSPECIFIED": 0,
+		"GAME":                         1,
+		"ECOMMERCE":                    2,
+		"CONTENT":                      3,
+		"TOOL":                         4,
+		"FINANCE":                      5,
+		"SOCIAL":                       6,
+		"EDUCATION":                    7,
+		"OTHER":                        8,
+	}
+)
+
+func (x Application_Type) Enum() *Application_Type {
+	p := new(Application_Type)
+	*p = x
+	return p
+}
+
+func (x Application_Type) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (Application_Type) Descriptor() protoreflect.EnumDescriptor {
+	return file_uba_service_v1_application_proto_enumTypes[1].Descriptor()
+}
+
+func (Application_Type) Type() protoreflect.EnumType {
+	return &file_uba_service_v1_application_proto_enumTypes[1]
+}
+
+func (x Application_Type) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use Application_Type.Descriptor instead.
+func (Application_Type) EnumDescriptor() ([]byte, []int) {
+	return file_uba_service_v1_application_proto_rawDescGZIP(), []int{0, 1}
+}
+
 // UBA应用
 type Application struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            uint32                 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`                                                      // ID
-	Name          *string                `protobuf:"bytes,2,opt,name=name,proto3,oneof" json:"name,omitempty"`                                             // UBA应用名称
-	AppId         *string                `protobuf:"bytes,3,opt,name=app_id,json=appId,proto3,oneof" json:"app_id,omitempty"`                              // UBA应用唯一标识（上报时使用）
-	AppKey        *string                `protobuf:"bytes,4,opt,name=app_key,json=appKey,proto3,oneof" json:"app_key,omitempty"`                           // 密钥（签名/鉴权）
-	AppSecret     *string                `protobuf:"bytes,5,opt,name=app_secret,json=appSecret,proto3,oneof" json:"app_secret,omitempty"`                  // 密钥
-	Type          *Platform              `protobuf:"varint,6,opt,name=type,proto3,enum=uba.service.v1.Platform,oneof" json:"type,omitempty"`               // 应用类型
-	Status        *Application_Status    `protobuf:"varint,7,opt,name=status,proto3,enum=uba.service.v1.Application_Status,oneof" json:"status,omitempty"` // 应用状态
-	Remark        *string                `protobuf:"bytes,8,opt,name=remark,proto3,oneof" json:"remark,omitempty"`                                         // 备注信息
-	Desensitize   *bool                  `protobuf:"varint,9,opt,name=desensitize,proto3,oneof" json:"desensitize,omitempty"`                              // 是否开启脱敏
-	TenantId      *uint32                `protobuf:"varint,10,opt,name=tenant_id,json=tenantId,proto3,oneof" json:"tenant_id,omitempty"`                   // 租户ID
-	TenantName    *string                `protobuf:"bytes,11,opt,name=tenant_name,json=tenantName,proto3,oneof" json:"tenant_name,omitempty"`              // 租户名称
-	WebhookUrl    *string                `protobuf:"bytes,12,opt,name=webhook_url,json=webhookUrl,proto3,oneof" json:"webhook_url,omitempty"`              // 事件回调 URL
-	WebhookSecret *string                `protobuf:"bytes,13,opt,name=webhook_secret,json=webhookSecret,proto3,oneof" json:"webhook_secret,omitempty"`     // 回调签名密钥
+	state     protoimpl.MessageState `protogen:"open.v1"`
+	Id        uint32                 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`                                                // ID
+	Name      *string                `protobuf:"bytes,2,opt,name=name,proto3,oneof" json:"name,omitempty"`                                       // UBA应用名称
+	AppId     *string                `protobuf:"bytes,3,opt,name=app_id,json=appId,proto3,oneof" json:"app_id,omitempty"`                        // UBA应用唯一标识（上报时使用）
+	AppKey    *string                `protobuf:"bytes,4,opt,name=app_key,json=appKey,proto3,oneof" json:"app_key,omitempty"`                     // 应用Key
+	AppSecret *string                `protobuf:"bytes,5,opt,name=app_secret,json=appSecret,proto3,oneof" json:"app_secret,omitempty"`            // 应用密钥
+	Type      *Application_Type      `protobuf:"varint,6,opt,name=type,proto3,enum=uba.service.v1.Application_Type,oneof" json:"type,omitempty"` // 应用类型
+	// 支持平台列表
+	Platforms     []string               `protobuf:"bytes,7,rep,name=platforms,proto3" json:"platforms,omitempty"`
+	Status        *Application_Status    `protobuf:"varint,8,opt,name=status,proto3,enum=uba.service.v1.Application_Status,oneof" json:"status,omitempty"` // 应用状态
+	Remark        *string                `protobuf:"bytes,9,opt,name=remark,proto3,oneof" json:"remark,omitempty"`                                         // 备注信息
+	Desensitize   *bool                  `protobuf:"varint,10,opt,name=desensitize,proto3,oneof" json:"desensitize,omitempty"`                             // 是否开启脱敏
+	WebhookUrl    *string                `protobuf:"bytes,11,opt,name=webhook_url,json=webhookUrl,proto3,oneof" json:"webhook_url,omitempty"`              // 事件回调 URL
+	WebhookSecret *string                `protobuf:"bytes,12,opt,name=webhook_secret,json=webhookSecret,proto3,oneof" json:"webhook_secret,omitempty"`     // 回调签名密钥
+	TenantId      *uint32                `protobuf:"varint,20,opt,name=tenant_id,json=tenantId,proto3,oneof" json:"tenant_id,omitempty"`                   // 租户ID
+	TenantName    *string                `protobuf:"bytes,21,opt,name=tenant_name,json=tenantName,proto3,oneof" json:"tenant_name,omitempty"`              // 租户名称
 	CreatedBy     *uint32                `protobuf:"varint,100,opt,name=created_by,json=createdBy,proto3,oneof" json:"created_by,omitempty"`               // 创建者用户ID
 	UpdatedBy     *uint32                `protobuf:"varint,101,opt,name=updated_by,json=updatedBy,proto3,oneof" json:"updated_by,omitempty"`               // 更新者用户ID
 	DeletedBy     *uint32                `protobuf:"varint,102,opt,name=deleted_by,json=deletedBy,proto3,oneof" json:"deleted_by,omitempty"`               // 删除者用户ID
@@ -166,11 +237,18 @@ func (x *Application) GetAppSecret() string {
 	return ""
 }
 
-func (x *Application) GetType() Platform {
+func (x *Application) GetType() Application_Type {
 	if x != nil && x.Type != nil {
 		return *x.Type
 	}
-	return Platform_PLATFORM_UNSPECIFIED
+	return Application_APPLICATION_TYPE_UNSPECIFIED
+}
+
+func (x *Application) GetPlatforms() []string {
+	if x != nil {
+		return x.Platforms
+	}
+	return nil
 }
 
 func (x *Application) GetStatus() Application_Status {
@@ -194,20 +272,6 @@ func (x *Application) GetDesensitize() bool {
 	return false
 }
 
-func (x *Application) GetTenantId() uint32 {
-	if x != nil && x.TenantId != nil {
-		return *x.TenantId
-	}
-	return 0
-}
-
-func (x *Application) GetTenantName() string {
-	if x != nil && x.TenantName != nil {
-		return *x.TenantName
-	}
-	return ""
-}
-
 func (x *Application) GetWebhookUrl() string {
 	if x != nil && x.WebhookUrl != nil {
 		return *x.WebhookUrl
@@ -218,6 +282,20 @@ func (x *Application) GetWebhookUrl() string {
 func (x *Application) GetWebhookSecret() string {
 	if x != nil && x.WebhookSecret != nil {
 		return *x.WebhookSecret
+	}
+	return ""
+}
+
+func (x *Application) GetTenantId() uint32 {
+	if x != nil && x.TenantId != nil {
+		return *x.TenantId
+	}
+	return 0
+}
+
+func (x *Application) GetTenantName() string {
+	if x != nil && x.TenantName != nil {
+		return *x.TenantName
 	}
 	return ""
 }
@@ -629,26 +707,27 @@ var File_uba_service_v1_application_proto protoreflect.FileDescriptor
 
 const file_uba_service_v1_application_proto_rawDesc = "" +
 	"\n" +
-	" uba/service/v1/application.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a google/protobuf/field_mask.proto\x1a\x1epagination/v1/pagination.proto\x1a\x1buba/service/v1/common.proto\"\xfd\v\n" +
+	" uba/service/v1/application.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a google/protobuf/field_mask.proto\x1a\x1epagination/v1/pagination.proto\x1a\x1buba/service/v1/common.proto\"\xca\r\n" +
 	"\vApplication\x12\x18\n" +
 	"\x02id\x18\x01 \x01(\rB\b\xbaG\x05\x92\x02\x02IDR\x02id\x12.\n" +
 	"\x04name\x18\x02 \x01(\tB\x15\xbaG\x12\x92\x02\x0fUBA应用名称H\x00R\x04name\x88\x01\x01\x12L\n" +
-	"\x06app_id\x18\x03 \x01(\tB0\xbaG-\x92\x02*UBA应用唯一标识（上报时使用）H\x01R\x05appId\x88\x01\x01\x12=\n" +
-	"\aapp_key\x18\x04 \x01(\tB\x1f\xbaG\x1c\x92\x02\x19密钥（签名/鉴权）H\x02R\x06appKey\x88\x01\x01\x120\n" +
+	"\x06app_id\x18\x03 \x01(\tB0\xbaG-\x92\x02*UBA应用唯一标识（上报时使用）H\x01R\x05appId\x88\x01\x01\x12-\n" +
+	"\aapp_key\x18\x04 \x01(\tB\x0f\xbaG\f\x92\x02\t应用KeyH\x02R\x06appKey\x88\x01\x01\x126\n" +
 	"\n" +
-	"app_secret\x18\x05 \x01(\tB\f\xbaG\t\x92\x02\x06密钥H\x03R\tappSecret\x88\x01\x01\x12E\n" +
-	"\x04type\x18\x06 \x01(\x0e2\x18.uba.service.v1.PlatformB\x12\xbaG\x0f\x92\x02\f应用类型H\x04R\x04type\x88\x01\x01\x12Z\n" +
-	"\x06status\x18\a \x01(\x0e2\".uba.service.v1.Application.StatusB\x19\xbaG\x16\x8a\x02\x04\x1a\x02ON\x92\x02\f应用状态H\x05R\x06status\x88\x01\x01\x12/\n" +
-	"\x06remark\x18\b \x01(\tB\x12\xbaG\x0f\x92\x02\f备注信息H\x06R\x06remark\x88\x01\x01\x12?\n" +
-	"\vdesensitize\x18\t \x01(\bB\x18\xbaG\x15\x92\x02\x12是否开启脱敏H\aR\vdesensitize\x88\x01\x01\x120\n" +
-	"\ttenant_id\x18\n" +
-	" \x01(\rB\x0e\xbaG\v\x92\x02\b租户IDH\bR\btenantId\x88\x01\x01\x128\n" +
-	"\vtenant_name\x18\v \x01(\tB\x12\xbaG\x0f\x92\x02\f租户名称H\tR\n" +
-	"tenantName\x88\x01\x01\x12<\n" +
-	"\vwebhook_url\x18\f \x01(\tB\x16\xbaG\x13\x92\x02\x10事件回调 URLH\n" +
-	"R\n" +
+	"app_secret\x18\x05 \x01(\tB\x12\xbaG\x0f\x92\x02\f应用密钥H\x03R\tappSecret\x88\x01\x01\x12M\n" +
+	"\x04type\x18\x06 \x01(\x0e2 .uba.service.v1.Application.TypeB\x12\xbaG\x0f\x92\x02\f应用类型H\x04R\x04type\x88\x01\x01\x12?\n" +
+	"\tplatforms\x18\a \x03(\tB!\xbaG\x1e\x92\x02\x1b应用支持的平台列表R\tplatforms\x12Z\n" +
+	"\x06status\x18\b \x01(\x0e2\".uba.service.v1.Application.StatusB\x19\xbaG\x16\x8a\x02\x04\x1a\x02ON\x92\x02\f应用状态H\x05R\x06status\x88\x01\x01\x12/\n" +
+	"\x06remark\x18\t \x01(\tB\x12\xbaG\x0f\x92\x02\f备注信息H\x06R\x06remark\x88\x01\x01\x12?\n" +
+	"\vdesensitize\x18\n" +
+	" \x01(\bB\x18\xbaG\x15\x92\x02\x12是否开启脱敏H\aR\vdesensitize\x88\x01\x01\x12<\n" +
+	"\vwebhook_url\x18\v \x01(\tB\x16\xbaG\x13\x92\x02\x10事件回调 URLH\bR\n" +
 	"webhookUrl\x88\x01\x01\x12D\n" +
-	"\x0ewebhook_secret\x18\r \x01(\tB\x18\xbaG\x15\x92\x02\x12回调签名密钥H\vR\rwebhookSecret\x88\x01\x01\x12;\n" +
+	"\x0ewebhook_secret\x18\f \x01(\tB\x18\xbaG\x15\x92\x02\x12回调签名密钥H\tR\rwebhookSecret\x88\x01\x01\x120\n" +
+	"\ttenant_id\x18\x14 \x01(\rB\x0e\xbaG\v\x92\x02\b租户IDH\n" +
+	"R\btenantId\x88\x01\x01\x128\n" +
+	"\vtenant_name\x18\x15 \x01(\tB\x12\xbaG\x0f\x92\x02\f租户名称H\vR\n" +
+	"tenantName\x88\x01\x01\x12;\n" +
 	"\n" +
 	"created_by\x18d \x01(\rB\x17\xbaG\x14\x92\x02\x11创建者用户IDH\fR\tcreatedBy\x88\x01\x01\x12;\n" +
 	"\n" +
@@ -664,7 +743,18 @@ const file_uba_service_v1_application_proto_rawDesc = "" +
 	"\x06Status\x12\x16\n" +
 	"\x12STATUS_UNSPECIFIED\x10\x00\x12\x06\n" +
 	"\x02ON\x10\x01\x12\a\n" +
-	"\x03OFF\x10\x02B\a\n" +
+	"\x03OFF\x10\x02\"\x8b\x01\n" +
+	"\x04Type\x12 \n" +
+	"\x1cAPPLICATION_TYPE_UNSPECIFIED\x10\x00\x12\b\n" +
+	"\x04GAME\x10\x01\x12\r\n" +
+	"\tECOMMERCE\x10\x02\x12\v\n" +
+	"\aCONTENT\x10\x03\x12\b\n" +
+	"\x04TOOL\x10\x04\x12\v\n" +
+	"\aFINANCE\x10\x05\x12\n" +
+	"\n" +
+	"\x06SOCIAL\x10\x06\x12\r\n" +
+	"\tEDUCATION\x10\a\x12\t\n" +
+	"\x05OTHER\x10\bB\a\n" +
 	"\x05_nameB\t\n" +
 	"\a_app_idB\n" +
 	"\n" +
@@ -673,12 +763,12 @@ const file_uba_service_v1_application_proto_rawDesc = "" +
 	"\x05_typeB\t\n" +
 	"\a_statusB\t\n" +
 	"\a_remarkB\x0e\n" +
-	"\f_desensitizeB\f\n" +
+	"\f_desensitizeB\x0e\n" +
+	"\f_webhook_urlB\x11\n" +
+	"\x0f_webhook_secretB\f\n" +
 	"\n" +
 	"_tenant_idB\x0e\n" +
-	"\f_tenant_nameB\x0e\n" +
-	"\f_webhook_urlB\x11\n" +
-	"\x0f_webhook_secretB\r\n" +
+	"\f_tenant_nameB\r\n" +
 	"\v_created_byB\r\n" +
 	"\v_updated_byB\r\n" +
 	"\v_deleted_byB\r\n" +
@@ -736,45 +826,45 @@ func file_uba_service_v1_application_proto_rawDescGZIP() []byte {
 	return file_uba_service_v1_application_proto_rawDescData
 }
 
-var file_uba_service_v1_application_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_uba_service_v1_application_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
 var file_uba_service_v1_application_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_uba_service_v1_application_proto_goTypes = []any{
 	(Application_Status)(0),          // 0: uba.service.v1.Application.Status
-	(*Application)(nil),              // 1: uba.service.v1.Application
-	(*ListApplicationResponse)(nil),  // 2: uba.service.v1.ListApplicationResponse
-	(*GetApplicationRequest)(nil),    // 3: uba.service.v1.GetApplicationRequest
-	(*CreateApplicationRequest)(nil), // 4: uba.service.v1.CreateApplicationRequest
-	(*UpdateApplicationRequest)(nil), // 5: uba.service.v1.UpdateApplicationRequest
-	(*DeleteApplicationRequest)(nil), // 6: uba.service.v1.DeleteApplicationRequest
-	(*CountApplicationResponse)(nil), // 7: uba.service.v1.CountApplicationResponse
-	(Platform)(0),                    // 8: uba.service.v1.Platform
+	(Application_Type)(0),            // 1: uba.service.v1.Application.Type
+	(*Application)(nil),              // 2: uba.service.v1.Application
+	(*ListApplicationResponse)(nil),  // 3: uba.service.v1.ListApplicationResponse
+	(*GetApplicationRequest)(nil),    // 4: uba.service.v1.GetApplicationRequest
+	(*CreateApplicationRequest)(nil), // 5: uba.service.v1.CreateApplicationRequest
+	(*UpdateApplicationRequest)(nil), // 6: uba.service.v1.UpdateApplicationRequest
+	(*DeleteApplicationRequest)(nil), // 7: uba.service.v1.DeleteApplicationRequest
+	(*CountApplicationResponse)(nil), // 8: uba.service.v1.CountApplicationResponse
 	(*timestamppb.Timestamp)(nil),    // 9: google.protobuf.Timestamp
 	(*fieldmaskpb.FieldMask)(nil),    // 10: google.protobuf.FieldMask
 	(*v1.PagingRequest)(nil),         // 11: pagination.PagingRequest
 	(*emptypb.Empty)(nil),            // 12: google.protobuf.Empty
 }
 var file_uba_service_v1_application_proto_depIdxs = []int32{
-	8,  // 0: uba.service.v1.Application.type:type_name -> uba.service.v1.Platform
+	1,  // 0: uba.service.v1.Application.type:type_name -> uba.service.v1.Application.Type
 	0,  // 1: uba.service.v1.Application.status:type_name -> uba.service.v1.Application.Status
 	9,  // 2: uba.service.v1.Application.created_at:type_name -> google.protobuf.Timestamp
 	9,  // 3: uba.service.v1.Application.updated_at:type_name -> google.protobuf.Timestamp
 	9,  // 4: uba.service.v1.Application.deleted_at:type_name -> google.protobuf.Timestamp
-	1,  // 5: uba.service.v1.ListApplicationResponse.items:type_name -> uba.service.v1.Application
+	2,  // 5: uba.service.v1.ListApplicationResponse.items:type_name -> uba.service.v1.Application
 	10, // 6: uba.service.v1.GetApplicationRequest.view_mask:type_name -> google.protobuf.FieldMask
-	1,  // 7: uba.service.v1.CreateApplicationRequest.data:type_name -> uba.service.v1.Application
-	1,  // 8: uba.service.v1.UpdateApplicationRequest.data:type_name -> uba.service.v1.Application
+	2,  // 7: uba.service.v1.CreateApplicationRequest.data:type_name -> uba.service.v1.Application
+	2,  // 8: uba.service.v1.UpdateApplicationRequest.data:type_name -> uba.service.v1.Application
 	10, // 9: uba.service.v1.UpdateApplicationRequest.update_mask:type_name -> google.protobuf.FieldMask
 	11, // 10: uba.service.v1.ApplicationService.List:input_type -> pagination.PagingRequest
 	11, // 11: uba.service.v1.ApplicationService.Count:input_type -> pagination.PagingRequest
-	3,  // 12: uba.service.v1.ApplicationService.Get:input_type -> uba.service.v1.GetApplicationRequest
-	4,  // 13: uba.service.v1.ApplicationService.Create:input_type -> uba.service.v1.CreateApplicationRequest
-	5,  // 14: uba.service.v1.ApplicationService.Update:input_type -> uba.service.v1.UpdateApplicationRequest
-	6,  // 15: uba.service.v1.ApplicationService.Delete:input_type -> uba.service.v1.DeleteApplicationRequest
-	2,  // 16: uba.service.v1.ApplicationService.List:output_type -> uba.service.v1.ListApplicationResponse
-	7,  // 17: uba.service.v1.ApplicationService.Count:output_type -> uba.service.v1.CountApplicationResponse
-	1,  // 18: uba.service.v1.ApplicationService.Get:output_type -> uba.service.v1.Application
-	1,  // 19: uba.service.v1.ApplicationService.Create:output_type -> uba.service.v1.Application
-	1,  // 20: uba.service.v1.ApplicationService.Update:output_type -> uba.service.v1.Application
+	4,  // 12: uba.service.v1.ApplicationService.Get:input_type -> uba.service.v1.GetApplicationRequest
+	5,  // 13: uba.service.v1.ApplicationService.Create:input_type -> uba.service.v1.CreateApplicationRequest
+	6,  // 14: uba.service.v1.ApplicationService.Update:input_type -> uba.service.v1.UpdateApplicationRequest
+	7,  // 15: uba.service.v1.ApplicationService.Delete:input_type -> uba.service.v1.DeleteApplicationRequest
+	3,  // 16: uba.service.v1.ApplicationService.List:output_type -> uba.service.v1.ListApplicationResponse
+	8,  // 17: uba.service.v1.ApplicationService.Count:output_type -> uba.service.v1.CountApplicationResponse
+	2,  // 18: uba.service.v1.ApplicationService.Get:output_type -> uba.service.v1.Application
+	2,  // 19: uba.service.v1.ApplicationService.Create:output_type -> uba.service.v1.Application
+	2,  // 20: uba.service.v1.ApplicationService.Update:output_type -> uba.service.v1.Application
 	12, // 21: uba.service.v1.ApplicationService.Delete:output_type -> google.protobuf.Empty
 	16, // [16:22] is the sub-list for method output_type
 	10, // [10:16] is the sub-list for method input_type
@@ -802,7 +892,7 @@ func file_uba_service_v1_application_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_uba_service_v1_application_proto_rawDesc), len(file_uba_service_v1_application_proto_rawDesc)),
-			NumEnums:      1,
+			NumEnums:      2,
 			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,

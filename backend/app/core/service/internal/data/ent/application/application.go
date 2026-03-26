@@ -40,6 +40,8 @@ const (
 	FieldType = "type"
 	// FieldStatus holds the string denoting the status field in the database.
 	FieldStatus = "status"
+	// FieldPlatforms holds the string denoting the platforms field in the database.
+	FieldPlatforms = "platforms"
 	// FieldRemark holds the string denoting the remark field in the database.
 	FieldRemark = "remark"
 	// FieldDesensitize holds the string denoting the desensitize field in the database.
@@ -68,6 +70,7 @@ var Columns = []string{
 	FieldAppSecret,
 	FieldType,
 	FieldStatus,
+	FieldPlatforms,
 	FieldRemark,
 	FieldDesensitize,
 	FieldWebhookURL,
@@ -107,13 +110,14 @@ type Type string
 
 // Type values.
 const (
-	TypePlatformWeb         Type = "PLATFORM_WEB"
-	TypePlatformIos         Type = "PLATFORM_IOS"
-	TypePlatformAndroid     Type = "PLATFORM_ANDROID"
-	TypePlatformWindows     Type = "PLATFORM_WINDOWS"
-	TypePlatformMacos       Type = "PLATFORM_MACOS"
-	TypePlatformLinux       Type = "PLATFORM_LINUX"
-	TypePlatformMiniProgram Type = "PLATFORM_MINI_PROGRAM"
+	TypeGame      Type = "GAME"
+	TypeEcommerce Type = "ECOMMERCE"
+	TypeContent   Type = "CONTENT"
+	TypeTool      Type = "TOOL"
+	TypeFinance   Type = "FINANCE"
+	TypeSocial    Type = "SOCIAL"
+	TypeEducation Type = "EDUCATION"
+	TypeOther     Type = "OTHER"
 )
 
 func (_type Type) String() string {
@@ -123,7 +127,7 @@ func (_type Type) String() string {
 // TypeValidator is a validator for the "type" field enum values. It is called by the builders before save.
 func TypeValidator(_type Type) error {
 	switch _type {
-	case TypePlatformWeb, TypePlatformIos, TypePlatformAndroid, TypePlatformWindows, TypePlatformMacos, TypePlatformLinux, TypePlatformMiniProgram:
+	case TypeGame, TypeEcommerce, TypeContent, TypeTool, TypeFinance, TypeSocial, TypeEducation, TypeOther:
 		return nil
 	default:
 		return fmt.Errorf("application: invalid enum value for type field: %q", _type)

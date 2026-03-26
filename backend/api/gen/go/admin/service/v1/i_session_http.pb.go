@@ -33,11 +33,11 @@ type SessionServiceHTTPServer interface {
 
 func RegisterSessionServiceHTTPServer(s *http.Server, srv SessionServiceHTTPServer) {
 	r := s.Route("/")
-	r.GET("/admin/v1/sessions", _SessionService_List24_HTTP_Handler(srv))
-	r.GET("/admin/v1/sessions/{id}", _SessionService_Get24_HTTP_Handler(srv))
+	r.GET("/admin/v1/sessions", _SessionService_List25_HTTP_Handler(srv))
+	r.GET("/admin/v1/sessions/{id}", _SessionService_Get25_HTTP_Handler(srv))
 }
 
-func _SessionService_List24_HTTP_Handler(srv SessionServiceHTTPServer) func(ctx http.Context) error {
+func _SessionService_List25_HTTP_Handler(srv SessionServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in v1.PagingRequest
 		if err := ctx.BindQuery(&in); err != nil {
@@ -56,7 +56,7 @@ func _SessionService_List24_HTTP_Handler(srv SessionServiceHTTPServer) func(ctx 
 	}
 }
 
-func _SessionService_Get24_HTTP_Handler(srv SessionServiceHTTPServer) func(ctx http.Context) error {
+func _SessionService_Get25_HTTP_Handler(srv SessionServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in v11.GetSessionRequest
 		if err := ctx.BindQuery(&in); err != nil {

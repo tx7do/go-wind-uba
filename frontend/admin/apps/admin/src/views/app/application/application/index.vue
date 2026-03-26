@@ -1,27 +1,27 @@
 <script lang="ts" setup>
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
-import type { ubaservicev1_TagDefinition as TagDefinition } from '#/generated/api/admin/service/v1';
+import type { ubaservicev1_Application as Application } from '#/generated/api/admin/service/v1';
 
 import { h } from 'vue';
 
 import { Page } from '@vben/common-ui';
-import { LucideFilePenLine, LucideTrash2 } from '@vben/icons';
-
-import { notification } from 'ant-design-vue';
+import { LucideTrash2 } from '@vben/icons';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { $t } from '#/locales';
 import {
-  tagCategoryList,
-  tagCategoryToColor,
-  tagCategoryToName,
-  tagTypeList,
-  tagTypeToColor,
-  tagTypeToName,
-  useTagDefinitionListStore,
+  applicationTypeToColor,
+  applicationTypeToName,
+  platformList,
+  platformToColor,
+  platformToName,
+  statusList,
+  statusToColor,
+  statusToName,
+  useApplicationListStore,
 } from '#/stores';
 
-const tagDefinitionListStore = useTagDefinitionListStore();
+const applicationStore = useApplicationListStore();
 
 const formOptions = {
   collapsed: false,
@@ -30,17 +30,8 @@ const formOptions = {
   schema: [
     {
       component: 'Input',
-      fieldName: 'name',
-      label: $t('page.tagDefinition.name'),
-      componentProps: {
-        placeholder: $t('ui.placeholder.input'),
-        allowClear: true,
-      },
-    },
-    {
-      component: 'Input',
-      fieldName: 'code',
-      label: $t('page.tagDefinition.code'),
+      fieldName: 'appId',
+      label: $t('page.application.appId'),
       componentProps: {
         placeholder: $t('ui.placeholder.input'),
         allowClear: true,
@@ -48,10 +39,10 @@ const formOptions = {
     },
     {
       component: 'Select',
-      fieldName: 'category',
-      label: $t('page.tagDefinition.category'),
+      fieldName: 'type',
+      label: $t('page.application.type'),
       componentProps: {
-        options: tagCategoryList,
+        options: platformList,
         placeholder: $t('ui.placeholder.select'),
         filterOption: (input: string, option: any) =>
           option.label.toLowerCase().includes(input.toLowerCase()),
@@ -61,10 +52,10 @@ const formOptions = {
     },
     {
       component: 'Select',
-      fieldName: 'tagType',
-      label: $t('page.tagDefinition.tagType'),
+      fieldName: 'status',
+      label: $t('ui.table.status'),
       componentProps: {
-        options: tagTypeList,
+        options: statusList,
         placeholder: $t('ui.placeholder.select'),
         filterOption: (input: string, option: any) =>
           option.label.toLowerCase().includes(input.toLowerCase()),
@@ -75,7 +66,7 @@ const formOptions = {
   ],
 };
 
-const gridOptions: VxeGridProps<TagDefinition> = {
+const gridOptions: VxeGridProps<Application> = {
   height: 'auto',
   stripe: true,
   autoResize: true,
@@ -98,7 +89,7 @@ const gridOptions: VxeGridProps<TagDefinition> = {
   proxyConfig: {
     ajax: {
       query: async ({ page }, formValues) => {
-        return await tagDefinitionListStore.listTagDefinition(
+        return await applicationStore.listApplication(
           {
             page: page.currentPage,
             pageSize: page.pageSize,
@@ -110,45 +101,55 @@ const gridOptions: VxeGridProps<TagDefinition> = {
   },
   columns: [
     {
-      title: $t('page.tagDefinition.name'),
-      field: 'name',
+      title: $t('page.application.appId'),
+      field: 'appId',
       minWidth: 150,
       fixed: 'left',
       align: 'left',
     },
-    { title: $t('page.tagDefinition.code'), field: 'code', minWidth: 150 },
     {
-      title: $t('page.tagDefinition.description'),
-      field: 'description',
-      minWidth: 150,
+      title: $t('page.application.appKey'),
+      field: 'appKey',
+      minWidth: 250,
       align: 'left',
     },
     {
-      title: $t('page.tagDefinition.category'),
-      field: 'category',
-      minWidth: 120,
-      slots: { default: 'category' },
+      title: $t('page.application.type'),
+      field: 'type',
+      minWidth: 200,
+      slots: {
+        default: 'type',
+      },
     },
     {
-      title: $t('page.tagDefinition.tagType'),
-      field: 'tagType',
-      minWidth: 120,
-      slots: { default: 'type' },
+      title: $t('page.application.status'),
+      field: 'status',
+      minWidth: 100,
+      slots: { default: 'status' },
     },
     {
-      title: $t('page.tagDefinition.isSystem'),
-      field: 'isSystem',
-      minWidth: 120,
+      title: $t('page.application.platforms'),
+      field: 'platforms',
+      align: 'left',
+      minWidth: 300,
+      slots: {
+        default: 'platforms',
+      },
     },
     {
-      title: $t('page.tagDefinition.isDynamic'),
-      field: 'isDynamic',
-      minWidth: 120,
+      title: $t('page.application.remark'),
+      field: 'remark',
+      minWidth: 200,
     },
     {
-      title: $t('page.tagDefinition.refreshIntervalSeconds'),
-      field: 'refreshIntervalSeconds',
-      minWidth: 120,
+      title: $t('page.application.desensitize'),
+      field: 'desensitize',
+      minWidth: 160,
+    },
+    {
+      title: $t('page.application.webhookUrl'),
+      field: 'webhookUrl',
+      minWidth: 160,
     },
     {
       title: $t('ui.table.createdAt'),
@@ -166,7 +167,7 @@ const gridOptions: VxeGridProps<TagDefinition> = {
   ],
 };
 
-const gridEvents: VxeGridListeners<TagDefinition> = {};
+const gridEvents: VxeGridListeners<Application> = {};
 
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions,
@@ -175,50 +176,50 @@ const [Grid, gridApi] = useVbenVxeGrid({
 });
 
 async function handleDelete(row: any) {
-  console.log('Delete', row);
-  try {
-    await tagDefinitionListStore.deleteTagDefinition(row.id);
-    notification.success({
-      message: $t('ui.notification.delete_success'),
-    });
-    await gridApi.reload();
-  } catch {
-    notification.error({
-      message: $t('ui.notification.delete_failed'),
-    });
-  }
-}
-
-function handleEdit(row: any) {
-  console.log('Edit', row);
+  console.log('handleDelete', row);
+  // try {
+  //   await applicationStore.deleteApplication(row.id);
+  //   notification.success({
+  //     message: $t('ui.notification.delete_success'),
+  //   });
+  //   await gridApi.reload();
+  // } catch {
+  //   notification.error({
+  //     message: $t('ui.notification.delete_failed'),
+  //   });
+  // }
 }
 </script>
 
 <template>
   <Page auto-content-height>
-    <Grid :title="$t('menu.tag.tags')">
-      <template #category="{ row }">
-        <a-tag :color="tagCategoryToColor(row.category)">
-          {{ tagCategoryToName(row.category) }}
+    <Grid :title="$t('menu.object.objects')">
+      <template #type="{ row }">
+        <a-tag :color="applicationTypeToColor(row.type)">
+          {{ applicationTypeToName(row.type) }}
         </a-tag>
       </template>
-      <template #type="{ row }">
-        <a-tag :color="tagTypeToColor(row.tagType)">
-          {{ tagTypeToName(row.tagType) }}
+      <template #platforms="{ row }">
+        <a-tag
+          v-for="item in row.platforms"
+          :key="item"
+          :color="platformToColor(item)"
+        >
+          {{ platformToName(item) }}
+        </a-tag>
+      </template>
+      <template #status="{ row }">
+        <a-tag :color="statusToColor(row.status)">
+          {{ statusToName(row.status) }}
         </a-tag>
       </template>
       <template #action="{ row }">
-        <a-button
-          type="link"
-          :icon="h(LucideFilePenLine)"
-          @click.stop="handleEdit(row)"
-        />
         <a-popconfirm
           :cancel-text="$t('ui.button.cancel')"
           :ok-text="$t('ui.button.ok')"
           :title="
             $t('ui.text.do_you_want_delete', {
-              moduleName: $t('menu.tag.tags'),
+              moduleName: $t('menu.application.applications'),
             })
           "
           @confirm="handleDelete(row)"

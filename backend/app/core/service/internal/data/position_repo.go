@@ -112,7 +112,7 @@ func (r *PositionRepo) List(ctx context.Context, req *paginationV1.PagingRequest
 		return nil, identityV1.ErrorBadRequest("invalid parameter")
 	}
 
-	builder := r.entClient.Client().Debug().Position.Query()
+	builder := r.entClient.Client().Position.Query()
 
 	ret, err := r.repository.ListWithPaging(ctx, builder, builder.Clone(), req)
 	if err != nil {
@@ -245,7 +245,7 @@ func (r *PositionRepo) Update(ctx context.Context, req *identityV1.UpdatePositio
 		}
 	}
 
-	builder := r.entClient.Client().Debug().Position.Update()
+	builder := r.entClient.Client().Position.Update()
 	err := r.repository.UpdateX(ctx, builder, req.Data, req.GetUpdateMask(),
 		func(dto *identityV1.Position) {
 			builder.
@@ -281,7 +281,7 @@ func (r *PositionRepo) Delete(ctx context.Context, req *identityV1.DeletePositio
 		return identityV1.ErrorBadRequest("invalid parameter")
 	}
 
-	builder := r.entClient.Client().Debug().Position.Delete()
+	builder := r.entClient.Client().Position.Delete()
 
 	var err error
 	_, err = r.repository.Delete(ctx, builder, func(s *sql.Selector) {

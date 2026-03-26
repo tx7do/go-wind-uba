@@ -3901,34 +3901,36 @@ func (m *ApiAuditLogMutation) ResetEdge(name string) error {
 // ApplicationMutation represents an operation that mutates the Application nodes in the graph.
 type ApplicationMutation struct {
 	config
-	op             Op
-	typ            string
-	id             *uint32
-	created_at     *time.Time
-	updated_at     *time.Time
-	deleted_at     *time.Time
-	created_by     *uint32
-	addcreated_by  *int32
-	updated_by     *uint32
-	addupdated_by  *int32
-	deleted_by     *uint32
-	adddeleted_by  *int32
-	tenant_id      *uint32
-	addtenant_id   *int32
-	name           *string
-	app_id         *string
-	app_key        *string
-	app_secret     *string
-	_type          *application.Type
-	status         *application.Status
-	remark         *string
-	desensitize    *bool
-	webhook_url    *string
-	webhook_secret *string
-	clearedFields  map[string]struct{}
-	done           bool
-	oldValue       func(context.Context) (*Application, error)
-	predicates     []predicate.Application
+	op              Op
+	typ             string
+	id              *uint32
+	created_at      *time.Time
+	updated_at      *time.Time
+	deleted_at      *time.Time
+	created_by      *uint32
+	addcreated_by   *int32
+	updated_by      *uint32
+	addupdated_by   *int32
+	deleted_by      *uint32
+	adddeleted_by   *int32
+	tenant_id       *uint32
+	addtenant_id    *int32
+	name            *string
+	app_id          *string
+	app_key         *string
+	app_secret      *string
+	_type           *application.Type
+	status          *application.Status
+	platforms       *[]string
+	appendplatforms []string
+	remark          *string
+	desensitize     *bool
+	webhook_url     *string
+	webhook_secret  *string
+	clearedFields   map[string]struct{}
+	done            bool
+	oldValue        func(context.Context) (*Application, error)
+	predicates      []predicate.Application
 }
 
 var _ ent.Mutation = (*ApplicationMutation)(nil)
@@ -4756,6 +4758,71 @@ func (m *ApplicationMutation) ResetStatus() {
 	delete(m.clearedFields, application.FieldStatus)
 }
 
+// SetPlatforms sets the "platforms" field.
+func (m *ApplicationMutation) SetPlatforms(s []string) {
+	m.platforms = &s
+	m.appendplatforms = nil
+}
+
+// Platforms returns the value of the "platforms" field in the mutation.
+func (m *ApplicationMutation) Platforms() (r []string, exists bool) {
+	v := m.platforms
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPlatforms returns the old "platforms" field's value of the Application entity.
+// If the Application object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ApplicationMutation) OldPlatforms(ctx context.Context) (v []string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPlatforms is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPlatforms requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPlatforms: %w", err)
+	}
+	return oldValue.Platforms, nil
+}
+
+// AppendPlatforms adds s to the "platforms" field.
+func (m *ApplicationMutation) AppendPlatforms(s []string) {
+	m.appendplatforms = append(m.appendplatforms, s...)
+}
+
+// AppendedPlatforms returns the list of values that were appended to the "platforms" field in this mutation.
+func (m *ApplicationMutation) AppendedPlatforms() ([]string, bool) {
+	if len(m.appendplatforms) == 0 {
+		return nil, false
+	}
+	return m.appendplatforms, true
+}
+
+// ClearPlatforms clears the value of the "platforms" field.
+func (m *ApplicationMutation) ClearPlatforms() {
+	m.platforms = nil
+	m.appendplatforms = nil
+	m.clearedFields[application.FieldPlatforms] = struct{}{}
+}
+
+// PlatformsCleared returns if the "platforms" field was cleared in this mutation.
+func (m *ApplicationMutation) PlatformsCleared() bool {
+	_, ok := m.clearedFields[application.FieldPlatforms]
+	return ok
+}
+
+// ResetPlatforms resets all changes to the "platforms" field.
+func (m *ApplicationMutation) ResetPlatforms() {
+	m.platforms = nil
+	m.appendplatforms = nil
+	delete(m.clearedFields, application.FieldPlatforms)
+}
+
 // SetRemark sets the "remark" field.
 func (m *ApplicationMutation) SetRemark(s string) {
 	m.remark = &s
@@ -4986,7 +5053,7 @@ func (m *ApplicationMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ApplicationMutation) Fields() []string {
-	fields := make([]string, 0, 17)
+	fields := make([]string, 0, 18)
 	if m.created_at != nil {
 		fields = append(fields, application.FieldCreatedAt)
 	}
@@ -5025,6 +5092,9 @@ func (m *ApplicationMutation) Fields() []string {
 	}
 	if m.status != nil {
 		fields = append(fields, application.FieldStatus)
+	}
+	if m.platforms != nil {
+		fields = append(fields, application.FieldPlatforms)
 	}
 	if m.remark != nil {
 		fields = append(fields, application.FieldRemark)
@@ -5072,6 +5142,8 @@ func (m *ApplicationMutation) Field(name string) (ent.Value, bool) {
 		return m.GetType()
 	case application.FieldStatus:
 		return m.Status()
+	case application.FieldPlatforms:
+		return m.Platforms()
 	case application.FieldRemark:
 		return m.Remark()
 	case application.FieldDesensitize:
@@ -5115,6 +5187,8 @@ func (m *ApplicationMutation) OldField(ctx context.Context, name string) (ent.Va
 		return m.OldType(ctx)
 	case application.FieldStatus:
 		return m.OldStatus(ctx)
+	case application.FieldPlatforms:
+		return m.OldPlatforms(ctx)
 	case application.FieldRemark:
 		return m.OldRemark(ctx)
 	case application.FieldDesensitize:
@@ -5222,6 +5296,13 @@ func (m *ApplicationMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetStatus(v)
+		return nil
+	case application.FieldPlatforms:
+		v, ok := value.([]string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPlatforms(v)
 		return nil
 	case application.FieldRemark:
 		v, ok := value.(string)
@@ -5371,6 +5452,9 @@ func (m *ApplicationMutation) ClearedFields() []string {
 	if m.FieldCleared(application.FieldStatus) {
 		fields = append(fields, application.FieldStatus)
 	}
+	if m.FieldCleared(application.FieldPlatforms) {
+		fields = append(fields, application.FieldPlatforms)
+	}
 	if m.FieldCleared(application.FieldRemark) {
 		fields = append(fields, application.FieldRemark)
 	}
@@ -5436,6 +5520,9 @@ func (m *ApplicationMutation) ClearField(name string) error {
 	case application.FieldStatus:
 		m.ClearStatus()
 		return nil
+	case application.FieldPlatforms:
+		m.ClearPlatforms()
+		return nil
 	case application.FieldRemark:
 		m.ClearRemark()
 		return nil
@@ -5494,6 +5581,9 @@ func (m *ApplicationMutation) ResetField(name string) error {
 		return nil
 	case application.FieldStatus:
 		m.ResetStatus()
+		return nil
+	case application.FieldPlatforms:
+		m.ResetPlatforms()
 		return nil
 	case application.FieldRemark:
 		m.ResetRemark()

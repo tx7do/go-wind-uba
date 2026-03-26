@@ -40,13 +40,13 @@ type DictEntryServiceHTTPServer interface {
 
 func RegisterDictEntryServiceHTTPServer(s *http.Server, srv DictEntryServiceHTTPServer) {
 	r := s.Route("/")
-	r.GET("/admin/v1/dict/entries", _DictEntryService_List3_HTTP_Handler(srv))
-	r.POST("/admin/v1/dict/entries", _DictEntryService_Create1_HTTP_Handler(srv))
-	r.PUT("/admin/v1/dict/entries/{id}", _DictEntryService_Update1_HTTP_Handler(srv))
-	r.DELETE("/admin/v1/dict/entries", _DictEntryService_Delete1_HTTP_Handler(srv))
+	r.GET("/admin/v1/dict/entries", _DictEntryService_List4_HTTP_Handler(srv))
+	r.POST("/admin/v1/dict/entries", _DictEntryService_Create2_HTTP_Handler(srv))
+	r.PUT("/admin/v1/dict/entries/{id}", _DictEntryService_Update2_HTTP_Handler(srv))
+	r.DELETE("/admin/v1/dict/entries", _DictEntryService_Delete2_HTTP_Handler(srv))
 }
 
-func _DictEntryService_List3_HTTP_Handler(srv DictEntryServiceHTTPServer) func(ctx http.Context) error {
+func _DictEntryService_List4_HTTP_Handler(srv DictEntryServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in v1.PagingRequest
 		if err := ctx.BindQuery(&in); err != nil {
@@ -65,7 +65,7 @@ func _DictEntryService_List3_HTTP_Handler(srv DictEntryServiceHTTPServer) func(c
 	}
 }
 
-func _DictEntryService_Create1_HTTP_Handler(srv DictEntryServiceHTTPServer) func(ctx http.Context) error {
+func _DictEntryService_Create2_HTTP_Handler(srv DictEntryServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in v11.CreateDictEntryRequest
 		if err := ctx.Bind(&in); err != nil {
@@ -87,7 +87,7 @@ func _DictEntryService_Create1_HTTP_Handler(srv DictEntryServiceHTTPServer) func
 	}
 }
 
-func _DictEntryService_Update1_HTTP_Handler(srv DictEntryServiceHTTPServer) func(ctx http.Context) error {
+func _DictEntryService_Update2_HTTP_Handler(srv DictEntryServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in v11.UpdateDictEntryRequest
 		if err := ctx.Bind(&in); err != nil {
@@ -112,7 +112,7 @@ func _DictEntryService_Update1_HTTP_Handler(srv DictEntryServiceHTTPServer) func
 	}
 }
 
-func _DictEntryService_Delete1_HTTP_Handler(srv DictEntryServiceHTTPServer) func(ctx http.Context) error {
+func _DictEntryService_Delete2_HTTP_Handler(srv DictEntryServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in v11.DeleteDictEntryRequest
 		if err := ctx.BindQuery(&in); err != nil {

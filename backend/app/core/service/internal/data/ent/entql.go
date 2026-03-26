@@ -149,6 +149,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			application.FieldAppSecret:     {Type: field.TypeString, Column: application.FieldAppSecret},
 			application.FieldType:          {Type: field.TypeEnum, Column: application.FieldType},
 			application.FieldStatus:        {Type: field.TypeEnum, Column: application.FieldStatus},
+			application.FieldPlatforms:     {Type: field.TypeJSON, Column: application.FieldPlatforms},
 			application.FieldRemark:        {Type: field.TypeString, Column: application.FieldRemark},
 			application.FieldDesensitize:   {Type: field.TypeBool, Column: application.FieldDesensitize},
 			application.FieldWebhookURL:    {Type: field.TypeString, Column: application.FieldWebhookURL},
@@ -1867,6 +1868,11 @@ func (f *ApplicationFilter) WhereType(p entql.StringP) {
 // WhereStatus applies the entql string predicate on the status field.
 func (f *ApplicationFilter) WhereStatus(p entql.StringP) {
 	f.Where(p.Field(application.FieldStatus))
+}
+
+// WherePlatforms applies the entql json.RawMessage predicate on the platforms field.
+func (f *ApplicationFilter) WherePlatforms(p entql.BytesP) {
+	f.Where(p.Field(application.FieldPlatforms))
 }
 
 // WhereRemark applies the entql string predicate on the remark field.

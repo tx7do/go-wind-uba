@@ -371,3 +371,88 @@ VALUES
      99,
      1001);
 
+
+INSERT INTO public.uba_applications (
+    created_at,
+    updated_at,
+    deleted_at,
+    created_by,
+    updated_by,
+    deleted_by,
+    tenant_id,
+    name,
+    app_id,
+    app_key,
+    app_secret,
+    type,
+    status,
+    remark,
+    desensitize,
+    webhook_url,
+    webhook_secret
+)
+VALUES
+-- 1. 租户0：正式应用（启用，数据脱敏）
+(NOW(), NOW(), NULL, 1001, 1001, NULL, 0,
+ '电商主站',
+ 'APP_2026001',
+ 'key_abcdef1234567890',
+ 'sec_abcdef1234567890abcdef123456',
+ 'PLATFORM_WEB',
+ 'ON',
+ '电商线上环境',
+ true,
+ 'https://api.shop.com/webhook',
+ 'whsec_abc123xyz789'),
+
+-- 2. 租户0：APP应用（启用，不脱敏）
+(NOW(), NOW(), NULL, 1001, 1001, NULL, 0,
+ '电商APP',
+ 'APP_2026002',
+ 'key_xyz9876543210fedcba',
+ 'sec_xyz9876543210fedcba987654',
+ 'PLATFORM_IOS',
+ 'ON',
+ '移动端APP',
+ false,
+ 'https://m.shop.com/api/webhook',
+ 'whsec_xyz987654321'),
+
+-- 3. 租户1：后台管理系统（禁用）
+(NOW(), NOW(), NULL, 1002, 1002, NULL, 1,
+ '运营后台',
+ 'APP_2026003',
+ 'key_admin1234567890',
+ 'sec_admin1234567890abcdef',
+ 'PLATFORM_LINUX',
+ 'OFF',
+ '内部管理后台',
+ true,
+ '',
+ ''),
+
+-- 4. 租户1：小程序应用（启用）
+(NOW(), NOW(), NULL, 1002, 1003, NULL, 1,
+ '微信小程序',
+ 'APP_2026004',
+ 'key_mini1234567890abc',
+ 'sec_mini1234567890abcdef123',
+ 'PLATFORM_MINI_PROGRAM',
+ 'ON',
+ '微信小程序端',
+ false,
+ 'https://wx.abc.com/webhook',
+ 'whsec_mini123456'),
+
+-- 5. 租户2：第三方合作应用（软删除）
+(NOW(), NOW(), NOW() - INTERVAL '7 days', 1004, 1005, 1005, 2,
+ '第三方合作平台',
+ 'APP_2026005',
+ 'key_third1234567890abcd',
+ 'sec_third1234567890abcdef12',
+ 'PLATFORM_MINI_PROGRAM',
+ 'OFF',
+ '已废弃合作方',
+ true,
+ NULL,
+ NULL);

@@ -204,6 +204,12 @@ func (_c *ApplicationCreate) SetNillableStatus(v *application.Status) *Applicati
 	return _c
 }
 
+// SetPlatforms sets the "platforms" field.
+func (_c *ApplicationCreate) SetPlatforms(v []string) *ApplicationCreate {
+	_c.mutation.SetPlatforms(v)
+	return _c
+}
+
 // SetRemark sets the "remark" field.
 func (_c *ApplicationCreate) SetRemark(v string) *ApplicationCreate {
 	_c.mutation.SetRemark(v)
@@ -425,6 +431,10 @@ func (_c *ApplicationCreate) createSpec() (*Application, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.Status(); ok {
 		_spec.SetField(application.FieldStatus, field.TypeEnum, value)
 		_node.Status = &value
+	}
+	if value, ok := _c.mutation.Platforms(); ok {
+		_spec.SetField(application.FieldPlatforms, field.TypeJSON, value)
+		_node.Platforms = value
 	}
 	if value, ok := _c.mutation.Remark(); ok {
 		_spec.SetField(application.FieldRemark, field.TypeString, value)
@@ -707,6 +717,24 @@ func (u *ApplicationUpsert) UpdateStatus() *ApplicationUpsert {
 // ClearStatus clears the value of the "status" field.
 func (u *ApplicationUpsert) ClearStatus() *ApplicationUpsert {
 	u.SetNull(application.FieldStatus)
+	return u
+}
+
+// SetPlatforms sets the "platforms" field.
+func (u *ApplicationUpsert) SetPlatforms(v []string) *ApplicationUpsert {
+	u.Set(application.FieldPlatforms, v)
+	return u
+}
+
+// UpdatePlatforms sets the "platforms" field to the value that was provided on create.
+func (u *ApplicationUpsert) UpdatePlatforms() *ApplicationUpsert {
+	u.SetExcluded(application.FieldPlatforms)
+	return u
+}
+
+// ClearPlatforms clears the value of the "platforms" field.
+func (u *ApplicationUpsert) ClearPlatforms() *ApplicationUpsert {
+	u.SetNull(application.FieldPlatforms)
 	return u
 }
 
@@ -1085,6 +1113,27 @@ func (u *ApplicationUpsertOne) UpdateStatus() *ApplicationUpsertOne {
 func (u *ApplicationUpsertOne) ClearStatus() *ApplicationUpsertOne {
 	return u.Update(func(s *ApplicationUpsert) {
 		s.ClearStatus()
+	})
+}
+
+// SetPlatforms sets the "platforms" field.
+func (u *ApplicationUpsertOne) SetPlatforms(v []string) *ApplicationUpsertOne {
+	return u.Update(func(s *ApplicationUpsert) {
+		s.SetPlatforms(v)
+	})
+}
+
+// UpdatePlatforms sets the "platforms" field to the value that was provided on create.
+func (u *ApplicationUpsertOne) UpdatePlatforms() *ApplicationUpsertOne {
+	return u.Update(func(s *ApplicationUpsert) {
+		s.UpdatePlatforms()
+	})
+}
+
+// ClearPlatforms clears the value of the "platforms" field.
+func (u *ApplicationUpsertOne) ClearPlatforms() *ApplicationUpsertOne {
+	return u.Update(func(s *ApplicationUpsert) {
+		s.ClearPlatforms()
 	})
 }
 
@@ -1641,6 +1690,27 @@ func (u *ApplicationUpsertBulk) UpdateStatus() *ApplicationUpsertBulk {
 func (u *ApplicationUpsertBulk) ClearStatus() *ApplicationUpsertBulk {
 	return u.Update(func(s *ApplicationUpsert) {
 		s.ClearStatus()
+	})
+}
+
+// SetPlatforms sets the "platforms" field.
+func (u *ApplicationUpsertBulk) SetPlatforms(v []string) *ApplicationUpsertBulk {
+	return u.Update(func(s *ApplicationUpsert) {
+		s.SetPlatforms(v)
+	})
+}
+
+// UpdatePlatforms sets the "platforms" field to the value that was provided on create.
+func (u *ApplicationUpsertBulk) UpdatePlatforms() *ApplicationUpsertBulk {
+	return u.Update(func(s *ApplicationUpsert) {
+		s.UpdatePlatforms()
+	})
+}
+
+// ClearPlatforms clears the value of the "platforms" field.
+func (u *ApplicationUpsertBulk) ClearPlatforms() *ApplicationUpsertBulk {
+	return u.Update(func(s *ApplicationUpsert) {
+		s.ClearPlatforms()
 	})
 }
 

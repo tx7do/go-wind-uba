@@ -91,7 +91,7 @@ func (r *DictEntryRepo) List(ctx context.Context, req *paginationV1.PagingReques
 		return nil, dictV1.ErrorBadRequest("invalid parameter")
 	}
 
-	builder := r.entClient.Client().Debug().DictEntry.Query()
+	builder := r.entClient.Client().DictEntry.Query()
 
 	ret, err := r.repository.ListWithPaging(ctx, builder, builder.Clone(), req)
 	if err != nil {

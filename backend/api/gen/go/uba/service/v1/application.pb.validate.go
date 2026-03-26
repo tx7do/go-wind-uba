@@ -91,20 +91,20 @@ func (m *Application) validate(all bool) error {
 		// no validation rules for Desensitize
 	}
 
-	if m.TenantId != nil {
-		// no validation rules for TenantId
-	}
-
-	if m.TenantName != nil {
-		// no validation rules for TenantName
-	}
-
 	if m.WebhookUrl != nil {
 		// no validation rules for WebhookUrl
 	}
 
 	if m.WebhookSecret != nil {
 		// no validation rules for WebhookSecret
+	}
+
+	if m.TenantId != nil {
+		// no validation rules for TenantId
+	}
+
+	if m.TenantName != nil {
+		// no validation rules for TenantName
 	}
 
 	if m.CreatedBy != nil {

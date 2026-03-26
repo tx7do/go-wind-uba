@@ -6,7 +6,7 @@ import { useUserStore } from '@vben/stores';
 import { defineStore } from 'pinia';
 
 import {
-  type ubaservicev1_Application_Status as Application_Status,
+  type ubaservicev1_Application_Type as Application_Type,
   createApplicationServiceClient,
   type ubaservicev1_Platform as Platform,
 } from '#/generated/api/admin/service/v1';
@@ -28,7 +28,7 @@ export const useApplicationListStore = defineStore('application-list', () => {
   ) {
     const noPaging =
       paging?.page === undefined && paging?.pageSize === undefined;
-    return await service.ListApplication({
+    return await service.List({
       // @ts-ignore proto generated code is error.
       fieldMask,
       orderBy: makeOrderBy(orderBy),
@@ -43,14 +43,14 @@ export const useApplicationListStore = defineStore('application-list', () => {
    * 获取应用
    */
   async function getApplication(id: number) {
-    return await service.GetApplication({ id });
+    return await service.Get({ id });
   }
 
   /**
    * 创建应用
    */
   async function createApplication(values: Record<string, any> = {}) {
-    return await service.CreateApplication({
+    return await service.Create({
       // @ts-ignore proto generated code is error.
       data: {
         ...values,
@@ -67,7 +67,7 @@ export const useApplicationListStore = defineStore('application-list', () => {
   ) {
     if ('id' in values) delete values.id;
 
-    return await service.UpdateApplication({
+    return await service.Update({
       id,
       // @ts-ignore proto generated code is error.
       data: {
@@ -82,7 +82,7 @@ export const useApplicationListStore = defineStore('application-list', () => {
    * 删除应用
    */
   async function deleteApplication(id: number) {
-    return await service.DeleteApplication({ id });
+    return await service.Delete({ id });
   }
 
   function $reset() {}
@@ -96,33 +96,6 @@ export const useApplicationListStore = defineStore('application-list', () => {
     deleteApplication,
   };
 });
-
-export const applicationStatusList = computed(() => [
-  { value: 'STATUS_ACTIVE', label: $t('enum.application.status.ACTIVE') },
-  { value: 'STATUS_INACTIVE', label: $t('enum.application.status.INACTIVE') },
-  { value: 'STATUS_DISABLED', label: $t('enum.application.status.DISABLED') },
-]);
-
-const APPLICATION_STATUS_COLOR_MAP = {
-  STATUS_ACTIVE: '#4096FF',
-  STATUS_INACTIVE: '#C9CDD4',
-  STATUS_DISABLED: '#F53F3F',
-  DEFAULT: '#86909C',
-} as const;
-
-export function applicationStatusToColor(status: Application_Status) {
-  return (
-    APPLICATION_STATUS_COLOR_MAP[
-      status as keyof typeof APPLICATION_STATUS_COLOR_MAP
-    ] || APPLICATION_STATUS_COLOR_MAP.DEFAULT
-  );
-}
-
-export function applicationStatusToName(status?: Application_Status) {
-  const values = applicationStatusList.value;
-  const matchedItem = values.find((item) => item.value === status);
-  return matchedItem ? matchedItem.label : '';
-}
 
 export const platformList = computed(() => [
   { value: 'PLATFORM_WEB', label: $t('enum.platform.PLATFORM_WEB') },
@@ -138,15 +111,15 @@ export const platformList = computed(() => [
 ]);
 
 const PLATFORM_COLOR_MAP = {
-  PLATFORM_WEB: '#4096FF',
-  PLATFORM_IOS: '#000000',
-  PLATFORM_ANDROID: '#3DDC84',
-  PLATFORM_WINDOWS: '#0078D4',
-  PLATFORM_MACOS: '#A2AAAD',
-  PLATFORM_LINUX: '#FCC624',
-  PLATFORM_MINI_PROGRAM: '#07C160',
-  PLATFORM_OFFICIAL_ACCOUNT: '#07C160',
-  DEFAULT: '#86909C',
+  PLATFORM_WEB: '#4096FF', // Web：经典蓝（保留）
+  PLATFORM_IOS: '#1890FF', // iOS：更清爽的苹果蓝
+  PLATFORM_ANDROID: '#34C759', // Android：官方绿（更柔和）
+  PLATFORM_WINDOWS: '#0078D4', // Windows：微软蓝（保留）
+  PLATFORM_MACOS: '#A8B1C1', // macOS：高级浅灰
+  PLATFORM_LINUX: '#E95420', // Linux：官方橙色（更标准）
+  PLATFORM_MINI_PROGRAM: '#07C160', // 小程序：微信绿（保留）
+  PLATFORM_OFFICIAL_ACCOUNT: '#52C41A', // 公众号：更清新的绿（区分小程序）
+  DEFAULT: '#86909C', // 默认中性灰
 } as const;
 
 export function platformToColor(platform?: Platform) {
@@ -159,5 +132,42 @@ export function platformToColor(platform?: Platform) {
 export function platformToName(platform?: Platform) {
   const values = platformList.value;
   const matchedItem = values.find((item) => item.value === platform);
+  return matchedItem ? matchedItem.label : '';
+}
+
+export const applicationTypeList = computed(() => [
+  { value: 'GAME', label: $t('enum.application.type.GAME') },
+  { value: 'ECOMMERCE', label: $t('enum.application.type.ECOMMERCE') },
+  { value: 'CONTENT', label: $t('enum.application.type.CONTENT') },
+  { value: 'TOOL', label: $t('enum.application.type.TOOL') },
+  { value: 'FINANCE', label: $t('enum.application.type.FINANCE') },
+  { value: 'SOCIAL', label: $t('enum.application.type.SOCIAL') },
+  { value: 'EDUCATION', label: $t('enum.application.type.EDUCATION') },
+  { value: 'OTHER', label: $t('enum.application.type.OTHER') },
+]);
+
+const APPLICATION_TYPE_COLOR_MAP = {
+  GAME: '#4E6CFE', // 游戏：更舒服的科技蓝
+  ECOMMERCE: '#FF4D4F', // 电商：活力红（行业标准）
+  CONTENT: '#20C997', // 内容：清新绿
+  TOOL: '#4096FF', // 工具：稳定蓝
+  FINANCE: '#00B42A', // 金融：安全绿
+  SOCIAL: '#FF7D00', // 社交：活力橙
+  EDUCATION: '#165DFF', // 教育：科技蓝
+  OTHER: '#86909C', // 其他：中性灰
+  DEFAULT: '#A8B1C1', // 默认：浅灰（更柔和）
+} as const;
+
+export function applicationTypeToColor(type?: Application_Type) {
+  return (
+    APPLICATION_TYPE_COLOR_MAP[
+      type as keyof typeof APPLICATION_TYPE_COLOR_MAP
+    ] || APPLICATION_TYPE_COLOR_MAP.DEFAULT
+  );
+}
+
+export function applicationTypeToName(type?: Application_Type) {
+  const values = applicationTypeList.value;
+  const matchedItem = values.find((item) => item.value === type);
   return matchedItem ? matchedItem.label : '';
 }

@@ -319,7 +319,7 @@ func (r *OrgUnitRepo) Update(ctx context.Context, req *identityV1.UpdateOrgUnitR
 		}
 	}
 
-	builder := r.entClient.Client().Debug().OrgUnit.Update()
+	builder := r.entClient.Client().OrgUnit.Update()
 	err := r.repository.UpdateX(ctx, builder, req.Data, req.GetUpdateMask(),
 		func(dto *identityV1.OrgUnit) {
 			builder.
@@ -385,7 +385,7 @@ func (r *OrgUnitRepo) Delete(ctx context.Context, req *identityV1.DeleteOrgUnitR
 		ids = append(ids, id)
 	}
 
-	builder := r.entClient.Client().Debug().OrgUnit.Delete()
+	builder := r.entClient.Client().OrgUnit.Delete()
 
 	_, err = r.repository.Delete(ctx, builder, func(s *sql.Selector) {
 		s.Where(sql.In(orgunit.FieldID, ids...))

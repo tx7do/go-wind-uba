@@ -34,11 +34,26 @@ service ApplicationService {
 
 // UBA应用
 message Application {
+  // 应用状态
   enum Status {
     STATUS_UNSPECIFIED = 0;
 
     ON = 1;
     OFF = 2;
+  }
+
+  // 应用类型
+  enum Type {
+    APPLICATION_TYPE_UNSPECIFIED = 0;
+
+    GAME = 1;       // 游戏
+    ECOMMERCE = 2;  // 电商
+    CONTENT = 3;    // 内容
+    TOOL = 4;       // 工具
+    FINANCE = 5;    // 金融
+    SOCIAL = 6;     // 社交
+    EDUCATION = 7;  // 教育
+    OTHER = 8;      // 其他
   }
 
   uint32 id = 1 [
@@ -55,47 +70,52 @@ message Application {
   ]; // UBA应用唯一标识（上报时使用）
   optional string app_key = 4 [
     json_name = "appKey",
-    (gnostic.openapi.v3.property) = { description: "密钥（签名/鉴权）" }
-  ]; // 密钥（签名/鉴权）
+    (gnostic.openapi.v3.property) = { description: "应用Key" }
+  ]; // 应用Key
   optional string app_secret = 5 [
     json_name = "appSecret",
-    (gnostic.openapi.v3.property) = { description: "密钥" }
-  ]; // 密钥
+    (gnostic.openapi.v3.property) = { description: "应用密钥" }
+  ]; // 应用密钥
 
-  optional Platform type = 6 [(gnostic.openapi.v3.property) = {
+  optional Type type = 6 [(gnostic.openapi.v3.property) = {
     description: "应用类型"
   }]; // 应用类型
 
-  optional Status status = 7 [(gnostic.openapi.v3.property) = {
+  // 支持平台列表
+  repeated string platforms = 7 [
+    (gnostic.openapi.v3.property) = { description: "应用支持的平台列表" }
+  ];
+
+  optional Status status = 8 [(gnostic.openapi.v3.property) = {
     description: "应用状态"
     default: { string: "ON" }
   }]; // 应用状态
 
-  optional string remark = 8 [
+  optional string remark = 9 [
     (gnostic.openapi.v3.property) = { description: "备注信息" }
   ]; // 备注信息
 
-  optional bool desensitize = 9 [
+  optional bool desensitize = 10 [
     (gnostic.openapi.v3.property) = { description: "是否开启脱敏" }
   ]; // 是否开启脱敏
 
-  optional uint32 tenant_id = 10 [
-    json_name = "tenantId",
-    (gnostic.openapi.v3.property) = {description: "租户ID"}
-  ];  // 租户ID
-  optional string tenant_name = 11 [
-    json_name = "tenantName",
-    (gnostic.openapi.v3.property) = {description: "租户名称"}
-  ];  // 租户名称
-
-  optional string webhook_url = 12 [
+  optional string webhook_url = 11 [
     json_name = "webhookUrl",
     (gnostic.openapi.v3.property) = {description: "事件回调 URL"}
   ];  // 事件回调 URL
-  optional string webhook_secret = 13 [
+  optional string webhook_secret = 12 [
     json_name = "webhookSecret",
     (gnostic.openapi.v3.property) = {description: "回调签名密钥"}
   ];  // 回调签名密钥
+
+  optional uint32 tenant_id = 20 [
+    json_name = "tenantId",
+    (gnostic.openapi.v3.property) = {description: "租户ID"}
+  ];  // 租户ID
+  optional string tenant_name = 21 [
+    json_name = "tenantName",
+    (gnostic.openapi.v3.property) = {description: "租户名称"}
+  ];  // 租户名称
 
   optional uint32 created_by = 100 [json_name = "createdBy", (gnostic.openapi.v3.property) = {description: "创建者用户ID"}]; // 创建者用户ID
   optional uint32 updated_by = 101 [json_name = "updatedBy", (gnostic.openapi.v3.property) = {description: "更新者用户ID"}]; // 更新者用户ID

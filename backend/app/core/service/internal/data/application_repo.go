@@ -28,8 +28,9 @@ type ApplicationRepo struct {
 
 	mapper *mapper.CopierMapper[ubaV1.Application, ent.Application]
 
-	statusConverter *mapper.EnumTypeConverter[ubaV1.Application_Status, application.Status]
-	typeConverter   *mapper.EnumTypeConverter[ubaV1.Platform, application.Type]
+	statusConverter   *mapper.EnumTypeConverter[ubaV1.Application_Status, application.Status]
+	typeConverter     *mapper.EnumTypeConverter[ubaV1.Application_Type, application.Type]
+	platformConverter *mapper.EnumTypeConverter[ubaV1.Platform, string]
 
 	repository *entCrud.Repository[
 		ent.ApplicationQuery, ent.ApplicationSelect,
@@ -49,7 +50,10 @@ func NewApplicationRepo(ctx *bootstrap.Context, entClient *entCrud.EntClient[*en
 		statusConverter: mapper.NewEnumTypeConverter[ubaV1.Application_Status, application.Status](
 			ubaV1.Application_Status_name, ubaV1.Application_Status_value,
 		),
-		typeConverter: mapper.NewEnumTypeConverter[ubaV1.Platform, application.Type](
+		typeConverter: mapper.NewEnumTypeConverter[ubaV1.Application_Type, application.Type](
+			ubaV1.Application_Type_name, ubaV1.Application_Type_value,
+		),
+		platformConverter: mapper.NewEnumTypeConverter[ubaV1.Platform, string](
 			ubaV1.Platform_name, ubaV1.Platform_value,
 		),
 	}
@@ -74,6 +78,7 @@ func (r *ApplicationRepo) init() {
 
 	r.mapper.AppendConverters(r.statusConverter.NewConverterPair())
 	r.mapper.AppendConverters(r.typeConverter.NewConverterPair())
+	r.mapper.AppendConverters(r.platformConverter.NewConverterPair())
 }
 
 func (r *ApplicationRepo) Count(ctx context.Context, req *paginationV1.PagingRequest) (*ubaV1.CountApplicationResponse, error) {
@@ -181,6 +186,10 @@ func (r *ApplicationRepo) newApplicationCreate(data *ubaV1.Application) *ent.App
 		SetNillableCreatedBy(data.CreatedBy).
 		SetCreatedAt(time.Now())
 
+	if data.Platforms != nil {
+		builder.SetPlatforms(data.Platforms)
+	}
+
 	return builder
 }
 
@@ -224,7 +233,7 @@ func (r *ApplicationRepo) Update(ctx context.Context, req *ubaV1.UpdateApplicati
 		}
 	}
 
-	builder := r.entClient.Client().Debug().Application.UpdateOneID(req.GetId())
+	builder := r.entClient.Client().Application.UpdateOneID(req.GetId())
 	dto, err := r.repository.UpdateOne(ctx, builder, req.Data, req.GetUpdateMask(),
 		func(dto *ubaV1.Application) {
 			builder.
@@ -240,6 +249,10 @@ func (r *ApplicationRepo) Update(ctx context.Context, req *ubaV1.UpdateApplicati
 				SetNillableWebhookSecret(req.Data.WebhookSecret).
 				SetNillableUpdatedBy(req.Data.UpdatedBy).
 				SetUpdatedAt(time.Now())
+
+			if req.Data.Platforms != nil {
+				builder.SetPlatforms(req.Data.Platforms)
+			}
 		},
 		func(s *sql.Selector) {
 			s.Where(sql.EQ(application.FieldID, req.GetId()))
@@ -254,7 +267,7 @@ func (r *ApplicationRepo) Delete(ctx context.Context, req *ubaV1.DeleteApplicati
 		return ubaV1.ErrorBadRequest("invalid parameter")
 	}
 
-	builder := r.entClient.Client().Debug().Application.Delete()
+	builder := r.entClient.Client().Application.Delete()
 
 	_, err := r.repository.Delete(ctx, builder, func(s *sql.Selector) {
 		s.Where(sql.EQ(application.FieldID, req.GetId()))

@@ -53,13 +53,14 @@ func (Application) Fields() []ent.Field {
 		field.Enum("type").
 			Comment("应用类型").
 			NamedValues(
-				"PlatformWeb", "PLATFORM_WEB",
-				"PlatformIos", "PLATFORM_IOS",
-				"PlatformAndroid", "PLATFORM_ANDROID",
-				"PlatformWindows", "PLATFORM_WINDOWS",
-				"PlatformMacos", "PLATFORM_MACOS",
-				"PlatformLinux", "PLATFORM_LINUX",
-				"PlatformMiniProgram", "PLATFORM_MINI_PROGRAM",
+				"Game", "GAME",
+				"Ecommerce", "ECOMMERCE",
+				"Content", "CONTENT",
+				"Tool", "TOOL",
+				"Finance", "FINANCE",
+				"Social", "SOCIAL",
+				"Education", "EDUCATION",
+				"Other", "OTHER",
 			).
 			Optional().
 			Nillable(),
@@ -73,6 +74,10 @@ func (Application) Fields() []ent.Field {
 			Default("ON").
 			Optional().
 			Nillable(),
+
+		field.Strings("platforms").
+			Comment("应用支持的平台列表").
+			Optional(),
 
 		field.String("remark").
 			Comment("备注信息").

@@ -271,7 +271,7 @@ func (r *TenantRepo) Update(ctx context.Context, req *identityV1.UpdateTenantReq
 		}
 	}
 
-	builder := r.entClient.Client().Debug().Tenant.Update()
+	builder := r.entClient.Client().Tenant.Update()
 	err := r.repository.UpdateX(ctx, builder, req.Data, req.GetUpdateMask(),
 		func(dto *identityV1.Tenant) {
 			builder.

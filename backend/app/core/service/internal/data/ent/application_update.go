@@ -12,6 +12,7 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"entgo.io/ent/dialect/sql/sqljson"
 	"entgo.io/ent/schema/field"
 )
 
@@ -270,6 +271,24 @@ func (_u *ApplicationUpdate) ClearStatus() *ApplicationUpdate {
 	return _u
 }
 
+// SetPlatforms sets the "platforms" field.
+func (_u *ApplicationUpdate) SetPlatforms(v []string) *ApplicationUpdate {
+	_u.mutation.SetPlatforms(v)
+	return _u
+}
+
+// AppendPlatforms appends value to the "platforms" field.
+func (_u *ApplicationUpdate) AppendPlatforms(v []string) *ApplicationUpdate {
+	_u.mutation.AppendPlatforms(v)
+	return _u
+}
+
+// ClearPlatforms clears the value of the "platforms" field.
+func (_u *ApplicationUpdate) ClearPlatforms() *ApplicationUpdate {
+	_u.mutation.ClearPlatforms()
+	return _u
+}
+
 // SetRemark sets the "remark" field.
 func (_u *ApplicationUpdate) SetRemark(v string) *ApplicationUpdate {
 	_u.mutation.SetRemark(v)
@@ -505,6 +524,17 @@ func (_u *ApplicationUpdate) sqlSave(ctx context.Context) (_node int, err error)
 	}
 	if _u.mutation.StatusCleared() {
 		_spec.ClearField(application.FieldStatus, field.TypeEnum)
+	}
+	if value, ok := _u.mutation.Platforms(); ok {
+		_spec.SetField(application.FieldPlatforms, field.TypeJSON, value)
+	}
+	if value, ok := _u.mutation.AppendedPlatforms(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, application.FieldPlatforms, value)
+		})
+	}
+	if _u.mutation.PlatformsCleared() {
+		_spec.ClearField(application.FieldPlatforms, field.TypeJSON)
 	}
 	if value, ok := _u.mutation.Remark(); ok {
 		_spec.SetField(application.FieldRemark, field.TypeString, value)
@@ -793,6 +823,24 @@ func (_u *ApplicationUpdateOne) ClearStatus() *ApplicationUpdateOne {
 	return _u
 }
 
+// SetPlatforms sets the "platforms" field.
+func (_u *ApplicationUpdateOne) SetPlatforms(v []string) *ApplicationUpdateOne {
+	_u.mutation.SetPlatforms(v)
+	return _u
+}
+
+// AppendPlatforms appends value to the "platforms" field.
+func (_u *ApplicationUpdateOne) AppendPlatforms(v []string) *ApplicationUpdateOne {
+	_u.mutation.AppendPlatforms(v)
+	return _u
+}
+
+// ClearPlatforms clears the value of the "platforms" field.
+func (_u *ApplicationUpdateOne) ClearPlatforms() *ApplicationUpdateOne {
+	_u.mutation.ClearPlatforms()
+	return _u
+}
+
 // SetRemark sets the "remark" field.
 func (_u *ApplicationUpdateOne) SetRemark(v string) *ApplicationUpdateOne {
 	_u.mutation.SetRemark(v)
@@ -1058,6 +1106,17 @@ func (_u *ApplicationUpdateOne) sqlSave(ctx context.Context) (_node *Application
 	}
 	if _u.mutation.StatusCleared() {
 		_spec.ClearField(application.FieldStatus, field.TypeEnum)
+	}
+	if value, ok := _u.mutation.Platforms(); ok {
+		_spec.SetField(application.FieldPlatforms, field.TypeJSON, value)
+	}
+	if value, ok := _u.mutation.AppendedPlatforms(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, application.FieldPlatforms, value)
+		})
+	}
+	if _u.mutation.PlatformsCleared() {
+		_spec.ClearField(application.FieldPlatforms, field.TypeJSON)
 	}
 	if value, ok := _u.mutation.Remark(); ok {
 		_spec.SetField(application.FieldRemark, field.TypeString, value)

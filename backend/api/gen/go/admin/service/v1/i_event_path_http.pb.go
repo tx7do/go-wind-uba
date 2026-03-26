@@ -33,11 +33,11 @@ type EventPathServiceHTTPServer interface {
 
 func RegisterEventPathServiceHTTPServer(s *http.Server, srv EventPathServiceHTTPServer) {
 	r := s.Route("/")
-	r.GET("/admin/v1/event-paths", _EventPathService_List5_HTTP_Handler(srv))
-	r.GET("/admin/v1/event-paths/{id}", _EventPathService_Get5_HTTP_Handler(srv))
+	r.GET("/admin/v1/event-paths", _EventPathService_List6_HTTP_Handler(srv))
+	r.GET("/admin/v1/event-paths/{id}", _EventPathService_Get6_HTTP_Handler(srv))
 }
 
-func _EventPathService_List5_HTTP_Handler(srv EventPathServiceHTTPServer) func(ctx http.Context) error {
+func _EventPathService_List6_HTTP_Handler(srv EventPathServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in v1.PagingRequest
 		if err := ctx.BindQuery(&in); err != nil {
@@ -56,7 +56,7 @@ func _EventPathService_List5_HTTP_Handler(srv EventPathServiceHTTPServer) func(c
 	}
 }
 
-func _EventPathService_Get5_HTTP_Handler(srv EventPathServiceHTTPServer) func(ctx http.Context) error {
+func _EventPathService_Get6_HTTP_Handler(srv EventPathServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in v11.GetEventPathRequest
 		if err := ctx.BindQuery(&in); err != nil {

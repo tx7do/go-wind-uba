@@ -189,7 +189,7 @@ func (r *InternalMessageRepo) Update(ctx context.Context, req *internalMessageV1
 		}
 	}
 
-	builder := r.entClient.Client().Debug().InternalMessage.Update()
+	builder := r.entClient.Client().InternalMessage.Update()
 	err := r.repository.UpdateX(ctx, builder, req.Data, req.GetUpdateMask(),
 		func(dto *internalMessageV1.InternalMessage) {
 			builder.

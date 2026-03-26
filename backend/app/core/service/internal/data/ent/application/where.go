@@ -839,6 +839,16 @@ func StatusNotNil() predicate.Application {
 	return predicate.Application(sql.FieldNotNull(FieldStatus))
 }
 
+// PlatformsIsNil applies the IsNil predicate on the "platforms" field.
+func PlatformsIsNil() predicate.Application {
+	return predicate.Application(sql.FieldIsNull(FieldPlatforms))
+}
+
+// PlatformsNotNil applies the NotNil predicate on the "platforms" field.
+func PlatformsNotNil() predicate.Application {
+	return predicate.Application(sql.FieldNotNull(FieldPlatforms))
+}
+
 // RemarkEQ applies the EQ predicate on the "remark" field.
 func RemarkEQ(v string) predicate.Application {
 	return predicate.Application(sql.FieldEQ(FieldRemark, v))

@@ -33,11 +33,11 @@ type IDMappingServiceHTTPServer interface {
 
 func RegisterIDMappingServiceHTTPServer(s *http.Server, srv IDMappingServiceHTTPServer) {
 	r := s.Route("/")
-	r.GET("/admin/v1/id-mappings", _IDMappingService_List7_HTTP_Handler(srv))
-	r.GET("/admin/v1/id-mappings/{id}", _IDMappingService_Get7_HTTP_Handler(srv))
+	r.GET("/admin/v1/id-mappings", _IDMappingService_List8_HTTP_Handler(srv))
+	r.GET("/admin/v1/id-mappings/{id}", _IDMappingService_Get8_HTTP_Handler(srv))
 }
 
-func _IDMappingService_List7_HTTP_Handler(srv IDMappingServiceHTTPServer) func(ctx http.Context) error {
+func _IDMappingService_List8_HTTP_Handler(srv IDMappingServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in v1.PagingRequest
 		if err := ctx.BindQuery(&in); err != nil {
@@ -56,7 +56,7 @@ func _IDMappingService_List7_HTTP_Handler(srv IDMappingServiceHTTPServer) func(c
 	}
 }
 
-func _IDMappingService_Get7_HTTP_Handler(srv IDMappingServiceHTTPServer) func(ctx http.Context) error {
+func _IDMappingService_Get8_HTTP_Handler(srv IDMappingServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in v11.GetIDMappingRequest
 		if err := ctx.BindQuery(&in); err != nil {

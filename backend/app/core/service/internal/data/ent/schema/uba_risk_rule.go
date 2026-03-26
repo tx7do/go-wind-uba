@@ -1,14 +1,14 @@
 package schema
 
 import (
-	ubaV1 "go-wind-uba/api/gen/go/uba/service/v1"
-
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
 	"github.com/tx7do/go-crud/entgo/mixin"
+
+	ubaV1 "go-wind-uba/api/gen/go/uba/service/v1"
 )
 
 // RiskRule holds the schema definition for the RiskRule entity.

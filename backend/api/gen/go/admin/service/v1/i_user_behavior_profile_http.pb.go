@@ -33,11 +33,11 @@ type UserBehaviorProfileServiceHTTPServer interface {
 
 func RegisterUserBehaviorProfileServiceHTTPServer(s *http.Server, srv UserBehaviorProfileServiceHTTPServer) {
 	r := s.Route("/")
-	r.GET("/admin/v1/user-behavior-profiles", _UserBehaviorProfileService_List29_HTTP_Handler(srv))
-	r.GET("/admin/v1/user-behavior-profiles/{id}", _UserBehaviorProfileService_Get31_HTTP_Handler(srv))
+	r.GET("/admin/v1/user-behavior-profiles", _UserBehaviorProfileService_List30_HTTP_Handler(srv))
+	r.GET("/admin/v1/user-behavior-profiles/{id}", _UserBehaviorProfileService_Get32_HTTP_Handler(srv))
 }
 
-func _UserBehaviorProfileService_List29_HTTP_Handler(srv UserBehaviorProfileServiceHTTPServer) func(ctx http.Context) error {
+func _UserBehaviorProfileService_List30_HTTP_Handler(srv UserBehaviorProfileServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in v1.PagingRequest
 		if err := ctx.BindQuery(&in); err != nil {
@@ -56,7 +56,7 @@ func _UserBehaviorProfileService_List29_HTTP_Handler(srv UserBehaviorProfileServ
 	}
 }
 
-func _UserBehaviorProfileService_Get31_HTTP_Handler(srv UserBehaviorProfileServiceHTTPServer) func(ctx http.Context) error {
+func _UserBehaviorProfileService_Get32_HTTP_Handler(srv UserBehaviorProfileServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in v11.GetUserBehaviorProfileRequest
 		if err := ctx.BindQuery(&in); err != nil {

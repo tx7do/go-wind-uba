@@ -241,11 +241,15 @@
     "GOOGLE": "谷歌云存储"
   },
   "application": {
-    "status": {
-      "STATUS_UNSPECIFIED": "未指定",
-      "STATUS_ACTIVE": "活跃",
-      "STATUS_INACTIVE": "不活跃",
-      "STATUS_DISABLED": "已禁用"
+    "type": {
+      "GAME": "游戏",
+      "ECOMMERCE": "电商",
+      "CONTENT": "内容",
+      "TOOL": "工具",
+      "FINANCE": "金融",
+      "SOCIAL": "社交",
+      "EDUCATION": "教育",
+      "OTHER": "其他"
     }
   },
   "platform": {
@@ -284,23 +288,6 @@
       "FALSE_POSITIVE": "误报",
       "IGNORED": "已忽略",
       "AUTO_BLOCKED": "自动阻断"
-    }
-  },
-  "riskRule": {
-    "actionType": {
-      "title": "操作类型",
-      "ACTION_TYPE_UNSPECIFIED": "未指定",
-      "ACTION_TYPE_WARNING": "警告",
-      "ACTION_TYPE_BLOCK": "阻断",
-      "ACTION_TYPE_NOTIFY": "通知",
-      "ACTION_TYPE_AUDIT": "审计",
-      "ACTION_TYPE_LIMIT": "限制",
-      "ACTION_TYPE_BLACKLIST": "黑名单",
-      "ACTION_TYPE_WHITELIST": "白名单",
-      "ACTION_TYPE_ENHANCED_AUTH": "增强认证",
-      "ACTION_TYPE_ACCOUNT_FREEZE": "账号冻结",
-      "ACTION_TYPE_DATA_EXPORT": "数据导出",
-      "ACTION_TYPE_SESSION_TERMINATE": "会话终止"
     }
   },
   "tagDefinition": {

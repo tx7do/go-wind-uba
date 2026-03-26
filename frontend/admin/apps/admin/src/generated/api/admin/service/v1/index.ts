@@ -943,22 +943,22 @@ export type auditservicev1_GetApiAuditLogRequest = {
 // 应用服务
 export interface ApplicationService {
   // 获取应用列表
-  ListApplication(request: pagination_PagingRequest): Promise<ubaservicev1_ListApplicationResponse>;
+  List(request: pagination_PagingRequest): Promise<ubaservicev1_ListApplicationResponse>;
   // 获取应用数据
-  GetApplication(request: ubaservicev1_GetApplicationRequest): Promise<ubaservicev1_Application>;
+  Get(request: ubaservicev1_GetApplicationRequest): Promise<ubaservicev1_Application>;
   // 创建应用
-  CreateApplication(request: ubaservicev1_CreateApplicationRequest): Promise<ubaservicev1_Application>;
+  Create(request: ubaservicev1_CreateApplicationRequest): Promise<ubaservicev1_Application>;
   // 更新应用
-  UpdateApplication(request: ubaservicev1_UpdateApplicationRequest): Promise<ubaservicev1_Application>;
+  Update(request: ubaservicev1_UpdateApplicationRequest): Promise<ubaservicev1_Application>;
   // 删除应用
-  DeleteApplication(request: ubaservicev1_DeleteApplicationRequest): Promise<wellKnownEmpty>;
+  Delete(request: ubaservicev1_DeleteApplicationRequest): Promise<wellKnownEmpty>;
 }
 
 export function createApplicationServiceClient(
   handler: RequestHandler
 ): ApplicationService {
   return {
-    ListApplication(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+    List(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
       const path = `admin/v1/apps`; // eslint-disable-line quotes
       const body = null;
       const queryParams: string[] = [];
@@ -1034,10 +1034,10 @@ export function createApplicationServiceClient(
         body,
       }, {
         service: "ApplicationService",
-        method: "ListApplication",
+        method: "List",
       }) as Promise<ubaservicev1_ListApplicationResponse>;
     },
-    GetApplication(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+    Get(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
       if (!request.id) {
         throw new Error("missing required field request.id");
       }
@@ -1057,10 +1057,10 @@ export function createApplicationServiceClient(
         body,
       }, {
         service: "ApplicationService",
-        method: "GetApplication",
+        method: "Get",
       }) as Promise<ubaservicev1_Application>;
     },
-    CreateApplication(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+    Create(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
       const path = `admin/v1/apps`; // eslint-disable-line quotes
       const body = JSON.stringify(request?.data ?? {});
       const queryParams: string[] = [];
@@ -1074,10 +1074,10 @@ export function createApplicationServiceClient(
         body,
       }, {
         service: "ApplicationService",
-        method: "CreateApplication",
+        method: "Create",
       }) as Promise<ubaservicev1_Application>;
     },
-    UpdateApplication(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+    Update(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
       if (!request.id) {
         throw new Error("missing required field request.id");
       }
@@ -1100,10 +1100,10 @@ export function createApplicationServiceClient(
         body,
       }, {
         service: "ApplicationService",
-        method: "UpdateApplication",
+        method: "Update",
       }) as Promise<ubaservicev1_Application>;
     },
-    DeleteApplication(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+    Delete(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
       if (!request.id) {
         throw new Error("missing required field request.id");
       }
@@ -1123,7 +1123,7 @@ export function createApplicationServiceClient(
         body,
       }, {
         service: "ApplicationService",
-        method: "DeleteApplication",
+        method: "Delete",
       }) as Promise<wellKnownEmpty>;
     },
   };
@@ -1141,14 +1141,16 @@ export type ubaservicev1_Application = {
   appId?: string;
   appKey?: string;
   appSecret?: string;
-  type?: ubaservicev1_Platform;
+  type?: ubaservicev1_Application_Type;
+  // 支持平台列表
+  platforms: string[] | undefined;
   status?: ubaservicev1_Application_Status;
   remark?: string;
   desensitize?: boolean;
-  tenantId?: number;
-  tenantName?: string;
   webhookUrl?: string;
   webhookSecret?: string;
+  tenantId?: number;
+  tenantName?: string;
   createdBy?: number;
   updatedBy?: number;
   deletedBy?: number;
@@ -1157,24 +1159,18 @@ export type ubaservicev1_Application = {
   deletedAt?: wellKnownTimestamp;
 };
 
-// 平台类型（用于标识应用或事件发生的平台）
-export type ubaservicev1_Platform =
-  // 未指定平台类型
-  | "PLATFORM_UNSPECIFIED"
-  // Web 平台
-  | "PLATFORM_WEB"
-  // iOS 平台
-  | "PLATFORM_IOS"
-  // Android 平台
-  | "PLATFORM_ANDROID"
-  // Windows 平台
-  | "PLATFORM_WINDOWS"
-  // macOS 平台
-  | "PLATFORM_MACOS"
-  // Linux 平台
-  | "PLATFORM_LINUX"
-  // 小程序平台
-  | "PLATFORM_MINI_PROGRAM";
+// 应用类型
+export type ubaservicev1_Application_Type =
+  | "APPLICATION_TYPE_UNSPECIFIED"
+  | "GAME"
+  | "ECOMMERCE"
+  | "CONTENT"
+  | "TOOL"
+  | "FINANCE"
+  | "SOCIAL"
+  | "EDUCATION"
+  | "OTHER";
+// 应用状态
 export type ubaservicev1_Application_Status =
   | "STATUS_UNSPECIFIED"
   | "ON"
@@ -7150,6 +7146,24 @@ export type ubaservicev1_Session = {
   updateTime: wellKnownTimestamp | undefined;
 };
 
+// 平台类型（用于标识应用或事件发生的平台）
+export type ubaservicev1_Platform =
+  // 未指定平台类型
+  | "PLATFORM_UNSPECIFIED"
+  // Web 平台
+  | "PLATFORM_WEB"
+  // iOS 平台
+  | "PLATFORM_IOS"
+  // Android 平台
+  | "PLATFORM_ANDROID"
+  // Windows 平台
+  | "PLATFORM_WINDOWS"
+  // macOS 平台
+  | "PLATFORM_MACOS"
+  // Linux 平台
+  | "PLATFORM_LINUX"
+  // 小程序平台
+  | "PLATFORM_MINI_PROGRAM";
 // 查询会话详情请求
 export type ubaservicev1_GetSessionRequest = {
   id: number | undefined;

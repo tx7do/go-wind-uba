@@ -298,7 +298,7 @@ paths:
             tags:
                 - ApplicationService
             description: 获取应用列表
-            operationId: ApplicationService_ListApplication
+            operationId: ApplicationService_List
             parameters:
                 - name: page
                   in: query
@@ -375,7 +375,7 @@ paths:
             tags:
                 - ApplicationService
             description: 创建应用
-            operationId: ApplicationService_CreateApplication
+            operationId: ApplicationService_Create
             requestBody:
                 content:
                     application/json:
@@ -394,7 +394,7 @@ paths:
             tags:
                 - ApplicationService
             description: 获取应用数据
-            operationId: ApplicationService_GetApplication
+            operationId: ApplicationService_Get
             parameters:
                 - name: id
                   in: path
@@ -418,7 +418,7 @@ paths:
             tags:
                 - ApplicationService
             description: 更新应用
-            operationId: ApplicationService_UpdateApplication
+            operationId: ApplicationService_Update
             parameters:
                 - name: id
                   in: path
@@ -452,7 +452,7 @@ paths:
             tags:
                 - ApplicationService
             description: 删除应用
-            operationId: ApplicationService_DeleteApplication
+            operationId: ApplicationService_Delete
             parameters:
                 - name: id
                   in: path
@@ -6142,23 +6142,29 @@ components:
                     description: UBA应用唯一标识（上报时使用）
                 appKey:
                     type: string
-                    description: 密钥（签名/鉴权）
+                    description: 应用Key
                 appSecret:
                     type: string
-                    description: 密钥
+                    description: 应用密钥
                 type:
                     enum:
-                        - PLATFORM_UNSPECIFIED
-                        - PLATFORM_WEB
-                        - PLATFORM_IOS
-                        - PLATFORM_ANDROID
-                        - PLATFORM_WINDOWS
-                        - PLATFORM_MACOS
-                        - PLATFORM_LINUX
-                        - PLATFORM_MINI_PROGRAM
+                        - APPLICATION_TYPE_UNSPECIFIED
+                        - GAME
+                        - ECOMMERCE
+                        - CONTENT
+                        - TOOL
+                        - FINANCE
+                        - SOCIAL
+                        - EDUCATION
+                        - OTHER
                     type: string
                     description: 应用类型
                     format: enum
+                platforms:
+                    type: array
+                    items:
+                        type: string
+                    description: 应用支持的平台列表
                 status:
                     enum:
                         - STATUS_UNSPECIFIED
@@ -6174,6 +6180,12 @@ components:
                 desensitize:
                     type: boolean
                     description: 是否开启脱敏
+                webhookUrl:
+                    type: string
+                    description: 事件回调 URL
+                webhookSecret:
+                    type: string
+                    description: 回调签名密钥
                 tenantId:
                     type: integer
                     description: 租户ID
@@ -6181,12 +6193,6 @@ components:
                 tenantName:
                     type: string
                     description: 租户名称
-                webhookUrl:
-                    type: string
-                    description: 事件回调 URL
-                webhookSecret:
-                    type: string
-                    description: 回调签名密钥
                 createdBy:
                     type: integer
                     description: 创建者用户ID

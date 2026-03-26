@@ -203,7 +203,7 @@ func (r *UserRoleRepo) ListRoleIDs(ctx context.Context, userID uint32, excludeEx
 		return []uint32{}, nil
 	}
 
-	q := r.entClient.Client().Debug().UserRole.Query().
+	q := r.entClient.Client().UserRole.Query().
 		Where(
 			userrole.UserIDEQ(userID),
 		)

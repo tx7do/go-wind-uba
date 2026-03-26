@@ -172,7 +172,7 @@ async function handleDelete(row: any) {
           :ok-text="$t('ui.button.ok')"
           :title="
             $t('ui.text.do_you_want_delete', {
-              moduleName: $t('menu.page.object'),
+              moduleName: $t('menu.object.objects'),
             })
           "
           @confirm="handleDelete(row)"

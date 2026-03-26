@@ -225,7 +225,7 @@ func (r *FileRepo) Update(ctx context.Context, req *storageV1.UpdateFileRequest)
 		}
 	}
 
-	builder := r.entClient.Client().Debug().File.Update()
+	builder := r.entClient.Client().File.Update()
 	err := r.repository.UpdateX(ctx, builder, req.Data, req.GetUpdateMask(),
 		func(dto *storageV1.File) {
 			builder.

@@ -450,7 +450,17 @@
     }
   },
   "application": {
-    "moduleName": "应用管理"
+    "moduleName": "应用管理",
+    "appId": "应用ID",
+    "appKey": "应用Key",
+    "appSecret": "应用密钥",
+    "type": "应用类型",
+    "platforms": "支持平台",
+    "status": "应用状态",
+    "remark": "备注信息",
+    "desensitize": "是否开启脱敏",
+    "webhookUrl": "事件回调 URL",
+    "webhookSecret": "回调签名密钥"
   },
   "object": {
     "moduleName": "对象管理",

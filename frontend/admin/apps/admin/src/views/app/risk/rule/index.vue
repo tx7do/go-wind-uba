@@ -195,7 +195,7 @@ async function handleDelete(row: any) {
     <Grid :title="$t('menu.risk.rule')">
       <template #toolbar-tools>
         <a-button type="primary" @click="handleCreate">
-          {{ $t('ui.button.create', { moduleName: $t('menu.page.riskRule') }) }}
+          {{ $t('ui.button.create', { moduleName: $t('menu.risk.rule') }) }}
         </a-button>
       </template>
       <template #riskType="{ row }">
@@ -224,7 +224,7 @@ async function handleDelete(row: any) {
           :ok-text="$t('ui.button.ok')"
           :title="
             $t('ui.text.do_you_want_delete', {
-              moduleName: $t('menu.page.riskRule'),
+              moduleName: $t('menu.risk.rule'),
             })
           "
           @confirm="handleDelete(row)"

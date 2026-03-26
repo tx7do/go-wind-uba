@@ -44,10 +44,10 @@ type redactedApplicationServiceServer struct {
 	bypass redact.Bypass
 }
 
-// ListApplication is the redacted wrapper for the actual ApplicationServiceServer.ListApplication method
+// List is the redacted wrapper for the actual ApplicationServiceServer.List method
 // Unary RPC
-func (s *redactedApplicationServiceServer) ListApplication(ctx context.Context, in *pagination.PagingRequest) (*ubapb.ListApplicationResponse, error) {
-	res, err := s.srv.ListApplication(ctx, in)
+func (s *redactedApplicationServiceServer) List(ctx context.Context, in *pagination.PagingRequest) (*ubapb.ListApplicationResponse, error) {
+	res, err := s.srv.List(ctx, in)
 	if !s.bypass.CheckInternal(ctx) {
 		// Apply redaction to the response
 		redact.Apply(res)
@@ -55,10 +55,10 @@ func (s *redactedApplicationServiceServer) ListApplication(ctx context.Context, 
 	return res, err
 }
 
-// GetApplication is the redacted wrapper for the actual ApplicationServiceServer.GetApplication method
+// Get is the redacted wrapper for the actual ApplicationServiceServer.Get method
 // Unary RPC
-func (s *redactedApplicationServiceServer) GetApplication(ctx context.Context, in *ubapb.GetApplicationRequest) (*ubapb.Application, error) {
-	res, err := s.srv.GetApplication(ctx, in)
+func (s *redactedApplicationServiceServer) Get(ctx context.Context, in *ubapb.GetApplicationRequest) (*ubapb.Application, error) {
+	res, err := s.srv.Get(ctx, in)
 	if !s.bypass.CheckInternal(ctx) {
 		// Apply redaction to the response
 		redact.Apply(res)
@@ -66,10 +66,10 @@ func (s *redactedApplicationServiceServer) GetApplication(ctx context.Context, i
 	return res, err
 }
 
-// CreateApplication is the redacted wrapper for the actual ApplicationServiceServer.CreateApplication method
+// Create is the redacted wrapper for the actual ApplicationServiceServer.Create method
 // Unary RPC
-func (s *redactedApplicationServiceServer) CreateApplication(ctx context.Context, in *ubapb.CreateApplicationRequest) (*ubapb.Application, error) {
-	res, err := s.srv.CreateApplication(ctx, in)
+func (s *redactedApplicationServiceServer) Create(ctx context.Context, in *ubapb.CreateApplicationRequest) (*ubapb.Application, error) {
+	res, err := s.srv.Create(ctx, in)
 	if !s.bypass.CheckInternal(ctx) {
 		// Apply redaction to the response
 		redact.Apply(res)
@@ -77,10 +77,10 @@ func (s *redactedApplicationServiceServer) CreateApplication(ctx context.Context
 	return res, err
 }
 
-// UpdateApplication is the redacted wrapper for the actual ApplicationServiceServer.UpdateApplication method
+// Update is the redacted wrapper for the actual ApplicationServiceServer.Update method
 // Unary RPC
-func (s *redactedApplicationServiceServer) UpdateApplication(ctx context.Context, in *ubapb.UpdateApplicationRequest) (*ubapb.Application, error) {
-	res, err := s.srv.UpdateApplication(ctx, in)
+func (s *redactedApplicationServiceServer) Update(ctx context.Context, in *ubapb.UpdateApplicationRequest) (*ubapb.Application, error) {
+	res, err := s.srv.Update(ctx, in)
 	if !s.bypass.CheckInternal(ctx) {
 		// Apply redaction to the response
 		redact.Apply(res)
@@ -88,10 +88,10 @@ func (s *redactedApplicationServiceServer) UpdateApplication(ctx context.Context
 	return res, err
 }
 
-// DeleteApplication is the redacted wrapper for the actual ApplicationServiceServer.DeleteApplication method
+// Delete is the redacted wrapper for the actual ApplicationServiceServer.Delete method
 // Unary RPC
-func (s *redactedApplicationServiceServer) DeleteApplication(ctx context.Context, in *ubapb.DeleteApplicationRequest) (*emptypb.Empty, error) {
-	res, err := s.srv.DeleteApplication(ctx, in)
+func (s *redactedApplicationServiceServer) Delete(ctx context.Context, in *ubapb.DeleteApplicationRequest) (*emptypb.Empty, error) {
+	res, err := s.srv.Delete(ctx, in)
 	if !s.bypass.CheckInternal(ctx) {
 		// Apply redaction to the response
 		redact.Apply(res)

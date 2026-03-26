@@ -3,6 +3,7 @@
 package ent
 
 import (
+	"encoding/json"
 	"fmt"
 	"go-wind-uba/app/core/service/internal/data/ent/application"
 	"strings"
@@ -44,6 +45,8 @@ type Application struct {
 	Type *application.Type `json:"type,omitempty"`
 	// 应用状态
 	Status *application.Status `json:"status,omitempty"`
+	// 应用支持的平台列表
+	Platforms []string `json:"platforms,omitempty"`
 	// 备注信息
 	Remark *string `json:"remark,omitempty"`
 	// 是否开启脱敏
@@ -60,6 +63,8 @@ func (*Application) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
+		case application.FieldPlatforms:
+			values[i] = new([]byte)
 		case application.FieldDesensitize:
 			values[i] = new(sql.NullBool)
 		case application.FieldID, application.FieldCreatedBy, application.FieldUpdatedBy, application.FieldDeletedBy, application.FieldTenantID:
@@ -179,6 +184,14 @@ func (_m *Application) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.Status = new(application.Status)
 				*_m.Status = application.Status(value.String)
+			}
+		case application.FieldPlatforms:
+			if value, ok := values[i].(*[]byte); !ok {
+				return fmt.Errorf("unexpected type %T for field platforms", values[i])
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &_m.Platforms); err != nil {
+					return fmt.Errorf("unmarshal field platforms: %w", err)
+				}
 			}
 		case application.FieldRemark:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -308,6 +321,9 @@ func (_m *Application) String() string {
 		builder.WriteString("status=")
 		builder.WriteString(fmt.Sprintf("%v", *v))
 	}
+	builder.WriteString(", ")
+	builder.WriteString("platforms=")
+	builder.WriteString(fmt.Sprintf("%v", _m.Platforms))
 	builder.WriteString(", ")
 	if v := _m.Remark; v != nil {
 		builder.WriteString("remark=")

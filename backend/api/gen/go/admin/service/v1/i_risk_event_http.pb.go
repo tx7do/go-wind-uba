@@ -40,13 +40,13 @@ type RiskEventServiceHTTPServer interface {
 
 func RegisterRiskEventServiceHTTPServer(s *http.Server, srv RiskEventServiceHTTPServer) {
 	r := s.Route("/")
-	r.GET("/admin/v1/risk-events", _RiskEventService_List21_HTTP_Handler(srv))
+	r.GET("/admin/v1/risk-events", _RiskEventService_List22_HTTP_Handler(srv))
 	r.GET("/admin/v1/risk-events/count", _RiskEventService_Count0_HTTP_Handler(srv))
-	r.GET("/admin/v1/risk-events/{id}", _RiskEventService_Get21_HTTP_Handler(srv))
-	r.POST("/admin/v1/risk-events", _RiskEventService_Create13_HTTP_Handler(srv))
+	r.GET("/admin/v1/risk-events/{id}", _RiskEventService_Get22_HTTP_Handler(srv))
+	r.POST("/admin/v1/risk-events", _RiskEventService_Create14_HTTP_Handler(srv))
 }
 
-func _RiskEventService_List21_HTTP_Handler(srv RiskEventServiceHTTPServer) func(ctx http.Context) error {
+func _RiskEventService_List22_HTTP_Handler(srv RiskEventServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in v1.PagingRequest
 		if err := ctx.BindQuery(&in); err != nil {
@@ -84,7 +84,7 @@ func _RiskEventService_Count0_HTTP_Handler(srv RiskEventServiceHTTPServer) func(
 	}
 }
 
-func _RiskEventService_Get21_HTTP_Handler(srv RiskEventServiceHTTPServer) func(ctx http.Context) error {
+func _RiskEventService_Get22_HTTP_Handler(srv RiskEventServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in v11.GetRiskEventRequest
 		if err := ctx.BindQuery(&in); err != nil {
@@ -106,7 +106,7 @@ func _RiskEventService_Get21_HTTP_Handler(srv RiskEventServiceHTTPServer) func(c
 	}
 }
 
-func _RiskEventService_Create13_HTTP_Handler(srv RiskEventServiceHTTPServer) func(ctx http.Context) error {
+func _RiskEventService_Create14_HTTP_Handler(srv RiskEventServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in v11.CreateRiskEventRequest
 		if err := ctx.Bind(&in); err != nil {

@@ -191,7 +191,7 @@ func (r *TaskRepo) Update(ctx context.Context, req *taskV1.UpdateTaskRequest) (*
 		}
 	}
 
-	builder := r.entClient.Client().Debug().Task.UpdateOneID(req.GetId())
+	builder := r.entClient.Client().Task.UpdateOneID(req.GetId())
 	result, err := r.repository.UpdateOne(ctx, builder, req.Data, req.GetUpdateMask(),
 		func(dto *taskV1.Task) {
 			builder.

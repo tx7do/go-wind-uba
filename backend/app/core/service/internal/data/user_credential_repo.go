@@ -224,7 +224,7 @@ func (r *UserCredentialRepo) Update(ctx context.Context, req *authenticationV1.U
 		req.Data.Credential = trans.Ptr(newCredential)
 	}
 
-	builder := r.entClient.Client().Debug().UserCredential.Update()
+	builder := r.entClient.Client().UserCredential.Update()
 	err = r.repository.UpdateX(ctx, builder, req.Data, req.GetUpdateMask(),
 		func(dto *authenticationV1.UserCredential) {
 			builder.

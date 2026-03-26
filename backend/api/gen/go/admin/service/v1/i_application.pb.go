@@ -28,13 +28,13 @@ var File_admin_service_v1_i_application_proto protoreflect.FileDescriptor
 
 const file_admin_service_v1_i_application_proto_rawDesc = "" +
 	"\n" +
-	"$admin/service/v1/i_application.proto\x12\x10admin.service.v1\x1a\x1cgoogle/api/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1epagination/v1/pagination.proto\x1a uba/service/v1/application.proto2\xe3\x04\n" +
-	"\x12ApplicationService\x12m\n" +
-	"\x0fListApplication\x12\x19.pagination.PagingRequest\x1a'.uba.service.v1.ListApplicationResponse\"\x16\x82\xd3\xe4\x93\x02\x10\x12\x0e/admin/v1/apps\x12q\n" +
-	"\x0eGetApplication\x12%.uba.service.v1.GetApplicationRequest\x1a\x1b.uba.service.v1.Application\"\x1b\x82\xd3\xe4\x93\x02\x15\x12\x13/admin/v1/apps/{id}\x12x\n" +
-	"\x11CreateApplication\x12(.uba.service.v1.CreateApplicationRequest\x1a\x1b.uba.service.v1.Application\"\x1c\x82\xd3\xe4\x93\x02\x16:\x04data\"\x0e/admin/v1/apps\x12}\n" +
-	"\x11UpdateApplication\x12(.uba.service.v1.UpdateApplicationRequest\x1a\x1b.uba.service.v1.Application\"!\x82\xd3\xe4\x93\x02\x1b:\x04data\x1a\x13/admin/v1/apps/{id}\x12r\n" +
-	"\x11DeleteApplication\x12(.uba.service.v1.DeleteApplicationRequest\x1a\x16.google.protobuf.Empty\"\x1b\x82\xd3\xe4\x93\x02\x15*\x13/admin/v1/apps/{id}B\xbc\x01\n" +
+	"$admin/service/v1/i_application.proto\x12\x10admin.service.v1\x1a\x1cgoogle/api/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1epagination/v1/pagination.proto\x1a uba/service/v1/application.proto2\xac\x04\n" +
+	"\x12ApplicationService\x12b\n" +
+	"\x04List\x12\x19.pagination.PagingRequest\x1a'.uba.service.v1.ListApplicationResponse\"\x16\x82\xd3\xe4\x93\x02\x10\x12\x0e/admin/v1/apps\x12f\n" +
+	"\x03Get\x12%.uba.service.v1.GetApplicationRequest\x1a\x1b.uba.service.v1.Application\"\x1b\x82\xd3\xe4\x93\x02\x15\x12\x13/admin/v1/apps/{id}\x12m\n" +
+	"\x06Create\x12(.uba.service.v1.CreateApplicationRequest\x1a\x1b.uba.service.v1.Application\"\x1c\x82\xd3\xe4\x93\x02\x16:\x04data\"\x0e/admin/v1/apps\x12r\n" +
+	"\x06Update\x12(.uba.service.v1.UpdateApplicationRequest\x1a\x1b.uba.service.v1.Application\"!\x82\xd3\xe4\x93\x02\x1b:\x04data\x1a\x13/admin/v1/apps/{id}\x12g\n" +
+	"\x06Delete\x12(.uba.service.v1.DeleteApplicationRequest\x1a\x16.google.protobuf.Empty\"\x1b\x82\xd3\xe4\x93\x02\x15*\x13/admin/v1/apps/{id}B\xbc\x01\n" +
 	"\x14com.admin.service.v1B\x11IApplicationProtoP\x01Z/go-wind-uba/api/gen/go/admin/service/v1;adminpb\xa2\x02\x03ASX\xaa\x02\x10Admin.Service.V1\xca\x02\x10Admin\\Service\\V1\xe2\x02\x1cAdmin\\Service\\V1\\GPBMetadata\xea\x02\x12Admin::Service::V1b\x06proto3"
 
 var file_admin_service_v1_i_application_proto_goTypes = []any{
@@ -48,16 +48,16 @@ var file_admin_service_v1_i_application_proto_goTypes = []any{
 	(*emptypb.Empty)(nil),                // 7: google.protobuf.Empty
 }
 var file_admin_service_v1_i_application_proto_depIdxs = []int32{
-	0, // 0: admin.service.v1.ApplicationService.ListApplication:input_type -> pagination.PagingRequest
-	1, // 1: admin.service.v1.ApplicationService.GetApplication:input_type -> uba.service.v1.GetApplicationRequest
-	2, // 2: admin.service.v1.ApplicationService.CreateApplication:input_type -> uba.service.v1.CreateApplicationRequest
-	3, // 3: admin.service.v1.ApplicationService.UpdateApplication:input_type -> uba.service.v1.UpdateApplicationRequest
-	4, // 4: admin.service.v1.ApplicationService.DeleteApplication:input_type -> uba.service.v1.DeleteApplicationRequest
-	5, // 5: admin.service.v1.ApplicationService.ListApplication:output_type -> uba.service.v1.ListApplicationResponse
-	6, // 6: admin.service.v1.ApplicationService.GetApplication:output_type -> uba.service.v1.Application
-	6, // 7: admin.service.v1.ApplicationService.CreateApplication:output_type -> uba.service.v1.Application
-	6, // 8: admin.service.v1.ApplicationService.UpdateApplication:output_type -> uba.service.v1.Application
-	7, // 9: admin.service.v1.ApplicationService.DeleteApplication:output_type -> google.protobuf.Empty
+	0, // 0: admin.service.v1.ApplicationService.List:input_type -> pagination.PagingRequest
+	1, // 1: admin.service.v1.ApplicationService.Get:input_type -> uba.service.v1.GetApplicationRequest
+	2, // 2: admin.service.v1.ApplicationService.Create:input_type -> uba.service.v1.CreateApplicationRequest
+	3, // 3: admin.service.v1.ApplicationService.Update:input_type -> uba.service.v1.UpdateApplicationRequest
+	4, // 4: admin.service.v1.ApplicationService.Delete:input_type -> uba.service.v1.DeleteApplicationRequest
+	5, // 5: admin.service.v1.ApplicationService.List:output_type -> uba.service.v1.ListApplicationResponse
+	6, // 6: admin.service.v1.ApplicationService.Get:output_type -> uba.service.v1.Application
+	6, // 7: admin.service.v1.ApplicationService.Create:output_type -> uba.service.v1.Application
+	6, // 8: admin.service.v1.ApplicationService.Update:output_type -> uba.service.v1.Application
+	7, // 9: admin.service.v1.ApplicationService.Delete:output_type -> google.protobuf.Empty
 	5, // [5:10] is the sub-list for method output_type
 	0, // [0:5] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name

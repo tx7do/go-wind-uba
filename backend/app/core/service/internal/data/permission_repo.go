@@ -421,7 +421,7 @@ func (r *PermissionRepo) Update(ctx context.Context, req *permissionV1.UpdatePer
 		}
 	}
 
-	builder := r.entClient.Client().Debug().Permission.UpdateOneID(req.GetId())
+	builder := r.entClient.Client().Permission.UpdateOneID(req.GetId())
 	perm, err := r.repository.UpdateOne(ctx, builder, req.Data, req.GetUpdateMask(),
 		func(dto *permissionV1.Permission) {
 			builder.

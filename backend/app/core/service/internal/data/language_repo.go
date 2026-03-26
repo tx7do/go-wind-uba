@@ -83,7 +83,7 @@ func (r *LanguageRepo) List(ctx context.Context, req *paginationV1.PagingRequest
 		return nil, dictV1.ErrorBadRequest("invalid parameter")
 	}
 
-	builder := r.entClient.Client().Debug().Language.Query()
+	builder := r.entClient.Client().Language.Query()
 
 	ret, err := r.repository.ListWithPaging(ctx, builder, builder.Clone(), req)
 	if err != nil {
@@ -203,7 +203,7 @@ func (r *LanguageRepo) Update(ctx context.Context, req *dictV1.UpdateLanguageReq
 		}
 	}
 
-	builder := r.entClient.Client().Debug().Language.Update()
+	builder := r.entClient.Client().Language.Update()
 	err := r.repository.UpdateX(ctx, builder, req.Data, req.GetUpdateMask(),
 		func(dto *dictV1.Language) {
 			builder.
@@ -229,7 +229,7 @@ func (r *LanguageRepo) Delete(ctx context.Context, req *dictV1.DeleteLanguageReq
 		return dictV1.ErrorBadRequest("invalid parameter")
 	}
 
-	builder := r.entClient.Client().Debug().Language.Delete()
+	builder := r.entClient.Client().Language.Delete()
 
 	var err error
 	_, err = r.repository.Delete(ctx, builder, func(s *sql.Selector) {

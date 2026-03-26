@@ -130,19 +130,21 @@ func (x *Application) Redact() string {
 
 	// Safe field: Type
 
+	// Safe field: Platforms
+
 	// Safe field: Status
 
 	// Safe field: Remark
 
 	// Safe field: Desensitize
 
-	// Safe field: TenantId
-
-	// Safe field: TenantName
-
 	// Safe field: WebhookUrl
 
 	// Safe field: WebhookSecret
+
+	// Safe field: TenantId
+
+	// Safe field: TenantName
 
 	// Safe field: CreatedBy
 

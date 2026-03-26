@@ -237,7 +237,7 @@ func (r *userRepo) List(ctx context.Context, req *paginationV1.PagingRequest) (*
 		return nil, identityV1.ErrorBadRequest("invalid parameter")
 	}
 
-	builder := r.entClient.Client().Debug().User.Query()
+	builder := r.entClient.Client().User.Query()
 
 	filterExpr, err := paginationFilter.ConvertFilterByPagingRequest(req)
 	if err != nil {

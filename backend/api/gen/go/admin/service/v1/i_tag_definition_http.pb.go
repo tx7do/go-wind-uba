@@ -46,15 +46,15 @@ type TagDefinitionServiceHTTPServer interface {
 
 func RegisterTagDefinitionServiceHTTPServer(s *http.Server, srv TagDefinitionServiceHTTPServer) {
 	r := s.Route("/")
-	r.GET("/admin/v1/tag-definitions", _TagDefinitionService_List25_HTTP_Handler(srv))
+	r.GET("/admin/v1/tag-definitions", _TagDefinitionService_List26_HTTP_Handler(srv))
 	r.GET("/admin/v1/tag-definitions/count", _TagDefinitionService_Count2_HTTP_Handler(srv))
-	r.GET("/admin/v1/tag-definitions/{id}", _TagDefinitionService_Get25_HTTP_Handler(srv))
-	r.POST("/admin/v1/tag-definitions", _TagDefinitionService_Create16_HTTP_Handler(srv))
-	r.PUT("/admin/v1/tag-definitions/{id}", _TagDefinitionService_Update14_HTTP_Handler(srv))
-	r.DELETE("/admin/v1/tag-definitions/{id}", _TagDefinitionService_Delete14_HTTP_Handler(srv))
+	r.GET("/admin/v1/tag-definitions/{id}", _TagDefinitionService_Get26_HTTP_Handler(srv))
+	r.POST("/admin/v1/tag-definitions", _TagDefinitionService_Create17_HTTP_Handler(srv))
+	r.PUT("/admin/v1/tag-definitions/{id}", _TagDefinitionService_Update15_HTTP_Handler(srv))
+	r.DELETE("/admin/v1/tag-definitions/{id}", _TagDefinitionService_Delete15_HTTP_Handler(srv))
 }
 
-func _TagDefinitionService_List25_HTTP_Handler(srv TagDefinitionServiceHTTPServer) func(ctx http.Context) error {
+func _TagDefinitionService_List26_HTTP_Handler(srv TagDefinitionServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in v1.PagingRequest
 		if err := ctx.BindQuery(&in); err != nil {
@@ -92,7 +92,7 @@ func _TagDefinitionService_Count2_HTTP_Handler(srv TagDefinitionServiceHTTPServe
 	}
 }
 
-func _TagDefinitionService_Get25_HTTP_Handler(srv TagDefinitionServiceHTTPServer) func(ctx http.Context) error {
+func _TagDefinitionService_Get26_HTTP_Handler(srv TagDefinitionServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in v11.GetTagDefinitionRequest
 		if err := ctx.BindQuery(&in); err != nil {
@@ -114,7 +114,7 @@ func _TagDefinitionService_Get25_HTTP_Handler(srv TagDefinitionServiceHTTPServer
 	}
 }
 
-func _TagDefinitionService_Create16_HTTP_Handler(srv TagDefinitionServiceHTTPServer) func(ctx http.Context) error {
+func _TagDefinitionService_Create17_HTTP_Handler(srv TagDefinitionServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in v11.CreateTagDefinitionRequest
 		if err := ctx.Bind(&in); err != nil {
@@ -136,7 +136,7 @@ func _TagDefinitionService_Create16_HTTP_Handler(srv TagDefinitionServiceHTTPSer
 	}
 }
 
-func _TagDefinitionService_Update14_HTTP_Handler(srv TagDefinitionServiceHTTPServer) func(ctx http.Context) error {
+func _TagDefinitionService_Update15_HTTP_Handler(srv TagDefinitionServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in v11.UpdateTagDefinitionRequest
 		if err := ctx.Bind(&in); err != nil {
@@ -161,7 +161,7 @@ func _TagDefinitionService_Update14_HTTP_Handler(srv TagDefinitionServiceHTTPSer
 	}
 }
 
-func _TagDefinitionService_Delete14_HTTP_Handler(srv TagDefinitionServiceHTTPServer) func(ctx http.Context) error {
+func _TagDefinitionService_Delete15_HTTP_Handler(srv TagDefinitionServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in v11.DeleteTagDefinitionRequest
 		if err := ctx.BindQuery(&in); err != nil {
