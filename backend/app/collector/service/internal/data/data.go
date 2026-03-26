@@ -26,7 +26,7 @@ import (
 
 const (
 	defaultKafkaPartitions        = 32
-	defaultKafkaReplicationFactor = 3
+	defaultKafkaReplicationFactor = 1
 )
 
 func NewClientType() authenticationV1.ClientType {

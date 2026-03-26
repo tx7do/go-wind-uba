@@ -32,7 +32,10 @@ func NewRestMiddleware(
 	ms = append(ms, logging.Server(ctx.GetLogger()))
 
 	// add white list for authentication.
-	rpc.AddWhiteList()
+	rpc.AddWhiteList(
+		collectorV1.OperationReportServiceHealthCheck,
+		collectorV1.OperationReportServicePostReport,
+	)
 
 	ms = append(ms, applogging.Server(
 		applogging.WithWriteApiLogFunc(func(ctx context.Context, data *auditV1.ApiAuditLog) error {

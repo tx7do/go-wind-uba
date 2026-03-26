@@ -37,6 +37,13 @@ func NewReportService(
 	}
 }
 
+func (s *ReportService) HealthCheck(_ context.Context, _ *emptypb.Empty) (*collectorV1.HealthCheckResponse, error) {
+	return &collectorV1.HealthCheckResponse{
+		Status:    collectorV1.HealthCheckResponse_OK,
+		Timestamp: time.Now().UnixMilli(),
+	}, nil
+}
+
 func (s *ReportService) PostReport(ctx context.Context, req *ubaV1.PostReportRequest) (*ubaV1.PostReportResponse, error) {
 	if req == nil || len(req.Events) == 0 {
 		return nil, ubaV1.ErrorBadRequest("request data is required")
@@ -44,7 +51,11 @@ func (s *ReportService) PostReport(ctx context.Context, req *ubaV1.PostReportReq
 
 	requestID := uuid.New().String()
 
-	for _, event := range req.Events {
+	// TODO 认证鉴权
+
+	errorsByType, validEvents := s.validateEvents(req.Events)
+
+	for _, event := range validEvents {
 		if event == nil {
 			s.log.Warnf("invalid event data: %v", event)
 			continue
@@ -93,29 +104,112 @@ func (s *ReportService) PostReport(ctx context.Context, req *ubaV1.PostReportReq
 	}
 
 	return &ubaV1.PostReportResponse{
-		Success:      true,
-		Message:      "accepted",
+		Success: true,
+		Message: "accepted",
+
+		ErrorsByType: errorsByType,
 		RequestId:    requestID,
 		ServerTime:   time.Now().UnixMilli(),
+
 		TotalCount:   int32(len(req.Events)),
-		SuccessCount: int32(len(req.Events)),
+		SuccessCount: int32(len(validEvents)),
+		FailedCount:  int32(len(req.Events) - len(validEvents)),
 	}, nil
 }
 
-func (s *ReportService) HealthCheck(_ context.Context, _ *emptypb.Empty) (*collectorV1.HealthCheckResponse, error) {
-	return &collectorV1.HealthCheckResponse{
-		Status:    collectorV1.HealthCheckResponse_OK,
-		Timestamp: time.Now().UnixMilli(),
-	}, nil
+// validateEvents 校验事件列表
+func (s *ReportService) validateEvents(
+	events []*ubaV1.ReportEvent,
+) ([]*ubaV1.TypeErrorDetail, []*ubaV1.ReportEvent) {
+
+	errorsByType := make(map[string][]*ubaV1.ErrorDetail)
+	validEvents := make([]*ubaV1.ReportEvent, 0, len(events))
+
+	for _, event := range events {
+		if err := s.validateEvent(event); err != nil {
+			errDetail := &ubaV1.ErrorDetail{
+				Code:    "INVALID_EVENT",
+				Message: err.Error(),
+				EventId: event.EventId,
+			}
+			errorsByType[event.EventType.String()] = append(
+				errorsByType[event.EventType.String()], errDetail)
+			continue
+		}
+		validEvents = append(validEvents, event)
+	}
+
+	// 转换为响应格式
+	var result []*ubaV1.TypeErrorDetail
+	for eventType, errors := range errorsByType {
+		result = append(result, &ubaV1.TypeErrorDetail{
+			Type:   eventType,
+			Errors: errors,
+		})
+	}
+
+	return result, validEvents
+}
+
+// validateEvent 校验单个事件
+func (s *ReportService) validateEvent(event *ubaV1.ReportEvent) error {
+	if event.EventId == "" {
+		return ubaV1.ErrorBadRequest("event_id is required")
+	}
+	if event.EventName == "" {
+		return ubaV1.ErrorBadRequest("event_name is required")
+	}
+	if event.EventTime == nil {
+		return ubaV1.ErrorBadRequest("event_time is required")
+	}
+	if event.TenantId == 0 {
+		return ubaV1.ErrorBadRequest("tenant_id is required")
+	}
+
+	// 校验 oneof payload
+	switch event.EventType {
+	case ubaV1.ReportEvent_BEHAVIOR:
+		if event.GetBehavior() == nil {
+			return ubaV1.ErrorBadRequest("behavior payload required for BEHAVIOR event")
+		}
+	case ubaV1.ReportEvent_PATH:
+		if event.GetPath() == nil {
+			return ubaV1.ErrorBadRequest("path payload required for PATH event")
+		}
+	case ubaV1.ReportEvent_RISK:
+		if event.GetRisk() == nil {
+			return ubaV1.ErrorBadRequest("risk payload required for RISK event")
+		}
+	default:
+		return ubaV1.ErrorBadRequest("unsupported event_type: %s", event.EventType)
+	}
+
+	return nil
 }
 
 // handleBehavior 处理行为事件
 func (s *ReportService) handleBehavior(ctx context.Context, evt *ubaV1.ReportEvent, ci *ubaV1.ClientInfo) error {
-	if evt.GetBehavior() == nil {
+	behaviorEvent := evt.GetBehavior()
+	if behaviorEvent == nil {
 		return ubaV1.ErrorBadRequest("behavior event data is required")
 	}
 
-	if err := s.kafkaBroker.Publish(ctx, topic.UbaEventRaw, broker.NewMessage(evt.GetBehavior())); err != nil {
+	if ci != nil {
+		if ci.GetCity() != "" {
+			behaviorEvent.IpCity = ci.GetCity()
+		}
+		if ci.GetCountry() != "" {
+			behaviorEvent.Country = ci.GetCountry()
+		}
+		if ci.GetUserAgent() != "" {
+			behaviorEvent.UserAgent = ci.GetUserAgent()
+		}
+		if ci.GetReferer() != "" {
+			behaviorEvent.Referer = ci.GetReferer()
+		}
+	}
+
+	if err := s.kafkaBroker.Publish(ctx, topic.UbaEventRaw, broker.NewMessage(behaviorEvent)); err != nil {
 		s.log.Errorf("failed to publish behavior event to kafka: %v", err)
 		return ubaV1.ErrorInternalServerError("failed to process behavior event")
 	}
@@ -125,11 +219,12 @@ func (s *ReportService) handleBehavior(ctx context.Context, evt *ubaV1.ReportEve
 
 // handlePath 处理路径事件
 func (s *ReportService) handlePath(ctx context.Context, evt *ubaV1.ReportEvent, ci *ubaV1.ClientInfo) error {
+	pathEvent := evt.GetPath()
 	if evt.GetPath() == nil {
 		return ubaV1.ErrorBadRequest("path event data is required")
 	}
 
-	if err := s.kafkaBroker.Publish(ctx, topic.UbaEventPath, broker.NewMessage(evt.GetBehavior())); err != nil {
+	if err := s.kafkaBroker.Publish(ctx, topic.UbaEventPath, broker.NewMessage(pathEvent)); err != nil {
 		s.log.Errorf("failed to publish path event to kafka: %v", err)
 		return ubaV1.ErrorInternalServerError("failed to process path event")
 	}
@@ -139,11 +234,12 @@ func (s *ReportService) handlePath(ctx context.Context, evt *ubaV1.ReportEvent, 
 
 // handleRisk 处理风险事件
 func (s *ReportService) handleRisk(ctx context.Context, evt *ubaV1.ReportEvent, ci *ubaV1.ClientInfo) error {
+	riskEvent := evt.GetRisk()
 	if evt.GetRisk() == nil {
 		return ubaV1.ErrorBadRequest("risk event data is required")
 	}
 
-	if err := s.kafkaBroker.Publish(ctx, topic.UbaEventRisk, broker.NewMessage(evt.GetBehavior())); err != nil {
+	if err := s.kafkaBroker.Publish(ctx, topic.UbaEventRisk, broker.NewMessage(riskEvent)); err != nil {
 		s.log.Errorf("failed to publish risk event to kafka: %v", err)
 		return ubaV1.ErrorInternalServerError("failed to process risk event")
 	}
