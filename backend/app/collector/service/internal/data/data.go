@@ -4,7 +4,7 @@ import (
 	"github.com/redis/go-redis/v9"
 
 	"github.com/tx7do/kratos-transport/broker"
-	"github.com/tx7do/kratos-transport/broker/kafka"
+	kafkaBroker "github.com/tx7do/kratos-transport/broker/kafka"
 
 	authzEngine "github.com/tx7do/kratos-authz/engine"
 	"github.com/tx7do/kratos-authz/engine/noop"
@@ -21,6 +21,12 @@ import (
 
 	"go-wind-uba/pkg/middleware/metadata"
 	"go-wind-uba/pkg/serviceid"
+	"go-wind-uba/pkg/topic"
+)
+
+const (
+	defaultKafkaPartitions        = 32
+	defaultKafkaReplicationFactor = 3
 )
 
 func NewClientType() authenticationV1.ClientType {
@@ -72,7 +78,7 @@ func NewKafkaBroker(ctx *bootstrap.Context) broker.Broker {
 		return nil
 	}
 
-	b := kafka.NewBroker(
+	b := kafkaBroker.NewBroker(
 		broker.WithAddress(cfg.Data.Kafka.Endpoints...),
 		broker.WithCodec(cfg.Data.Kafka.Codec),
 		broker.WithGlobalTracerProvider(),
@@ -92,6 +98,10 @@ func NewKafkaBroker(ctx *bootstrap.Context) broker.Broker {
 
 	if err := b.Connect(); err != nil {
 		return nil
+	}
+
+	for _, endpoint := range cfg.Server.Kafka.GetEndpoints() {
+		_ = kafkaBroker.CreateTopic(endpoint, topic.UbaEventRaw, defaultKafkaPartitions, defaultKafkaReplicationFactor)
 	}
 
 	return b

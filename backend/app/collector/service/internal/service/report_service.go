@@ -12,6 +12,8 @@ import (
 
 	collectorV1 "go-wind-uba/api/gen/go/collector/service/v1"
 	ubaV1 "go-wind-uba/api/gen/go/uba/service/v1"
+
+	"go-wind-uba/pkg/topic"
 )
 
 type ReportService struct {
@@ -109,16 +111,43 @@ func (s *ReportService) HealthCheck(_ context.Context, _ *emptypb.Empty) (*colle
 
 // handleBehavior 处理行为事件
 func (s *ReportService) handleBehavior(ctx context.Context, evt *ubaV1.ReportEvent, ci *ubaV1.ClientInfo) error {
+	if evt.GetBehavior() == nil {
+		return ubaV1.ErrorBadRequest("behavior event data is required")
+	}
+
+	if err := s.kafkaBroker.Publish(ctx, topic.UbaEventRaw, broker.NewMessage(evt.GetBehavior())); err != nil {
+		s.log.Errorf("failed to publish behavior event to kafka: %v", err)
+		return ubaV1.ErrorInternalServerError("failed to process behavior event")
+	}
+
 	return nil
 }
 
 // handlePath 处理路径事件
 func (s *ReportService) handlePath(ctx context.Context, evt *ubaV1.ReportEvent, ci *ubaV1.ClientInfo) error {
+	if evt.GetPath() == nil {
+		return ubaV1.ErrorBadRequest("path event data is required")
+	}
+
+	if err := s.kafkaBroker.Publish(ctx, topic.UbaEventPath, broker.NewMessage(evt.GetBehavior())); err != nil {
+		s.log.Errorf("failed to publish path event to kafka: %v", err)
+		return ubaV1.ErrorInternalServerError("failed to process path event")
+	}
+
 	return nil
 }
 
 // handleRisk 处理风险事件
 func (s *ReportService) handleRisk(ctx context.Context, evt *ubaV1.ReportEvent, ci *ubaV1.ClientInfo) error {
+	if evt.GetRisk() == nil {
+		return ubaV1.ErrorBadRequest("risk event data is required")
+	}
+
+	if err := s.kafkaBroker.Publish(ctx, topic.UbaEventRisk, broker.NewMessage(evt.GetBehavior())); err != nil {
+		s.log.Errorf("failed to publish risk event to kafka: %v", err)
+		return ubaV1.ErrorInternalServerError("failed to process risk event")
+	}
+
 	return nil
 }
 
