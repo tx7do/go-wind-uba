@@ -44,37 +44,37 @@ components:
         BehaviorEvent:
             type: object
             properties:
-                eventId:
+                event_id:
                     type: string
                     description: 事件ID，建议使用 UUID，作为事件的唯一标识，同时也可用于路由和去重
-                tenantId:
+                tenant_id:
                     type: integer
                     description: 租户ID，事件所属的租户，用于多租户隔离
                     format: uint32
-                userId:
+                user_id:
                     type: integer
                     description: 用户ID，事件的主体，可以是用户、设备、账号等，具体含义由业务定义
                     format: uint32
-                deviceId:
+                device_id:
                     type: string
-                accountId:
+                account_id:
                     type: string
                     description: 账号ID，事件发生时使用的账号标识，可以用于分析账号相关的行为特征
-                globalUserId:
+                global_user_id:
                     type: string
                     description: 全局用户ID，结合 user_id、device_id、account_id 等多维度标识，通过算法生成的全局唯一用户标识，可以用于跨设备、跨账号的用户行为分析
-                eventTime:
+                event_time:
                     type: string
                     description: 事件发生时间，记录事件实际发生的时间点，通常由客户端上报，可能存在时钟偏差
                     format: date-time
-                eventTs:
+                event_ts:
                     type: string
                     description: 事件时间戳，事件发生时间的 Unix 时间戳表示，单位毫秒，可以用于快速的时间范围查询和排序
-                serverTime:
+                server_time:
                     type: string
                     description: 服务器接收时间，记录事件被服务器接收的时间点，可以用于分析事件的传输延迟和时序关系
                     format: date-time
-                eventCategory:
+                event_category:
                     enum:
                         - EVENT_CATEGORY_UNSPECIFIED
                         - EVENT_CATEGORY_AUTH
@@ -86,25 +86,25 @@ components:
                     type: string
                     description: 事件类别，事件的类型或分类，用于对事件进行分组和分析，具体类别由业务定义
                     format: enum
-                eventName:
+                event_name:
                     type: string
                     description: 事件名称，事件的具体名称或动作，用于描述事件的具体行为，通常与事件类别结合使用以提供更细粒度的行为描述
-                eventAction:
+                event_action:
                     type: string
                     description: 事件动作，事件的具体动作或结果，用于描述事件发生后的结果或状态变化，可以用于分析事件的效果和用户的反应
-                objectType:
+                object_type:
                     type: string
                     description: 对象类型，事件作用的对象类型，可以是商品、页面、功能等，具体含义由业务定义
-                objectId:
+                object_id:
                     type: string
                     description: 对象ID，事件作用的对象标识，可以用于分析特定对象的行为特征和受欢迎程度
-                objectName:
+                object_name:
                     type: string
                     description: 对象名称，事件作用的对象名称，可以提供更友好的对象描述，便于分析和展示
-                sessionId:
+                session_id:
                     type: string
                     description: 会话ID，事件所属的会话标识，可以用于分析用户的会话行为和路径，通常由客户端上报，可能存在时钟偏差
-                sessionSeq:
+                session_seq:
                     type: integer
                     description: 会话内序列号，事件在所属会话中的序列号，用于分析事件的顺序和路径，可以由客户端上报，也可以由服务器根据 session_id 进行计算生成
                     format: uint32
@@ -124,7 +124,7 @@ components:
                 os:
                     type: string
                     description: 操作系统，事件发生的操作系统信息，可以提供更细粒度的环境描述，便于分析不同操作系统上的行为差异
-                appVersion:
+                app_version:
                     type: string
                     description: 应用版本，事件发生的应用版本信息，可以用于分析不同版本上的行为差异和版本升级的影响
                 channel:
@@ -133,7 +133,7 @@ components:
                 ip:
                     type: string
                     description: IP地址，事件发生时的客户端IP地址，可以用于分析用户的地理位置和网络特征
-                ipCity:
+                ip_city:
                     type: string
                     description: IP城市，事件发生时的IP地址解析出的城市信息，可以用于分析用户的地理位置特征
                 country:
@@ -145,7 +145,7 @@ components:
                 geo:
                     type: string
                     description: 地理位置，经纬度信息，格式如 'lat,lng' 或 GeoJSON，用于更精细的地理分析
-                userAgent:
+                user_agent:
                     type: string
                     description: 客户端 User-Agent 信息，记录客户端类型、版本、操作系统等特征，便于分析设备和环境
                 referer:
@@ -156,7 +156,7 @@ components:
                     additionalProperties:
                         type: string
                     description: 业务上下文，事件的业务相关上下文信息，可以包含任意的键值对，由业务定义和使用，便于分析事件发生时的具体业务场景和条件
-                durationMs:
+                duration_ms:
                     type: integer
                     description: 持续时间，事件持续的时间长度，单位毫秒，可以用于分析事件的持续时间分布和用户的停留时间特征
                     format: uint32
@@ -182,7 +182,7 @@ components:
                     additionalProperties:
                         type: string
                     description: 扩展属性，事件的其他相关属性信息，可以包含任意的键值对，由业务定义和使用，便于分析事件的其他特征和细节
-                opResult:
+                op_result:
                     enum:
                         - OP_RESULT_UNSPECIFIED
                         - OP_RESULT_SUCCESS
@@ -192,10 +192,10 @@ components:
                     type: string
                     description: 操作结果，事件相关的操作结果信息，可以用于分析事件的成功率和失败原因，具体含义由业务定义
                     format: enum
-                errorCode:
+                error_code:
                     type: string
                     description: 错误码，事件相关的错误码信息，可以用于分析事件的失败原因和问题排查，具体含义由业务定义
-                riskLevel:
+                risk_level:
                     enum:
                         - RISK_LEVEL_UNSPECIFIED
                         - RISK_LEVEL_NORMAL
@@ -205,14 +205,14 @@ components:
                     type: string
                     description: 风险等级，事件相关的风险等级信息，可以用于分析事件的风险特征和安全问题，具体含义由业务定义
                     format: enum
-                traceId:
+                trace_id:
                     type: string
                     description: Trace ID，事件相关的分布式追踪标识，可以用于分析事件的调用链和系统性能，通常由服务器生成并传递给客户端进行上报
-                createdAt:
+                created_at:
                     type: string
                     description: 创建时间
                     format: date-time
-                updatedAt:
+                updated_at:
                     type: string
                     description: 更新时间
                     format: date-time

@@ -28,81 +28,81 @@ service BehaviorEventService {
 message BehaviorEvent {
   // 主键 & 路由
   string event_id = 1 [
-    json_name = "eventId",
+    json_name = "event_id",
     (gnostic.openapi.v3.property) = {description: "事件ID，建议使用 UUID，作为事件的唯一标识，同时也可用于路由和去重"}
   ]; // 事件ID，建议使用 UUID，作为事件的唯一标识，同时也可用于路由和去重
   uint32 tenant_id = 2 [
-    json_name = "tenantId",
+    json_name = "tenant_id",
     (gnostic.openapi.v3.property) = {description: "租户ID，事件所属的租户，用于多租户隔离"}
   ]; // 租户ID，事件所属的租户，用于多租户隔离
 
   // 主体：Who
   uint32 user_id = 3 [
-    json_name = "userId",
+    json_name = "user_id",
     (gnostic.openapi.v3.property) = {description: "用户ID，事件的主体，可以是用户、设备、账号等，具体含义由业务定义"}
   ]; // 用户ID，事件的主体，可以是用户、设备、账号等，具体含义由业务定义
   string device_id = 4 [
-    json_name = "deviceId",
+    json_name = "device_id",
     (gnostic.openapi.v3.property) = {description: ""}
   ]; // 设备ID，事件发生时使用的设备标识，可以用于分析设备相关的行为特征
   string account_id = 5 [
-    json_name = "accountId",
+    json_name = "account_id",
     (gnostic.openapi.v3.property) = {description: "账号ID，事件发生时使用的账号标识，可以用于分析账号相关的行为特征"}
   ]; // 账号ID，事件发生时使用的账号标识，可以用于分析账号相关的行为特征
   string global_user_id = 6 [
-    json_name = "globalUserId",
+    json_name = "global_user_id",
     (gnostic.openapi.v3.property) = {description: "全局用户ID，结合 user_id、device_id、account_id 等多维度标识，通过算法生成的全局唯一用户标识，可以用于跨设备、跨账号的用户行为分析"}
   ]; // 全局用户ID，结合 user_id、device_id、account_id 等多维度标识，通过算法生成的全局唯一用户标识，可以用于跨设备、跨账号的用户行为分析
 
   // 时间
   google.protobuf.Timestamp event_time = 7 [
-    json_name = "eventTime",
+    json_name = "event_time",
     (gnostic.openapi.v3.property) = {description: "事件发生时间，记录事件实际发生的时间点，通常由客户端上报，可能存在时钟偏差"}
   ]; // 事件发生时间，记录事件实际发生的时间点，通常由客户端上报，可能存在时钟偏差
   int64 event_ts = 8 [
-    json_name = "eventTs",
+    json_name = "event_ts",
     (gnostic.openapi.v3.property) = {description: "事件时间戳，事件发生时间的 Unix 时间戳表示，单位毫秒，可以用于快速的时间范围查询和排序"}
   ]; // 事件时间戳，事件发生时间的 Unix 时间戳表示，单位毫秒，可以用于快速的时间范围查询和排序
   google.protobuf.Timestamp server_time = 9 [
-    json_name = "serverTime",
+    json_name = "server_time",
     (gnostic.openapi.v3.property) = {description: "服务器接收时间，记录事件被服务器接收的时间点，可以用于分析事件的传输延迟和时序关系"}
   ]; // 服务器接收时间，记录事件被服务器接收的时间点，可以用于分析事件的传输延迟和时序关系
 
   // 行为：What
   optional EventCategory event_category = 10 [
-    json_name = "eventCategory",
+    json_name = "event_category",
     (gnostic.openapi.v3.property) = {description: "事件类别，事件的类型或分类，用于对事件进行分组和分析，具体类别由业务定义"}
   ]; // 事件类别，事件的类型或分类，用于对事件进行分组和分析，具体类别由业务定义
   string event_name = 11 [
-    json_name = "eventName",
+    json_name = "event_name",
     (gnostic.openapi.v3.property) = {description: "事件名称，事件的具体名称或动作，用于描述事件的具体行为，通常与事件类别结合使用以提供更细粒度的行为描述"}
   ]; // 事件名称，事件的具体名称或动作，用于描述事件的具体行为，通常与事件类别结合使用以提供更细粒度的行为描述
   string event_action = 12 [
-    json_name = "eventAction",
+    json_name = "event_action",
     (gnostic.openapi.v3.property) = {description: "事件动作，事件的具体动作或结果，用于描述事件发生后的结果或状态变化，可以用于分析事件的效果和用户的反应"}
   ]; // 事件动作，事件的具体动作或结果，用于描述事件发生后的结果或状态变化，可以用于分析事件的效果和用户的反应
 
   // 客体：Object
   string object_type = 13 [
-    json_name = "objectType",
+    json_name = "object_type",
     (gnostic.openapi.v3.property) = {description: "对象类型，事件作用的对象类型，可以是商品、页面、功能等，具体含义由业务定义"}
   ]; // 对象类型，事件作用的对象类型，可以是商品、页面、功能等，具体含义由业务定义
   string object_id = 14 [
-    json_name = "objectId",
+    json_name = "object_id",
     (gnostic.openapi.v3.property) = {description: "对象ID，事件作用的对象标识，可以用于分析特定对象的行为特征和受欢迎程度"}
   ]; // 对象ID，事件作用的对象标识，可以用于分析特定对象的行为特征和受欢迎程度
   string object_name = 15 [
-    json_name = "objectName",
+    json_name = "object_name",
     (gnostic.openapi.v3.property) = {description: "对象名称，事件作用的对象名称，可以提供更友好的对象描述，便于分析和展示"}
   ]; // 对象名称，事件作用的对象名称，可以提供更友好的对象描述，便于分析和展示
 
   // 上下文：Context
   uint64 session_id = 16 [
-    json_name = "sessionId",
+    json_name = "session_id",
     (gnostic.openapi.v3.property) = {description: "会话ID，事件所属的会话标识，可以用于分析用户的会话行为和路径，通常由客户端上报，可能存在时钟偏差"}
   ]; // 会话ID，事件所属的会话标识，可以用于分析用户的会话行为和路径，通常由客户端上报，可能存在时钟偏差
   uint32 session_seq = 17 [
-    json_name = "sessionSeq",
+    json_name = "session_seq",
     (gnostic.openapi.v3.property) = {description: "会话内序列号，事件在所属会话中的序列号，用于分析事件的顺序和路径，可以由客户端上报，也可以由服务器根据 session_id 进行计算生成"}
   ]; // 会话内序列号，事件在所属会话中的序列号，用于分析事件的顺序和路径，可以由客户端上报，也可以由服务器根据 session_id 进行计算生成
 
@@ -116,7 +116,7 @@ message BehaviorEvent {
     (gnostic.openapi.v3.property) = {description: "操作系统，事件发生的操作系统信息，可以提供更细粒度的环境描述，便于分析不同操作系统上的行为差异"}
   ]; // 操作系统，事件发生的操作系统信息，可以提供更细粒度的环境描述，便于分析不同操作系统上的行为差异
   string app_version = 20 [
-    json_name = "appVersion",
+    json_name = "app_version",
     (gnostic.openapi.v3.property) = {description: "应用版本，事件发生的应用版本信息，可以用于分析不同版本上的行为差异和版本升级的影响"}
   ]; // 应用版本，事件发生的应用版本信息，可以用于分析不同版本上的行为差异和版本升级的影响
   string channel = 21 [
@@ -130,7 +130,7 @@ message BehaviorEvent {
     (gnostic.openapi.v3.property) = {description: "IP地址，事件发生时的客户端IP地址，可以用于分析用户的地理位置和网络特征"}
   ]; // IP地址，事件发生时的客户端IP地址，可以用于分析用户的地理位置和网络特征
   string ip_city = 23 [
-    json_name = "ipCity",
+    json_name = "ip_city",
     (gnostic.openapi.v3.property) = {description: "IP城市，事件发生时的IP地址解析出的城市信息，可以用于分析用户的地理位置特征"}
   ]; // IP城市，事件发生时的IP地址解析出的城市信息，可以用于分析用户的地理位置特征
   string country = 24 [
@@ -150,7 +150,7 @@ message BehaviorEvent {
 
   // 客户端 User-Agent
   string user_agent = 40 [
-    json_name = "userAgent",
+    json_name = "user_agent",
     (gnostic.openapi.v3.property) = {description: "客户端 User-Agent 信息，记录客户端类型、版本、操作系统等特征，便于分析设备和环境"}
   ]; // 客户端 User-Agent 信息，记录客户端类型、版本、操作系统等特征，便于分析设备和环境
 
@@ -168,7 +168,7 @@ message BehaviorEvent {
 
   // 指标：Metrics
   uint32 duration_ms = 27 [
-    json_name = "durationMs",
+    json_name = "duration_ms",
     (gnostic.openapi.v3.property) = {description: "持续时间，事件持续的时间长度，单位毫秒，可以用于分析事件的持续时间分布和用户的停留时间特征"}
   ]; // 持续时间，事件持续的时间长度，单位毫秒，可以用于分析事件的持续时间分布和用户的停留时间特征
   string amount = 28 [
@@ -196,28 +196,28 @@ message BehaviorEvent {
 
   // 企业级字段
   optional OpResult op_result = 33 [
-    json_name = "opResult",
+    json_name = "op_result",
     (gnostic.openapi.v3.property) = {description: "操作结果，事件相关的操作结果信息，可以用于分析事件的成功率和失败原因，具体含义由业务定义"}
   ]; // 操作结果，事件相关的操作结果信息，可以用于分析事件的成功率和失败原因，具体含义由业务定义
   string error_code = 34 [
-    json_name = "errorCode",
+    json_name = "error_code",
     (gnostic.openapi.v3.property) = {description: "错误码，事件相关的错误码信息，可以用于分析事件的失败原因和问题排查，具体含义由业务定义"}
   ]; // 错误码，事件相关的错误码信息，可以用于分析事件的失败原因和问题排查，具体含义由业务定义
   optional RiskLevel risk_level = 35 [
-    json_name = "riskLevel",
+    json_name = "risk_level",
     (gnostic.openapi.v3.property) = {description: "风险等级，事件相关的风险等级信息，可以用于分析事件的风险特征和安全问题，具体含义由业务定义"}
   ]; // 风险等级，事件相关的风险等级信息，可以用于分析事件的风险特征和安全问题，具体含义由业务定义
   string trace_id = 36 [
-    json_name = "traceId",
+    json_name = "trace_id",
     (gnostic.openapi.v3.property) = {description: "Trace ID，事件相关的分布式追踪标识，可以用于分析事件的调用链和系统性能，通常由服务器生成并传递给客户端进行上报"}
   ]; // Trace ID，事件相关的分布式追踪标识，可以用于分析事件的调用链和系统性能，通常由服务器生成并传递给客户端进行上报
 
   optional google.protobuf.Timestamp created_at = 200 [
-    json_name = "createdAt",
+    json_name = "created_at",
     (gnostic.openapi.v3.property) = {description: "创建时间"}
   ]; // 创建时间
   optional google.protobuf.Timestamp updated_at = 201 [
-    json_name = "updatedAt",
+    json_name = "updated_at",
     (gnostic.openapi.v3.property) = {description: "更新时间"}
   ]; // 更新时间
 }

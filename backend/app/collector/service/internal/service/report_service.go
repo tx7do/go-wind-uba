@@ -2,10 +2,13 @@ package service
 
 import (
 	"context"
+	"encoding/json"
 	"time"
 
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/google/uuid"
+	"github.com/tx7do/go-utils/mapper"
+	"github.com/tx7do/go-utils/timeutil"
 	"github.com/tx7do/kratos-bootstrap/bootstrap"
 	"github.com/tx7do/kratos-transport/broker"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -23,6 +26,9 @@ type ReportService struct {
 	log         *log.Helper
 
 	applicationServiceClient ubaV1.ApplicationServiceClient
+
+	platformConverter *mapper.EnumTypeConverter[ubaV1.Platform, string]
+	categoryConverter *mapper.EnumTypeConverter[ubaV1.EventCategory, string]
 }
 
 func NewReportService(
@@ -34,6 +40,12 @@ func NewReportService(
 		log:                      ctx.NewLoggerHelper("report/service/collector-service"),
 		kafkaBroker:              kafkaBroker,
 		applicationServiceClient: applicationServiceClient,
+		platformConverter: mapper.NewEnumTypeConverter[ubaV1.Platform, string](
+			ubaV1.Platform_name, ubaV1.Platform_value,
+		),
+		categoryConverter: mapper.NewEnumTypeConverter[ubaV1.EventCategory, string](
+			ubaV1.EventCategory_name, ubaV1.EventCategory_value,
+		),
 	}
 }
 
@@ -49,6 +61,7 @@ func (s *ReportService) PostReport(ctx context.Context, req *ubaV1.PostReportReq
 		return nil, ubaV1.ErrorBadRequest("request data is required")
 	}
 
+	now := time.Now()
 	requestID := uuid.New().String()
 
 	// TODO 认证鉴权
@@ -60,6 +73,8 @@ func (s *ReportService) PostReport(ctx context.Context, req *ubaV1.PostReportReq
 			s.log.Warnf("invalid event data: %v", event)
 			continue
 		}
+
+		event.ServerTime = timeutil.TimeToTimestamppb(&now)
 
 		switch event.GetEventType() {
 		case ubaV1.ReportEvent_BEHAVIOR:
@@ -208,6 +223,23 @@ func (s *ReportService) handleBehavior(ctx context.Context, evt *ubaV1.ReportEve
 			behaviorEvent.Referer = ci.GetReferer()
 		}
 	}
+
+	behaviorEvent.EventId = evt.EventId
+	behaviorEvent.EventName = evt.EventName
+	behaviorEvent.EventTime = evt.EventTime
+	behaviorEvent.EventCategory = s.categoryConverter.ToDTO(&evt.EventCategory)
+	behaviorEvent.TenantId = evt.TenantId
+	behaviorEvent.UserId = evt.GetUserId()
+	behaviorEvent.DeviceId = evt.GetDeviceId()
+	behaviorEvent.TraceId = evt.GetTraceId()
+	behaviorEvent.ServerTime = evt.GetServerTime()
+	behaviorEvent.Context = evt.GetProperties()
+	behaviorEvent.Ip = evt.GetIp()
+	behaviorEvent.SessionId = evt.GetSessionId()
+	behaviorEvent.Platform = s.platformConverter.ToDTO(&evt.Platform)
+
+	bt, _ := json.Marshal(behaviorEvent)
+	s.log.Debugf("received behavior event: %s", string(bt))
 
 	if err := s.kafkaBroker.Publish(ctx, topic.UbaEventRaw, broker.NewMessage(behaviorEvent)); err != nil {
 		s.log.Errorf("failed to publish behavior event to kafka: %v", err)
