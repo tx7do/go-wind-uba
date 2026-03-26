@@ -115,7 +115,7 @@ CREATE TABLE IF NOT EXISTS gw_uba.sessions_fact
 
     -- ========== 时间：When（会话时间范围）==========
     start_time      DateTime64(3) COMMENT '会话开始时间（会话中第一个事件的发生时间）',
-    end_time        DateTime64(3) COMMENT '会话结束时间（会话中最后一个事件的发生时间，会话关闭时更新）',
+    end_time        Nullable(DateTime64(3)) COMMENT '会话结束时间（会话中最后一个事件的发生时间，会话关闭时更新）',
     session_date    Date MATERIALIZED toDate(start_time) COMMENT '会话日期（物化列，用于分区和 TTL 清理）',
     duration_ms     UInt64 COMMENT '会话时长（end_time - start_time 的毫秒数，用于会话质量分析）',
 
@@ -203,12 +203,12 @@ CREATE TABLE IF NOT EXISTS gw_uba.risk_events
     -- ========== 处置状态：Status（风险处置流程）==========
     status            LowCardinality(String) COMMENT '处置状态（pending 待处理/confirmed 已确认/false_positive 误报/ignored 已忽略）',
     handler_id        String COMMENT '处置人 ID（处理该风险事件的运营人员 ID）',
-    handled_time      DateTime64(3) COMMENT '处置时间（风险事件被处理的时间点）',
+    handled_time      Nullable(DateTime64(3)) COMMENT '处置时间（风险事件被处理的时间点）',
     handle_remark     String COMMENT '处置备注（运营人员的处置说明和备注）',
 
     -- ========== 时间字段：When（风险时间信息）==========
-    occur_time        DateTime64(3) COMMENT '风险发生时间（触发风险的行为发生时间，毫秒精度）',
-    report_time       DateTime64(3) DEFAULT now64(3) COMMENT '风险上报时间（ClickHouse 接收到风险事件的时间）',
+    occur_time        Nullable(DateTime64(3)) COMMENT '风险发生时间（触发风险的行为发生时间，毫秒精度）',
+    report_time       Nullable(DateTime64(3)) DEFAULT now64(3) COMMENT '风险上报时间（ClickHouse 接收到风险事件的时间）',
     event_date        Date MATERIALIZED toDate(occur_time) COMMENT '风险日期（物化列，用于分区和 TTL 清理）',
 
     -- ========== 审计字段：Audit（系统管理）==========
@@ -243,7 +243,7 @@ CREATE TABLE IF NOT EXISTS gw_uba.users_dim
     user_id           UInt32 COMMENT '登录用户 ID（关联 uba_users.id，主键的一部分）',
 
     -- ========== 基础属性：Basic（用户基本信息）==========
-    register_time     DateTime COMMENT '注册时间（用户首次注册的时间点）',
+    register_time     Nullable(DateTime) COMMENT '注册时间（用户首次注册的时间点）',
     register_channel  String COMMENT '注册渠道（app_store/google_play/huawei/web 等注册来源）',
     first_active_date Date COMMENT '首次活跃日期（用户第一次产生行为事件的日期）',
     last_active_date  Date COMMENT '最后活跃日期（用户最后一次产生行为事件的日期，用于流失分析）',
@@ -257,7 +257,7 @@ CREATE TABLE IF NOT EXISTS gw_uba.users_dim
     total_events      UInt64 COMMENT '累计事件数（用户历史产生的所有事件数量）',
     total_sessions    UInt32 COMMENT '累计会话数（用户历史产生的所有会话数量）',
     total_pay_amount  Decimal(18, 2) COMMENT '累计支付金额（用户历史所有支付事件的金额总和，单位元）',
-    last_pay_time     DateTime COMMENT '最后支付时间（用户最后一次支付的时间点，用于付费用户分析）',
+    last_pay_time     Nullable(DateTime) COMMENT '最后支付时间（用户最后一次支付的时间点，用于付费用户分析）',
 
     -- ========== 偏好标签：Preference（用户偏好预计算）==========
     prefer_categories Array(String) COMMENT '偏好事件分类（用户最常参与的事件分类，如["game", "social", "pay"]）',
@@ -267,7 +267,7 @@ CREATE TABLE IF NOT EXISTS gw_uba.users_dim
     risk_score        UInt8    DEFAULT 0 COMMENT '用户风险评分（0-100，综合历史风险事件计算，用于风险用户识别）',
     risk_level        LowCardinality(String) COMMENT '风险等级 low/medium/high/black',
     risk_tags         Array(String) COMMENT '用户风险标签数组（如["frequent_login_fail", "abnormal_location", "suspicious_payment"]）',
-    last_risk_time    DateTime COMMENT '最后风险时间',
+    last_risk_time    Nullable(DateTime) COMMENT '最后风险时间',
 
     -- ========== 设备&环境（新增）==========
     geo               Map(String, String) COMMENT '地理位置 country/province/city/isp',
@@ -319,8 +319,8 @@ CREATE TABLE IF NOT EXISTS gw_uba.objects_dim
 
     -- ========== 状态：Status（对象生命周期状态）==========
     status        LowCardinality(String) COMMENT '对象状态（online 上架/online 在售/offline 下架/discontinued 停产）',
-    valid_from    DateTime COMMENT '生效时间（对象信息开始生效的时间点）',
-    valid_to      DateTime COMMENT '失效时间（对象信息失效的时间点，NULL 表示长期有效）',
+    valid_from    Nullable(DateTime) COMMENT '生效时间（对象信息开始生效的时间点）',
+    valid_to      Nullable(DateTime) COMMENT '失效时间（对象信息失效的时间点，NULL 表示长期有效）',
 
     -- ========== 审计字段：Audit（系统管理）==========
     created_at    DateTime DEFAULT now() COMMENT '记录创建时间（对象信息首次写入 ClickHouse 的时间）',
@@ -358,8 +358,8 @@ CREATE TABLE IF NOT EXISTS gw_uba.id_mapping
     link_source    LowCardinality(String) COMMENT '关联来源：login（用户登录）/bind（手动绑定）/algorithm（算法推荐）/device（同设备识别）',
 
     -- ========== 时效字段 ==========
-    first_seen     DateTime COMMENT '首次关联时间（该身份标识第一次出现的时间）',
-    last_seen      DateTime COMMENT '最后活跃时间（该身份标识最后一次活跃的时间，用于 TTL 清理）',
+    first_seen     Nullable (DateTime) COMMENT '首次关联时间（该身份标识第一次出现的时间）',
+    last_seen      Nullable (DateTime) COMMENT '最后活跃时间（该身份标识最后一次活跃的时间，用于 TTL 清理）',
     is_active      UInt8    DEFAULT 1 COMMENT '是否有效：1（有效）/0（已失效，如用户解绑）',
 
     -- ========== 审计字段 ==========
@@ -402,8 +402,8 @@ CREATE TABLE IF NOT EXISTS gw_uba.user_tags
     source_rule_id UInt32 COMMENT '来源规则 ID（当 source=rule 时，关联触发该标签的规则 ID）',
 
     -- ========== 时效字段 ==========
-    effective_time DateTime64(3) COMMENT '标签生效时间（标签开始生效的时间点）',
-    expire_time    DateTime64(3) COMMENT '标签过期时间（标签失效的时间点，NULL 表示永久有效）',
+    effective_time Nullable(DateTime64(3)) COMMENT '标签生效时间（标签开始生效的时间点）',
+    expire_time    Nullable(DateTime64(3)) COMMENT '标签过期时间（标签失效的时间点，NULL 表示永久有效）',
     expire_date    Date MATERIALIZED COALESCE(toDate(expire_time), toDateTime('2100-01-01')) COMMENT '过期日期（物化列，用于 TTL 清理，永久有效标签设为 2100 年）',
     is_active      UInt8    DEFAULT 1 COMMENT '是否有效：1（有效）/0（已失效，如手动取消标签）',
 
@@ -454,11 +454,11 @@ CREATE TABLE IF NOT EXISTS gw_uba.path_features
     -- ========== 转化标记字段 ==========
     is_converted      UInt8    DEFAULT 0 COMMENT '是否转化：0（未转化）/1（已转化，如完成购买）',
     conversion_event  LowCardinality(String) COMMENT '转化事件名称（触发转化的事件，如"purchase_success"）',
-    conversion_time   DateTime64(3) COMMENT '转化时间（转化发生的时间点，用于计算转化时长）',
+    conversion_time   Nullable(DateTime64(3)) COMMENT '转化时间（转化发生的时间点，用于计算转化时长）',
 
     -- ========== 时间字段 ==========
-    start_time        DateTime64(3) COMMENT '路径开始时间（路径中第一个事件的发生时间）',
-    end_time          DateTime64(3) COMMENT '路径结束时间（路径中最后一个事件的发生时间）',
+    start_time        Nullable(DateTime64(3)) COMMENT '路径开始时间（路径中第一个事件的发生时间）',
+    end_time          Nullable(DateTime64(3)) COMMENT '路径结束时间（路径中最后一个事件的发生时间）',
     event_date        Date MATERIALIZED toDate(start_time) COMMENT '路径日期（物化列，用于分区和 TTL 清理）',
 
     -- ========== 指标字段 ==========
