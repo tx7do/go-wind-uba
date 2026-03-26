@@ -502,13 +502,41 @@
     "lastTriggeredAt": "最后触发时间"
   },
   "tagDefinition": {
-    "moduleName": "标签定义"
+    "moduleName": "标签定义",
+    "name": "标签名称",
+    "code": "唯一代码",
+    "description": "标签描述",
+    "category": "标签分类",
+    "tagType": "标签类型",
+    "rule": "计算规则",
+    "allowedValues": "取值范围",
+    "isSystem": "是否系统预置",
+    "isDynamic": "是否动态标签",
+    "refreshIntervalSeconds": "刷新间隔"
   },
   "idMapping": {
-    "moduleName": "ID映射"
+    "moduleName": "ID映射",
+    "globalUserId": "全局用户唯一标识",
+    "idType": "类型",
+    "idValue": "值",
+    "confidence": "置信度",
+    "linkSource": "关联来源",
+    "firstSeen": "首次出现时间",
+    "lastSeen": "最后出现时间",
+    "isActive": "是否激活",
+    "properties": "扩展属性"
   },
   "userTag": {
-    "moduleName": "用户标签"
+    "moduleName": "用户标签",
+    "userId": "用户ID",
+    "tagId": "标签ID",
+    "value": "标签值",
+    "valueLabel": "名称",
+    "confidence": "置信度",
+    "source": "标签来源",
+    "sourceRuleId": "来源规则ID",
+    "effectiveTime": "有效时间",
+    "expireTime": "过期时间"
   },
   "eventPath": {
     "moduleName": "事件路径",

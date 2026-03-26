@@ -28,7 +28,16 @@ const formOptions = {
     {
       component: 'Input',
       fieldName: 'user_id',
-      label: $t('ui.formLabel.userId'),
+      label: $t('page.userTag.userId'),
+      componentProps: {
+        placeholder: $t('ui.placeholder.input'),
+        allowClear: true,
+      },
+    },
+    {
+      component: 'Input',
+      fieldName: 'tag_id',
+      label: $t('page.userTag.tagId'),
       componentProps: {
         placeholder: $t('ui.placeholder.input'),
         allowClear: true,
@@ -37,7 +46,7 @@ const formOptions = {
     {
       component: 'Input',
       fieldName: 'value_label',
-      label: $t('ui.formLabel.tagName'),
+      label: $t('page.userTag.valueLabel'),
       componentProps: {
         placeholder: $t('ui.placeholder.input'),
         allowClear: true,
@@ -46,7 +55,7 @@ const formOptions = {
     {
       component: 'Select',
       fieldName: 'source',
-      label: $t('ui.field.source'),
+      label: $t('page.userTag.source'),
       componentProps: {
         options: tagSourceList,
         placeholder: $t('ui.placeholder.select'),
@@ -93,15 +102,37 @@ const gridOptions: VxeGridProps<UserTag> = {
     },
   },
   columns: [
-    { title: $t('ui.field.id'), field: 'id', minWidth: 100 },
-    { title: $t('ui.field.userId'), field: 'userId', minWidth: 100 },
-    { title: $t('ui.field.tagName'), field: 'valueLabel', minWidth: 150 },
-    { title: $t('ui.field.tagValue'), field: 'value', minWidth: 150 },
+    { title: $t('ui.field.id'), field: 'id', minWidth: 100, fixed: 'left' },
+    { title: $t('page.userTag.userId'), field: 'userId', minWidth: 100 },
+    { title: $t('page.userTag.tagId'), field: 'tagId', minWidth: 100 },
     {
-      title: $t('ui.field.source'),
+      title: $t('page.userTag.valueLabel'),
+      field: 'valueLabel',
+      minWidth: 150,
+    },
+    { title: $t('page.userTag.value'), field: 'value', minWidth: 150 },
+    {
+      title: $t('page.userTag.confidence'),
+      field: 'confidence',
+      minWidth: 150,
+    },
+    {
+      title: $t('page.userTag.source'),
       field: 'source',
       minWidth: 120,
       slots: { default: 'source' },
+    },
+    {
+      title: $t('page.userTag.effectiveTime'),
+      field: 'effectiveTime',
+      formatter: 'formatDateTime',
+      minWidth: 160,
+    },
+    {
+      title: $t('page.userTag.expireTime'),
+      field: 'expireTime',
+      formatter: 'formatDateTime',
+      minWidth: 160,
     },
     {
       title: $t('ui.table.createdAt'),

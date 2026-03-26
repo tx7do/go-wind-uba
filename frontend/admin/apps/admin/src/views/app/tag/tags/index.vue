@@ -31,7 +31,16 @@ const formOptions = {
     {
       component: 'Input',
       fieldName: 'name',
-      label: $t('ui.formLabel.name'),
+      label: $t('page.tagDefinition.name'),
+      componentProps: {
+        placeholder: $t('ui.placeholder.input'),
+        allowClear: true,
+      },
+    },
+    {
+      component: 'Input',
+      fieldName: 'code',
+      label: $t('page.tagDefinition.code'),
       componentProps: {
         placeholder: $t('ui.placeholder.input'),
         allowClear: true,
@@ -40,7 +49,7 @@ const formOptions = {
     {
       component: 'Select',
       fieldName: 'category',
-      label: $t('ui.field.category'),
+      label: $t('page.tagDefinition.category'),
       componentProps: {
         options: tagCategoryList,
         placeholder: $t('ui.placeholder.select'),
@@ -53,7 +62,7 @@ const formOptions = {
     {
       component: 'Select',
       fieldName: 'tagType',
-      label: $t('ui.field.type'),
+      label: $t('page.tagDefinition.tagType'),
       componentProps: {
         options: tagTypeList,
         placeholder: $t('ui.placeholder.select'),
@@ -100,24 +109,45 @@ const gridOptions: VxeGridProps<TagDefinition> = {
     },
   },
   columns: [
-    { title: $t('ui.field.id'), field: 'id', minWidth: 100 },
-    { title: $t('ui.field.name'), field: 'name', minWidth: 150 },
-    { title: $t('ui.field.code'), field: 'code', minWidth: 150 },
     {
-      title: $t('ui.field.category'),
+      title: $t('page.tagDefinition.name'),
+      field: 'name',
+      minWidth: 150,
+      fixed: 'left',
+      align: 'left',
+    },
+    { title: $t('page.tagDefinition.code'), field: 'code', minWidth: 150 },
+    {
+      title: $t('page.tagDefinition.description'),
+      field: 'description',
+      minWidth: 150,
+      align: 'left',
+    },
+    {
+      title: $t('page.tagDefinition.category'),
       field: 'category',
       minWidth: 120,
       slots: { default: 'category' },
     },
     {
-      title: $t('ui.field.type'),
+      title: $t('page.tagDefinition.tagType'),
       field: 'tagType',
       minWidth: 120,
       slots: { default: 'type' },
     },
     {
-      title: $t('ui.field.defaultValue'),
-      field: 'defaultValue',
+      title: $t('page.tagDefinition.isSystem'),
+      field: 'isSystem',
+      minWidth: 120,
+    },
+    {
+      title: $t('page.tagDefinition.isDynamic'),
+      field: 'isDynamic',
+      minWidth: 120,
+    },
+    {
+      title: $t('page.tagDefinition.refreshIntervalSeconds'),
+      field: 'refreshIntervalSeconds',
       minWidth: 120,
     },
     {

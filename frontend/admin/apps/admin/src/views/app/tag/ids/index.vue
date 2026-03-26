@@ -11,7 +11,8 @@ import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { $t } from '#/locales';
 import {
   idMappingIdTypeToColor,
-  idMappingIdTypeToName, idTypeList, tagTypeList,
+  idMappingIdTypeToName,
+  idTypeList,
   useIdMappingListStore,
 } from '#/stores';
 
@@ -24,8 +25,8 @@ const formOptions = {
   schema: [
     {
       component: 'Input',
-      fieldName: 'source_id',
-      label: $t('ui.formLabel.sourceId'),
+      fieldName: 'id_value',
+      label: $t('page.idMapping.idValue'),
       componentProps: {
         placeholder: $t('ui.placeholder.input'),
         allowClear: true,
@@ -34,7 +35,7 @@ const formOptions = {
     {
       component: 'Select',
       fieldName: 'idType',
-      label: $t('ui.formLabel.sourceType'),
+      label: $t('page.idMapping.idType'),
       componentProps: {
         options: idTypeList,
         placeholder: $t('ui.placeholder.select'),
@@ -81,17 +82,44 @@ const gridOptions: VxeGridProps<IDMapping> = {
     },
   },
   columns: [
-    { title: $t('ui.field.id'), field: 'id', minWidth: 100 },
-    { title: $t('ui.field.targetType'), field: 'globalUserId', minWidth: 120 },
-    { title: $t('ui.field.sourceId'), field: 'idValue', minWidth: 150 },
-    { title: $t('ui.field.sourceType'), field: 'confidence', minWidth: 120 },
-    { title: $t('ui.field.targetId'), field: 'linkSource', minWidth: 150 },
     {
-      title: $t('ui.field.idType'),
+      title: $t('page.idMapping.globalUserId'),
+      field: 'globalUserId',
+      minWidth: 200,
+      fixed: 'left',
+    },
+    {
+      title: $t('page.idMapping.idType'),
       field: 'idType',
       minWidth: 120,
       slots: { default: 'idType' },
     },
+    { title: $t('page.idMapping.idValue'), field: 'idValue', minWidth: 120 },
+    {
+      title: $t('page.idMapping.confidence'),
+      field: 'confidence',
+      minWidth: 150,
+    },
+    {
+      title: $t('page.idMapping.linkSource'),
+      field: 'linkSource',
+      minWidth: 150,
+      formatter: 'formatDateTime',
+    },
+    {
+      title: $t('page.idMapping.firstSeen'),
+      field: 'firstSeen',
+      minWidth: 150,
+      formatter: 'formatDateTime',
+    },
+    {
+      title: $t('page.idMapping.lastSeen'),
+      field: 'lastSeen',
+      minWidth: 150,
+      formatter: 'formatDateTime',
+    },
+    { title: $t('page.idMapping.isActive'), field: 'isActive', minWidth: 150 },
+
     {
       title: $t('ui.table.createdAt'),
       field: 'createdAt',
