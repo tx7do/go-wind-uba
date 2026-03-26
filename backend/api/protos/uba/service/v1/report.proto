@@ -37,6 +37,22 @@ message PostReportRequest {
 
 // 统一事件结构，包含通用字段和不同事件类型的特有字段
 message ReportEvent {
+  // 事件类型枚举
+  enum EventType {
+    EVENT_TYPE_UNSPECIFIED = 0;
+
+    BEHAVIOR = 1;    // 行为事件
+    PATH = 2;        // 路径事件
+    RISK = 3;        // 风险事件
+
+    SESSION = 4;     // 会话事件（未来扩展）
+    FUNNEL = 5;      // 漏斗事件（未来扩展）
+
+    // 保留区间
+    reserved 10 to 99;
+    reserved "EVENT_TYPE_RESERVED";
+  }
+
   // 事件类型（路由关键字段）
   EventType event_type = 1 [
     json_name = "eventType",
@@ -106,22 +122,7 @@ message ReportEvent {
   }
 }
 
-// 事件类型枚举
-enum EventType {
-  EVENT_TYPE_UNSPECIFIED = 0;
-
-  EVENT_TYPE_BEHAVIOR = 1;    // 行为事件
-  EVENT_TYPE_PATH = 2;        // 路径事件
-  EVENT_TYPE_RISK = 3;        // 风险事件
-
-  EVENT_TYPE_SESSION = 4;     // 会话事件（未来扩展）
-  EVENT_TYPE_FUNNEL = 5;      // 漏斗事件（未来扩展）
-
-  // 保留区间
-  reserved 10 to 99;
-  reserved "EVENT_TYPE_RESERVED";
-}
-
+// 客户端信息结构，包含用户代理、来源 URL、地理位置信息等字段，服务端可解析用于补全事件上下文和分析
 message ClientInfo {
   string user_agent = 1 [
     json_name = "userAgent",

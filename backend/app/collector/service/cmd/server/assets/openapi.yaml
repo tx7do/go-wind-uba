@@ -232,6 +232,7 @@ components:
                 city:
                     type: string
                     description: 城市，基于 IP 地址解析的用户所在城市
+            description: 客户端信息结构，包含用户代理、来源 URL、地理位置信息等字段，服务端可解析用于补全事件上下文和分析
         ErrorDetail:
             type: object
             properties:
@@ -418,11 +419,11 @@ components:
                 eventType:
                     enum:
                         - EVENT_TYPE_UNSPECIFIED
-                        - EVENT_TYPE_BEHAVIOR
-                        - EVENT_TYPE_PATH
-                        - EVENT_TYPE_RISK
-                        - EVENT_TYPE_SESSION
-                        - EVENT_TYPE_FUNNEL
+                        - BEHAVIOR
+                        - PATH
+                        - RISK
+                        - SESSION
+                        - FUNNEL
                     type: string
                     description: 事件类型，区分不同事件结构和处理逻辑，路由关键字段
                     format: enum

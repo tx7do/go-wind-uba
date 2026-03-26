@@ -24,62 +24,62 @@ const (
 )
 
 // 事件类型枚举
-type EventType int32
+type ReportEvent_EventType int32
 
 const (
-	EventType_EVENT_TYPE_UNSPECIFIED EventType = 0
-	EventType_EVENT_TYPE_BEHAVIOR    EventType = 1 // 行为事件
-	EventType_EVENT_TYPE_PATH        EventType = 2 // 路径事件
-	EventType_EVENT_TYPE_RISK        EventType = 3 // 风险事件
-	EventType_EVENT_TYPE_SESSION     EventType = 4 // 会话事件（未来扩展）
-	EventType_EVENT_TYPE_FUNNEL      EventType = 5 // 漏斗事件（未来扩展）
+	ReportEvent_EVENT_TYPE_UNSPECIFIED ReportEvent_EventType = 0
+	ReportEvent_BEHAVIOR               ReportEvent_EventType = 1 // 行为事件
+	ReportEvent_PATH                   ReportEvent_EventType = 2 // 路径事件
+	ReportEvent_RISK                   ReportEvent_EventType = 3 // 风险事件
+	ReportEvent_SESSION                ReportEvent_EventType = 4 // 会话事件（未来扩展）
+	ReportEvent_FUNNEL                 ReportEvent_EventType = 5 // 漏斗事件（未来扩展）
 )
 
-// Enum value maps for EventType.
+// Enum value maps for ReportEvent_EventType.
 var (
-	EventType_name = map[int32]string{
+	ReportEvent_EventType_name = map[int32]string{
 		0: "EVENT_TYPE_UNSPECIFIED",
-		1: "EVENT_TYPE_BEHAVIOR",
-		2: "EVENT_TYPE_PATH",
-		3: "EVENT_TYPE_RISK",
-		4: "EVENT_TYPE_SESSION",
-		5: "EVENT_TYPE_FUNNEL",
+		1: "BEHAVIOR",
+		2: "PATH",
+		3: "RISK",
+		4: "SESSION",
+		5: "FUNNEL",
 	}
-	EventType_value = map[string]int32{
+	ReportEvent_EventType_value = map[string]int32{
 		"EVENT_TYPE_UNSPECIFIED": 0,
-		"EVENT_TYPE_BEHAVIOR":    1,
-		"EVENT_TYPE_PATH":        2,
-		"EVENT_TYPE_RISK":        3,
-		"EVENT_TYPE_SESSION":     4,
-		"EVENT_TYPE_FUNNEL":      5,
+		"BEHAVIOR":               1,
+		"PATH":                   2,
+		"RISK":                   3,
+		"SESSION":                4,
+		"FUNNEL":                 5,
 	}
 )
 
-func (x EventType) Enum() *EventType {
-	p := new(EventType)
+func (x ReportEvent_EventType) Enum() *ReportEvent_EventType {
+	p := new(ReportEvent_EventType)
 	*p = x
 	return p
 }
 
-func (x EventType) String() string {
+func (x ReportEvent_EventType) String() string {
 	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
-func (EventType) Descriptor() protoreflect.EnumDescriptor {
+func (ReportEvent_EventType) Descriptor() protoreflect.EnumDescriptor {
 	return file_uba_service_v1_report_proto_enumTypes[0].Descriptor()
 }
 
-func (EventType) Type() protoreflect.EnumType {
+func (ReportEvent_EventType) Type() protoreflect.EnumType {
 	return &file_uba_service_v1_report_proto_enumTypes[0]
 }
 
-func (x EventType) Number() protoreflect.EnumNumber {
+func (x ReportEvent_EventType) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(x)
 }
 
-// Deprecated: Use EventType.Descriptor instead.
-func (EventType) EnumDescriptor() ([]byte, []int) {
-	return file_uba_service_v1_report_proto_rawDescGZIP(), []int{0}
+// Deprecated: Use ReportEvent_EventType.Descriptor instead.
+func (ReportEvent_EventType) EnumDescriptor() ([]byte, []int) {
+	return file_uba_service_v1_report_proto_rawDescGZIP(), []int{1, 0}
 }
 
 type PostReportRequest struct {
@@ -155,7 +155,7 @@ func (x *PostReportRequest) GetClientInfo() *ClientInfo {
 type ReportEvent struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// 事件类型（路由关键字段）
-	EventType EventType `protobuf:"varint,1,opt,name=event_type,json=eventType,proto3,enum=uba.service.v1.EventType" json:"event_type,omitempty"`
+	EventType ReportEvent_EventType `protobuf:"varint,1,opt,name=event_type,json=eventType,proto3,enum=uba.service.v1.ReportEvent_EventType" json:"event_type,omitempty"`
 	// 通用字段（所有事件类型共有）
 	EventId       string                 `protobuf:"bytes,2,opt,name=event_id,json=eventId,proto3" json:"event_id,omitempty"`
 	UserId        *uint32                `protobuf:"varint,3,opt,name=user_id,json=userId,proto3,oneof" json:"user_id,omitempty"`
@@ -211,11 +211,11 @@ func (*ReportEvent) Descriptor() ([]byte, []int) {
 	return file_uba_service_v1_report_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *ReportEvent) GetEventType() EventType {
+func (x *ReportEvent) GetEventType() ReportEvent_EventType {
 	if x != nil {
 		return x.EventType
 	}
-	return EventType_EVENT_TYPE_UNSPECIFIED
+	return ReportEvent_EVENT_TYPE_UNSPECIFIED
 }
 
 func (x *ReportEvent) GetEventId() string {
@@ -365,6 +365,7 @@ func (*ReportEvent_Path) isReportEvent_Payload() {}
 
 func (*ReportEvent_Risk) isReportEvent_Payload() {}
 
+// 客户端信息结构，包含用户代理、来源 URL、地理位置信息等字段，服务端可解析用于补全事件上下文和分析
 type ClientInfo struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	UserAgent     string                 `protobuf:"bytes,1,opt,name=user_agent,json=userAgent,proto3" json:"user_agent,omitempty"`
@@ -668,10 +669,10 @@ const file_uba_service_v1_report_proto_rawDesc = "" +
 	"app_secret\x18\x02 \x01(\tB7\xbaG4\x92\x021密钥，鉴权使用，鉴权/路由关键字段R\tappSecret\x123\n" +
 	"\x06events\x18\x03 \x03(\v2\x1b.uba.service.v1.ReportEventR\x06events\x12\x8b\x01\n" +
 	"\vclient_info\x18\x04 \x01(\v2\x1a.uba.service.v1.ClientInfoBN\xbaGK\x92\x02H客户端信息，服务端可解析用于补全事件上下文和分析R\n" +
-	"clientInfo\"\xa5\x0f\n" +
-	"\vReportEvent\x12\x8b\x01\n" +
+	"clientInfo\"\xb0\x10\n" +
+	"\vReportEvent\x12\x97\x01\n" +
 	"\n" +
-	"event_type\x18\x01 \x01(\x0e2\x19.uba.service.v1.EventTypeBQ\xbaGN\x92\x02K事件类型，区分不同事件结构和处理逻辑，路由关键字段R\teventType\x12u\n" +
+	"event_type\x18\x01 \x01(\x0e2%.uba.service.v1.ReportEvent.EventTypeBQ\xbaGN\x92\x02K事件类型，区分不同事件结构和处理逻辑，路由关键字段R\teventType\x12u\n" +
 	"\bevent_id\x18\x02 \x01(\tBZ\xbaGW\x92\x02T事件ID，全局唯一标识一条事件记录，建议使用ULID或Snowflake生成R\aeventId\x12i\n" +
 	"\auser_id\x18\x03 \x01(\rBK\xbaGH\x92\x02E登录用户ID，唯一标识一个用户，未登录可不填或填0H\x01R\x06userId\x88\x01\x01\x12\x82\x01\n" +
 	"\tdevice_id\x18\x04 \x01(\tBe\xbaGb\x92\x02_设备指纹，标识用户使用的设备，未登录用户可通过设备ID进行关联分析R\bdeviceId\x12\x97\x01\n" +
@@ -697,7 +698,16 @@ const file_uba_service_v1_report_proto_rawDesc = "" +
 	"\x04risk\x18( \x01(\v2\x19.uba.service.v1.RiskEventH\x00R\x04risk\x1a=\n" +
 	"\x0fPropertiesEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\t\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"}\n" +
+	"\tEventType\x12\x1a\n" +
+	"\x16EVENT_TYPE_UNSPECIFIED\x10\x00\x12\f\n" +
+	"\bBEHAVIOR\x10\x01\x12\b\n" +
+	"\x04PATH\x10\x02\x12\b\n" +
+	"\x04RISK\x10\x03\x12\v\n" +
+	"\aSESSION\x10\x04\x12\n" +
+	"\n" +
+	"\x06FUNNEL\x10\x05\"\x04\b\n" +
+	"\x10c*\x13EVENT_TYPE_RESERVEDB\t\n" +
 	"\apayloadB\n" +
 	"\n" +
 	"\b_user_id\"\xdb\x02\n" +
@@ -730,15 +740,7 @@ const file_uba_service_v1_report_proto_rawDesc = "" +
 	"\vErrorDetail\x12\x12\n" +
 	"\x04code\x18\x01 \x01(\tR\x04code\x12\x18\n" +
 	"\amessage\x18\x02 \x01(\tR\amessage\x12`\n" +
-	"\bevent_id\x18\x03 \x01(\tBE\xbaGB\x92\x02?失败的事件 ID，便于定位具体哪条事件上报失败R\aeventId*\xb4\x01\n" +
-	"\tEventType\x12\x1a\n" +
-	"\x16EVENT_TYPE_UNSPECIFIED\x10\x00\x12\x17\n" +
-	"\x13EVENT_TYPE_BEHAVIOR\x10\x01\x12\x13\n" +
-	"\x0fEVENT_TYPE_PATH\x10\x02\x12\x13\n" +
-	"\x0fEVENT_TYPE_RISK\x10\x03\x12\x16\n" +
-	"\x12EVENT_TYPE_SESSION\x10\x04\x12\x15\n" +
-	"\x11EVENT_TYPE_FUNNEL\x10\x05\"\x04\b\n" +
-	"\x10c*\x13EVENT_TYPE_RESERVED2f\n" +
+	"\bevent_id\x18\x03 \x01(\tBE\xbaGB\x92\x02?失败的事件 ID，便于定位具体哪条事件上报失败R\aeventId2f\n" +
 	"\rReportService\x12U\n" +
 	"\n" +
 	"PostReport\x12!.uba.service.v1.PostReportRequest\x1a\".uba.service.v1.PostReportResponse\"\x00B\xa8\x01\n" +
@@ -759,7 +761,7 @@ func file_uba_service_v1_report_proto_rawDescGZIP() []byte {
 var file_uba_service_v1_report_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_uba_service_v1_report_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_uba_service_v1_report_proto_goTypes = []any{
-	(EventType)(0),                // 0: uba.service.v1.EventType
+	(ReportEvent_EventType)(0),    // 0: uba.service.v1.ReportEvent.EventType
 	(*PostReportRequest)(nil),     // 1: uba.service.v1.PostReportRequest
 	(*ReportEvent)(nil),           // 2: uba.service.v1.ReportEvent
 	(*ClientInfo)(nil),            // 3: uba.service.v1.ClientInfo
@@ -776,7 +778,7 @@ var file_uba_service_v1_report_proto_goTypes = []any{
 var file_uba_service_v1_report_proto_depIdxs = []int32{
 	2,  // 0: uba.service.v1.PostReportRequest.events:type_name -> uba.service.v1.ReportEvent
 	3,  // 1: uba.service.v1.PostReportRequest.client_info:type_name -> uba.service.v1.ClientInfo
-	0,  // 2: uba.service.v1.ReportEvent.event_type:type_name -> uba.service.v1.EventType
+	0,  // 2: uba.service.v1.ReportEvent.event_type:type_name -> uba.service.v1.ReportEvent.EventType
 	8,  // 3: uba.service.v1.ReportEvent.event_time:type_name -> google.protobuf.Timestamp
 	7,  // 4: uba.service.v1.ReportEvent.properties:type_name -> uba.service.v1.ReportEvent.PropertiesEntry
 	8,  // 5: uba.service.v1.ReportEvent.server_time:type_name -> google.protobuf.Timestamp
