@@ -220,7 +220,7 @@ async function handleDelete(row: any) {
 
 <template>
   <Page auto-content-height>
-    <Grid :title="$t('menu.risk.event')">
+    <Grid :table-title="$t('menu.risk.event')">
       <template #riskType="{ row }">
         <a-tag :color="riskEventTypeToColor(row.riskType)">
           {{ riskEventTypeToName(row.riskType) }}

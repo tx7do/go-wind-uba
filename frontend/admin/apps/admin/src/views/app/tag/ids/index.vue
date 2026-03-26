@@ -162,7 +162,7 @@ async function handleDelete(row: any) {
 
 <template>
   <Page auto-content-height>
-    <Grid :title="$t('menu.tag.ids')">
+    <Grid :table-title="$t('menu.tag.ids')">
       <template #idType="{ row }">
         <a-tag :color="idMappingIdTypeToColor(row.idType)">
           {{ idMappingIdTypeToName(row.idType) }}

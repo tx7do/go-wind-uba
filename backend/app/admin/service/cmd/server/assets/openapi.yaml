@@ -6143,7 +6143,7 @@ components:
                     description: UBA应用名称
                 appId:
                     type: string
-                    description: UBA应用唯一标识（上报时使用）
+                    description: 应用唯一标识（上报/回调/配置时使用，如'game_001'）
                 appKey:
                     type: string
                     description: 应用Key

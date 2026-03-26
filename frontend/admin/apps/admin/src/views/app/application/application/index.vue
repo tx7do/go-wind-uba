@@ -251,7 +251,7 @@ async function handleDelete(row: any) {
 
 <template>
   <Page auto-content-height>
-    <Grid :title="$t('menu.application.applications')">
+    <Grid :table-title="$t('menu.application.applications')">
       <template #toolbar-tools>
         <a-button class="mr-2" type="primary" @click="handleCreate">
           {{ $t('page.application.button.create') }}

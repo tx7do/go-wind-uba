@@ -155,7 +155,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <Grid :title="$t('menu.dataAnalysis.eventPath')" />
+    <Grid :table-title="$t('menu.dataAnalysis.eventPath')" />
   </Page>
 </template>
 

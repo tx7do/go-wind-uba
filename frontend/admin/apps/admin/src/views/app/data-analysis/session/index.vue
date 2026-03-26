@@ -204,7 +204,7 @@ async function handleDelete(row: any) {
 
 <template>
   <Page auto-content-height>
-    <Grid :title="$t('menu.dataAnalysis.session')">
+    <Grid :table-title="$t('menu.dataAnalysis.session')">
       <template #platform="{ row }">
         <a-tag :color="platformToColor(row.platform)">
           {{ platformToName(row.platform) }}

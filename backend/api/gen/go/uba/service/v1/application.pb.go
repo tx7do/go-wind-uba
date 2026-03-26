@@ -725,11 +725,11 @@ var File_uba_service_v1_application_proto protoreflect.FileDescriptor
 
 const file_uba_service_v1_application_proto_rawDesc = "" +
 	"\n" +
-	" uba/service/v1/application.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a google/protobuf/field_mask.proto\x1a\x1epagination/v1/pagination.proto\x1a\x1buba/service/v1/common.proto\"\xca\r\n" +
+	" uba/service/v1/application.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a google/protobuf/field_mask.proto\x1a\x1epagination/v1/pagination.proto\x1a\x1buba/service/v1/common.proto\"\xe5\r\n" +
 	"\vApplication\x12\x18\n" +
 	"\x02id\x18\x01 \x01(\rB\b\xbaG\x05\x92\x02\x02IDR\x02id\x12.\n" +
-	"\x04name\x18\x02 \x01(\tB\x15\xbaG\x12\x92\x02\x0fUBA应用名称H\x00R\x04name\x88\x01\x01\x12L\n" +
-	"\x06app_id\x18\x03 \x01(\tB0\xbaG-\x92\x02*UBA应用唯一标识（上报时使用）H\x01R\x05appId\x88\x01\x01\x12-\n" +
+	"\x04name\x18\x02 \x01(\tB\x15\xbaG\x12\x92\x02\x0fUBA应用名称H\x00R\x04name\x88\x01\x01\x12g\n" +
+	"\x06app_id\x18\x03 \x01(\tBK\xbaGH\x92\x02E应用唯一标识（上报/回调/配置时使用，如'game_001'）H\x01R\x05appId\x88\x01\x01\x12-\n" +
 	"\aapp_key\x18\x04 \x01(\tB\x0f\xbaG\f\x92\x02\t应用KeyH\x02R\x06appKey\x88\x01\x01\x126\n" +
 	"\n" +
 	"app_secret\x18\x05 \x01(\tB\x12\xbaG\x0f\x92\x02\f应用密钥H\x03R\tappSecret\x88\x01\x01\x12M\n" +

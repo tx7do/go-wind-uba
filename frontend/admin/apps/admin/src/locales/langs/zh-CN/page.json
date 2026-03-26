@@ -446,7 +446,8 @@
     "value": "限制值",
     "reason": "限制原因",
     "button": {
-      "create": "创建限制"
+      "create": "创建登录策略",
+      "update": "更新登录策略"
     }
   },
   "application": {
@@ -513,7 +514,11 @@
     "condition": "规则条件",
     "actions": "动作配置",
     "enabled": "是否启用",
-    "priority": "优先级"
+    "priority": "优先级",
+    "button": {
+      "create": "创建风险规则",
+      "update": "更新风险规则"
+    }
   },
   "webhook": {
     "moduleName": "Webhook管理",
@@ -525,7 +530,11 @@
     "filter": "高级过滤条件",
     "enabled": "是否启用",
     "failureCount": "失败次数",
-    "lastTriggeredAt": "最后触发时间"
+    "lastTriggeredAt": "最后触发时间",
+    "button": {
+      "create": "创建Webhook",
+      "update": "更新Webhook"
+    }
   },
   "tagDefinition": {
     "moduleName": "标签定义",
@@ -538,7 +547,11 @@
     "allowedValues": "取值范围",
     "isSystem": "是否系统预置",
     "isDynamic": "是否动态标签",
-    "refreshIntervalSeconds": "刷新间隔"
+    "refreshIntervalSeconds": "刷新间隔",
+    "button": {
+      "create": "创建标签",
+      "update": "更新标签"
+    }
   },
   "idMapping": {
     "moduleName": "ID映射",
@@ -550,7 +563,11 @@
     "firstSeen": "首次出现时间",
     "lastSeen": "最后出现时间",
     "isActive": "是否激活",
-    "properties": "扩展属性"
+    "properties": "扩展属性",
+    "button": {
+      "create": "创建ID映射",
+      "update": "更新ID映射"
+    }
   },
   "userTag": {
     "moduleName": "用户标签",
@@ -562,7 +579,11 @@
     "source": "标签来源",
     "sourceRuleId": "来源规则ID",
     "effectiveTime": "有效时间",
-    "expireTime": "过期时间"
+    "expireTime": "过期时间",
+    "button": {
+      "create": "创建用户标签",
+      "update": "更新用户标签"
+    }
   },
   "eventPath": {
     "moduleName": "事件路径",
@@ -581,7 +602,11 @@
     "firstEvent": "首个事件",
     "lastEvent": "末尾事件",
     "first3Events": "首3事件",
-    "last3Events": "末3事件"
+    "last3Events": "末3事件",
+    "button": {
+      "create": "创建事件路径",
+      "update": "更新事件路径"
+    }
   },
   "userBehaviorProfile": {
     "moduleName": "用户画像",
@@ -607,7 +632,11 @@
     "geo": "地理位置",
     "platform": "平台类型",
     "deviceType": "设备类型",
-    "ver": "版本号"
+    "ver": "版本号",
+    "button": {
+      "create": "创建用户画像",
+      "update": "更新用户画像"
+    }
   },
   "session": {
     "moduleName": "会话管理",

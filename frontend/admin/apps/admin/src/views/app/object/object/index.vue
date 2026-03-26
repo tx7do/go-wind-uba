@@ -165,7 +165,7 @@ async function handleDelete(row: any) {
 
 <template>
   <Page auto-content-height>
-    <Grid :title="$t('menu.object.objects')">
+    <Grid :table-title="$t('menu.object.objects')">
       <template #action="{ row }">
         <a-popconfirm
           :cancel-text="$t('ui.button.cancel')"

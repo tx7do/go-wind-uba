@@ -192,7 +192,7 @@ async function handleDelete(row: any) {
 
 <template>
   <Page auto-content-height>
-    <Grid :title="$t('menu.risk.rule')">
+    <Grid :table-title="$t('menu.risk.rule')">
       <template #toolbar-tools>
         <a-button type="primary" @click="handleCreate">
           {{ $t('ui.button.create', { moduleName: $t('menu.risk.rule') }) }}

@@ -4,7 +4,7 @@ import type { ubaservicev1_Webhook as Webhook } from '#/generated/api/admin/serv
 
 import { h } from 'vue';
 
-import { Page } from '@vben/common-ui';
+import { Page, useVbenDrawer } from '@vben/common-ui';
 import { LucideFilePenLine, LucideTrash2 } from '@vben/icons';
 
 import { notification } from 'ant-design-vue';
@@ -12,6 +12,8 @@ import { notification } from 'ant-design-vue';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { $t } from '#/locales';
 import { useWebhookListStore } from '#/stores';
+
+import WebhookDrawer from './webohhok-drawer.vue';
 
 const webhookListStore = useWebhookListStore();
 
@@ -97,11 +99,16 @@ const gridOptions: VxeGridProps<Webhook> = {
       minWidth: 300,
       align: 'left',
     },
-    { title: $t('page.webhook.appId'), field: 'appId', minWidth: 100 },
     {
       title: $t('page.webhook.secret'),
       field: 'secret',
       minWidth: 200,
+      align: 'left',
+    },
+    {
+      title: $t('page.webhook.appId'),
+      field: 'appId',
+      minWidth: 100,
       align: 'left',
     },
     {
@@ -140,12 +147,50 @@ const [Grid, gridApi] = useVbenVxeGrid({
   gridEvents,
 });
 
+const [Drawer, drawerApi] = useVbenDrawer({
+  // 连接抽离的组件
+  connectedComponent: WebhookDrawer,
+
+  onOpenChange(isOpen: boolean) {
+    if (!isOpen) {
+      // 关闭时，重载表格数据
+      gridApi.reload();
+    }
+  },
+});
+
+function openDrawer(create: boolean, row?: any) {
+  drawerApi.setData({
+    create,
+    row,
+  });
+  drawerApi.open();
+}
+
+/* 创建 */
+function handleCreate() {
+  console.log('创建');
+
+  openDrawer(true);
+}
+
+/* 编辑 */
+function handleEdit(row: any) {
+  console.log('编辑', row);
+  openDrawer(false, row);
+}
+
+/* 删除 */
 async function handleDelete(row: any) {
+  console.log('删除', row);
+
   try {
     await webhookListStore.deleteWebhook(row.id);
+
     notification.success({
       message: $t('ui.notification.delete_success'),
     });
+
     await gridApi.reload();
   } catch {
     notification.error({
@@ -153,15 +198,16 @@ async function handleDelete(row: any) {
     });
   }
 }
-
-function handleEdit(row: any) {
-  console.log('Edit', row);
-}
 </script>
 
 <template>
   <Page auto-content-height>
-    <Grid :title="$t('menu.risk.webhook')">
+    <Grid :table-title="$t('menu.risk.webhook')">
+      <template #toolbar-tools>
+        <a-button class="mr-2" type="primary" @click="handleCreate">
+          {{ $t('page.webhook.button.create') }}
+        </a-button>
+      </template>
       <template #enabled="{ row }">
         <a-tag :color="row.enabled ? '#52C41A' : '#8C8C8C'">
           {{ row.enabled ? $t('ui.switch.enable') : $t('ui.switch.disable') }}
@@ -187,6 +233,7 @@ function handleEdit(row: any) {
         </a-popconfirm>
       </template>
     </Grid>
+    <Drawer />
   </Page>
 </template>
 

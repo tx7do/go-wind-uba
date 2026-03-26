@@ -179,7 +179,7 @@ function handleEdit(row: any) {
 
 <template>
   <Page auto-content-height>
-    <Grid :title="$t('menu.tag.userTags')">
+    <Grid :table-title="$t('menu.tag.userTags')">
       <template #source="{ row }">
         <a-tag :color="userTagSourceToColor(row.source)">
           {{ userTagSourceToName(row.source) }}

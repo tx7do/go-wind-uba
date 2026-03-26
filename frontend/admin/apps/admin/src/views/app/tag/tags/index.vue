@@ -196,7 +196,7 @@ function handleEdit(row: any) {
 
 <template>
   <Page auto-content-height>
-    <Grid :title="$t('menu.tag.tags')">
+    <Grid :table-title="$t('menu.tag.tags')">
       <template #category="{ row }">
         <a-tag :color="tagCategoryToColor(row.category)">
           {{ tagCategoryToName(row.category) }}

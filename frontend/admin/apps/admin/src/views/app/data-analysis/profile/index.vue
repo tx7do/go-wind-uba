@@ -183,7 +183,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <Grid :title="$t('menu.dataAnalysis.userBehaviorProfile')">
+    <Grid :table-title="$t('menu.dataAnalysis.userBehaviorProfile')">
       <template #platform="{ row }">
         <a-tag :color="platformToColor(row.platform)">
           {{ platformToName(row.platform) }}
