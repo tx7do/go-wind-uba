@@ -27,10 +27,10 @@ var File_admin_service_v1_i_event_path_proto protoreflect.FileDescriptor
 
 const file_admin_service_v1_i_event_path_proto_rawDesc = "" +
 	"\n" +
-	"#admin/service/v1/i_event_path.proto\x12\x10admin.service.v1\x1a\x1cgoogle/api/annotations.proto\x1a\x1epagination/v1/pagination.proto\x1a\x1fuba/service/v1/event_path.proto2\xeb\x01\n" +
+	"#admin/service/v1/i_event_path.proto\x12\x10admin.service.v1\x1a\x1cgoogle/api/annotations.proto\x1a\x1epagination/v1/pagination.proto\x1a\x1fuba/service/v1/event_path.proto2\xe6\x01\n" +
 	"\x10EventPathService\x12g\n" +
-	"\x04List\x12\x19.pagination.PagingRequest\x1a%.uba.service.v1.ListEventPathResponse\"\x1d\x82\xd3\xe4\x93\x02\x17\x12\x15/admin/v1/event-paths\x12n\n" +
-	"\x03Get\x12#.uba.service.v1.GetEventPathRequest\x1a\x19.uba.service.v1.EventPath\"'\x82\xd3\xe4\x93\x02!\x12\x1f/admin/v1/event-paths/{path_id}B\xba\x01\n" +
+	"\x04List\x12\x19.pagination.PagingRequest\x1a%.uba.service.v1.ListEventPathResponse\"\x1d\x82\xd3\xe4\x93\x02\x17\x12\x15/admin/v1/event-paths\x12i\n" +
+	"\x03Get\x12#.uba.service.v1.GetEventPathRequest\x1a\x19.uba.service.v1.EventPath\"\"\x82\xd3\xe4\x93\x02\x1c\x12\x1a/admin/v1/event-paths/{id}B\xba\x01\n" +
 	"\x14com.admin.service.v1B\x0fIEventPathProtoP\x01Z/go-wind-uba/api/gen/go/admin/service/v1;adminpb\xa2\x02\x03ASX\xaa\x02\x10Admin.Service.V1\xca\x02\x10Admin\\Service\\V1\xe2\x02\x1cAdmin\\Service\\V1\\GPBMetadata\xea\x02\x12Admin::Service::V1b\x06proto3"
 
 var file_admin_service_v1_i_event_path_proto_goTypes = []any{

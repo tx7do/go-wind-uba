@@ -11,14 +11,14 @@ import { useEventPathListStore } from '#/stores';
 const eventPathListStore = useEventPathListStore();
 
 const formOptions = {
-  collapsed: true,
+  collapsed: false,
   showCollapseButton: true,
   submitOnEnter: true,
   schema: [
     {
       component: 'Input',
-      fieldName: 'user_id',
-      label: $t('ui.formLabel.userId'),
+      fieldName: 'id',
+      label: $t('page.eventPath.id'),
       componentProps: {
         placeholder: $t('ui.placeholder.input'),
         allowClear: true,
@@ -26,8 +26,17 @@ const formOptions = {
     },
     {
       component: 'Input',
-      fieldName: 'event_name',
-      label: $t('ui.formLabel.eventName'),
+      fieldName: 'user_id',
+      label: $t('page.eventPath.userId'),
+      componentProps: {
+        placeholder: $t('ui.placeholder.input'),
+        allowClear: true,
+      },
+    },
+    {
+      component: 'Input',
+      fieldName: 'session_id',
+      label: $t('page.eventPath.sessionId'),
       componentProps: {
         placeholder: $t('ui.placeholder.input'),
         allowClear: true,
@@ -65,24 +74,70 @@ const gridOptions: VxeGridProps<EventPath> = {
             pageSize: page.pageSize,
           },
           formValues,
+          undefined,
+          ['-start_time'],
         );
       },
     },
   },
   columns: [
-    { title: $t('ui.field.pathId'), field: 'pathId', minWidth: 200 },
-    { title: $t('ui.field.userId'), field: 'userId', minWidth: 100 },
-    { title: $t('ui.field.eventName'), field: 'eventName', minWidth: 150 },
-    { title: $t('ui.field.eventData'), field: 'eventData', minWidth: 200 },
     {
-      title: $t('ui.field.occurredAt'),
-      field: 'occurredAt',
+      title: $t('page.eventPath.id'),
+      field: 'id',
+      minWidth: 200,
+      fixed: 'left',
+    },
+    { title: $t('page.eventPath.userId'), field: 'userId', minWidth: 100 },
+    {
+      title: $t('page.eventPath.sessionId'),
+      field: 'sessionId',
+      minWidth: 100,
+    },
+    {
+      title: $t('page.eventPath.totalDurationMs'),
+      field: 'totalDurationMs',
+      minWidth: 150,
+    },
+    {
+      title: $t('page.eventPath.stepCount'),
+      field: 'stepCount',
+      minWidth: 200,
+    },
+    {
+      title: $t('page.eventPath.firstEvent'),
+      field: 'firstEvent',
+      minWidth: 160,
+    },
+    {
+      title: $t('page.eventPath.lastEvent'),
+      field: 'lastEvent',
+      minWidth: 160,
+    },
+    {
+      title: $t('page.eventPath.conversionEvent'),
+      field: 'conversionEvent',
+      minWidth: 160,
+    },
+    {
+      title: $t('page.eventPath.isConverted'),
+      field: 'isConverted',
+      minWidth: 160,
+    },
+    {
+      title: $t('page.eventPath.conversionTime'),
+      field: 'conversionTime',
       formatter: 'formatDateTime',
       minWidth: 160,
     },
     {
-      title: $t('ui.table.createdAt'),
-      field: 'createdAt',
+      title: $t('page.eventPath.startTime'),
+      field: 'startTime',
+      formatter: 'formatDateTime',
+      minWidth: 160,
+    },
+    {
+      title: $t('page.eventPath.endTime'),
+      field: 'endTime',
       formatter: 'formatDateTime',
       minWidth: 160,
     },

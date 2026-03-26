@@ -1148,18 +1148,23 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ListEventPathResponse'
-    /admin/v1/event-paths/{pathId}:
+    /admin/v1/event-paths/{id}:
         get:
             tags:
                 - EventPathService
             description: 查询单条事件路径详情
             operationId: EventPathService_Get
             parameters:
-                - name: pathId
+                - name: id
                   in: path
                   required: true
                   schema:
                     type: string
+                - name: viewMask
+                  in: query
+                  schema:
+                    type: string
+                    format: field-mask
             responses:
                 "200":
                     description: OK
@@ -6867,7 +6872,7 @@ components:
         EventPath:
             type: object
             properties:
-                pathId:
+                id:
                     type: string
                     description: 路径ID，唯一标识一条事件路径，hash 或 UUID
                 tenantId:
@@ -6886,6 +6891,19 @@ components:
                     items:
                         $ref: '#/components/schemas/PathNode'
                     description: 有序事件序列，路径节点列表，按发生顺序排列
+                pathHash:
+                    type: string
+                    description: 路径哈希值，根据事件序列计算得到的哈希值，用于快速路径识别和去重
+                isConverted:
+                    type: boolean
+                    description: 是否完成目标转化，如完成支付、注册等
+                conversionEvent:
+                    type: string
+                    description: 转化事件名称，目标转化对应的事件名称
+                conversionTime:
+                    type: string
+                    description: 转化时间，目标转化事件发生的时间
+                    format: date-time
                 startTime:
                     type: string
                     description: 路径起始时间，第一个节点事件时间
@@ -6894,20 +6912,33 @@ components:
                     type: string
                     description: 路径结束时间，最后一个节点事件时间
                     format: date-time
+                eventDate:
+                    type: string
+                    description: 事件日期，路径起始时间的日期部分，用于按日统计和查询
+                    format: date-time
                 totalDurationMs:
-                    type: integer
+                    type: string
                     description: 路径总时长，毫秒，start_time 到 end_time 的间隔
-                    format: uint32
                 stepCount:
                     type: integer
                     description: 步骤数，路径节点总数
                     format: uint32
-                isConverted:
-                    type: boolean
-                    description: 是否完成目标转化，如完成支付、注册等
-                conversionEvent:
+                firstEvent:
                     type: string
-                    description: 转化事件名称，目标转化对应的事件名称
+                    description: 第一个事件名称，路径中第一个节点的事件名称
+                lastEvent:
+                    type: string
+                    description: 最后一个事件名称，路径中最后一个节点的事件名称
+                first3Events:
+                    type: array
+                    items:
+                        type: string
+                    description: 前3个事件名称，路径中前3个节点的事件名称列表
+                last3Events:
+                    type: array
+                    items:
+                        type: string
+                    description: 后3个事件名称，路径中后3个节点的事件名称列表
             description: 事件路径（用户行为路径，包含有序事件序列和路径指标）
         File:
             type: object
@@ -10424,11 +10455,9 @@ components:
                     description: 租户ID
                     format: uint32
                 userId:
-                    type: string
+                    type: integer
                     description: 用户ID
-                ver:
-                    type: string
-                    description: 版本号
+                    format: uint32
                 registerTime:
                     type: string
                     description: 注册时间
@@ -10508,7 +10537,9 @@ components:
                         type: string
                     description: 扩展属性
                 geo:
-                    type: string
+                    type: object
+                    additionalProperties:
+                        type: string
                     description: 地理位置，经纬度信息或 GeoJSON，便于分析用户地理分布
                 platform:
                     enum:
@@ -10526,6 +10557,9 @@ components:
                 deviceType:
                     type: string
                     description: 设备类型，记录用户主要使用的设备类型（如手机、平板、PC 等）
+                ver:
+                    type: string
+                    description: 版本号
                 createdAt:
                     type: string
                     description: 创建时间
@@ -10533,10 +10567,6 @@ components:
                 updatedAt:
                     type: string
                     description: 更新时间
-                    format: date-time
-                deletedAt:
-                    type: string
-                    description: 删除时间
                     format: date-time
             description: 用户画像（对应 users_dim 表）
         UserExistsResponse:

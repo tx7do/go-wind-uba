@@ -98,17 +98,12 @@ export const useApplicationListStore = defineStore('application-list', () => {
 });
 
 export const applicationStatusList = computed(() => [
-  {
-    value: 'STATUS_UNSPECIFIED',
-    label: $t('enum.application.status.UNSPECIFIED'),
-  },
   { value: 'STATUS_ACTIVE', label: $t('enum.application.status.ACTIVE') },
   { value: 'STATUS_INACTIVE', label: $t('enum.application.status.INACTIVE') },
   { value: 'STATUS_DISABLED', label: $t('enum.application.status.DISABLED') },
 ]);
 
 const APPLICATION_STATUS_COLOR_MAP = {
-  STATUS_UNSPECIFIED: '#86909C',
   STATUS_ACTIVE: '#4096FF',
   STATUS_INACTIVE: '#C9CDD4',
   STATUS_DISABLED: '#F53F3F',
@@ -130,22 +125,19 @@ export function applicationStatusToName(status?: Application_Status) {
 }
 
 export const platformList = computed(() => [
-  { value: 'PLATFORM_UNSPECIFIED', label: $t('enum.platform.UNSPECIFIED') },
-  { value: 'PLATFORM_WEB', label: $t('enum.platform.WEB') },
-  { value: 'PLATFORM_IOS', label: $t('enum.platform.IOS') },
-  { value: 'PLATFORM_ANDROID', label: $t('enum.platform.ANDROID') },
-  { value: 'PLATFORM_WINDOWS', label: $t('enum.platform.WINDOWS') },
-  { value: 'PLATFORM_MACOS', label: $t('enum.platform.MACOS') },
-  { value: 'PLATFORM_LINUX', label: $t('enum.platform.LINUX') },
-  { value: 'PLATFORM_MINI_PROGRAM', label: $t('enum.platform.MINI_PROGRAM') },
+  { value: 'PLATFORM_WEB', label: $t('enum.platform.PLATFORM_WEB') },
+  { value: 'PLATFORM_IOS', label: $t('enum.platform.PLATFORM_IOS') },
+  { value: 'PLATFORM_ANDROID', label: $t('enum.platform.PLATFORM_ANDROID') },
+  { value: 'PLATFORM_WINDOWS', label: $t('enum.platform.PLATFORM_WINDOWS') },
+  { value: 'PLATFORM_MACOS', label: $t('enum.platform.PLATFORM_MACOS') },
+  { value: 'PLATFORM_LINUX', label: $t('enum.platform.PLATFORM_LINUX') },
   {
-    value: 'PLATFORM_OFFICIAL_ACCOUNT',
-    label: $t('enum.platform.OFFICIAL_ACCOUNT'),
+    value: 'PLATFORM_MINI_PROGRAM',
+    label: $t('enum.platform.PLATFORM_MINI_PROGRAM'),
   },
 ]);
 
 const PLATFORM_COLOR_MAP = {
-  PLATFORM_UNSPECIFIED: '#86909C',
   PLATFORM_WEB: '#4096FF',
   PLATFORM_IOS: '#000000',
   PLATFORM_ANDROID: '#3DDC84',

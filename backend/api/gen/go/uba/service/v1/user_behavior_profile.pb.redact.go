@@ -102,8 +102,6 @@ func (x *UserBehaviorProfile) Redact() string {
 
 	// Safe field: UserId
 
-	// Safe field: Ver
-
 	// Safe field: RegisterTime
 
 	// Safe field: RegisterChannel
@@ -146,11 +144,11 @@ func (x *UserBehaviorProfile) Redact() string {
 
 	// Safe field: DeviceType
 
+	// Safe field: Ver
+
 	// Safe field: CreatedAt
 
 	// Safe field: UpdatedAt
-
-	// Safe field: DeletedAt
 	return x.String()
 }
 

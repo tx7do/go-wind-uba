@@ -3,10 +3,10 @@ package schema
 import "time"
 
 type PathFeatures struct {
-	PathID          *string    `json:"path_id"`
+	ID              *string    `json:"id"`
 	TenantID        *uint32    `json:"tenant_id"`
 	UserID          *uint32    `json:"user_id"`
-	SessionID       *uint32    `json:"session_id"`
+	SessionID       *uint64    `json:"session_id"`
 	PathHash        *string    `json:"path_hash"`
 	FirstEvent      *string    `json:"first_event"`
 	LastEvent       *string    `json:"last_event"`
@@ -21,6 +21,4 @@ type PathFeatures struct {
 	EventDate       *time.Time `json:"event_date"`
 	TotalDurationMs *uint64    `json:"total_duration_ms"`
 	StepCount       *uint8     `json:"step_count"`
-	CreatedAt       *time.Time `json:"created_at"`
-	UpdatedAt       *time.Time `json:"updated_at"`
 }

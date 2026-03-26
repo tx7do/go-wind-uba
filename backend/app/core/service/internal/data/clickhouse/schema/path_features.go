@@ -6,10 +6,10 @@ import "time"
 // 对应表：gw_uba.path_features
 
 type PathFeatures struct {
-	PathID          *string    `ch:"path_id"`
+	ID              *string    `ch:"id"`
 	TenantID        *uint32    `ch:"tenant_id"`
 	UserID          *uint32    `ch:"user_id"`
-	SessionID       *uint32    `ch:"session_id"`
+	SessionID       *uint64    `ch:"session_id"`
 	PathHash        *string    `ch:"path_hash"`
 	FirstEvent      *string    `ch:"first_event"`
 	LastEvent       *string    `ch:"last_event"`
@@ -24,6 +24,4 @@ type PathFeatures struct {
 	EventDate       *time.Time `ch:"event_date"`
 	TotalDurationMs *uint64    `ch:"total_duration_ms"`
 	StepCount       *uint8     `ch:"step_count"`
-	CreatedAt       *time.Time `ch:"created_at"`
-	UpdatedAt       *time.Time `ch:"updated_at"`
 }

@@ -184,22 +184,38 @@ ALTER TABLE risk_events ADD INDEX idx_risk_level (risk_level) USING INVERTED;
 CREATE TABLE IF NOT EXISTS users_dim (
     tenant_id         INT NOT NULL COMMENT '租户ID',
     user_id           INT NOT NULL COMMENT '登录用户ID',
+
     register_time     DATETIME COMMENT '注册时间',
     register_channel  VARCHAR(128) COMMENT '注册渠道',
     first_active_date DATE COMMENT '首次活跃日期',
     last_active_date  DATE COMMENT '最后活跃日期',
+
     user_level        SMALLINT DEFAULT 0 COMMENT '用户等级',
     vip_level         TINYINT DEFAULT 0 COMMENT 'VIP等级',
     user_role         VARCHAR(64) COMMENT '用户角色',
+
     total_events      BIGINT DEFAULT 0 COMMENT '累计事件数',
     total_sessions    INT DEFAULT 0 COMMENT '累计会话数',
     total_pay_amount  DECIMAL(18,2) DEFAULT 0 COMMENT '累计支付金额',
     last_pay_time     DATETIME COMMENT '最后支付时间',
+
     prefer_categories ARRAY<STRING> COMMENT '偏好事件分类',
     prefer_objects    ARRAY<STRING> COMMENT '偏好对象类型',
+
+    -- 风险字段
     risk_score        TINYINT DEFAULT 0 COMMENT '用户风险评分',
     risk_tags         ARRAY<STRING> COMMENT '用户风险标签数组',
+    risk_level        VARCHAR(32) COMMENT '风险等级 low/medium/high/black',
+    last_risk_time    DATETIME COMMENT '最后一次风险事件时间',
+
+    geo               MAP<STRING,STRING> COMMENT '地理位置 country/province/city/isp',
+    platform          VARCHAR(64) COMMENT '客户端平台 ios/android/web/mini_program',
+    device_type       VARCHAR(64) COMMENT '设备类型 mobile/pad/desktop/unknown',
+
     profile           MAP<STRING,STRING> COMMENT '自定义用户画像',
+
+    -- 版本控制
+    ver               BIGINT DEFAULT 1 COMMENT '数据版本号，更新+1',
     created_at        DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间',
     updated_at        DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '记录更新时间'
 )
@@ -213,6 +229,7 @@ CREATE TABLE IF NOT EXISTS users_dim (
 ALTER TABLE users_dim MODIFY COMMENT '用户维度表（存储用户级别的预计算画像指标，支持用户圈选、分群分析、个性化推荐）';
 ALTER TABLE users_dim ADD INDEX idx_risk_score (risk_score) USING INVERTED;
 ALTER TABLE users_dim ADD INDEX idx_last_active (last_active_date) USING INVERTED;
+ALTER TABLE users_dim ADD INDEX idx_risk_level (risk_level) USING INVERTED;
 
 
 -- ============================================================
@@ -322,9 +339,8 @@ ALTER TABLE user_tags ADD INDEX idx_source (source) USING INVERTED;
 -- 8. 用户行为路径特征表
 -- ============================================================
 CREATE TABLE IF NOT EXISTS path_features (
-    path_id           VARCHAR(128) NOT NULL COMMENT '路径特征ID',
+    id                VARCHAR(128) NOT NULL COMMENT '路径特征ID',
     tenant_id         INT NOT NULL COMMENT '租户ID',
-    event_date        DATE NOT NULL COMMENT '路径日期',
     user_id           INT DEFAULT 0 COMMENT '登录用户ID',
     session_id        BIGINT DEFAULT 0 COMMENT '会话ID',
     path_hash         VARCHAR(128) COMMENT '路径序列哈希值',
@@ -338,14 +354,13 @@ CREATE TABLE IF NOT EXISTS path_features (
     conversion_time   DATETIMEV2(3) COMMENT '转化时间',
     start_time        DATETIMEV2(3) NOT NULL COMMENT '路径开始时间',
     end_time          DATETIMEV2(3) COMMENT '路径结束时间',
+    event_date        DATE NOT NULL COMMENT '路径日期',
     total_duration_ms BIGINT DEFAULT 0 COMMENT '路径总耗时',
-    step_count        TINYINT DEFAULT 0 COMMENT '路径步数',
-    created_at        DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间',
-    updated_at        DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '记录更新时间'
+    step_count        TINYINT DEFAULT 0 COMMENT '路径步数'
 )
     UNIQUE KEY(path_id, tenant_id, event_date)
     PARTITION BY RANGE(event_date) ()
-    DISTRIBUTED BY HASH(tenant_id, path_id) BUCKETS 16
+    DISTRIBUTED BY HASH(tenant_id, id) BUCKETS 16
     PROPERTIES (
                    "replication_num" = "1",
                    "dynamic_partition.enable" = "true",

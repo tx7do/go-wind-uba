@@ -448,5 +448,77 @@
     "button": {
       "create": "创建限制"
     }
+  },
+  "application": {
+    "moduleName": "应用管理"
+  },
+  "object": {
+    "moduleName": "对象管理"
+  },
+  "riskEvent": {
+    "moduleName": "风险事件"
+  },
+  "riskRule": {
+    "moduleName": "风险规则"
+  },
+  "webhook": {
+    "moduleName": "Webhook管理"
+  },
+  "tagDefinition": {
+    "moduleName": "标签定义"
+  },
+  "idMapping": {
+    "moduleName": "ID映射"
+  },
+  "userTag": {
+    "moduleName": "用户标签"
+  },
+  "eventPath": {
+    "moduleName": "事件路径",
+    "id": "路径ID",
+    "userId": "用户ID",
+    "sessionId": "会话ID",
+    "startTime": "起始时间",
+    "endTime": "结束时间",
+    "eventDate": "事件日期",
+    "totalDurationMs": "路径总时长",
+    "stepCount": "步骤数",
+    "isConverted": "是否转化",
+    "conversionEvent": "转化事件",
+    "pathHash": "路径Hash值",
+    "conversionTime": "转化时间",
+    "firstEvent": "首个事件",
+    "lastEvent": "末尾事件",
+    "first3Events": "首3事件",
+    "last3Events": "末3事件"
+  },
+  "userBehaviorProfile": {
+    "moduleName": "用户画像",
+    "userId": "用户ID",
+    "registerTime": "注册时间",
+    "registerChannel": "注册渠道",
+    "firstActiveDate": "首次活跃日期",
+    "lastActiveDate": "最后活跃日期",
+    "userLevel": "用户等级",
+    "vipLevel": "VIP等级",
+    "userRole": "用户角色",
+    "totalEvents": "总事件数",
+    "totalSessions": "总会话数",
+    "totalPayAmount": "总支付金额",
+    "lastPayTime": "最后支付时间",
+    "preferCategories": "偏好类别",
+    "preferObjects": "偏好对象",
+    "riskScore": "风险评分",
+    "riskTags": "风险标签",
+    "riskLevel": "风险等级",
+    "lastRiskTime": "最后风险时间",
+    "profile": "扩展属性",
+    "geo": "地理位置",
+    "platform": "平台类型",
+    "deviceType": "设备类型",
+    "ver": "版本号"
+  },
+  "session": {
+    "moduleName": "会话管理"
   }
 }

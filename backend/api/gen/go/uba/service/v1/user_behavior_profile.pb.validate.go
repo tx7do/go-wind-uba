@@ -57,13 +57,9 @@ func (m *UserBehaviorProfile) validate(all bool) error {
 
 	var errors []error
 
-	// no validation rules for Id
-
 	// no validation rules for TenantId
 
 	// no validation rules for UserId
-
-	// no validation rules for Ver
 
 	if all {
 		switch v := interface{}(m.GetRegisterTime()).(type) {
@@ -199,6 +195,14 @@ func (m *UserBehaviorProfile) validate(all bool) error {
 
 	// no validation rules for Profile
 
+	// no validation rules for Geo
+
+	// no validation rules for Ver
+
+	if m.Id != nil {
+		// no validation rules for Id
+	}
+
 	if m.RiskLevel != nil {
 		// no validation rules for RiskLevel
 	}
@@ -234,10 +238,6 @@ func (m *UserBehaviorProfile) validate(all bool) error {
 			}
 		}
 
-	}
-
-	if m.Geo != nil {
-		// no validation rules for Geo
 	}
 
 	if m.Platform != nil {
@@ -306,39 +306,6 @@ func (m *UserBehaviorProfile) validate(all bool) error {
 			if err := v.Validate(); err != nil {
 				return UserBehaviorProfileValidationError{
 					field:  "UpdatedAt",
-					reason: "embedded message failed validation",
-					cause:  err,
-				}
-			}
-		}
-
-	}
-
-	if m.DeletedAt != nil {
-
-		if all {
-			switch v := interface{}(m.GetDeletedAt()).(type) {
-			case interface{ ValidateAll() error }:
-				if err := v.ValidateAll(); err != nil {
-					errors = append(errors, UserBehaviorProfileValidationError{
-						field:  "DeletedAt",
-						reason: "embedded message failed validation",
-						cause:  err,
-					})
-				}
-			case interface{ Validate() error }:
-				if err := v.Validate(); err != nil {
-					errors = append(errors, UserBehaviorProfileValidationError{
-						field:  "DeletedAt",
-						reason: "embedded message failed validation",
-						cause:  err,
-					})
-				}
-			}
-		} else if v, ok := interface{}(m.GetDeletedAt()).(interface{ Validate() error }); ok {
-			if err := v.Validate(); err != nil {
-				return UserBehaviorProfileValidationError{
-					field:  "DeletedAt",
 					reason: "embedded message failed validation",
 					cause:  err,
 				}

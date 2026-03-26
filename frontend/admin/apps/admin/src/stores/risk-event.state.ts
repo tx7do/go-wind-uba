@@ -144,15 +144,19 @@ export function riskEventTypeToName(type?: RiskType) {
 }
 
 export const riskLevelList = computed(() => [
-  { value: 'RISK_LEVEL_UNSPECIFIED', label: $t('enum.risk.level.UNSPECIFIED') },
-  { value: 'RISK_LEVEL_NORMAL', label: $t('enum.risk.level.NORMAL') },
-  { value: 'RISK_LEVEL_SUSPICIOUS', label: $t('enum.risk.level.SUSPICIOUS') },
-  { value: 'RISK_LEVEL_HIGH', label: $t('enum.risk.level.HIGH') },
-  { value: 'RISK_LEVEL_CRITICAL', label: $t('enum.risk.level.CRITICAL') },
+  { value: 'RISK_LEVEL_NORMAL', label: $t('enum.riskLevel.RISK_LEVEL_NORMAL') },
+  {
+    value: 'RISK_LEVEL_SUSPICIOUS',
+    label: $t('enum.riskLevel.RISK_LEVEL_SUSPICIOUS'),
+  },
+  { value: 'RISK_LEVEL_HIGH', label: $t('enum.riskLevel.RISK_LEVEL_HIGH') },
+  {
+    value: 'RISK_LEVEL_CRITICAL',
+    label: $t('enum.riskLevel.RISK_LEVEL_CRITICAL'),
+  },
 ]);
 
 const RISK_LEVEL_COLOR_MAP = {
-  RISK_LEVEL_UNSPECIFIED: '#86909C',
   RISK_LEVEL_NORMAL: '#00B42A',
   RISK_LEVEL_SUSPICIOUS: '#FF9A2E',
   RISK_LEVEL_HIGH: '#F77234',
@@ -174,10 +178,6 @@ export function riskLevelToName(level?: RiskLevel) {
 }
 
 export const riskEventStatusList = computed(() => [
-  {
-    value: 'RISK_EVENT_STATUS_UNSPECIFIED',
-    label: $t('enum.risk.event.status.UNSPECIFIED'),
-  },
   { value: 'PENDING', label: $t('enum.risk.event.status.PENDING') },
   { value: 'INVESTIGATING', label: $t('enum.risk.event.status.INVESTIGATING') },
   { value: 'CONFIRMED', label: $t('enum.risk.event.status.CONFIRMED') },
@@ -190,7 +190,6 @@ export const riskEventStatusList = computed(() => [
 ]);
 
 const RISK_EVENT_STATUS_COLOR_MAP = {
-  RISK_EVENT_STATUS_UNSPECIFIED: '#86909C',
   PENDING: '#FF9A2E',
   INVESTIGATING: '#4096FF',
   CONFIRMED: '#F53F3F',

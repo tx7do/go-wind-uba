@@ -246,26 +246,25 @@
       "STATUS_ACTIVE": "活跃",
       "STATUS_INACTIVE": "不活跃",
       "STATUS_DISABLED": "已禁用"
-    },
-    "platform": {
-      "PLATFORM_UNSPECIFIED": "未指定",
-      "PLATFORM_WEB": "Web",
-      "PLATFORM_ANDROID": "Android",
-      "PLATFORM_IOS": "iOS",
-      "PLATFORM_WINDOWS": "Windows",
-      "PLATFORM_MACOS": "macOS",
-      "PLATFORM_LINUX": "Linux",
-      "PLATFORM_WECHAT": "微信小程序",
-      "PLATFORM_DINGTALK": "钉钉",
-      "PLATFORM_FEISHU": "飞书",
-      "PLATFORM_UNITY": "Unity",
-      "PLATFORM_UNREAL": "Unreal"
     }
+  },
+  "platform": {
+    "PLATFORM_WEB": "Web",
+    "PLATFORM_ANDROID": "Android",
+    "PLATFORM_IOS": "iOS",
+    "PLATFORM_WINDOWS": "Windows",
+    "PLATFORM_MACOS": "macOS",
+    "PLATFORM_LINUX": "Linux",
+    "PLATFORM_MINI_PROGRAM": "小程序"
+  },
+  "riskLevel": {
+    "RISK_LEVEL_NORMAL": "正常风险",
+    "RISK_LEVEL_SUSPICIOUS": "可疑风险",
+    "RISK_LEVEL_HIGH": "高风险",
+    "RISK_LEVEL_CRITICAL": "危急风险"
   },
   "riskEvent": {
     "type": {
-      "title": "类型",
-      "TYPE_UNSPECIFIED": "未指定",
       "TYPE_LOGIN_ABNORMAL": "登录异常",
       "TYPE_PERMISSION_CHANGE": "权限变更",
       "TYPE_DATA_ACCESS": "数据访问",
@@ -279,16 +278,12 @@
       "TYPE_BUSINESS_RISK": "业务风险"
     },
     "level": {
-      "title": "等级",
-      "LEVEL_UNSPECIFIED": "未指定",
       "LEVEL_LOW": "低",
       "LEVEL_MEDIUM": "中",
       "LEVEL_HIGH": "高",
       "LEVEL_CRITICAL": "严重"
     },
     "status": {
-      "title": "状态",
-      "STATUS_UNSPECIFIED": "未指定",
       "STATUS_PENDING": "待处理",
       "STATUS_PROCESSING": "处理中",
       "STATUS_RESOLVED": "已解决",
@@ -317,7 +312,6 @@
   "tagDefinition": {
     "category": {
       "CATEGORY_UNSPECIFIED": "未指定",
-
       "TAG_CATEGORY_USER": "用户",
       "TAG_CATEGORY_BEHAVIOR": "行为",
       "TAG_CATEGORY_RISK": "风险",
@@ -325,7 +319,6 @@
     },
     "type": {
       "TYPE_UNSPECIFIED": "未指定",
-
       "TAG_TYPE_BOOLEAN": "布尔",
       "TAG_TYPE_ENUM": "枚举",
       "TAG_TYPE_NUMERIC": "数值",
@@ -336,7 +329,6 @@
   "userTag": {
     "tagSource": {
       "SOURCE_UNSPECIFIED": "未指定",
-
       "TAG_SOURCE_MANUAL": "人工打标",
       "TAG_SOURCE_MODEL": "算法模型",
       "TAG_SOURCE_RULE": "规则引擎",
@@ -346,7 +338,6 @@
   "idMapping": {
     "idType": {
       "ID_TYPE_UNSPECIFIED": "未指定",
-
       "ID_TYPE_USER_ID": "用户 ID",
       "ID_TYPE_DEVICE_ID": "设备 ID",
       "ID_TYPE_COOKIE": "Cookie",

@@ -18,7 +18,7 @@ service EventPathService {
   // 查询单条事件路径详情
   rpc Get(uba.service.v1.GetEventPathRequest) returns (uba.service.v1.EventPath) {
     option (google.api.http) = {
-      get: "/admin/v1/event-paths/{path_id}"
+      get: "/admin/v1/event-paths/{id}"
     };
   }
 }

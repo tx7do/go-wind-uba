@@ -6,31 +6,42 @@ import { Page } from '@vben/common-ui';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { $t } from '#/locales';
-import { useUserBehaviorProfileListStore } from '#/stores';
+import {
+  platformList,
+  platformToColor,
+  platformToName,
+  riskLevelToColor,
+  riskLevelToName, statusList,
+  useUserBehaviorProfileListStore,
+} from '#/stores';
 
 const userBehaviorProfileListStore = useUserBehaviorProfileListStore();
 
 const formOptions = {
-  collapsed: true,
+  collapsed: false,
   showCollapseButton: true,
   submitOnEnter: true,
   schema: [
     {
       component: 'Input',
       fieldName: 'user_id',
-      label: $t('ui.formLabel.userId'),
+      label: $t('page.userBehaviorProfile.userId'),
       componentProps: {
         placeholder: $t('ui.placeholder.input'),
         allowClear: true,
       },
     },
     {
-      component: 'Input',
-      fieldName: 'username',
-      label: $t('ui.formLabel.username'),
+      component: 'Select',
+      fieldName: 'platform',
+      label: $t('page.userBehaviorProfile.platform'),
       componentProps: {
-        placeholder: $t('ui.placeholder.input'),
+        options: platformList,
+        placeholder: $t('ui.placeholder.select'),
+        filterOption: (input: string, option: any) =>
+          option.label.toLowerCase().includes(input.toLowerCase()),
         allowClear: true,
+        showSearch: true,
       },
     },
   ],
@@ -70,27 +81,93 @@ const gridOptions: VxeGridProps<UserBehaviorProfile> = {
     },
   },
   columns: [
-    { title: $t('ui.field.userId'), field: 'userId', width: 100 },
-    { title: $t('ui.field.username'), field: 'username', width: 120 },
-    { title: $t('ui.field.behaviorData'), field: 'behaviorData', width: 300 },
-    { title: $t('ui.field.profileTags'), field: 'profileTags', width: 200 },
     {
-      title: $t('ui.field.lastActiveAt'),
-      field: 'lastActiveAt',
+      title: $t('page.userBehaviorProfile.userId'),
+      field: 'userId',
+      minWidth: 100,
+      fixed: 'left',
+    },
+    {
+      title: $t('page.userBehaviorProfile.registerTime'),
+      field: 'registerTime',
+      minWidth: 180,
       formatter: 'formatDateTime',
-      width: 160,
+    },
+    {
+      title: $t('page.userBehaviorProfile.registerChannel'),
+      field: 'registerChannel',
+      minWidth: 120,
+    },
+    {
+      title: $t('page.userBehaviorProfile.firstActiveDate'),
+      field: 'firstActiveDate',
+      formatter: 'formatDateTime',
+      minWidth: 160,
+    },
+    {
+      title: $t('page.userBehaviorProfile.lastActiveDate'),
+      field: 'lastActiveDate',
+      formatter: 'formatDateTime',
+      minWidth: 160,
+    },
+    {
+      title: $t('page.userBehaviorProfile.userLevel'),
+      field: 'userLevel',
+      minWidth: 100,
+    },
+    {
+      title: $t('page.userBehaviorProfile.vipLevel'),
+      field: 'vipLevel',
+      minWidth: 100,
+    },
+    {
+      title: $t('page.userBehaviorProfile.totalEvents'),
+      field: 'totalEvents',
+      minWidth: 100,
+    },
+    {
+      title: $t('page.userBehaviorProfile.totalSessions'),
+      field: 'totalSessions',
+      minWidth: 100,
+    },
+    {
+      title: $t('page.userBehaviorProfile.totalPayAmount'),
+      field: 'totalPayAmount',
+      minWidth: 100,
+    },
+    {
+      title: $t('page.userBehaviorProfile.lastPayTime'),
+      field: 'lastPayTime',
+      formatter: 'formatDateTime',
+      minWidth: 160,
+    },
+    {
+      title: $t('page.userBehaviorProfile.riskLevel'),
+      field: 'riskLevel',
+      minWidth: 100,
+      slots: {
+        default: 'riskLevel',
+      },
+    },
+    {
+      title: $t('page.userBehaviorProfile.deviceType'),
+      field: 'deviceType',
+      minWidth: 100,
+    },
+    {
+      title: $t('page.userBehaviorProfile.platform'),
+      field: 'platform',
+      minWidth: 100,
+      slots: {
+        default: 'platform',
+      },
     },
     {
       title: $t('ui.table.createdAt'),
       field: 'createdAt',
       formatter: 'formatDateTime',
-      width: 160,
-    },
-    {
-      title: $t('ui.table.updatedAt'),
-      field: 'updatedAt',
-      formatter: 'formatDateTime',
-      width: 160,
+      fixed: 'right',
+      minWidth: 160,
     },
   ],
 };
@@ -106,7 +183,18 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <Grid :title="$t('menu.dataAnalysis.userBehaviorProfile')" />
+    <Grid :title="$t('menu.dataAnalysis.userBehaviorProfile')">
+      <template #platform="{ row }">
+        <a-tag :color="platformToColor(row.platform)">
+          {{ platformToName(row.platform) }}
+        </a-tag>
+      </template>
+      <template #riskLevel="{ row }">
+        <a-tag :color="riskLevelToColor(row.riskLevel)">
+          {{ riskLevelToName(row.riskLevel) }}
+        </a-tag>
+      </template>
+    </Grid>
   </Page>
 </template>
 

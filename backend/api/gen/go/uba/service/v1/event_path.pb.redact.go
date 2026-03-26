@@ -11,6 +11,7 @@ import (
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
+	fieldmaskpb "google.golang.org/protobuf/types/known/fieldmaskpb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -23,6 +24,7 @@ var (
 	_ status.Status
 	_ timestamppb.Timestamp
 	_ emptypb.Empty
+	_ fieldmaskpb.FieldMask
 	_ pagination.Sorting
 )
 
@@ -112,7 +114,7 @@ func (x *EventPath) Redact() string {
 		return ""
 	}
 
-	// Safe field: PathId
+	// Safe field: Id
 
 	// Safe field: TenantId
 
@@ -122,17 +124,31 @@ func (x *EventPath) Redact() string {
 
 	// Safe field: Nodes
 
+	// Safe field: PathHash
+
+	// Safe field: IsConverted
+
+	// Safe field: ConversionEvent
+
+	// Safe field: ConversionTime
+
 	// Safe field: StartTime
 
 	// Safe field: EndTime
+
+	// Safe field: EventDate
 
 	// Safe field: TotalDurationMs
 
 	// Safe field: StepCount
 
-	// Safe field: IsConverted
+	// Safe field: FirstEvent
 
-	// Safe field: ConversionEvent
+	// Safe field: LastEvent
+
+	// Safe field: First_3Events
+
+	// Safe field: Last_3Events
 	return x.String()
 }
 
@@ -154,7 +170,7 @@ func (x *GetEventPathRequest) Redact() string {
 		return ""
 	}
 
-	// Safe field: PathId
+	// Safe field: ViewMask
 	return x.String()
 }
 
@@ -183,7 +199,5 @@ func (x *DeleteEventPathRequest) Redact() string {
 	if x == nil {
 		return ""
 	}
-
-	// Safe field: PathId
 	return x.String()
 }

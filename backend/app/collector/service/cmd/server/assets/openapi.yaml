@@ -246,7 +246,7 @@ components:
         EventPath:
             type: object
             properties:
-                pathId:
+                id:
                     type: string
                     description: 路径ID，唯一标识一条事件路径，hash 或 UUID
                 tenantId:
@@ -265,6 +265,19 @@ components:
                     items:
                         $ref: '#/components/schemas/PathNode'
                     description: 有序事件序列，路径节点列表，按发生顺序排列
+                pathHash:
+                    type: string
+                    description: 路径哈希值，根据事件序列计算得到的哈希值，用于快速路径识别和去重
+                isConverted:
+                    type: boolean
+                    description: 是否完成目标转化，如完成支付、注册等
+                conversionEvent:
+                    type: string
+                    description: 转化事件名称，目标转化对应的事件名称
+                conversionTime:
+                    type: string
+                    description: 转化时间，目标转化事件发生的时间
+                    format: date-time
                 startTime:
                     type: string
                     description: 路径起始时间，第一个节点事件时间
@@ -273,20 +286,33 @@ components:
                     type: string
                     description: 路径结束时间，最后一个节点事件时间
                     format: date-time
+                eventDate:
+                    type: string
+                    description: 事件日期，路径起始时间的日期部分，用于按日统计和查询
+                    format: date-time
                 totalDurationMs:
-                    type: integer
+                    type: string
                     description: 路径总时长，毫秒，start_time 到 end_time 的间隔
-                    format: uint32
                 stepCount:
                     type: integer
                     description: 步骤数，路径节点总数
                     format: uint32
-                isConverted:
-                    type: boolean
-                    description: 是否完成目标转化，如完成支付、注册等
-                conversionEvent:
+                firstEvent:
                     type: string
-                    description: 转化事件名称，目标转化对应的事件名称
+                    description: 第一个事件名称，路径中第一个节点的事件名称
+                lastEvent:
+                    type: string
+                    description: 最后一个事件名称，路径中最后一个节点的事件名称
+                first3Events:
+                    type: array
+                    items:
+                        type: string
+                    description: 前3个事件名称，路径中前3个节点的事件名称列表
+                last3Events:
+                    type: array
+                    items:
+                        type: string
+                    description: 后3个事件名称，路径中后3个节点的事件名称列表
             description: 事件路径（用户行为路径，包含有序事件序列和路径指标）
         HealthCheckResponse:
             type: object

@@ -265,12 +265,20 @@ CREATE TABLE IF NOT EXISTS gw_uba.users_dim
 
     -- ========== 风险画像：Risk（用户风险预计算）==========
     risk_score        UInt8    DEFAULT 0 COMMENT '用户风险评分（0-100，综合历史风险事件计算，用于风险用户识别）',
+    risk_level        LowCardinality(String) COMMENT '风险等级 low/medium/high/black',
     risk_tags         Array(String) COMMENT '用户风险标签数组（如["frequent_login_fail", "abnormal_location", "suspicious_payment"]）',
+    last_risk_time    DateTime COMMENT '最后风险时间',
+
+    -- ========== 设备&环境（新增）==========
+    geo               Map(String, String) COMMENT '地理位置 country/province/city/isp',
+    platform          LowCardinality(String) COMMENT '平台 ios/android/web/mini_program',
+    device_type       LowCardinality(String) COMMENT '设备类型 mobile/pad/desktop',
 
     -- ========== 扩展属性：Extension（用户扩展信息）==========
     profile           Map(String, String) COMMENT '自定义用户画像（扩展字段：{guild_id: 1001, server: cn-1, ab_group: B}）',
 
     -- ========== 审计字段：Audit（系统管理）==========
+    ver               UInt64 DEFAULT 1 COMMENT '数据版本号，更新+1',
     created_at        DateTime DEFAULT now() COMMENT '记录创建时间（用户画像首次写入 ClickHouse 的时间）',
     updated_at        DateTime DEFAULT now() COMMENT '记录更新时间（用于 ReplacingMergeTree 版本控制，用户画像更新时变化）',
 
@@ -426,7 +434,7 @@ CREATE TABLE IF NOT EXISTS gw_uba.user_tags
 CREATE TABLE IF NOT EXISTS gw_uba.path_features
 (
     -- ========== 主键字段 ==========
-    path_id           String COMMENT '路径特征 ID（路径的唯一标识，可用 hash 生成）',
+    id                String COMMENT '路径特征 ID（路径的唯一标识，可用 hash 生成）',
     tenant_id         UInt32 COMMENT '租户 ID（SaaS 多租户隔离）',
 
     -- ========== 关联主体字段 ==========
@@ -456,10 +464,6 @@ CREATE TABLE IF NOT EXISTS gw_uba.path_features
     -- ========== 指标字段 ==========
     total_duration_ms UInt64 COMMENT '路径总耗时（从 start_time 到 end_time 的毫秒数）',
     step_count        UInt8 COMMENT '路径步数（与 path_length 相同，冗余便于查询）',
-
-    -- ========== 审计字段 ==========
-    created_at        DateTime DEFAULT now() COMMENT '记录创建时间（路径特征写入的时间）',
-    updated_at        DateTime DEFAULT now() COMMENT '记录更新时间（用于审计追踪）',
 
     -- ========== 跳数索引 ==========
     INDEX idx_first_event first_event TYPE set(100) GRANULARITY 2,         -- 加速入口事件筛选

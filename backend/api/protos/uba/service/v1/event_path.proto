@@ -5,6 +5,7 @@ package uba.service.v1;
 import "gnostic/openapi/v3/annotations.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/empty.proto";
+import "google/protobuf/field_mask.proto";
 import "pagination/v1/pagination.proto";
 
 // 事件路径服务
@@ -59,8 +60,8 @@ message PathNode {
 // 事件路径（用户行为路径，包含有序事件序列和路径指标）
 message EventPath {
   // 路径ID（唯一标识一条事件路径，hash 或 UUID）
-  string path_id = 1 [
-    json_name = "pathId",
+  string id = 1 [
+    json_name = "id",
     (gnostic.openapi.v3.property) = {description: "路径ID，唯一标识一条事件路径，hash 或 UUID"}
   ];
   // 租户ID（多租户隔离，支持 SaaS 场景）
@@ -85,26 +86,9 @@ message EventPath {
     (gnostic.openapi.v3.property) = {description: "有序事件序列，路径节点列表，按发生顺序排列"}
   ];
 
-  // 路径指标
-  // 路径起始时间（第一个节点事件时间）
-  google.protobuf.Timestamp start_time = 6 [
-    json_name = "startTime",
-    (gnostic.openapi.v3.property) = {description: "路径起始时间，第一个节点事件时间"}
-  ];
-  // 路径结束时间（最后一个节点事件时间）
-  google.protobuf.Timestamp end_time = 7 [
-    json_name = "endTime",
-    (gnostic.openapi.v3.property) = {description: "路径结束时间，最后一个节点事件时间"}
-  ];
-  // 路径总时长（毫秒，start_time 到 end_time 的间隔）
-  uint32 total_duration_ms = 8 [
-    json_name = "totalDurationMs",
-    (gnostic.openapi.v3.property) = {description: "路径总时长，毫秒，start_time 到 end_time 的间隔"}
-  ];
-  // 步骤数（路径节点总数）
-  uint32 step_count = 9 [
-    json_name = "stepCount",
-    (gnostic.openapi.v3.property) = {description: "步骤数，路径节点总数"}
+  uint64 path_hash = 6 [
+    json_name = "pathHash",
+    (gnostic.openapi.v3.property) = {description: "路径哈希值，根据事件序列计算得到的哈希值，用于快速路径识别和去重"}
   ];
 
   // 转化标记
@@ -118,6 +102,54 @@ message EventPath {
     json_name = "conversionEvent",
     (gnostic.openapi.v3.property) = {description: "转化事件名称，目标转化对应的事件名称"}
   ];
+  google.protobuf.Timestamp conversion_time = 12 [
+    json_name = "conversionTime",
+    (gnostic.openapi.v3.property) = {description: "转化时间，目标转化事件发生的时间"}
+  ];
+
+  // 路径指标
+  // 路径起始时间（第一个节点事件时间）
+  google.protobuf.Timestamp start_time = 20 [
+    json_name = "startTime",
+    (gnostic.openapi.v3.property) = {description: "路径起始时间，第一个节点事件时间"}
+  ];
+  // 路径结束时间（最后一个节点事件时间）
+  google.protobuf.Timestamp end_time = 21 [
+    json_name = "endTime",
+    (gnostic.openapi.v3.property) = {description: "路径结束时间，最后一个节点事件时间"}
+  ];
+  google.protobuf.Timestamp event_date = 22 [
+    json_name = "eventDate",
+    (gnostic.openapi.v3.property) = {description: "事件日期，路径起始时间的日期部分，用于按日统计和查询"}
+  ];
+
+  // 路径总时长（毫秒，start_time 到 end_time 的间隔）
+  uint64 total_duration_ms = 30 [
+    json_name = "totalDurationMs",
+    (gnostic.openapi.v3.property) = {description: "路径总时长，毫秒，start_time 到 end_time 的间隔"}
+  ];
+  // 步骤数（路径节点总数）
+  uint32 step_count = 31 [
+    json_name = "stepCount",
+    (gnostic.openapi.v3.property) = {description: "步骤数，路径节点总数"}
+  ];
+
+  string first_event = 40 [
+    json_name = "firstEvent",
+    (gnostic.openapi.v3.property) = {description: "第一个事件名称，路径中第一个节点的事件名称"}
+  ];
+  string last_event = 41 [
+    json_name = "lastEvent",
+    (gnostic.openapi.v3.property) = {description: "最后一个事件名称，路径中最后一个节点的事件名称"}
+  ];
+  repeated string first_3_events = 42 [
+    json_name = "first3Events",
+    (gnostic.openapi.v3.property) = {description: "前3个事件名称，路径中前3个节点的事件名称列表"}
+  ];
+  repeated string last_3_events = 43 [
+    json_name = "last3Events",
+    (gnostic.openapi.v3.property) = {description: "后3个事件名称，路径中后3个节点的事件名称列表"}
+  ];
 }
 
 message ListEventPathResponse {
@@ -127,10 +159,19 @@ message ListEventPathResponse {
 
 // 查询事件路径详情请求
 message GetEventPathRequest {
-  string path_id = 1 [
-    json_name = "pathId",
-    (gnostic.openapi.v3.property) = {description: "路径ID"}
-  ];
+  oneof query_by {
+    string id = 1 [
+      (gnostic.openapi.v3.property) = {description: "路径ID", read_only: true},
+      json_name = "id"
+    ]; // 路径ID
+  }
+
+  optional google.protobuf.FieldMask view_mask = 100 [
+    json_name = "viewMask",
+    (gnostic.openapi.v3.property) = {
+      description: "视图字段过滤器，用于控制返回的字段"
+    }
+  ]; // 视图字段过滤器，用于控制返回的字段
 }
 
 // 创建事件路径请求
@@ -144,8 +185,10 @@ message BatchCreateEventPathRequest {
 
 // 删除事件路径请求
 message DeleteEventPathRequest {
-  string path_id = 1 [
-    json_name = "pathId",
-    (gnostic.openapi.v3.property) = {description: "路径ID"}
-  ];
+  oneof query_by {
+    string id = 1 [
+      (gnostic.openapi.v3.property) = {description: "路径ID", read_only: true},
+      json_name = "id"
+    ]; // ID
+  }
 }

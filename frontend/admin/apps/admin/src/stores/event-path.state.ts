@@ -35,8 +35,8 @@ export const useEventPathListStore = defineStore('event-path-list', () => {
   /**
    * 获取事件路径
    */
-  async function getEventPath(pathId: string) {
-    return await service.Get({ pathId });
+  async function getEventPath(id: string) {
+    return await service.Get({ id });
   }
 
   function $reset() {}

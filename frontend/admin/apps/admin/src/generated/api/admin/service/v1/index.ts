@@ -2044,12 +2044,15 @@ export function createEventPathServiceClient(
       }) as Promise<ubaservicev1_ListEventPathResponse>;
     },
     Get(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
-      if (!request.pathId) {
-        throw new Error("missing required field request.path_id");
+      if (!request.id) {
+        throw new Error("missing required field request.id");
       }
-      const path = `admin/v1/event-paths/${request.pathId}`; // eslint-disable-line quotes
+      const path = `admin/v1/event-paths/${request.id}`; // eslint-disable-line quotes
       const body = null;
       const queryParams: string[] = [];
+      if (request.viewMask) {
+        queryParams.push(`viewMask=${encodeURIComponent(request.viewMask.toString())}`)
+      }
       let uri = path;
       if (queryParams.length > 0) {
         uri += `?${queryParams.join("&")}`
@@ -2073,7 +2076,7 @@ export type ubaservicev1_ListEventPathResponse = {
 // 事件路径（用户行为路径，包含有序事件序列和路径指标）
 export type ubaservicev1_EventPath = {
   // 路径ID（唯一标识一条事件路径，hash 或 UUID）
-  pathId: string | undefined;
+  id: string | undefined;
   // 租户ID（多租户隔离，支持 SaaS 场景）
   tenantId: number | undefined;
   // 用户ID（路径所属用户）
@@ -2082,20 +2085,27 @@ export type ubaservicev1_EventPath = {
   sessionId: number | undefined;
   // 有序事件序列（路径节点列表，按发生顺序排列）
   nodes: ubaservicev1_PathNode[] | undefined;
-  // 路径指标
-  // 路径起始时间（第一个节点事件时间）
-  startTime: wellKnownTimestamp | undefined;
-  // 路径结束时间（最后一个节点事件时间）
-  endTime: wellKnownTimestamp | undefined;
-  // 路径总时长（毫秒，start_time 到 end_time 的间隔）
-  totalDurationMs: number | undefined;
-  // 步骤数（路径节点总数）
-  stepCount: number | undefined;
+  pathHash: number | undefined;
   // 转化标记
   // 是否完成目标转化（如完成支付、注册等）
   isConverted: boolean | undefined;
   // 转化事件名称（目标转化对应的事件名称）
   conversionEvent: string | undefined;
+  conversionTime: wellKnownTimestamp | undefined;
+  // 路径指标
+  // 路径起始时间（第一个节点事件时间）
+  startTime: wellKnownTimestamp | undefined;
+  // 路径结束时间（最后一个节点事件时间）
+  endTime: wellKnownTimestamp | undefined;
+  eventDate: wellKnownTimestamp | undefined;
+  // 路径总时长（毫秒，start_time 到 end_time 的间隔）
+  totalDurationMs: number | undefined;
+  // 步骤数（路径节点总数）
+  stepCount: number | undefined;
+  firstEvent: string | undefined;
+  lastEvent: string | undefined;
+  first3Events: string[] | undefined;
+  last3Events: string[] | undefined;
 };
 
 // 路径节点（事件路径中的单个事件节点，包含事件信息和对象信息）
@@ -2114,7 +2124,8 @@ export type ubaservicev1_PathNode = {
 
 // 查询事件路径详情请求
 export type ubaservicev1_GetEventPathRequest = {
-  pathId: string | undefined;
+  id?: string;
+  viewMask?: wellKnownFieldMask;
 };
 
 // 文件管理服务
@@ -8734,10 +8745,9 @@ export type ubaservicev1_ListUserBehaviorProfileResponse = {
 // 用户画像（对应 users_dim 表）
 export type ubaservicev1_UserBehaviorProfile = {
   // 自增长主键ID
-  id: number | undefined;
+  id?: number;
   tenantId: number | undefined;
-  userId: string | undefined;
-  ver: number | undefined;
+  userId: number | undefined;
   // 基础属性
   registerTime: wellKnownTimestamp | undefined;
   registerChannel: string | undefined;
@@ -8765,14 +8775,14 @@ export type ubaservicev1_UserBehaviorProfile = {
   // 扩展属性
   profile: { [key: string]: string } | undefined;
   // 地理位置
-  geo?: string;
+  geo: { [key: string]: string } | undefined;
   // 平台类型
   platform?: ubaservicev1_Platform;
   // 设备类型
   deviceType?: string;
+  ver: number | undefined;
   createdAt?: wellKnownTimestamp;
   updatedAt?: wellKnownTimestamp;
-  deletedAt?: wellKnownTimestamp;
 };
 
 // 获取用户画像数据 - 请求

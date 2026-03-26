@@ -193,7 +193,7 @@ func (m *EventPath) validate(all bool) error {
 
 	var errors []error
 
-	// no validation rules for PathId
+	// no validation rules for Id
 
 	// no validation rules for TenantId
 
@@ -233,6 +233,41 @@ func (m *EventPath) validate(all bool) error {
 			}
 		}
 
+	}
+
+	// no validation rules for PathHash
+
+	// no validation rules for IsConverted
+
+	// no validation rules for ConversionEvent
+
+	if all {
+		switch v := interface{}(m.GetConversionTime()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, EventPathValidationError{
+					field:  "ConversionTime",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, EventPathValidationError{
+					field:  "ConversionTime",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetConversionTime()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return EventPathValidationError{
+				field:  "ConversionTime",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
 	}
 
 	if all {
@@ -293,13 +328,42 @@ func (m *EventPath) validate(all bool) error {
 		}
 	}
 
+	if all {
+		switch v := interface{}(m.GetEventDate()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, EventPathValidationError{
+					field:  "EventDate",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, EventPathValidationError{
+					field:  "EventDate",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetEventDate()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return EventPathValidationError{
+				field:  "EventDate",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
 	// no validation rules for TotalDurationMs
 
 	// no validation rules for StepCount
 
-	// no validation rules for IsConverted
+	// no validation rules for FirstEvent
 
-	// no validation rules for ConversionEvent
+	// no validation rules for LastEvent
 
 	if len(errors) > 0 {
 		return EventPathMultiError(errors)
@@ -538,7 +602,55 @@ func (m *GetEventPathRequest) validate(all bool) error {
 
 	var errors []error
 
-	// no validation rules for PathId
+	switch v := m.QueryBy.(type) {
+	case *GetEventPathRequest_Id:
+		if v == nil {
+			err := GetEventPathRequestValidationError{
+				field:  "QueryBy",
+				reason: "oneof value cannot be a typed-nil",
+			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
+		}
+		// no validation rules for Id
+	default:
+		_ = v // ensures v is used
+	}
+
+	if m.ViewMask != nil {
+
+		if all {
+			switch v := interface{}(m.GetViewMask()).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, GetEventPathRequestValidationError{
+						field:  "ViewMask",
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, GetEventPathRequestValidationError{
+						field:  "ViewMask",
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(m.GetViewMask()).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return GetEventPathRequestValidationError{
+					field:  "ViewMask",
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
 
 	if len(errors) > 0 {
 		return GetEventPathRequestMultiError(errors)
@@ -910,7 +1022,22 @@ func (m *DeleteEventPathRequest) validate(all bool) error {
 
 	var errors []error
 
-	// no validation rules for PathId
+	switch v := m.QueryBy.(type) {
+	case *DeleteEventPathRequest_Id:
+		if v == nil {
+			err := DeleteEventPathRequestValidationError{
+				field:  "QueryBy",
+				reason: "oneof value cannot be a typed-nil",
+			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
+		}
+		// no validation rules for Id
+	default:
+		_ = v // ensures v is used
+	}
 
 	if len(errors) > 0 {
 		return DeleteEventPathRequestMultiError(errors)
