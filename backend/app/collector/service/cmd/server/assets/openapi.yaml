@@ -504,9 +504,8 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: ID
-                    format: uint32
                 tenantId:
                     type: integer
                     description: 租户ID，多租户隔离，支持 SaaS 场景

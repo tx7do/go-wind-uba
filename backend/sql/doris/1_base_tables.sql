@@ -134,7 +134,7 @@ ALTER TABLE sessions_fact ADD INDEX idx_is_bounce (is_bounce) USING INVERTED;
 -- 3. 风险事件表
 -- ============================================================
 CREATE TABLE IF NOT EXISTS risk_events (
-    risk_id         VARCHAR(64) NOT NULL COMMENT '风险事件唯一ID',
+    id              BIGINT NOT NULL COMMENT '风险事件唯一ID',
     tenant_id       INT NOT NULL COMMENT '租户ID',
     event_date      DATE NOT NULL COMMENT '风险日期',
     user_id         INT DEFAULT 0 COMMENT '登录用户ID',
@@ -159,9 +159,9 @@ CREATE TABLE IF NOT EXISTS risk_events (
     created_at      DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间',
     updated_at      DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '记录更新时间'
 )
-    UNIQUE KEY(risk_id, tenant_id, event_date)
+    UNIQUE KEY(id, tenant_id, event_date)
     PARTITION BY RANGE(event_date) ()
-    DISTRIBUTED BY HASH(risk_id, tenant_id) BUCKETS 16
+    DISTRIBUTED BY HASH(id, tenant_id) BUCKETS 16
     PROPERTIES (
                    "replication_num" = "1",
                    "dynamic_partition.enable" = "true",

@@ -8,7 +8,7 @@ import (
 // 对应表：gw_uba.risk_events
 
 type RiskEvents struct {
-	RiskID          *string           `ch:"risk_id"`
+	ID              *uint64           `ch:"id"`
 	TenantID        *uint32           `ch:"tenant_id"`
 	UserID          *uint32           `ch:"user_id"`
 	DeviceID        *string           `ch:"device_id"`

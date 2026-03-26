@@ -51,7 +51,7 @@ message RiskEvent {
     AUTO_BLOCKED = 6;
   }
 
-  uint32 id = 1 [
+  uint64 id = 1 [
     (gnostic.openapi.v3.property) = { description: "ID" }
   ]; // ID
 
@@ -210,7 +210,7 @@ message ListRiskEventResponse {
 // 获取风险事件数据 - 请求
 message GetRiskEventRequest {
   oneof query_by {
-    uint32 id = 1 [
+    uint64 id = 1 [
       (gnostic.openapi.v3.property) = {description: "ID", read_only: true},
       json_name = "id"
     ]; // ID
@@ -235,7 +235,7 @@ message BatchCreateRiskEventRequest {
 
 // 更新风险事件 - 请求
 message UpdateRiskEventRequest {
-  uint32 id = 1;
+  uint64 id = 1;
 
   RiskEvent data = 2 [
     json_name = "data",
@@ -259,7 +259,7 @@ message UpdateRiskEventRequest {
 // 删除风险事件 - 请求
 message DeleteRiskEventRequest {
   oneof query_by {
-    uint32 id = 1 [
+    uint64 id = 1 [
       (gnostic.openapi.v3.property) = {description: "ID", read_only: true},
       json_name = "id"
     ]; // ID

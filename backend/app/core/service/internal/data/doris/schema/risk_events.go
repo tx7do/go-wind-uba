@@ -5,7 +5,7 @@ import (
 )
 
 type RiskEvents struct {
-	RiskID          *string           `json:"risk_id"`
+	ID              *uint64           `json:"id"`
 	TenantID        *uint32           `json:"tenant_id"`
 	UserID          *uint32           `json:"user_id"`
 	DeviceID        *string           `json:"device_id"`

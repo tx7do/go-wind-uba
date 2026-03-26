@@ -150,3 +150,59 @@ VALUES
      'RISK_LEVEL_NORMAL',[],
         {'server_id':'s1','zone':'cn-east','ab_group':'A'},now(),now());
 
+
+INSERT INTO gw_uba.risk_events
+(
+    id,tenant_id,user_id,device_id,global_user_id,
+    risk_type,risk_level,risk_score,rule_id,rule_name,rule_context,
+    related_event_ids,session_id,description,evidence,
+    status,handler_id,handled_time,occur_time,report_time,created_at,updated_at
+)
+VALUES
+    (1,0,10001,'device_android_1001','GLOBAL_USER_10001',
+     'RISK_TYPE_LOGIN_ANOMALY','RISK_LEVEL_HIGH',92.5,1,'频繁登录失败',{'threshold':'5','window':'300s','current':'8'},
+        ['EVT_001','EVT_002','EVT_003'],10001001,
+     '10分钟内登录失败8次，超过阈值5次',
+        {'ip':'123.123.123.123','location':'Beijing','device':'Android 14'},
+     'PENDING','','1970-01-01 00:00:00.000',
+     '2026-03-26 10:10:00.123','2026-03-26 10:10:00.456',now(),now()),
+
+    (2,0,10003,'device_ios_1003','GLOBAL_USER_10003',
+     'RISK_TYPE_FRAUD_PAYMENT','RISK_LEVEL_CRITICAL',98.8,2,'大额支付检测',{'threshold':'5000','amount':'6888'},
+        ['EVT_004','EVT_005'],10003001,
+     '单笔支付金额6888元，超过阈值5000元',
+        {'ip':'119.119.119.119','location':'Guangzhou','device':'iOS 17'},
+     'CONFIRMED','admin_001','2026-03-26 14:06:00.123',
+     '2026-03-26 14:05:00.234','2026-03-26 14:05:00.567',now(),now()),
+
+    (3,1,0,'device_anon_1004','',
+     'RISK_TYPE_LOCATION_ANOMALY','RISK_LEVEL_SUSPICIOUS',65.2,3,'异地登录检测',{'usual_city':'NewYork','current':'Dallas'},
+        ['EVT_006'],10004001,
+     '登录城市与常用城市不一致，异地访问',
+        {'ip':'150.150.150.150','location':'Dallas','device':'Android 13'},
+     'FALSE_POSITIVE','admin_002','2026-03-26 15:40:00.333',
+     '2026-03-26 15:30:00.666','2026-03-26 15:30:00.999',now(),now()),
+
+    (4,1,10005,'device_web_1006','GLOBAL_USER_10005',
+     'RISK_TYPE_ABNORMAL_FLOW','RISK_LEVEL_CRITICAL',72.0,4,'频繁下单检测',{'window':'24h','threshold':'20','count':'27'},
+        ['EVT_007','EVT_008','EVT_009'],10006001,
+     '24小时内下单27次，超过阈值20次',
+        {'ip':'180.180.180.180','location':'Singapore','device':'Windows 11'},
+     'PENDING','','1970-01-01 00:00:00.000',
+     '2026-03-26 17:10:00.111','2026-03-26 17:10:00.222',now(),now()),
+
+    (5,2,10004,'device_mini_1005','GLOBAL_USER_10004',
+     'RISK_TYPE_DEVICE_CHANGE','RISK_LEVEL_HIGH',89.9,5,'风险设备检测',{'risk_device':'true','simulator':'yes'},
+        ['EVT_010'],10005001,
+     '使用模拟器/越狱设备登录，设备风险',
+        {'ip':'168.168.168.168','location':'Singapore','device':'WeChat MiniProgram'},
+     'IGNORED','admin_003','2026-03-26 16:45:00.444',
+     '2026-03-26 16:40:00.555','2026-03-26 16:40:00.777',now(),now()),
+
+    (6,0,10008,'device_android_1008','GLOBAL_USER_10008',
+     'RISK_TYPE_BRUTE_FORCE','RISK_LEVEL_CRITICAL',95.0,1,'暴力破解尝试',{'threshold':'10','fail_count':'15'},
+        ['EVT_011','EVT_012','EVT_013'],10007001,
+     '1小时内密码尝试失败15次，疑似暴力破解',
+        {'ip':'192.168.1.1','location':'Hangzhou','device':'Android 14'},
+     'CONFIRMED','admin_001','2026-03-26 20:10:00.123',
+     '2026-03-26 20:05:00.333','2026-03-26 20:05:00.666',now(),now());

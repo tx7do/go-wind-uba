@@ -174,7 +174,7 @@ CREATE TABLE IF NOT EXISTS gw_uba.sessions_fact
 CREATE TABLE IF NOT EXISTS gw_uba.risk_events
 (
     -- ========== 主键字段 ==========
-    risk_id           String COMMENT '风险事件唯一 ID（ULID/Snowflake 生成，用于风险事件追踪和处置）',
+    id                UInt64 COMMENT '风险事件唯一 ID（Snowflake 生成，用于风险事件追踪和处置）',
     tenant_id         UInt32 COMMENT '租户 ID（SaaS 多租户隔离，所有查询必须带此条件）',
 
     -- ========== 关联主体：Who（谁触发风险）==========

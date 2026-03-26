@@ -99,7 +99,7 @@ func (RiskEvent_Status) EnumDescriptor() ([]byte, []int) {
 // 风险事件
 type RiskEvent struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	Id    uint32                 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"` // ID
+	Id    uint64                 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"` // ID
 	// 租户ID（多租户隔离，支持 SaaS 场景）
 	TenantId *uint32 `protobuf:"varint,2,opt,name=tenant_id,json=tenantId,proto3,oneof" json:"tenant_id,omitempty"`
 	// 用户ID（关联主体，风险事件涉及的用户）
@@ -180,7 +180,7 @@ func (*RiskEvent) Descriptor() ([]byte, []int) {
 	return file_uba_service_v1_risk_event_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *RiskEvent) GetId() uint32 {
+func (x *RiskEvent) GetId() uint64 {
 	if x != nil {
 		return x.Id
 	}
@@ -553,7 +553,7 @@ func (x *GetRiskEventRequest) GetQueryBy() isGetRiskEventRequest_QueryBy {
 	return nil
 }
 
-func (x *GetRiskEventRequest) GetId() uint32 {
+func (x *GetRiskEventRequest) GetId() uint64 {
 	if x != nil {
 		if x, ok := x.QueryBy.(*GetRiskEventRequest_Id); ok {
 			return x.Id
@@ -574,7 +574,7 @@ type isGetRiskEventRequest_QueryBy interface {
 }
 
 type GetRiskEventRequest_Id struct {
-	Id uint32 `protobuf:"varint,1,opt,name=id,proto3,oneof"` // ID
+	Id uint64 `protobuf:"varint,1,opt,name=id,proto3,oneof"` // ID
 }
 
 func (*GetRiskEventRequest_Id) isGetRiskEventRequest_QueryBy() {}
@@ -671,7 +671,7 @@ func (x *BatchCreateRiskEventRequest) GetItems() []*RiskEvent {
 // 更新风险事件 - 请求
 type UpdateRiskEventRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            uint32                 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id            uint64                 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	Data          *RiskEvent             `protobuf:"bytes,2,opt,name=data,proto3" json:"data,omitempty"`                                            // 数据
 	UpdateMask    *fieldmaskpb.FieldMask `protobuf:"bytes,3,opt,name=update_mask,json=updateMask,proto3" json:"update_mask,omitempty"`              // 要更新的字段列表
 	AllowMissing  *bool                  `protobuf:"varint,4,opt,name=allow_missing,json=allowMissing,proto3,oneof" json:"allow_missing,omitempty"` // 如果设置为true的时候，资源不存在则会新增(插入)，并且在这种情况下`updateMask`字段将会被忽略。
@@ -709,7 +709,7 @@ func (*UpdateRiskEventRequest) Descriptor() ([]byte, []int) {
 	return file_uba_service_v1_risk_event_proto_rawDescGZIP(), []int{6}
 }
 
-func (x *UpdateRiskEventRequest) GetId() uint32 {
+func (x *UpdateRiskEventRequest) GetId() uint64 {
 	if x != nil {
 		return x.Id
 	}
@@ -786,7 +786,7 @@ func (x *DeleteRiskEventRequest) GetQueryBy() isDeleteRiskEventRequest_QueryBy {
 	return nil
 }
 
-func (x *DeleteRiskEventRequest) GetId() uint32 {
+func (x *DeleteRiskEventRequest) GetId() uint64 {
 	if x != nil {
 		if x, ok := x.QueryBy.(*DeleteRiskEventRequest_Id); ok {
 			return x.Id
@@ -807,7 +807,7 @@ type isDeleteRiskEventRequest_QueryBy interface {
 }
 
 type DeleteRiskEventRequest_Id struct {
-	Id uint32 `protobuf:"varint,1,opt,name=id,proto3,oneof"` // ID
+	Id uint64 `protobuf:"varint,1,opt,name=id,proto3,oneof"` // ID
 }
 
 func (*DeleteRiskEventRequest_Id) isDeleteRiskEventRequest_QueryBy() {}
@@ -862,7 +862,7 @@ const file_uba_service_v1_risk_event_proto_rawDesc = "" +
 	"\n" +
 	"\x1fuba/service/v1/risk_event.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a google/protobuf/field_mask.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1epagination/v1/pagination.proto\x1a\x1buba/service/v1/common.proto\"\xef\x17\n" +
 	"\tRiskEvent\x12\x18\n" +
-	"\x02id\x18\x01 \x01(\rB\b\xbaG\x05\x92\x02\x02IDR\x02id\x12W\n" +
+	"\x02id\x18\x01 \x01(\x04B\b\xbaG\x05\x92\x02\x02IDR\x02id\x12W\n" +
 	"\ttenant_id\x18\x02 \x01(\rB5\xbaG2\x92\x02/租户ID，多租户隔离，支持 SaaS 场景H\x00R\btenantId\x88\x01\x01\x12Y\n" +
 	"\auser_id\x18\x03 \x01(\rB;\xbaG8\x92\x025用户ID，关联主体，风险事件涉及的用户H\x01R\x06userId\x88\x01\x01\x12]\n" +
 	"\tdevice_id\x18\x04 \x01(\tB;\xbaG8\x92\x025设备ID，关联主体，风险事件涉及的设备H\x02R\bdeviceId\x88\x01\x01\x12]\n" +
@@ -964,7 +964,7 @@ const file_uba_service_v1_risk_event_proto_rawDesc = "" +
 	"\x05items\x18\x01 \x03(\v2\x19.uba.service.v1.RiskEventR\x05items\x12\x14\n" +
 	"\x05total\x18\x02 \x01(\x04R\x05total\"\xc6\x01\n" +
 	"\x13GetRiskEventRequest\x12\x1c\n" +
-	"\x02id\x18\x01 \x01(\rB\n" +
+	"\x02id\x18\x01 \x01(\x04B\n" +
 	"\xbaG\a\x18\x01\x92\x02\x02IDH\x00R\x02id\x12w\n" +
 	"\tview_mask\x18d \x01(\v2\x1a.google.protobuf.FieldMaskB9\xbaG6\x92\x023视图字段过滤器，用于控制返回的字段H\x01R\bviewMask\x88\x01\x01B\n" +
 	"\n" +
@@ -976,14 +976,14 @@ const file_uba_service_v1_risk_event_proto_rawDesc = "" +
 	"\x1bBatchCreateRiskEventRequest\x12/\n" +
 	"\x05items\x18\x01 \x03(\v2\x19.uba.service.v1.RiskEventR\x05items\"\xa3\x03\n" +
 	"\x16UpdateRiskEventRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\rR\x02id\x12;\n" +
+	"\x02id\x18\x01 \x01(\x04R\x02id\x12;\n" +
 	"\x04data\x18\x02 \x01(\v2\x19.uba.service.v1.RiskEventB\f\xbaG\t\x92\x02\x06数据R\x04data\x12s\n" +
 	"\vupdate_mask\x18\x03 \x01(\v2\x1a.google.protobuf.FieldMaskB6\xbaG3:\x16\x12\x14id,realname,username\x92\x02\x18要更新的字段列表R\n" +
 	"updateMask\x12\xb4\x01\n" +
 	"\rallow_missing\x18\x04 \x01(\bB\x89\x01\xbaG\x85\x01\x92\x02\x81\x01如果设置为true的时候，资源不存在则会新增(插入)，并且在这种情况下`updateMask`字段将会被忽略。H\x00R\fallowMissing\x88\x01\x01B\x10\n" +
 	"\x0e_allow_missing\"\x8e\x01\n" +
 	"\x16DeleteRiskEventRequest\x12\x1c\n" +
-	"\x02id\x18\x01 \x01(\rB\n" +
+	"\x02id\x18\x01 \x01(\x04B\n" +
 	"\xbaG\a\x18\x01\x92\x02\x02IDH\x00R\x02id\x12;\n" +
 	"\n" +
 	"deleted_by\x18d \x01(\rB\x17\xbaG\x14\x92\x02\x11删除者用户IDH\x01R\tdeletedBy\x88\x01\x01B\n" +
