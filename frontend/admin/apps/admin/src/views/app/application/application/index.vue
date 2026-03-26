@@ -4,15 +4,17 @@ import type { ubaservicev1_Application as Application } from '#/generated/api/ad
 
 import { h } from 'vue';
 
-import { Page } from '@vben/common-ui';
-import { LucideTrash2 } from '@vben/icons';
+import { Page, useVbenDrawer } from '@vben/common-ui';
+import { LucideFilePenLine, LucideTrash2 } from '@vben/icons';
+
+import { notification } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { $t } from '#/locales';
 import {
+  applicationTypeList,
   applicationTypeToColor,
   applicationTypeToName,
-  platformList,
   platformToColor,
   platformToName,
   statusList,
@@ -20,6 +22,8 @@ import {
   statusToName,
   useApplicationListStore,
 } from '#/stores';
+
+import ApplicationDrawer from './application-drawer.vue';
 
 const applicationStore = useApplicationListStore();
 
@@ -42,7 +46,7 @@ const formOptions = {
       fieldName: 'type',
       label: $t('page.application.type'),
       componentProps: {
-        options: platformList,
+        options: applicationTypeList,
         placeholder: $t('ui.placeholder.select'),
         filterOption: (input: string, option: any) =>
           option.label.toLowerCase().includes(input.toLowerCase()),
@@ -116,7 +120,7 @@ const gridOptions: VxeGridProps<Application> = {
     {
       title: $t('page.application.type'),
       field: 'type',
-      minWidth: 200,
+      minWidth: 100,
       slots: {
         default: 'type',
       },
@@ -131,7 +135,7 @@ const gridOptions: VxeGridProps<Application> = {
       title: $t('page.application.platforms'),
       field: 'platforms',
       align: 'left',
-      minWidth: 300,
+      minWidth: 250,
       slots: {
         default: 'platforms',
       },
@@ -140,15 +144,17 @@ const gridOptions: VxeGridProps<Application> = {
       title: $t('page.application.remark'),
       field: 'remark',
       minWidth: 200,
-    },
-    {
-      title: $t('page.application.desensitize'),
-      field: 'desensitize',
-      minWidth: 160,
+      align: 'left',
     },
     {
       title: $t('page.application.webhookUrl'),
       field: 'webhookUrl',
+      minWidth: 300,
+      align: 'left',
+    },
+    {
+      title: $t('page.application.desensitize'),
+      field: 'desensitize',
       minWidth: 160,
     },
     {
@@ -175,25 +181,67 @@ const [Grid, gridApi] = useVbenVxeGrid({
   gridEvents,
 });
 
+const [Drawer, drawerApi] = useVbenDrawer({
+  // 连接抽离的组件
+  connectedComponent: ApplicationDrawer,
+
+  onOpenChange(isOpen: boolean) {
+    if (!isOpen) {
+      // 关闭时，重载表格数据
+      gridApi.reload();
+    }
+  },
+});
+
+function openDrawer(create: boolean, row?: any) {
+  drawerApi.setData({
+    create,
+    row,
+  });
+  drawerApi.open();
+}
+
+/* 创建 */
+function handleCreate() {
+  console.log('创建');
+
+  openDrawer(true);
+}
+
+/* 编辑 */
+function handleEdit(row: any) {
+  console.log('编辑', row);
+  openDrawer(false, row);
+}
+
+/* 删除 */
 async function handleDelete(row: any) {
-  console.log('handleDelete', row);
-  // try {
-  //   await applicationStore.deleteApplication(row.id);
-  //   notification.success({
-  //     message: $t('ui.notification.delete_success'),
-  //   });
-  //   await gridApi.reload();
-  // } catch {
-  //   notification.error({
-  //     message: $t('ui.notification.delete_failed'),
-  //   });
-  // }
+  console.log('删除', row);
+
+  try {
+    await applicationStore.deleteApplication(row.id);
+
+    notification.success({
+      message: $t('ui.notification.delete_success'),
+    });
+
+    await gridApi.reload();
+  } catch {
+    notification.error({
+      message: $t('ui.notification.delete_failed'),
+    });
+  }
 }
 </script>
 
 <template>
   <Page auto-content-height>
-    <Grid :title="$t('menu.object.objects')">
+    <Grid :title="$t('menu.application.applications')">
+      <template #toolbar-tools>
+        <a-button class="mr-2" type="primary" @click="handleCreate">
+          {{ $t('page.application.button.create') }}
+        </a-button>
+      </template>
       <template #type="{ row }">
         <a-tag :color="applicationTypeToColor(row.type)">
           {{ applicationTypeToName(row.type) }}
@@ -214,12 +262,17 @@ async function handleDelete(row: any) {
         </a-tag>
       </template>
       <template #action="{ row }">
+        <a-button
+          type="link"
+          :icon="h(LucideFilePenLine)"
+          @click.stop="handleEdit(row)"
+        />
         <a-popconfirm
           :cancel-text="$t('ui.button.cancel')"
           :ok-text="$t('ui.button.ok')"
           :title="
             $t('ui.text.do_you_want_delete', {
-              moduleName: $t('menu.application.applications'),
+              moduleName: $t('page.application.moduleName'),
             })
           "
           @confirm="handleDelete(row)"
@@ -228,6 +281,7 @@ async function handleDelete(row: any) {
         </a-popconfirm>
       </template>
     </Grid>
+    <Drawer />
   </Page>
 </template>
 

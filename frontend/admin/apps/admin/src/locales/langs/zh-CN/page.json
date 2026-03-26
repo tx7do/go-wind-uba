@@ -460,7 +460,11 @@
     "remark": "备注信息",
     "desensitize": "是否开启脱敏",
     "webhookUrl": "事件回调 URL",
-    "webhookSecret": "回调签名密钥"
+    "webhookSecret": "回调签名密钥",
+    "button": {
+      "create": "创建应用",
+      "update": "更新应用"
+    }
   },
   "object": {
     "moduleName": "对象管理",
