@@ -33,9 +33,19 @@ service WebhookService {
 
 // 网络钩子配置
 message Webhook {
-  uint32 id = 1 [json_name = "id", (gnostic.openapi.v3.property) = {description: "主键ID，唯一标识Webhook配置"}]; // 主键ID
-  optional uint32 tenant_id = 2 [json_name = "tenantId", (gnostic.openapi.v3.property) = {description: "租户ID，多租户隔离，支持SaaS场景"}]; // 租户ID
-  optional uint32 app_id = 3 [json_name = "appId", (gnostic.openapi.v3.property) = {description: "关联应用ID"}]; // 关联应用ID
+  uint32 id = 1 [
+    json_name = "id",
+    (gnostic.openapi.v3.property) = {description: "主键ID，唯一标识Webhook配置"}
+  ]; // 主键ID
+
+  optional uint32 tenant_id = 2 [
+    json_name = "tenantId",
+    (gnostic.openapi.v3.property) = {description: "租户ID，多租户隔离，支持SaaS场景"}
+  ]; // 租户ID
+  optional string app_id = 3 [
+    json_name = "appId",
+    (gnostic.openapi.v3.property) = {description: "关联的应用标识（对应 Application.app_id）"}
+  ]; // 关联应用ID
 
   optional string name = 4 [json_name = "name", (gnostic.openapi.v3.property) = {description: "Webhook名称"}]; // 名称
   optional string url = 5 [json_name = "url", (gnostic.openapi.v3.property) = {description: "回调URL"}]; // 回调URL

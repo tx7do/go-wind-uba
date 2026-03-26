@@ -402,6 +402,10 @@ paths:
                   schema:
                     type: integer
                     format: uint32
+                - name: appId
+                  in: query
+                  schema:
+                    type: string
                 - name: viewMask
                   in: query
                   schema:
@@ -10674,9 +10678,8 @@ components:
                     description: 租户ID，多租户隔离，支持SaaS场景
                     format: uint32
                 appId:
-                    type: integer
-                    description: 关联应用ID
-                    format: uint32
+                    type: string
+                    description: 关联的应用标识（对应 Application.app_id）
                 name:
                     type: string
                     description: Webhook名称

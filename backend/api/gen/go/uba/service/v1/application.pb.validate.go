@@ -468,6 +468,18 @@ func (m *GetApplicationRequest) validate(all bool) error {
 			errors = append(errors, err)
 		}
 		// no validation rules for Id
+	case *GetApplicationRequest_AppId:
+		if v == nil {
+			err := GetApplicationRequestValidationError{
+				field:  "QueryBy",
+				reason: "oneof value cannot be a typed-nil",
+			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
+		}
+		// no validation rules for AppId
 	default:
 		_ = v // ensures v is used
 	}

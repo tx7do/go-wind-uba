@@ -69342,6 +69342,7 @@ type WebhookMutation struct {
 	tenant_id         *uint32
 	addtenant_id      *int32
 	name              *string
+	app_id            *string
 	url               *string
 	secret            *string
 	event_types       *[]string
@@ -69350,8 +69351,6 @@ type WebhookMutation struct {
 	last_triggered_at *time.Time
 	failure_count     *uint32
 	addfailure_count  *int32
-	app_id            *uint32
-	addapp_id         *int32
 	clearedFields     map[string]struct{}
 	done              bool
 	oldValue          func(context.Context) (*Webhook, error)
@@ -69938,6 +69937,55 @@ func (m *WebhookMutation) ResetName() {
 	delete(m.clearedFields, webhook.FieldName)
 }
 
+// SetAppID sets the "app_id" field.
+func (m *WebhookMutation) SetAppID(s string) {
+	m.app_id = &s
+}
+
+// AppID returns the value of the "app_id" field in the mutation.
+func (m *WebhookMutation) AppID() (r string, exists bool) {
+	v := m.app_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAppID returns the old "app_id" field's value of the Webhook entity.
+// If the Webhook object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *WebhookMutation) OldAppID(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldAppID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldAppID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAppID: %w", err)
+	}
+	return oldValue.AppID, nil
+}
+
+// ClearAppID clears the value of the "app_id" field.
+func (m *WebhookMutation) ClearAppID() {
+	m.app_id = nil
+	m.clearedFields[webhook.FieldAppID] = struct{}{}
+}
+
+// AppIDCleared returns if the "app_id" field was cleared in this mutation.
+func (m *WebhookMutation) AppIDCleared() bool {
+	_, ok := m.clearedFields[webhook.FieldAppID]
+	return ok
+}
+
+// ResetAppID resets all changes to the "app_id" field.
+func (m *WebhookMutation) ResetAppID() {
+	m.app_id = nil
+	delete(m.clearedFields, webhook.FieldAppID)
+}
+
 // SetURL sets the "url" field.
 func (m *WebhookMutation) SetURL(s string) {
 	m.url = &s
@@ -70242,76 +70290,6 @@ func (m *WebhookMutation) ResetFailureCount() {
 	m.addfailure_count = nil
 }
 
-// SetAppID sets the "app_id" field.
-func (m *WebhookMutation) SetAppID(u uint32) {
-	m.app_id = &u
-	m.addapp_id = nil
-}
-
-// AppID returns the value of the "app_id" field in the mutation.
-func (m *WebhookMutation) AppID() (r uint32, exists bool) {
-	v := m.app_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldAppID returns the old "app_id" field's value of the Webhook entity.
-// If the Webhook object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *WebhookMutation) OldAppID(ctx context.Context) (v *uint32, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldAppID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldAppID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldAppID: %w", err)
-	}
-	return oldValue.AppID, nil
-}
-
-// AddAppID adds u to the "app_id" field.
-func (m *WebhookMutation) AddAppID(u int32) {
-	if m.addapp_id != nil {
-		*m.addapp_id += u
-	} else {
-		m.addapp_id = &u
-	}
-}
-
-// AddedAppID returns the value that was added to the "app_id" field in this mutation.
-func (m *WebhookMutation) AddedAppID() (r int32, exists bool) {
-	v := m.addapp_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ClearAppID clears the value of the "app_id" field.
-func (m *WebhookMutation) ClearAppID() {
-	m.app_id = nil
-	m.addapp_id = nil
-	m.clearedFields[webhook.FieldAppID] = struct{}{}
-}
-
-// AppIDCleared returns if the "app_id" field was cleared in this mutation.
-func (m *WebhookMutation) AppIDCleared() bool {
-	_, ok := m.clearedFields[webhook.FieldAppID]
-	return ok
-}
-
-// ResetAppID resets all changes to the "app_id" field.
-func (m *WebhookMutation) ResetAppID() {
-	m.app_id = nil
-	m.addapp_id = nil
-	delete(m.clearedFields, webhook.FieldAppID)
-}
-
 // Where appends a list predicates to the WebhookMutation builder.
 func (m *WebhookMutation) Where(ps ...predicate.Webhook) {
 	m.predicates = append(m.predicates, ps...)
@@ -70371,6 +70349,9 @@ func (m *WebhookMutation) Fields() []string {
 	if m.name != nil {
 		fields = append(fields, webhook.FieldName)
 	}
+	if m.app_id != nil {
+		fields = append(fields, webhook.FieldAppID)
+	}
 	if m.url != nil {
 		fields = append(fields, webhook.FieldURL)
 	}
@@ -70388,9 +70369,6 @@ func (m *WebhookMutation) Fields() []string {
 	}
 	if m.failure_count != nil {
 		fields = append(fields, webhook.FieldFailureCount)
-	}
-	if m.app_id != nil {
-		fields = append(fields, webhook.FieldAppID)
 	}
 	return fields
 }
@@ -70416,6 +70394,8 @@ func (m *WebhookMutation) Field(name string) (ent.Value, bool) {
 		return m.TenantID()
 	case webhook.FieldName:
 		return m.Name()
+	case webhook.FieldAppID:
+		return m.AppID()
 	case webhook.FieldURL:
 		return m.URL()
 	case webhook.FieldSecret:
@@ -70428,8 +70408,6 @@ func (m *WebhookMutation) Field(name string) (ent.Value, bool) {
 		return m.LastTriggeredAt()
 	case webhook.FieldFailureCount:
 		return m.FailureCount()
-	case webhook.FieldAppID:
-		return m.AppID()
 	}
 	return nil, false
 }
@@ -70455,6 +70433,8 @@ func (m *WebhookMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldTenantID(ctx)
 	case webhook.FieldName:
 		return m.OldName(ctx)
+	case webhook.FieldAppID:
+		return m.OldAppID(ctx)
 	case webhook.FieldURL:
 		return m.OldURL(ctx)
 	case webhook.FieldSecret:
@@ -70467,8 +70447,6 @@ func (m *WebhookMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldLastTriggeredAt(ctx)
 	case webhook.FieldFailureCount:
 		return m.OldFailureCount(ctx)
-	case webhook.FieldAppID:
-		return m.OldAppID(ctx)
 	}
 	return nil, fmt.Errorf("unknown Webhook field %s", name)
 }
@@ -70534,6 +70512,13 @@ func (m *WebhookMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetName(v)
 		return nil
+	case webhook.FieldAppID:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAppID(v)
+		return nil
 	case webhook.FieldURL:
 		v, ok := value.(string)
 		if !ok {
@@ -70576,13 +70561,6 @@ func (m *WebhookMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetFailureCount(v)
 		return nil
-	case webhook.FieldAppID:
-		v, ok := value.(uint32)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetAppID(v)
-		return nil
 	}
 	return fmt.Errorf("unknown Webhook field %s", name)
 }
@@ -70606,9 +70584,6 @@ func (m *WebhookMutation) AddedFields() []string {
 	if m.addfailure_count != nil {
 		fields = append(fields, webhook.FieldFailureCount)
 	}
-	if m.addapp_id != nil {
-		fields = append(fields, webhook.FieldAppID)
-	}
 	return fields
 }
 
@@ -70627,8 +70602,6 @@ func (m *WebhookMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedTenantID()
 	case webhook.FieldFailureCount:
 		return m.AddedFailureCount()
-	case webhook.FieldAppID:
-		return m.AddedAppID()
 	}
 	return nil, false
 }
@@ -70673,13 +70646,6 @@ func (m *WebhookMutation) AddField(name string, value ent.Value) error {
 		}
 		m.AddFailureCount(v)
 		return nil
-	case webhook.FieldAppID:
-		v, ok := value.(int32)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddAppID(v)
-		return nil
 	}
 	return fmt.Errorf("unknown Webhook numeric field %s", name)
 }
@@ -70712,6 +70678,9 @@ func (m *WebhookMutation) ClearedFields() []string {
 	if m.FieldCleared(webhook.FieldName) {
 		fields = append(fields, webhook.FieldName)
 	}
+	if m.FieldCleared(webhook.FieldAppID) {
+		fields = append(fields, webhook.FieldAppID)
+	}
 	if m.FieldCleared(webhook.FieldURL) {
 		fields = append(fields, webhook.FieldURL)
 	}
@@ -70723,9 +70692,6 @@ func (m *WebhookMutation) ClearedFields() []string {
 	}
 	if m.FieldCleared(webhook.FieldLastTriggeredAt) {
 		fields = append(fields, webhook.FieldLastTriggeredAt)
-	}
-	if m.FieldCleared(webhook.FieldAppID) {
-		fields = append(fields, webhook.FieldAppID)
 	}
 	return fields
 }
@@ -70765,6 +70731,9 @@ func (m *WebhookMutation) ClearField(name string) error {
 	case webhook.FieldName:
 		m.ClearName()
 		return nil
+	case webhook.FieldAppID:
+		m.ClearAppID()
+		return nil
 	case webhook.FieldURL:
 		m.ClearURL()
 		return nil
@@ -70776,9 +70745,6 @@ func (m *WebhookMutation) ClearField(name string) error {
 		return nil
 	case webhook.FieldLastTriggeredAt:
 		m.ClearLastTriggeredAt()
-		return nil
-	case webhook.FieldAppID:
-		m.ClearAppID()
 		return nil
 	}
 	return fmt.Errorf("unknown Webhook nullable field %s", name)
@@ -70812,6 +70778,9 @@ func (m *WebhookMutation) ResetField(name string) error {
 	case webhook.FieldName:
 		m.ResetName()
 		return nil
+	case webhook.FieldAppID:
+		m.ResetAppID()
+		return nil
 	case webhook.FieldURL:
 		m.ResetURL()
 		return nil
@@ -70829,9 +70798,6 @@ func (m *WebhookMutation) ResetField(name string) error {
 		return nil
 	case webhook.FieldFailureCount:
 		m.ResetFailureCount()
-		return nil
-	case webhook.FieldAppID:
-		m.ResetAppID()
 		return nil
 	}
 	return fmt.Errorf("unknown Webhook field %s", name)

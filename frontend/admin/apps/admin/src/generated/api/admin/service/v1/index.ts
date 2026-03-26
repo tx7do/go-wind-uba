@@ -1044,6 +1044,9 @@ export function createApplicationServiceClient(
       const path = `admin/v1/apps/${request.id}`; // eslint-disable-line quotes
       const body = null;
       const queryParams: string[] = [];
+      if (request.appId) {
+        queryParams.push(`appId=${encodeURIComponent(request.appId.toString())}`)
+      }
       if (request.viewMask) {
         queryParams.push(`viewMask=${encodeURIComponent(request.viewMask.toString())}`)
       }
@@ -1136,8 +1139,10 @@ export type ubaservicev1_ListApplicationResponse = {
 
 // UBA应用
 export type ubaservicev1_Application = {
+  // 内部主键（数据库使用，不对外暴露）
   id: number | undefined;
   name?: string;
+  // 业务唯一标识（对外使用，上报/回调/配置都用它）
   appId?: string;
   appKey?: string;
   appSecret?: string;
@@ -1178,6 +1183,7 @@ export type ubaservicev1_Application_Status =
 // 获取UBA应用数据 - 请求
 export type ubaservicev1_GetApplicationRequest = {
   id?: number;
+  appId?: string;
   viewMask?: wellKnownFieldMask;
 };
 
@@ -9616,7 +9622,7 @@ export type ubaservicev1_ListWebhookResponse = {
 export type ubaservicev1_Webhook = {
   id: number | undefined;
   tenantId?: number;
-  appId?: number;
+  appId?: string;
   name?: string;
   url?: string;
   secret?: string;

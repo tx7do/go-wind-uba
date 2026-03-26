@@ -31,7 +31,7 @@ type Webhook struct {
 	state    protoimpl.MessageState `protogen:"open.v1"`
 	Id       uint32                 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`                                   // 主键ID
 	TenantId *uint32                `protobuf:"varint,2,opt,name=tenant_id,json=tenantId,proto3,oneof" json:"tenant_id,omitempty"` // 租户ID
-	AppId    *uint32                `protobuf:"varint,3,opt,name=app_id,json=appId,proto3,oneof" json:"app_id,omitempty"`          // 关联应用ID
+	AppId    *string                `protobuf:"bytes,3,opt,name=app_id,json=appId,proto3,oneof" json:"app_id,omitempty"`           // 关联应用ID
 	Name     *string                `protobuf:"bytes,4,opt,name=name,proto3,oneof" json:"name,omitempty"`                          // 名称
 	Url      *string                `protobuf:"bytes,5,opt,name=url,proto3,oneof" json:"url,omitempty"`                            // 回调URL
 	Secret   *string                `protobuf:"bytes,6,opt,name=secret,proto3,oneof" json:"secret,omitempty"`                      // 签名密钥
@@ -96,11 +96,11 @@ func (x *Webhook) GetTenantId() uint32 {
 	return 0
 }
 
-func (x *Webhook) GetAppId() uint32 {
+func (x *Webhook) GetAppId() string {
 	if x != nil && x.AppId != nil {
 		return *x.AppId
 	}
-	return 0
+	return ""
 }
 
 func (x *Webhook) GetName() string {
@@ -745,11 +745,11 @@ var File_uba_service_v1_webhook_proto protoreflect.FileDescriptor
 
 const file_uba_service_v1_webhook_proto_rawDesc = "" +
 	"\n" +
-	"\x1cuba/service/v1/webhook.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a google/protobuf/field_mask.proto\x1a\x1epagination/v1/pagination.proto\"\xb4\v\n" +
+	"\x1cuba/service/v1/webhook.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a google/protobuf/field_mask.proto\x1a\x1epagination/v1/pagination.proto\"\xda\v\n" +
 	"\aWebhook\x12:\n" +
 	"\x02id\x18\x01 \x01(\rB*\xbaG'\x92\x02$主键ID，唯一标识Webhook配置R\x02id\x12U\n" +
-	"\ttenant_id\x18\x02 \x01(\rB3\xbaG0\x92\x02-租户ID，多租户隔离，支持SaaS场景H\x00R\btenantId\x88\x01\x01\x120\n" +
-	"\x06app_id\x18\x03 \x01(\rB\x14\xbaG\x11\x92\x02\x0e关联应用IDH\x01R\x05appId\x88\x01\x01\x12,\n" +
+	"\ttenant_id\x18\x02 \x01(\rB3\xbaG0\x92\x02-租户ID，多租户隔离，支持SaaS场景H\x00R\btenantId\x88\x01\x01\x12V\n" +
+	"\x06app_id\x18\x03 \x01(\tB:\xbaG7\x92\x024关联的应用标识（对应 Application.app_id）H\x01R\x05appId\x88\x01\x01\x12,\n" +
 	"\x04name\x18\x04 \x01(\tB\x13\xbaG\x10\x92\x02\rWebhook名称H\x02R\x04name\x88\x01\x01\x12&\n" +
 	"\x03url\x18\x05 \x01(\tB\x0f\xbaG\f\x92\x02\t回调URLH\x03R\x03url\x88\x01\x01\x12V\n" +
 	"\x06secret\x18\x06 \x01(\tB9\xbaG6\x92\x023签名密钥（写入时返回，读取时脱敏）H\x04R\x06secret\x88\x01\x01\x12c\n" +

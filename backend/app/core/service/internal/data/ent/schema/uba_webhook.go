@@ -34,6 +34,11 @@ func (Webhook) Fields() []ent.Field {
 			Optional().
 			Nillable(),
 
+		field.String("app_id").
+			Comment("关联应用ID").
+			Optional().
+			Nillable(),
+
 		field.String("url").
 			Comment("回调URL").
 			NotEmpty().
@@ -65,11 +70,6 @@ func (Webhook) Fields() []ent.Field {
 		field.Uint32("failure_count").
 			Comment("失败次数").
 			Default(0),
-
-		field.Uint32("app_id").
-			Comment("关联应用ID").
-			Optional().
-			Nillable(),
 	}
 }
 

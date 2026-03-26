@@ -1415,15 +1415,15 @@ func init() {
 	// webhook.NameValidator is a validator for the "name" field. It is called by the builders before save.
 	webhook.NameValidator = webhookDescName.Validators[0].(func(string) error)
 	// webhookDescURL is the schema descriptor for url field.
-	webhookDescURL := webhookFields[1].Descriptor()
+	webhookDescURL := webhookFields[2].Descriptor()
 	// webhook.URLValidator is a validator for the "url" field. It is called by the builders before save.
 	webhook.URLValidator = webhookDescURL.Validators[0].(func(string) error)
 	// webhookDescEnabled is the schema descriptor for enabled field.
-	webhookDescEnabled := webhookFields[4].Descriptor()
+	webhookDescEnabled := webhookFields[5].Descriptor()
 	// webhook.DefaultEnabled holds the default value on creation for the enabled field.
 	webhook.DefaultEnabled = webhookDescEnabled.Default.(bool)
 	// webhookDescFailureCount is the schema descriptor for failure_count field.
-	webhookDescFailureCount := webhookFields[6].Descriptor()
+	webhookDescFailureCount := webhookFields[7].Descriptor()
 	// webhook.DefaultFailureCount holds the default value on creation for the failure_count field.
 	webhook.DefaultFailureCount = webhookDescFailureCount.Default.(uint32)
 	// webhookDescID is the schema descriptor for id field.

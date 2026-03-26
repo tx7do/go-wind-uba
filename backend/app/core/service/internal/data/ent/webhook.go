@@ -35,6 +35,8 @@ type Webhook struct {
 	TenantID *uint32 `json:"tenant_id,omitempty"`
 	// Webhook名称
 	Name *string `json:"name,omitempty"`
+	// 关联应用ID
+	AppID *string `json:"app_id,omitempty"`
 	// 回调URL
 	URL *string `json:"url,omitempty"`
 	// 签名密钥
@@ -47,8 +49,6 @@ type Webhook struct {
 	LastTriggeredAt *time.Time `json:"last_triggered_at,omitempty"`
 	// 失败次数
 	FailureCount uint32 `json:"failure_count,omitempty"`
-	// 关联应用ID
-	AppID        *uint32 `json:"app_id,omitempty"`
 	selectValues sql.SelectValues
 }
 
@@ -61,9 +61,9 @@ func (*Webhook) scanValues(columns []string) ([]any, error) {
 			values[i] = new([]byte)
 		case webhook.FieldEnabled:
 			values[i] = new(sql.NullBool)
-		case webhook.FieldID, webhook.FieldCreatedBy, webhook.FieldUpdatedBy, webhook.FieldDeletedBy, webhook.FieldTenantID, webhook.FieldFailureCount, webhook.FieldAppID:
+		case webhook.FieldID, webhook.FieldCreatedBy, webhook.FieldUpdatedBy, webhook.FieldDeletedBy, webhook.FieldTenantID, webhook.FieldFailureCount:
 			values[i] = new(sql.NullInt64)
-		case webhook.FieldName, webhook.FieldURL, webhook.FieldSecret:
+		case webhook.FieldName, webhook.FieldAppID, webhook.FieldURL, webhook.FieldSecret:
 			values[i] = new(sql.NullString)
 		case webhook.FieldCreatedAt, webhook.FieldUpdatedAt, webhook.FieldDeletedAt, webhook.FieldLastTriggeredAt:
 			values[i] = new(sql.NullTime)
@@ -144,6 +144,13 @@ func (_m *Webhook) assignValues(columns []string, values []any) error {
 				_m.Name = new(string)
 				*_m.Name = value.String
 			}
+		case webhook.FieldAppID:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field app_id", values[i])
+			} else if value.Valid {
+				_m.AppID = new(string)
+				*_m.AppID = value.String
+			}
 		case webhook.FieldURL:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field url", values[i])
@@ -184,13 +191,6 @@ func (_m *Webhook) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field failure_count", values[i])
 			} else if value.Valid {
 				_m.FailureCount = uint32(value.Int64)
-			}
-		case webhook.FieldAppID:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field app_id", values[i])
-			} else if value.Valid {
-				_m.AppID = new(uint32)
-				*_m.AppID = uint32(value.Int64)
 			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
@@ -268,6 +268,11 @@ func (_m *Webhook) String() string {
 		builder.WriteString(*v)
 	}
 	builder.WriteString(", ")
+	if v := _m.AppID; v != nil {
+		builder.WriteString("app_id=")
+		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
 	if v := _m.URL; v != nil {
 		builder.WriteString("url=")
 		builder.WriteString(*v)
@@ -291,11 +296,6 @@ func (_m *Webhook) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("failure_count=")
 	builder.WriteString(fmt.Sprintf("%v", _m.FailureCount))
-	builder.WriteString(", ")
-	if v := _m.AppID; v != nil {
-		builder.WriteString("app_id=")
-		builder.WriteString(fmt.Sprintf("%v", *v))
-	}
 	builder.WriteByte(')')
 	return builder.String()
 }

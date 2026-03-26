@@ -451,6 +451,7 @@
   },
   "application": {
     "moduleName": "应用管理",
+    "name": "应用名称",
     "appId": "应用ID",
     "appKey": "应用Key",
     "appSecret": "应用密钥",

@@ -2857,13 +2857,13 @@ var (
 		{Name: "deleted_by", Type: field.TypeUint32, Nullable: true, Comment: "删除者ID"},
 		{Name: "tenant_id", Type: field.TypeUint32, Nullable: true, Comment: "租户ID", Default: 0},
 		{Name: "name", Type: field.TypeString, Nullable: true, Comment: "Webhook名称"},
+		{Name: "app_id", Type: field.TypeString, Nullable: true, Comment: "关联应用ID"},
 		{Name: "url", Type: field.TypeString, Nullable: true, Comment: "回调URL"},
 		{Name: "secret", Type: field.TypeString, Nullable: true, Comment: "签名密钥"},
 		{Name: "event_types", Type: field.TypeJSON, Nullable: true, Comment: "触发事件类型列表，如[\"risk.high\", \"risk.critical\"]"},
 		{Name: "enabled", Type: field.TypeBool, Comment: "是否启用，1为启用，0为禁用", Default: true},
 		{Name: "last_triggered_at", Type: field.TypeTime, Nullable: true, Comment: "最后触发时间"},
 		{Name: "failure_count", Type: field.TypeUint32, Comment: "失败次数", Default: 0},
-		{Name: "app_id", Type: field.TypeUint32, Nullable: true, Comment: "关联应用ID"},
 	}
 	// UbaWebhooksTable holds the schema information for the "uba_webhooks" table.
 	UbaWebhooksTable = &schema.Table{
@@ -2880,7 +2880,7 @@ var (
 			{
 				Name:    "idx_webhook_tenant_id_enabled",
 				Unique:  false,
-				Columns: []*schema.Column{UbaWebhooksColumns[7], UbaWebhooksColumns[12]},
+				Columns: []*schema.Column{UbaWebhooksColumns[7], UbaWebhooksColumns[13]},
 			},
 		},
 	}

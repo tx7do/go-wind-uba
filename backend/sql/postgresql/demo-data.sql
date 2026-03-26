@@ -314,7 +314,7 @@ VALUES
      true,
      NOW() - INTERVAL '1 hour',
      0,
-     1001),
+     '1001'),
 
     -- 2. 租户0：用户支付成功回调（启用）
     (NOW(), NOW(), NULL, 1001, 1001, NULL, 0,
@@ -325,7 +325,7 @@ VALUES
      true,
      NOW() - INTERVAL '30 minutes',
      1,
-     1001),
+     '1001'),
 
     -- 3. 租户1：用户登录事件回调（禁用）
     (NOW(), NOW(), NULL, 1002, 1002, NULL, 1,
@@ -336,7 +336,7 @@ VALUES
      false,
      NULL,
      5,
-     1002),
+     '1002'),
 
     -- 4. 租户1：会话结束回调（启用）
     (NOW(), NOW(), NULL, 1002, 1003, NULL, 1,
@@ -347,7 +347,7 @@ VALUES
      true,
      NOW() - INTERVAL '2 hours',
      0,
-     1002),
+     '1002'),
 
     -- 5. 租户2：风险事件回调（启用）
     (NOW(), NOW(), NULL, 1004, 1004, NULL, 2,
@@ -358,7 +358,7 @@ VALUES
      true,
      NOW() - INTERVAL '15 minutes',
      2,
-     1003),
+     '1003'),
 
     -- 6. 已软删除的废弃回调
     (NOW(), NOW(), NOW() - INTERVAL '7 days', 1001, 1005, 1005, 0,
@@ -369,7 +369,7 @@ VALUES
      false,
      NOW() - INTERVAL '10 days',
      99,
-     1001);
+     '1001');
 
 
 INSERT INTO public.uba_applications (

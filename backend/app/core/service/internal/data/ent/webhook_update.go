@@ -171,6 +171,26 @@ func (_u *WebhookUpdate) ClearName() *WebhookUpdate {
 	return _u
 }
 
+// SetAppID sets the "app_id" field.
+func (_u *WebhookUpdate) SetAppID(v string) *WebhookUpdate {
+	_u.mutation.SetAppID(v)
+	return _u
+}
+
+// SetNillableAppID sets the "app_id" field if the given value is not nil.
+func (_u *WebhookUpdate) SetNillableAppID(v *string) *WebhookUpdate {
+	if v != nil {
+		_u.SetAppID(*v)
+	}
+	return _u
+}
+
+// ClearAppID clears the value of the "app_id" field.
+func (_u *WebhookUpdate) ClearAppID() *WebhookUpdate {
+	_u.mutation.ClearAppID()
+	return _u
+}
+
 // SetURL sets the "url" field.
 func (_u *WebhookUpdate) SetURL(v string) *WebhookUpdate {
 	_u.mutation.SetURL(v)
@@ -281,33 +301,6 @@ func (_u *WebhookUpdate) SetNillableFailureCount(v *uint32) *WebhookUpdate {
 // AddFailureCount adds value to the "failure_count" field.
 func (_u *WebhookUpdate) AddFailureCount(v int32) *WebhookUpdate {
 	_u.mutation.AddFailureCount(v)
-	return _u
-}
-
-// SetAppID sets the "app_id" field.
-func (_u *WebhookUpdate) SetAppID(v uint32) *WebhookUpdate {
-	_u.mutation.ResetAppID()
-	_u.mutation.SetAppID(v)
-	return _u
-}
-
-// SetNillableAppID sets the "app_id" field if the given value is not nil.
-func (_u *WebhookUpdate) SetNillableAppID(v *uint32) *WebhookUpdate {
-	if v != nil {
-		_u.SetAppID(*v)
-	}
-	return _u
-}
-
-// AddAppID adds value to the "app_id" field.
-func (_u *WebhookUpdate) AddAppID(v int32) *WebhookUpdate {
-	_u.mutation.AddAppID(v)
-	return _u
-}
-
-// ClearAppID clears the value of the "app_id" field.
-func (_u *WebhookUpdate) ClearAppID() *WebhookUpdate {
-	_u.mutation.ClearAppID()
 	return _u
 }
 
@@ -427,6 +420,12 @@ func (_u *WebhookUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if _u.mutation.NameCleared() {
 		_spec.ClearField(webhook.FieldName, field.TypeString)
 	}
+	if value, ok := _u.mutation.AppID(); ok {
+		_spec.SetField(webhook.FieldAppID, field.TypeString, value)
+	}
+	if _u.mutation.AppIDCleared() {
+		_spec.ClearField(webhook.FieldAppID, field.TypeString)
+	}
 	if value, ok := _u.mutation.URL(); ok {
 		_spec.SetField(webhook.FieldURL, field.TypeString, value)
 	}
@@ -464,15 +463,6 @@ func (_u *WebhookUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if value, ok := _u.mutation.AddedFailureCount(); ok {
 		_spec.AddField(webhook.FieldFailureCount, field.TypeUint32, value)
-	}
-	if value, ok := _u.mutation.AppID(); ok {
-		_spec.SetField(webhook.FieldAppID, field.TypeUint32, value)
-	}
-	if value, ok := _u.mutation.AddedAppID(); ok {
-		_spec.AddField(webhook.FieldAppID, field.TypeUint32, value)
-	}
-	if _u.mutation.AppIDCleared() {
-		_spec.ClearField(webhook.FieldAppID, field.TypeUint32)
 	}
 	_spec.AddModifiers(_u.modifiers...)
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
@@ -637,6 +627,26 @@ func (_u *WebhookUpdateOne) ClearName() *WebhookUpdateOne {
 	return _u
 }
 
+// SetAppID sets the "app_id" field.
+func (_u *WebhookUpdateOne) SetAppID(v string) *WebhookUpdateOne {
+	_u.mutation.SetAppID(v)
+	return _u
+}
+
+// SetNillableAppID sets the "app_id" field if the given value is not nil.
+func (_u *WebhookUpdateOne) SetNillableAppID(v *string) *WebhookUpdateOne {
+	if v != nil {
+		_u.SetAppID(*v)
+	}
+	return _u
+}
+
+// ClearAppID clears the value of the "app_id" field.
+func (_u *WebhookUpdateOne) ClearAppID() *WebhookUpdateOne {
+	_u.mutation.ClearAppID()
+	return _u
+}
+
 // SetURL sets the "url" field.
 func (_u *WebhookUpdateOne) SetURL(v string) *WebhookUpdateOne {
 	_u.mutation.SetURL(v)
@@ -747,33 +757,6 @@ func (_u *WebhookUpdateOne) SetNillableFailureCount(v *uint32) *WebhookUpdateOne
 // AddFailureCount adds value to the "failure_count" field.
 func (_u *WebhookUpdateOne) AddFailureCount(v int32) *WebhookUpdateOne {
 	_u.mutation.AddFailureCount(v)
-	return _u
-}
-
-// SetAppID sets the "app_id" field.
-func (_u *WebhookUpdateOne) SetAppID(v uint32) *WebhookUpdateOne {
-	_u.mutation.ResetAppID()
-	_u.mutation.SetAppID(v)
-	return _u
-}
-
-// SetNillableAppID sets the "app_id" field if the given value is not nil.
-func (_u *WebhookUpdateOne) SetNillableAppID(v *uint32) *WebhookUpdateOne {
-	if v != nil {
-		_u.SetAppID(*v)
-	}
-	return _u
-}
-
-// AddAppID adds value to the "app_id" field.
-func (_u *WebhookUpdateOne) AddAppID(v int32) *WebhookUpdateOne {
-	_u.mutation.AddAppID(v)
-	return _u
-}
-
-// ClearAppID clears the value of the "app_id" field.
-func (_u *WebhookUpdateOne) ClearAppID() *WebhookUpdateOne {
-	_u.mutation.ClearAppID()
 	return _u
 }
 
@@ -923,6 +906,12 @@ func (_u *WebhookUpdateOne) sqlSave(ctx context.Context) (_node *Webhook, err er
 	if _u.mutation.NameCleared() {
 		_spec.ClearField(webhook.FieldName, field.TypeString)
 	}
+	if value, ok := _u.mutation.AppID(); ok {
+		_spec.SetField(webhook.FieldAppID, field.TypeString, value)
+	}
+	if _u.mutation.AppIDCleared() {
+		_spec.ClearField(webhook.FieldAppID, field.TypeString)
+	}
 	if value, ok := _u.mutation.URL(); ok {
 		_spec.SetField(webhook.FieldURL, field.TypeString, value)
 	}
@@ -960,15 +949,6 @@ func (_u *WebhookUpdateOne) sqlSave(ctx context.Context) (_node *Webhook, err er
 	}
 	if value, ok := _u.mutation.AddedFailureCount(); ok {
 		_spec.AddField(webhook.FieldFailureCount, field.TypeUint32, value)
-	}
-	if value, ok := _u.mutation.AppID(); ok {
-		_spec.SetField(webhook.FieldAppID, field.TypeUint32, value)
-	}
-	if value, ok := _u.mutation.AddedAppID(); ok {
-		_spec.AddField(webhook.FieldAppID, field.TypeUint32, value)
-	}
-	if _u.mutation.AppIDCleared() {
-		_spec.ClearField(webhook.FieldAppID, field.TypeUint32)
 	}
 	_spec.AddModifiers(_u.modifiers...)
 	_node = &Webhook{config: _u.config}

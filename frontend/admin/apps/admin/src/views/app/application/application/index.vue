@@ -42,6 +42,15 @@ const formOptions = {
       },
     },
     {
+      component: 'Input',
+      fieldName: 'name',
+      label: $t('page.application.name'),
+      componentProps: {
+        placeholder: $t('ui.placeholder.input'),
+        allowClear: true,
+      },
+    },
+    {
       component: 'Select',
       fieldName: 'type',
       label: $t('page.application.type'),
@@ -109,6 +118,12 @@ const gridOptions: VxeGridProps<Application> = {
       field: 'appId',
       minWidth: 150,
       fixed: 'left',
+      align: 'left',
+    },
+    {
+      title: $t('page.application.name'),
+      field: 'name',
+      minWidth: 150,
       align: 'left',
     },
     {

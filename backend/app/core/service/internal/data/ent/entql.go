@@ -1318,13 +1318,13 @@ var schemaGraph = func() *sqlgraph.Schema {
 			webhook.FieldDeletedBy:       {Type: field.TypeUint32, Column: webhook.FieldDeletedBy},
 			webhook.FieldTenantID:        {Type: field.TypeUint32, Column: webhook.FieldTenantID},
 			webhook.FieldName:            {Type: field.TypeString, Column: webhook.FieldName},
+			webhook.FieldAppID:           {Type: field.TypeString, Column: webhook.FieldAppID},
 			webhook.FieldURL:             {Type: field.TypeString, Column: webhook.FieldURL},
 			webhook.FieldSecret:          {Type: field.TypeString, Column: webhook.FieldSecret},
 			webhook.FieldEventTypes:      {Type: field.TypeJSON, Column: webhook.FieldEventTypes},
 			webhook.FieldEnabled:         {Type: field.TypeBool, Column: webhook.FieldEnabled},
 			webhook.FieldLastTriggeredAt: {Type: field.TypeTime, Column: webhook.FieldLastTriggeredAt},
 			webhook.FieldFailureCount:    {Type: field.TypeUint32, Column: webhook.FieldFailureCount},
-			webhook.FieldAppID:           {Type: field.TypeUint32, Column: webhook.FieldAppID},
 		},
 	}
 	graph.MustAddE(
@@ -6858,6 +6858,11 @@ func (f *WebhookFilter) WhereName(p entql.StringP) {
 	f.Where(p.Field(webhook.FieldName))
 }
 
+// WhereAppID applies the entql string predicate on the app_id field.
+func (f *WebhookFilter) WhereAppID(p entql.StringP) {
+	f.Where(p.Field(webhook.FieldAppID))
+}
+
 // WhereURL applies the entql string predicate on the url field.
 func (f *WebhookFilter) WhereURL(p entql.StringP) {
 	f.Where(p.Field(webhook.FieldURL))
@@ -6886,9 +6891,4 @@ func (f *WebhookFilter) WhereLastTriggeredAt(p entql.TimeP) {
 // WhereFailureCount applies the entql uint32 predicate on the failure_count field.
 func (f *WebhookFilter) WhereFailureCount(p entql.Uint32P) {
 	f.Where(p.Field(webhook.FieldFailureCount))
-}
-
-// WhereAppID applies the entql uint32 predicate on the app_id field.
-func (f *WebhookFilter) WhereAppID(p entql.Uint32P) {
-	f.Where(p.Field(webhook.FieldAppID))
 }

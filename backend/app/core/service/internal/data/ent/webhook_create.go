@@ -134,6 +134,20 @@ func (_c *WebhookCreate) SetNillableName(v *string) *WebhookCreate {
 	return _c
 }
 
+// SetAppID sets the "app_id" field.
+func (_c *WebhookCreate) SetAppID(v string) *WebhookCreate {
+	_c.mutation.SetAppID(v)
+	return _c
+}
+
+// SetNillableAppID sets the "app_id" field if the given value is not nil.
+func (_c *WebhookCreate) SetNillableAppID(v *string) *WebhookCreate {
+	if v != nil {
+		_c.SetAppID(*v)
+	}
+	return _c
+}
+
 // SetURL sets the "url" field.
 func (_c *WebhookCreate) SetURL(v string) *WebhookCreate {
 	_c.mutation.SetURL(v)
@@ -206,20 +220,6 @@ func (_c *WebhookCreate) SetFailureCount(v uint32) *WebhookCreate {
 func (_c *WebhookCreate) SetNillableFailureCount(v *uint32) *WebhookCreate {
 	if v != nil {
 		_c.SetFailureCount(*v)
-	}
-	return _c
-}
-
-// SetAppID sets the "app_id" field.
-func (_c *WebhookCreate) SetAppID(v uint32) *WebhookCreate {
-	_c.mutation.SetAppID(v)
-	return _c
-}
-
-// SetNillableAppID sets the "app_id" field if the given value is not nil.
-func (_c *WebhookCreate) SetNillableAppID(v *uint32) *WebhookCreate {
-	if v != nil {
-		_c.SetAppID(*v)
 	}
 	return _c
 }
@@ -370,6 +370,10 @@ func (_c *WebhookCreate) createSpec() (*Webhook, *sqlgraph.CreateSpec) {
 		_spec.SetField(webhook.FieldName, field.TypeString, value)
 		_node.Name = &value
 	}
+	if value, ok := _c.mutation.AppID(); ok {
+		_spec.SetField(webhook.FieldAppID, field.TypeString, value)
+		_node.AppID = &value
+	}
 	if value, ok := _c.mutation.URL(); ok {
 		_spec.SetField(webhook.FieldURL, field.TypeString, value)
 		_node.URL = &value
@@ -393,10 +397,6 @@ func (_c *WebhookCreate) createSpec() (*Webhook, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.FailureCount(); ok {
 		_spec.SetField(webhook.FieldFailureCount, field.TypeUint32, value)
 		_node.FailureCount = value
-	}
-	if value, ok := _c.mutation.AppID(); ok {
-		_spec.SetField(webhook.FieldAppID, field.TypeUint32, value)
-		_node.AppID = &value
 	}
 	return _node, _spec
 }
@@ -576,6 +576,24 @@ func (u *WebhookUpsert) ClearName() *WebhookUpsert {
 	return u
 }
 
+// SetAppID sets the "app_id" field.
+func (u *WebhookUpsert) SetAppID(v string) *WebhookUpsert {
+	u.Set(webhook.FieldAppID, v)
+	return u
+}
+
+// UpdateAppID sets the "app_id" field to the value that was provided on create.
+func (u *WebhookUpsert) UpdateAppID() *WebhookUpsert {
+	u.SetExcluded(webhook.FieldAppID)
+	return u
+}
+
+// ClearAppID clears the value of the "app_id" field.
+func (u *WebhookUpsert) ClearAppID() *WebhookUpsert {
+	u.SetNull(webhook.FieldAppID)
+	return u
+}
+
 // SetURL sets the "url" field.
 func (u *WebhookUpsert) SetURL(v string) *WebhookUpsert {
 	u.Set(webhook.FieldURL, v)
@@ -675,30 +693,6 @@ func (u *WebhookUpsert) UpdateFailureCount() *WebhookUpsert {
 // AddFailureCount adds v to the "failure_count" field.
 func (u *WebhookUpsert) AddFailureCount(v uint32) *WebhookUpsert {
 	u.Add(webhook.FieldFailureCount, v)
-	return u
-}
-
-// SetAppID sets the "app_id" field.
-func (u *WebhookUpsert) SetAppID(v uint32) *WebhookUpsert {
-	u.Set(webhook.FieldAppID, v)
-	return u
-}
-
-// UpdateAppID sets the "app_id" field to the value that was provided on create.
-func (u *WebhookUpsert) UpdateAppID() *WebhookUpsert {
-	u.SetExcluded(webhook.FieldAppID)
-	return u
-}
-
-// AddAppID adds v to the "app_id" field.
-func (u *WebhookUpsert) AddAppID(v uint32) *WebhookUpsert {
-	u.Add(webhook.FieldAppID, v)
-	return u
-}
-
-// ClearAppID clears the value of the "app_id" field.
-func (u *WebhookUpsert) ClearAppID() *WebhookUpsert {
-	u.SetNull(webhook.FieldAppID)
 	return u
 }
 
@@ -903,6 +897,27 @@ func (u *WebhookUpsertOne) ClearName() *WebhookUpsertOne {
 	})
 }
 
+// SetAppID sets the "app_id" field.
+func (u *WebhookUpsertOne) SetAppID(v string) *WebhookUpsertOne {
+	return u.Update(func(s *WebhookUpsert) {
+		s.SetAppID(v)
+	})
+}
+
+// UpdateAppID sets the "app_id" field to the value that was provided on create.
+func (u *WebhookUpsertOne) UpdateAppID() *WebhookUpsertOne {
+	return u.Update(func(s *WebhookUpsert) {
+		s.UpdateAppID()
+	})
+}
+
+// ClearAppID clears the value of the "app_id" field.
+func (u *WebhookUpsertOne) ClearAppID() *WebhookUpsertOne {
+	return u.Update(func(s *WebhookUpsert) {
+		s.ClearAppID()
+	})
+}
+
 // SetURL sets the "url" field.
 func (u *WebhookUpsertOne) SetURL(v string) *WebhookUpsertOne {
 	return u.Update(func(s *WebhookUpsert) {
@@ -1019,34 +1034,6 @@ func (u *WebhookUpsertOne) AddFailureCount(v uint32) *WebhookUpsertOne {
 func (u *WebhookUpsertOne) UpdateFailureCount() *WebhookUpsertOne {
 	return u.Update(func(s *WebhookUpsert) {
 		s.UpdateFailureCount()
-	})
-}
-
-// SetAppID sets the "app_id" field.
-func (u *WebhookUpsertOne) SetAppID(v uint32) *WebhookUpsertOne {
-	return u.Update(func(s *WebhookUpsert) {
-		s.SetAppID(v)
-	})
-}
-
-// AddAppID adds v to the "app_id" field.
-func (u *WebhookUpsertOne) AddAppID(v uint32) *WebhookUpsertOne {
-	return u.Update(func(s *WebhookUpsert) {
-		s.AddAppID(v)
-	})
-}
-
-// UpdateAppID sets the "app_id" field to the value that was provided on create.
-func (u *WebhookUpsertOne) UpdateAppID() *WebhookUpsertOne {
-	return u.Update(func(s *WebhookUpsert) {
-		s.UpdateAppID()
-	})
-}
-
-// ClearAppID clears the value of the "app_id" field.
-func (u *WebhookUpsertOne) ClearAppID() *WebhookUpsertOne {
-	return u.Update(func(s *WebhookUpsert) {
-		s.ClearAppID()
 	})
 }
 
@@ -1417,6 +1404,27 @@ func (u *WebhookUpsertBulk) ClearName() *WebhookUpsertBulk {
 	})
 }
 
+// SetAppID sets the "app_id" field.
+func (u *WebhookUpsertBulk) SetAppID(v string) *WebhookUpsertBulk {
+	return u.Update(func(s *WebhookUpsert) {
+		s.SetAppID(v)
+	})
+}
+
+// UpdateAppID sets the "app_id" field to the value that was provided on create.
+func (u *WebhookUpsertBulk) UpdateAppID() *WebhookUpsertBulk {
+	return u.Update(func(s *WebhookUpsert) {
+		s.UpdateAppID()
+	})
+}
+
+// ClearAppID clears the value of the "app_id" field.
+func (u *WebhookUpsertBulk) ClearAppID() *WebhookUpsertBulk {
+	return u.Update(func(s *WebhookUpsert) {
+		s.ClearAppID()
+	})
+}
+
 // SetURL sets the "url" field.
 func (u *WebhookUpsertBulk) SetURL(v string) *WebhookUpsertBulk {
 	return u.Update(func(s *WebhookUpsert) {
@@ -1533,34 +1541,6 @@ func (u *WebhookUpsertBulk) AddFailureCount(v uint32) *WebhookUpsertBulk {
 func (u *WebhookUpsertBulk) UpdateFailureCount() *WebhookUpsertBulk {
 	return u.Update(func(s *WebhookUpsert) {
 		s.UpdateFailureCount()
-	})
-}
-
-// SetAppID sets the "app_id" field.
-func (u *WebhookUpsertBulk) SetAppID(v uint32) *WebhookUpsertBulk {
-	return u.Update(func(s *WebhookUpsert) {
-		s.SetAppID(v)
-	})
-}
-
-// AddAppID adds v to the "app_id" field.
-func (u *WebhookUpsertBulk) AddAppID(v uint32) *WebhookUpsertBulk {
-	return u.Update(func(s *WebhookUpsert) {
-		s.AddAppID(v)
-	})
-}
-
-// UpdateAppID sets the "app_id" field to the value that was provided on create.
-func (u *WebhookUpsertBulk) UpdateAppID() *WebhookUpsertBulk {
-	return u.Update(func(s *WebhookUpsert) {
-		s.UpdateAppID()
-	})
-}
-
-// ClearAppID clears the value of the "app_id" field.
-func (u *WebhookUpsertBulk) ClearAppID() *WebhookUpsertBulk {
-	return u.Update(func(s *WebhookUpsert) {
-		s.ClearAppID()
 	})
 }
 

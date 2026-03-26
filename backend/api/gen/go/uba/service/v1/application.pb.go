@@ -146,13 +146,15 @@ func (Application_Type) EnumDescriptor() ([]byte, []int) {
 
 // UBA应用
 type Application struct {
-	state     protoimpl.MessageState `protogen:"open.v1"`
-	Id        uint32                 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`                                                // ID
-	Name      *string                `protobuf:"bytes,2,opt,name=name,proto3,oneof" json:"name,omitempty"`                                       // UBA应用名称
-	AppId     *string                `protobuf:"bytes,3,opt,name=app_id,json=appId,proto3,oneof" json:"app_id,omitempty"`                        // UBA应用唯一标识（上报时使用）
-	AppKey    *string                `protobuf:"bytes,4,opt,name=app_key,json=appKey,proto3,oneof" json:"app_key,omitempty"`                     // 应用Key
-	AppSecret *string                `protobuf:"bytes,5,opt,name=app_secret,json=appSecret,proto3,oneof" json:"app_secret,omitempty"`            // 应用密钥
-	Type      *Application_Type      `protobuf:"varint,6,opt,name=type,proto3,enum=uba.service.v1.Application_Type,oneof" json:"type,omitempty"` // 应用类型
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 内部主键（数据库使用，不对外暴露）
+	Id   uint32  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`          // ID
+	Name *string `protobuf:"bytes,2,opt,name=name,proto3,oneof" json:"name,omitempty"` // UBA应用名称
+	// 业务唯一标识（对外使用，上报/回调/配置都用它）
+	AppId     *string           `protobuf:"bytes,3,opt,name=app_id,json=appId,proto3,oneof" json:"app_id,omitempty"`                        // UBA应用唯一标识（上报时使用）
+	AppKey    *string           `protobuf:"bytes,4,opt,name=app_key,json=appKey,proto3,oneof" json:"app_key,omitempty"`                     // 应用Key
+	AppSecret *string           `protobuf:"bytes,5,opt,name=app_secret,json=appSecret,proto3,oneof" json:"app_secret,omitempty"`            // 应用密钥
+	Type      *Application_Type `protobuf:"varint,6,opt,name=type,proto3,enum=uba.service.v1.Application_Type,oneof" json:"type,omitempty"` // 应用类型
 	// 支持平台列表
 	Platforms     []string               `protobuf:"bytes,7,rep,name=platforms,proto3" json:"platforms,omitempty"`
 	Status        *Application_Status    `protobuf:"varint,8,opt,name=status,proto3,enum=uba.service.v1.Application_Status,oneof" json:"status,omitempty"` // 应用状态
@@ -401,6 +403,7 @@ type GetApplicationRequest struct {
 	// Types that are valid to be assigned to QueryBy:
 	//
 	//	*GetApplicationRequest_Id
+	//	*GetApplicationRequest_AppId
 	QueryBy       isGetApplicationRequest_QueryBy `protobuf_oneof:"query_by"`
 	ViewMask      *fieldmaskpb.FieldMask          `protobuf:"bytes,100,opt,name=view_mask,json=viewMask,proto3,oneof" json:"view_mask,omitempty"` // 视图字段过滤器，用于控制返回的字段
 	unknownFields protoimpl.UnknownFields
@@ -453,6 +456,15 @@ func (x *GetApplicationRequest) GetId() uint32 {
 	return 0
 }
 
+func (x *GetApplicationRequest) GetAppId() string {
+	if x != nil {
+		if x, ok := x.QueryBy.(*GetApplicationRequest_AppId); ok {
+			return x.AppId
+		}
+	}
+	return ""
+}
+
 func (x *GetApplicationRequest) GetViewMask() *fieldmaskpb.FieldMask {
 	if x != nil {
 		return x.ViewMask
@@ -468,7 +480,13 @@ type GetApplicationRequest_Id struct {
 	Id uint32 `protobuf:"varint,1,opt,name=id,proto3,oneof"` // ID
 }
 
+type GetApplicationRequest_AppId struct {
+	AppId string `protobuf:"bytes,2,opt,name=app_id,json=appId,proto3,oneof"` // 应用ID
+}
+
 func (*GetApplicationRequest_Id) isGetApplicationRequest_QueryBy() {}
+
+func (*GetApplicationRequest_AppId) isGetApplicationRequest_QueryBy() {}
 
 // 创建UBA应用 - 请求
 type CreateApplicationRequest struct {
@@ -777,10 +795,11 @@ const file_uba_service_v1_application_proto_rawDesc = "" +
 	"\v_deleted_at\"b\n" +
 	"\x17ListApplicationResponse\x121\n" +
 	"\x05items\x18\x01 \x03(\v2\x1b.uba.service.v1.ApplicationR\x05items\x12\x14\n" +
-	"\x05total\x18\x02 \x01(\x04R\x05total\"\xc8\x01\n" +
+	"\x05total\x18\x02 \x01(\x04R\x05total\"\xf3\x01\n" +
 	"\x15GetApplicationRequest\x12\x1c\n" +
 	"\x02id\x18\x01 \x01(\rB\n" +
-	"\xbaG\a\x18\x01\x92\x02\x02IDH\x00R\x02id\x12w\n" +
+	"\xbaG\a\x18\x01\x92\x02\x02IDH\x00R\x02id\x12)\n" +
+	"\x06app_id\x18\x02 \x01(\tB\x10\xbaG\r\x18\x01\x92\x02\b应用IDH\x00R\x05appId\x12w\n" +
 	"\tview_mask\x18d \x01(\v2\x1a.google.protobuf.FieldMaskB9\xbaG6\x92\x023视图字段过滤器，用于控制返回的字段H\x01R\bviewMask\x88\x01\x01B\n" +
 	"\n" +
 	"\bquery_byB\f\n" +
@@ -882,6 +901,7 @@ func file_uba_service_v1_application_proto_init() {
 	file_uba_service_v1_application_proto_msgTypes[0].OneofWrappers = []any{}
 	file_uba_service_v1_application_proto_msgTypes[2].OneofWrappers = []any{
 		(*GetApplicationRequest_Id)(nil),
+		(*GetApplicationRequest_AppId)(nil),
 	}
 	file_uba_service_v1_application_proto_msgTypes[4].OneofWrappers = []any{}
 	file_uba_service_v1_application_proto_msgTypes[5].OneofWrappers = []any{

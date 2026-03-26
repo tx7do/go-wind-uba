@@ -56,6 +56,7 @@ message Application {
     OTHER = 8;      // 其他
   }
 
+  // 内部主键（数据库使用，不对外暴露）
   uint32 id = 1 [
     (gnostic.openapi.v3.property) = { description: "ID" }
   ]; // ID
@@ -64,6 +65,7 @@ message Application {
     (gnostic.openapi.v3.property) = { description: "UBA应用名称" }
   ]; // UBA应用名称
 
+  // 业务唯一标识（对外使用，上报/回调/配置都用它）
   optional string app_id = 3 [
     json_name = "appId",
     (gnostic.openapi.v3.property) = { description: "UBA应用唯一标识（上报时使用）" }
@@ -139,6 +141,11 @@ message GetApplicationRequest {
       (gnostic.openapi.v3.property) = {description: "ID", read_only: true},
       json_name = "id"
     ]; // ID
+
+    string app_id = 2 [
+      (gnostic.openapi.v3.property) = {description: "应用ID", read_only: true},
+      json_name = "appId"
+    ]; // 应用ID
   }
 
   optional google.protobuf.FieldMask view_mask = 100 [

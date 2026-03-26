@@ -28,6 +28,8 @@ const (
 	FieldTenantID = "tenant_id"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
+	// FieldAppID holds the string denoting the app_id field in the database.
+	FieldAppID = "app_id"
 	// FieldURL holds the string denoting the url field in the database.
 	FieldURL = "url"
 	// FieldSecret holds the string denoting the secret field in the database.
@@ -40,8 +42,6 @@ const (
 	FieldLastTriggeredAt = "last_triggered_at"
 	// FieldFailureCount holds the string denoting the failure_count field in the database.
 	FieldFailureCount = "failure_count"
-	// FieldAppID holds the string denoting the app_id field in the database.
-	FieldAppID = "app_id"
 	// Table holds the table name of the webhook in the database.
 	Table = "uba_webhooks"
 )
@@ -57,13 +57,13 @@ var Columns = []string{
 	FieldDeletedBy,
 	FieldTenantID,
 	FieldName,
+	FieldAppID,
 	FieldURL,
 	FieldSecret,
 	FieldEventTypes,
 	FieldEnabled,
 	FieldLastTriggeredAt,
 	FieldFailureCount,
-	FieldAppID,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -146,6 +146,11 @@ func ByName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldName, opts...).ToFunc()
 }
 
+// ByAppID orders the results by the app_id field.
+func ByAppID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldAppID, opts...).ToFunc()
+}
+
 // ByURL orders the results by the url field.
 func ByURL(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldURL, opts...).ToFunc()
@@ -169,9 +174,4 @@ func ByLastTriggeredAt(opts ...sql.OrderTermOption) OrderOption {
 // ByFailureCount orders the results by the failure_count field.
 func ByFailureCount(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldFailureCount, opts...).ToFunc()
-}
-
-// ByAppID orders the results by the app_id field.
-func ByAppID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldAppID, opts...).ToFunc()
 }

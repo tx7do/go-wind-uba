@@ -31,6 +31,16 @@ const [BaseForm, baseFormApi] = useVbenForm({
   schema: [
     {
       component: 'Input',
+      fieldName: 'name',
+      label: $t('page.application.name'),
+      rules: 'required',
+      componentProps: {
+        placeholder: $t('ui.placeholder.input'),
+        allowClear: true,
+      },
+    },
+    {
+      component: 'Input',
       fieldName: 'appId',
       label: $t('page.application.appId'),
       rules: 'required',
