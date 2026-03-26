@@ -11,7 +11,7 @@ import (
 	v1 "github.com/tx7do/go-crud/api/gen/go/pagination/v1"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	durationpb "google.golang.org/protobuf/types/known/durationpb"
+	_ "google.golang.org/protobuf/types/known/durationpb"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	reflect "reflect"
@@ -44,7 +44,7 @@ type Session struct {
 	// 会话结束时间
 	EndTime *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=end_time,json=endTime,proto3" json:"end_time,omitempty"`
 	// 会话时长（起止时间间隔，单位秒）
-	Duration *durationpb.Duration `protobuf:"bytes,8,opt,name=duration,proto3" json:"duration,omitempty"`
+	DurationMs uint64 `protobuf:"varint,8,opt,name=duration_ms,json=durationMs,proto3" json:"duration_ms,omitempty"`
 	// 会话事件数（本会话内发生的事件总数）
 	EventCount uint32 `protobuf:"varint,9,opt,name=event_count,json=eventCount,proto3" json:"event_count,omitempty"`
 	// 页面浏览数（PV，页面浏览次数）
@@ -58,21 +58,26 @@ type Session struct {
 	// 是否跳出（单页会话，true 表示跳出）
 	IsBounce bool `protobuf:"varint,14,opt,name=is_bounce,json=isBounce,proto3" json:"is_bounce,omitempty"`
 	// 平台类型（会话发生的平台，如 Web、iOS、Android 等）
-	Platform Platform `protobuf:"varint,15,opt,name=platform,proto3,enum=uba.service.v1.Platform" json:"platform,omitempty"`
-	// IP城市（会话发生时的地理位置城市）
-	IpCity string `protobuf:"bytes,16,opt,name=ip_city,json=ipCity,proto3" json:"ip_city,omitempty"`
+	Platform *Platform `protobuf:"varint,15,opt,name=platform,proto3,enum=uba.service.v1.Platform,oneof" json:"platform,omitempty"`
+	// 操作系统，会话发生时的操作系统信息
+	Os string `protobuf:"bytes,16,opt,name=os,proto3" json:"os,omitempty"`
 	// 应用版本（会话发生时的应用版本号）
 	AppVersion string `protobuf:"bytes,17,opt,name=app_version,json=appVersion,proto3" json:"app_version,omitempty"`
+	// IP城市（会话发生时的地理位置城市）
+	IpCity  string `protobuf:"bytes,18,opt,name=ip_city,json=ipCity,proto3" json:"ip_city,omitempty"`
+	Country string `protobuf:"bytes,19,opt,name=country,proto3" json:"country,omitempty"`
 	// 会话内总金额（本会话内发生的总金额，字符串类型，支持多币种）
-	TotalAmount string `protobuf:"bytes,18,opt,name=total_amount,json=totalAmount,proto3" json:"total_amount,omitempty"`
+	TotalAmount string `protobuf:"bytes,20,opt,name=total_amount,json=totalAmount,proto3" json:"total_amount,omitempty"`
 	// 支付事件数（本会话内发生的支付事件总数）
-	PayEventCount uint32 `protobuf:"varint,19,opt,name=pay_event_count,json=payEventCount,proto3" json:"pay_event_count,omitempty"`
+	PayEventCount uint32 `protobuf:"varint,21,opt,name=pay_event_count,json=payEventCount,proto3" json:"pay_event_count,omitempty"`
 	// 风险等级（会话风险标记，枚举类型）
-	RiskLevel RiskLevel `protobuf:"varint,20,opt,name=risk_level,json=riskLevel,proto3,enum=uba.service.v1.RiskLevel" json:"risk_level,omitempty"`
+	RiskLevel *RiskLevel `protobuf:"varint,30,opt,name=risk_level,json=riskLevel,proto3,enum=uba.service.v1.RiskLevel,oneof" json:"risk_level,omitempty"`
 	// 风险标签（会话风险标记，字符串列表）
-	RiskTags []string `protobuf:"bytes,21,rep,name=risk_tags,json=riskTags,proto3" json:"risk_tags,omitempty"`
+	RiskTags []string `protobuf:"bytes,31,rep,name=risk_tags,json=riskTags,proto3" json:"risk_tags,omitempty"`
+	// 会话上下文
+	Context map[string]string `protobuf:"bytes,40,rep,name=context,proto3" json:"context,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	// 更新时间（会话最近一次更新的时间）
-	UpdateTime    *timestamppb.Timestamp `protobuf:"bytes,22,opt,name=update_time,json=updateTime,proto3" json:"update_time,omitempty"`
+	UpdateTime    *timestamppb.Timestamp `protobuf:"bytes,50,opt,name=update_time,json=updateTime,proto3" json:"update_time,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -156,11 +161,11 @@ func (x *Session) GetEndTime() *timestamppb.Timestamp {
 	return nil
 }
 
-func (x *Session) GetDuration() *durationpb.Duration {
+func (x *Session) GetDurationMs() uint64 {
 	if x != nil {
-		return x.Duration
+		return x.DurationMs
 	}
-	return nil
+	return 0
 }
 
 func (x *Session) GetEventCount() uint32 {
@@ -206,10 +211,24 @@ func (x *Session) GetIsBounce() bool {
 }
 
 func (x *Session) GetPlatform() Platform {
-	if x != nil {
-		return x.Platform
+	if x != nil && x.Platform != nil {
+		return *x.Platform
 	}
 	return Platform_PLATFORM_UNSPECIFIED
+}
+
+func (x *Session) GetOs() string {
+	if x != nil {
+		return x.Os
+	}
+	return ""
+}
+
+func (x *Session) GetAppVersion() string {
+	if x != nil {
+		return x.AppVersion
+	}
+	return ""
 }
 
 func (x *Session) GetIpCity() string {
@@ -219,9 +238,9 @@ func (x *Session) GetIpCity() string {
 	return ""
 }
 
-func (x *Session) GetAppVersion() string {
+func (x *Session) GetCountry() string {
 	if x != nil {
-		return x.AppVersion
+		return x.Country
 	}
 	return ""
 }
@@ -241,8 +260,8 @@ func (x *Session) GetPayEventCount() uint32 {
 }
 
 func (x *Session) GetRiskLevel() RiskLevel {
-	if x != nil {
-		return x.RiskLevel
+	if x != nil && x.RiskLevel != nil {
+		return *x.RiskLevel
 	}
 	return RiskLevel_RISK_LEVEL_UNSPECIFIED
 }
@@ -250,6 +269,13 @@ func (x *Session) GetRiskLevel() RiskLevel {
 func (x *Session) GetRiskTags() []string {
 	if x != nil {
 		return x.RiskTags
+	}
+	return nil
+}
+
+func (x *Session) GetContext() map[string]string {
+	if x != nil {
+		return x.Context
 	}
 	return nil
 }
@@ -541,7 +567,7 @@ var File_uba_service_v1_session_proto protoreflect.FileDescriptor
 
 const file_uba_service_v1_session_proto_rawDesc = "" +
 	"\n" +
-	"\x1cuba/service/v1/session.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1epagination/v1/pagination.proto\x1a\x1buba/service/v1/common.proto\"\xcd\x0f\n" +
+	"\x1cuba/service/v1/session.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1epagination/v1/pagination.proto\x1a\x1buba/service/v1/common.proto\"\x8b\x12\n" +
 	"\aSession\x129\n" +
 	"\x02id\x18\x01 \x01(\rB)\xbaG&\x92\x02#会话ID，唯一标识一条会话R\x02id\x12R\n" +
 	"\ttenant_id\x18\x02 \x01(\rB5\xbaG2\x92\x02/租户ID，多租户隔离，支持 SaaS 场景R\btenantId\x12<\n" +
@@ -550,8 +576,9 @@ const file_uba_service_v1_session_proto_rawDesc = "" +
 	"\x0eglobal_user_id\x18\x05 \x01(\tB2\xbaG/\x92\x02,全局用户ID，跨平台唯一标识用户R\fglobalUserId\x12S\n" +
 	"\n" +
 	"start_time\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampB\x18\xbaG\x15\x92\x02\x12会话起始时间R\tstartTime\x12O\n" +
-	"\bend_time\x18\a \x01(\v2\x1a.google.protobuf.TimestampB\x18\xbaG\x15\x92\x02\x12会话结束时间R\aendTime\x12j\n" +
-	"\bduration\x18\b \x01(\v2\x19.google.protobuf.DurationB3\xbaG0\x92\x02-会话时长，起止时间间隔，单位秒R\bduration\x12Z\n" +
+	"\bend_time\x18\a \x01(\v2\x1a.google.protobuf.TimestampB\x18\xbaG\x15\x92\x02\x12会话结束时间R\aendTime\x12T\n" +
+	"\vduration_ms\x18\b \x01(\x04B3\xbaG0\x92\x02-会话时长，起止时间间隔，单位秒R\n" +
+	"durationMs\x12Z\n" +
 	"\vevent_count\x18\t \x01(\rB9\xbaG6\x92\x023会话事件数，本会话内发生的事件总数R\n" +
 	"eventCount\x12Z\n" +
 	"\x0fpage_view_count\x18\n" +
@@ -560,18 +587,26 @@ const file_uba_service_v1_session_proto_rawDesc = "" +
 	"\n" +
 	"entry_page\x18\f \x01(\tB'\xbaG$\x92\x02!入口页面，会话起始页面R\tentryPage\x12D\n" +
 	"\texit_page\x18\r \x01(\tB'\xbaG$\x92\x02!出口页面，会话结束页面R\bexitPage\x12R\n" +
-	"\tis_bounce\x18\x0e \x01(\bB5\xbaG2\x92\x02/是否跳出，单页会话，true 表示跳出R\bisBounce\x12~\n" +
-	"\bplatform\x18\x0f \x01(\x0e2\x18.uba.service.v1.PlatformBH\xbaGE\x92\x02B平台类型，会话发生的平台，如 Web、iOS、Android 等R\bplatform\x12N\n" +
-	"\aip_city\x18\x10 \x01(\tB5\xbaG2\x92\x02/IP城市，会话发生时的地理位置城市R\x06ipCity\x12W\n" +
+	"\tis_bounce\x18\x0e \x01(\bB5\xbaG2\x92\x02/是否跳出，单页会话，true 表示跳出R\bisBounce\x12\x83\x01\n" +
+	"\bplatform\x18\x0f \x01(\x0e2\x18.uba.service.v1.PlatformBH\xbaGE\x92\x02B平台类型，会话发生的平台，如 Web、iOS、Android 等H\x00R\bplatform\x88\x01\x01\x12I\n" +
+	"\x02os\x18\x10 \x01(\tB9\xbaG6\x92\x023操作系统，会话发生时的操作系统信息R\x02os\x12W\n" +
 	"\vapp_version\x18\x11 \x01(\tB6\xbaG3\x92\x020应用版本，会话发生时的应用版本号R\n" +
-	"appVersion\x12\x80\x01\n" +
-	"\ftotal_amount\x18\x12 \x01(\tB]\xbaGZ\x92\x02W会话内总金额，本会话内发生的总金额，字符串类型，支持多币种R\vtotalAmount\x12g\n" +
-	"\x0fpay_event_count\x18\x13 \x01(\rB?\xbaG<\x92\x029支付事件数，本会话内发生的支付事件总数R\rpayEventCount\x12p\n" +
+	"appVersion\x12N\n" +
+	"\aip_city\x18\x12 \x01(\tB5\xbaG2\x92\x02/IP城市，会话发生时的地理位置城市R\x06ipCity\x12M\n" +
+	"\acountry\x18\x13 \x01(\tB3\xbaG0\x92\x02-国家，会话发生时的地理位置国家R\acountry\x12\x80\x01\n" +
+	"\ftotal_amount\x18\x14 \x01(\tB]\xbaGZ\x92\x02W会话内总金额，本会话内发生的总金额，字符串类型，支持多币种R\vtotalAmount\x12g\n" +
+	"\x0fpay_event_count\x18\x15 \x01(\rB?\xbaG<\x92\x029支付事件数，本会话内发生的支付事件总数R\rpayEventCount\x12u\n" +
 	"\n" +
-	"risk_level\x18\x14 \x01(\x0e2\x19.uba.service.v1.RiskLevelB6\xbaG3\x92\x020风险等级，会话风险标记，枚举类型R\triskLevel\x12V\n" +
-	"\trisk_tags\x18\x15 \x03(\tB9\xbaG6\x92\x023风险标签，会话风险标记，字符串列表R\briskTags\x12s\n" +
-	"\vupdate_time\x18\x16 \x01(\v2\x1a.google.protobuf.TimestampB6\xbaG3\x92\x020更新时间，会话最近一次更新的时间R\n" +
-	"updateTime\"Z\n" +
+	"risk_level\x18\x1e \x01(\x0e2\x19.uba.service.v1.RiskLevelB6\xbaG3\x92\x020风险等级，会话风险标记，枚举类型H\x01R\triskLevel\x88\x01\x01\x12V\n" +
+	"\trisk_tags\x18\x1f \x03(\tB9\xbaG6\x92\x023风险标签，会话风险标记，字符串列表R\briskTags\x12U\n" +
+	"\acontext\x18( \x03(\v2$.uba.service.v1.Session.ContextEntryB\x15\xbaG\x12\x92\x02\x0f会话上下文R\acontext\x12s\n" +
+	"\vupdate_time\x182 \x01(\v2\x1a.google.protobuf.TimestampB6\xbaG3\x92\x020更新时间，会话最近一次更新的时间R\n" +
+	"updateTime\x1a:\n" +
+	"\fContextEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\v\n" +
+	"\t_platformB\r\n" +
+	"\v_risk_level\"Z\n" +
 	"\x13ListSessionResponse\x12-\n" +
 	"\x05items\x18\x01 \x03(\v2\x17.uba.service.v1.SessionR\x05items\x12\x14\n" +
 	"\x05total\x18\x02 \x01(\x04R\x05total\"3\n" +
@@ -604,7 +639,7 @@ func file_uba_service_v1_session_proto_rawDescGZIP() []byte {
 	return file_uba_service_v1_session_proto_rawDescData
 }
 
-var file_uba_service_v1_session_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_uba_service_v1_session_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_uba_service_v1_session_proto_goTypes = []any{
 	(*Session)(nil),                   // 0: uba.service.v1.Session
 	(*ListSessionResponse)(nil),       // 1: uba.service.v1.ListSessionResponse
@@ -613,20 +648,20 @@ var file_uba_service_v1_session_proto_goTypes = []any{
 	(*BatchCreateSessionRequest)(nil), // 4: uba.service.v1.BatchCreateSessionRequest
 	(*UpdateSessionRequest)(nil),      // 5: uba.service.v1.UpdateSessionRequest
 	(*DeleteSessionRequest)(nil),      // 6: uba.service.v1.DeleteSessionRequest
-	(*timestamppb.Timestamp)(nil),     // 7: google.protobuf.Timestamp
-	(*durationpb.Duration)(nil),       // 8: google.protobuf.Duration
+	nil,                               // 7: uba.service.v1.Session.ContextEntry
+	(*timestamppb.Timestamp)(nil),     // 8: google.protobuf.Timestamp
 	(Platform)(0),                     // 9: uba.service.v1.Platform
 	(RiskLevel)(0),                    // 10: uba.service.v1.RiskLevel
 	(*v1.PagingRequest)(nil),          // 11: pagination.PagingRequest
 	(*emptypb.Empty)(nil),             // 12: google.protobuf.Empty
 }
 var file_uba_service_v1_session_proto_depIdxs = []int32{
-	7,  // 0: uba.service.v1.Session.start_time:type_name -> google.protobuf.Timestamp
-	7,  // 1: uba.service.v1.Session.end_time:type_name -> google.protobuf.Timestamp
-	8,  // 2: uba.service.v1.Session.duration:type_name -> google.protobuf.Duration
-	9,  // 3: uba.service.v1.Session.platform:type_name -> uba.service.v1.Platform
-	10, // 4: uba.service.v1.Session.risk_level:type_name -> uba.service.v1.RiskLevel
-	7,  // 5: uba.service.v1.Session.update_time:type_name -> google.protobuf.Timestamp
+	8,  // 0: uba.service.v1.Session.start_time:type_name -> google.protobuf.Timestamp
+	8,  // 1: uba.service.v1.Session.end_time:type_name -> google.protobuf.Timestamp
+	9,  // 2: uba.service.v1.Session.platform:type_name -> uba.service.v1.Platform
+	10, // 3: uba.service.v1.Session.risk_level:type_name -> uba.service.v1.RiskLevel
+	7,  // 4: uba.service.v1.Session.context:type_name -> uba.service.v1.Session.ContextEntry
+	8,  // 5: uba.service.v1.Session.update_time:type_name -> google.protobuf.Timestamp
 	0,  // 6: uba.service.v1.ListSessionResponse.items:type_name -> uba.service.v1.Session
 	0,  // 7: uba.service.v1.CreateSessionRequest.data:type_name -> uba.service.v1.Session
 	0,  // 8: uba.service.v1.BatchCreateSessionRequest.items:type_name -> uba.service.v1.Session
@@ -652,13 +687,14 @@ func file_uba_service_v1_session_proto_init() {
 		return
 	}
 	file_uba_service_v1_common_proto_init()
+	file_uba_service_v1_session_proto_msgTypes[0].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_uba_service_v1_session_proto_rawDesc), len(file_uba_service_v1_session_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   7,
+			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

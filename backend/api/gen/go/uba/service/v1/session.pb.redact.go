@@ -110,7 +110,7 @@ func (x *Session) Redact() string {
 
 	// Safe field: EndTime
 
-	// Safe field: Duration
+	// Safe field: DurationMs
 
 	// Safe field: EventCount
 
@@ -126,9 +126,13 @@ func (x *Session) Redact() string {
 
 	// Safe field: Platform
 
-	// Safe field: IpCity
+	// Safe field: Os
 
 	// Safe field: AppVersion
+
+	// Safe field: IpCity
+
+	// Safe field: Country
 
 	// Safe field: TotalAmount
 
@@ -137,6 +141,8 @@ func (x *Session) Redact() string {
 	// Safe field: RiskLevel
 
 	// Safe field: RiskTags
+
+	// Safe field: Context
 
 	// Safe field: UpdateTime
 	return x.String()

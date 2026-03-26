@@ -83,7 +83,7 @@ ALTER TABLE events_fact ADD INDEX idx_event_name (event_name) USING INVERTED;
 -- 2. 用户会话事实表
 -- ============================================================
 CREATE TABLE IF NOT EXISTS sessions_fact (
-    session_id      BIGINT NOT NULL COMMENT '会话唯一ID',
+    id              BIGINT NOT NULL COMMENT '会话唯一ID',
     tenant_id       INT NOT NULL COMMENT '租户ID',
     session_date    DATE NOT NULL COMMENT '会话日期',
     user_id         INT DEFAULT 0 COMMENT '登录用户ID',
@@ -111,9 +111,9 @@ CREATE TABLE IF NOT EXISTS sessions_fact (
     created_at      DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     updated_at      DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间'
 )
-    UNIQUE KEY(session_id, tenant_id, session_date)
+    UNIQUE KEY(id, tenant_id, session_date)
     PARTITION BY RANGE(session_date) ()
-    DISTRIBUTED BY HASH(session_id, tenant_id) BUCKETS 16
+    DISTRIBUTED BY HASH(id, tenant_id) BUCKETS 16
     PROPERTIES (
                    "replication_num" = "1",
                    "dynamic_partition.enable" = "true",

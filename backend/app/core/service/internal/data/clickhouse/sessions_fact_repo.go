@@ -16,13 +16,15 @@ import (
 )
 
 type SessionsFactRepo struct {
-	db                 *clickhouseCrud.Client
-	log                *log.Helper
-	tableName          string
-	mapper             *mapper.CopierMapper[ubaV1.Session, schema.SessionsFact]
+	db        *clickhouseCrud.Client
+	log       *log.Helper
+	tableName string
+
+	mapper     *mapper.CopierMapper[ubaV1.Session, schema.SessionsFact]
+	repository *clickhouseCrud.Repository[ubaV1.Session, schema.SessionsFact]
+
 	platformConverter  *mapper.EnumTypeConverter[ubaV1.Platform, string]
 	riskLevelConverter *mapper.EnumTypeConverter[ubaV1.RiskLevel, string]
-	repository         *clickhouseCrud.Repository[ubaV1.Session, schema.SessionsFact]
 }
 
 func NewSessionsFactRepo(
@@ -52,8 +54,10 @@ func (r *SessionsFactRepo) init() {
 		r.tableName,
 		r.log,
 	)
+
 	r.mapper.AppendConverters(copierutil.NewTimeStringConverterPair())
 	r.mapper.AppendConverters(copierutil.NewTimeTimestamppbConverterPair())
+
 	r.mapper.AppendConverters(r.platformConverter.NewConverterPair())
 	r.mapper.AppendConverters(r.riskLevelConverter.NewConverterPair())
 }

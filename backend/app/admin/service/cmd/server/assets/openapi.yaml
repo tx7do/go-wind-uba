@@ -9430,8 +9430,7 @@ components:
                     type: string
                     description: 会话结束时间
                     format: date-time
-                duration:
-                    pattern: ^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$
+                durationMs:
                     type: string
                     description: 会话时长，起止时间间隔，单位秒
                 eventCount:
@@ -9468,12 +9467,18 @@ components:
                     type: string
                     description: 平台类型，会话发生的平台，如 Web、iOS、Android 等
                     format: enum
-                ipCity:
+                os:
                     type: string
-                    description: IP城市，会话发生时的地理位置城市
+                    description: 操作系统，会话发生时的操作系统信息
                 appVersion:
                     type: string
                     description: 应用版本，会话发生时的应用版本号
+                ipCity:
+                    type: string
+                    description: IP城市，会话发生时的地理位置城市
+                country:
+                    type: string
+                    description: 国家，会话发生时的地理位置国家
                 totalAmount:
                     type: string
                     description: 会话内总金额，本会话内发生的总金额，字符串类型，支持多币种
@@ -9496,6 +9501,11 @@ components:
                     items:
                         type: string
                     description: 风险标签，会话风险标记，字符串列表
+                context:
+                    type: object
+                    additionalProperties:
+                        type: string
+                    description: 会话上下文
                 updateTime:
                     type: string
                     description: 更新时间，会话最近一次更新的时间

@@ -519,6 +519,29 @@
     "ver": "版本号"
   },
   "session": {
-    "moduleName": "会话管理"
+    "moduleName": "会话管理",
+    "id": "ID",
+    "userId": "用户ID",
+    "deviceId": "设备ID",
+    "globalUserId": "全局用户ID",
+    "startTime": "起始时间",
+    "endTime": "结束时间",
+    "durationMs": "会话时长",
+    "eventCount": "会话事件数",
+    "pageViewCount": "页面浏览数（PV）",
+    "actionCount": "交互次数",
+    "entryPage": "入口页面",
+    "exitPage": "出口页面",
+    "isBounce": "是否跳出",
+    "platform": "平台类型",
+    "os": "操作系统",
+    "appVersion": "应用版本",
+    "ipCity": "IP城市",
+    "country": "国家",
+    "totalAmount": "会话内总金额",
+    "payEventCount": "支付事件数",
+    "riskLevel": "风险等级",
+    "riskTags": "风险标签",
+    "context": "会话上下文"
   }
 }

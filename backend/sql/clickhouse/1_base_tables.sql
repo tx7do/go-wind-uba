@@ -105,7 +105,7 @@ CREATE TABLE IF NOT EXISTS gw_uba.events_fact
 CREATE TABLE IF NOT EXISTS gw_uba.sessions_fact
 (
     -- ========== 主键 & 路由字段 ==========
-    session_id      UInt64 COMMENT '会话唯一 ID（写入层生成，用于关联 events_fact.session_id）',
+    id              UInt64 COMMENT '会话唯一 ID（写入层生成，用于关联 events_fact.session_id）',
     tenant_id       UInt32 COMMENT '租户 ID（SaaS 多租户隔离，所有查询必须带此条件）',
 
     -- ========== 主体：Who（谁的会话）==========
@@ -158,7 +158,7 @@ CREATE TABLE IF NOT EXISTS gw_uba.sessions_fact
     INDEX idx_entry_page entry_page TYPE ngrambf_v1(3, 1024, 3, 0) GRANULARITY 2 -- 加速入口页面模糊查询
 ) ENGINE = ReplacingMergeTree(updated_at) -- 使用 ReplacingMergeTree（会话开始时创建，结束时需要更新 end_time 和 duration_ms）
       PARTITION BY toYYYYMM(session_date) -- 按月分区，平衡管理粒度和查询性能
-      ORDER BY (tenant_id, session_date, user_id, start_time) -- 按租户 + 日期 + 用户 + 开始时间排序，优化用户会话查询
+      ORDER BY (tenant_id, id, session_date) -- 按租户 + 日期 + ID 排序，优化用户会话查询
       TTL session_date + INTERVAL 90 DAY -- 90 天前的会话自动清理，节省存储空间
       SETTINGS
           index_granularity = 8192, -- 索引粒度，平衡查询性能和存储开销

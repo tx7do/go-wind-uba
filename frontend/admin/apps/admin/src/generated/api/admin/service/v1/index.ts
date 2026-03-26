@@ -7119,7 +7119,7 @@ export type ubaservicev1_Session = {
   // 会话结束时间
   endTime: wellKnownTimestamp | undefined;
   // 会话时长（起止时间间隔，单位秒）
-  duration: wellKnownDuration | undefined;
+  durationMs: number | undefined;
   // 会话事件数（本会话内发生的事件总数）
   eventCount: number | undefined;
   // 页面浏览数（PV，页面浏览次数）
@@ -7133,19 +7133,24 @@ export type ubaservicev1_Session = {
   // 是否跳出（单页会话，true 表示跳出）
   isBounce: boolean | undefined;
   // 平台类型（会话发生的平台，如 Web、iOS、Android 等）
-  platform: ubaservicev1_Platform | undefined;
-  // IP城市（会话发生时的地理位置城市）
-  ipCity: string | undefined;
+  platform?: ubaservicev1_Platform;
+  // 操作系统，会话发生时的操作系统信息
+  os: string | undefined;
   // 应用版本（会话发生时的应用版本号）
   appVersion: string | undefined;
+  // IP城市（会话发生时的地理位置城市）
+  ipCity: string | undefined;
+  country: string | undefined;
   // 会话内总金额（本会话内发生的总金额，字符串类型，支持多币种）
   totalAmount: string | undefined;
   // 支付事件数（本会话内发生的支付事件总数）
   payEventCount: number | undefined;
   // 风险等级（会话风险标记，枚举类型）
-  riskLevel: ubaservicev1_RiskLevel | undefined;
+  riskLevel?: ubaservicev1_RiskLevel;
   // 风险标签（会话风险标记，字符串列表）
   riskTags: string[] | undefined;
+  // 会话上下文
+  context: { [key: string]: string } | undefined;
   // 更新时间（会话最近一次更新的时间）
   updateTime: wellKnownTimestamp | undefined;
 };

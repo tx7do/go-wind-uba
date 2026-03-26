@@ -70,8 +70,8 @@ message Session {
     (gnostic.openapi.v3.property) = {description: "会话结束时间"}
   ];
   // 会话时长（起止时间间隔，单位秒）
-  google.protobuf.Duration duration = 8 [
-    json_name = "duration",
+  uint64 duration_ms = 8 [
+    json_name = "durationMs",
     (gnostic.openapi.v3.property) = {description: "会话时长，起止时间间隔，单位秒"}
   ];
 
@@ -107,45 +107,61 @@ message Session {
   ];
 
   // 平台类型（会话发生的平台，如 Web、iOS、Android 等）
-  Platform platform = 15 [
+  optional Platform platform = 15 [
     json_name = "platform",
     (gnostic.openapi.v3.property) = {description: "平台类型，会话发生的平台，如 Web、iOS、Android 等"}
   ];
-  // IP城市（会话发生时的地理位置城市）
-  string ip_city = 16 [
-    json_name = "ipCity",
-    (gnostic.openapi.v3.property) = {description: "IP城市，会话发生时的地理位置城市"}
+  // 操作系统，会话发生时的操作系统信息
+  string os = 16 [
+    json_name = "os",
+    (gnostic.openapi.v3.property) = {description: "操作系统，会话发生时的操作系统信息"}
   ];
   // 应用版本（会话发生时的应用版本号）
   string app_version = 17 [
     json_name = "appVersion",
     (gnostic.openapi.v3.property) = {description: "应用版本，会话发生时的应用版本号"}
   ];
+  // IP城市（会话发生时的地理位置城市）
+  string ip_city = 18 [
+    json_name = "ipCity",
+    (gnostic.openapi.v3.property) = {description: "IP城市，会话发生时的地理位置城市"}
+  ];
+  string country = 19 [
+    json_name = "country",
+    (gnostic.openapi.v3.property) = {description: "国家，会话发生时的地理位置国家"}
+  ];
 
   // 会话内总金额（本会话内发生的总金额，字符串类型，支持多币种）
-  string total_amount = 18 [
+  string total_amount = 20 [
     json_name = "totalAmount",
     (gnostic.openapi.v3.property) = {description: "会话内总金额，本会话内发生的总金额，字符串类型，支持多币种"}
   ];
   // 支付事件数（本会话内发生的支付事件总数）
-  uint32 pay_event_count = 19 [
+  uint32 pay_event_count = 21 [
     json_name = "payEventCount",
     (gnostic.openapi.v3.property) = {description: "支付事件数，本会话内发生的支付事件总数"}
   ];
 
   // 风险等级（会话风险标记，枚举类型）
-  RiskLevel risk_level = 20 [
+  optional RiskLevel risk_level = 30 [
     json_name = "riskLevel",
     (gnostic.openapi.v3.property) = {description: "风险等级，会话风险标记，枚举类型"}
   ];
   // 风险标签（会话风险标记，字符串列表）
-  repeated string risk_tags = 21 [
+  repeated string risk_tags = 31 [
     json_name = "riskTags",
     (gnostic.openapi.v3.property) = {description: "风险标签，会话风险标记，字符串列表"}
   ];
 
+  // 会话上下文
+  map<string, string> context = 40 [
+    json_name = "context",
+    (gnostic.openapi.v3.property) = {description: "会话上下文"}
+  ];
+
+
   // 更新时间（会话最近一次更新的时间）
-  google.protobuf.Timestamp update_time = 22 [
+  google.protobuf.Timestamp update_time = 50 [
     json_name = "updateTime",
     (gnostic.openapi.v3.property) = {description: "更新时间，会话最近一次更新的时间"}
   ];

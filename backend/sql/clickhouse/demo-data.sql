@@ -74,3 +74,79 @@ VALUES
         {'country':'CN','province':'Zhejiang','city':'Hangzhou','isp':'ChinaMobile'},'PLATFORM_ANDROID','mobile',
         {'guild_id':'1005','server':'cn'},1,now(),now());
 
+
+INSERT INTO gw_uba.sessions_fact
+(
+    id,tenant_id,user_id,device_id,global_user_id,
+    start_time,end_time,duration_ms,event_count,page_view_count,action_count,
+    entry_page,exit_page,is_bounce,
+    platform,os,app_version,ip_city,country,
+    total_amount,pay_event_count,
+    risk_level,risk_tags,
+    context,created_at,updated_at
+)
+VALUES
+    (10001001,0,10001,'device_android_1001','GLOBAL_USER_10001',
+     '2026-03-26 10:10:00.456','2026-03-26 10:15:30.123',330000,18,6,12,
+     '/home','/checkout',0,
+     'PLATFORM_ANDROID','Android 14','v2.5.0','Beijing','CN',
+     688.00,1,
+     'RISK_LEVEL_NORMAL',[],
+        {'server_id':'s1','zone':'cn-east','ab_group':'A'},now(),now()),
+
+    (10002001,0,10002,'device_web_1002','GLOBAL_USER_10002',
+     '2026-03-26 11:20:10.789','2026-03-26 11:22:45.321',155000,9,3,6,
+     '/list','/exit',1,
+     'PLATFORM_WEB','Windows 11','web','Shanghai','CN',
+     0.00,0,
+     'RISK_LEVEL_NORMAL',[],
+        {'server_id':'s1','zone':'cn-east','ab_group':'B'},now(),now()),
+
+    (10003001,1,10003,'device_ios_1003','GLOBAL_USER_10003',
+     '2026-03-26 14:04:30.555','2026-03-26 14:05:11.222',41000,5,2,3,
+     '/login','/pay',0,
+     'PLATFORM_IOS','iOS 17','v2.5.1','Guangzhou','CN',
+     299.00,1,
+     'RISK_LEVEL_NORMAL',[],
+        {'server_id':'us1','zone':'us-west','ab_group':'A'},now(),now()),
+
+    (10004001,1,0,'device_anon_1004','',
+     '2026-03-26 15:30:00.111','2026-03-26 15:38:22.333',502000,24,8,16,
+     '/ad','/close',0,
+     'PLATFORM_ANDROID','Android 13','v2.4.0','Dallas','US',
+     0.00,0,
+     'RISK_LEVEL_SUSPICIOUS',['abnormal_location'],
+        {'server_id':'us1','zone':'us-west','ab_group':'B'},now(),now()),
+
+    (10005001,2,10004,'device_mini_1005','GLOBAL_USER_10004',
+     '2026-03-26 16:37:20.999','2026-03-26 16:40:15.666',175000,12,4,8,
+     '/wechat_mini','/coupon',0,
+     'PLATFORM_MINI_PROGRAM','WeChat','v1.8.0','Singapore','SG',
+     99.00,1,
+     'RISK_LEVEL_NORMAL',[],
+        {'server_id':'sg1','zone':'sg','ab_group':'A'},now(),now()),
+
+    (10006001,2,10005,'device_web_1006','GLOBAL_USER_10005',
+     '2026-03-26 17:10:05.444','2026-03-26 17:10:15.777',10000,2,1,1,
+     '/push','/back',1,
+     'PLATFORM_WEB','MacOS','web','Singapore','SG',
+     0.00,0,
+     'RISK_LEVEL_NORMAL',[],
+        {'server_id':'sg1','zone':'sg','ab_group':'B'},now(),now()),
+
+    (10001002,0,10001,'device_android_1001','GLOBAL_USER_10001',
+     '2026-03-26 19:18:10.456','2026-03-26 19:20:30.123',140000,10,3,7,
+     '/member','/repay',0,
+     'PLATFORM_ANDROID','Android 14','v2.5.0','Beijing','CN',
+     399.00,1,
+     'RISK_LEVEL_NORMAL',[],
+        {'server_id':'s1','zone':'cn-east','ab_group':'A'},now(),now()),
+
+    (10007001,0,10006,'device_web_1007','GLOBAL_USER_10006',
+     '2026-03-26 20:03:00.666','2026-03-26 20:05:10.333',130000,8,3,5,
+     '/search','/buy',0,
+     'PLATFORM_WEB','Windows 11','web','Hangzhou','CN',
+     158.00,1,
+     'RISK_LEVEL_NORMAL',[],
+        {'server_id':'s1','zone':'cn-east','ab_group':'A'},now(),now());
+

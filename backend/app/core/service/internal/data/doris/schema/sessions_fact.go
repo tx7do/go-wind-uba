@@ -1,9 +1,13 @@
 package schema
 
-import "time"
+import (
+	"time"
+
+	"github.com/shopspring/decimal"
+)
 
 type SessionsFact struct {
-	SessionID     *uint64           `json:"session_id"`
+	ID            *uint64           `ch:"id"`
 	TenantID      *uint32           `json:"tenant_id"`
 	UserID        *uint32           `json:"user_id"`
 	DeviceID      *string           `json:"device_id"`
@@ -23,7 +27,7 @@ type SessionsFact struct {
 	AppVersion    *string           `json:"app_version"`
 	IpCity        *string           `json:"ip_city"`
 	Country       *string           `json:"country"`
-	TotalAmount   *float64          `json:"total_amount"`
+	TotalAmount   *decimal.Decimal  `json:"total_amount"`
 	PayEventCount *uint32           `json:"pay_event_count"`
 	RiskLevel     *string           `json:"risk_level"`
 	RiskTags      []string          `json:"risk_tags"`

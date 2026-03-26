@@ -9,7 +9,13 @@ import { LucideTrash2 } from '@vben/icons';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { $t } from '#/locales';
-import { useSessionListStore } from '#/stores';
+import {
+  platformToColor,
+  platformToName,
+  riskLevelToColor,
+  riskLevelToName,
+  useSessionListStore,
+} from '#/stores';
 
 const sessionListStore = useSessionListStore();
 
@@ -74,29 +80,91 @@ const gridOptions: VxeGridProps<Session> = {
     },
   },
   columns: [
-    { title: $t('ui.field.sessionId'), field: 'id', width: 200 },
-    { title: $t('ui.field.userId'), field: 'userId', width: 100 },
-    { title: $t('ui.field.username'), field: 'username', width: 120 },
-    { title: $t('ui.field.ipAddress'), field: 'ip', width: 140 },
-    { title: $t('ui.field.userAgent'), field: 'userAgent', width: 200 },
+    { title: $t('page.session.id'), field: 'id', minWidth: 200, fixed: 'left' },
+    { title: $t('page.session.userId'), field: 'userId', minWidth: 100 },
     {
-      title: $t('ui.table.createdAt'),
-      field: 'createdAt',
-      formatter: 'formatDateTime',
-      width: 160,
+      title: $t('page.session.deviceId'),
+      field: 'deviceId',
+      minWidth: 200,
+      align: 'left',
     },
     {
-      title: $t('ui.field.expiresAt'),
-      field: 'expiresAt',
+      title: $t('page.session.globalUserId'),
+      field: 'globalUserId',
+      minWidth: 200,
+      align: 'left',
+    },
+    {
+      title: $t('page.session.durationMs'),
+      field: 'durationMs',
+      minWidth: 100,
+    },
+    {
+      title: $t('page.session.eventCount'),
+      field: 'eventCount',
+      minWidth: 100,
+    },
+    {
+      title: $t('page.session.pageViewCount'),
+      field: 'pageViewCount',
+      minWidth: 100,
+    },
+    {
+      title: $t('page.session.actionCount'),
+      field: 'actionCount',
+      minWidth: 100,
+    },
+    { title: $t('page.session.entryPage'), field: 'entryPage', minWidth: 120 },
+    { title: $t('page.session.exitPage'), field: 'exitPage', minWidth: 120 },
+    { title: $t('page.session.isBounce'), field: 'isBounce', minWidth: 100 },
+    {
+      title: $t('page.session.platform'),
+      field: 'platform',
+      minWidth: 100,
+      slots: { default: 'platform' },
+    },
+    { title: $t('page.session.os'), field: 'os', minWidth: 100 },
+    {
+      title: $t('page.session.appVersion'),
+      field: 'appVersion',
+      minWidth: 100,
+    },
+    { title: $t('page.session.ipCity'), field: 'ipCity', minWidth: 100 },
+    { title: $t('page.session.country'), field: 'country', minWidth: 100 },
+    {
+      title: $t('page.session.totalAmount'),
+      field: 'totalAmount',
+      minWidth: 100,
+    },
+    {
+      title: $t('page.session.payEventCount'),
+      field: 'payEventCount',
+      minWidth: 100,
+    },
+    {
+      title: $t('page.session.riskLevel'),
+      field: 'riskLevel',
+      minWidth: 100,
+      slots: { default: 'riskLevel' },
+    },
+    {
+      title: $t('page.session.startTime'),
+      field: 'startTime',
       formatter: 'formatDateTime',
-      width: 160,
+      minWidth: 160,
+    },
+    {
+      title: $t('page.session.endTime'),
+      field: 'endTime',
+      formatter: 'formatDateTime',
+      minWidth: 160,
     },
     {
       title: $t('ui.table.action'),
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      width: 120,
+      minWidth: 120,
     },
   ],
 };
@@ -128,6 +196,16 @@ async function handleDelete(row: any) {
 <template>
   <Page auto-content-height>
     <Grid :title="$t('menu.dataAnalysis.session')">
+      <template #platform="{ row }">
+        <a-tag :color="platformToColor(row.platform)">
+          {{ platformToName(row.platform) }}
+        </a-tag>
+      </template>
+      <template #riskLevel="{ row }">
+        <a-tag :color="riskLevelToColor(row.riskLevel)">
+          {{ riskLevelToName(row.riskLevel) }}
+        </a-tag>
+      </template>
       <template #action="{ row }">
         <a-popconfirm
           :cancel-text="$t('ui.button.cancel')"

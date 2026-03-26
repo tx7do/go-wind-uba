@@ -124,34 +124,7 @@ func (m *Session) validate(all bool) error {
 		}
 	}
 
-	if all {
-		switch v := interface{}(m.GetDuration()).(type) {
-		case interface{ ValidateAll() error }:
-			if err := v.ValidateAll(); err != nil {
-				errors = append(errors, SessionValidationError{
-					field:  "Duration",
-					reason: "embedded message failed validation",
-					cause:  err,
-				})
-			}
-		case interface{ Validate() error }:
-			if err := v.Validate(); err != nil {
-				errors = append(errors, SessionValidationError{
-					field:  "Duration",
-					reason: "embedded message failed validation",
-					cause:  err,
-				})
-			}
-		}
-	} else if v, ok := interface{}(m.GetDuration()).(interface{ Validate() error }); ok {
-		if err := v.Validate(); err != nil {
-			return SessionValidationError{
-				field:  "Duration",
-				reason: "embedded message failed validation",
-				cause:  err,
-			}
-		}
-	}
+	// no validation rules for DurationMs
 
 	// no validation rules for EventCount
 
@@ -165,17 +138,19 @@ func (m *Session) validate(all bool) error {
 
 	// no validation rules for IsBounce
 
-	// no validation rules for Platform
+	// no validation rules for Os
+
+	// no validation rules for AppVersion
 
 	// no validation rules for IpCity
 
-	// no validation rules for AppVersion
+	// no validation rules for Country
 
 	// no validation rules for TotalAmount
 
 	// no validation rules for PayEventCount
 
-	// no validation rules for RiskLevel
+	// no validation rules for Context
 
 	if all {
 		switch v := interface{}(m.GetUpdateTime()).(type) {
@@ -204,6 +179,14 @@ func (m *Session) validate(all bool) error {
 				cause:  err,
 			}
 		}
+	}
+
+	if m.Platform != nil {
+		// no validation rules for Platform
+	}
+
+	if m.RiskLevel != nil {
+		// no validation rules for RiskLevel
 	}
 
 	if len(errors) > 0 {

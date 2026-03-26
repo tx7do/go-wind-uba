@@ -16,11 +16,15 @@ import (
 )
 
 type SessionsFactRepo struct {
-	db         *dorisCrud.Client
-	log        *log.Helper
-	tableName  string
+	db        *dorisCrud.Client
+	log       *log.Helper
+	tableName string
+
 	mapper     *mapper.CopierMapper[ubaV1.Session, schema.SessionsFact]
 	repository *dorisCrud.Repository[ubaV1.Session, schema.SessionsFact]
+
+	platformConverter  *mapper.EnumTypeConverter[ubaV1.Platform, string]
+	riskLevelConverter *mapper.EnumTypeConverter[ubaV1.RiskLevel, string]
 }
 
 func NewSessionsFactRepo(
@@ -32,6 +36,12 @@ func NewSessionsFactRepo(
 		db:        db,
 		tableName: "sessions_fact",
 		mapper:    mapper.NewCopierMapper[ubaV1.Session, schema.SessionsFact](),
+		platformConverter: mapper.NewEnumTypeConverter[ubaV1.Platform, string](
+			ubaV1.Platform_name, ubaV1.Platform_value,
+		),
+		riskLevelConverter: mapper.NewEnumTypeConverter[ubaV1.RiskLevel, string](
+			ubaV1.RiskLevel_name, ubaV1.RiskLevel_value,
+		),
 	}
 	repo.init()
 	return repo
@@ -47,6 +57,9 @@ func (r *SessionsFactRepo) init() {
 
 	r.mapper.AppendConverters(copierutil.NewTimeStringConverterPair())
 	r.mapper.AppendConverters(copierutil.NewTimeTimestamppbConverterPair())
+
+	r.mapper.AppendConverters(r.platformConverter.NewConverterPair())
+	r.mapper.AppendConverters(r.riskLevelConverter.NewConverterPair())
 }
 
 func (r *SessionsFactRepo) Create(ctx context.Context, dto *ubaV1.Session) error {
