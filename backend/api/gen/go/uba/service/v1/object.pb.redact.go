@@ -96,13 +96,11 @@ func (x *ObjectDim) Redact() string {
 		return ""
 	}
 
-	// Safe field: Id
-
 	// Safe field: TenantId
 
-	// Safe field: ObjectType
+	// Safe field: Id
 
-	// Safe field: ObjectId
+	// Safe field: ObjectType
 
 	// Safe field: ObjectName
 
@@ -126,13 +124,9 @@ func (x *ObjectDim) Redact() string {
 
 	// Safe field: UpdatedBy
 
-	// Safe field: DeletedBy
-
 	// Safe field: CreatedAt
 
 	// Safe field: UpdatedAt
-
-	// Safe field: DeletedAt
 	return x.String()
 }
 

@@ -301,9 +301,9 @@ CREATE TABLE IF NOT EXISTS gw_uba.users_dim
 CREATE TABLE IF NOT EXISTS gw_uba.objects_dim
 (
     -- ========== 主键字段 ==========
+    id            String COMMENT '对象 ID（业务系统中的对象唯一标识，如商品 SKU/道具 ID/关卡 ID）',
     tenant_id     UInt32 COMMENT '租户 ID（SaaS 多租户隔离，所有查询必须带此条件）',
     object_type   LowCardinality(String) COMMENT '对象类型（game_item 游戏道具/product 商品/article 文章/level 关卡/page 页面/api 接口）',
-    object_id     String COMMENT '对象 ID（业务系统中的对象唯一标识，如商品 SKU/道具 ID/关卡 ID）',
 
     -- ========== 基础信息：Basic（对象基本信息）==========
     object_name   String COMMENT '对象名称（人类可读的对象名称，如"屠龙刀"/"iPhone 15"/"第一关"）',
@@ -331,7 +331,7 @@ CREATE TABLE IF NOT EXISTS gw_uba.objects_dim
     INDEX idx_status status TYPE set(10) GRANULARITY 1,                             -- 加速对象状态筛选
     INDEX idx_rarity rarity TYPE set(10) GRANULARITY 1                              -- 加速稀有度筛选
 ) ENGINE = ReplacingMergeTree(updated_at) -- 使用 ReplacingMergeTree（对象信息需要更新，如价格调整、状态变更）
-      ORDER BY (tenant_id, object_type, object_id) -- 按租户 + 对象类型 + 对象 ID 排序，优化单对象查询
+      ORDER BY (tenant_id, object_type, id) -- 按租户 + 对象类型 + 对象 ID 排序，优化单对象查询
       SETTINGS
           index_granularity = 8192, -- 索引粒度，平衡查询性能和存储开销
           enable_mixed_granularity_parts = 1, -- 启用混合粒度分区，支持大文本字段

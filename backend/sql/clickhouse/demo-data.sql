@@ -206,3 +206,39 @@ VALUES
         {'ip':'192.168.1.1','location':'Hangzhou','device':'Android 14'},
      'CONFIRMED','admin_001','2026-03-26 20:10:00.123',
      '2026-03-26 20:05:00.333','2026-03-26 20:05:00.666',now(),now());
+
+
+INSERT INTO gw_uba.objects_dim
+(
+    id,tenant_id,object_type,object_name,category_path,
+    price,currency,rarity,attributes,
+    status,valid_from,valid_to,created_at,updated_at
+)
+VALUES
+    ('sku_10001',0,'product','iPhone 15','electronics/mobile/phone',
+     5999.00,'CNY','N',{'color':'white','storage':'256G','cpu':'a16'},
+     'online','2025-01-01 00:00:00',NULL,now(),now()),
+
+    ('item_20001',0,'game_item','屠龙刀','game/equipment/weapon',
+     888.00,'DIAMOND','SSR',{'attack':'150','durability':'100','type':'sword'},
+     'online','2025-02-01 00:00:00',NULL,now(),now()),
+
+    ('page_home',0,'page','首页','page/index/main',
+     0.00,'CNY','N',{'layout':'double','need_login':'false'},
+     'online','2025-01-01 00:00:00',NULL,now(),now()),
+
+    ('level_1_001',1,'level','第一关','game/level/chapter1',
+     0.00,'CNY','N',{'difficulty':'easy','reward':'coin','star':'3'},
+     'online','2025-03-01 00:00:00',NULL,now(),now()),
+
+    ('art_30001',1,'article','新手入门攻略','content/article/guide',
+     0.00,'CNY','N',{'author':'system','read_time':'5min','topic':'beginner'},
+     'online','2025-04-01 00:00:00',NULL,now(),now()),
+
+    ('sku_40001',2,'product','夏季纯棉T恤','clothes/casual/tshirt',
+     99.00,'CNY','N',{'color':'black','size':'XL','material':'cotton'},
+     'offline','2025-01-01 00:00:00','2026-01-01 00:00:00',now(),now()),
+
+    ('api_user_info',2,'api','用户信息接口','api/user/basic',
+     0.00,'CNY','N',{'method':'GET','rate_limit':'100','version':'v1'},
+     'online','2025-05-01 00:00:00',NULL,now(),now());

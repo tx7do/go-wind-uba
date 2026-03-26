@@ -1,14 +1,18 @@
 package schema
 
-import "time"
+import (
+	"time"
+
+	"github.com/shopspring/decimal"
+)
 
 type ObjectsDim struct {
 	TenantID     *uint32           `json:"tenant_id"`
+	ID           *string           `json:"id"`
 	ObjectType   *string           `json:"object_type"`
-	ObjectID     *string           `json:"object_id"`
 	ObjectName   *string           `json:"object_name"`
 	CategoryPath *string           `json:"category_path"`
-	Price        *float64          `json:"price"`
+	Price        *decimal.Decimal  `json:"price"`
 	Currency     *string           `json:"currency"`
 	Rarity       *string           `json:"rarity"`
 	Attributes   map[string]string `json:"attributes"`

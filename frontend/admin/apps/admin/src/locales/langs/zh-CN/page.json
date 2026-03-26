@@ -453,7 +453,18 @@
     "moduleName": "应用管理"
   },
   "object": {
-    "moduleName": "对象管理"
+    "moduleName": "对象管理",
+    "id": "对象ID",
+    "objectType": "对象类型",
+    "objectName": "对象名称",
+    "categoryPath": "分类路径",
+    "price": "价格",
+    "currency": "币种",
+    "rarity": "稀有度",
+    "attributes": "属性",
+    "status": "状态",
+    "validFrom": "有效期起始时间",
+    "validTo": "有效期结束时间"
   },
   "riskEvent": {
     "moduleName": "风险事件",

@@ -26,28 +26,22 @@ service ObjectService {
 
 // 对象维度（对应 objects_dim 表）
 message ObjectDim {
-  // 自增长主键ID
-  uint32 id = 1 [
-    json_name = "id",
-    (gnostic.openapi.v3.property) = {description: "自增长主键ID，唯一标识一条对象维度记录"}
-  ];
-
   // 租户ID（多租户隔离，支持 SaaS 场景）
-  uint32 tenant_id = 2 [
+  optional uint32 tenant_id = 1 [
     json_name = "tenantId",
     (gnostic.openapi.v3.property) = {description: "租户ID，多租户隔离，支持 SaaS 场景"}
+  ];
+
+  // 对象ID（唯一标识一个对象）
+  string id = 2 [
+    json_name = "id",
+    (gnostic.openapi.v3.property) = {description: "对象ID，唯一标识一个对象"}
   ];
 
   // 对象类型（如商品、道具、内容等）
   string object_type = 3 [
     json_name = "objectType",
     (gnostic.openapi.v3.property) = {description: "对象类型，如商品、道具、内容等"}
-  ];
-
-  // 对象ID（唯一标识一个对象）
-  string object_id = 4 [
-    json_name = "objectId",
-    (gnostic.openapi.v3.property) = {description: "对象ID，唯一标识一个对象"}
   ];
 
   // 对象名称（对象的显示名称）
@@ -116,15 +110,8 @@ message ObjectDim {
     (gnostic.openapi.v3.property) = {description: "更新者用户ID，记录最近一次更新该对象的用户"}
   ];
 
-  // 删除者用户ID（记录删除该对象的用户）
-  optional uint32 deleted_by = 102 [
-    json_name = "deletedBy",
-    (gnostic.openapi.v3.property) = {description: "删除者用户ID，记录删除该对象的用户"}
-  ];
-
   optional google.protobuf.Timestamp created_at = 200 [json_name = "createdAt", (gnostic.openapi.v3.property) = {description: "创建时间"}];// 创建时间
   optional google.protobuf.Timestamp updated_at = 201 [json_name = "updatedAt", (gnostic.openapi.v3.property) = {description: "更新时间"}];// 更新时间
-  optional google.protobuf.Timestamp deleted_at = 202 [json_name = "deletedAt", (gnostic.openapi.v3.property) = {description: "删除时间"}];// 删除时间
 }
 
 // 获取对象维度列表 - 答复

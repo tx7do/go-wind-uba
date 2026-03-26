@@ -14,14 +14,14 @@ import { useObjectDimListStore } from '#/stores';
 const objectDimListStore = useObjectDimListStore();
 
 const formOptions = {
-  collapsed: true,
+  collapsed: false,
   showCollapseButton: true,
   submitOnEnter: true,
   schema: [
     {
       component: 'Input',
-      fieldName: 'name',
-      label: $t('ui.formLabel.objectName'),
+      fieldName: 'objectName',
+      label: $t('page.object.objectName'),
       componentProps: {
         placeholder: $t('ui.placeholder.input'),
         allowClear: true,
@@ -29,8 +29,17 @@ const formOptions = {
     },
     {
       component: 'Input',
-      fieldName: 'code',
-      label: $t('ui.formLabel.objectCode'),
+      fieldName: 'objectType',
+      label: $t('page.object.objectType'),
+      componentProps: {
+        placeholder: $t('ui.placeholder.input'),
+        allowClear: true,
+      },
+    },
+    {
+      component: 'Input',
+      fieldName: 'status',
+      label: $t('page.object.status'),
       componentProps: {
         placeholder: $t('ui.placeholder.input'),
         allowClear: true,
@@ -73,22 +82,59 @@ const gridOptions: VxeGridProps<ObjectDim> = {
     },
   },
   columns: [
-    { title: $t('ui.field.id'), field: 'id', width: 100 },
-    { title: $t('ui.field.objectName'), field: 'name', width: 150 },
-    { title: $t('ui.field.objectCode'), field: 'code', width: 150 },
-    { title: $t('ui.field.description'), field: 'description', width: 200 },
+    {
+      title: $t('page.object.id'),
+      field: 'id',
+      minWidth: 100,
+      fixed: 'left',
+      align: 'left',
+    },
+    {
+      title: $t('page.object.objectType'),
+      field: 'objectType',
+      minWidth: 150,
+      align: 'left',
+    },
+    {
+      title: $t('page.object.objectName'),
+      field: 'objectName',
+      minWidth: 150,
+      align: 'left',
+    },
+    {
+      title: $t('page.object.categoryPath'),
+      field: 'categoryPath',
+      minWidth: 200,
+      align: 'left',
+    },
+    { title: $t('page.object.price'), field: 'price', minWidth: 100 },
+    { title: $t('page.object.currency'), field: 'currency', minWidth: 100 },
+    { title: $t('page.object.rarity'), field: 'rarity', minWidth: 100 },
+    { title: $t('page.object.status'), field: 'status', minWidth: 100 },
+    {
+      title: $t('page.object.validFrom'),
+      field: 'validFrom',
+      minWidth: 160,
+      formatter: 'formatDateTime',
+    },
+    {
+      title: $t('page.object.validTo'),
+      field: 'validTo',
+      minWidth: 160,
+      formatter: 'formatDateTime',
+    },
     {
       title: $t('ui.table.createdAt'),
       field: 'createdAt',
       formatter: 'formatDateTime',
-      width: 160,
+      minWidth: 160,
     },
     {
       title: $t('ui.table.action'),
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      width: 120,
+      minWidth: 120,
     },
   ],
 };

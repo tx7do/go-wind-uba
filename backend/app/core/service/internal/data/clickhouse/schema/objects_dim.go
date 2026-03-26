@@ -1,17 +1,21 @@
 package schema
 
-import "time"
+import (
+	"time"
+
+	"github.com/shopspring/decimal"
+)
 
 // 对象维度表
 // 对应表：gw_uba.objects_dim
 
 type ObjectsDim struct {
 	TenantID     *uint32           `ch:"tenant_id"`
+	ID           *string           `ch:"id"`
 	ObjectType   *string           `ch:"object_type"`
-	ObjectID     *string           `ch:"object_id"`
 	ObjectName   *string           `ch:"object_name"`
 	CategoryPath *string           `ch:"category_path"`
-	Price        *float64          `ch:"price"`
+	Price        *decimal.Decimal  `ch:"price"`
 	Currency     *string           `ch:"currency"`
 	Rarity       *string           `ch:"rarity"`
 	Attributes   map[string]string `ch:"attributes"`

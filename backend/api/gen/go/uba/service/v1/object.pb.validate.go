@@ -59,11 +59,7 @@ func (m *ObjectDim) validate(all bool) error {
 
 	// no validation rules for Id
 
-	// no validation rules for TenantId
-
 	// no validation rules for ObjectType
-
-	// no validation rules for ObjectId
 
 	// no validation rules for ObjectName
 
@@ -137,16 +133,16 @@ func (m *ObjectDim) validate(all bool) error {
 		}
 	}
 
+	if m.TenantId != nil {
+		// no validation rules for TenantId
+	}
+
 	if m.CreatedBy != nil {
 		// no validation rules for CreatedBy
 	}
 
 	if m.UpdatedBy != nil {
 		// no validation rules for UpdatedBy
-	}
-
-	if m.DeletedBy != nil {
-		// no validation rules for DeletedBy
 	}
 
 	if m.CreatedAt != nil {
@@ -207,39 +203,6 @@ func (m *ObjectDim) validate(all bool) error {
 			if err := v.Validate(); err != nil {
 				return ObjectDimValidationError{
 					field:  "UpdatedAt",
-					reason: "embedded message failed validation",
-					cause:  err,
-				}
-			}
-		}
-
-	}
-
-	if m.DeletedAt != nil {
-
-		if all {
-			switch v := interface{}(m.GetDeletedAt()).(type) {
-			case interface{ ValidateAll() error }:
-				if err := v.ValidateAll(); err != nil {
-					errors = append(errors, ObjectDimValidationError{
-						field:  "DeletedAt",
-						reason: "embedded message failed validation",
-						cause:  err,
-					})
-				}
-			case interface{ Validate() error }:
-				if err := v.Validate(); err != nil {
-					errors = append(errors, ObjectDimValidationError{
-						field:  "DeletedAt",
-						reason: "embedded message failed validation",
-						cause:  err,
-					})
-				}
-			}
-		} else if v, ok := interface{}(m.GetDeletedAt()).(interface{ Validate() error }); ok {
-			if err := v.Validate(); err != nil {
-				return ObjectDimValidationError{
-					field:  "DeletedAt",
 					reason: "embedded message failed validation",
 					cause:  err,
 				}

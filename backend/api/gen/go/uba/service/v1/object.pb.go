@@ -29,14 +29,12 @@ const (
 // 对象维度（对应 objects_dim 表）
 type ObjectDim struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// 自增长主键ID
-	Id uint32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	// 租户ID（多租户隔离，支持 SaaS 场景）
-	TenantId uint32 `protobuf:"varint,2,opt,name=tenant_id,json=tenantId,proto3" json:"tenant_id,omitempty"`
+	TenantId *uint32 `protobuf:"varint,1,opt,name=tenant_id,json=tenantId,proto3,oneof" json:"tenant_id,omitempty"`
+	// 对象ID（唯一标识一个对象）
+	Id string `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
 	// 对象类型（如商品、道具、内容等）
 	ObjectType string `protobuf:"bytes,3,opt,name=object_type,json=objectType,proto3" json:"object_type,omitempty"`
-	// 对象ID（唯一标识一个对象）
-	ObjectId string `protobuf:"bytes,4,opt,name=object_id,json=objectId,proto3" json:"object_id,omitempty"`
 	// 对象名称（对象的显示名称）
 	ObjectName string `protobuf:"bytes,5,opt,name=object_name,json=objectName,proto3" json:"object_name,omitempty"`
 	// 分类路径（对象所属的分类层级路径）
@@ -58,12 +56,9 @@ type ObjectDim struct {
 	// 创建者用户ID（记录创建该对象的用户）
 	CreatedBy *uint32 `protobuf:"varint,100,opt,name=created_by,json=createdBy,proto3,oneof" json:"created_by,omitempty"`
 	// 更新者用户ID（记录最近一次更新该对象的用户）
-	UpdatedBy *uint32 `protobuf:"varint,101,opt,name=updated_by,json=updatedBy,proto3,oneof" json:"updated_by,omitempty"`
-	// 删除者用户ID（记录删除该对象的用户）
-	DeletedBy     *uint32                `protobuf:"varint,102,opt,name=deleted_by,json=deletedBy,proto3,oneof" json:"deleted_by,omitempty"`
+	UpdatedBy     *uint32                `protobuf:"varint,101,opt,name=updated_by,json=updatedBy,proto3,oneof" json:"updated_by,omitempty"`
 	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,200,opt,name=created_at,json=createdAt,proto3,oneof" json:"created_at,omitempty"` // 创建时间
 	UpdatedAt     *timestamppb.Timestamp `protobuf:"bytes,201,opt,name=updated_at,json=updatedAt,proto3,oneof" json:"updated_at,omitempty"` // 更新时间
-	DeletedAt     *timestamppb.Timestamp `protobuf:"bytes,202,opt,name=deleted_at,json=deletedAt,proto3,oneof" json:"deleted_at,omitempty"` // 删除时间
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -98,30 +93,23 @@ func (*ObjectDim) Descriptor() ([]byte, []int) {
 	return file_uba_service_v1_object_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *ObjectDim) GetId() uint32 {
-	if x != nil {
-		return x.Id
+func (x *ObjectDim) GetTenantId() uint32 {
+	if x != nil && x.TenantId != nil {
+		return *x.TenantId
 	}
 	return 0
 }
 
-func (x *ObjectDim) GetTenantId() uint32 {
+func (x *ObjectDim) GetId() string {
 	if x != nil {
-		return x.TenantId
+		return x.Id
 	}
-	return 0
+	return ""
 }
 
 func (x *ObjectDim) GetObjectType() string {
 	if x != nil {
 		return x.ObjectType
-	}
-	return ""
-}
-
-func (x *ObjectDim) GetObjectId() string {
-	if x != nil {
-		return x.ObjectId
 	}
 	return ""
 }
@@ -203,13 +191,6 @@ func (x *ObjectDim) GetUpdatedBy() uint32 {
 	return 0
 }
 
-func (x *ObjectDim) GetDeletedBy() uint32 {
-	if x != nil && x.DeletedBy != nil {
-		return *x.DeletedBy
-	}
-	return 0
-}
-
 func (x *ObjectDim) GetCreatedAt() *timestamppb.Timestamp {
 	if x != nil {
 		return x.CreatedAt
@@ -220,13 +201,6 @@ func (x *ObjectDim) GetCreatedAt() *timestamppb.Timestamp {
 func (x *ObjectDim) GetUpdatedAt() *timestamppb.Timestamp {
 	if x != nil {
 		return x.UpdatedAt
-	}
-	return nil
-}
-
-func (x *ObjectDim) GetDeletedAt() *timestamppb.Timestamp {
-	if x != nil {
-		return x.DeletedAt
 	}
 	return nil
 }
@@ -596,13 +570,12 @@ var File_uba_service_v1_object_proto protoreflect.FileDescriptor
 
 const file_uba_service_v1_object_proto_rawDesc = "" +
 	"\n" +
-	"\x1buba/service/v1/object.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a google/protobuf/field_mask.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1epagination/v1/pagination.proto\"\xbc\x0f\n" +
-	"\tObjectDim\x12N\n" +
-	"\x02id\x18\x01 \x01(\rB>\xbaG;\x92\x028自增长主键ID，唯一标识一条对象维度记录R\x02id\x12R\n" +
-	"\ttenant_id\x18\x02 \x01(\rB5\xbaG2\x92\x02/租户ID，多租户隔离，支持 SaaS 场景R\btenantId\x12T\n" +
+	"\x1buba/service/v1/object.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a google/protobuf/field_mask.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1epagination/v1/pagination.proto\"\xa1\r\n" +
+	"\tObjectDim\x12W\n" +
+	"\ttenant_id\x18\x01 \x01(\rB5\xbaG2\x92\x02/租户ID，多租户隔离，支持 SaaS 场景H\x00R\btenantId\x88\x01\x01\x129\n" +
+	"\x02id\x18\x02 \x01(\tB)\xbaG&\x92\x02#对象ID，唯一标识一个对象R\x02id\x12T\n" +
 	"\vobject_type\x18\x03 \x01(\tB3\xbaG0\x92\x02-对象类型，如商品、道具、内容等R\n" +
-	"objectType\x12F\n" +
-	"\tobject_id\x18\x04 \x01(\tB)\xbaG&\x92\x02#对象ID，唯一标识一个对象R\bobjectId\x12K\n" +
+	"objectType\x12K\n" +
 	"\vobject_name\x18\x05 \x01(\tB*\xbaG'\x92\x02$对象名称，对象的显示名称R\n" +
 	"objectName\x12[\n" +
 	"\rcategory_path\x18\x06 \x01(\tB6\xbaG3\x92\x020分类路径，对象所属的分类层级路径R\fcategoryPath\x12^\n" +
@@ -618,26 +591,22 @@ const file_uba_service_v1_object_proto_rawDesc = "" +
 	"valid_from\x18\f \x01(\v2\x1a.google.protobuf.TimestampB<\xbaG9\x92\x026有效期起始时间，对象有效期的开始时间R\tvalidFrom\x12s\n" +
 	"\bvalid_to\x18\r \x01(\v2\x1a.google.protobuf.TimestampB<\xbaG9\x92\x026有效期结束时间，对象有效期的结束时间R\avalidTo\x12\\\n" +
 	"\n" +
-	"created_by\x18d \x01(\rB8\xbaG5\x92\x022创建者用户ID，记录创建该对象的用户H\x00R\tcreatedBy\x88\x01\x01\x12h\n" +
+	"created_by\x18d \x01(\rB8\xbaG5\x92\x022创建者用户ID，记录创建该对象的用户H\x01R\tcreatedBy\x88\x01\x01\x12h\n" +
 	"\n" +
-	"updated_by\x18e \x01(\rBD\xbaGA\x92\x02>更新者用户ID，记录最近一次更新该对象的用户H\x01R\tupdatedBy\x88\x01\x01\x12\\\n" +
-	"\n" +
-	"deleted_by\x18f \x01(\rB8\xbaG5\x92\x022删除者用户ID，记录删除该对象的用户H\x02R\tdeletedBy\x88\x01\x01\x12S\n" +
+	"updated_by\x18e \x01(\rBD\xbaGA\x92\x02>更新者用户ID，记录最近一次更新该对象的用户H\x02R\tupdatedBy\x88\x01\x01\x12S\n" +
 	"\n" +
 	"created_at\x18\xc8\x01 \x01(\v2\x1a.google.protobuf.TimestampB\x12\xbaG\x0f\x92\x02\f创建时间H\x03R\tcreatedAt\x88\x01\x01\x12S\n" +
 	"\n" +
-	"updated_at\x18\xc9\x01 \x01(\v2\x1a.google.protobuf.TimestampB\x12\xbaG\x0f\x92\x02\f更新时间H\x04R\tupdatedAt\x88\x01\x01\x12S\n" +
-	"\n" +
-	"deleted_at\x18\xca\x01 \x01(\v2\x1a.google.protobuf.TimestampB\x12\xbaG\x0f\x92\x02\f删除时间H\x05R\tdeletedAt\x88\x01\x01\x1a=\n" +
+	"updated_at\x18\xc9\x01 \x01(\v2\x1a.google.protobuf.TimestampB\x12\xbaG\x0f\x92\x02\f更新时间H\x04R\tupdatedAt\x88\x01\x01\x1a=\n" +
 	"\x0fAttributesEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\r\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\f\n" +
+	"\n" +
+	"_tenant_idB\r\n" +
 	"\v_created_byB\r\n" +
 	"\v_updated_byB\r\n" +
-	"\v_deleted_byB\r\n" +
 	"\v_created_atB\r\n" +
-	"\v_updated_atB\r\n" +
-	"\v_deleted_at\"^\n" +
+	"\v_updated_at\"^\n" +
 	"\x15ListObjectDimResponse\x12/\n" +
 	"\x05items\x18\x01 \x03(\v2\x19.uba.service.v1.ObjectDimR\x05items\x12\x14\n" +
 	"\x05total\x18\x02 \x01(\x04R\x05total\"\xc6\x01\n" +
@@ -708,26 +677,25 @@ var file_uba_service_v1_object_proto_depIdxs = []int32{
 	8,  // 2: uba.service.v1.ObjectDim.valid_to:type_name -> google.protobuf.Timestamp
 	8,  // 3: uba.service.v1.ObjectDim.created_at:type_name -> google.protobuf.Timestamp
 	8,  // 4: uba.service.v1.ObjectDim.updated_at:type_name -> google.protobuf.Timestamp
-	8,  // 5: uba.service.v1.ObjectDim.deleted_at:type_name -> google.protobuf.Timestamp
-	0,  // 6: uba.service.v1.ListObjectDimResponse.items:type_name -> uba.service.v1.ObjectDim
-	9,  // 7: uba.service.v1.GetObjectDimRequest.view_mask:type_name -> google.protobuf.FieldMask
-	0,  // 8: uba.service.v1.CreateObjectDimRequest.data:type_name -> uba.service.v1.ObjectDim
-	0,  // 9: uba.service.v1.BatchCreateObjectDimRequest.items:type_name -> uba.service.v1.ObjectDim
-	0,  // 10: uba.service.v1.UpdateObjectDimRequest.data:type_name -> uba.service.v1.ObjectDim
-	9,  // 11: uba.service.v1.UpdateObjectDimRequest.update_mask:type_name -> google.protobuf.FieldMask
-	10, // 12: uba.service.v1.ObjectService.List:input_type -> pagination.PagingRequest
-	2,  // 13: uba.service.v1.ObjectService.Get:input_type -> uba.service.v1.GetObjectDimRequest
-	0,  // 14: uba.service.v1.ObjectService.Create:input_type -> uba.service.v1.ObjectDim
-	4,  // 15: uba.service.v1.ObjectService.BatchCreate:input_type -> uba.service.v1.BatchCreateObjectDimRequest
-	1,  // 16: uba.service.v1.ObjectService.List:output_type -> uba.service.v1.ListObjectDimResponse
-	0,  // 17: uba.service.v1.ObjectService.Get:output_type -> uba.service.v1.ObjectDim
-	11, // 18: uba.service.v1.ObjectService.Create:output_type -> google.protobuf.Empty
-	11, // 19: uba.service.v1.ObjectService.BatchCreate:output_type -> google.protobuf.Empty
-	16, // [16:20] is the sub-list for method output_type
-	12, // [12:16] is the sub-list for method input_type
-	12, // [12:12] is the sub-list for extension type_name
-	12, // [12:12] is the sub-list for extension extendee
-	0,  // [0:12] is the sub-list for field type_name
+	0,  // 5: uba.service.v1.ListObjectDimResponse.items:type_name -> uba.service.v1.ObjectDim
+	9,  // 6: uba.service.v1.GetObjectDimRequest.view_mask:type_name -> google.protobuf.FieldMask
+	0,  // 7: uba.service.v1.CreateObjectDimRequest.data:type_name -> uba.service.v1.ObjectDim
+	0,  // 8: uba.service.v1.BatchCreateObjectDimRequest.items:type_name -> uba.service.v1.ObjectDim
+	0,  // 9: uba.service.v1.UpdateObjectDimRequest.data:type_name -> uba.service.v1.ObjectDim
+	9,  // 10: uba.service.v1.UpdateObjectDimRequest.update_mask:type_name -> google.protobuf.FieldMask
+	10, // 11: uba.service.v1.ObjectService.List:input_type -> pagination.PagingRequest
+	2,  // 12: uba.service.v1.ObjectService.Get:input_type -> uba.service.v1.GetObjectDimRequest
+	0,  // 13: uba.service.v1.ObjectService.Create:input_type -> uba.service.v1.ObjectDim
+	4,  // 14: uba.service.v1.ObjectService.BatchCreate:input_type -> uba.service.v1.BatchCreateObjectDimRequest
+	1,  // 15: uba.service.v1.ObjectService.List:output_type -> uba.service.v1.ListObjectDimResponse
+	0,  // 16: uba.service.v1.ObjectService.Get:output_type -> uba.service.v1.ObjectDim
+	11, // 17: uba.service.v1.ObjectService.Create:output_type -> google.protobuf.Empty
+	11, // 18: uba.service.v1.ObjectService.BatchCreate:output_type -> google.protobuf.Empty
+	15, // [15:19] is the sub-list for method output_type
+	11, // [11:15] is the sub-list for method input_type
+	11, // [11:11] is the sub-list for extension type_name
+	11, // [11:11] is the sub-list for extension extendee
+	0,  // [0:11] is the sub-list for field type_name
 }
 
 func init() { file_uba_service_v1_object_proto_init() }

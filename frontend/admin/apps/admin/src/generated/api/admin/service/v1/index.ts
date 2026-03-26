@@ -4472,14 +4472,12 @@ export type ubaservicev1_ListObjectDimResponse = {
 
 // 对象维度（对应 objects_dim 表）
 export type ubaservicev1_ObjectDim = {
-  // 自增长主键ID
-  id: number | undefined;
   // 租户ID（多租户隔离，支持 SaaS 场景）
-  tenantId: number | undefined;
+  tenantId?: number;
+  // 对象ID（唯一标识一个对象）
+  id: string | undefined;
   // 对象类型（如商品、道具、内容等）
   objectType: string | undefined;
-  // 对象ID（唯一标识一个对象）
-  objectId: string | undefined;
   // 对象名称（对象的显示名称）
   objectName: string | undefined;
   // 分类路径（对象所属的分类层级路径）
@@ -4502,11 +4500,8 @@ export type ubaservicev1_ObjectDim = {
   createdBy?: number;
   // 更新者用户ID（记录最近一次更新该对象的用户）
   updatedBy?: number;
-  // 删除者用户ID（记录删除该对象的用户）
-  deletedBy?: number;
   createdAt?: wellKnownTimestamp;
   updatedAt?: wellKnownTimestamp;
-  deletedAt?: wellKnownTimestamp;
 };
 
 // 获取对象维度数据 - 请求

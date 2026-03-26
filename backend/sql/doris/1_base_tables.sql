@@ -236,9 +236,9 @@ ALTER TABLE users_dim ADD INDEX idx_risk_level (risk_level) USING INVERTED;
 -- 5. 对象维度表
 -- ============================================================
 CREATE TABLE IF NOT EXISTS objects_dim (
+    id            VARCHAR(128) NOT NULL COMMENT '对象ID',
     tenant_id     INT NOT NULL COMMENT '租户ID',
     object_type   VARCHAR(64) NOT NULL COMMENT '对象类型',
-    object_id     VARCHAR(128) NOT NULL COMMENT '对象ID',
     object_name   VARCHAR(256) COMMENT '对象名称',
     category_path VARCHAR(512) COMMENT '分类路径',
     price         DECIMAL(18,2) DEFAULT 0 COMMENT '对象价格',
@@ -251,8 +251,8 @@ CREATE TABLE IF NOT EXISTS objects_dim (
     created_at    DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间',
     updated_at    DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '记录更新时间'
 )
-    UNIQUE KEY(tenant_id, object_type, object_id)
-    DISTRIBUTED BY HASH(tenant_id, object_type, object_id) BUCKETS 10
+    UNIQUE KEY(tenant_id, object_type, id)
+    DISTRIBUTED BY HASH(tenant_id, object_type, id) BUCKETS 10
     PROPERTIES (
                    "replication_num" = "1",
                    "light_schema_change" = "true",
