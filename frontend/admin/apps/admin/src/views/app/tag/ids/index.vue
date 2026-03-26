@@ -2,14 +2,13 @@
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 import type { ubaservicev1_IDMapping as IDMapping } from '#/generated/api/admin/service/v1';
 
-import { h } from 'vue';
-
 import { Page } from '@vben/common-ui';
-import { LucideTrash2 } from '@vben/icons';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { $t } from '#/locales';
 import {
+  enableBoolToColor,
+  enableBoolToName,
   idMappingIdTypeToColor,
   idMappingIdTypeToName,
   idTypeList,
@@ -87,6 +86,7 @@ const gridOptions: VxeGridProps<IDMapping> = {
       field: 'globalUserId',
       minWidth: 200,
       fixed: 'left',
+      align: 'left',
     },
     {
       title: $t('page.idMapping.idType'),
@@ -94,17 +94,22 @@ const gridOptions: VxeGridProps<IDMapping> = {
       minWidth: 120,
       slots: { default: 'idType' },
     },
-    { title: $t('page.idMapping.idValue'), field: 'idValue', minWidth: 120 },
+    {
+      title: $t('page.idMapping.idValue'),
+      field: 'idValue',
+      minWidth: 200,
+      align: 'left',
+    },
     {
       title: $t('page.idMapping.confidence'),
       field: 'confidence',
-      minWidth: 150,
+      minWidth: 100,
     },
     {
       title: $t('page.idMapping.linkSource'),
       field: 'linkSource',
       minWidth: 150,
-      formatter: 'formatDateTime',
+      align: 'left',
     },
     {
       title: $t('page.idMapping.firstSeen'),
@@ -118,7 +123,12 @@ const gridOptions: VxeGridProps<IDMapping> = {
       minWidth: 150,
       formatter: 'formatDateTime',
     },
-    { title: $t('page.idMapping.isActive'), field: 'isActive', minWidth: 150 },
+    {
+      title: $t('page.idMapping.isActive'),
+      field: 'isActive',
+      minWidth: 150,
+      slots: { default: 'isActive' },
+    },
 
     {
       title: $t('ui.table.createdAt'),
@@ -126,38 +136,16 @@ const gridOptions: VxeGridProps<IDMapping> = {
       formatter: 'formatDateTime',
       minWidth: 160,
     },
-    {
-      title: $t('ui.table.action'),
-      field: 'action',
-      fixed: 'right',
-      slots: { default: 'action' },
-      minWidth: 120,
-    },
   ],
 };
 
 const gridEvents: VxeGridListeners<IDMapping> = {};
 
-const [Grid, gridApi] = useVbenVxeGrid({
+const [Grid] = useVbenVxeGrid({
   gridOptions,
   formOptions,
   gridEvents,
 });
-
-async function handleDelete(row: any) {
-  console.log('handleDelete', row);
-  // try {
-  //   await idMappingListStore.deleteIDMapping(row.id);
-  //   notification.success({
-  //     message: $t('ui.notification.delete_success'),
-  //   });
-  //   await gridApi.reload();
-  // } catch {
-  //   notification.error({
-  //     message: $t('ui.notification.delete_failed'),
-  //   });
-  // }
-}
 </script>
 
 <template>
@@ -168,19 +156,10 @@ async function handleDelete(row: any) {
           {{ idMappingIdTypeToName(row.idType) }}
         </a-tag>
       </template>
-      <template #action="{ row }">
-        <a-popconfirm
-          :cancel-text="$t('ui.button.cancel')"
-          :ok-text="$t('ui.button.ok')"
-          :title="
-            $t('ui.text.do_you_want_delete', {
-              moduleName: $t('menu.tag.ids'),
-            })
-          "
-          @confirm="handleDelete(row)"
-        >
-          <a-button danger type="link" :icon="h(LucideTrash2)" />
-        </a-popconfirm>
+      <template #isActive="{ row }">
+        <a-tag :color="enableBoolToColor(row.isActive)">
+          {{ enableBoolToName(row.isActive) }}
+        </a-tag>
       </template>
     </Grid>
   </Page>

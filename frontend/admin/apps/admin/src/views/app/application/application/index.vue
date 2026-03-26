@@ -15,6 +15,8 @@ import {
   applicationTypeList,
   applicationTypeToColor,
   applicationTypeToName,
+  enableBoolToColor,
+  enableBoolToName,
   platformToColor,
   platformToName,
   statusList,
@@ -171,6 +173,9 @@ const gridOptions: VxeGridProps<Application> = {
       title: $t('page.application.desensitize'),
       field: 'desensitize',
       minWidth: 160,
+      slots: {
+        default: 'desensitize',
+      },
     },
     {
       title: $t('ui.table.createdAt'),
@@ -274,6 +279,11 @@ async function handleDelete(row: any) {
       <template #status="{ row }">
         <a-tag :color="statusToColor(row.status)">
           {{ statusToName(row.status) }}
+        </a-tag>
+      </template>
+      <template #desensitize="{ row }">
+        <a-tag :color="enableBoolToColor(row.desensitize)">
+          {{ enableBoolToName(row.desensitize) }}
         </a-tag>
       </template>
       <template #action="{ row }">

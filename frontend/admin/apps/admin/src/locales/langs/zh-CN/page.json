@@ -553,6 +553,22 @@
       "update": "更新标签"
     }
   },
+  "userTag": {
+    "moduleName": "用户标签",
+    "userId": "用户ID",
+    "tagId": "标签ID",
+    "value": "标签值",
+    "valueLabel": "标签名称",
+    "confidence": "置信度",
+    "source": "标签来源",
+    "sourceRuleId": "来源规则ID",
+    "effectiveTime": "有效时间",
+    "expireTime": "过期时间",
+    "button": {
+      "create": "创建用户标签",
+      "update": "更新用户标签"
+    }
+  },
   "idMapping": {
     "moduleName": "ID映射",
     "globalUserId": "全局用户唯一标识",
@@ -567,22 +583,6 @@
     "button": {
       "create": "创建ID映射",
       "update": "更新ID映射"
-    }
-  },
-  "userTag": {
-    "moduleName": "用户标签",
-    "userId": "用户ID",
-    "tagId": "标签ID",
-    "value": "标签值",
-    "valueLabel": "名称",
-    "confidence": "置信度",
-    "source": "标签来源",
-    "sourceRuleId": "来源规则ID",
-    "effectiveTime": "有效时间",
-    "expireTime": "过期时间",
-    "button": {
-      "create": "创建用户标签",
-      "update": "更新用户标签"
     }
   },
   "eventPath": {

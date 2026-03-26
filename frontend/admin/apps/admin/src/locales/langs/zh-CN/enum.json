@@ -293,18 +293,18 @@
   "tagDefinition": {
     "category": {
       "CATEGORY_UNSPECIFIED": "未指定",
-      "TAG_CATEGORY_USER": "用户",
-      "TAG_CATEGORY_BEHAVIOR": "行为",
-      "TAG_CATEGORY_RISK": "风险",
-      "TAG_CATEGORY_BUSINESS": "业务"
+      "TAG_CATEGORY_USER": "用户属性标签",
+      "TAG_CATEGORY_BEHAVIOR": "行为偏好标签",
+      "TAG_CATEGORY_RISK": "风险标签",
+      "TAG_CATEGORY_BUSINESS": "业务标签"
     },
     "type": {
       "TYPE_UNSPECIFIED": "未指定",
-      "TAG_TYPE_BOOLEAN": "布尔",
-      "TAG_TYPE_ENUM": "枚举",
-      "TAG_TYPE_NUMERIC": "数值",
-      "TAG_TYPE_STRING": "字符串",
-      "TAG_TYPE_LIST": "列表"
+      "TAG_TYPE_BOOLEAN": "布尔型标签",
+      "TAG_TYPE_ENUM": "枚举型标签",
+      "TAG_TYPE_NUMERIC": "数值型标签",
+      "TAG_TYPE_STRING": "字符串型标签",
+      "TAG_TYPE_LIST": "列表型标签"
     }
   },
   "userTag": {

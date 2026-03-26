@@ -6,7 +6,11 @@ import { Page } from '@vben/common-ui';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { $t } from '#/locales';
-import { useEventPathListStore } from '#/stores';
+import {
+  enableBoolToColor,
+  enableBoolToName,
+  useEventPathListStore,
+} from '#/stores';
 
 const eventPathListStore = useEventPathListStore();
 
@@ -86,6 +90,7 @@ const gridOptions: VxeGridProps<EventPath> = {
       field: 'id',
       minWidth: 200,
       fixed: 'left',
+      align: 'left',
     },
     { title: $t('page.eventPath.userId'), field: 'userId', minWidth: 100 },
     {
@@ -101,7 +106,7 @@ const gridOptions: VxeGridProps<EventPath> = {
     {
       title: $t('page.eventPath.stepCount'),
       field: 'stepCount',
-      minWidth: 200,
+      minWidth: 100,
     },
     {
       title: $t('page.eventPath.firstEvent'),
@@ -122,6 +127,7 @@ const gridOptions: VxeGridProps<EventPath> = {
       title: $t('page.eventPath.isConverted'),
       field: 'isConverted',
       minWidth: 160,
+      slots: { default: 'isConverted' },
     },
     {
       title: $t('page.eventPath.conversionTime'),
@@ -146,7 +152,7 @@ const gridOptions: VxeGridProps<EventPath> = {
 
 const gridEvents: VxeGridListeners<EventPath> = {};
 
-const [Grid, gridApi] = useVbenVxeGrid({
+const [Grid] = useVbenVxeGrid({
   gridOptions,
   formOptions,
   gridEvents,
@@ -155,7 +161,13 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <Grid :table-title="$t('menu.dataAnalysis.eventPath')" />
+    <Grid :table-title="$t('menu.dataAnalysis.eventPath')">
+      <template #isConverted="{ row }">
+        <a-tag :color="enableBoolToColor(row.isConverted)">
+          {{ enableBoolToName(row.isConverted) }}
+        </a-tag>
+      </template>
+    </Grid>
   </Page>
 </template>
 

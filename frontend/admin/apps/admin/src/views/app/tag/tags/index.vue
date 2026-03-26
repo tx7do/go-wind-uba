@@ -4,7 +4,7 @@ import type { ubaservicev1_TagDefinition as TagDefinition } from '#/generated/ap
 
 import { h } from 'vue';
 
-import { Page } from '@vben/common-ui';
+import { Page, useVbenDrawer } from '@vben/common-ui';
 import { LucideFilePenLine, LucideTrash2 } from '@vben/icons';
 
 import { notification } from 'ant-design-vue';
@@ -12,6 +12,8 @@ import { notification } from 'ant-design-vue';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { $t } from '#/locales';
 import {
+  enableBoolToColor,
+  enableBoolToName,
   tagCategoryList,
   tagCategoryToColor,
   tagCategoryToName,
@@ -20,6 +22,8 @@ import {
   tagTypeToName,
   useTagDefinitionListStore,
 } from '#/stores';
+
+import TagDrawer from './tag-drawer.vue';
 
 const tagDefinitionListStore = useTagDefinitionListStore();
 
@@ -139,11 +143,13 @@ const gridOptions: VxeGridProps<TagDefinition> = {
       title: $t('page.tagDefinition.isSystem'),
       field: 'isSystem',
       minWidth: 120,
+      slots: { default: 'isSystem' },
     },
     {
       title: $t('page.tagDefinition.isDynamic'),
       field: 'isDynamic',
       minWidth: 120,
+      slots: { default: 'isDynamic' },
     },
     {
       title: $t('page.tagDefinition.refreshIntervalSeconds'),
@@ -189,14 +195,48 @@ async function handleDelete(row: any) {
   }
 }
 
+const [Drawer, drawerApi] = useVbenDrawer({
+  // 连接抽离的组件
+  connectedComponent: TagDrawer,
+
+  onOpenChange(isOpen: boolean) {
+    if (!isOpen) {
+      // 关闭时，重载表格数据
+      gridApi.reload();
+    }
+  },
+});
+
+function openDrawer(create: boolean, row?: any) {
+  drawerApi.setData({
+    create,
+    row,
+  });
+  drawerApi.open();
+}
+
+/* 创建 */
+function handleCreate() {
+  console.log('创建');
+
+  openDrawer(true);
+}
+
+/* 编辑 */
 function handleEdit(row: any) {
-  console.log('Edit', row);
+  console.log('编辑', row);
+  openDrawer(false, row);
 }
 </script>
 
 <template>
   <Page auto-content-height>
     <Grid :table-title="$t('menu.tag.tags')">
+      <template #toolbar-tools>
+        <a-button class="mr-2" type="primary" @click="handleCreate">
+          {{ $t('page.tagDefinition.button.create') }}
+        </a-button>
+      </template>
       <template #category="{ row }">
         <a-tag :color="tagCategoryToColor(row.category)">
           {{ tagCategoryToName(row.category) }}
@@ -205,6 +245,16 @@ function handleEdit(row: any) {
       <template #type="{ row }">
         <a-tag :color="tagTypeToColor(row.tagType)">
           {{ tagTypeToName(row.tagType) }}
+        </a-tag>
+      </template>
+      <template #isSystem="{ row }">
+        <a-tag :color="enableBoolToColor(row.isSystem)">
+          {{ enableBoolToName(row.isSystem) }}
+        </a-tag>
+      </template>
+      <template #isDynamic="{ row }">
+        <a-tag :color="enableBoolToColor(row.isDynamic)">
+          {{ enableBoolToName(row.isDynamic) }}
         </a-tag>
       </template>
       <template #action="{ row }">
@@ -227,6 +277,7 @@ function handleEdit(row: any) {
         </a-popconfirm>
       </template>
     </Grid>
+    <Drawer />
   </Page>
 </template>
 

@@ -2,14 +2,13 @@
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 import type { ubaservicev1_Session as Session } from '#/generated/api/admin/service/v1';
 
-import { h } from 'vue';
-
 import { Page } from '@vben/common-ui';
-import { LucideTrash2 } from '@vben/icons';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { $t } from '#/locales';
 import {
+  enableBoolToColor,
+  enableBoolToName,
   platformToColor,
   platformToName,
   riskLevelToColor,
@@ -125,7 +124,12 @@ const gridOptions: VxeGridProps<Session> = {
     },
     { title: $t('page.session.entryPage'), field: 'entryPage', minWidth: 120 },
     { title: $t('page.session.exitPage'), field: 'exitPage', minWidth: 120 },
-    { title: $t('page.session.isBounce'), field: 'isBounce', minWidth: 100 },
+    {
+      title: $t('page.session.isBounce'),
+      field: 'isBounce',
+      minWidth: 100,
+      slots: { default: 'isBounce' },
+    },
     {
       title: $t('page.session.platform'),
       field: 'platform',
@@ -168,38 +172,16 @@ const gridOptions: VxeGridProps<Session> = {
       formatter: 'formatDateTime',
       minWidth: 160,
     },
-    {
-      title: $t('ui.table.action'),
-      field: 'action',
-      fixed: 'right',
-      slots: { default: 'action' },
-      minWidth: 120,
-    },
   ],
 };
 
 const gridEvents: VxeGridListeners<Session> = {};
 
-const [Grid, gridApi] = useVbenVxeGrid({
+const [Grid] = useVbenVxeGrid({
   gridOptions,
   formOptions,
   gridEvents,
 });
-
-async function handleDelete(row: any) {
-  console.log('handleDelete', row);
-  // try {
-  //   await sessionListStore.deleteSession(row.id);
-  //   notification.success({
-  //     message: $t('ui.notification.delete_success'),
-  //   });
-  //   await gridApi.reload();
-  // } catch {
-  //   notification.error({
-  //     message: $t('ui.notification.delete_failed'),
-  //   });
-  // }
-}
 </script>
 
 <template>
@@ -215,19 +197,10 @@ async function handleDelete(row: any) {
           {{ riskLevelToName(row.riskLevel) }}
         </a-tag>
       </template>
-      <template #action="{ row }">
-        <a-popconfirm
-          :cancel-text="$t('ui.button.cancel')"
-          :ok-text="$t('ui.button.ok')"
-          :title="
-            $t('ui.text.do_you_want_delete', {
-              moduleName: $t('menu.dataAnalysis.session'),
-            })
-          "
-          @confirm="handleDelete(row)"
-        >
-          <a-button danger type="link" :icon="h(LucideTrash2)" />
-        </a-popconfirm>
+      <template #isBounce="{ row }">
+        <a-tag :color="enableBoolToColor(row.isBounce)">
+          {{ enableBoolToName(row.isBounce) }}
+        </a-tag>
       </template>
     </Grid>
   </Page>

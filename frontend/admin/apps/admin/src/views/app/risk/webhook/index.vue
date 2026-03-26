@@ -11,9 +11,13 @@ import { notification } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { $t } from '#/locales';
-import { useWebhookListStore } from '#/stores';
+import {
+  enableBoolToColor,
+  enableBoolToName,
+  useWebhookListStore,
+} from '#/stores';
 
-import WebhookDrawer from './webohhok-drawer.vue';
+import WebhookDrawer from './webhook-drawer.vue';
 
 const webhookListStore = useWebhookListStore();
 
@@ -209,8 +213,8 @@ async function handleDelete(row: any) {
         </a-button>
       </template>
       <template #enabled="{ row }">
-        <a-tag :color="row.enabled ? '#52C41A' : '#8C8C8C'">
-          {{ row.enabled ? $t('ui.switch.enable') : $t('ui.switch.disable') }}
+        <a-tag :color="enableBoolToColor(row.enabled)">
+          {{ enableBoolToName(row.enabled) }}
         </a-tag>
       </template>
       <template #action="{ row }">

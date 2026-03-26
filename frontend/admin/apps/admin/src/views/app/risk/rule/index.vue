@@ -12,13 +12,15 @@ import { notification } from 'ant-design-vue';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { $t } from '#/locales';
 import {
-  loginAuditLogActionTypeList, riskEventTypeList,
+  riskEventTypeList,
   riskEventTypeToColor,
   riskEventTypeToName,
   riskLevelToColor,
   riskLevelToName,
   useRiskRuleListStore,
 } from '#/stores';
+
+import RiskRuleDrawer from './risk-rule-drawer.vue';
 
 const riskRuleListStore = useRiskRuleListStore();
 
@@ -47,7 +49,7 @@ const formOptions = {
     },
     {
       component: 'Select',
-      fieldName: 'action_type',
+      fieldName: 'riskType',
       label: $t('page.riskRule.riskType'),
       componentProps: {
         options: riskEventTypeList,
@@ -157,7 +159,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
   gridEvents,
 });
 
-const [Drawer, drawerApi] = useVbenDrawer();
+const [Drawer, drawerApi] = useVbenDrawer({
+  // 连接抽离的组件
+  connectedComponent: RiskRuleDrawer,
+
+  onOpenChange(isOpen: boolean) {
+    if (!isOpen) {
+      // 关闭时，重载表格数据
+      gridApi.reload();
+    }
+  },
+});
 
 function openDrawer(create: boolean, row?: any) {
   drawerApi.setData({
@@ -167,11 +179,16 @@ function openDrawer(create: boolean, row?: any) {
   drawerApi.open();
 }
 
+/* 创建 */
 function handleCreate() {
+  console.log('创建');
+
   openDrawer(true);
 }
 
+/* 编辑 */
 function handleEdit(row: any) {
+  console.log('编辑', row);
   openDrawer(false, row);
 }
 

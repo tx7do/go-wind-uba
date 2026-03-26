@@ -5,7 +5,6 @@ import type { ubaservicev1_UserTag as UserTag } from '#/generated/api/admin/serv
 import { h } from 'vue';
 
 import { Page } from '@vben/common-ui';
-import { LucideFilePenLine, LucideTrash2 } from '@vben/icons';
 
 import { notification } from 'ant-design-vue';
 
@@ -102,24 +101,35 @@ const gridOptions: VxeGridProps<UserTag> = {
     },
   },
   columns: [
-    { title: $t('ui.field.id'), field: 'id', minWidth: 100, fixed: 'left' },
-    { title: $t('page.userTag.userId'), field: 'userId', minWidth: 100 },
-    { title: $t('page.userTag.tagId'), field: 'tagId', minWidth: 100 },
     {
       title: $t('page.userTag.valueLabel'),
       field: 'valueLabel',
       minWidth: 150,
+      align: 'left',
+      fixed: 'left',
     },
-    { title: $t('page.userTag.value'), field: 'value', minWidth: 150 },
+    {
+      title: $t('page.userTag.value'),
+      field: 'value',
+      minWidth: 150,
+      align: 'left',
+    },
+    {
+      title: $t('page.userTag.userId'),
+      field: 'userId',
+      minWidth: 100,
+    },
+    { title: $t('page.userTag.tagId'), field: 'tagId', minWidth: 100 },
+
     {
       title: $t('page.userTag.confidence'),
       field: 'confidence',
-      minWidth: 150,
+      minWidth: 100,
     },
     {
       title: $t('page.userTag.source'),
       field: 'source',
-      minWidth: 120,
+      minWidth: 100,
       slots: { default: 'source' },
     },
     {
@@ -140,19 +150,12 @@ const gridOptions: VxeGridProps<UserTag> = {
       formatter: 'formatDateTime',
       minWidth: 160,
     },
-    {
-      title: $t('ui.table.action'),
-      field: 'action',
-      fixed: 'right',
-      slots: { default: 'action' },
-      minWidth: 120,
-    },
   ],
 };
 
 const gridEvents: VxeGridListeners<UserTag> = {};
 
-const [Grid, gridApi] = useVbenVxeGrid({
+const [Grid] = useVbenVxeGrid({
   gridOptions,
   formOptions,
   gridEvents,
@@ -171,10 +174,6 @@ async function handleDelete(row: any) {
     });
   }
 }
-
-function handleEdit(row: any) {
-  console.log('Edit', row);
-}
 </script>
 
 <template>
@@ -186,11 +185,6 @@ function handleEdit(row: any) {
         </a-tag>
       </template>
       <template #action="{ row }">
-        <a-button
-          type="link"
-          :icon="h(LucideFilePenLine)"
-          @click.stop="handleEdit(row)"
-        />
         <a-popconfirm
           :cancel-text="$t('ui.button.cancel')"
           :ok-text="$t('ui.button.ok')"
