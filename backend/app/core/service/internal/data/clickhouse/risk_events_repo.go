@@ -16,12 +16,15 @@ import (
 )
 
 type RiskEventsRepo struct {
-	db                 *clickhouseCrud.Client
-	log                *log.Helper
-	tableName          string
-	mapper             *mapper.CopierMapper[ubaV1.RiskEvent, schema.RiskEvents]
-	riskLevelConverter *mapper.EnumTypeConverter[ubaV1.RiskLevel, string]
-	repository         *clickhouseCrud.Repository[ubaV1.RiskEvent, schema.RiskEvents]
+	db         *clickhouseCrud.Client
+	log        *log.Helper
+	tableName  string
+	mapper     *mapper.CopierMapper[ubaV1.RiskEvent, schema.RiskEvents]
+	repository *clickhouseCrud.Repository[ubaV1.RiskEvent, schema.RiskEvents]
+
+	riskLevelConverter       *mapper.EnumTypeConverter[ubaV1.RiskLevel, string]
+	riskTypeConverter        *mapper.EnumTypeConverter[ubaV1.RiskType, string]
+	riskEventStatusConverter *mapper.EnumTypeConverter[ubaV1.RiskEvent_Status, string]
 }
 
 func NewRiskEventsRepo(
@@ -36,6 +39,12 @@ func NewRiskEventsRepo(
 		riskLevelConverter: mapper.NewEnumTypeConverter[ubaV1.RiskLevel, string](
 			ubaV1.RiskLevel_name, ubaV1.RiskLevel_value,
 		),
+		riskTypeConverter: mapper.NewEnumTypeConverter[ubaV1.RiskType, string](
+			ubaV1.RiskType_name, ubaV1.RiskType_value,
+		),
+		riskEventStatusConverter: mapper.NewEnumTypeConverter[ubaV1.RiskEvent_Status, string](
+			ubaV1.RiskEvent_Status_name, ubaV1.RiskEvent_Status_value,
+		),
 	}
 	repo.init()
 	return repo
@@ -48,9 +57,13 @@ func (r *RiskEventsRepo) init() {
 		r.tableName,
 		r.log,
 	)
+
 	r.mapper.AppendConverters(copierutil.NewTimeStringConverterPair())
 	r.mapper.AppendConverters(copierutil.NewTimeTimestamppbConverterPair())
+
 	r.mapper.AppendConverters(r.riskLevelConverter.NewConverterPair())
+	r.mapper.AppendConverters(r.riskTypeConverter.NewConverterPair())
+	r.mapper.AppendConverters(r.riskEventStatusConverter.NewConverterPair())
 }
 
 func (r *RiskEventsRepo) Create(ctx context.Context, dto *ubaV1.RiskEvent) error {

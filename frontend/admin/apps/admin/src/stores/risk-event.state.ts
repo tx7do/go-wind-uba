@@ -70,52 +70,53 @@ export const useRiskEventListStore = defineStore('risk-event-list', () => {
 });
 
 export const riskEventTypeList = computed(() => [
-  { value: 'RISK_TYPE_UNSPECIFIED', label: $t('enum.risk.type.UNSPECIFIED') },
   {
     value: 'RISK_TYPE_LOGIN_ANOMALY',
-    label: $t('enum.risk.type.LOGIN_ANOMALY'),
+    label: $t('enum.riskType.RISK_TYPE_LOGIN_ANOMALY'),
   },
-  { value: 'RISK_TYPE_BRUTE_FORCE', label: $t('enum.risk.type.BRUTE_FORCE') },
+  {
+    value: 'RISK_TYPE_BRUTE_FORCE',
+    label: $t('enum.riskType.RISK_TYPE_BRUTE_FORCE'),
+  },
   {
     value: 'RISK_TYPE_CREDENTIAL_STUFFING',
-    label: $t('enum.risk.type.CREDENTIAL_STUFFING'),
+    label: $t('enum.riskType.RISK_TYPE_CREDENTIAL_STUFFING'),
   },
   {
     value: 'RISK_TYPE_FREQUENT_OPERATION',
-    label: $t('enum.risk.type.FREQUENT_OPERATION'),
+    label: $t('enum.riskType.RISK_TYPE_FREQUENT_OPERATION'),
   },
   {
     value: 'RISK_TYPE_ABNORMAL_FLOW',
-    label: $t('enum.risk.type.ABNORMAL_FLOW'),
+    label: $t('enum.riskType.RISK_TYPE_ABNORMAL_FLOW'),
   },
   {
     value: 'RISK_TYPE_DATA_EXFILTRATION',
-    label: $t('enum.risk.type.DATA_EXFILTRATION'),
+    label: $t('enum.riskType.RISK_TYPE_DATA_EXFILTRATION'),
   },
   {
     value: 'RISK_TYPE_DEVICE_CHANGE',
-    label: $t('enum.risk.type.DEVICE_CHANGE'),
+    label: $t('enum.riskType.RISK_TYPE_DEVICE_CHANGE'),
   },
   {
     value: 'RISK_TYPE_LOCATION_ANOMALY',
-    label: $t('enum.risk.type.LOCATION_ANOMALY'),
+    label: $t('enum.riskType.RISK_TYPE_LOCATION_ANOMALY'),
   },
   {
     value: 'RISK_TYPE_PROXY_DETECTED',
-    label: $t('enum.risk.type.PROXY_DETECTED'),
+    label: $t('enum.riskType.RISK_TYPE_PROXY_DETECTED'),
   },
   {
     value: 'RISK_TYPE_FRAUD_PAYMENT',
-    label: $t('enum.risk.type.FRAUD_PAYMENT'),
+    label: $t('enum.riskType.RISK_TYPE_FRAUD_PAYMENT'),
   },
   {
     value: 'RISK_TYPE_ABUSE_PROMOTION',
-    label: $t('enum.risk.type.ABUSE_PROMOTION'),
+    label: $t('enum.riskType.RISK_TYPE_ABUSE_PROMOTION'),
   },
 ]);
 
 const RISK_TYPE_COLOR_MAP = {
-  RISK_TYPE_UNSPECIFIED: '#86909C',
   RISK_TYPE_LOGIN_ANOMALY: '#F53F3F',
   RISK_TYPE_BRUTE_FORCE: '#F77234',
   RISK_TYPE_CREDENTIAL_STUFFING: '#FF9A2E',
@@ -178,15 +179,15 @@ export function riskLevelToName(level?: RiskLevel) {
 }
 
 export const riskEventStatusList = computed(() => [
-  { value: 'PENDING', label: $t('enum.risk.event.status.PENDING') },
-  { value: 'INVESTIGATING', label: $t('enum.risk.event.status.INVESTIGATING') },
-  { value: 'CONFIRMED', label: $t('enum.risk.event.status.CONFIRMED') },
+  { value: 'PENDING', label: $t('enum.riskEvent.status.PENDING') },
+  { value: 'INVESTIGATING', label: $t('enum.riskEvent.status.INVESTIGATING') },
+  { value: 'CONFIRMED', label: $t('enum.riskEvent.status.CONFIRMED') },
   {
     value: 'FALSE_POSITIVE',
-    label: $t('enum.risk.event.status.FALSE_POSITIVE'),
+    label: $t('enum.riskEvent.status.FALSE_POSITIVE'),
   },
-  { value: 'IGNORED', label: $t('enum.risk.event.status.IGNORED') },
-  { value: 'AUTO_BLOCKED', label: $t('enum.risk.event.status.AUTO_BLOCKED') },
+  { value: 'IGNORED', label: $t('enum.riskEvent.status.IGNORED') },
+  { value: 'AUTO_BLOCKED', label: $t('enum.riskEvent.status.AUTO_BLOCKED') },
 ]);
 
 const RISK_EVENT_STATUS_COLOR_MAP = {

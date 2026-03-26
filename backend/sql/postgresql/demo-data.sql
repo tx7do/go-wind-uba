@@ -285,3 +285,89 @@ VALUES
      TRUE,
      '{"auth_status":"authorized","last_use_time":"2026-03-20"}');
 
+
+-- 插入 uba_webhooks 测试数据
+INSERT INTO public.uba_webhooks (
+    created_at,
+    updated_at,
+    deleted_at,
+    created_by,
+    updated_by,
+    deleted_by,
+    tenant_id,
+    name,
+    url,
+    secret,
+    event_types,
+    enabled,
+    last_triggered_at,
+    failure_count,
+    app_id
+)
+VALUES
+    -- 1. 租户0：用户标签变更回调（启用）
+    (NOW(), NOW(), NULL, 1001, 1001, NULL, 0,
+     '用户标签更新通知',
+     'https://api.xxx.com/webhook/tag_change',
+     'whsec_1234567890abcdef',
+     '["tag.created","tag.updated","tag.deleted"]',
+     true,
+     NOW() - INTERVAL '1 hour',
+     0,
+     1001),
+
+    -- 2. 租户0：用户支付成功回调（启用）
+    (NOW(), NOW(), NULL, 1001, 1001, NULL, 0,
+     '支付成功通知',
+     'https://api.xxx.com/webhook/pay_success',
+     'whsec_abcdef1234567890',
+     '["order.paid","order.refund"]',
+     true,
+     NOW() - INTERVAL '30 minutes',
+     1,
+     1001),
+
+    -- 3. 租户1：用户登录事件回调（禁用）
+    (NOW(), NOW(), NULL, 1002, 1002, NULL, 1,
+     '用户登录通知',
+     'https://api.yyy.com/webhook/user_login',
+     'whsec_0987654321fedcba',
+     '["user.login","user.logout"]',
+     false,
+     NULL,
+     5,
+     1002),
+
+    -- 4. 租户1：会话结束回调（启用）
+    (NOW(), NOW(), NULL, 1002, 1003, NULL, 1,
+     '会话结束通知',
+     'https://api.yyy.com/webhook/session_end',
+     'whsec_fedcba0987654321',
+     '["session.start","session.end"]',
+     true,
+     NOW() - INTERVAL '2 hours',
+     0,
+     1002),
+
+    -- 5. 租户2：风险事件回调（启用）
+    (NOW(), NOW(), NULL, 1004, 1004, NULL, 2,
+     '用户风险预警通知',
+     'https://api.zzz.com/webhook/risk_alert',
+     'whsec_risk1234567890abc',
+     '["user.risk.high","user.risk.medium"]',
+     true,
+     NOW() - INTERVAL '15 minutes',
+     2,
+     1003),
+
+    -- 6. 已软删除的废弃回调
+    (NOW(), NOW(), NOW() - INTERVAL '7 days', 1001, 1005, 1005, 0,
+     '旧版测试回调',
+     'https://api.old.com/webhook/test',
+     'whsec_old1234567890',
+     '["test.event"]',
+     false,
+     NOW() - INTERVAL '10 days',
+     99,
+     1001);
+

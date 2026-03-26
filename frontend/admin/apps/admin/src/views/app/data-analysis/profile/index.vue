@@ -11,7 +11,7 @@ import {
   platformToColor,
   platformToName,
   riskLevelToColor,
-  riskLevelToName, statusList,
+  riskLevelToName,
   useUserBehaviorProfileListStore,
 } from '#/stores';
 

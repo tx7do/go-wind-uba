@@ -263,33 +263,27 @@
     "RISK_LEVEL_HIGH": "高风险",
     "RISK_LEVEL_CRITICAL": "危急风险"
   },
+  "riskType": {
+    "RISK_TYPE_LOGIN_ANOMALY": "异常登录风险",
+    "RISK_TYPE_BRUTE_FORCE": "暴力破解风险",
+    "RISK_TYPE_CREDENTIAL_STUFFING": "撞库风险",
+    "RISK_TYPE_FREQUENT_OPERATION": "高频操作风险",
+    "RISK_TYPE_ABNORMAL_FLOW": "异常流程风险",
+    "RISK_TYPE_DATA_EXFILTRATION": "数据泄露风险",
+    "RISK_TYPE_DEVICE_CHANGE": "设备突变风险",
+    "RISK_TYPE_LOCATION_ANOMALY": "异地登录风险",
+    "RISK_TYPE_PROXY_DETECTED": "代理/VPN风险",
+    "RISK_TYPE_FRAUD_PAYMENT": "欺诈支付风险",
+    "RISK_TYPE_ABUSE_PROMOTION": "薅羊毛风险"
+  },
   "riskEvent": {
-    "type": {
-      "TYPE_LOGIN_ABNORMAL": "登录异常",
-      "TYPE_PERMISSION_CHANGE": "权限变更",
-      "TYPE_DATA_ACCESS": "数据访问",
-      "TYPE_OPERATION_AUDIT": "操作审计",
-      "TYPE_RISK_CONTROL": "风控规则",
-      "TYPE_ACCOUNT_SECURITY": "账号安全",
-      "TYPE_CONTENT_SECURITY": "内容安全",
-      "TYPE_FINANCIAL_RISK": "财务风险",
-      "TYPE_COMPLIANCE_RISK": "合规风险",
-      "TYPE_SYSTEM_SECURITY": "系统安全",
-      "TYPE_BUSINESS_RISK": "业务风险"
-    },
-    "level": {
-      "LEVEL_LOW": "低",
-      "LEVEL_MEDIUM": "中",
-      "LEVEL_HIGH": "高",
-      "LEVEL_CRITICAL": "严重"
-    },
     "status": {
-      "STATUS_PENDING": "待处理",
-      "STATUS_PROCESSING": "处理中",
-      "STATUS_RESOLVED": "已解决",
-      "STATUS_CLOSED": "已关闭",
-      "STATUS_FALSE_POSITIVE": "误报",
-      "STATUS_ESCALATED": "已升级"
+      "PENDING": "待处理",
+      "INVESTIGATING": "调查中",
+      "CONFIRMED": "已确认",
+      "FALSE_POSITIVE": "误报",
+      "IGNORED": "已忽略",
+      "AUTO_BLOCKED": "自动阻断"
     }
   },
   "riskRule": {

@@ -115,7 +115,7 @@ message RiskEvent {
     (gnostic.openapi.v3.property) = {description: "关联行为事件ID列表，风险事件关联的行为事件"}
   ];
   // 会话ID（风险事件发生时的会话标识）
-  optional uint32 session_id = 14 [
+  optional uint64 session_id = 14 [
     json_name = "sessionId",
     (gnostic.openapi.v3.property) = {description: "会话ID，风险事件发生时的会话标识"}
   ];

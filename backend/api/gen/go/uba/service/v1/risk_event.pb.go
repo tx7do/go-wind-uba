@@ -123,7 +123,7 @@ type RiskEvent struct {
 	// 关联行为事件ID列表（风险事件关联的行为事件）
 	RelatedEventIds []uint32 `protobuf:"varint,13,rep,packed,name=related_event_ids,json=relatedEventIds,proto3" json:"related_event_ids,omitempty"`
 	// 会话ID（风险事件发生时的会话标识）
-	SessionId *uint32 `protobuf:"varint,14,opt,name=session_id,json=sessionId,proto3,oneof" json:"session_id,omitempty"`
+	SessionId *uint64 `protobuf:"varint,14,opt,name=session_id,json=sessionId,proto3,oneof" json:"session_id,omitempty"`
 	// 风险详情描述
 	Description *string `protobuf:"bytes,15,opt,name=description,proto3,oneof" json:"description,omitempty"`
 	// 证据（风险事件相关证据，键值对形式）
@@ -264,7 +264,7 @@ func (x *RiskEvent) GetRelatedEventIds() []uint32 {
 	return nil
 }
 
-func (x *RiskEvent) GetSessionId() uint32 {
+func (x *RiskEvent) GetSessionId() uint64 {
 	if x != nil && x.SessionId != nil {
 		return *x.SessionId
 	}
@@ -878,7 +878,7 @@ const file_uba_service_v1_risk_event_proto_rawDesc = "" +
 	"\frule_context\x18\f \x01(\v2\x17.google.protobuf.StructB6\xbaG3\x92\x020规则上下文，触发条件，结构化信息H\tR\vruleContext\x88\x01\x01\x12p\n" +
 	"\x11related_event_ids\x18\r \x03(\rBD\xbaGA\x92\x02>关联行为事件ID列表，风险事件关联的行为事件R\x0frelatedEventIds\x12Y\n" +
 	"\n" +
-	"session_id\x18\x0e \x01(\rB5\xbaG2\x92\x02/会话ID，风险事件发生时的会话标识H\n" +
+	"session_id\x18\x0e \x01(\x04B5\xbaG2\x92\x02/会话ID，风险事件发生时的会话标识H\n" +
 	"R\tsessionId\x88\x01\x01\x12]\n" +
 	"\vdescription\x18\x0f \x01(\tB6\xbaG3\x92\x020风险详情描述，风险事件的详细说明H\vR\vdescription\x88\x01\x01\x12~\n" +
 	"\bevidence\x18\x10 \x03(\v2'.uba.service.v1.RiskEvent.EvidenceEntryB9\xbaG6\x92\x023证据，风险事件相关证据，键值对形式R\bevidence\x12o\n" +

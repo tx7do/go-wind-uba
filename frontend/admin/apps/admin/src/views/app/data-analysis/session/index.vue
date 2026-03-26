@@ -20,14 +20,14 @@ import {
 const sessionListStore = useSessionListStore();
 
 const formOptions = {
-  collapsed: true,
+  collapsed: false,
   showCollapseButton: true,
   submitOnEnter: true,
   schema: [
     {
       component: 'Input',
       fieldName: 'user_id',
-      label: $t('ui.formLabel.userId'),
+      label: $t('page.session.userId'),
       componentProps: {
         placeholder: $t('ui.placeholder.input'),
         allowClear: true,
@@ -35,8 +35,17 @@ const formOptions = {
     },
     {
       component: 'Input',
-      fieldName: 'username',
-      label: $t('ui.formLabel.username'),
+      fieldName: 'device_id',
+      label: $t('page.session.deviceId'),
+      componentProps: {
+        placeholder: $t('ui.placeholder.input'),
+        allowClear: true,
+      },
+    },
+    {
+      component: 'Input',
+      fieldName: 'global_user_id',
+      label: $t('page.session.globalUserId'),
       componentProps: {
         placeholder: $t('ui.placeholder.input'),
         allowClear: true,

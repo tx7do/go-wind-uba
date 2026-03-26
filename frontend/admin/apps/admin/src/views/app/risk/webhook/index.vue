@@ -16,14 +16,14 @@ import { useWebhookListStore } from '#/stores';
 const webhookListStore = useWebhookListStore();
 
 const formOptions = {
-  collapsed: true,
+  collapsed: false,
   showCollapseButton: true,
   submitOnEnter: true,
   schema: [
     {
       component: 'Input',
       fieldName: 'name',
-      label: $t('ui.formLabel.name'),
+      label: $t('page.webhook.name'),
       componentProps: {
         placeholder: $t('ui.placeholder.input'),
         allowClear: true,
@@ -32,7 +32,16 @@ const formOptions = {
     {
       component: 'Input',
       fieldName: 'url',
-      label: $t('ui.formLabel.url'),
+      label: $t('page.webhook.url'),
+      componentProps: {
+        placeholder: $t('ui.placeholder.input'),
+        allowClear: true,
+      },
+    },
+    {
+      component: 'Input',
+      fieldName: 'appId',
+      label: $t('page.webhook.appId'),
       componentProps: {
         placeholder: $t('ui.placeholder.input'),
         allowClear: true,
@@ -75,28 +84,50 @@ const gridOptions: VxeGridProps<Webhook> = {
     },
   },
   columns: [
-    { title: $t('ui.field.id'), field: 'id', width: 100 },
-    { title: $t('ui.field.name'), field: 'name', width: 150 },
-    { title: $t('ui.field.url'), field: 'url', width: 300 },
-    { title: $t('ui.field.eventType'), field: 'eventType', width: 150 },
     {
-      title: $t('ui.field.enabled'),
+      title: $t('page.webhook.name'),
+      field: 'name',
+      minWidth: 150,
+      fixed: 'left',
+      align: 'left',
+    },
+    {
+      title: $t('page.webhook.url'),
+      field: 'url',
+      minWidth: 300,
+      align: 'left',
+    },
+    { title: $t('page.webhook.appId'), field: 'appId', minWidth: 100 },
+    {
+      title: $t('page.webhook.secret'),
+      field: 'secret',
+      minWidth: 200,
+      align: 'left',
+    },
+    {
+      title: $t('page.webhook.enabled'),
       field: 'enabled',
-      width: 90,
+      minWidth: 90,
       slots: { default: 'enabled' },
+    },
+    {
+      title: $t('page.webhook.lastTriggeredAt'),
+      field: 'lastTriggeredAt',
+      formatter: 'formatDateTime',
+      minWidth: 160,
     },
     {
       title: $t('ui.table.createdAt'),
       field: 'createdAt',
       formatter: 'formatDateTime',
-      width: 160,
+      minWidth: 160,
     },
     {
       title: $t('ui.table.action'),
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      width: 120,
+      minWidth: 120,
     },
   ],
 };

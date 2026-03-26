@@ -1,6 +1,8 @@
 package schema
 
-import "time"
+import (
+	"time"
+)
 
 // 风险事件表
 // 对应表：gw_uba.risk_events
@@ -18,7 +20,7 @@ type RiskEvents struct {
 	RuleName        *string           `ch:"rule_name"`
 	RuleContext     map[string]string `ch:"rule_context"`
 	RelatedEventIDs []string          `ch:"related_event_ids"`
-	SessionID       *uint32           `ch:"session_id"`
+	SessionID       *uint64           `ch:"session_id"`
 	Description     *string           `ch:"description"`
 	Evidence        map[string]string `ch:"evidence"`
 	Status          *string           `ch:"status"`

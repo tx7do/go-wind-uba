@@ -10,10 +10,13 @@ import { LucideTrash2 } from '@vben/icons';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { $t } from '#/locales';
 import {
+  riskEventStatusList,
   riskEventStatusToColor,
   riskEventStatusToName,
+  riskEventTypeList,
   riskEventTypeToColor,
   riskEventTypeToName,
+  riskLevelList,
   riskLevelToColor,
   riskLevelToName,
   useRiskEventListStore,
@@ -22,14 +25,14 @@ import {
 const riskEventListStore = useRiskEventListStore();
 
 const formOptions = {
-  collapsed: true,
+  collapsed: false,
   showCollapseButton: true,
   submitOnEnter: true,
   schema: [
     {
       component: 'Input',
       fieldName: 'user_id',
-      label: $t('ui.formLabel.userId'),
+      label: $t('page.riskEvent.userId'),
       componentProps: {
         placeholder: $t('ui.placeholder.input'),
         allowClear: true,
@@ -37,39 +40,41 @@ const formOptions = {
     },
     {
       component: 'Select',
-      fieldName: 'type',
-      label: $t('enum.riskEvent.type.title'),
+      fieldName: 'status',
+      label: $t('page.riskEvent.status'),
       componentProps: {
-        options: [
-          {
-            value: 'RISK_TYPE_LOGIN_ABNORMAL',
-            label: $t('ui.riskEventType.RISK_TYPE_LOGIN_ABNORMAL'),
-          },
-          {
-            value: 'RISK_TYPE_PERMISSION_CHANGE',
-            label: $t('ui.riskEventType.RISK_TYPE_PERMISSION_CHANGE'),
-          },
-          {
-            value: 'RISK_TYPE_DATA_ACCESS',
-            label: $t('ui.riskEventType.RISK_TYPE_DATA_ACCESS'),
-          },
-        ],
+        options: riskEventStatusList,
         placeholder: $t('ui.placeholder.select'),
+        filterOption: (input: string, option: any) =>
+          option.label.toLowerCase().includes(input.toLowerCase()),
         allowClear: true,
+        showSearch: true,
       },
     },
     {
       component: 'Select',
-      fieldName: 'level',
-      label: $t('enum.riskEvent.level.title'),
+      fieldName: 'riskType',
+      label: $t('page.riskEvent.riskType'),
       componentProps: {
-        options: [
-          { value: 'LEVEL_LOW', label: $t('ui.riskLevel.LEVEL_LOW') },
-          { value: 'LEVEL_MEDIUM', label: $t('ui.riskLevel.LEVEL_MEDIUM') },
-          { value: 'LEVEL_HIGH', label: $t('ui.riskLevel.LEVEL_HIGH') },
-        ],
+        options: riskEventTypeList,
         placeholder: $t('ui.placeholder.select'),
+        filterOption: (input: string, option: any) =>
+          option.label.toLowerCase().includes(input.toLowerCase()),
         allowClear: true,
+        showSearch: true,
+      },
+    },
+    {
+      component: 'Select',
+      fieldName: 'riskLevel',
+      label: $t('page.riskEvent.riskLevel'),
+      componentProps: {
+        options: riskLevelList,
+        placeholder: $t('ui.placeholder.select'),
+        filterOption: (input: string, option: any) =>
+          option.label.toLowerCase().includes(input.toLowerCase()),
+        allowClear: true,
+        showSearch: true,
       },
     },
   ],
@@ -109,39 +114,82 @@ const gridOptions: VxeGridProps<RiskEvent> = {
     },
   },
   columns: [
-    { title: $t('ui.field.id'), field: 'id', width: 100 },
-    { title: $t('ui.field.userId'), field: 'userId', width: 100 },
     {
-      title: $t('enum.riskEvent.type.title'),
-      field: 'type',
-      width: 140,
-      slots: { default: 'type' },
+      title: $t('page.riskEvent.userId'),
+      field: 'userId',
+      minWidth: 100,
+      fixed: 'left',
     },
     {
-      title: $t('enum.riskEvent.level.title'),
-      field: 'level',
-      width: 100,
-      slots: { default: 'level' },
+      title: $t('page.riskEvent.deviceId'),
+      field: 'deviceId',
+      minWidth: 150,
+      align: 'left',
     },
     {
-      title: $t('enum.riskEvent.status.title'),
+      title: $t('page.riskEvent.globalUserId'),
+      field: 'globalUserId',
+      minWidth: 150,
+      align: 'left',
+    },
+    {
+      title: $t('page.riskEvent.riskType'),
+      field: 'riskType',
+      minWidth: 140,
+      slots: { default: 'riskType' },
+    },
+    {
+      title: $t('page.riskEvent.riskLevel'),
+      field: 'riskLevel',
+      minWidth: 100,
+      slots: { default: 'riskLevel' },
+    },
+    {
+      title: $t('page.riskEvent.status'),
       field: 'status',
-      width: 100,
+      minWidth: 100,
       slots: { default: 'status' },
     },
-    { title: $t('ui.field.description'), field: 'description', width: 250 },
     {
-      title: $t('ui.field.occurredAt'),
-      field: 'createdAt',
+      title: $t('page.riskEvent.riskScore'),
+      field: 'riskScore',
+      minWidth: 100,
+    },
+    {
+      title: $t('page.riskEvent.ruleId'),
+      field: 'ruleId',
+      minWidth: 100,
+    },
+    {
+      title: $t('page.riskEvent.ruleName'),
+      field: 'ruleName',
+      minWidth: 120,
+      align: 'left',
+    },
+    {
+      title: $t('page.riskEvent.description'),
+      field: 'description',
+      minWidth: 250,
+      align: 'left',
+    },
+    {
+      title: $t('page.riskEvent.occurTime'),
+      field: 'occurTime',
       formatter: 'formatDateTime',
-      width: 160,
+      minWidth: 160,
+    },
+    {
+      title: $t('page.riskEvent.reportTime'),
+      field: 'reportTime',
+      formatter: 'formatDateTime',
+      minWidth: 160,
     },
     {
       title: $t('ui.table.action'),
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      width: 120,
+      minWidth: 120,
     },
   ],
 };
@@ -173,14 +221,14 @@ async function handleDelete(row: any) {
 <template>
   <Page auto-content-height>
     <Grid :title="$t('menu.risk.event')">
-      <template #type="{ row }">
-        <a-tag :color="riskEventTypeToColor(row.type)">
-          {{ riskEventTypeToName(row.type) }}
+      <template #riskType="{ row }">
+        <a-tag :color="riskEventTypeToColor(row.riskType)">
+          {{ riskEventTypeToName(row.riskType) }}
         </a-tag>
       </template>
-      <template #level="{ row }">
-        <a-tag :color="riskLevelToColor(row.level)">
-          {{ riskLevelToName(row.level) }}
+      <template #riskLevel="{ row }">
+        <a-tag :color="riskLevelToColor(row.riskLevel)">
+          {{ riskLevelToName(row.riskLevel) }}
         </a-tag>
       </template>
       <template #status="{ row }">

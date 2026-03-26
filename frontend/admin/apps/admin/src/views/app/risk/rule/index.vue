@@ -12,22 +12,34 @@ import { notification } from 'ant-design-vue';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { $t } from '#/locales';
 import {
-  riskActionTypeToColor,
-  riskActionTypeToName,
+  loginAuditLogActionTypeList, riskEventTypeList,
+  riskEventTypeToColor,
+  riskEventTypeToName,
+  riskLevelToColor,
+  riskLevelToName,
   useRiskRuleListStore,
 } from '#/stores';
 
 const riskRuleListStore = useRiskRuleListStore();
 
 const formOptions = {
-  collapsed: true,
+  collapsed: false,
   showCollapseButton: true,
   submitOnEnter: true,
   schema: [
     {
       component: 'Input',
       fieldName: 'name',
-      label: $t('ui.formLabel.name'),
+      label: $t('page.riskRule.name'),
+      componentProps: {
+        placeholder: $t('ui.placeholder.input'),
+        allowClear: true,
+      },
+    },
+    {
+      component: 'Input',
+      fieldName: 'code',
+      label: $t('page.riskRule.code'),
       componentProps: {
         placeholder: $t('ui.placeholder.input'),
         allowClear: true,
@@ -36,10 +48,14 @@ const formOptions = {
     {
       component: 'Select',
       fieldName: 'action_type',
-      label: $t('enum.riskRule.actionType.title'),
+      label: $t('page.riskRule.riskType'),
       componentProps: {
+        options: riskEventTypeList,
         placeholder: $t('ui.placeholder.select'),
+        filterOption: (input: string, option: any) =>
+          option.label.toLowerCase().includes(input.toLowerCase()),
         allowClear: true,
+        showSearch: true,
       },
     },
   ],
@@ -79,34 +95,56 @@ const gridOptions: VxeGridProps<RiskRule> = {
     },
   },
   columns: [
-    { title: $t('ui.field.id'), field: 'id', width: 100 },
-    { title: $t('ui.field.name'), field: 'name', width: 150 },
-    { title: $t('ui.field.description'), field: 'description', width: 200 },
     {
-      title: $t('enum.riskRule.actionType.title'),
-      field: 'actionType',
-      width: 120,
-      slots: { default: 'actionType' },
+      title: $t('page.riskRule.name'),
+      field: 'name',
+      minWidth: 150,
+      align: 'left',
+      fixed: 'left',
     },
-    { title: $t('ui.field.priority'), field: 'priority', width: 80 },
     {
-      title: $t('ui.field.enabled'),
+      title: $t('page.riskRule.description'),
+      field: 'description',
+      minWidth: 200,
+      align: 'left',
+    },
+    {
+      title: $t('page.riskRule.code'),
+      field: 'code',
+      minWidth: 200,
+      align: 'left',
+    },
+    {
+      title: $t('page.riskRule.riskType'),
+      field: 'riskType',
+      minWidth: 120,
+      slots: { default: 'riskType' },
+    },
+    {
+      title: $t('page.riskRule.defaultLevel'),
+      field: 'defaultLevel',
+      minWidth: 120,
+      slots: { default: 'riskLevel' },
+    },
+    { title: $t('page.riskRule.priority'), field: 'priority', minWidth: 80 },
+    {
+      title: $t('page.riskRule.enabled'),
       field: 'enabled',
-      width: 90,
+      minWidth: 90,
       slots: { default: 'enabled' },
     },
     {
       title: $t('ui.table.createdAt'),
       field: 'createdAt',
       formatter: 'formatDateTime',
-      width: 160,
+      minWidth: 160,
     },
     {
       title: $t('ui.table.action'),
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      width: 120,
+      minWidth: 120,
     },
   ],
 };
@@ -160,9 +198,14 @@ async function handleDelete(row: any) {
           {{ $t('ui.button.create', { moduleName: $t('menu.page.riskRule') }) }}
         </a-button>
       </template>
-      <template #actionType="{ row }">
-        <a-tag :color="riskActionTypeToColor(row.actionType)">
-          {{ riskActionTypeToName(row.actionType) }}
+      <template #riskType="{ row }">
+        <a-tag :color="riskEventTypeToColor(row.riskType)">
+          {{ riskEventTypeToName(row.riskType) }}
+        </a-tag>
+      </template>
+      <template #riskLevel="{ row }">
+        <a-tag :color="riskLevelToColor(row.defaultLevel)">
+          {{ riskLevelToName(row.defaultLevel) }}
         </a-tag>
       </template>
       <template #enabled="{ row }">

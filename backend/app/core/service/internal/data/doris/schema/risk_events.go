@@ -1,6 +1,8 @@
 package schema
 
-import "time"
+import (
+	"time"
+)
 
 type RiskEvents struct {
 	RiskID          *string           `json:"risk_id"`
@@ -15,7 +17,7 @@ type RiskEvents struct {
 	RuleName        *string           `json:"rule_name"`
 	RuleContext     map[string]string `json:"rule_context"`
 	RelatedEventIDs []string          `json:"related_event_ids"`
-	SessionID       *uint32           `json:"session_id"`
+	SessionID       *uint64           `json:"session_id"`
 	Description     *string           `json:"description"`
 	Evidence        map[string]string `json:"evidence"`
 	Status          *string           `json:"status"`

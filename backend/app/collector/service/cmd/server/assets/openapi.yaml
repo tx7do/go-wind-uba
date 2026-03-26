@@ -569,9 +569,8 @@ components:
                         format: uint32
                     description: 关联行为事件ID列表，风险事件关联的行为事件
                 sessionId:
-                    type: integer
+                    type: string
                     description: 会话ID，风险事件发生时的会话标识
-                    format: uint32
                 description:
                     type: string
                     description: 风险详情描述，风险事件的详细说明
