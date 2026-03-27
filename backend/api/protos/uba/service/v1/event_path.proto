@@ -32,27 +32,27 @@ service EventPathService {
 message PathNode {
   // 事件名称（路径节点对应的行为事件名称）
   string event_name = 1 [
-    json_name = "event_name",
+    json_name = "eventName",
     (gnostic.openapi.v3.property) = {description: "事件名称，路径节点对应的行为事件名称"}
   ];
   // 对象类型（节点关联的对象类型，如商品、内容等）
   string object_type = 2 [
-    json_name = "object_type",
+    json_name = "objectType",
     (gnostic.openapi.v3.property) = {description: "对象类型，节点关联的对象类型，如商品、内容等"}
   ];
   // 对象ID（节点关联的对象唯一标识）
   string object_id = 3 [
-    json_name = "object_id",
+    json_name = "objectId",
     (gnostic.openapi.v3.property) = {description: "对象ID，节点关联的对象唯一标识"}
   ];
   // 事件时间（节点对应事件发生的时间）
   google.protobuf.Timestamp event_time = 4 [
-    json_name = "event_time",
+    json_name = "eventTime",
     (gnostic.openapi.v3.property) = {description: "事件时间，节点对应事件发生的时间"}
   ];
   // 步骤索引（节点在路径中的位置，从0开始）
   uint32 step_index = 5 [
-    json_name = "step_index",
+    json_name = "stepIndex",
     (gnostic.openapi.v3.property) = {description: "步骤索引，节点在路径中的位置，从0开始"}
   ];
 }
@@ -66,17 +66,17 @@ message EventPath {
   ];
   // 租户ID（多租户隔离，支持 SaaS 场景）
   uint32 tenant_id = 2 [
-    json_name = "tenant_id",
+    json_name = "tenantId",
     (gnostic.openapi.v3.property) = {description: "租户ID，多租户隔离，支持 SaaS 场景"}
   ];
   // 用户ID（路径所属用户）
   uint32 user_id = 3 [
-    json_name = "user_id",
+    json_name = "userId",
     (gnostic.openapi.v3.property) = {description: "用户ID，路径所属用户"}
   ];
   // 会话ID（路径所属会话）
   uint64 session_id = 4 [
-    json_name = "session_id",
+    json_name = "sessionId",
     (gnostic.openapi.v3.property) = {description: "会话ID，路径所属会话"}
   ];
 
@@ -87,67 +87,67 @@ message EventPath {
   ];
 
   uint64 path_hash = 6 [
-    json_name = "path_hash",
+    json_name = "pathHash",
     (gnostic.openapi.v3.property) = {description: "路径哈希值，根据事件序列计算得到的哈希值，用于快速路径识别和去重"}
   ];
 
   // 转化标记
   // 是否完成目标转化（如完成支付、注册等）
   bool is_converted = 10 [
-    json_name = "is_converted",
+    json_name = "isConverted",
     (gnostic.openapi.v3.property) = {description: "是否完成目标转化，如完成支付、注册等"}
   ];
   // 转化事件名称（目标转化对应的事件名称）
   string conversion_event = 11 [
-    json_name = "conversion_event",
+    json_name = "conversionEvent",
     (gnostic.openapi.v3.property) = {description: "转化事件名称，目标转化对应的事件名称"}
   ];
   google.protobuf.Timestamp conversion_time = 12 [
-    json_name = "conversion_time",
+    json_name = "conversionTime",
     (gnostic.openapi.v3.property) = {description: "转化时间，目标转化事件发生的时间"}
   ];
 
   // 路径指标
   // 路径起始时间（第一个节点事件时间）
   google.protobuf.Timestamp start_time = 20 [
-    json_name = "start_time",
+    json_name = "startTime",
     (gnostic.openapi.v3.property) = {description: "路径起始时间，第一个节点事件时间"}
   ];
   // 路径结束时间（最后一个节点事件时间）
   google.protobuf.Timestamp end_time = 21 [
-    json_name = "end_time",
+    json_name = "endTime",
     (gnostic.openapi.v3.property) = {description: "路径结束时间，最后一个节点事件时间"}
   ];
   google.protobuf.Timestamp event_date = 22 [
-    json_name = "event_date",
+    json_name = "eventDate",
     (gnostic.openapi.v3.property) = {description: "事件日期，路径起始时间的日期部分，用于按日统计和查询"}
   ];
 
   // 路径总时长（毫秒，start_time 到 end_time 的间隔）
   uint64 total_duration_ms = 30 [
-    json_name = "total_duration_ms",
+    json_name = "totalDurationMs",
     (gnostic.openapi.v3.property) = {description: "路径总时长，毫秒，start_time 到 end_time 的间隔"}
   ];
   // 步骤数（路径节点总数）
   uint32 step_count = 31 [
-    json_name = "step_count",
+    json_name = "stepCount",
     (gnostic.openapi.v3.property) = {description: "步骤数，路径节点总数"}
   ];
 
   string first_event = 40 [
-    json_name = "first_event",
+    json_name = "firstEvent",
     (gnostic.openapi.v3.property) = {description: "第一个事件名称，路径中第一个节点的事件名称"}
   ];
   string last_event = 41 [
-    json_name = "last_event",
+    json_name = "lastEvent",
     (gnostic.openapi.v3.property) = {description: "最后一个事件名称，路径中最后一个节点的事件名称"}
   ];
   repeated string first_3_events = 42 [
-    json_name = "first_3_events",
+    json_name = "first3Events",
     (gnostic.openapi.v3.property) = {description: "前3个事件名称，路径中前3个节点的事件名称列表"}
   ];
   repeated string last_3_events = 43 [
-    json_name = "last_3_events",
+    json_name = "last3Events",
     (gnostic.openapi.v3.property) = {description: "后3个事件名称，路径中后3个节点的事件名称列表"}
   ];
 }

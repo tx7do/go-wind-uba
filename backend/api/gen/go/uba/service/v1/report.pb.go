@@ -29,10 +29,7 @@ type ReportEvent_EventType int32
 const (
 	ReportEvent_EVENT_TYPE_UNSPECIFIED ReportEvent_EventType = 0
 	ReportEvent_BEHAVIOR               ReportEvent_EventType = 1 // 行为事件
-	ReportEvent_PATH                   ReportEvent_EventType = 2 // 路径事件
-	ReportEvent_RISK                   ReportEvent_EventType = 3 // 风险事件
-	ReportEvent_SESSION                ReportEvent_EventType = 4 // 会话事件（未来扩展）
-	ReportEvent_FUNNEL                 ReportEvent_EventType = 5 // 漏斗事件（未来扩展）
+	ReportEvent_RISK                   ReportEvent_EventType = 2 // 风险事件
 )
 
 // Enum value maps for ReportEvent_EventType.
@@ -40,18 +37,12 @@ var (
 	ReportEvent_EventType_name = map[int32]string{
 		0: "EVENT_TYPE_UNSPECIFIED",
 		1: "BEHAVIOR",
-		2: "PATH",
-		3: "RISK",
-		4: "SESSION",
-		5: "FUNNEL",
+		2: "RISK",
 	}
 	ReportEvent_EventType_value = map[string]int32{
 		"EVENT_TYPE_UNSPECIFIED": 0,
 		"BEHAVIOR":               1,
-		"PATH":                   2,
-		"RISK":                   3,
-		"SESSION":                4,
-		"FUNNEL":                 5,
+		"RISK":                   2,
 	}
 )
 
@@ -174,7 +165,6 @@ type ReportEvent struct {
 	// Types that are valid to be assigned to Payload:
 	//
 	//	*ReportEvent_Behavior
-	//	*ReportEvent_Path
 	//	*ReportEvent_Risk
 	Payload       isReportEvent_Payload `protobuf_oneof:"payload"`
 	unknownFields protoimpl.UnknownFields
@@ -325,15 +315,6 @@ func (x *ReportEvent) GetBehavior() *BehaviorEvent {
 	return nil
 }
 
-func (x *ReportEvent) GetPath() *EventPath {
-	if x != nil {
-		if x, ok := x.Payload.(*ReportEvent_Path); ok {
-			return x.Path
-		}
-	}
-	return nil
-}
-
 func (x *ReportEvent) GetRisk() *RiskEvent {
 	if x != nil {
 		if x, ok := x.Payload.(*ReportEvent_Risk); ok {
@@ -351,17 +332,11 @@ type ReportEvent_Behavior struct {
 	Behavior *BehaviorEvent `protobuf:"bytes,20,opt,name=behavior,proto3,oneof"` // 行为事件
 }
 
-type ReportEvent_Path struct {
-	Path *EventPath `protobuf:"bytes,30,opt,name=path,proto3,oneof"` // 路径事件
-}
-
 type ReportEvent_Risk struct {
-	Risk *RiskEvent `protobuf:"bytes,40,opt,name=risk,proto3,oneof"` // 风险事件
+	Risk *RiskEvent `protobuf:"bytes,30,opt,name=risk,proto3,oneof"` // 风险事件
 }
 
 func (*ReportEvent_Behavior) isReportEvent_Payload() {}
-
-func (*ReportEvent_Path) isReportEvent_Payload() {}
 
 func (*ReportEvent_Risk) isReportEvent_Payload() {}
 
@@ -669,7 +644,7 @@ const file_uba_service_v1_report_proto_rawDesc = "" +
 	"app_secret\x18\x02 \x01(\tB7\xbaG4\x92\x021密钥，鉴权使用，鉴权/路由关键字段R\tappSecret\x123\n" +
 	"\x06events\x18\x03 \x03(\v2\x1b.uba.service.v1.ReportEventR\x06events\x12\x8b\x01\n" +
 	"\vclient_info\x18\x04 \x01(\v2\x1a.uba.service.v1.ClientInfoBN\xbaGK\x92\x02H客户端信息，服务端可解析用于补全事件上下文和分析R\n" +
-	"clientInfo\"\xb0\x10\n" +
+	"clientInfo\"\xdc\x0f\n" +
 	"\vReportEvent\x12\x97\x01\n" +
 	"\n" +
 	"event_type\x18\x01 \x01(\x0e2%.uba.service.v1.ReportEvent.EventTypeBQ\xbaGN\x92\x02K事件类型，区分不同事件结构和处理逻辑，路由关键字段R\teventType\x12u\n" +
@@ -694,19 +669,14 @@ const file_uba_service_v1_report_proto_rawDesc = "" +
 	"\vserver_time\x18\x0e \x01(\v2\x1a.google.protobuf.TimestampBK\xbaGH\x92\x02E服务端接收时间，服务端处理事件的时间，单位毫秒R\n" +
 	"serverTime\x12;\n" +
 	"\bbehavior\x18\x14 \x01(\v2\x1d.uba.service.v1.BehaviorEventH\x00R\bbehavior\x12/\n" +
-	"\x04path\x18\x1e \x01(\v2\x19.uba.service.v1.EventPathH\x00R\x04path\x12/\n" +
-	"\x04risk\x18( \x01(\v2\x19.uba.service.v1.RiskEventH\x00R\x04risk\x1a=\n" +
+	"\x04risk\x18\x1e \x01(\v2\x19.uba.service.v1.RiskEventH\x00R\x04risk\x1a=\n" +
 	"\x0fPropertiesEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"}\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"Z\n" +
 	"\tEventType\x12\x1a\n" +
 	"\x16EVENT_TYPE_UNSPECIFIED\x10\x00\x12\f\n" +
 	"\bBEHAVIOR\x10\x01\x12\b\n" +
-	"\x04PATH\x10\x02\x12\b\n" +
-	"\x04RISK\x10\x03\x12\v\n" +
-	"\aSESSION\x10\x04\x12\n" +
-	"\n" +
-	"\x06FUNNEL\x10\x05\"\x04\b\n" +
+	"\x04RISK\x10\x02\"\x04\b\n" +
 	"\x10c*\x13EVENT_TYPE_RESERVEDB\t\n" +
 	"\apayloadB\n" +
 	"\n" +
@@ -771,9 +741,8 @@ var file_uba_service_v1_report_proto_goTypes = []any{
 	nil,                           // 7: uba.service.v1.ReportEvent.PropertiesEntry
 	(*timestamppb.Timestamp)(nil), // 8: google.protobuf.Timestamp
 	(*BehaviorEvent)(nil),         // 9: uba.service.v1.BehaviorEvent
-	(*EventPath)(nil),             // 10: uba.service.v1.EventPath
-	(*RiskEvent)(nil),             // 11: uba.service.v1.RiskEvent
-	(*RiskAction)(nil),            // 12: uba.service.v1.RiskAction
+	(*RiskEvent)(nil),             // 10: uba.service.v1.RiskEvent
+	(*RiskAction)(nil),            // 11: uba.service.v1.RiskAction
 }
 var file_uba_service_v1_report_proto_depIdxs = []int32{
 	2,  // 0: uba.service.v1.PostReportRequest.events:type_name -> uba.service.v1.ReportEvent
@@ -783,18 +752,17 @@ var file_uba_service_v1_report_proto_depIdxs = []int32{
 	7,  // 4: uba.service.v1.ReportEvent.properties:type_name -> uba.service.v1.ReportEvent.PropertiesEntry
 	8,  // 5: uba.service.v1.ReportEvent.server_time:type_name -> google.protobuf.Timestamp
 	9,  // 6: uba.service.v1.ReportEvent.behavior:type_name -> uba.service.v1.BehaviorEvent
-	10, // 7: uba.service.v1.ReportEvent.path:type_name -> uba.service.v1.EventPath
-	11, // 8: uba.service.v1.ReportEvent.risk:type_name -> uba.service.v1.RiskEvent
-	5,  // 9: uba.service.v1.PostReportResponse.errors_by_type:type_name -> uba.service.v1.TypeErrorDetail
-	12, // 10: uba.service.v1.PostReportResponse.risk_action:type_name -> uba.service.v1.RiskAction
-	6,  // 11: uba.service.v1.TypeErrorDetail.errors:type_name -> uba.service.v1.ErrorDetail
-	1,  // 12: uba.service.v1.ReportService.PostReport:input_type -> uba.service.v1.PostReportRequest
-	4,  // 13: uba.service.v1.ReportService.PostReport:output_type -> uba.service.v1.PostReportResponse
-	13, // [13:14] is the sub-list for method output_type
-	12, // [12:13] is the sub-list for method input_type
-	12, // [12:12] is the sub-list for extension type_name
-	12, // [12:12] is the sub-list for extension extendee
-	0,  // [0:12] is the sub-list for field type_name
+	10, // 7: uba.service.v1.ReportEvent.risk:type_name -> uba.service.v1.RiskEvent
+	5,  // 8: uba.service.v1.PostReportResponse.errors_by_type:type_name -> uba.service.v1.TypeErrorDetail
+	11, // 9: uba.service.v1.PostReportResponse.risk_action:type_name -> uba.service.v1.RiskAction
+	6,  // 10: uba.service.v1.TypeErrorDetail.errors:type_name -> uba.service.v1.ErrorDetail
+	1,  // 11: uba.service.v1.ReportService.PostReport:input_type -> uba.service.v1.PostReportRequest
+	4,  // 12: uba.service.v1.ReportService.PostReport:output_type -> uba.service.v1.PostReportResponse
+	12, // [12:13] is the sub-list for method output_type
+	11, // [11:12] is the sub-list for method input_type
+	11, // [11:11] is the sub-list for extension type_name
+	11, // [11:11] is the sub-list for extension extendee
+	0,  // [0:11] is the sub-list for field type_name
 }
 
 func init() { file_uba_service_v1_report_proto_init() }
@@ -808,7 +776,6 @@ func file_uba_service_v1_report_proto_init() {
 	file_uba_service_v1_risk_rule_proto_init()
 	file_uba_service_v1_report_proto_msgTypes[1].OneofWrappers = []any{
 		(*ReportEvent_Behavior)(nil),
-		(*ReportEvent_Path)(nil),
 		(*ReportEvent_Risk)(nil),
 	}
 	file_uba_service_v1_report_proto_msgTypes[3].OneofWrappers = []any{}

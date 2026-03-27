@@ -42,11 +42,7 @@ message ReportEvent {
     EVENT_TYPE_UNSPECIFIED = 0;
 
     BEHAVIOR = 1;    // 行为事件
-    PATH = 2;        // 路径事件
-    RISK = 3;        // 风险事件
-
-    SESSION = 4;     // 会话事件（未来扩展）
-    FUNNEL = 5;      // 漏斗事件（未来扩展）
+    RISK = 2;        // 风险事件
 
     // 保留区间
     reserved 10 to 99;
@@ -117,8 +113,7 @@ message ReportEvent {
 
   oneof payload {
     BehaviorEvent behavior = 20;    // 行为事件
-    EventPath path = 30;            // 路径事件
-    RiskEvent risk = 40;            // 风险事件
+    RiskEvent risk = 30;            // 风险事件
   }
 }
 

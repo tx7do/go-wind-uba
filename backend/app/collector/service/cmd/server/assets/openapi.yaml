@@ -44,37 +44,37 @@ components:
         BehaviorEvent:
             type: object
             properties:
-                event_id:
+                eventId:
                     type: string
                     description: 事件ID，建议使用 UUID，作为事件的唯一标识，同时也可用于路由和去重
-                tenant_id:
+                tenantId:
                     type: integer
                     description: 租户ID，事件所属的租户，用于多租户隔离
                     format: uint32
-                user_id:
+                userId:
                     type: integer
                     description: 用户ID，事件的主体，可以是用户、设备、账号等，具体含义由业务定义
                     format: uint32
-                device_id:
+                deviceId:
                     type: string
-                account_id:
+                accountId:
                     type: string
                     description: 账号ID，事件发生时使用的账号标识，可以用于分析账号相关的行为特征
-                global_user_id:
+                globalUserId:
                     type: string
                     description: 全局用户ID，结合 user_id、device_id、account_id 等多维度标识，通过算法生成的全局唯一用户标识，可以用于跨设备、跨账号的用户行为分析
-                event_time:
+                eventTime:
                     type: string
                     description: 事件发生时间，记录事件实际发生的时间点，通常由客户端上报，可能存在时钟偏差
                     format: date-time
-                event_ts:
+                eventTs:
                     type: string
                     description: 事件时间戳，事件发生时间的 Unix 时间戳表示，单位毫秒，可以用于快速的时间范围查询和排序
-                server_time:
+                serverTime:
                     type: string
                     description: 服务器接收时间，记录事件被服务器接收的时间点，可以用于分析事件的传输延迟和时序关系
                     format: date-time
-                event_category:
+                eventCategory:
                     enum:
                         - EVENT_CATEGORY_UNSPECIFIED
                         - EVENT_CATEGORY_AUTH
@@ -86,25 +86,25 @@ components:
                     type: string
                     description: 事件类别，事件的类型或分类，用于对事件进行分组和分析，具体类别由业务定义
                     format: enum
-                event_name:
+                eventName:
                     type: string
                     description: 事件名称，事件的具体名称或动作，用于描述事件的具体行为，通常与事件类别结合使用以提供更细粒度的行为描述
-                event_action:
+                eventAction:
                     type: string
                     description: 事件动作，事件的具体动作或结果，用于描述事件发生后的结果或状态变化，可以用于分析事件的效果和用户的反应
-                object_type:
+                objectType:
                     type: string
                     description: 对象类型，事件作用的对象类型，可以是商品、页面、功能等，具体含义由业务定义
-                object_id:
+                objectId:
                     type: string
                     description: 对象ID，事件作用的对象标识，可以用于分析特定对象的行为特征和受欢迎程度
-                object_name:
+                objectName:
                     type: string
                     description: 对象名称，事件作用的对象名称，可以提供更友好的对象描述，便于分析和展示
-                session_id:
+                sessionId:
                     type: string
                     description: 会话ID，事件所属的会话标识，可以用于分析用户的会话行为和路径，通常由客户端上报，可能存在时钟偏差
-                session_seq:
+                sessionSeq:
                     type: integer
                     description: 会话内序列号，事件在所属会话中的序列号，用于分析事件的顺序和路径，可以由客户端上报，也可以由服务器根据 session_id 进行计算生成
                     format: uint32
@@ -124,7 +124,7 @@ components:
                 os:
                     type: string
                     description: 操作系统，事件发生的操作系统信息，可以提供更细粒度的环境描述，便于分析不同操作系统上的行为差异
-                app_version:
+                appVersion:
                     type: string
                     description: 应用版本，事件发生的应用版本信息，可以用于分析不同版本上的行为差异和版本升级的影响
                 channel:
@@ -133,7 +133,7 @@ components:
                 ip:
                     type: string
                     description: IP地址，事件发生时的客户端IP地址，可以用于分析用户的地理位置和网络特征
-                ip_city:
+                ipCity:
                     type: string
                     description: IP城市，事件发生时的IP地址解析出的城市信息，可以用于分析用户的地理位置特征
                 country:
@@ -145,7 +145,7 @@ components:
                 geo:
                     type: string
                     description: 地理位置，经纬度信息，格式如 'lat,lng' 或 GeoJSON，用于更精细的地理分析
-                user_agent:
+                userAgent:
                     type: string
                     description: 客户端 User-Agent 信息，记录客户端类型、版本、操作系统等特征，便于分析设备和环境
                 referer:
@@ -156,7 +156,7 @@ components:
                     additionalProperties:
                         type: string
                     description: 业务上下文，事件的业务相关上下文信息，可以包含任意的键值对，由业务定义和使用，便于分析事件发生时的具体业务场景和条件
-                duration_ms:
+                durationMs:
                     type: integer
                     description: 持续时间，事件持续的时间长度，单位毫秒，可以用于分析事件的持续时间分布和用户的停留时间特征
                     format: uint32
@@ -182,7 +182,7 @@ components:
                     additionalProperties:
                         type: string
                     description: 扩展属性，事件的其他相关属性信息，可以包含任意的键值对，由业务定义和使用，便于分析事件的其他特征和细节
-                op_result:
+                opResult:
                     enum:
                         - OP_RESULT_UNSPECIFIED
                         - OP_RESULT_SUCCESS
@@ -192,10 +192,10 @@ components:
                     type: string
                     description: 操作结果，事件相关的操作结果信息，可以用于分析事件的成功率和失败原因，具体含义由业务定义
                     format: enum
-                error_code:
+                errorCode:
                     type: string
                     description: 错误码，事件相关的错误码信息，可以用于分析事件的失败原因和问题排查，具体含义由业务定义
-                risk_level:
+                riskLevel:
                     enum:
                         - RISK_LEVEL_UNSPECIFIED
                         - RISK_LEVEL_NORMAL
@@ -205,14 +205,14 @@ components:
                     type: string
                     description: 风险等级，事件相关的风险等级信息，可以用于分析事件的风险特征和安全问题，具体含义由业务定义
                     format: enum
-                trace_id:
+                traceId:
                     type: string
                     description: Trace ID，事件相关的分布式追踪标识，可以用于分析事件的调用链和系统性能，通常由服务器生成并传递给客户端进行上报
-                created_at:
+                createdAt:
                     type: string
                     description: 创建时间
                     format: date-time
-                updated_at:
+                updatedAt:
                     type: string
                     description: 更新时间
                     format: date-time
@@ -244,77 +244,6 @@ components:
                     type: string
                     description: 失败的事件 ID，便于定位具体哪条事件上报失败
             description: 错误详情
-        EventPath:
-            type: object
-            properties:
-                id:
-                    type: string
-                    description: 路径ID，唯一标识一条事件路径，hash 或 UUID
-                tenant_id:
-                    type: integer
-                    description: 租户ID，多租户隔离，支持 SaaS 场景
-                    format: uint32
-                user_id:
-                    type: integer
-                    description: 用户ID，路径所属用户
-                    format: uint32
-                session_id:
-                    type: string
-                    description: 会话ID，路径所属会话
-                nodes:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/PathNode'
-                    description: 有序事件序列，路径节点列表，按发生顺序排列
-                path_hash:
-                    type: string
-                    description: 路径哈希值，根据事件序列计算得到的哈希值，用于快速路径识别和去重
-                is_converted:
-                    type: boolean
-                    description: 是否完成目标转化，如完成支付、注册等
-                conversion_event:
-                    type: string
-                    description: 转化事件名称，目标转化对应的事件名称
-                conversion_time:
-                    type: string
-                    description: 转化时间，目标转化事件发生的时间
-                    format: date-time
-                start_time:
-                    type: string
-                    description: 路径起始时间，第一个节点事件时间
-                    format: date-time
-                end_time:
-                    type: string
-                    description: 路径结束时间，最后一个节点事件时间
-                    format: date-time
-                event_date:
-                    type: string
-                    description: 事件日期，路径起始时间的日期部分，用于按日统计和查询
-                    format: date-time
-                total_duration_ms:
-                    type: string
-                    description: 路径总时长，毫秒，start_time 到 end_time 的间隔
-                step_count:
-                    type: integer
-                    description: 步骤数，路径节点总数
-                    format: uint32
-                first_event:
-                    type: string
-                    description: 第一个事件名称，路径中第一个节点的事件名称
-                last_event:
-                    type: string
-                    description: 最后一个事件名称，路径中最后一个节点的事件名称
-                first_3_events:
-                    type: array
-                    items:
-                        type: string
-                    description: 前3个事件名称，路径中前3个节点的事件名称列表
-                last_3_events:
-                    type: array
-                    items:
-                        type: string
-                    description: 后3个事件名称，路径中后3个节点的事件名称列表
-            description: 事件路径（用户行为路径，包含有序事件序列和路径指标）
         HealthCheckResponse:
             type: object
             properties:
@@ -345,27 +274,6 @@ components:
                     type: object
                     description: 元数据
             description: Kratos错误返回
-        PathNode:
-            type: object
-            properties:
-                event_name:
-                    type: string
-                    description: 事件名称，路径节点对应的行为事件名称
-                object_type:
-                    type: string
-                    description: 对象类型，节点关联的对象类型，如商品、内容等
-                object_id:
-                    type: string
-                    description: 对象ID，节点关联的对象唯一标识
-                event_time:
-                    type: string
-                    description: 事件时间，节点对应事件发生的时间
-                    format: date-time
-                step_index:
-                    type: integer
-                    description: 步骤索引，节点在路径中的位置，从0开始
-                    format: uint32
-            description: 路径节点（事件路径中的单个事件节点，包含事件信息和对象信息）
         PostReportRequest:
             type: object
             properties:
@@ -420,10 +328,7 @@ components:
                     enum:
                         - EVENT_TYPE_UNSPECIFIED
                         - BEHAVIOR
-                        - PATH
                         - RISK
-                        - SESSION
-                        - FUNNEL
                     type: string
                     description: 事件类型，区分不同事件结构和处理逻辑，路由关键字段
                     format: enum
@@ -474,8 +379,6 @@ components:
                     format: date-time
                 behavior:
                     $ref: '#/components/schemas/BehaviorEvent'
-                path:
-                    $ref: '#/components/schemas/EventPath'
                 risk:
                     $ref: '#/components/schemas/RiskEvent'
             description: 统一事件结构，包含通用字段和不同事件类型的特有字段
@@ -507,21 +410,21 @@ components:
                 id:
                     type: string
                     description: ID
-                tenant_id:
+                tenantId:
                     type: integer
                     description: 租户ID，多租户隔离，支持 SaaS 场景
                     format: uint32
-                user_id:
+                userId:
                     type: integer
                     description: 用户ID，关联主体，风险事件涉及的用户
                     format: uint32
-                device_id:
+                deviceId:
                     type: string
                     description: 设备ID，关联主体，风险事件涉及的设备
-                global_user_id:
+                globalUserId:
                     type: string
                     description: 全局用户ID，跨平台唯一标识用户
-                risk_type:
+                riskType:
                     enum:
                         - RISK_TYPE_UNSPECIFIED
                         - RISK_TYPE_LOGIN_ANOMALY
@@ -538,7 +441,7 @@ components:
                     type: string
                     description: 风险类型，标识风险事件的类型
                     format: enum
-                risk_level:
+                riskLevel:
                     enum:
                         - RISK_LEVEL_UNSPECIFIED
                         - RISK_LEVEL_NORMAL
@@ -548,27 +451,27 @@ components:
                     type: string
                     description: 风险等级，标识风险事件的严重程度
                     format: enum
-                risk_score:
+                riskScore:
                     type: number
                     description: 风险评分，0-100，风险事件的评分
                     format: float
-                rule_id:
+                ruleId:
                     type: integer
                     description: 触发规则ID，标识触发风险事件的规则
                     format: uint32
-                rule_name:
+                ruleName:
                     type: string
                     description: 规则名称，触发风险事件的规则名称
-                rule_context:
+                ruleContext:
                     type: object
                     description: 规则上下文，触发条件，结构化信息
-                related_event_ids:
+                relatedEventIds:
                     type: array
                     items:
                         type: integer
                         format: uint32
                     description: 关联行为事件ID列表，风险事件关联的行为事件
-                session_id:
+                sessionId:
                     type: string
                     description: 会话ID，风险事件发生时的会话标识
                 description:
@@ -591,46 +494,46 @@ components:
                     type: string
                     description: 处置状态，风险事件的处理状态
                     format: enum
-                handler_id:
+                handlerId:
                     type: integer
                     description: 处理人ID，风险事件的处理人
                     format: uint32
-                handled_time:
+                handledTime:
                     type: string
                     description: 处理时间，风险事件被处理的时间
                     format: date-time
-                handle_remark:
+                handleRemark:
                     type: string
                     description: 处理备注，风险事件处理的说明
-                occur_time:
+                occurTime:
                     type: string
                     description: 风险事件发生时间
                     format: date-time
-                report_time:
+                reportTime:
                     type: string
                     description: 风险事件上报时间
                     format: date-time
-                created_by:
+                createdBy:
                     type: integer
                     description: 创建者用户ID
                     format: uint32
-                updated_by:
+                updatedBy:
                     type: integer
                     description: 更新者用户ID
                     format: uint32
-                deleted_by:
+                deletedBy:
                     type: integer
                     description: 删除者用户ID
                     format: uint32
-                created_at:
+                createdAt:
                     type: string
                     description: 创建时间
                     format: date-time
-                updated_at:
+                updatedAt:
                     type: string
                     description: 更新时间
                     format: date-time
-                deleted_at:
+                deletedAt:
                     type: string
                     description: 删除时间
                     format: date-time

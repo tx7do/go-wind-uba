@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	"encoding/json"
+	"strings"
 	"time"
 
 	"github.com/go-kratos/kratos/v2/log"
@@ -85,31 +85,10 @@ func (s *ReportService) PostReport(ctx context.Context, req *ubaV1.PostReportReq
 				continue
 			}
 
-		case ubaV1.ReportEvent_PATH:
-			// 处理路径事件
-			if err := s.handlePath(ctx, event, req.ClientInfo); err != nil {
-				s.log.Errorf("failed to handle path event: %v", err)
-				continue
-			}
-
 		case ubaV1.ReportEvent_RISK:
 			// 处理风险事件
 			if err := s.handleRisk(ctx, event, req.ClientInfo); err != nil {
 				s.log.Errorf("failed to handle risk event: %v", err)
-				continue
-			}
-
-		case ubaV1.ReportEvent_SESSION:
-			// 处理会话事件
-			if err := s.handleSession(ctx, event, req.ClientInfo); err != nil {
-				s.log.Errorf("failed to handle session event: %v", err)
-				continue
-			}
-
-		case ubaV1.ReportEvent_FUNNEL:
-			// 处理漏斗事件
-			if err := s.handleFunnel(ctx, event, req.ClientInfo); err != nil {
-				s.log.Errorf("failed to handle funnel event: %v", err)
 				continue
 			}
 
@@ -188,10 +167,6 @@ func (s *ReportService) validateEvent(event *ubaV1.ReportEvent) error {
 		if event.GetBehavior() == nil {
 			return ubaV1.ErrorBadRequest("behavior payload required for BEHAVIOR event")
 		}
-	case ubaV1.ReportEvent_PATH:
-		if event.GetPath() == nil {
-			return ubaV1.ErrorBadRequest("path payload required for PATH event")
-		}
 	case ubaV1.ReportEvent_RISK:
 		if event.GetRisk() == nil {
 			return ubaV1.ErrorBadRequest("risk payload required for RISK event")
@@ -210,39 +185,73 @@ func (s *ReportService) handleBehavior(ctx context.Context, evt *ubaV1.ReportEve
 		return ubaV1.ErrorBadRequest("behavior event data is required")
 	}
 
+	// event_id
+	if evt.EventId == "" {
+		evt.EventId = uuid.New().String()
+	}
+	behaviorEvent.EventId = evt.EventId
+
+	// event_time
+	if evt.EventTime == nil {
+		now := time.Now()
+		evt.EventTime = timeutil.TimeToTimestamppb(&now)
+	}
+	behaviorEvent.EventTime = evt.EventTime
+
+	// event_name
+	if evt.EventName == "" {
+		evt.EventName = "behavior_event"
+	}
+	behaviorEvent.EventName = evt.EventName
+
+	// context/properties
+	if evt.Properties == nil {
+		evt.Properties = map[string]string{}
+	}
+	behaviorEvent.Context = evt.GetProperties()
+
+	// user_id
+	if evt.UserId == nil {
+		behaviorEvent.UserId = 0
+	} else {
+		behaviorEvent.UserId = *evt.UserId
+	}
+	// device_id
+	behaviorEvent.DeviceId = evt.GetDeviceId()
+	// session_id
+	behaviorEvent.SessionId = evt.GetSessionId()
+	// trace_id
+	behaviorEvent.TraceId = evt.GetTraceId()
+
+	// platform, event_category
+	behaviorEvent.Platform = s.platformConverter.ToDTO(&evt.Platform)
+	behaviorEvent.EventCategory = s.categoryConverter.ToDTO(&evt.EventCategory)
+
+	// geo, user_agent, referer
 	if ci != nil {
-		if ci.GetCity() != "" {
-			behaviorEvent.IpCity = ci.GetCity()
+		if city := ci.GetCity(); city != "" {
+			behaviorEvent.IpCity = trimAndLimit(city, 64)
 		}
-		if ci.GetCountry() != "" {
-			behaviorEvent.Country = ci.GetCountry()
+		if country := ci.GetCountry(); country != "" {
+			behaviorEvent.Country = trimAndLimit(country, 64)
 		}
-		if ci.GetUserAgent() != "" {
-			behaviorEvent.UserAgent = ci.GetUserAgent()
+		if ua := ci.GetUserAgent(); ua != "" {
+			behaviorEvent.UserAgent = trimAndLimit(ua, 256)
 		}
-		if ci.GetReferer() != "" {
-			behaviorEvent.Referer = ci.GetReferer()
+		if ref := ci.GetReferer(); ref != "" {
+			behaviorEvent.Referer = trimAndLimit(ref, 256)
+		}
+	}
+	// geo 字段补全
+	if evt.Properties != nil {
+		if geo, ok := evt.Properties["geo"]; ok {
+			behaviorEvent.Geo = trimAndLimit(geo, 128)
 		}
 	}
 
 	behaviorEvent.TenantId = evt.TenantId
-	behaviorEvent.UserId = evt.GetUserId()
-	behaviorEvent.DeviceId = evt.GetDeviceId()
-	behaviorEvent.SessionId = evt.GetSessionId()
-
-	behaviorEvent.EventId = evt.EventId
-	behaviorEvent.EventName = evt.EventName
-	behaviorEvent.EventTime = evt.EventTime
-	behaviorEvent.EventCategory = s.categoryConverter.ToDTO(&evt.EventCategory)
-
-	behaviorEvent.TraceId = evt.GetTraceId()
 	behaviorEvent.ServerTime = evt.GetServerTime()
-	behaviorEvent.Context = evt.GetProperties()
 	behaviorEvent.Ip = evt.GetIp()
-	behaviorEvent.Platform = s.platformConverter.ToDTO(&evt.Platform)
-
-	bt, _ := json.Marshal(behaviorEvent)
-	s.log.Debugf("received behavior event: %s", string(bt))
 
 	if err := s.kafkaBroker.Publish(ctx, topic.UbaEventRaw, broker.NewMessage(behaviorEvent)); err != nil {
 		s.log.Errorf("failed to publish behavior event to kafka: %v", err)
@@ -252,23 +261,13 @@ func (s *ReportService) handleBehavior(ctx context.Context, evt *ubaV1.ReportEve
 	return nil
 }
 
-// handlePath 处理路径事件
-func (s *ReportService) handlePath(ctx context.Context, evt *ubaV1.ReportEvent, ci *ubaV1.ClientInfo) error {
-	pathEvent := evt.GetPath()
-	if pathEvent == nil {
-		return ubaV1.ErrorBadRequest("path event data is required")
+// trimAndLimit 去除首尾空格并限制最大长度
+func trimAndLimit(s string, max int) string {
+	t := strings.TrimSpace(s)
+	if len(t) > max {
+		t = t[:max]
 	}
-
-	pathEvent.TenantId = evt.TenantId
-	pathEvent.UserId = evt.GetUserId()
-	pathEvent.SessionId = evt.GetSessionId()
-
-	if err := s.kafkaBroker.Publish(ctx, topic.UbaEventPath, broker.NewMessage(pathEvent)); err != nil {
-		s.log.Errorf("failed to publish path event to kafka: %v", err)
-		return ubaV1.ErrorInternalServerError("failed to process path event")
-	}
-
-	return nil
+	return t
 }
 
 // handleRisk 处理风险事件
@@ -288,15 +287,5 @@ func (s *ReportService) handleRisk(ctx context.Context, evt *ubaV1.ReportEvent, 
 		return ubaV1.ErrorInternalServerError("failed to process risk event")
 	}
 
-	return nil
-}
-
-// handleSession 处理会话事件
-func (s *ReportService) handleSession(ctx context.Context, evt *ubaV1.ReportEvent, ci *ubaV1.ClientInfo) error {
-	return nil
-}
-
-// handleFunnel 处理漏斗事件
-func (s *ReportService) handleFunnel(ctx context.Context, evt *ubaV1.ReportEvent, ci *ubaV1.ClientInfo) error {
 	return nil
 }

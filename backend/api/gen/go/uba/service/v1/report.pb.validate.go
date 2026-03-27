@@ -348,47 +348,6 @@ func (m *ReportEvent) validate(all bool) error {
 			}
 		}
 
-	case *ReportEvent_Path:
-		if v == nil {
-			err := ReportEventValidationError{
-				field:  "Payload",
-				reason: "oneof value cannot be a typed-nil",
-			}
-			if !all {
-				return err
-			}
-			errors = append(errors, err)
-		}
-
-		if all {
-			switch v := interface{}(m.GetPath()).(type) {
-			case interface{ ValidateAll() error }:
-				if err := v.ValidateAll(); err != nil {
-					errors = append(errors, ReportEventValidationError{
-						field:  "Path",
-						reason: "embedded message failed validation",
-						cause:  err,
-					})
-				}
-			case interface{ Validate() error }:
-				if err := v.Validate(); err != nil {
-					errors = append(errors, ReportEventValidationError{
-						field:  "Path",
-						reason: "embedded message failed validation",
-						cause:  err,
-					})
-				}
-			}
-		} else if v, ok := interface{}(m.GetPath()).(interface{ Validate() error }); ok {
-			if err := v.Validate(); err != nil {
-				return ReportEventValidationError{
-					field:  "Path",
-					reason: "embedded message failed validation",
-					cause:  err,
-				}
-			}
-		}
-
 	case *ReportEvent_Risk:
 		if v == nil {
 			err := ReportEventValidationError{

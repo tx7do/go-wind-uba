@@ -207,8 +207,8 @@ CREATE TABLE IF NOT EXISTS gw_uba.risk_events
     handle_remark     String COMMENT '处置备注（运营人员的处置说明和备注）',
 
     -- ========== 时间字段：When（风险时间信息）==========
-    occur_time        Nullable(DateTime64(3)) COMMENT '风险发生时间（触发风险的行为发生时间，毫秒精度）',
-    report_time       Nullable(DateTime64(3)) DEFAULT now64(3) COMMENT '风险上报时间（ClickHouse 接收到风险事件的时间）',
+    occur_time        DateTime64(3) COMMENT '风险发生时间（触发风险的行为发生时间，毫秒精度）',
+    report_time       DateTime64(3) DEFAULT now64(3) COMMENT '风险上报时间（ClickHouse 接收到风险事件的时间）',
     event_date        Date MATERIALIZED toDate(occur_time) COMMENT '风险日期（物化列，用于分区和 TTL 清理）',
 
     -- ========== 审计字段：Audit（系统管理）==========
@@ -222,15 +222,15 @@ CREATE TABLE IF NOT EXISTS gw_uba.risk_events
     INDEX idx_rule_id rule_id TYPE bloom_filter(0.01) GRANULARITY 4,            -- 加速规则效果分析
     INDEX idx_description description TYPE tokenbf_v1(1024, 3, 0) GRANULARITY 2 -- 加速风险描述全文搜索
 ) ENGINE = ReplacingMergeTree(updated_at) -- 使用 ReplacingMergeTree（风险事件处置时需要更新 status、handler_id 等字段）
-      PARTITION BY toYYYYMM(event_date) -- 按月分区，平衡管理粒度和查询性能
-      ORDER BY (tenant_id, event_date, risk_level, occur_time) -- 按租户 + 日期 + 风险等级 + 发生时间排序，优化待处理风险查询
-      TTL event_date + INTERVAL 180 DAY -- 180 天前的风险事件自动清理，节省存储空间
-      SETTINGS
-          index_granularity = 8192, -- 索引粒度，平衡查询性能和存储开销
-          enable_mixed_granularity_parts = 1, -- 启用混合粒度分区，支持大文本字段
-          ttl_only_drop_parts = 1, -- TTL 只删除完整分区，避免部分删除开销
-          min_bytes_for_wide_part = 10485760 -- 10MB，宽分区最小字节数，优化合并策略
-      COMMENT '风险事件表（存储风控规则触发的风险事件，支持风险处置、误报分析、规则优化）';
+    PARTITION BY toYYYYMM(event_date) -- 按月分区，平衡管理粒度和查询性能
+    ORDER BY (tenant_id, event_date, risk_level, occur_time) -- 按租户 + 日期 + 风险等级 + 发生时间排序，优化待处理风险查询
+    TTL event_date + INTERVAL 180 DAY -- 180 天前的风险事件自动清理，节省存储空间
+    SETTINGS
+        index_granularity = 8192, -- 索引粒度，平衡查询性能和存储开销
+        enable_mixed_granularity_parts = 1, -- 启用混合粒度分区，支持大文本字段
+        ttl_only_drop_parts = 1, -- TTL 只删除完整分区，避免部分删除开销
+        min_bytes_for_wide_part = 10485760 -- 10MB，宽分区最小字节数，优化合并策略
+    COMMENT '风险事件表（存储风控规则触发的风险事件，支持风险处置、误报分析、规则优化）';
 
 
 -- ============================================================

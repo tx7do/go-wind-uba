@@ -101,29 +101,29 @@ type RiskEvent struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	Id    uint64                 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"` // ID
 	// 租户ID（多租户隔离，支持 SaaS 场景）
-	TenantId *uint32 `protobuf:"varint,2,opt,name=tenant_id,proto3,oneof" json:"tenant_id,omitempty"`
+	TenantId *uint32 `protobuf:"varint,2,opt,name=tenant_id,json=tenantId,proto3,oneof" json:"tenant_id,omitempty"`
 	// 用户ID（关联主体，风险事件涉及的用户）
-	UserId *uint32 `protobuf:"varint,3,opt,name=user_id,proto3,oneof" json:"user_id,omitempty"`
+	UserId *uint32 `protobuf:"varint,3,opt,name=user_id,json=userId,proto3,oneof" json:"user_id,omitempty"`
 	// 设备ID（关联主体，风险事件涉及的设备）
-	DeviceId *string `protobuf:"bytes,4,opt,name=device_id,proto3,oneof" json:"device_id,omitempty"`
+	DeviceId *string `protobuf:"bytes,4,opt,name=device_id,json=deviceId,proto3,oneof" json:"device_id,omitempty"`
 	// 全局用户ID（跨平台唯一标识用户）
-	GlobalUserId *string `protobuf:"bytes,5,opt,name=global_user_id,proto3,oneof" json:"global_user_id,omitempty"`
+	GlobalUserId *string `protobuf:"bytes,5,opt,name=global_user_id,json=globalUserId,proto3,oneof" json:"global_user_id,omitempty"`
 	// 风险类型
-	RiskType *RiskType `protobuf:"varint,6,opt,name=risk_type,proto3,enum=uba.service.v1.RiskType,oneof" json:"risk_type,omitempty"`
+	RiskType *RiskType `protobuf:"varint,6,opt,name=risk_type,json=riskType,proto3,enum=uba.service.v1.RiskType,oneof" json:"risk_type,omitempty"`
 	// 风险等级
-	RiskLevel *RiskLevel `protobuf:"varint,7,opt,name=risk_level,proto3,enum=uba.service.v1.RiskLevel,oneof" json:"risk_level,omitempty"`
+	RiskLevel *RiskLevel `protobuf:"varint,7,opt,name=risk_level,json=riskLevel,proto3,enum=uba.service.v1.RiskLevel,oneof" json:"risk_level,omitempty"`
 	// 风险评分（0-100，风险事件的评分）
-	RiskScore *float32 `protobuf:"fixed32,8,opt,name=risk_score,proto3,oneof" json:"risk_score,omitempty"`
+	RiskScore *float32 `protobuf:"fixed32,8,opt,name=risk_score,json=riskScore,proto3,oneof" json:"risk_score,omitempty"`
 	// 触发规则ID
-	RuleId *uint32 `protobuf:"varint,10,opt,name=rule_id,proto3,oneof" json:"rule_id,omitempty"`
+	RuleId *uint32 `protobuf:"varint,10,opt,name=rule_id,json=ruleId,proto3,oneof" json:"rule_id,omitempty"`
 	// 规则名称
-	RuleName *string `protobuf:"bytes,11,opt,name=rule_name,proto3,oneof" json:"rule_name,omitempty"`
+	RuleName *string `protobuf:"bytes,11,opt,name=rule_name,json=ruleName,proto3,oneof" json:"rule_name,omitempty"`
 	// 规则上下文（触发条件，结构化信息）
-	RuleContext *structpb.Struct `protobuf:"bytes,12,opt,name=rule_context,proto3,oneof" json:"rule_context,omitempty"`
+	RuleContext *structpb.Struct `protobuf:"bytes,12,opt,name=rule_context,json=ruleContext,proto3,oneof" json:"rule_context,omitempty"`
 	// 关联行为事件ID列表（风险事件关联的行为事件）
-	RelatedEventIds []uint32 `protobuf:"varint,13,rep,packed,name=related_event_ids,proto3" json:"related_event_ids,omitempty"`
+	RelatedEventIds []uint32 `protobuf:"varint,13,rep,packed,name=related_event_ids,json=relatedEventIds,proto3" json:"related_event_ids,omitempty"`
 	// 会话ID（风险事件发生时的会话标识）
-	SessionId *uint64 `protobuf:"varint,14,opt,name=session_id,proto3,oneof" json:"session_id,omitempty"`
+	SessionId *uint64 `protobuf:"varint,14,opt,name=session_id,json=sessionId,proto3,oneof" json:"session_id,omitempty"`
 	// 风险详情描述
 	Description *string `protobuf:"bytes,15,opt,name=description,proto3,oneof" json:"description,omitempty"`
 	// 证据（风险事件相关证据，键值对形式）
@@ -131,21 +131,21 @@ type RiskEvent struct {
 	// 处置状态
 	Status *RiskEvent_Status `protobuf:"varint,17,opt,name=status,proto3,enum=uba.service.v1.RiskEvent_Status,oneof" json:"status,omitempty"`
 	// 处理人ID
-	HandlerId *uint32 `protobuf:"varint,18,opt,name=handler_id,proto3,oneof" json:"handler_id,omitempty"`
+	HandlerId *uint32 `protobuf:"varint,18,opt,name=handler_id,json=handlerId,proto3,oneof" json:"handler_id,omitempty"`
 	// 处理时间
-	HandledTime *timestamppb.Timestamp `protobuf:"bytes,19,opt,name=handled_time,proto3,oneof" json:"handled_time,omitempty"`
+	HandledTime *timestamppb.Timestamp `protobuf:"bytes,19,opt,name=handled_time,json=handledTime,proto3,oneof" json:"handled_time,omitempty"`
 	// 处理备注
-	HandleRemark *string `protobuf:"bytes,20,opt,name=handle_remark,proto3,oneof" json:"handle_remark,omitempty"`
+	HandleRemark *string `protobuf:"bytes,20,opt,name=handle_remark,json=handleRemark,proto3,oneof" json:"handle_remark,omitempty"`
 	// 风险事件发生时间
-	OccurTime *timestamppb.Timestamp `protobuf:"bytes,21,opt,name=occur_time,proto3,oneof" json:"occur_time,omitempty"`
+	OccurTime *timestamppb.Timestamp `protobuf:"bytes,21,opt,name=occur_time,json=occurTime,proto3,oneof" json:"occur_time,omitempty"`
 	// 风险事件上报时间
-	ReportTime    *timestamppb.Timestamp `protobuf:"bytes,22,opt,name=report_time,proto3,oneof" json:"report_time,omitempty"`
-	CreatedBy     *uint32                `protobuf:"varint,100,opt,name=created_by,proto3,oneof" json:"created_by,omitempty"` // 创建者用户ID
-	UpdatedBy     *uint32                `protobuf:"varint,101,opt,name=updated_by,proto3,oneof" json:"updated_by,omitempty"` // 更新者用户ID
-	DeletedBy     *uint32                `protobuf:"varint,102,opt,name=deleted_by,proto3,oneof" json:"deleted_by,omitempty"` // 删除者用户ID
-	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,200,opt,name=created_at,proto3,oneof" json:"created_at,omitempty"`  // 创建时间
-	UpdatedAt     *timestamppb.Timestamp `protobuf:"bytes,201,opt,name=updated_at,proto3,oneof" json:"updated_at,omitempty"`  // 更新时间
-	DeletedAt     *timestamppb.Timestamp `protobuf:"bytes,202,opt,name=deleted_at,proto3,oneof" json:"deleted_at,omitempty"`  // 删除时间
+	ReportTime    *timestamppb.Timestamp `protobuf:"bytes,22,opt,name=report_time,json=reportTime,proto3,oneof" json:"report_time,omitempty"`
+	CreatedBy     *uint32                `protobuf:"varint,100,opt,name=created_by,json=createdBy,proto3,oneof" json:"created_by,omitempty"` // 创建者用户ID
+	UpdatedBy     *uint32                `protobuf:"varint,101,opt,name=updated_by,json=updatedBy,proto3,oneof" json:"updated_by,omitempty"` // 更新者用户ID
+	DeletedBy     *uint32                `protobuf:"varint,102,opt,name=deleted_by,json=deletedBy,proto3,oneof" json:"deleted_by,omitempty"` // 删除者用户ID
+	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,200,opt,name=created_at,json=createdAt,proto3,oneof" json:"created_at,omitempty"`  // 创建时间
+	UpdatedAt     *timestamppb.Timestamp `protobuf:"bytes,201,opt,name=updated_at,json=updatedAt,proto3,oneof" json:"updated_at,omitempty"`  // 更新时间
+	DeletedAt     *timestamppb.Timestamp `protobuf:"bytes,202,opt,name=deleted_at,json=deletedAt,proto3,oneof" json:"deleted_at,omitempty"`  // 删除时间
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -860,59 +860,49 @@ var File_uba_service_v1_risk_event_proto protoreflect.FileDescriptor
 
 const file_uba_service_v1_risk_event_proto_rawDesc = "" +
 	"\n" +
-	"\x1fuba/service/v1/risk_event.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a google/protobuf/field_mask.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1epagination/v1/pagination.proto\x1a\x1buba/service/v1/common.proto\"\x88\x18\n" +
+	"\x1fuba/service/v1/risk_event.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a google/protobuf/field_mask.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1epagination/v1/pagination.proto\x1a\x1buba/service/v1/common.proto\"\xef\x17\n" +
 	"\tRiskEvent\x12\x18\n" +
-	"\x02id\x18\x01 \x01(\x04B\b\xbaG\x05\x92\x02\x02IDR\x02id\x12X\n" +
-	"\ttenant_id\x18\x02 \x01(\rB5\xbaG2\x92\x02/租户ID，多租户隔离，支持 SaaS 场景H\x00R\ttenant_id\x88\x01\x01\x12Z\n" +
-	"\auser_id\x18\x03 \x01(\rB;\xbaG8\x92\x025用户ID，关联主体，风险事件涉及的用户H\x01R\auser_id\x88\x01\x01\x12^\n" +
-	"\tdevice_id\x18\x04 \x01(\tB;\xbaG8\x92\x025设备ID，关联主体，风险事件涉及的设备H\x02R\tdevice_id\x88\x01\x01\x12_\n" +
-	"\x0eglobal_user_id\x18\x05 \x01(\tB2\xbaG/\x92\x02,全局用户ID，跨平台唯一标识用户H\x03R\x0eglobal_user_id\x88\x01\x01\x12m\n" +
-	"\trisk_type\x18\x06 \x01(\x0e2\x18.uba.service.v1.RiskTypeB0\xbaG-\x92\x02*风险类型，标识风险事件的类型H\x04R\trisk_type\x88\x01\x01\x12v\n" +
+	"\x02id\x18\x01 \x01(\x04B\b\xbaG\x05\x92\x02\x02IDR\x02id\x12W\n" +
+	"\ttenant_id\x18\x02 \x01(\rB5\xbaG2\x92\x02/租户ID，多租户隔离，支持 SaaS 场景H\x00R\btenantId\x88\x01\x01\x12Y\n" +
+	"\auser_id\x18\x03 \x01(\rB;\xbaG8\x92\x025用户ID，关联主体，风险事件涉及的用户H\x01R\x06userId\x88\x01\x01\x12]\n" +
+	"\tdevice_id\x18\x04 \x01(\tB;\xbaG8\x92\x025设备ID，关联主体，风险事件涉及的设备H\x02R\bdeviceId\x88\x01\x01\x12]\n" +
+	"\x0eglobal_user_id\x18\x05 \x01(\tB2\xbaG/\x92\x02,全局用户ID，跨平台唯一标识用户H\x03R\fglobalUserId\x88\x01\x01\x12l\n" +
+	"\trisk_type\x18\x06 \x01(\x0e2\x18.uba.service.v1.RiskTypeB0\xbaG-\x92\x02*风险类型，标识风险事件的类型H\x04R\briskType\x88\x01\x01\x12u\n" +
 	"\n" +
-	"risk_level\x18\a \x01(\x0e2\x19.uba.service.v1.RiskLevelB6\xbaG3\x92\x020风险等级，标识风险事件的严重程度H\x05R\n" +
-	"risk_level\x88\x01\x01\x12W\n" +
+	"risk_level\x18\a \x01(\x0e2\x19.uba.service.v1.RiskLevelB6\xbaG3\x92\x020风险等级，标识风险事件的严重程度H\x05R\triskLevel\x88\x01\x01\x12V\n" +
 	"\n" +
-	"risk_score\x18\b \x01(\x02B2\xbaG/\x92\x02,风险评分，0-100，风险事件的评分H\x06R\n" +
-	"risk_score\x88\x01\x01\x12W\n" +
+	"risk_score\x18\b \x01(\x02B2\xbaG/\x92\x02,风险评分，0-100，风险事件的评分H\x06R\triskScore\x88\x01\x01\x12V\n" +
 	"\arule_id\x18\n" +
-	" \x01(\rB8\xbaG5\x92\x022触发规则ID，标识触发风险事件的规则H\aR\arule_id\x88\x01\x01\x12Y\n" +
-	"\trule_name\x18\v \x01(\tB6\xbaG3\x92\x020规则名称，触发风险事件的规则名称H\bR\trule_name\x88\x01\x01\x12x\n" +
-	"\frule_context\x18\f \x01(\v2\x17.google.protobuf.StructB6\xbaG3\x92\x020规则上下文，触发条件，结构化信息H\tR\frule_context\x88\x01\x01\x12r\n" +
-	"\x11related_event_ids\x18\r \x03(\rBD\xbaGA\x92\x02>关联行为事件ID列表，风险事件关联的行为事件R\x11related_event_ids\x12Z\n" +
+	" \x01(\rB8\xbaG5\x92\x022触发规则ID，标识触发风险事件的规则H\aR\x06ruleId\x88\x01\x01\x12X\n" +
+	"\trule_name\x18\v \x01(\tB6\xbaG3\x92\x020规则名称，触发风险事件的规则名称H\bR\bruleName\x88\x01\x01\x12w\n" +
+	"\frule_context\x18\f \x01(\v2\x17.google.protobuf.StructB6\xbaG3\x92\x020规则上下文，触发条件，结构化信息H\tR\vruleContext\x88\x01\x01\x12p\n" +
+	"\x11related_event_ids\x18\r \x03(\rBD\xbaGA\x92\x02>关联行为事件ID列表，风险事件关联的行为事件R\x0frelatedEventIds\x12Y\n" +
 	"\n" +
 	"session_id\x18\x0e \x01(\x04B5\xbaG2\x92\x02/会话ID，风险事件发生时的会话标识H\n" +
-	"R\n" +
-	"session_id\x88\x01\x01\x12]\n" +
+	"R\tsessionId\x88\x01\x01\x12]\n" +
 	"\vdescription\x18\x0f \x01(\tB6\xbaG3\x92\x020风险详情描述，风险事件的详细说明H\vR\vdescription\x88\x01\x01\x12~\n" +
 	"\bevidence\x18\x10 \x03(\v2'.uba.service.v1.RiskEvent.EvidenceEntryB9\xbaG6\x92\x023证据，风险事件相关证据，键值对形式R\bevidence\x12o\n" +
-	"\x06status\x18\x11 \x01(\x0e2 .uba.service.v1.RiskEvent.StatusB0\xbaG-\x92\x02*处置状态，风险事件的处理状态H\fR\x06status\x88\x01\x01\x12Q\n" +
+	"\x06status\x18\x11 \x01(\x0e2 .uba.service.v1.RiskEvent.StatusB0\xbaG-\x92\x02*处置状态，风险事件的处理状态H\fR\x06status\x88\x01\x01\x12P\n" +
 	"\n" +
-	"handler_id\x18\x12 \x01(\rB,\xbaG)\x92\x02&处理人ID，风险事件的处理人H\rR\n" +
-	"handler_id\x88\x01\x01\x12x\n" +
-	"\fhandled_time\x18\x13 \x01(\v2\x1a.google.protobuf.TimestampB3\xbaG0\x92\x02-处理时间，风险事件被处理的时间H\x0eR\fhandled_time\x88\x01\x01\x12[\n" +
-	"\rhandle_remark\x18\x14 \x01(\tB0\xbaG-\x92\x02*处理备注，风险事件处理的说明H\x0fR\rhandle_remark\x88\x01\x01\x12_\n" +
+	"handler_id\x18\x12 \x01(\rB,\xbaG)\x92\x02&处理人ID，风险事件的处理人H\rR\thandlerId\x88\x01\x01\x12w\n" +
+	"\fhandled_time\x18\x13 \x01(\v2\x1a.google.protobuf.TimestampB3\xbaG0\x92\x02-处理时间，风险事件被处理的时间H\x0eR\vhandledTime\x88\x01\x01\x12Z\n" +
+	"\rhandle_remark\x18\x14 \x01(\tB0\xbaG-\x92\x02*处理备注，风险事件处理的说明H\x0fR\fhandleRemark\x88\x01\x01\x12^\n" +
 	"\n" +
-	"occur_time\x18\x15 \x01(\v2\x1a.google.protobuf.TimestampB\x1e\xbaG\x1b\x92\x02\x18风险事件发生时间H\x10R\n" +
-	"occur_time\x88\x01\x01\x12a\n" +
-	"\vreport_time\x18\x16 \x01(\v2\x1a.google.protobuf.TimestampB\x1e\xbaG\x1b\x92\x02\x18风险事件上报时间H\x11R\vreport_time\x88\x01\x01\x12<\n" +
+	"occur_time\x18\x15 \x01(\v2\x1a.google.protobuf.TimestampB\x1e\xbaG\x1b\x92\x02\x18风险事件发生时间H\x10R\toccurTime\x88\x01\x01\x12`\n" +
+	"\vreport_time\x18\x16 \x01(\v2\x1a.google.protobuf.TimestampB\x1e\xbaG\x1b\x92\x02\x18风险事件上报时间H\x11R\n" +
+	"reportTime\x88\x01\x01\x12;\n" +
 	"\n" +
-	"created_by\x18d \x01(\rB\x17\xbaG\x14\x92\x02\x11创建者用户IDH\x12R\n" +
-	"created_by\x88\x01\x01\x12<\n" +
+	"created_by\x18d \x01(\rB\x17\xbaG\x14\x92\x02\x11创建者用户IDH\x12R\tcreatedBy\x88\x01\x01\x12;\n" +
 	"\n" +
-	"updated_by\x18e \x01(\rB\x17\xbaG\x14\x92\x02\x11更新者用户IDH\x13R\n" +
-	"updated_by\x88\x01\x01\x12<\n" +
+	"updated_by\x18e \x01(\rB\x17\xbaG\x14\x92\x02\x11更新者用户IDH\x13R\tupdatedBy\x88\x01\x01\x12;\n" +
 	"\n" +
-	"deleted_by\x18f \x01(\rB\x17\xbaG\x14\x92\x02\x11删除者用户IDH\x14R\n" +
-	"deleted_by\x88\x01\x01\x12T\n" +
+	"deleted_by\x18f \x01(\rB\x17\xbaG\x14\x92\x02\x11删除者用户IDH\x14R\tdeletedBy\x88\x01\x01\x12S\n" +
 	"\n" +
-	"created_at\x18\xc8\x01 \x01(\v2\x1a.google.protobuf.TimestampB\x12\xbaG\x0f\x92\x02\f创建时间H\x15R\n" +
-	"created_at\x88\x01\x01\x12T\n" +
+	"created_at\x18\xc8\x01 \x01(\v2\x1a.google.protobuf.TimestampB\x12\xbaG\x0f\x92\x02\f创建时间H\x15R\tcreatedAt\x88\x01\x01\x12S\n" +
 	"\n" +
-	"updated_at\x18\xc9\x01 \x01(\v2\x1a.google.protobuf.TimestampB\x12\xbaG\x0f\x92\x02\f更新时间H\x16R\n" +
-	"updated_at\x88\x01\x01\x12T\n" +
+	"updated_at\x18\xc9\x01 \x01(\v2\x1a.google.protobuf.TimestampB\x12\xbaG\x0f\x92\x02\f更新时间H\x16R\tupdatedAt\x88\x01\x01\x12S\n" +
 	"\n" +
-	"deleted_at\x18\xca\x01 \x01(\v2\x1a.google.protobuf.TimestampB\x12\xbaG\x0f\x92\x02\f删除时间H\x17R\n" +
-	"deleted_at\x88\x01\x01\x1a;\n" +
+	"deleted_at\x18\xca\x01 \x01(\v2\x1a.google.protobuf.TimestampB\x12\xbaG\x0f\x92\x02\f删除时间H\x17R\tdeletedAt\x88\x01\x01\x1a;\n" +
 	"\rEvidenceEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\x8d\x01\n" +
