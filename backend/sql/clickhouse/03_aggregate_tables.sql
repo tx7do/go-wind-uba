@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS gw_uba.events_agg_daily
     -- ========== 核心指标（使用 AggregateFunction 支持精确去重）==========
     uv               AggregateFunction(uniqCombined, UInt32) COMMENT '去重用户数（使用 uniqCombined 状态函数，支持精确去重）',
     pv               SimpleAggregateFunction(sum, UInt64) COMMENT '事件总数（页面浏览量/事件量，直接累加）',
-    session_count    SimpleAggregateFunction(sum, UInt64) COMMENT '会话总数（独立会话数量）',
+    session_count    AggregateFunction(uniqCombined, UInt64) COMMENT '会话总数（独立会话数量）',
 
     -- ========== 业务指标 ==========
     total_amount     SimpleAggregateFunction(sum, Decimal(38, 2)) COMMENT '总金额（充值/订单金额总和，Decimal(38,2) 防止溢出）',
@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS gw_uba.sessions_agg_daily
     duration_count SimpleAggregateFunction(sum, UInt64) COMMENT '时长计数',
 
     -- 跳出率（用 sum + count 代替 avg）
-    bounce_sum     SimpleAggregateFunction(sum, Float64) COMMENT '跳出次数总和（is_bounce = 1 的累加）',
+    bounce_sum     SimpleAggregateFunction(sum, UInt64) COMMENT '跳出次数总和（is_bounce = 1 的累加）',
     bounce_count   SimpleAggregateFunction(sum, UInt64) COMMENT '跳出计数（用于计算跳出率）',
 
     total_amount   SimpleAggregateFunction(sum, Decimal(38, 2)) COMMENT '会话内总金额',
@@ -122,7 +122,7 @@ CREATE TABLE IF NOT EXISTS gw_uba.user_tags_agg
     stat_date    Date COMMENT '统计日期（按日聚合）',
 
     -- ========== 统计指标 ==========
-    user_count   SimpleAggregateFunction(sum, UInt64) COMMENT '标签用户数（拥有该标签的去重用户数）',
+    user_count   AggregateFunction(uniqCombined, UInt32) COMMENT '标签用户数（拥有该标签的去重用户数）',
     sample_users AggregateFunction(groupArraySample(1000), UInt32) COMMENT '抽样用户 ID 数组（用于运营预览，最多 1000 个用户）'
 )
     ENGINE = AggregatingMergeTree -- 聚合树引擎
@@ -176,11 +176,11 @@ CREATE TABLE IF NOT EXISTS gw_uba.user_activity_daily
     user_level     LowCardinality(String),
 
     active_users   AggregateFunction(uniqCombined, UInt32),
-    new_users      AggregateFunction(uniqCombined, UInt32),
+    --new_users      AggregateFunction(uniqCombined, UInt32),
     pay_users      AggregateFunction(uniqCombined, UInt32),
     risk_users     AggregateFunction(uniqCombined, UInt32),
 
-    total_sessions SimpleAggregateFunction(sum, UInt64),
+    total_sessions AggregateFunction(uniqCombined, UInt64),
     total_events   SimpleAggregateFunction(sum, UInt64)
 )
     ENGINE = AggregatingMergeTree()
@@ -194,20 +194,29 @@ CREATE TABLE IF NOT EXISTS gw_uba.user_activity_daily
 -- ============================================================
 CREATE TABLE IF NOT EXISTS gw_uba.user_retention_daily
 (
-    tenant_id      UInt32,
-    register_date  Date,
-    stat_date      Date,
-    platform       LowCardinality(String),
-    country        LowCardinality(String),
+    -- 主键 & 分区字段
+    tenant_id      UInt32 COMMENT '租户 ID',
+    register_date  Date COMMENT '注册日期（用户首次活跃日期）',
+    stat_date      Date COMMENT '统计日期（留存检查日期）',
 
-    register_users AggregateFunction(uniqCombined, UInt32),
-    retained_users AggregateFunction(uniqCombined, UInt32),
-    retention_days UInt32
+    -- 维度
+    platform       LowCardinality(String) COMMENT '平台',
+    country        LowCardinality(String) COMMENT '国家',
+
+    -- 留存指标
+    register_users UInt64 COMMENT '注册人数（当日新增用户数）',
+    retained_users UInt64 COMMENT '留存人数（在 stat_date 活跃的用户数）',
+    retention_days UInt8 COMMENT '留存天数（stat_date - register_date）',
+
+    -- 计算字段（查询时计算）
+    -- retention_rate = retained_users / register_users
+
+    INDEX idx_register (tenant_id, register_date) TYPE minmax GRANULARITY 1
 )
-    ENGINE = AggregatingMergeTree()
+    ENGINE = ReplacingMergeTree()
         PARTITION BY toYYYYMM(register_date)
         ORDER BY (tenant_id, register_date, stat_date, platform, country)
-        TTL register_date + INTERVAL 730 DAY;
+        TTL register_date + INTERVAL 730 DAY COMMENT '用户留存日表（通过定时任务计算，支持次日/7 日/30 日留存分析）';
 
 
 -- ============================================================
@@ -215,22 +224,35 @@ CREATE TABLE IF NOT EXISTS gw_uba.user_retention_daily
 -- ============================================================
 CREATE TABLE IF NOT EXISTS gw_uba.pay_agg_daily
 (
-    tenant_id       UInt32,
-    stat_date       Date,
-    platform        LowCardinality(String),
-    country         LowCardinality(String),
-    pay_level       LowCardinality(String),
+    -- 主键 & 分区字段
+    tenant_id       UInt32 COMMENT '租户 ID',
+    stat_date       Date COMMENT '统计日期',
+    platform        LowCardinality(String) COMMENT '平台',
+    country         LowCardinality(String) COMMENT '国家',
+    pay_level       LowCardinality(String) COMMENT '付费等级（free/paying/vip）',
 
-    pay_user_count  AggregateFunction(uniqCombined, UInt32),
-    pay_order_count SimpleAggregateFunction(sum, UInt64),
-    total_amount    SimpleAggregateFunction(sum, Decimal(38, 2)),
-    per_user_amount SimpleAggregateFunction(sum, Decimal(38, 2)),
-    refund_amount   SimpleAggregateFunction(sum, Decimal(38, 2))
+    -- 核心指标
+    pay_user_count  AggregateFunction(uniqCombined, UInt32) COMMENT '付费用户数（去重）',
+    pay_order_count SimpleAggregateFunction(sum, UInt64) COMMENT '订单数（付费事件数）',
+    total_amount    SimpleAggregateFunction(sum, Decimal(38, 2)) COMMENT '总金额',
+
+    -- 辅助指标（用于查询时计算客单价）
+    -- 客单价 = total_amount / uniqCombinedMerge(pay_user_count)
+
+    -- 退款相关
+    refund_count    SimpleAggregateFunction(sum, UInt64) COMMENT '退款订单数',
+    refund_amount   SimpleAggregateFunction(sum, Decimal(38, 2)) COMMENT '退款金额',
+
+    -- 新增用户付费
+    -- new_pay_users   AggregateFunction(uniqCombined, UInt32) COMMENT '新付费用户（当日注册且付费）',
+
+    INDEX idx_stat (tenant_id, stat_date) TYPE minmax GRANULARITY 1
 )
     ENGINE = AggregatingMergeTree()
         PARTITION BY toYYYYMM(stat_date)
         ORDER BY (tenant_id, stat_date, platform, country, pay_level)
-        TTL stat_date + INTERVAL 730 DAY;
+        TTL stat_date + INTERVAL 730 DAY
+        COMMENT '付费日聚合表（用于收入分析、付费转化、客单价分析）';
 
 
 -- ============================================================
@@ -238,18 +260,22 @@ CREATE TABLE IF NOT EXISTS gw_uba.pay_agg_daily
 -- ============================================================
 CREATE TABLE IF NOT EXISTS gw_uba.page_visit_daily
 (
-    tenant_id     UInt32,
-    stat_date     Date,
-    page_id       String,
-    page_type     LowCardinality(String),
-    platform      LowCardinality(String),
+    tenant_id      UInt32,
+    stat_date      Date,
+    page_id        String,
+    page_type      LowCardinality(String),
+    platform       LowCardinality(String),
 
-    pv            SimpleAggregateFunction(sum, UInt64),
-    uv            AggregateFunction(uniqCombined, UInt32),
-    session_count SimpleAggregateFunction(sum, UInt64),
-    avg_duration  SimpleAggregateFunction(sum, Float64),
-    enter_count   SimpleAggregateFunction(sum, UInt64),
-    exit_count    SimpleAggregateFunction(sum, UInt64)
+    pv             SimpleAggregateFunction(sum, UInt64),
+    uv             AggregateFunction(uniqCombined, UInt32),
+    session_count  SimpleAggregateFunction(sum, UInt64),
+
+    --avg_duration   SimpleAggregateFunction(sum, Float64),
+    duration_sum   SimpleAggregateFunction(sum, Float64),
+    duration_count SimpleAggregateFunction(sum, UInt64),
+
+    enter_count    SimpleAggregateFunction(sum, UInt64),
+    exit_count     SimpleAggregateFunction(sum, UInt64)
 )
     ENGINE = AggregatingMergeTree()
         PARTITION BY toYYYYMM(stat_date)
@@ -334,7 +360,7 @@ SELECT tenant_id,
        tag_id,
        tag_value,
        toDate(updated_at)                   as stat_date,
-       count(DISTINCT user_id)              as user_count,
+       uniqCombinedState(user_id)           as user_count,
        groupArraySampleState(1000)(user_id) as sample_users
 FROM gw_uba.user_tags
 WHERE is_active = 1
@@ -385,7 +411,7 @@ SELECT tenant_id,
        country,
        uniqCombinedState(user_id)               as uv,
        count()                                  as pv,
-       count(DISTINCT session_id)               as session_count,
+       uniqCombinedState(session_id)            as session_count,
        sum(amount)                              as total_amount,
        sum(duration_ms)                         as duration_sum,
        count()                                  as duration_count,
@@ -412,10 +438,10 @@ SELECT tenant_id,
        country,
        ''                                                   AS user_level,
        uniqCombinedState(user_id)                           AS active_users,
-       uniqCombinedStateIf(user_id, 0)                      AS new_users,
+       --uniqCombinedStateIf(user_id, 0)                      AS new_users,
        uniqCombinedStateIf(user_id, amount > 0)             AS pay_users,
        uniqCombinedStateIf(user_id, risk_level != 'normal') AS risk_users,
-       count(DISTINCT session_id)                           AS total_sessions,
+       uniqCombinedState(session_id)                        AS total_sessions,
        count()                                              AS total_events
 FROM gw_uba.events_fact
 WHERE user_id != 0
@@ -428,29 +454,30 @@ GROUP BY tenant_id, stat_date, platform, country, user_level;
 -- 目标表：gw_uba.user_retention_daily
 -- 触发：users_dim 有新数据时自动执行
 -- 过滤：只统计有效用户（user_id != 0）
+-- ✅ 使用定时任务计算替换
 -- -----------------------------------------------------------
-CREATE MATERIALIZED VIEW IF NOT EXISTS gw_uba.mv_user_retention_daily
-    TO gw_uba.user_retention_daily
-AS
-SELECT tenant_id,
-       toDate(first_active_date)                 AS register_date,
-       toDate(now())                             AS stat_date,
-       platform,
-       country,
-       uniqCombinedState(user_id)                AS register_users,
-       uniqCombinedState(user_id)                AS retained_users,
-       dateDiff('day', register_date, stat_date) AS retention_days
-FROM gw_uba.users_dim
-WHERE user_id != 0
-GROUP BY tenant_id, register_date, stat_date, platform, country;
+-- CREATE MATERIALIZED VIEW IF NOT EXISTS gw_uba.mv_user_retention_daily
+--     TO gw_uba.user_retention_daily
+-- AS
+-- SELECT tenant_id,
+--        toDate(first_active_date)                 AS register_date,
+--        toDate(now())                             AS stat_date,
+--        platform,
+--        country,
+--        uniqCombinedState(user_id)                AS register_users,
+--        uniqCombinedState(user_id)                AS retained_users,
+--        dateDiff('day', register_date, stat_date) AS retention_days
+-- FROM gw_uba.users_dim
+-- WHERE user_id != 0
+-- GROUP BY tenant_id, register_date, stat_date, platform, country;
 
 
 -- -----------------------------------------------------------
--- 8. 物化视图：付费日聚合
+-- 8. 物化视图：付费日聚合（修复版）
 -- 源表：gw_uba.events_fact
 -- 目标表：gw_uba.pay_agg_daily
 -- 触发：events_fact 有新数据时自动执行
--- 过滤：只统计付费事件（event_category = 'pay' 且 amount > 0）
+-- 过滤：只统计付费事件（event_category = 'pay' 或 event_name 包含 pay/purchase）
 -- -----------------------------------------------------------
 CREATE MATERIALIZED VIEW IF NOT EXISTS gw_uba.mv_pay_agg_daily
     TO gw_uba.pay_agg_daily
@@ -460,13 +487,23 @@ SELECT tenant_id,
        platform,
        country,
        ''                                       AS pay_level,
+
+       -- 付费用户数（去重）
        uniqCombinedStateIf(user_id, amount > 0) AS pay_user_count,
+
+       -- 订单数（付费事件数）
        countIf(amount > 0)                      AS pay_order_count,
+
+       -- 总金额
        sum(amount)                              AS total_amount,
-       sum(amount)                              AS per_user_amount,
-       sum(0)                                   AS refund_amount
+
+       -- 退款相关
+       0                                        AS refund_count,
+       0                                        AS refund_amount
+
 FROM gw_uba.events_fact
 WHERE event_category = 'pay'
+   OR event_name IN ('purchase', 'pay', 'recharge', 'top_up')
 GROUP BY tenant_id, stat_date, platform, country, pay_level;
 
 
@@ -481,16 +518,72 @@ CREATE MATERIALIZED VIEW IF NOT EXISTS gw_uba.mv_page_visit_daily
     TO gw_uba.page_visit_daily
 AS
 SELECT tenant_id,
-       toDate(event_time)         AS stat_date,
-       object_id                  AS page_id,
-       'page'                     AS page_type,
+       toDate(event_time)            AS stat_date,
+       object_id                     AS page_id,
+       'page'                        AS page_type,
        platform,
-       count()                    AS pv,
-       uniqCombinedState(user_id) AS uv,
-       count(DISTINCT session_id) AS session_count,
-       sum(duration_ms)           AS avg_duration,
-       0                          AS enter_count,
-       0                          AS exit_count
+       count()                       AS pv,
+       uniqCombinedState(user_id)    AS uv,
+       uniqCombinedState(session_id) AS session_count,
+       sum(duration_ms)              AS duration_sum,
+       count()                       AS duration_count,
+       0                             AS enter_count,
+       0                             AS exit_count
 FROM gw_uba.events_fact
 WHERE event_name = 'page_view'
 GROUP BY tenant_id, stat_date, page_id, page_type, platform;
+
+
+-- -----------------------------------------------------------
+-- 10. 物化视图：事件日聚合查询视图
+-- 说明：对 events_agg_daily 的聚合结果进行二次聚合，支持更灵活的查询（如按国家/平台汇总）
+-- 注意：聚合函数字段必须使用 Merge 进行二次聚合，普通 sum 字段直接 sum
+-- -----------------------------------------------------------
+CREATE VIEW IF NOT EXISTS gw_uba.events_agg_daily_view AS
+SELECT tenant_id,
+       stat_date,
+       event_category,
+       event_name,
+       platform,
+       country,
+
+       -- 聚合函数字段：用 Merge
+       uniqCombinedMerge(uv)                   AS uv,
+       uniqCombinedMerge(pay_user_count)       AS pay_user_count,
+
+       -- 普通 sum 字段：直接 sum，不能用 Merge
+       sum(pv)                                 AS pv,
+       sum(session_count)                      AS session_count,
+       sum(total_amount)                       AS total_amount,
+
+       sum(duration_sum) / sum(duration_count) AS avg_duration,
+       sum(risk_event_count)                   AS risk_event_count,
+       sum(level_up_count)                     AS level_up_count
+
+FROM gw_uba.events_agg_daily
+GROUP BY tenant_id, stat_date, event_category, event_name, platform, country;
+
+
+-- -----------------------------------------------------------
+-- 11. 物化视图：付费日聚合查询视图
+-- 说明：对 pay_agg_daily 的聚合结果进行二次聚合，支持更灵活的查询（如按国家/平台汇总）
+-- 注意：聚合函数字段必须使用 Merge 进行二次聚合，普通 sum 字段直接 sum
+-- -----------------------------------------------------------
+CREATE VIEW IF NOT EXISTS gw_uba.pay_agg_daily_view AS
+SELECT tenant_id,
+       stat_date,
+       platform,
+       country,
+       pay_level,
+
+       uniqCombinedMerge(pay_user_count)                        AS pay_user_count,
+       sum(pay_order_count)                                     AS pay_order_count,
+       sum(total_amount)                                        AS total_amount,
+       sum(refund_count)                                        AS refund_count,
+       sum(refund_amount)                                       AS refund_amount,
+
+       if(pay_user_count = 0, 0, total_amount / pay_user_count) AS per_user_amount,
+       if(total_amount = 0, 0, refund_amount / total_amount)    AS refund_rate
+
+FROM gw_uba.pay_agg_daily
+GROUP BY tenant_id, stat_date, platform, country, pay_level;
