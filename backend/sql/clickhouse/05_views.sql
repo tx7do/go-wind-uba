@@ -10,28 +10,27 @@
 CREATE MATERIALIZED VIEW IF NOT EXISTS gw_uba.mv_path_features
     TO gw_uba.path_features
 AS
-SELECT concat(toString(session_id), '_', toString(min(event_ts))) AS id,
+SELECT concat(toString(session_id), '_', toString(min(event_ts)))                           AS id,
        tenant_id,
        user_id,
        session_id,
 
-       hex(MD5(arrayStringConcat(groupArray(event_name), '->')))  AS path_hash,
-       arrayElement(groupArray(event_name), 1)                    AS first_event,
-       arrayElement(groupArray(event_name), -1)                   AS last_event,
+       -- 直接计算，不生成中间字段
+       hex(MD5(arrayStringConcat(groupArray(event_name), '->')))                            AS path_hash,
+       if(length(groupArray(event_name)) > 0, arrayElement(groupArray(event_name), 1), '')  AS first_event,
+       if(length(groupArray(event_name)) > 0, arrayElement(groupArray(event_name), -1), '') AS last_event,
+       length(groupArray(event_name))                                                       AS path_length,
+       arraySlice(groupArray(event_name), 1, 3)                                             AS first_3_events,
+       arraySlice(groupArray(event_name), -3)                                               AS last_3_events,
 
-       length(groupArray(event_name))                             AS path_length,
-       arraySlice(groupArray(event_name), 1, 3)                   AS first_3_events,
-       arraySlice(groupArray(event_name), -3)                     AS last_3_events,
+       maxIf(1, event_name = 'purchase_success')                                            AS is_converted,
+       'purchase_success'                                                                   AS conversion_event,
+       maxIf(event_time, event_name = 'purchase_success')                                   AS conversion_time,
 
-       maxIf(1, event_name = 'purchase_success')                  AS is_converted,
-       'purchase_success'                                         AS conversion_event,
-       maxIf(event_time, event_name = 'purchase_success')         AS conversion_time,
-
-       min(event_time)                                            AS start_time,
-       max(event_time)                                            AS end_time,
-
-       max(event_ts) - min(event_ts)                              AS total_duration_ms,
-       count()                                                    AS step_count
+       min(event_time)                                                                      AS start_time,
+       max(event_time)                                                                      AS end_time,
+       max(event_ts) - min(event_ts)                                                        AS total_duration_ms,
+       count()                                                                              AS step_count
 
 FROM gw_uba.events_fact
 WHERE session_id <> 0
@@ -44,40 +43,40 @@ GROUP BY tenant_id, user_id, session_id;
 CREATE MATERIALIZED VIEW IF NOT EXISTS gw_uba.mv_sessions_fact
     TO gw_uba.sessions_fact
 AS
-SELECT session_id                              AS id,
+SELECT session_id                          AS id,
        tenant_id,
        user_id,
        device_id,
        global_user_id,
 
-       min(event_time)                         AS start_time,
-       max(event_time)                         AS end_time,
-       max(event_ts) - min(event_ts)           AS duration_ms,
+       min(event_time)                     AS start_time,
+       max(event_time)                     AS end_time,
+       max(event_ts) - min(event_ts)       AS duration_ms,
 
-       count()                                 AS event_count,
-       sumIf(1, event_name = 'page_view')      AS page_view_count,
-       sumIf(1, event_name != 'page_view')     AS action_count,
+       count()                             AS event_count,
+       sumIf(1, event_name = 'page_view')  AS page_view_count,
+       sumIf(1, event_name != 'page_view') AS action_count,
 
-       arrayElement(groupArray(object_id), 1)  AS entry_page,
-       arrayElement(groupArray(object_id), -1) AS exit_page,
+       min(object_id)                      AS entry_page,
+       max(object_id)                      AS exit_page,
 
-       if(count() = 1, 1, 0)                   AS is_bounce,
+       if(count() = 1, 1, 0)               AS is_bounce,
 
-       any(platform)                           AS platform,
-       any(os)                                 AS os,
-       any(app_version)                        AS app_version,
-       any(ip_city)                            AS ip_city,
-       any(country)                            AS country,
+       any(platform)                       AS platform,
+       any(os)                             AS os,
+       any(app_version)                    AS app_version,
+       any(ip_city)                        AS ip_city,
+       any(country)                        AS country,
 
-       sum(amount)                             AS total_amount,
-       sumIf(1, event_category = 'pay')        AS pay_event_count,
+       sum(amount)                         AS total_amount,
+       sumIf(1, event_category = 'pay')    AS pay_event_count,
 
-       any(risk_level)                         AS risk_level,
-       array('')                               AS risk_tags,
-       any(context)                            AS context,
+       any(risk_level)                     AS risk_level,
+       emptyArrayString()                  AS risk_tags,
+       any(context)                        AS context,
 
-       now()                                   AS created_at,
-       now()                                   AS updated_at
+       min(event_time)                     AS created_at,
+       max(event_time)                     AS updated_at
 
 FROM gw_uba.events_fact
 WHERE session_id <> 0
@@ -93,38 +92,38 @@ AS
 SELECT tenant_id,
        user_id,
 
-       toDateTime('1970-01-01')                 AS register_time,
-       ''                                       AS register_channel,
-       min(event_date)                          AS first_active_date,
-       max(event_date)                          AS last_active_date,
+       toDateTime('1970-01-01')               AS register_time,
+       ''                                     AS register_channel,
+       min(event_date)                        AS first_active_date,
+       max(event_date)                        AS last_active_date,
 
-       0                                        AS user_level,
-       0                                        AS vip_level,
-       ''                                       AS user_role,
+       0                                      AS user_level,
+       0                                      AS vip_level,
+       ''                                     AS user_role,
 
-       count()                                  AS total_events,
-       uniqExact(session_id)                    AS total_sessions,
-       sum(amount)                              AS total_pay_amount,
-       toDateTime64('1970-01-01 00:00:00', 3)   AS last_pay_time,
+       count()                                AS total_events,
+       countDistinct(session_id)              AS total_sessions,
+       sum(amount)                            AS total_pay_amount,
+       toDateTime64('1970-01-01 00:00:00', 3) AS last_pay_time,
 
-       cast([], 'Array(String)')                AS prefer_categories,
-       cast([], 'Array(String)')                AS prefer_objects,
+       emptyArrayString()                     AS prefer_categories,
+       emptyArrayString()                     AS prefer_objects,
 
-       0                                        AS risk_score,
-       ''                                       AS risk_level,
-       cast([], 'Array(String)')                AS risk_tags,
-       toDateTime('1970-01-01')                 AS last_risk_time,
+       0                                      AS risk_score,
+       ''                                     AS risk_level,
+       emptyArrayString()                     AS risk_tags,
+       toDateTime('1970-01-01')               AS last_risk_time,
 
-       cast(map('', ''), 'Map(String, String)') AS geo,
-       any(platform)                            AS platform,
-       any(country)                             AS country,
-       ''                                       AS device_type,
+       map('', '')                            AS geo,
+       any(platform)                          AS platform,
+       any(country)                           AS country,
+       ''                                     AS device_type,
 
-       cast(map('', ''), 'Map(String, String)') AS profile,
+       map('', '')                            AS profile,
 
-       1                                        AS ver,
-       now()                                    AS created_at,
-       now()                                    AS updated_at
+       1                                      AS ver,
+       min(event_time)                        AS created_at,
+       max(event_time)                        AS updated_at
 FROM gw_uba.events_fact
 WHERE user_id <> 0
 GROUP BY tenant_id, user_id;
@@ -153,4 +152,3 @@ SELECT
 FROM gw_uba.risk_events
 WHERE user_id != 0
 GROUP BY tenant_id, user_id;
-id <> 0;
