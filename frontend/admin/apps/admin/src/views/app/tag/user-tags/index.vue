@@ -5,13 +5,13 @@ import type { ubaservicev1_UserTag as UserTag } from '#/generated/api/admin/serv
 import { h } from 'vue';
 
 import { Page } from '@vben/common-ui';
+import { LucideTrash2 } from '@vben/icons';
 
 import { notification } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { $t } from '#/locales';
 import {
-  tagSourceList,
   userTagSourceToColor,
   userTagSourceToName,
   useUserTagListStore,
@@ -151,7 +151,7 @@ const gridOptions: VxeGridProps<UserTag> = {
 
 const gridEvents: VxeGridListeners<UserTag> = {};
 
-const [Grid] = useVbenVxeGrid({
+const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions,
   formOptions,
   gridEvents,
