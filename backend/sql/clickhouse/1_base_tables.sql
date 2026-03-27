@@ -480,3 +480,31 @@ CREATE TABLE IF NOT EXISTS gw_uba.path_features
           ttl_only_drop_parts = 1, -- TTL 只删除完整分区，避免部分删除开销
           min_bytes_for_wide_part = 10485760 -- 10MB，宽分区最小字节数，优化合并策略
       COMMENT '用户行为路径特征表（存储用户会话内的行为序列，用于路径分析、漏斗分析、热门路径挖掘，支持转化追踪）';
+
+
+-- ============================================================
+-- 9 用户风险画像表（独立存储风险相关字段）
+-- ============================================================
+CREATE TABLE IF NOT EXISTS gw_uba.user_risk_profile
+(
+    -- 主键
+    tenant_id      UInt32 COMMENT '租户 ID',
+    user_id        UInt32 COMMENT '用户 ID',
+
+    -- 风险相关字段
+    risk_score     UInt8                  DEFAULT 0 COMMENT '风险评分（0-100）',
+    risk_level     LowCardinality(String) DEFAULT 'normal' COMMENT '风险等级',
+    risk_tags      Array(String) COMMENT '风险标签数组',
+    last_risk_time DateTime COMMENT '最后风险时间',
+
+    -- 审计字段
+    updated_at     DateTime               DEFAULT now() COMMENT '更新时间（版本列）',
+
+    -- 索引
+    INDEX idx_user (tenant_id, user_id) TYPE minmax GRANULARITY 1
+    )
+ENGINE = ReplacingMergeTree(updated_at)
+    ORDER BY (tenant_id, user_id)
+    SETTINGS
+        index_granularity = 8192
+    COMMENT '用户风险画像表（独立存储风险相关字段，避免覆盖主画像）';
