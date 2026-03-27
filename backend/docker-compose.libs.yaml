@@ -3,51 +3,66 @@ networks:
     driver: bridge
 
 services:
-  postgres:
-    image: docker.io/bitnami/postgresql:latest
+  #  consul:
+  #    image: docker.io/bitnami/consul:latest
+  #    restart: always
+  #    ports:
+  #      - '8300:8300'
+  #      - '8301:8301'
+  #      - '8301:8301/udp'
+  #      - '8500:8500'
+  #      - '8600:8600'
+  #      - '8600:8600/udp'
+  #    networks:
+  #      - app-tier
+  #    environment:
+  #      - CONSUL_BIND_INTERFACE='eth0'
+  #      - CONSUL_AGENT_MODE=server
+  #      - CONSUL_ENABLE_UI=true
+  #      - CONSUL_BOOTSTRAP_EXPECT=1
+  #      - CONSUL_CLIENT_LAN_ADDRESS=0.0.0.0
+  #      - CONSUL_BIND_ADDR=0.0.0.0
+  #      - CONSUL_DISABLE_KEYRING_FILE=true
+  #      - CONSUL_NODE_NAME=consul
+
+  etcd:
+    image: quay.io/coreos/etcd:v3.6.8
     restart: always
     ports:
-      - "5432:5432"
+      - "2379:2379"
+      - "2380:2380"
     networks:
       - app-tier
-    hostname: postgres
+    hostname: etcd
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=*Abcd123456
-      - POSTGRES_DB=gwubd
+      - ETCDCTL_API=3
+      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
+      - ETCD_ADVERTISE_CLIENT_URLS=http://127.0.0.1:2379
+      - ETCD_LISTEN_PEER_URLS=http://0.0.0.0:2380
+      - ETCD_INITIAL_ADVERTISE_PEER_URLS=http://127.0.0.1:2380
+      - ETCD_INITIAL_CLUSTER=default=http://127.0.0.1:2380
+      - ETCD_INITIAL_CLUSTER_TOKEN=etcd-cluster-token
+      - ETCD_INITIAL_CLUSTER_STATE=new
+      - ETCD_NAME=default
 
-#  mysql:
-#    image: docker.io/bitnami/mariadb:latest
-#    restart: always
-#    ports:
-#      - "3306:3306"
-#    networks:
-#      - app-tier
-#    environment:
-#      - MARIADB_ROOT_PASSWORD=*Abcd123456
-#      - MARIADB_USER=admin
-#      - MARIADB_PASSWORD=*Abcd123456
-#      - MARIADB_DATABASE=gwubd
-#      - ALLOW_EMPTY_PASSWORD=yes
-#      - TZ=Asia/Shanghai
-
-  clickhouse:
-    image: docker.io/bitnami/clickhouse:latest
+  jaeger:
+    image: docker.io/jaegertracing/all-in-one:latest
     restart: always
     ports:
-      - "9000:9000"
-      - "8123:8123"
-      - "9009:9009"
+      - "6831:6831/udp"
+      - "5778:5778"
+      - "4317:4317"
+      - "4318:4318"
+      - "16686:16686"
+      - "14250:14250"
+      - "14268:14268"
+      - "14269:14269"
     networks:
       - app-tier
-    hostname: clickhouse
+    hostname: jaeger
     environment:
-      - CLICKHOUSE_USER=default
-      - CLICKHOUSE_PASSWORD=*Abcd123456
-      - CLICKHOUSE_DB=gwubd
-      - CLICKHOUSE_ENABLE_HTTP=true
-      - CLICKHOUSE_ENABLE_NATIVE=true
-      - CLICKHOUSE_ENABLE_TCP=true
+      - COLLECTOR_ZIPKIN_HOST_PORT=:9411
+      - COLLECTOR_OTLP_ENABLED=true
 
   redis:
     image: docker.io/bitnami/redis:latest
@@ -63,8 +78,8 @@ services:
       - REDIS_AOF_ENABLED=no
       - REDIS_IO_THREADS_DO_READS=yes
       - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL,CONFIG
-#    volumes:
-#      - ${APP_ROOT:-/root/app}/redis/data:/bitnami/redis/data
+  #    volumes:
+  #      - ${APP_ROOT:-/root/app}/redis/data:/bitnami/redis/data
 
   kafka:
     image: docker.io/bitnami/kafka:latest
@@ -111,67 +126,95 @@ services:
       - MINIO_DEFAULT_BUCKETS=images
       - MINIO_FORCE_NEW_KEYS=yes
       - BITNAMI_DEBUG=true
-#    volumes:
-#      - ${APP_ROOT:-/root/app}/minio/data:/data
+    #    volumes:
+    #      - ${APP_ROOT:-/root/app}/minio/data:/data
     command: server /data --console-address ':9001'
 
-#  consul:
-#    image: docker.io/bitnami/consul:latest
+  postgres:
+    image: docker.io/bitnami/postgresql:latest
+    restart: always
+    ports:
+      - "5432:5432"
+    networks:
+      - app-tier
+    hostname: postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=*Abcd123456
+      - POSTGRES_DB=gwubd
+
+#  mysql:
+#    image: docker.io/bitnami/mariadb:latest
 #    restart: always
 #    ports:
-#      - '8300:8300'
-#      - '8301:8301'
-#      - '8301:8301/udp'
-#      - '8500:8500'
-#      - '8600:8600'
-#      - '8600:8600/udp'
+#      - "3306:3306"
 #    networks:
 #      - app-tier
 #    environment:
-#      - CONSUL_BIND_INTERFACE='eth0'
-#      - CONSUL_AGENT_MODE=server
-#      - CONSUL_ENABLE_UI=true
-#      - CONSUL_BOOTSTRAP_EXPECT=1
-#      - CONSUL_CLIENT_LAN_ADDRESS=0.0.0.0
-#      - CONSUL_BIND_ADDR=0.0.0.0
-#      - CONSUL_DISABLE_KEYRING_FILE=true
-#      - CONSUL_NODE_NAME=consul
+#      - MARIADB_ROOT_PASSWORD=*Abcd123456
+#      - MARIADB_USER=admin
+#      - MARIADB_PASSWORD=*Abcd123456
+#      - MARIADB_DATABASE=gwubd
+#      - ALLOW_EMPTY_PASSWORD=yes
+#      - TZ=Asia/Shanghai
 
-  etcd:
-    image: quay.io/coreos/etcd:v3.6.8
+  clickhouse:
+    image: docker.io/bitnami/clickhouse:latest
     restart: always
     ports:
-      - "2379:2379"
-      - "2380:2380"
+      - "9000:9000"
+      - "8123:8123"
+      - "9009:9009"
     networks:
       - app-tier
-    hostname: etcd
+    hostname: clickhouse
     environment:
-      - ETCDCTL_API=3
-      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
-      - ETCD_ADVERTISE_CLIENT_URLS=http://127.0.0.1:2379
-      - ETCD_LISTEN_PEER_URLS=http://0.0.0.0:2380
-      - ETCD_INITIAL_ADVERTISE_PEER_URLS=http://127.0.0.1:2380
-      - ETCD_INITIAL_CLUSTER=default=http://127.0.0.1:2380
-      - ETCD_INITIAL_CLUSTER_TOKEN=etcd-cluster-token
-      - ETCD_INITIAL_CLUSTER_STATE=new
-      - ETCD_NAME=default
+      - CLICKHOUSE_USER=default
+      - CLICKHOUSE_PASSWORD=*Abcd123456
+      - CLICKHOUSE_DB=gwubd
+      - CLICKHOUSE_ENABLE_HTTP=true
+      - CLICKHOUSE_ENABLE_NATIVE=true
+      - CLICKHOUSE_ENABLE_TCP=true
 
-  jaeger:
-    image: docker.io/jaegertracing/all-in-one:latest
+  doris-fe:
+    image: apache/doris:fe-4.0.4
+    container_name: doris-fe
     restart: always
     ports:
-      - "6831:6831/udp"
-      - "5778:5778"
-      - "4317:4317"
-      - "4318:4318"
-      - "16686:16686"
-      - "14250:14250"
-      - "14268:14268"
-      - "14269:14269"
+      - "8030:8030"
+      - "9030:9030"
+      - "9010:9010"
     networks:
       - app-tier
-    hostname: jaeger
+    hostname: doris-fe
     environment:
-      - COLLECTOR_ZIPKIN_HOST_PORT=:9411
-      - COLLECTOR_OTLP_ENABLED=true
+      - FE_SERVERS=fe1:172.20.80.2:9010
+      - FE_ID=1
+    volumes:
+      - /data/fe/doris-meta:/opt/apache-doris/fe/doris-meta
+      - /data/fe/conf:/opt/apache-doris/fe/conf
+      - /data/fe/log:/opt/apache-doris/fe/log
+    # Doris FE 需要静态 IP 时可用自定义 network
+    # extra_hosts:
+    #   - "fe1:172.20.80.2"
+
+  doris-be:
+    image: apache/doris:be-4.0.4
+    container_name: doris-be
+    restart: always
+    ports:
+      - "8040:8040"
+      - "9050:9050"
+    networks:
+      - app-tier
+    hostname: doris-be
+    environment:
+      - FE_SERVERS=fe1:172.20.80.2:9010
+      - BE_ADDR=172.20.80.3:9050
+    volumes:
+      - /data/be/storage:/opt/apache-doris/be/storage
+      - /data/be/conf:/opt/apache-doris/be/conf
+      - /data/be/log:/opt/apache-doris/be/log
+    # Doris BE 需要静态 IP 时可用自定义 network
+    # extra_hosts:
+    #   - "be1:172.20.80.3"

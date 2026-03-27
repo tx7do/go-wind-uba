@@ -576,14 +576,19 @@ SELECT tenant_id,
        country,
        pay_level,
 
-       uniqCombinedMerge(pay_user_count)                        AS pay_user_count,
-       sum(pay_order_count)                                     AS pay_order_count,
-       sum(total_amount)                                        AS total_amount,
-       sum(refund_count)                                        AS refund_count,
-       sum(refund_amount)                                       AS refund_amount,
+       uniqCombinedMerge(pay_user_count) AS total_pay_user_count,
+       sum(pay_order_count)              AS total_pay_order_count,
+       sum(total_amount)                 AS grand_total_amount,
+       sum(refund_count)                 AS total_refund_count,
+       sum(refund_amount)                AS grand_refund_amount,
 
-       if(pay_user_count = 0, 0, total_amount / pay_user_count) AS per_user_amount,
-       if(total_amount = 0, 0, refund_amount / total_amount)    AS refund_rate
+       if(total_pay_user_count > 0,
+          grand_total_amount / total_pay_user_count,
+          0)                             AS per_user_amount,
+
+       if(grand_total_amount > 0,
+          grand_refund_amount / grand_total_amount,
+          0)                             AS refund_rate
 
 FROM gw_uba.pay_agg_daily
 GROUP BY tenant_id, stat_date, platform, country, pay_level;
@@ -623,9 +628,54 @@ SELECT tenant_id,
        status,
 
        uniqCombinedMerge(unique_users) AS unique_users,
-       sum(event_count)                AS event_count,
-       sum(confirmed_count)            AS confirmed_count,
-       sum(risk_score_sum)             AS risk_score_sum,
-       sum(risk_score_count)           AS risk_score_count
+       sum(event_count)                AS total_event_count,
+       sum(confirmed_count)            AS total_confirmed_count,
+       sum(risk_score_sum)             AS total_risk_score_sum,
+       sum(risk_score_count)           AS total_risk_score_count,
+
+       if(total_risk_score_count > 0,
+          total_risk_score_sum / total_risk_score_count,
+          0)                           AS avg_risk_score,
+
+       if(total_event_count > 0,
+          total_confirmed_count / total_event_count,
+          0)                           AS confirm_rate
+
 FROM gw_uba.risk_stats_daily
 GROUP BY tenant_id, stat_date, risk_type, risk_level, status;
+
+
+-- -----------------------------------------------------------
+-- 14. 物化视图：用户标签聚合查询视图
+-- 说明：对 user_tags_agg 的聚合结果进行二次聚合，支持更灵活的查询（如按标签值汇总）
+-- 注意：聚合函数字段必须使用 Merge 进行二次聚合，普通 sum 字段直接 sum
+-- -----------------------------------------------------------
+CREATE VIEW IF NOT EXISTS gw_uba.user_tags_agg_view AS
+SELECT tenant_id,
+       tag_id,
+       tag_value,
+       stat_date,
+       sum(user_count)                           AS user_count,
+       groupArraySampleMerge(1000)(sample_users) AS sample_users
+FROM gw_uba.user_tags_agg
+GROUP BY tenant_id, tag_id, tag_value, stat_date;
+
+
+-- -----------------------------------------------------------
+-- 15. 物化视图：热门路径日聚合查询视图
+-- 说明：对 popular_paths_daily 的聚合结果进行二次聚合，支持更灵活的查询（如按国家/平台汇总）
+-- 注意：聚合函数字段必须使用 Merge 进行二次聚合，普通 sum 字段直接 sum
+-- -----------------------------------------------------------
+CREATE VIEW IF NOT EXISTS gw_uba.popular_paths_daily_view AS
+SELECT tenant_id,
+       stat_date,
+       event_sequence,
+       sequence_hash,
+       sum(support_count)                      AS support_count,
+       uniqCombinedMerge(unique_users)         AS unique_users,
+       sum(duration_sum) / sum(duration_count) AS avg_duration,
+       if(sum(conversion_count) > 0,
+          sum(conversion_sum) / sum(conversion_count),
+          0)                                   AS conversion_rate
+FROM gw_uba.popular_paths_daily
+GROUP BY tenant_id, stat_date, event_sequence, sequence_hash;
