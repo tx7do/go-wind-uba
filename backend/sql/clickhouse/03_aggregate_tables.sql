@@ -751,7 +751,7 @@ SELECT tenant_id,
        step_name,
        uniqCombinedMerge(enter_users)                       AS enter_users,
        uniqCombinedMerge(complete_users)                    AS complete_users,
-       if((enter_users) > 0, complete_users / enter_users, 0) AS conversion_rate
+       if(enter_users > 0, complete_users / enter_users, 0) AS conversion_rate
 FROM gw_uba.funnel_steps_daily
 GROUP BY tenant_id, stat_date, funnel_id, step_index, step_name;
 
