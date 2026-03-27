@@ -9,6 +9,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/tx7do/go-utils/mapper"
 	"github.com/tx7do/go-utils/timeutil"
+	"github.com/tx7do/go-utils/trans"
 	"github.com/tx7do/kratos-bootstrap/bootstrap"
 	"github.com/tx7do/kratos-transport/broker"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -224,18 +225,20 @@ func (s *ReportService) handleBehavior(ctx context.Context, evt *ubaV1.ReportEve
 		}
 	}
 
+	behaviorEvent.TenantId = evt.TenantId
+	behaviorEvent.UserId = evt.GetUserId()
+	behaviorEvent.DeviceId = evt.GetDeviceId()
+	behaviorEvent.SessionId = evt.GetSessionId()
+
 	behaviorEvent.EventId = evt.EventId
 	behaviorEvent.EventName = evt.EventName
 	behaviorEvent.EventTime = evt.EventTime
 	behaviorEvent.EventCategory = s.categoryConverter.ToDTO(&evt.EventCategory)
-	behaviorEvent.TenantId = evt.TenantId
-	behaviorEvent.UserId = evt.GetUserId()
-	behaviorEvent.DeviceId = evt.GetDeviceId()
+
 	behaviorEvent.TraceId = evt.GetTraceId()
 	behaviorEvent.ServerTime = evt.GetServerTime()
 	behaviorEvent.Context = evt.GetProperties()
 	behaviorEvent.Ip = evt.GetIp()
-	behaviorEvent.SessionId = evt.GetSessionId()
 	behaviorEvent.Platform = s.platformConverter.ToDTO(&evt.Platform)
 
 	bt, _ := json.Marshal(behaviorEvent)
@@ -252,9 +255,13 @@ func (s *ReportService) handleBehavior(ctx context.Context, evt *ubaV1.ReportEve
 // handlePath 处理路径事件
 func (s *ReportService) handlePath(ctx context.Context, evt *ubaV1.ReportEvent, ci *ubaV1.ClientInfo) error {
 	pathEvent := evt.GetPath()
-	if evt.GetPath() == nil {
+	if pathEvent == nil {
 		return ubaV1.ErrorBadRequest("path event data is required")
 	}
+
+	pathEvent.TenantId = evt.TenantId
+	pathEvent.UserId = evt.GetUserId()
+	pathEvent.SessionId = evt.GetSessionId()
 
 	if err := s.kafkaBroker.Publish(ctx, topic.UbaEventPath, broker.NewMessage(pathEvent)); err != nil {
 		s.log.Errorf("failed to publish path event to kafka: %v", err)
@@ -267,9 +274,14 @@ func (s *ReportService) handlePath(ctx context.Context, evt *ubaV1.ReportEvent, 
 // handleRisk 处理风险事件
 func (s *ReportService) handleRisk(ctx context.Context, evt *ubaV1.ReportEvent, ci *ubaV1.ClientInfo) error {
 	riskEvent := evt.GetRisk()
-	if evt.GetRisk() == nil {
+	if riskEvent == nil {
 		return ubaV1.ErrorBadRequest("risk event data is required")
 	}
+
+	riskEvent.TenantId = trans.Ptr(evt.GetTenantId())
+	riskEvent.UserId = trans.Ptr(evt.GetUserId())
+	riskEvent.DeviceId = trans.Ptr(evt.GetDeviceId())
+	riskEvent.SessionId = trans.Ptr(evt.GetSessionId())
 
 	if err := s.kafkaBroker.Publish(ctx, topic.UbaEventRisk, broker.NewMessage(riskEvent)); err != nil {
 		s.log.Errorf("failed to publish risk event to kafka: %v", err)

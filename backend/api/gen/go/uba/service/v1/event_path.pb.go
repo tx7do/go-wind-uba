@@ -30,15 +30,15 @@ const (
 type PathNode struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// 事件名称（路径节点对应的行为事件名称）
-	EventName string `protobuf:"bytes,1,opt,name=event_name,json=eventName,proto3" json:"event_name,omitempty"`
+	EventName string `protobuf:"bytes,1,opt,name=event_name,proto3" json:"event_name,omitempty"`
 	// 对象类型（节点关联的对象类型，如商品、内容等）
-	ObjectType string `protobuf:"bytes,2,opt,name=object_type,json=objectType,proto3" json:"object_type,omitempty"`
+	ObjectType string `protobuf:"bytes,2,opt,name=object_type,proto3" json:"object_type,omitempty"`
 	// 对象ID（节点关联的对象唯一标识）
-	ObjectId string `protobuf:"bytes,3,opt,name=object_id,json=objectId,proto3" json:"object_id,omitempty"`
+	ObjectId string `protobuf:"bytes,3,opt,name=object_id,proto3" json:"object_id,omitempty"`
 	// 事件时间（节点对应事件发生的时间）
-	EventTime *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=event_time,json=eventTime,proto3" json:"event_time,omitempty"`
+	EventTime *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=event_time,proto3" json:"event_time,omitempty"`
 	// 步骤索引（节点在路径中的位置，从0开始）
-	StepIndex     uint32 `protobuf:"varint,5,opt,name=step_index,json=stepIndex,proto3" json:"step_index,omitempty"`
+	StepIndex     uint32 `protobuf:"varint,5,opt,name=step_index,proto3" json:"step_index,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -114,34 +114,34 @@ type EventPath struct {
 	// 路径ID（唯一标识一条事件路径，hash 或 UUID）
 	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	// 租户ID（多租户隔离，支持 SaaS 场景）
-	TenantId uint32 `protobuf:"varint,2,opt,name=tenant_id,json=tenantId,proto3" json:"tenant_id,omitempty"`
+	TenantId uint32 `protobuf:"varint,2,opt,name=tenant_id,proto3" json:"tenant_id,omitempty"`
 	// 用户ID（路径所属用户）
-	UserId uint32 `protobuf:"varint,3,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	UserId uint32 `protobuf:"varint,3,opt,name=user_id,proto3" json:"user_id,omitempty"`
 	// 会话ID（路径所属会话）
-	SessionId uint64 `protobuf:"varint,4,opt,name=session_id,json=sessionId,proto3" json:"session_id,omitempty"`
+	SessionId uint64 `protobuf:"varint,4,opt,name=session_id,proto3" json:"session_id,omitempty"`
 	// 有序事件序列（路径节点列表，按发生顺序排列）
 	Nodes    []*PathNode `protobuf:"bytes,5,rep,name=nodes,proto3" json:"nodes,omitempty"`
-	PathHash uint64      `protobuf:"varint,6,opt,name=path_hash,json=pathHash,proto3" json:"path_hash,omitempty"`
+	PathHash uint64      `protobuf:"varint,6,opt,name=path_hash,proto3" json:"path_hash,omitempty"`
 	// 转化标记
 	// 是否完成目标转化（如完成支付、注册等）
-	IsConverted bool `protobuf:"varint,10,opt,name=is_converted,json=isConverted,proto3" json:"is_converted,omitempty"`
+	IsConverted bool `protobuf:"varint,10,opt,name=is_converted,proto3" json:"is_converted,omitempty"`
 	// 转化事件名称（目标转化对应的事件名称）
-	ConversionEvent string                 `protobuf:"bytes,11,opt,name=conversion_event,json=conversionEvent,proto3" json:"conversion_event,omitempty"`
-	ConversionTime  *timestamppb.Timestamp `protobuf:"bytes,12,opt,name=conversion_time,json=conversionTime,proto3" json:"conversion_time,omitempty"`
+	ConversionEvent string                 `protobuf:"bytes,11,opt,name=conversion_event,proto3" json:"conversion_event,omitempty"`
+	ConversionTime  *timestamppb.Timestamp `protobuf:"bytes,12,opt,name=conversion_time,proto3" json:"conversion_time,omitempty"`
 	// 路径指标
 	// 路径起始时间（第一个节点事件时间）
-	StartTime *timestamppb.Timestamp `protobuf:"bytes,20,opt,name=start_time,json=startTime,proto3" json:"start_time,omitempty"`
+	StartTime *timestamppb.Timestamp `protobuf:"bytes,20,opt,name=start_time,proto3" json:"start_time,omitempty"`
 	// 路径结束时间（最后一个节点事件时间）
-	EndTime   *timestamppb.Timestamp `protobuf:"bytes,21,opt,name=end_time,json=endTime,proto3" json:"end_time,omitempty"`
-	EventDate *timestamppb.Timestamp `protobuf:"bytes,22,opt,name=event_date,json=eventDate,proto3" json:"event_date,omitempty"`
+	EndTime   *timestamppb.Timestamp `protobuf:"bytes,21,opt,name=end_time,proto3" json:"end_time,omitempty"`
+	EventDate *timestamppb.Timestamp `protobuf:"bytes,22,opt,name=event_date,proto3" json:"event_date,omitempty"`
 	// 路径总时长（毫秒，start_time 到 end_time 的间隔）
-	TotalDurationMs uint64 `protobuf:"varint,30,opt,name=total_duration_ms,json=totalDurationMs,proto3" json:"total_duration_ms,omitempty"`
+	TotalDurationMs uint64 `protobuf:"varint,30,opt,name=total_duration_ms,proto3" json:"total_duration_ms,omitempty"`
 	// 步骤数（路径节点总数）
-	StepCount     uint32   `protobuf:"varint,31,opt,name=step_count,json=stepCount,proto3" json:"step_count,omitempty"`
-	FirstEvent    string   `protobuf:"bytes,40,opt,name=first_event,json=firstEvent,proto3" json:"first_event,omitempty"`
-	LastEvent     string   `protobuf:"bytes,41,opt,name=last_event,json=lastEvent,proto3" json:"last_event,omitempty"`
-	First_3Events []string `protobuf:"bytes,42,rep,name=first_3_events,json=first3Events,proto3" json:"first_3_events,omitempty"`
-	Last_3Events  []string `protobuf:"bytes,43,rep,name=last_3_events,json=last3Events,proto3" json:"last_3_events,omitempty"`
+	StepCount     uint32   `protobuf:"varint,31,opt,name=step_count,proto3" json:"step_count,omitempty"`
+	FirstEvent    string   `protobuf:"bytes,40,opt,name=first_event,proto3" json:"first_event,omitempty"`
+	LastEvent     string   `protobuf:"bytes,41,opt,name=last_event,proto3" json:"last_event,omitempty"`
+	First_3Events []string `protobuf:"bytes,42,rep,name=first_3_events,proto3" json:"first_3_events,omitempty"`
+	Last_3Events  []string `protobuf:"bytes,43,rep,name=last_3_events,proto3" json:"last_3_events,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -589,43 +589,49 @@ var File_uba_service_v1_event_path_proto protoreflect.FileDescriptor
 
 const file_uba_service_v1_event_path_proto_rawDesc = "" +
 	"\n" +
-	"\x1fuba/service/v1/event_path.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a google/protobuf/field_mask.proto\x1a\x1epagination/v1/pagination.proto\"\xf4\x03\n" +
-	"\bPathNode\x12[\n" +
+	"\x1fuba/service/v1/event_path.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a google/protobuf/field_mask.proto\x1a\x1epagination/v1/pagination.proto\"\xf9\x03\n" +
+	"\bPathNode\x12\\\n" +
 	"\n" +
-	"event_name\x18\x01 \x01(\tB<\xbaG9\x92\x026事件名称，路径节点对应的行为事件名称R\teventName\x12i\n" +
-	"\vobject_type\x18\x02 \x01(\tBH\xbaGE\x92\x02B对象类型，节点关联的对象类型，如商品、内容等R\n" +
-	"objectType\x12O\n" +
-	"\tobject_id\x18\x03 \x01(\tB2\xbaG/\x92\x02,对象ID，节点关联的对象唯一标识R\bobjectId\x12q\n" +
+	"event_name\x18\x01 \x01(\tB<\xbaG9\x92\x026事件名称，路径节点对应的行为事件名称R\n" +
+	"event_name\x12j\n" +
+	"\vobject_type\x18\x02 \x01(\tBH\xbaGE\x92\x02B对象类型，节点关联的对象类型，如商品、内容等R\vobject_type\x12P\n" +
+	"\tobject_id\x18\x03 \x01(\tB2\xbaG/\x92\x02,对象ID，节点关联的对象唯一标识R\tobject_id\x12r\n" +
 	"\n" +
-	"event_time\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampB6\xbaG3\x92\x020事件时间，节点对应事件发生的时间R\teventTime\x12\\\n" +
+	"event_time\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampB6\xbaG3\x92\x020事件时间，节点对应事件发生的时间R\n" +
+	"event_time\x12]\n" +
 	"\n" +
-	"step_index\x18\x05 \x01(\rB=\xbaG:\x92\x027步骤索引，节点在路径中的位置，从0开始R\tstepIndex\"\xd2\x0e\n" +
+	"step_index\x18\x05 \x01(\rB=\xbaG:\x92\x027步骤索引，节点在路径中的位置，从0开始R\n" +
+	"step_index\"\xe5\x0e\n" +
 	"\tEventPath\x12O\n" +
-	"\x02id\x18\x01 \x01(\tB?\xbaG<\x92\x029路径ID，唯一标识一条事件路径，hash 或 UUIDR\x02id\x12R\n" +
-	"\ttenant_id\x18\x02 \x01(\rB5\xbaG2\x92\x02/租户ID，多租户隔离，支持 SaaS 场景R\btenantId\x12<\n" +
-	"\auser_id\x18\x03 \x01(\rB#\xbaG \x92\x02\x1d用户ID，路径所属用户R\x06userId\x12B\n" +
+	"\x02id\x18\x01 \x01(\tB?\xbaG<\x92\x029路径ID，唯一标识一条事件路径，hash 或 UUIDR\x02id\x12S\n" +
+	"\ttenant_id\x18\x02 \x01(\rB5\xbaG2\x92\x02/租户ID，多租户隔离，支持 SaaS 场景R\ttenant_id\x12=\n" +
+	"\auser_id\x18\x03 \x01(\rB#\xbaG \x92\x02\x1d用户ID，路径所属用户R\auser_id\x12C\n" +
 	"\n" +
-	"session_id\x18\x04 \x01(\x04B#\xbaG \x92\x02\x1d会话ID，路径所属会话R\tsessionId\x12u\n" +
-	"\x05nodes\x18\x05 \x03(\v2\x18.uba.service.v1.PathNodeBE\xbaGB\x92\x02?有序事件序列，路径节点列表，按发生顺序排列R\x05nodes\x12\x83\x01\n" +
-	"\tpath_hash\x18\x06 \x01(\x04Bf\xbaGc\x92\x02`路径哈希值，根据事件序列计算得到的哈希值，用于快速路径识别和去重R\bpathHash\x12_\n" +
+	"session_id\x18\x04 \x01(\x04B#\xbaG \x92\x02\x1d会话ID，路径所属会话R\n" +
+	"session_id\x12u\n" +
+	"\x05nodes\x18\x05 \x03(\v2\x18.uba.service.v1.PathNodeBE\xbaGB\x92\x02?有序事件序列，路径节点列表，按发生顺序排列R\x05nodes\x12\x84\x01\n" +
+	"\tpath_hash\x18\x06 \x01(\x04Bf\xbaGc\x92\x02`路径哈希值，根据事件序列计算得到的哈希值，用于快速路径识别和去重R\tpath_hash\x12`\n" +
 	"\fis_converted\x18\n" +
-	" \x01(\bB<\xbaG9\x92\x026是否完成目标转化，如完成支付、注册等R\visConverted\x12g\n" +
-	"\x10conversion_event\x18\v \x01(\tB<\xbaG9\x92\x026转化事件名称，目标转化对应的事件名称R\x0fconversionEvent\x12{\n" +
-	"\x0fconversion_time\x18\f \x01(\v2\x1a.google.protobuf.TimestampB6\xbaG3\x92\x020转化时间，目标转化事件发生的时间R\x0econversionTime\x12q\n" +
+	" \x01(\bB<\xbaG9\x92\x026是否完成目标转化，如完成支付、注册等R\fis_converted\x12h\n" +
+	"\x10conversion_event\x18\v \x01(\tB<\xbaG9\x92\x026转化事件名称，目标转化对应的事件名称R\x10conversion_event\x12|\n" +
+	"\x0fconversion_time\x18\f \x01(\v2\x1a.google.protobuf.TimestampB6\xbaG3\x92\x020转化时间，目标转化事件发生的时间R\x0fconversion_time\x12r\n" +
 	"\n" +
-	"start_time\x18\x14 \x01(\v2\x1a.google.protobuf.TimestampB6\xbaG3\x92\x020路径起始时间，第一个节点事件时间R\tstartTime\x12p\n" +
-	"\bend_time\x18\x15 \x01(\v2\x1a.google.protobuf.TimestampB9\xbaG6\x92\x023路径结束时间，最后一个节点事件时间R\aendTime\x12\x8f\x01\n" +
+	"start_time\x18\x14 \x01(\v2\x1a.google.protobuf.TimestampB6\xbaG3\x92\x020路径起始时间，第一个节点事件时间R\n" +
+	"start_time\x12q\n" +
+	"\bend_time\x18\x15 \x01(\v2\x1a.google.protobuf.TimestampB9\xbaG6\x92\x023路径结束时间，最后一个节点事件时间R\bend_time\x12\x90\x01\n" +
 	"\n" +
-	"event_date\x18\x16 \x01(\v2\x1a.google.protobuf.TimestampBT\xbaGQ\x92\x02N事件日期，路径起始时间的日期部分，用于按日统计和查询R\teventDate\x12n\n" +
-	"\x11total_duration_ms\x18\x1e \x01(\x04BB\xbaG?\x92\x02<路径总时长，毫秒，start_time 到 end_time 的间隔R\x0ftotalDurationMs\x12C\n" +
+	"event_date\x18\x16 \x01(\v2\x1a.google.protobuf.TimestampBT\xbaGQ\x92\x02N事件日期，路径起始时间的日期部分，用于按日统计和查询R\n" +
+	"event_date\x12p\n" +
+	"\x11total_duration_ms\x18\x1e \x01(\x04BB\xbaG?\x92\x02<路径总时长，毫秒，start_time 到 end_time 的间隔R\x11total_duration_ms\x12D\n" +
 	"\n" +
-	"step_count\x18\x1f \x01(\rB$\xbaG!\x92\x02\x1e步骤数，路径节点总数R\tstepCount\x12f\n" +
-	"\vfirst_event\x18( \x01(\tBE\xbaGB\x92\x02?第一个事件名称，路径中第一个节点的事件名称R\n" +
-	"firstEvent\x12j\n" +
+	"step_count\x18\x1f \x01(\rB$\xbaG!\x92\x02\x1e步骤数，路径节点总数R\n" +
+	"step_count\x12g\n" +
+	"\vfirst_event\x18( \x01(\tBE\xbaGB\x92\x02?第一个事件名称，路径中第一个节点的事件名称R\vfirst_event\x12k\n" +
 	"\n" +
-	"last_event\x18) \x01(\tBK\xbaGH\x92\x02E最后一个事件名称，路径中最后一个节点的事件名称R\tlastEvent\x12m\n" +
-	"\x0efirst_3_events\x18* \x03(\tBG\xbaGD\x92\x02A前3个事件名称，路径中前3个节点的事件名称列表R\ffirst3Events\x12k\n" +
-	"\rlast_3_events\x18+ \x03(\tBG\xbaGD\x92\x02A后3个事件名称，路径中后3个节点的事件名称列表R\vlast3Events\"^\n" +
+	"last_event\x18) \x01(\tBK\xbaGH\x92\x02E最后一个事件名称，路径中最后一个节点的事件名称R\n" +
+	"last_event\x12o\n" +
+	"\x0efirst_3_events\x18* \x03(\tBG\xbaGD\x92\x02A前3个事件名称，路径中前3个节点的事件名称列表R\x0efirst_3_events\x12m\n" +
+	"\rlast_3_events\x18+ \x03(\tBG\xbaGD\x92\x02A后3个事件名称，路径中后3个节点的事件名称列表R\rlast_3_events\"^\n" +
 	"\x15ListEventPathResponse\x12/\n" +
 	"\x05items\x18\x01 \x03(\v2\x19.uba.service.v1.EventPathR\x05items\x12\x14\n" +
 	"\x05total\x18\x02 \x01(\x04R\x05total\"\xcc\x01\n" +

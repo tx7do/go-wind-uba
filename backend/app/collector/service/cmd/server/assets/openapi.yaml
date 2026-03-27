@@ -250,15 +250,15 @@ components:
                 id:
                     type: string
                     description: 路径ID，唯一标识一条事件路径，hash 或 UUID
-                tenantId:
+                tenant_id:
                     type: integer
                     description: 租户ID，多租户隔离，支持 SaaS 场景
                     format: uint32
-                userId:
+                user_id:
                     type: integer
                     description: 用户ID，路径所属用户
                     format: uint32
-                sessionId:
+                session_id:
                     type: string
                     description: 会话ID，路径所属会话
                 nodes:
@@ -266,50 +266,50 @@ components:
                     items:
                         $ref: '#/components/schemas/PathNode'
                     description: 有序事件序列，路径节点列表，按发生顺序排列
-                pathHash:
+                path_hash:
                     type: string
                     description: 路径哈希值，根据事件序列计算得到的哈希值，用于快速路径识别和去重
-                isConverted:
+                is_converted:
                     type: boolean
                     description: 是否完成目标转化，如完成支付、注册等
-                conversionEvent:
+                conversion_event:
                     type: string
                     description: 转化事件名称，目标转化对应的事件名称
-                conversionTime:
+                conversion_time:
                     type: string
                     description: 转化时间，目标转化事件发生的时间
                     format: date-time
-                startTime:
+                start_time:
                     type: string
                     description: 路径起始时间，第一个节点事件时间
                     format: date-time
-                endTime:
+                end_time:
                     type: string
                     description: 路径结束时间，最后一个节点事件时间
                     format: date-time
-                eventDate:
+                event_date:
                     type: string
                     description: 事件日期，路径起始时间的日期部分，用于按日统计和查询
                     format: date-time
-                totalDurationMs:
+                total_duration_ms:
                     type: string
                     description: 路径总时长，毫秒，start_time 到 end_time 的间隔
-                stepCount:
+                step_count:
                     type: integer
                     description: 步骤数，路径节点总数
                     format: uint32
-                firstEvent:
+                first_event:
                     type: string
                     description: 第一个事件名称，路径中第一个节点的事件名称
-                lastEvent:
+                last_event:
                     type: string
                     description: 最后一个事件名称，路径中最后一个节点的事件名称
-                first3Events:
+                first_3_events:
                     type: array
                     items:
                         type: string
                     description: 前3个事件名称，路径中前3个节点的事件名称列表
-                last3Events:
+                last_3_events:
                     type: array
                     items:
                         type: string
@@ -348,20 +348,20 @@ components:
         PathNode:
             type: object
             properties:
-                eventName:
+                event_name:
                     type: string
                     description: 事件名称，路径节点对应的行为事件名称
-                objectType:
+                object_type:
                     type: string
                     description: 对象类型，节点关联的对象类型，如商品、内容等
-                objectId:
+                object_id:
                     type: string
                     description: 对象ID，节点关联的对象唯一标识
-                eventTime:
+                event_time:
                     type: string
                     description: 事件时间，节点对应事件发生的时间
                     format: date-time
-                stepIndex:
+                step_index:
                     type: integer
                     description: 步骤索引，节点在路径中的位置，从0开始
                     format: uint32
@@ -507,21 +507,21 @@ components:
                 id:
                     type: string
                     description: ID
-                tenantId:
+                tenant_id:
                     type: integer
                     description: 租户ID，多租户隔离，支持 SaaS 场景
                     format: uint32
-                userId:
+                user_id:
                     type: integer
                     description: 用户ID，关联主体，风险事件涉及的用户
                     format: uint32
-                deviceId:
+                device_id:
                     type: string
                     description: 设备ID，关联主体，风险事件涉及的设备
-                globalUserId:
+                global_user_id:
                     type: string
                     description: 全局用户ID，跨平台唯一标识用户
-                riskType:
+                risk_type:
                     enum:
                         - RISK_TYPE_UNSPECIFIED
                         - RISK_TYPE_LOGIN_ANOMALY
@@ -538,7 +538,7 @@ components:
                     type: string
                     description: 风险类型，标识风险事件的类型
                     format: enum
-                riskLevel:
+                risk_level:
                     enum:
                         - RISK_LEVEL_UNSPECIFIED
                         - RISK_LEVEL_NORMAL
@@ -548,27 +548,27 @@ components:
                     type: string
                     description: 风险等级，标识风险事件的严重程度
                     format: enum
-                riskScore:
+                risk_score:
                     type: number
                     description: 风险评分，0-100，风险事件的评分
                     format: float
-                ruleId:
+                rule_id:
                     type: integer
                     description: 触发规则ID，标识触发风险事件的规则
                     format: uint32
-                ruleName:
+                rule_name:
                     type: string
                     description: 规则名称，触发风险事件的规则名称
-                ruleContext:
+                rule_context:
                     type: object
                     description: 规则上下文，触发条件，结构化信息
-                relatedEventIds:
+                related_event_ids:
                     type: array
                     items:
                         type: integer
                         format: uint32
                     description: 关联行为事件ID列表，风险事件关联的行为事件
-                sessionId:
+                session_id:
                     type: string
                     description: 会话ID，风险事件发生时的会话标识
                 description:
@@ -591,46 +591,46 @@ components:
                     type: string
                     description: 处置状态，风险事件的处理状态
                     format: enum
-                handlerId:
+                handler_id:
                     type: integer
                     description: 处理人ID，风险事件的处理人
                     format: uint32
-                handledTime:
+                handled_time:
                     type: string
                     description: 处理时间，风险事件被处理的时间
                     format: date-time
-                handleRemark:
+                handle_remark:
                     type: string
                     description: 处理备注，风险事件处理的说明
-                occurTime:
+                occur_time:
                     type: string
                     description: 风险事件发生时间
                     format: date-time
-                reportTime:
+                report_time:
                     type: string
                     description: 风险事件上报时间
                     format: date-time
-                createdBy:
+                created_by:
                     type: integer
                     description: 创建者用户ID
                     format: uint32
-                updatedBy:
+                updated_by:
                     type: integer
                     description: 更新者用户ID
                     format: uint32
-                deletedBy:
+                deleted_by:
                     type: integer
                     description: 删除者用户ID
                     format: uint32
-                createdAt:
+                created_at:
                     type: string
                     description: 创建时间
                     format: date-time
-                updatedAt:
+                updated_at:
                     type: string
                     description: 更新时间
                     format: date-time
-                deletedAt:
+                deleted_at:
                     type: string
                     description: 删除时间
                     format: date-time

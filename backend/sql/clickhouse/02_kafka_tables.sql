@@ -9,53 +9,17 @@
 -- ============================================================
 CREATE TABLE IF NOT EXISTS gw_uba.kafka_events_raw
 (
-    event_id       String,
-    tenant_id      UInt32,
-    user_id        UInt32,
-    device_id      String,
-    account_id     String,
-    global_user_id String,
-    event_time     DateTime64(3),
-    event_category String,
-    event_name     String,
-    event_action   String,
-    object_type    String,
-    object_id      String,
-    object_name    String,
-    session_id     UInt64,
-    session_seq    UInt32,
-    platform       String,
-    os             String,
-    app_version    String,
-    channel        String,
-    user_agent     String,
-    ip             String,
-    ip_city        String,
-    country        String,
-    network        String,
-    geo            String,
-    referer        String,
-
-    context        String,
-    duration_ms    UInt32,
-    amount         Decimal(18, 2),
-    quantity       UInt32,
-    score          Int32,
-    metrics        String,
-    properties     String,
-    op_result      String,
-    error_code     String,
-    risk_level     String,
-    trace_id       String
-    )
+    raw String
+)
     ENGINE = Kafka
     SETTINGS
     kafka_broker_list = 'kafka:9092',
-    kafka_topic_list = 'uba.events.raw',
-    kafka_group_name = 'uba-ingest-ch',
-    kafka_format = 'JSONEachRow',
+    kafka_topic_list = 'uba_events_raw',
+    kafka_group_name = 'uba_ingest_ch',
+    kafka_format = 'JSONAsString',
     kafka_num_consumers = 3,
-    kafka_skip_broken_messages = 1;
+    kafka_skip_broken_messages = 1,
+    kafka_commit_on_select = 1;
 
 
 -- ============================================================
@@ -104,45 +68,59 @@ CREATE TABLE IF NOT EXISTS gw_uba.kafka_risk_events_raw
 CREATE MATERIALIZED VIEW IF NOT EXISTS gw_uba.mv_kafka_events_to_fact
     TO gw_uba.events_fact
 AS
-SELECT event_id,
-       tenant_id,
-       user_id,
-       device_id,
-       account_id,
-       global_user_id,
-       event_time,
-       now64(3)                                       AS server_time,
-       event_category,
-       event_name,
-       event_action,
-       object_type,
-       object_id,
-       object_name,
-       session_id,
-       session_seq,
-       platform,
-       os,
-       app_version,
-       channel,
-       ip,
-       ip_city,
-       country,
-       network,
-       geo,
-       referer,
-       JSONExtract(context, 'Map(String, String)')    AS context,
-       duration_ms,
-       amount,
-       quantity,
-       score,
-       JSONExtract(metrics, 'Map(String, Float64)')   AS metrics,
-       JSONExtract(properties, 'Map(String, String)') AS properties,
-       op_result,
-       error_code,
-       risk_level,
-       trace_id,
-       now()                                          AS created_at,
-       now()                                          AS updated_at
+SELECT JSONExtractString(raw, 'event_id')                                  AS event_id,
+       toUInt32(JSONExtract(raw, 'tenant_id', 'UInt32'))                   AS tenant_id,
+       toUInt32(JSONExtract(raw, 'user_id', 'UInt32'))                     AS user_id,
+       JSONExtractString(raw, 'device_id')                                 AS device_id,
+       JSONExtractString(raw, 'account_id')                                AS account_id,
+       JSONExtractString(raw, 'global_user_id')                            AS global_user_id,
+
+       parseDateTime64BestEffort(JSONExtractString(raw, 'event_time'), 3)  AS event_time,
+       parseDateTime64BestEffort(JSONExtractString(raw, 'server_time'), 3) AS server_time,
+--        now64(3)                                                            AS server_time,
+
+       JSONExtractString(raw, 'event_category')                            AS event_category,
+       JSONExtractString(raw, 'event_name')                                AS event_name,
+       JSONExtractString(raw, 'event_action')                              AS event_action,
+
+       JSONExtractString(raw, 'object_type')                               AS object_type,
+       JSONExtractString(raw, 'object_id')                                 AS object_id,
+       JSONExtractString(raw, 'object_name')                               AS object_name,
+
+       toUInt64(JSONExtract(raw, 'session_id', 'UInt64'))                  AS session_id,
+       toUInt32(JSONExtract(raw, 'session_seq', 'UInt32'))                 AS session_seq,
+
+       JSONExtractString(raw, 'platform')                                  AS platform,
+       JSONExtractString(raw, 'os')                                        AS os,
+       JSONExtractString(raw, 'app_version')                               AS app_version,
+       JSONExtractString(raw, 'channel')                                   AS channel,
+       JSONExtractString(raw, 'user_agent')                                AS user_agent,
+
+       JSONExtractString(raw, 'ip')                                        AS ip,
+       JSONExtractString(raw, 'ip_city')                                   AS ip_city,
+       JSONExtractString(raw, 'country')                                   AS country,
+       JSONExtractString(raw, 'network')                                   AS network,
+       JSONExtractString(raw, 'geo')                                       AS geo,
+       JSONExtractString(raw, 'referer')                                   AS referer,
+
+       JSONExtract(raw, 'context', 'Map(String, String)')                  AS context,
+
+       toUInt32(JSONExtract(raw, 'duration_ms', 'UInt32'))                 AS duration_ms,
+       toDecimal128(JSONExtract(raw, 'amount', 'Decimal(18,2)'), 2)        AS amount,
+       toUInt32(JSONExtract(raw, 'quantity', 'UInt32'))                    AS quantity,
+       toInt32(JSONExtract(raw, 'score', 'Int32'))                         AS score,
+
+       JSONExtract(raw, 'metrics', 'Map(String, Float64)')                 AS metrics,
+       JSONExtract(raw, 'properties', 'Map(String, String)')               AS properties,
+
+       JSONExtractString(raw, 'op_result')                                 AS op_result,
+       JSONExtractString(raw, 'error_code')                                AS error_code,
+       JSONExtractString(raw, 'risk_level')                                AS risk_level,
+       JSONExtractString(raw, 'trace_id')                                  AS trace_id,
+
+       now()                                                               AS created_at,
+       now()                                                               AS updated_at
+
 FROM gw_uba.kafka_events_raw;
 
 

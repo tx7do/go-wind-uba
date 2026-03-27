@@ -2080,48 +2080,48 @@ export type ubaservicev1_EventPath = {
   // 路径ID（唯一标识一条事件路径，hash 或 UUID）
   id: string | undefined;
   // 租户ID（多租户隔离，支持 SaaS 场景）
-  tenantId: number | undefined;
+  tenant_id: number | undefined;
   // 用户ID（路径所属用户）
-  userId: number | undefined;
+  user_id: number | undefined;
   // 会话ID（路径所属会话）
-  sessionId: number | undefined;
+  session_id: number | undefined;
   // 有序事件序列（路径节点列表，按发生顺序排列）
   nodes: ubaservicev1_PathNode[] | undefined;
-  pathHash: number | undefined;
+  path_hash: number | undefined;
   // 转化标记
   // 是否完成目标转化（如完成支付、注册等）
-  isConverted: boolean | undefined;
+  is_converted: boolean | undefined;
   // 转化事件名称（目标转化对应的事件名称）
-  conversionEvent: string | undefined;
-  conversionTime: wellKnownTimestamp | undefined;
+  conversion_event: string | undefined;
+  conversion_time: wellKnownTimestamp | undefined;
   // 路径指标
   // 路径起始时间（第一个节点事件时间）
-  startTime: wellKnownTimestamp | undefined;
+  start_time: wellKnownTimestamp | undefined;
   // 路径结束时间（最后一个节点事件时间）
-  endTime: wellKnownTimestamp | undefined;
-  eventDate: wellKnownTimestamp | undefined;
+  end_time: wellKnownTimestamp | undefined;
+  event_date: wellKnownTimestamp | undefined;
   // 路径总时长（毫秒，start_time 到 end_time 的间隔）
-  totalDurationMs: number | undefined;
+  total_duration_ms: number | undefined;
   // 步骤数（路径节点总数）
-  stepCount: number | undefined;
-  firstEvent: string | undefined;
-  lastEvent: string | undefined;
-  first3Events: string[] | undefined;
-  last3Events: string[] | undefined;
+  step_count: number | undefined;
+  first_event: string | undefined;
+  last_event: string | undefined;
+  first_3_events: string[] | undefined;
+  last_3_events: string[] | undefined;
 };
 
 // 路径节点（事件路径中的单个事件节点，包含事件信息和对象信息）
 export type ubaservicev1_PathNode = {
   // 事件名称（路径节点对应的行为事件名称）
-  eventName: string | undefined;
+  event_name: string | undefined;
   // 对象类型（节点关联的对象类型，如商品、内容等）
-  objectType: string | undefined;
+  object_type: string | undefined;
   // 对象ID（节点关联的对象唯一标识）
-  objectId: string | undefined;
+  object_id: string | undefined;
   // 事件时间（节点对应事件发生的时间）
-  eventTime: wellKnownTimestamp | undefined;
+  event_time: wellKnownTimestamp | undefined;
   // 步骤索引（节点在路径中的位置，从0开始）
-  stepIndex: number | undefined;
+  step_index: number | undefined;
 };
 
 // 查询事件路径详情请求
@@ -6246,29 +6246,29 @@ export type ubaservicev1_ListRiskEventResponse = {
 export type ubaservicev1_RiskEvent = {
   id: number | undefined;
   // 租户ID（多租户隔离，支持 SaaS 场景）
-  tenantId?: number;
+  tenant_id?: number;
   // 用户ID（关联主体，风险事件涉及的用户）
-  userId?: number;
+  user_id?: number;
   // 设备ID（关联主体，风险事件涉及的设备）
-  deviceId?: string;
+  device_id?: string;
   // 全局用户ID（跨平台唯一标识用户）
-  globalUserId?: string;
+  global_user_id?: string;
   // 风险类型
-  riskType?: ubaservicev1_RiskType;
+  risk_type?: ubaservicev1_RiskType;
   // 风险等级
-  riskLevel?: ubaservicev1_RiskLevel;
+  risk_level?: ubaservicev1_RiskLevel;
   // 风险评分（0-100，风险事件的评分）
-  riskScore?: number;
+  risk_score?: number;
   // 触发规则ID
-  ruleId?: number;
+  rule_id?: number;
   // 规则名称
-  ruleName?: string;
+  rule_name?: string;
   // 规则上下文（触发条件，结构化信息）
-  ruleContext?: wellKnownStruct;
+  rule_context?: wellKnownStruct;
   // 关联行为事件ID列表（风险事件关联的行为事件）
-  relatedEventIds: number[] | undefined;
+  related_event_ids: number[] | undefined;
   // 会话ID（风险事件发生时的会话标识）
-  sessionId?: number;
+  session_id?: number;
   // 风险详情描述
   description?: string;
   // 证据（风险事件相关证据，键值对形式）
@@ -6276,21 +6276,21 @@ export type ubaservicev1_RiskEvent = {
   // 处置状态
   status?: ubaservicev1_RiskEvent_Status;
   // 处理人ID
-  handlerId?: number;
+  handler_id?: number;
   // 处理时间
-  handledTime?: wellKnownTimestamp;
+  handled_time?: wellKnownTimestamp;
   // 处理备注
-  handleRemark?: string;
+  handle_remark?: string;
   // 风险事件发生时间
-  occurTime?: wellKnownTimestamp;
+  occur_time?: wellKnownTimestamp;
   // 风险事件上报时间
-  reportTime?: wellKnownTimestamp;
-  createdBy?: number;
-  updatedBy?: number;
-  deletedBy?: number;
-  createdAt?: wellKnownTimestamp;
-  updatedAt?: wellKnownTimestamp;
-  deletedAt?: wellKnownTimestamp;
+  report_time?: wellKnownTimestamp;
+  created_by?: number;
+  updated_by?: number;
+  deleted_by?: number;
+  created_at?: wellKnownTimestamp;
+  updated_at?: wellKnownTimestamp;
+  deleted_at?: wellKnownTimestamp;
 };
 
 // 风险等级
