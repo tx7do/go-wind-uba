@@ -137,7 +137,7 @@ export function dataScopeToColor(dataScope: any): string {
 export function roleDataScopeToName(dataScope: any) {
   const values = roleDataScopeList.value;
   const matchedItem = values.find((item) => item.value === dataScope);
-  return matchedItem ? matchedItem.label : '';
+  return matchedItem ? matchedItem.label : dataScope;
 }
 
 interface PermissionTreeDataNode {

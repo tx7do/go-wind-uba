@@ -59,17 +59,12 @@ const [BaseForm, baseFormApi] = useVbenForm({
       },
     },
     {
-      component: 'Select',
+      component: 'Input',
       fieldName: 'riskType',
       label: $t('page.riskRule.riskType'),
       componentProps: {
-        options: riskEventTypeList,
-        placeholder: $t('ui.placeholder.select'),
-        class: 'w-full',
-        filterOption: (input: string, option: any) =>
-          option.label.toLowerCase().includes(input.toLowerCase()),
+        placeholder: $t('ui.placeholder.input'),
         allowClear: true,
-        showSearch: true,
       },
     },
     {

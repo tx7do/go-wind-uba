@@ -155,7 +155,7 @@ type ReportEvent struct {
 	EventName     string                 `protobuf:"bytes,6,opt,name=event_name,json=eventName,proto3" json:"event_name,omitempty"`
 	EventCategory string                 `protobuf:"bytes,7,opt,name=event_category,json=eventCategory,proto3" json:"event_category,omitempty"`
 	// 上下文（所有事件类型共有）
-	SessionId  uint64                 `protobuf:"varint,8,opt,name=session_id,json=sessionId,proto3" json:"session_id,omitempty"`
+	SessionId  string                 `protobuf:"bytes,8,opt,name=session_id,json=sessionId,proto3" json:"session_id,omitempty"`
 	Platform   string                 `protobuf:"bytes,9,opt,name=platform,proto3" json:"platform,omitempty"`
 	Ip         string                 `protobuf:"bytes,10,opt,name=ip,proto3" json:"ip,omitempty"`
 	Properties map[string]string      `protobuf:"bytes,11,rep,name=properties,proto3" json:"properties,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
@@ -250,11 +250,11 @@ func (x *ReportEvent) GetEventCategory() string {
 	return ""
 }
 
-func (x *ReportEvent) GetSessionId() uint64 {
+func (x *ReportEvent) GetSessionId() string {
 	if x != nil {
 		return x.SessionId
 	}
-	return 0
+	return ""
 }
 
 func (x *ReportEvent) GetPlatform() string {
@@ -657,7 +657,7 @@ const file_uba_service_v1_report_proto_rawDesc = "" +
 	"event_name\x18\x06 \x01(\tBK\xbaGH\x92\x02E事件名称，具体事件的标识，如登录、点击、购买等R\teventName\x12\x84\x01\n" +
 	"\x0eevent_category\x18\a \x01(\tB]\xbaGZ\x92\x02W事件大类，事件的分类标识，如行为事件、路径事件、风险事件等R\reventCategory\x12l\n" +
 	"\n" +
-	"session_id\x18\b \x01(\x04BM\xbaGJ\x92\x02G会话ID，事件所属会话的唯一标识，关联分析关键字段R\tsessionId\x12e\n" +
+	"session_id\x18\b \x01(\tBM\xbaGJ\x92\x02G会话ID，事件所属会话的唯一标识，关联分析关键字段R\tsessionId\x12e\n" +
 	"\bplatform\x18\t \x01(\tBI\xbaGF\x92\x02C平台，事件发生的平台或渠道，如Web、iOS、Android等R\bplatform\x12q\n" +
 	"\x02ip\x18\n" +
 	" \x01(\tBa\xbaG^\x92\x02[IP地址，事件发生时的客户端IP地址，服务端可解析为地理位置等信息R\x02ip\x12\xad\x01\n" +

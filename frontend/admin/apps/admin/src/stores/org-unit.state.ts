@@ -113,7 +113,7 @@ export const orgUnitStatusList = computed(() => [
 export function orgUnitStatusToName(status: OrgUnit_Status) {
   const values = orgUnitStatusList.value;
   const matchedItem = values.find((item) => item.value === status);
-  return matchedItem ? matchedItem.label : '';
+  return matchedItem ? matchedItem.label : status;
 }
 
 /**
@@ -198,7 +198,7 @@ export const orgUnitTypeListForQuery = computed(() => {
 export function orgUnitTypeToName(orgUnitType: OrgUnit_Type) {
   const values = orgUnitTypeList.value;
   const matchedItem = values.find((item) => item.value === orgUnitType);
-  return matchedItem ? matchedItem.label : '';
+  return matchedItem ? matchedItem.label : orgUnitType;
 }
 
 // 组织类型-颜色映射常量

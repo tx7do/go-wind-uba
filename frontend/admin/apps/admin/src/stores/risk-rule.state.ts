@@ -123,5 +123,5 @@ export function riskActionTypeToColor(type?: RiskAction_ActionType) {
 export function riskActionTypeToName(type?: RiskAction_ActionType) {
   const values = riskActionTypeList.value;
   const matchedItem = values.find((item) => item.value === type);
-  return matchedItem ? matchedItem.label : '';
+  return matchedItem ? matchedItem.label : type;
 }

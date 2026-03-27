@@ -120,63 +120,6 @@ var (
 	IDValidator func(uint32) error
 )
 
-// RiskType defines the type for the "risk_type" enum field.
-type RiskType string
-
-// RiskType values.
-const (
-	RiskTypeRiskTypeLoginAnomaly       RiskType = "RISK_TYPE_LOGIN_ANOMALY"
-	RiskTypeRiskTypeBruteForce         RiskType = "RISK_TYPE_BRUTE_FORCE"
-	RiskTypeRiskTypeCredentialStuffing RiskType = "RISK_TYPE_CREDENTIAL_STUFFING"
-	RiskTypeRiskTypeFrequentOperation  RiskType = "RISK_TYPE_FREQUENT_OPERATION"
-	RiskTypeRiskTypeAbnormalFlow       RiskType = "RISK_TYPE_ABNORMAL_FLOW"
-	RiskTypeRiskTypeDataExfiltration   RiskType = "RISK_TYPE_DATA_EXFILTRATION"
-	RiskTypeRiskTypeDeviceChange       RiskType = "RISK_TYPE_DEVICE_CHANGE"
-	RiskTypeRiskTypeLocationAnomaly    RiskType = "RISK_TYPE_LOCATION_ANOMALY"
-	RiskTypeRiskTypeProxyDetected      RiskType = "RISK_TYPE_PROXY_DETECTED"
-	RiskTypeRiskTypeFraudPayment       RiskType = "RISK_TYPE_FRAUD_PAYMENT"
-	RiskTypeRiskTypeAbusePromotion     RiskType = "RISK_TYPE_ABUSE_PROMOTION"
-)
-
-func (rt RiskType) String() string {
-	return string(rt)
-}
-
-// RiskTypeValidator is a validator for the "risk_type" field enum values. It is called by the builders before save.
-func RiskTypeValidator(rt RiskType) error {
-	switch rt {
-	case RiskTypeRiskTypeLoginAnomaly, RiskTypeRiskTypeBruteForce, RiskTypeRiskTypeCredentialStuffing, RiskTypeRiskTypeFrequentOperation, RiskTypeRiskTypeAbnormalFlow, RiskTypeRiskTypeDataExfiltration, RiskTypeRiskTypeDeviceChange, RiskTypeRiskTypeLocationAnomaly, RiskTypeRiskTypeProxyDetected, RiskTypeRiskTypeFraudPayment, RiskTypeRiskTypeAbusePromotion:
-		return nil
-	default:
-		return fmt.Errorf("riskrule: invalid enum value for risk_type field: %q", rt)
-	}
-}
-
-// DefaultLevel defines the type for the "default_level" enum field.
-type DefaultLevel string
-
-// DefaultLevel values.
-const (
-	DefaultLevelRiskLevelNormal     DefaultLevel = "RISK_LEVEL_NORMAL"
-	DefaultLevelRiskLevelSuspicious DefaultLevel = "RISK_LEVEL_SUSPICIOUS"
-	DefaultLevelRiskLevelHigh       DefaultLevel = "RISK_LEVEL_HIGH"
-	DefaultLevelRiskLevelCritical   DefaultLevel = "RISK_LEVEL_CRITICAL"
-)
-
-func (dl DefaultLevel) String() string {
-	return string(dl)
-}
-
-// DefaultLevelValidator is a validator for the "default_level" field enum values. It is called by the builders before save.
-func DefaultLevelValidator(dl DefaultLevel) error {
-	switch dl {
-	case DefaultLevelRiskLevelNormal, DefaultLevelRiskLevelSuspicious, DefaultLevelRiskLevelHigh, DefaultLevelRiskLevelCritical:
-		return nil
-	default:
-		return fmt.Errorf("riskrule: invalid enum value for default_level field: %q", dl)
-	}
-}
-
 // ExecMode defines the type for the "exec_mode" enum field.
 type ExecMode string
 

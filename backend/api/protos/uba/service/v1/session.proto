@@ -33,8 +33,8 @@ service SessionService {
 // 会话（对应 sessions 表）
 message Session {
   // 会话ID（唯一标识一条会话）
-  uint32 id = 1 [
-    json_name = "id",
+  string session_id = 1 [
+    json_name = "sessionId",
     (gnostic.openapi.v3.property) = {description: "会话ID，唯一标识一条会话"}
   ];
   // 租户ID（多租户隔离，支持 SaaS 场景）
@@ -107,7 +107,7 @@ message Session {
   ];
 
   // 平台类型（会话发生的平台，如 Web、iOS、Android 等）
-  optional Platform platform = 15 [
+  optional string platform = 15 [
     json_name = "platform",
     (gnostic.openapi.v3.property) = {description: "平台类型，会话发生的平台，如 Web、iOS、Android 等"}
   ];
@@ -143,7 +143,7 @@ message Session {
   ];
 
   // 风险等级（会话风险标记，枚举类型）
-  optional RiskLevel risk_level = 30 [
+  optional string risk_level = 30 [
     json_name = "riskLevel",
     (gnostic.openapi.v3.property) = {description: "风险等级，会话风险标记，枚举类型"}
   ];

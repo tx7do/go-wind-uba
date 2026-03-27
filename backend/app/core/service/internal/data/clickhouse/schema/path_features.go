@@ -6,10 +6,10 @@ import "time"
 // 对应表：gw_uba.path_features
 
 type PathFeatures struct {
-	ID              *string    `ch:"id"`
+	PathID          *string    `ch:"path_id"`
 	TenantID        *uint32    `ch:"tenant_id"`
 	UserID          *uint32    `ch:"user_id"`
-	SessionID       *uint64    `ch:"session_id"`
+	SessionID       *string    `ch:"session_id"`
 	PathHash        *string    `ch:"path_hash"`
 	FirstEvent      *string    `ch:"first_event"`
 	LastEvent       *string    `ch:"last_event"`

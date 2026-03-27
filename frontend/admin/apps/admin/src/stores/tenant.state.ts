@@ -193,7 +193,7 @@ export const tenantStatusList = computed(() => [
 export function tenantStatusToName(tenantStatus: Tenant_Status) {
   const values = tenantStatusList.value;
   const matchedItem = values.find((item) => item.value === tenantStatus);
-  return matchedItem ? matchedItem.label : '';
+  return matchedItem ? matchedItem.label : tenantStatus;
 }
 
 export function tenantStatusToColor(tenantStatus: Tenant_Status) {

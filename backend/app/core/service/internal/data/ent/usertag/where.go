@@ -114,6 +114,11 @@ func Confidence(v float64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldEQ(FieldConfidence, v))
 }
 
+// Source applies equality check predicate on the "source" field. It's identical to SourceEQ.
+func Source(v string) predicate.UserTag {
+	return predicate.UserTag(sql.FieldEQ(FieldSource, v))
+}
+
 // SourceRuleID applies equality check predicate on the "source_rule_id" field. It's identical to SourceRuleIDEQ.
 func SourceRuleID(v uint32) predicate.UserTag {
 	return predicate.UserTag(sql.FieldEQ(FieldSourceRuleID, v))
@@ -785,23 +790,58 @@ func ConfidenceNotNil() predicate.UserTag {
 }
 
 // SourceEQ applies the EQ predicate on the "source" field.
-func SourceEQ(v Source) predicate.UserTag {
+func SourceEQ(v string) predicate.UserTag {
 	return predicate.UserTag(sql.FieldEQ(FieldSource, v))
 }
 
 // SourceNEQ applies the NEQ predicate on the "source" field.
-func SourceNEQ(v Source) predicate.UserTag {
+func SourceNEQ(v string) predicate.UserTag {
 	return predicate.UserTag(sql.FieldNEQ(FieldSource, v))
 }
 
 // SourceIn applies the In predicate on the "source" field.
-func SourceIn(vs ...Source) predicate.UserTag {
+func SourceIn(vs ...string) predicate.UserTag {
 	return predicate.UserTag(sql.FieldIn(FieldSource, vs...))
 }
 
 // SourceNotIn applies the NotIn predicate on the "source" field.
-func SourceNotIn(vs ...Source) predicate.UserTag {
+func SourceNotIn(vs ...string) predicate.UserTag {
 	return predicate.UserTag(sql.FieldNotIn(FieldSource, vs...))
+}
+
+// SourceGT applies the GT predicate on the "source" field.
+func SourceGT(v string) predicate.UserTag {
+	return predicate.UserTag(sql.FieldGT(FieldSource, v))
+}
+
+// SourceGTE applies the GTE predicate on the "source" field.
+func SourceGTE(v string) predicate.UserTag {
+	return predicate.UserTag(sql.FieldGTE(FieldSource, v))
+}
+
+// SourceLT applies the LT predicate on the "source" field.
+func SourceLT(v string) predicate.UserTag {
+	return predicate.UserTag(sql.FieldLT(FieldSource, v))
+}
+
+// SourceLTE applies the LTE predicate on the "source" field.
+func SourceLTE(v string) predicate.UserTag {
+	return predicate.UserTag(sql.FieldLTE(FieldSource, v))
+}
+
+// SourceContains applies the Contains predicate on the "source" field.
+func SourceContains(v string) predicate.UserTag {
+	return predicate.UserTag(sql.FieldContains(FieldSource, v))
+}
+
+// SourceHasPrefix applies the HasPrefix predicate on the "source" field.
+func SourceHasPrefix(v string) predicate.UserTag {
+	return predicate.UserTag(sql.FieldHasPrefix(FieldSource, v))
+}
+
+// SourceHasSuffix applies the HasSuffix predicate on the "source" field.
+func SourceHasSuffix(v string) predicate.UserTag {
+	return predicate.UserTag(sql.FieldHasSuffix(FieldSource, v))
 }
 
 // SourceIsNil applies the IsNil predicate on the "source" field.
@@ -812,6 +852,16 @@ func SourceIsNil() predicate.UserTag {
 // SourceNotNil applies the NotNil predicate on the "source" field.
 func SourceNotNil() predicate.UserTag {
 	return predicate.UserTag(sql.FieldNotNull(FieldSource))
+}
+
+// SourceEqualFold applies the EqualFold predicate on the "source" field.
+func SourceEqualFold(v string) predicate.UserTag {
+	return predicate.UserTag(sql.FieldEqualFold(FieldSource, v))
+}
+
+// SourceContainsFold applies the ContainsFold predicate on the "source" field.
+func SourceContainsFold(v string) predicate.UserTag {
+	return predicate.UserTag(sql.FieldContainsFold(FieldSource, v))
 }
 
 // SourceRuleIDEQ applies the EQ predicate on the "source_rule_id" field.

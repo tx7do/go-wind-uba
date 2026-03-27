@@ -123,5 +123,5 @@ export function permissionAuditLogActionToColor(action: ActionType) {
 export function permissionAuditLogActionToName(action: ActionType) {
   const values = permissionAuditLogActionList.value;
   const matchedItem = values.find((item) => item.value === action);
-  return matchedItem ? matchedItem.label : '';
+  return matchedItem ? matchedItem.label : action;
 }

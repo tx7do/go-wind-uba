@@ -86,7 +86,7 @@ message UserTag {
   ];
 
   // 标签来源（如人工打标、规则引擎、算法模型、批量导入等）
-  optional TagSource source = 8 [
+  optional string source = 8 [
     json_name = "source",
     (gnostic.openapi.v3.property) = {description: "标签来源，如人工打标、规则引擎、算法模型、批量导入等"}
   ];

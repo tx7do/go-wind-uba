@@ -102,5 +102,5 @@ export function operationAuditLogActionToColor(action: ActionType) {
 export function operationAuditLogActionToName(action: ActionType) {
   const values = operationAuditLogActionList.value;
   const matchedItem = values.find((item) => item.value === action);
-  return matchedItem ? matchedItem.label : '';
+  return matchedItem ? matchedItem.label : action;
 }

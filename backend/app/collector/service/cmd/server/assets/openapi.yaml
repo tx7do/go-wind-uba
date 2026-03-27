@@ -75,17 +75,8 @@ components:
                     description: 服务器接收时间，记录事件被服务器接收的时间点，可以用于分析事件的传输延迟和时序关系
                     format: date-time
                 eventCategory:
-                    enum:
-                        - EVENT_CATEGORY_UNSPECIFIED
-                        - EVENT_CATEGORY_AUTH
-                        - EVENT_CATEGORY_PAY
-                        - EVENT_CATEGORY_GAME
-                        - EVENT_CATEGORY_CONTENT
-                        - EVENT_CATEGORY_SECURITY
-                        - EVENT_CATEGORY_SYSTEM
                     type: string
                     description: 事件类别，事件的类型或分类，用于对事件进行分组和分析，具体类别由业务定义
-                    format: enum
                 eventName:
                     type: string
                     description: 事件名称，事件的具体名称或动作，用于描述事件的具体行为，通常与事件类别结合使用以提供更细粒度的行为描述
@@ -109,18 +100,8 @@ components:
                     description: 会话内序列号，事件在所属会话中的序列号，用于分析事件的顺序和路径，可以由客户端上报，也可以由服务器根据 session_id 进行计算生成
                     format: uint32
                 platform:
-                    enum:
-                        - PLATFORM_UNSPECIFIED
-                        - PLATFORM_WEB
-                        - PLATFORM_IOS
-                        - PLATFORM_ANDROID
-                        - PLATFORM_WINDOWS
-                        - PLATFORM_MACOS
-                        - PLATFORM_LINUX
-                        - PLATFORM_MINI_PROGRAM
                     type: string
                     description: 平台，事件发生的环境平台，可以是 Web、iOS、Android、PC 等，具体类别由业务定义
-                    format: enum
                 os:
                     type: string
                     description: 操作系统，事件发生的操作系统信息，可以提供更细粒度的环境描述，便于分析不同操作系统上的行为差异
@@ -183,28 +164,14 @@ components:
                         type: string
                     description: 扩展属性，事件的其他相关属性信息，可以包含任意的键值对，由业务定义和使用，便于分析事件的其他特征和细节
                 opResult:
-                    enum:
-                        - OP_RESULT_UNSPECIFIED
-                        - OP_RESULT_SUCCESS
-                        - OP_RESULT_FAILED
-                        - OP_RESULT_TIMEOUT
-                        - OP_RESULT_PARTIAL
                     type: string
                     description: 操作结果，事件相关的操作结果信息，可以用于分析事件的成功率和失败原因，具体含义由业务定义
-                    format: enum
                 errorCode:
                     type: string
                     description: 错误码，事件相关的错误码信息，可以用于分析事件的失败原因和问题排查，具体含义由业务定义
                 riskLevel:
-                    enum:
-                        - RISK_LEVEL_UNSPECIFIED
-                        - RISK_LEVEL_NORMAL
-                        - RISK_LEVEL_SUSPICIOUS
-                        - RISK_LEVEL_HIGH
-                        - RISK_LEVEL_CRITICAL
                     type: string
                     description: 风险等级，事件相关的风险等级信息，可以用于分析事件的风险特征和安全问题，具体含义由业务定义
-                    format: enum
                 traceId:
                     type: string
                     description: Trace ID，事件相关的分布式追踪标识，可以用于分析事件的调用链和系统性能，通常由服务器生成并传递给客户端进行上报
@@ -407,9 +374,9 @@ components:
         RiskEvent:
             type: object
             properties:
-                id:
+                riskEventId:
                     type: string
-                    description: ID
+                    description: 风险事件ID
                 tenantId:
                     type: integer
                     description: 租户ID，多租户隔离，支持 SaaS 场景
@@ -425,32 +392,11 @@ components:
                     type: string
                     description: 全局用户ID，跨平台唯一标识用户
                 riskType:
-                    enum:
-                        - RISK_TYPE_UNSPECIFIED
-                        - RISK_TYPE_LOGIN_ANOMALY
-                        - RISK_TYPE_BRUTE_FORCE
-                        - RISK_TYPE_CREDENTIAL_STUFFING
-                        - RISK_TYPE_FREQUENT_OPERATION
-                        - RISK_TYPE_ABNORMAL_FLOW
-                        - RISK_TYPE_DATA_EXFILTRATION
-                        - RISK_TYPE_DEVICE_CHANGE
-                        - RISK_TYPE_LOCATION_ANOMALY
-                        - RISK_TYPE_PROXY_DETECTED
-                        - RISK_TYPE_FRAUD_PAYMENT
-                        - RISK_TYPE_ABUSE_PROMOTION
                     type: string
                     description: 风险类型，标识风险事件的类型
-                    format: enum
                 riskLevel:
-                    enum:
-                        - RISK_LEVEL_UNSPECIFIED
-                        - RISK_LEVEL_NORMAL
-                        - RISK_LEVEL_SUSPICIOUS
-                        - RISK_LEVEL_HIGH
-                        - RISK_LEVEL_CRITICAL
                     type: string
                     description: 风险等级，标识风险事件的严重程度
-                    format: enum
                 riskScore:
                     type: number
                     description: 风险评分，0-100，风险事件的评分
@@ -468,8 +414,7 @@ components:
                 relatedEventIds:
                     type: array
                     items:
-                        type: integer
-                        format: uint32
+                        type: string
                     description: 关联行为事件ID列表，风险事件关联的行为事件
                 sessionId:
                     type: string

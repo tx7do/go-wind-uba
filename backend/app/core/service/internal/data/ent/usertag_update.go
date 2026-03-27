@@ -272,13 +272,13 @@ func (_u *UserTagUpdate) ClearConfidence() *UserTagUpdate {
 }
 
 // SetSource sets the "source" field.
-func (_u *UserTagUpdate) SetSource(v usertag.Source) *UserTagUpdate {
+func (_u *UserTagUpdate) SetSource(v string) *UserTagUpdate {
 	_u.mutation.SetSource(v)
 	return _u
 }
 
 // SetNillableSource sets the "source" field if the given value is not nil.
-func (_u *UserTagUpdate) SetNillableSource(v *usertag.Source) *UserTagUpdate {
+func (_u *UserTagUpdate) SetNillableSource(v *string) *UserTagUpdate {
 	if v != nil {
 		_u.SetSource(*v)
 	}
@@ -417,11 +417,6 @@ func (_u *UserTagUpdate) check() error {
 			return &ValidationError{Name: "value", err: fmt.Errorf(`ent: validator failed for field "UserTag.value": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.Source(); ok {
-		if err := usertag.SourceValidator(v); err != nil {
-			return &ValidationError{Name: "source", err: fmt.Errorf(`ent: validator failed for field "UserTag.source": %w`, err)}
-		}
-	}
 	return nil
 }
 
@@ -528,10 +523,10 @@ func (_u *UserTagUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		_spec.ClearField(usertag.FieldConfidence, field.TypeFloat64)
 	}
 	if value, ok := _u.mutation.Source(); ok {
-		_spec.SetField(usertag.FieldSource, field.TypeEnum, value)
+		_spec.SetField(usertag.FieldSource, field.TypeString, value)
 	}
 	if _u.mutation.SourceCleared() {
-		_spec.ClearField(usertag.FieldSource, field.TypeEnum)
+		_spec.ClearField(usertag.FieldSource, field.TypeString)
 	}
 	if value, ok := _u.mutation.SourceRuleID(); ok {
 		_spec.SetField(usertag.FieldSourceRuleID, field.TypeUint32, value)
@@ -825,13 +820,13 @@ func (_u *UserTagUpdateOne) ClearConfidence() *UserTagUpdateOne {
 }
 
 // SetSource sets the "source" field.
-func (_u *UserTagUpdateOne) SetSource(v usertag.Source) *UserTagUpdateOne {
+func (_u *UserTagUpdateOne) SetSource(v string) *UserTagUpdateOne {
 	_u.mutation.SetSource(v)
 	return _u
 }
 
 // SetNillableSource sets the "source" field if the given value is not nil.
-func (_u *UserTagUpdateOne) SetNillableSource(v *usertag.Source) *UserTagUpdateOne {
+func (_u *UserTagUpdateOne) SetNillableSource(v *string) *UserTagUpdateOne {
 	if v != nil {
 		_u.SetSource(*v)
 	}
@@ -983,11 +978,6 @@ func (_u *UserTagUpdateOne) check() error {
 			return &ValidationError{Name: "value", err: fmt.Errorf(`ent: validator failed for field "UserTag.value": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.Source(); ok {
-		if err := usertag.SourceValidator(v); err != nil {
-			return &ValidationError{Name: "source", err: fmt.Errorf(`ent: validator failed for field "UserTag.source": %w`, err)}
-		}
-	}
 	return nil
 }
 
@@ -1111,10 +1101,10 @@ func (_u *UserTagUpdateOne) sqlSave(ctx context.Context) (_node *UserTag, err er
 		_spec.ClearField(usertag.FieldConfidence, field.TypeFloat64)
 	}
 	if value, ok := _u.mutation.Source(); ok {
-		_spec.SetField(usertag.FieldSource, field.TypeEnum, value)
+		_spec.SetField(usertag.FieldSource, field.TypeString, value)
 	}
 	if _u.mutation.SourceCleared() {
-		_spec.ClearField(usertag.FieldSource, field.TypeEnum)
+		_spec.ClearField(usertag.FieldSource, field.TypeString)
 	}
 	if value, ok := _u.mutation.SourceRuleID(); ok {
 		_spec.SetField(usertag.FieldSourceRuleID, field.TypeUint32, value)

@@ -41,32 +41,13 @@ func (RiskRule) Fields() []ent.Field {
 			Optional().
 			Nillable(),
 
-		field.Enum("risk_type").
+		field.String("risk_type").
 			Comment("风险类型，规则对应的风险类型").
-			NamedValues(
-				"RiskTypeLoginAnomaly", "RISK_TYPE_LOGIN_ANOMALY",
-				"RiskTypeBruteForce", "RISK_TYPE_BRUTE_FORCE",
-				"RiskTypeCredentialStuffing", "RISK_TYPE_CREDENTIAL_STUFFING",
-				"RiskTypeFrequentOperation", "RISK_TYPE_FREQUENT_OPERATION",
-				"RiskTypeAbnormalFlow", "RISK_TYPE_ABNORMAL_FLOW",
-				"RiskTypeDataExfiltration", "RISK_TYPE_DATA_EXFILTRATION",
-				"RiskTypeDeviceChange", "RISK_TYPE_DEVICE_CHANGE",
-				"RiskTypeLocationAnomaly", "RISK_TYPE_LOCATION_ANOMALY",
-				"RiskTypeProxyDetected", "RISK_TYPE_PROXY_DETECTED",
-				"RiskTypeFraudPayment", "RISK_TYPE_FRAUD_PAYMENT",
-				"RiskTypeAbusePromotion", "RISK_TYPE_ABUSE_PROMOTION",
-			).
 			Optional().
 			Nillable(),
 
-		field.Enum("default_level").
+		field.String("default_level").
 			Comment("默认风险等级，规则对应的默认风险等级").
-			NamedValues(
-				"RiskLevelNormal", "RISK_LEVEL_NORMAL",
-				"RiskLevelSuspicious", "RISK_LEVEL_SUSPICIOUS",
-				"RiskLevelHigh", "RISK_LEVEL_HIGH",
-				"RiskLevelCritical", "RISK_LEVEL_CRITICAL",
-			).
 			Optional().
 			Nillable(),
 

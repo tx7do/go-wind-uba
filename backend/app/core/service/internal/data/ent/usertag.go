@@ -43,7 +43,7 @@ type UserTag struct {
 	// 置信度，算法打标
 	Confidence *float64 `json:"confidence,omitempty"`
 	// 标签来源
-	Source *usertag.Source `json:"source,omitempty"`
+	Source *string `json:"source,omitempty"`
 	// 来源规则ID，关联规则表
 	SourceRuleID *uint32 `json:"source_rule_id,omitempty"`
 	// 生效时间
@@ -179,8 +179,8 @@ func (_m *UserTag) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field source", values[i])
 			} else if value.Valid {
-				_m.Source = new(usertag.Source)
-				*_m.Source = usertag.Source(value.String)
+				_m.Source = new(string)
+				*_m.Source = value.String
 			}
 		case usertag.FieldSourceRuleID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -308,7 +308,7 @@ func (_m *UserTag) String() string {
 	builder.WriteString(", ")
 	if v := _m.Source; v != nil {
 		builder.WriteString("source=")
-		builder.WriteString(fmt.Sprintf("%v", *v))
+		builder.WriteString(*v)
 	}
 	builder.WriteString(", ")
 	if v := _m.SourceRuleID; v != nil {

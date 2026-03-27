@@ -7,7 +7,6 @@ import (
 
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/google/uuid"
-	"github.com/tx7do/go-utils/mapper"
 	"github.com/tx7do/go-utils/timeutil"
 	"github.com/tx7do/go-utils/trans"
 	"github.com/tx7do/kratos-bootstrap/bootstrap"
@@ -27,9 +26,6 @@ type ReportService struct {
 	log         *log.Helper
 
 	applicationServiceClient ubaV1.ApplicationServiceClient
-
-	platformConverter *mapper.EnumTypeConverter[ubaV1.Platform, string]
-	categoryConverter *mapper.EnumTypeConverter[ubaV1.EventCategory, string]
 }
 
 func NewReportService(
@@ -41,12 +37,6 @@ func NewReportService(
 		log:                      ctx.NewLoggerHelper("report/service/collector-service"),
 		kafkaBroker:              kafkaBroker,
 		applicationServiceClient: applicationServiceClient,
-		platformConverter: mapper.NewEnumTypeConverter[ubaV1.Platform, string](
-			ubaV1.Platform_name, ubaV1.Platform_value,
-		),
-		categoryConverter: mapper.NewEnumTypeConverter[ubaV1.EventCategory, string](
-			ubaV1.EventCategory_name, ubaV1.EventCategory_value,
-		),
 	}
 }
 
@@ -224,34 +214,34 @@ func (s *ReportService) handleBehavior(ctx context.Context, evt *ubaV1.ReportEve
 	behaviorEvent.TraceId = evt.GetTraceId()
 
 	// platform, event_category
-	behaviorEvent.Platform = s.platformConverter.ToDTO(&evt.Platform)
-	behaviorEvent.EventCategory = s.categoryConverter.ToDTO(&evt.EventCategory)
+	behaviorEvent.Platform = trans.Ptr(evt.GetPlatform())
+	behaviorEvent.EventCategory = trans.Ptr(evt.GetEventCategory())
 
 	// geo, user_agent, referer
 	if ci != nil {
 		if city := ci.GetCity(); city != "" {
-			behaviorEvent.IpCity = trimAndLimit(city, 64)
+			behaviorEvent.IpCity = trans.Ptr(trimAndLimit(city, 64))
 		}
 		if country := ci.GetCountry(); country != "" {
-			behaviorEvent.Country = trimAndLimit(country, 64)
+			behaviorEvent.Country = trans.Ptr(trimAndLimit(country, 64))
 		}
 		if ua := ci.GetUserAgent(); ua != "" {
-			behaviorEvent.UserAgent = trimAndLimit(ua, 256)
+			behaviorEvent.UserAgent = trans.Ptr(trimAndLimit(ua, 256))
 		}
 		if ref := ci.GetReferer(); ref != "" {
-			behaviorEvent.Referer = trimAndLimit(ref, 256)
+			behaviorEvent.Referer = trans.Ptr(trimAndLimit(ref, 256))
 		}
 	}
 	// geo 字段补全
 	if evt.Properties != nil {
 		if geo, ok := evt.Properties["geo"]; ok {
-			behaviorEvent.Geo = trimAndLimit(geo, 128)
+			behaviorEvent.Geo = trans.Ptr(trimAndLimit(geo, 128))
 		}
 	}
 
 	behaviorEvent.TenantId = evt.TenantId
 	behaviorEvent.ServerTime = evt.GetServerTime()
-	behaviorEvent.Ip = evt.GetIp()
+	behaviorEvent.Ip = trans.Ptr(evt.GetIp())
 
 	if err := s.kafkaBroker.Publish(ctx, topic.UbaEventRaw, broker.NewMessage(behaviorEvent)); err != nil {
 		s.log.Errorf("failed to publish behavior event to kafka: %v", err)

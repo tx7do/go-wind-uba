@@ -105,7 +105,7 @@ type UserTag struct {
 	// 置信度（算法打标时，范围0~1）
 	Confidence *float64 `protobuf:"fixed64,7,opt,name=confidence,proto3,oneof" json:"confidence,omitempty"`
 	// 标签来源（如人工打标、规则引擎、算法模型、批量导入等）
-	Source *TagSource `protobuf:"varint,8,opt,name=source,proto3,enum=uba.service.v1.TagSource,oneof" json:"source,omitempty"`
+	Source *string `protobuf:"bytes,8,opt,name=source,proto3,oneof" json:"source,omitempty"`
 	// 来源规则ID（如果是规则计算，记录规则ID）
 	SourceRuleId *uint32 `protobuf:"varint,9,opt,name=source_rule_id,json=sourceRuleId,proto3,oneof" json:"source_rule_id,omitempty"`
 	// 有效时间（标签生效时间）
@@ -201,11 +201,11 @@ func (x *UserTag) GetConfidence() float64 {
 	return 0
 }
 
-func (x *UserTag) GetSource() TagSource {
+func (x *UserTag) GetSource() string {
 	if x != nil && x.Source != nil {
 		return *x.Source
 	}
-	return TagSource_TAG_SOURCE_UNSPECIFIED
+	return ""
 }
 
 func (x *UserTag) GetSourceRuleId() uint32 {
@@ -636,7 +636,7 @@ var File_uba_service_v1_user_tag_proto protoreflect.FileDescriptor
 
 const file_uba_service_v1_user_tag_proto_rawDesc = "" +
 	"\n" +
-	"\x1duba/service/v1/user_tag.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a google/protobuf/field_mask.proto\x1a\x1epagination/v1/pagination.proto\"\xce\r\n" +
+	"\x1duba/service/v1/user_tag.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a google/protobuf/field_mask.proto\x1a\x1epagination/v1/pagination.proto\"\xb2\r\n" +
 	"\aUserTag\x12V\n" +
 	"\x02id\x18\x01 \x01(\rBA\xbaG>\x92\x02;主键ID，自增长，唯一标识一条用户标签记录H\x00R\x02id\x88\x01\x01\x12W\n" +
 	"\ttenant_id\x18\x02 \x01(\rB5\xbaG2\x92\x02/租户ID，多租户隔离，支持 SaaS 场景H\x01R\btenantId\x88\x01\x01\x12G\n" +
@@ -647,8 +647,8 @@ const file_uba_service_v1_user_tag_proto_rawDesc = "" +
 	"valueLabel\x88\x01\x01\x12R\n" +
 	"\n" +
 	"confidence\x18\a \x01(\x01B-\xbaG*\x92\x02'置信度，算法打标时，范围0~1H\x06R\n" +
-	"confidence\x88\x01\x01\x12\x8c\x01\n" +
-	"\x06source\x18\b \x01(\x0e2\x19.uba.service.v1.TagSourceBT\xbaGQ\x92\x02N标签来源，如人工打标、规则引擎、算法模型、批量导入等H\aR\x06source\x88\x01\x01\x12h\n" +
+	"confidence\x88\x01\x01\x12q\n" +
+	"\x06source\x18\b \x01(\tBT\xbaGQ\x92\x02N标签来源，如人工打标、规则引擎、算法模型、批量导入等H\aR\x06source\x88\x01\x01\x12h\n" +
 	"\x0esource_rule_id\x18\t \x01(\rB=\xbaG:\x92\x027来源规则ID，如果是规则计算，记录规则IDH\bR\fsourceRuleId\x88\x01\x01\x12o\n" +
 	"\x0eeffective_time\x18\n" +
 	" \x01(\v2\x1a.google.protobuf.TimestampB'\xbaG$\x92\x02!有效时间，标签生效时间H\tR\reffectiveTime\x88\x01\x01\x12i\n" +
@@ -760,34 +760,33 @@ var file_uba_service_v1_user_tag_proto_goTypes = []any{
 	(*emptypb.Empty)(nil),         // 11: google.protobuf.Empty
 }
 var file_uba_service_v1_user_tag_proto_depIdxs = []int32{
-	0,  // 0: uba.service.v1.UserTag.source:type_name -> uba.service.v1.TagSource
-	8,  // 1: uba.service.v1.UserTag.effective_time:type_name -> google.protobuf.Timestamp
-	8,  // 2: uba.service.v1.UserTag.expire_time:type_name -> google.protobuf.Timestamp
-	8,  // 3: uba.service.v1.UserTag.created_at:type_name -> google.protobuf.Timestamp
-	8,  // 4: uba.service.v1.UserTag.updated_at:type_name -> google.protobuf.Timestamp
-	8,  // 5: uba.service.v1.UserTag.deleted_at:type_name -> google.protobuf.Timestamp
-	1,  // 6: uba.service.v1.ListUserTagResponse.items:type_name -> uba.service.v1.UserTag
-	9,  // 7: uba.service.v1.GetUserTagRequest.view_mask:type_name -> google.protobuf.FieldMask
-	1,  // 8: uba.service.v1.CreateUserTagRequest.data:type_name -> uba.service.v1.UserTag
-	1,  // 9: uba.service.v1.UpdateUserTagRequest.data:type_name -> uba.service.v1.UserTag
-	9,  // 10: uba.service.v1.UpdateUserTagRequest.update_mask:type_name -> google.protobuf.FieldMask
-	10, // 11: uba.service.v1.UserTagService.List:input_type -> pagination.PagingRequest
-	10, // 12: uba.service.v1.UserTagService.Count:input_type -> pagination.PagingRequest
-	3,  // 13: uba.service.v1.UserTagService.Get:input_type -> uba.service.v1.GetUserTagRequest
-	4,  // 14: uba.service.v1.UserTagService.Create:input_type -> uba.service.v1.CreateUserTagRequest
-	5,  // 15: uba.service.v1.UserTagService.Update:input_type -> uba.service.v1.UpdateUserTagRequest
-	6,  // 16: uba.service.v1.UserTagService.Delete:input_type -> uba.service.v1.DeleteUserTagRequest
-	2,  // 17: uba.service.v1.UserTagService.List:output_type -> uba.service.v1.ListUserTagResponse
-	7,  // 18: uba.service.v1.UserTagService.Count:output_type -> uba.service.v1.CountUserTagResponse
-	1,  // 19: uba.service.v1.UserTagService.Get:output_type -> uba.service.v1.UserTag
-	1,  // 20: uba.service.v1.UserTagService.Create:output_type -> uba.service.v1.UserTag
-	1,  // 21: uba.service.v1.UserTagService.Update:output_type -> uba.service.v1.UserTag
-	11, // 22: uba.service.v1.UserTagService.Delete:output_type -> google.protobuf.Empty
-	17, // [17:23] is the sub-list for method output_type
-	11, // [11:17] is the sub-list for method input_type
-	11, // [11:11] is the sub-list for extension type_name
-	11, // [11:11] is the sub-list for extension extendee
-	0,  // [0:11] is the sub-list for field type_name
+	8,  // 0: uba.service.v1.UserTag.effective_time:type_name -> google.protobuf.Timestamp
+	8,  // 1: uba.service.v1.UserTag.expire_time:type_name -> google.protobuf.Timestamp
+	8,  // 2: uba.service.v1.UserTag.created_at:type_name -> google.protobuf.Timestamp
+	8,  // 3: uba.service.v1.UserTag.updated_at:type_name -> google.protobuf.Timestamp
+	8,  // 4: uba.service.v1.UserTag.deleted_at:type_name -> google.protobuf.Timestamp
+	1,  // 5: uba.service.v1.ListUserTagResponse.items:type_name -> uba.service.v1.UserTag
+	9,  // 6: uba.service.v1.GetUserTagRequest.view_mask:type_name -> google.protobuf.FieldMask
+	1,  // 7: uba.service.v1.CreateUserTagRequest.data:type_name -> uba.service.v1.UserTag
+	1,  // 8: uba.service.v1.UpdateUserTagRequest.data:type_name -> uba.service.v1.UserTag
+	9,  // 9: uba.service.v1.UpdateUserTagRequest.update_mask:type_name -> google.protobuf.FieldMask
+	10, // 10: uba.service.v1.UserTagService.List:input_type -> pagination.PagingRequest
+	10, // 11: uba.service.v1.UserTagService.Count:input_type -> pagination.PagingRequest
+	3,  // 12: uba.service.v1.UserTagService.Get:input_type -> uba.service.v1.GetUserTagRequest
+	4,  // 13: uba.service.v1.UserTagService.Create:input_type -> uba.service.v1.CreateUserTagRequest
+	5,  // 14: uba.service.v1.UserTagService.Update:input_type -> uba.service.v1.UpdateUserTagRequest
+	6,  // 15: uba.service.v1.UserTagService.Delete:input_type -> uba.service.v1.DeleteUserTagRequest
+	2,  // 16: uba.service.v1.UserTagService.List:output_type -> uba.service.v1.ListUserTagResponse
+	7,  // 17: uba.service.v1.UserTagService.Count:output_type -> uba.service.v1.CountUserTagResponse
+	1,  // 18: uba.service.v1.UserTagService.Get:output_type -> uba.service.v1.UserTag
+	1,  // 19: uba.service.v1.UserTagService.Create:output_type -> uba.service.v1.UserTag
+	1,  // 20: uba.service.v1.UserTagService.Update:output_type -> uba.service.v1.UserTag
+	11, // 21: uba.service.v1.UserTagService.Delete:output_type -> google.protobuf.Empty
+	16, // [16:22] is the sub-list for method output_type
+	10, // [10:16] is the sub-list for method input_type
+	10, // [10:10] is the sub-list for extension type_name
+	10, // [10:10] is the sub-list for extension extendee
+	0,  // [0:10] is the sub-list for field type_name
 }
 
 func init() { file_uba_service_v1_user_tag_proto_init() }

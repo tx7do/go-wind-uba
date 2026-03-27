@@ -57,7 +57,7 @@ func (m *RiskEvent) validate(all bool) error {
 
 	var errors []error
 
-	// no validation rules for Id
+	// no validation rules for RiskEventId
 
 	// no validation rules for Evidence
 

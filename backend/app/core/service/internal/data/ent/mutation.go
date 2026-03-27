@@ -42667,8 +42667,8 @@ type RiskRuleMutation struct {
 	addtenant_id      *int32
 	name              *string
 	description       *string
-	risk_type         *riskrule.RiskType
-	default_level     *riskrule.DefaultLevel
+	risk_type         *string
+	default_level     *string
 	condition         *map[string]interface{}
 	actions           *[]*ubapb.RiskAction
 	appendactions     []*ubapb.RiskAction
@@ -43318,12 +43318,12 @@ func (m *RiskRuleMutation) ResetDescription() {
 }
 
 // SetRiskType sets the "risk_type" field.
-func (m *RiskRuleMutation) SetRiskType(rt riskrule.RiskType) {
-	m.risk_type = &rt
+func (m *RiskRuleMutation) SetRiskType(s string) {
+	m.risk_type = &s
 }
 
 // RiskType returns the value of the "risk_type" field in the mutation.
-func (m *RiskRuleMutation) RiskType() (r riskrule.RiskType, exists bool) {
+func (m *RiskRuleMutation) RiskType() (r string, exists bool) {
 	v := m.risk_type
 	if v == nil {
 		return
@@ -43334,7 +43334,7 @@ func (m *RiskRuleMutation) RiskType() (r riskrule.RiskType, exists bool) {
 // OldRiskType returns the old "risk_type" field's value of the RiskRule entity.
 // If the RiskRule object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *RiskRuleMutation) OldRiskType(ctx context.Context) (v *riskrule.RiskType, err error) {
+func (m *RiskRuleMutation) OldRiskType(ctx context.Context) (v *string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldRiskType is only allowed on UpdateOne operations")
 	}
@@ -43367,12 +43367,12 @@ func (m *RiskRuleMutation) ResetRiskType() {
 }
 
 // SetDefaultLevel sets the "default_level" field.
-func (m *RiskRuleMutation) SetDefaultLevel(rl riskrule.DefaultLevel) {
-	m.default_level = &rl
+func (m *RiskRuleMutation) SetDefaultLevel(s string) {
+	m.default_level = &s
 }
 
 // DefaultLevel returns the value of the "default_level" field in the mutation.
-func (m *RiskRuleMutation) DefaultLevel() (r riskrule.DefaultLevel, exists bool) {
+func (m *RiskRuleMutation) DefaultLevel() (r string, exists bool) {
 	v := m.default_level
 	if v == nil {
 		return
@@ -43383,7 +43383,7 @@ func (m *RiskRuleMutation) DefaultLevel() (r riskrule.DefaultLevel, exists bool)
 // OldDefaultLevel returns the old "default_level" field's value of the RiskRule entity.
 // If the RiskRule object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *RiskRuleMutation) OldDefaultLevel(ctx context.Context) (v *riskrule.DefaultLevel, err error) {
+func (m *RiskRuleMutation) OldDefaultLevel(ctx context.Context) (v *string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldDefaultLevel is only allowed on UpdateOne operations")
 	}
@@ -44235,14 +44235,14 @@ func (m *RiskRuleMutation) SetField(name string, value ent.Value) error {
 		m.SetDescription(v)
 		return nil
 	case riskrule.FieldRiskType:
-		v, ok := value.(riskrule.RiskType)
+		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetRiskType(v)
 		return nil
 	case riskrule.FieldDefaultLevel:
-		v, ok := value.(riskrule.DefaultLevel)
+		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -67552,7 +67552,7 @@ type UserTagMutation struct {
 	value_label       *string
 	confidence        *float64
 	addconfidence     *float64
-	source            *usertag.Source
+	source            *string
 	source_rule_id    *uint32
 	addsource_rule_id *int32
 	effective_time    *time.Time
@@ -68404,12 +68404,12 @@ func (m *UserTagMutation) ResetConfidence() {
 }
 
 // SetSource sets the "source" field.
-func (m *UserTagMutation) SetSource(u usertag.Source) {
-	m.source = &u
+func (m *UserTagMutation) SetSource(s string) {
+	m.source = &s
 }
 
 // Source returns the value of the "source" field in the mutation.
-func (m *UserTagMutation) Source() (r usertag.Source, exists bool) {
+func (m *UserTagMutation) Source() (r string, exists bool) {
 	v := m.source
 	if v == nil {
 		return
@@ -68420,7 +68420,7 @@ func (m *UserTagMutation) Source() (r usertag.Source, exists bool) {
 // OldSource returns the old "source" field's value of the UserTag entity.
 // If the UserTag object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *UserTagMutation) OldSource(ctx context.Context) (v *usertag.Source, err error) {
+func (m *UserTagMutation) OldSource(ctx context.Context) (v *string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldSource is only allowed on UpdateOne operations")
 	}
@@ -68934,7 +68934,7 @@ func (m *UserTagMutation) SetField(name string, value ent.Value) error {
 		m.SetConfidence(v)
 		return nil
 	case usertag.FieldSource:
-		v, ok := value.(usertag.Source)
+		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}

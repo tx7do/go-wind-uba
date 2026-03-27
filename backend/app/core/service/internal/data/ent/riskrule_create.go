@@ -150,13 +150,13 @@ func (_c *RiskRuleCreate) SetNillableDescription(v *string) *RiskRuleCreate {
 }
 
 // SetRiskType sets the "risk_type" field.
-func (_c *RiskRuleCreate) SetRiskType(v riskrule.RiskType) *RiskRuleCreate {
+func (_c *RiskRuleCreate) SetRiskType(v string) *RiskRuleCreate {
 	_c.mutation.SetRiskType(v)
 	return _c
 }
 
 // SetNillableRiskType sets the "risk_type" field if the given value is not nil.
-func (_c *RiskRuleCreate) SetNillableRiskType(v *riskrule.RiskType) *RiskRuleCreate {
+func (_c *RiskRuleCreate) SetNillableRiskType(v *string) *RiskRuleCreate {
 	if v != nil {
 		_c.SetRiskType(*v)
 	}
@@ -164,13 +164,13 @@ func (_c *RiskRuleCreate) SetNillableRiskType(v *riskrule.RiskType) *RiskRuleCre
 }
 
 // SetDefaultLevel sets the "default_level" field.
-func (_c *RiskRuleCreate) SetDefaultLevel(v riskrule.DefaultLevel) *RiskRuleCreate {
+func (_c *RiskRuleCreate) SetDefaultLevel(v string) *RiskRuleCreate {
 	_c.mutation.SetDefaultLevel(v)
 	return _c
 }
 
 // SetNillableDefaultLevel sets the "default_level" field if the given value is not nil.
-func (_c *RiskRuleCreate) SetNillableDefaultLevel(v *riskrule.DefaultLevel) *RiskRuleCreate {
+func (_c *RiskRuleCreate) SetNillableDefaultLevel(v *string) *RiskRuleCreate {
 	if v != nil {
 		_c.SetDefaultLevel(*v)
 	}
@@ -366,16 +366,6 @@ func (_c *RiskRuleCreate) check() error {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "RiskRule.name": %w`, err)}
 		}
 	}
-	if v, ok := _c.mutation.RiskType(); ok {
-		if err := riskrule.RiskTypeValidator(v); err != nil {
-			return &ValidationError{Name: "risk_type", err: fmt.Errorf(`ent: validator failed for field "RiskRule.risk_type": %w`, err)}
-		}
-	}
-	if v, ok := _c.mutation.DefaultLevel(); ok {
-		if err := riskrule.DefaultLevelValidator(v); err != nil {
-			return &ValidationError{Name: "default_level", err: fmt.Errorf(`ent: validator failed for field "RiskRule.default_level": %w`, err)}
-		}
-	}
 	if v, ok := _c.mutation.Code(); ok {
 		if err := riskrule.CodeValidator(v); err != nil {
 			return &ValidationError{Name: "code", err: fmt.Errorf(`ent: validator failed for field "RiskRule.code": %w`, err)}
@@ -461,11 +451,11 @@ func (_c *RiskRuleCreate) createSpec() (*RiskRule, *sqlgraph.CreateSpec) {
 		_node.Description = &value
 	}
 	if value, ok := _c.mutation.RiskType(); ok {
-		_spec.SetField(riskrule.FieldRiskType, field.TypeEnum, value)
+		_spec.SetField(riskrule.FieldRiskType, field.TypeString, value)
 		_node.RiskType = &value
 	}
 	if value, ok := _c.mutation.DefaultLevel(); ok {
-		_spec.SetField(riskrule.FieldDefaultLevel, field.TypeEnum, value)
+		_spec.SetField(riskrule.FieldDefaultLevel, field.TypeString, value)
 		_node.DefaultLevel = &value
 	}
 	if value, ok := _c.mutation.Condition(); ok {
@@ -705,7 +695,7 @@ func (u *RiskRuleUpsert) ClearDescription() *RiskRuleUpsert {
 }
 
 // SetRiskType sets the "risk_type" field.
-func (u *RiskRuleUpsert) SetRiskType(v riskrule.RiskType) *RiskRuleUpsert {
+func (u *RiskRuleUpsert) SetRiskType(v string) *RiskRuleUpsert {
 	u.Set(riskrule.FieldRiskType, v)
 	return u
 }
@@ -723,7 +713,7 @@ func (u *RiskRuleUpsert) ClearRiskType() *RiskRuleUpsert {
 }
 
 // SetDefaultLevel sets the "default_level" field.
-func (u *RiskRuleUpsert) SetDefaultLevel(v riskrule.DefaultLevel) *RiskRuleUpsert {
+func (u *RiskRuleUpsert) SetDefaultLevel(v string) *RiskRuleUpsert {
 	u.Set(riskrule.FieldDefaultLevel, v)
 	return u
 }
@@ -1155,7 +1145,7 @@ func (u *RiskRuleUpsertOne) ClearDescription() *RiskRuleUpsertOne {
 }
 
 // SetRiskType sets the "risk_type" field.
-func (u *RiskRuleUpsertOne) SetRiskType(v riskrule.RiskType) *RiskRuleUpsertOne {
+func (u *RiskRuleUpsertOne) SetRiskType(v string) *RiskRuleUpsertOne {
 	return u.Update(func(s *RiskRuleUpsert) {
 		s.SetRiskType(v)
 	})
@@ -1176,7 +1166,7 @@ func (u *RiskRuleUpsertOne) ClearRiskType() *RiskRuleUpsertOne {
 }
 
 // SetDefaultLevel sets the "default_level" field.
-func (u *RiskRuleUpsertOne) SetDefaultLevel(v riskrule.DefaultLevel) *RiskRuleUpsertOne {
+func (u *RiskRuleUpsertOne) SetDefaultLevel(v string) *RiskRuleUpsertOne {
 	return u.Update(func(s *RiskRuleUpsert) {
 		s.SetDefaultLevel(v)
 	})
@@ -1809,7 +1799,7 @@ func (u *RiskRuleUpsertBulk) ClearDescription() *RiskRuleUpsertBulk {
 }
 
 // SetRiskType sets the "risk_type" field.
-func (u *RiskRuleUpsertBulk) SetRiskType(v riskrule.RiskType) *RiskRuleUpsertBulk {
+func (u *RiskRuleUpsertBulk) SetRiskType(v string) *RiskRuleUpsertBulk {
 	return u.Update(func(s *RiskRuleUpsert) {
 		s.SetRiskType(v)
 	})
@@ -1830,7 +1820,7 @@ func (u *RiskRuleUpsertBulk) ClearRiskType() *RiskRuleUpsertBulk {
 }
 
 // SetDefaultLevel sets the "default_level" field.
-func (u *RiskRuleUpsertBulk) SetDefaultLevel(v riskrule.DefaultLevel) *RiskRuleUpsertBulk {
+func (u *RiskRuleUpsertBulk) SetDefaultLevel(v string) *RiskRuleUpsertBulk {
 	return u.Update(func(s *RiskRuleUpsert) {
 		s.SetDefaultLevel(v)
 	})

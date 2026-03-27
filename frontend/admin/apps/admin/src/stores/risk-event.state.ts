@@ -8,8 +8,6 @@ import { defineStore } from 'pinia';
 import {
   createRiskEventServiceClient,
   type ubaservicev1_RiskEvent_Status as RiskEvent_Status,
-  type ubaservicev1_RiskLevel as RiskLevel,
-  type ubaservicev1_RiskType as RiskType,
 } from '#/generated/api/admin/service/v1';
 import { makeOrderBy, makeQueryString } from '#/utils/query';
 import { type Paging, requestClientRequestHandler } from '#/utils/request';
@@ -131,17 +129,17 @@ const RISK_TYPE_COLOR_MAP = {
   DEFAULT: '#86909C',
 } as const;
 
-export function riskEventTypeToColor(type?: RiskType) {
+export function riskEventTypeToColor(type?: any) {
   return (
     RISK_TYPE_COLOR_MAP[type as keyof typeof RISK_TYPE_COLOR_MAP] ||
     RISK_TYPE_COLOR_MAP.DEFAULT
   );
 }
 
-export function riskEventTypeToName(type?: RiskType) {
+export function riskEventTypeToName(type?: any) {
   const values = riskEventTypeList.value;
   const matchedItem = values.find((item) => item.value === type);
-  return matchedItem ? matchedItem.label : '';
+  return matchedItem ? matchedItem.label : type;
 }
 
 export const riskLevelList = computed(() => [
@@ -165,17 +163,17 @@ const RISK_LEVEL_COLOR_MAP = {
   DEFAULT: '#86909C',
 } as const;
 
-export function riskLevelToColor(level?: RiskLevel) {
+export function riskLevelToColor(level?: any) {
   return (
     RISK_LEVEL_COLOR_MAP[level as keyof typeof RISK_LEVEL_COLOR_MAP] ||
     RISK_LEVEL_COLOR_MAP.DEFAULT
   );
 }
 
-export function riskLevelToName(level?: RiskLevel) {
+export function riskLevelToName(level?: any) {
   const values = riskLevelList.value;
   const matchedItem = values.find((item) => item.value === level);
-  return matchedItem ? matchedItem.label : '';
+  return matchedItem ? matchedItem.label : level;
 }
 
 export const riskEventStatusList = computed(() => [
@@ -211,5 +209,5 @@ export function riskEventStatusToColor(status?: RiskEvent_Status) {
 export function riskEventStatusToName(status?: RiskEvent_Status) {
   const values = riskEventStatusList.value;
   const matchedItem = values.find((item) => item.value === status);
-  return matchedItem ? matchedItem.label : '';
+  return matchedItem ? matchedItem.label : status;
 }

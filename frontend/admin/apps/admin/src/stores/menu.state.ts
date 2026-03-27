@@ -145,7 +145,7 @@ export const menuTypeList = computed(() => [
 export function menuTypeToName(menuType: any): string {
   const values = menuTypeList.value;
   const matchedItem = values.find((item) => item.value === menuType);
-  return matchedItem ? matchedItem.label : '';
+  return matchedItem ? matchedItem.label : menuType;
 }
 
 /**

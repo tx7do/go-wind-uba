@@ -60,8 +60,8 @@ message PathNode {
 // 事件路径（用户行为路径，包含有序事件序列和路径指标）
 message EventPath {
   // 路径ID（唯一标识一条事件路径，hash 或 UUID）
-  string id = 1 [
-    json_name = "id",
+  string path_id = 1 [
+    json_name = "pathId",
     (gnostic.openapi.v3.property) = {description: "路径ID，唯一标识一条事件路径，hash 或 UUID"}
   ];
   // 租户ID（多租户隔离，支持 SaaS 场景）
@@ -75,7 +75,7 @@ message EventPath {
     (gnostic.openapi.v3.property) = {description: "用户ID，路径所属用户"}
   ];
   // 会话ID（路径所属会话）
-  uint64 session_id = 4 [
+  string session_id = 4 [
     json_name = "sessionId",
     (gnostic.openapi.v3.property) = {description: "会话ID，路径所属会话"}
   ];
@@ -160,9 +160,9 @@ message ListEventPathResponse {
 // 查询事件路径详情请求
 message GetEventPathRequest {
   oneof query_by {
-    string id = 1 [
+    string path_id = 1 [
       (gnostic.openapi.v3.property) = {description: "路径ID", read_only: true},
-      json_name = "id"
+      json_name = "pathId"
     ]; // 路径ID
   }
 
@@ -186,9 +186,9 @@ message BatchCreateEventPathRequest {
 // 删除事件路径请求
 message DeleteEventPathRequest {
   oneof query_by {
-    string id = 1 [
+    string path_id = 1 [
       (gnostic.openapi.v3.property) = {description: "路径ID", read_only: true},
-      json_name = "id"
+      json_name = "pathId"
     ]; // ID
   }
 }

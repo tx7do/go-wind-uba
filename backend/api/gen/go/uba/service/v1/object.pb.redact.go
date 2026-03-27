@@ -96,9 +96,7 @@ func (x *ObjectDim) Redact() string {
 		return ""
 	}
 
-	// Safe field: TenantId
-
-	// Safe field: Id
+	// Safe field: ObjectId
 
 	// Safe field: ObjectType
 
@@ -115,6 +113,8 @@ func (x *ObjectDim) Redact() string {
 	// Safe field: Attributes
 
 	// Safe field: Status
+
+	// Safe field: TenantId
 
 	// Safe field: ValidFrom
 

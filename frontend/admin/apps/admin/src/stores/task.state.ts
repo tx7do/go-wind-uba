@@ -147,7 +147,7 @@ export const taskTypeList = computed(() => [
 export function taskTypeToName(taskType: Task_Type) {
   const values = taskTypeList.value;
   const matchedItem = values.find((item) => item.value === taskType);
-  return matchedItem ? matchedItem.label : '';
+  return matchedItem ? matchedItem.label : taskType;
 }
 
 export function taskTypeToColor(taskType: Task_Type) {

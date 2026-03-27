@@ -57,7 +57,7 @@ func (m *ObjectDim) validate(all bool) error {
 
 	var errors []error
 
-	// no validation rules for Id
+	// no validation rules for ObjectId
 
 	// no validation rules for ObjectType
 

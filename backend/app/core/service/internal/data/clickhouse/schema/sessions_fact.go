@@ -10,7 +10,7 @@ import (
 // 对应表：gw_uba.sessions_fact
 
 type SessionsFact struct {
-	ID *uint64 `ch:"id"`
+	SessionID *string `ch:"session_id"`
 
 	TenantID     *uint32 `ch:"tenant_id"`
 	UserID       *uint32 `ch:"user_id"`

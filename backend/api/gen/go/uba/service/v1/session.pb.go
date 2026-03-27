@@ -30,7 +30,7 @@ const (
 type Session struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// 会话ID（唯一标识一条会话）
-	Id uint32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	SessionId string `protobuf:"bytes,1,opt,name=session_id,json=sessionId,proto3" json:"session_id,omitempty"`
 	// 租户ID（多租户隔离，支持 SaaS 场景）
 	TenantId uint32 `protobuf:"varint,2,opt,name=tenant_id,json=tenantId,proto3" json:"tenant_id,omitempty"`
 	// 用户ID（会话主体用户）
@@ -58,7 +58,7 @@ type Session struct {
 	// 是否跳出（单页会话，true 表示跳出）
 	IsBounce bool `protobuf:"varint,14,opt,name=is_bounce,json=isBounce,proto3" json:"is_bounce,omitempty"`
 	// 平台类型（会话发生的平台，如 Web、iOS、Android 等）
-	Platform *Platform `protobuf:"varint,15,opt,name=platform,proto3,enum=uba.service.v1.Platform,oneof" json:"platform,omitempty"`
+	Platform *string `protobuf:"bytes,15,opt,name=platform,proto3,oneof" json:"platform,omitempty"`
 	// 操作系统，会话发生时的操作系统信息
 	Os string `protobuf:"bytes,16,opt,name=os,proto3" json:"os,omitempty"`
 	// 应用版本（会话发生时的应用版本号）
@@ -71,7 +71,7 @@ type Session struct {
 	// 支付事件数（本会话内发生的支付事件总数）
 	PayEventCount uint32 `protobuf:"varint,21,opt,name=pay_event_count,json=payEventCount,proto3" json:"pay_event_count,omitempty"`
 	// 风险等级（会话风险标记，枚举类型）
-	RiskLevel *RiskLevel `protobuf:"varint,30,opt,name=risk_level,json=riskLevel,proto3,enum=uba.service.v1.RiskLevel,oneof" json:"risk_level,omitempty"`
+	RiskLevel *string `protobuf:"bytes,30,opt,name=risk_level,json=riskLevel,proto3,oneof" json:"risk_level,omitempty"`
 	// 风险标签（会话风险标记，字符串列表）
 	RiskTags []string `protobuf:"bytes,31,rep,name=risk_tags,json=riskTags,proto3" json:"risk_tags,omitempty"`
 	// 会话上下文
@@ -112,11 +112,11 @@ func (*Session) Descriptor() ([]byte, []int) {
 	return file_uba_service_v1_session_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Session) GetId() uint32 {
+func (x *Session) GetSessionId() string {
 	if x != nil {
-		return x.Id
+		return x.SessionId
 	}
-	return 0
+	return ""
 }
 
 func (x *Session) GetTenantId() uint32 {
@@ -210,11 +210,11 @@ func (x *Session) GetIsBounce() bool {
 	return false
 }
 
-func (x *Session) GetPlatform() Platform {
+func (x *Session) GetPlatform() string {
 	if x != nil && x.Platform != nil {
 		return *x.Platform
 	}
-	return Platform_PLATFORM_UNSPECIFIED
+	return ""
 }
 
 func (x *Session) GetOs() string {
@@ -259,11 +259,11 @@ func (x *Session) GetPayEventCount() uint32 {
 	return 0
 }
 
-func (x *Session) GetRiskLevel() RiskLevel {
+func (x *Session) GetRiskLevel() string {
 	if x != nil && x.RiskLevel != nil {
 		return *x.RiskLevel
 	}
-	return RiskLevel_RISK_LEVEL_UNSPECIFIED
+	return ""
 }
 
 func (x *Session) GetRiskTags() []string {
@@ -567,9 +567,10 @@ var File_uba_service_v1_session_proto protoreflect.FileDescriptor
 
 const file_uba_service_v1_session_proto_rawDesc = "" +
 	"\n" +
-	"\x1cuba/service/v1/session.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1epagination/v1/pagination.proto\x1a\x1buba/service/v1/common.proto\"\x8b\x12\n" +
-	"\aSession\x129\n" +
-	"\x02id\x18\x01 \x01(\rB)\xbaG&\x92\x02#会话ID，唯一标识一条会话R\x02id\x12R\n" +
+	"\x1cuba/service/v1/session.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1epagination/v1/pagination.proto\x1a\x1buba/service/v1/common.proto\"\xe4\x11\n" +
+	"\aSession\x12H\n" +
+	"\n" +
+	"session_id\x18\x01 \x01(\tB)\xbaG&\x92\x02#会话ID，唯一标识一条会话R\tsessionId\x12R\n" +
 	"\ttenant_id\x18\x02 \x01(\rB5\xbaG2\x92\x02/租户ID，多租户隔离，支持 SaaS 场景R\btenantId\x12<\n" +
 	"\auser_id\x18\x03 \x01(\rB#\xbaG \x92\x02\x1d用户ID，会话主体用户R\x06userId\x12@\n" +
 	"\tdevice_id\x18\x04 \x01(\tB#\xbaG \x92\x02\x1d设备ID，会话主体设备R\bdeviceId\x12X\n" +
@@ -587,17 +588,17 @@ const file_uba_service_v1_session_proto_rawDesc = "" +
 	"\n" +
 	"entry_page\x18\f \x01(\tB'\xbaG$\x92\x02!入口页面，会话起始页面R\tentryPage\x12D\n" +
 	"\texit_page\x18\r \x01(\tB'\xbaG$\x92\x02!出口页面，会话结束页面R\bexitPage\x12R\n" +
-	"\tis_bounce\x18\x0e \x01(\bB5\xbaG2\x92\x02/是否跳出，单页会话，true 表示跳出R\bisBounce\x12\x83\x01\n" +
-	"\bplatform\x18\x0f \x01(\x0e2\x18.uba.service.v1.PlatformBH\xbaGE\x92\x02B平台类型，会话发生的平台，如 Web、iOS、Android 等H\x00R\bplatform\x88\x01\x01\x12I\n" +
+	"\tis_bounce\x18\x0e \x01(\bB5\xbaG2\x92\x02/是否跳出，单页会话，true 表示跳出R\bisBounce\x12i\n" +
+	"\bplatform\x18\x0f \x01(\tBH\xbaGE\x92\x02B平台类型，会话发生的平台，如 Web、iOS、Android 等H\x00R\bplatform\x88\x01\x01\x12I\n" +
 	"\x02os\x18\x10 \x01(\tB9\xbaG6\x92\x023操作系统，会话发生时的操作系统信息R\x02os\x12W\n" +
 	"\vapp_version\x18\x11 \x01(\tB6\xbaG3\x92\x020应用版本，会话发生时的应用版本号R\n" +
 	"appVersion\x12N\n" +
 	"\aip_city\x18\x12 \x01(\tB5\xbaG2\x92\x02/IP城市，会话发生时的地理位置城市R\x06ipCity\x12M\n" +
 	"\acountry\x18\x13 \x01(\tB3\xbaG0\x92\x02-国家，会话发生时的地理位置国家R\acountry\x12\x80\x01\n" +
 	"\ftotal_amount\x18\x14 \x01(\tB]\xbaGZ\x92\x02W会话内总金额，本会话内发生的总金额，字符串类型，支持多币种R\vtotalAmount\x12g\n" +
-	"\x0fpay_event_count\x18\x15 \x01(\rB?\xbaG<\x92\x029支付事件数，本会话内发生的支付事件总数R\rpayEventCount\x12u\n" +
+	"\x0fpay_event_count\x18\x15 \x01(\rB?\xbaG<\x92\x029支付事件数，本会话内发生的支付事件总数R\rpayEventCount\x12Z\n" +
 	"\n" +
-	"risk_level\x18\x1e \x01(\x0e2\x19.uba.service.v1.RiskLevelB6\xbaG3\x92\x020风险等级，会话风险标记，枚举类型H\x01R\triskLevel\x88\x01\x01\x12V\n" +
+	"risk_level\x18\x1e \x01(\tB6\xbaG3\x92\x020风险等级，会话风险标记，枚举类型H\x01R\triskLevel\x88\x01\x01\x12V\n" +
 	"\trisk_tags\x18\x1f \x03(\tB9\xbaG6\x92\x023风险标签，会话风险标记，字符串列表R\briskTags\x12U\n" +
 	"\acontext\x18( \x03(\v2$.uba.service.v1.Session.ContextEntryB\x15\xbaG\x12\x92\x02\x0f会话上下文R\acontext\x12s\n" +
 	"\vupdate_time\x182 \x01(\v2\x1a.google.protobuf.TimestampB6\xbaG3\x92\x020更新时间，会话最近一次更新的时间R\n" +
@@ -650,35 +651,31 @@ var file_uba_service_v1_session_proto_goTypes = []any{
 	(*DeleteSessionRequest)(nil),      // 6: uba.service.v1.DeleteSessionRequest
 	nil,                               // 7: uba.service.v1.Session.ContextEntry
 	(*timestamppb.Timestamp)(nil),     // 8: google.protobuf.Timestamp
-	(Platform)(0),                     // 9: uba.service.v1.Platform
-	(RiskLevel)(0),                    // 10: uba.service.v1.RiskLevel
-	(*v1.PagingRequest)(nil),          // 11: pagination.PagingRequest
-	(*emptypb.Empty)(nil),             // 12: google.protobuf.Empty
+	(*v1.PagingRequest)(nil),          // 9: pagination.PagingRequest
+	(*emptypb.Empty)(nil),             // 10: google.protobuf.Empty
 }
 var file_uba_service_v1_session_proto_depIdxs = []int32{
 	8,  // 0: uba.service.v1.Session.start_time:type_name -> google.protobuf.Timestamp
 	8,  // 1: uba.service.v1.Session.end_time:type_name -> google.protobuf.Timestamp
-	9,  // 2: uba.service.v1.Session.platform:type_name -> uba.service.v1.Platform
-	10, // 3: uba.service.v1.Session.risk_level:type_name -> uba.service.v1.RiskLevel
-	7,  // 4: uba.service.v1.Session.context:type_name -> uba.service.v1.Session.ContextEntry
-	8,  // 5: uba.service.v1.Session.update_time:type_name -> google.protobuf.Timestamp
-	0,  // 6: uba.service.v1.ListSessionResponse.items:type_name -> uba.service.v1.Session
-	0,  // 7: uba.service.v1.CreateSessionRequest.data:type_name -> uba.service.v1.Session
-	0,  // 8: uba.service.v1.BatchCreateSessionRequest.items:type_name -> uba.service.v1.Session
-	0,  // 9: uba.service.v1.UpdateSessionRequest.session:type_name -> uba.service.v1.Session
-	11, // 10: uba.service.v1.SessionService.List:input_type -> pagination.PagingRequest
-	2,  // 11: uba.service.v1.SessionService.Get:input_type -> uba.service.v1.GetSessionRequest
-	0,  // 12: uba.service.v1.SessionService.Create:input_type -> uba.service.v1.Session
-	4,  // 13: uba.service.v1.SessionService.BatchCreate:input_type -> uba.service.v1.BatchCreateSessionRequest
-	1,  // 14: uba.service.v1.SessionService.List:output_type -> uba.service.v1.ListSessionResponse
-	0,  // 15: uba.service.v1.SessionService.Get:output_type -> uba.service.v1.Session
-	12, // 16: uba.service.v1.SessionService.Create:output_type -> google.protobuf.Empty
-	12, // 17: uba.service.v1.SessionService.BatchCreate:output_type -> google.protobuf.Empty
-	14, // [14:18] is the sub-list for method output_type
-	10, // [10:14] is the sub-list for method input_type
-	10, // [10:10] is the sub-list for extension type_name
-	10, // [10:10] is the sub-list for extension extendee
-	0,  // [0:10] is the sub-list for field type_name
+	7,  // 2: uba.service.v1.Session.context:type_name -> uba.service.v1.Session.ContextEntry
+	8,  // 3: uba.service.v1.Session.update_time:type_name -> google.protobuf.Timestamp
+	0,  // 4: uba.service.v1.ListSessionResponse.items:type_name -> uba.service.v1.Session
+	0,  // 5: uba.service.v1.CreateSessionRequest.data:type_name -> uba.service.v1.Session
+	0,  // 6: uba.service.v1.BatchCreateSessionRequest.items:type_name -> uba.service.v1.Session
+	0,  // 7: uba.service.v1.UpdateSessionRequest.session:type_name -> uba.service.v1.Session
+	9,  // 8: uba.service.v1.SessionService.List:input_type -> pagination.PagingRequest
+	2,  // 9: uba.service.v1.SessionService.Get:input_type -> uba.service.v1.GetSessionRequest
+	0,  // 10: uba.service.v1.SessionService.Create:input_type -> uba.service.v1.Session
+	4,  // 11: uba.service.v1.SessionService.BatchCreate:input_type -> uba.service.v1.BatchCreateSessionRequest
+	1,  // 12: uba.service.v1.SessionService.List:output_type -> uba.service.v1.ListSessionResponse
+	0,  // 13: uba.service.v1.SessionService.Get:output_type -> uba.service.v1.Session
+	10, // 14: uba.service.v1.SessionService.Create:output_type -> google.protobuf.Empty
+	10, // 15: uba.service.v1.SessionService.BatchCreate:output_type -> google.protobuf.Empty
+	12, // [12:16] is the sub-list for method output_type
+	8,  // [8:12] is the sub-list for method input_type
+	8,  // [8:8] is the sub-list for extension type_name
+	8,  // [8:8] is the sub-list for extension extendee
+	0,  // [0:8] is the sub-list for field type_name
 }
 
 func init() { file_uba_service_v1_session_proto_init() }

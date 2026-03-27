@@ -121,7 +121,7 @@ export const membershipPositionStatusList = computed(() => [
 export function membershipPositionStatusToName(status: any) {
   const values = membershipPositionStatusList.value;
   const matchedItem = values.find((item) => item.value === status);
-  return matchedItem ? matchedItem.label : '';
+  return matchedItem ? matchedItem.label : status;
 }
 
 // 职位状态-颜色映射常量
@@ -176,7 +176,7 @@ export const positionTypeList = computed(() => [
 export function positionTypeToName(status: Position_Status) {
   const values = positionTypeList.value;
   const matchedItem = values.find((item) => item.value === status);
-  return matchedItem ? matchedItem.label : '';
+  return matchedItem ? matchedItem.label : status;
 }
 
 // 多主题职位类型颜色映射

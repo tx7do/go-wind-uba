@@ -25,6 +25,15 @@ const formOptions = {
   schema: [
     {
       component: 'Input',
+      fieldName: 'session_id',
+      label: $t('page.session.sessionId'),
+      componentProps: {
+        placeholder: $t('ui.placeholder.input'),
+        allowClear: true,
+      },
+    },
+    {
+      component: 'Input',
       fieldName: 'user_id',
       label: $t('page.session.userId'),
       componentProps: {
@@ -88,7 +97,12 @@ const gridOptions: VxeGridProps<Session> = {
     },
   },
   columns: [
-    { title: $t('page.session.id'), field: 'id', minWidth: 200, fixed: 'left' },
+    {
+      title: $t('page.session.sessionId'),
+      field: 'sessionId',
+      minWidth: 200,
+      fixed: 'left',
+    },
     { title: $t('page.session.userId'), field: 'userId', minWidth: 100 },
     {
       title: $t('page.session.deviceId'),
@@ -134,7 +148,6 @@ const gridOptions: VxeGridProps<Session> = {
       title: $t('page.session.platform'),
       field: 'platform',
       minWidth: 100,
-      slots: { default: 'platform' },
     },
     { title: $t('page.session.os'), field: 'os', minWidth: 100 },
     {
@@ -158,7 +171,6 @@ const gridOptions: VxeGridProps<Session> = {
       title: $t('page.session.riskLevel'),
       field: 'riskLevel',
       minWidth: 100,
-      slots: { default: 'riskLevel' },
     },
     {
       title: $t('page.session.startTime'),

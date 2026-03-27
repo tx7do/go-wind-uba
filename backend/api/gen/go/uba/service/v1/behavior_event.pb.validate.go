@@ -143,26 +143,6 @@ func (m *BehaviorEvent) validate(all bool) error {
 
 	// no validation rules for SessionSeq
 
-	// no validation rules for Os
-
-	// no validation rules for AppVersion
-
-	// no validation rules for Channel
-
-	// no validation rules for Ip
-
-	// no validation rules for IpCity
-
-	// no validation rules for Country
-
-	// no validation rules for Network
-
-	// no validation rules for Geo
-
-	// no validation rules for UserAgent
-
-	// no validation rules for Referer
-
 	// no validation rules for Context
 
 	// no validation rules for DurationMs
@@ -187,6 +167,46 @@ func (m *BehaviorEvent) validate(all bool) error {
 
 	if m.Platform != nil {
 		// no validation rules for Platform
+	}
+
+	if m.Os != nil {
+		// no validation rules for Os
+	}
+
+	if m.AppVersion != nil {
+		// no validation rules for AppVersion
+	}
+
+	if m.Channel != nil {
+		// no validation rules for Channel
+	}
+
+	if m.Ip != nil {
+		// no validation rules for Ip
+	}
+
+	if m.IpCity != nil {
+		// no validation rules for IpCity
+	}
+
+	if m.Country != nil {
+		// no validation rules for Country
+	}
+
+	if m.Network != nil {
+		// no validation rules for Network
+	}
+
+	if m.Geo != nil {
+		// no validation rules for Geo
+	}
+
+	if m.UserAgent != nil {
+		// no validation rules for UserAgent
+	}
+
+	if m.Referer != nil {
+		// no validation rules for Referer
 	}
 
 	if m.OpResult != nil {

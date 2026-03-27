@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS gw_uba.events_fact
 
     -- ========== 上下文：Context（事件上下文信息）==========
     -- 会话上下文
-    session_id     UInt64 COMMENT '会话 ID（写入层生成，关联 sessions_fact.session_id，用于会话内事件序列分析）',
+    session_id     String COMMENT '会话 ID（写入层生成，关联 sessions_fact.session_id，用于会话内事件序列分析）',
     session_seq    UInt32 COMMENT '会话内事件序号（事件在会话中的顺序号，用于还原事件序列）',
 
     -- 环境上下文
@@ -105,7 +105,7 @@ CREATE TABLE IF NOT EXISTS gw_uba.events_fact
 CREATE TABLE IF NOT EXISTS gw_uba.sessions_fact
 (
     -- ========== 主键 & 路由字段 ==========
-    id              UInt64 COMMENT '会话唯一 ID（写入层生成，用于关联 events_fact.session_id）',
+    session_id      String COMMENT '会话唯一 ID（写入层生成，用于关联 events_fact.session_id）',
     tenant_id       UInt32 COMMENT '租户 ID（SaaS 多租户隔离，所有查询必须带此条件）',
 
     -- ========== 主体：Who（谁的会话）==========
@@ -158,7 +158,7 @@ CREATE TABLE IF NOT EXISTS gw_uba.sessions_fact
     INDEX idx_entry_page entry_page TYPE ngrambf_v1(3, 1024, 3, 0) GRANULARITY 2 -- 加速入口页面模糊查询
 ) ENGINE = ReplacingMergeTree(updated_at) -- 使用 ReplacingMergeTree（会话开始时创建，结束时需要更新 end_time 和 duration_ms）
       PARTITION BY toYYYYMM(session_date) -- 按月分区，平衡管理粒度和查询性能
-      ORDER BY (tenant_id, id, session_date) -- 按租户 + 日期 + ID 排序，优化用户会话查询
+      ORDER BY (tenant_id, session_id, session_date) -- 按租户 + 日期 + ID 排序，优化用户会话查询
       TTL session_date + INTERVAL 90 DAY -- 90 天前的会话自动清理，节省存储空间
       SETTINGS
           index_granularity = 8192, -- 索引粒度，平衡查询性能和存储开销
@@ -174,7 +174,7 @@ CREATE TABLE IF NOT EXISTS gw_uba.sessions_fact
 CREATE TABLE IF NOT EXISTS gw_uba.risk_events
 (
     -- ========== 主键字段 ==========
-    id                UInt64 COMMENT '风险事件唯一 ID（Snowflake 生成，用于风险事件追踪和处置）',
+    risk_event_id     String COMMENT '风险事件唯一 ID（Snowflake 生成，用于风险事件追踪和处置）',
     tenant_id         UInt32 COMMENT '租户 ID（SaaS 多租户隔离，所有查询必须带此条件）',
 
     -- ========== 关联主体：Who（谁触发风险）==========
@@ -194,7 +194,7 @@ CREATE TABLE IF NOT EXISTS gw_uba.risk_events
 
     -- ========== 关联行为事件：Evidence（证据链）==========
     related_event_ids Array(String) COMMENT '关联行为事件 ID 数组（触发风险的行为事件 ID 列表，用于证据追溯）',
-    session_id        UInt64 COMMENT '关联会话 ID（关联 sessions_fact.session_id，用于会话内风险分析）',
+    session_id        String COMMENT '关联会话 ID（关联 sessions_fact.session_id，用于会话内风险分析）',
 
     -- ========== 风险详情：Detail（风险详细信息）==========
     description       String COMMENT '风险描述（人类可读的风险说明，如"1 小时内登录失败 8 次"）',
@@ -302,7 +302,7 @@ CREATE TABLE IF NOT EXISTS gw_uba.users_dim
 CREATE TABLE IF NOT EXISTS gw_uba.objects_dim
 (
     -- ========== 主键字段 ==========
-    id            String COMMENT '对象 ID（业务系统中的对象唯一标识，如商品 SKU/道具 ID/关卡 ID）',
+    object_id     String COMMENT '对象 ID（业务系统中的对象唯一标识，如商品 SKU/道具 ID/关卡 ID）',
     tenant_id     UInt32 COMMENT '租户 ID（SaaS 多租户隔离，所有查询必须带此条件）',
     object_type   LowCardinality(String) COMMENT '对象类型（game_item 游戏道具/product 商品/article 文章/level 关卡/page 页面/api 接口）',
 
@@ -332,7 +332,7 @@ CREATE TABLE IF NOT EXISTS gw_uba.objects_dim
     INDEX idx_status status TYPE set(10) GRANULARITY 1,                             -- 加速对象状态筛选
     INDEX idx_rarity rarity TYPE set(10) GRANULARITY 1                              -- 加速稀有度筛选
 ) ENGINE = ReplacingMergeTree(updated_at) -- 使用 ReplacingMergeTree（对象信息需要更新，如价格调整、状态变更）
-      ORDER BY (tenant_id, object_type, id) -- 按租户 + 对象类型 + 对象 ID 排序，优化单对象查询
+      ORDER BY (tenant_id, object_type, object_id) -- 按租户 + 对象类型 + 对象 ID 排序，优化单对象查询
       SETTINGS
           index_granularity = 8192, -- 索引粒度，平衡查询性能和存储开销
           enable_mixed_granularity_parts = 1, -- 启用混合粒度分区，支持大文本字段
@@ -438,12 +438,12 @@ CREATE TABLE IF NOT EXISTS gw_uba.user_tags
 CREATE TABLE IF NOT EXISTS gw_uba.path_features
 (
     -- ========== 主键字段 ==========
-    id                String COMMENT '路径特征 ID（路径的唯一标识，可用 hash 生成）',
+    path_id           String COMMENT '路径特征 ID（路径的唯一标识，可用 hash 生成）',
     tenant_id         UInt32 COMMENT '租户 ID（SaaS 多租户隔离）',
 
     -- ========== 关联主体字段 ==========
     user_id           UInt32 COMMENT '登录用户 ID（可为 0 表示匿名用户）',
-    session_id        UInt64 COMMENT '会话 ID（关联 sessions_fact.session_id，用于会话内路径分析）',
+    session_id        String COMMENT '会话 ID（关联 sessions_fact.session_id，用于会话内路径分析）',
 
     -- ========== 路径摘要字段 ==========
     path_hash         String COMMENT '路径序列哈希值（用于去重和聚合，相同路径有相同 hash）',

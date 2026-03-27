@@ -97,42 +97,46 @@ const (
 	// 未指定平台类型
 	Platform_PLATFORM_UNSPECIFIED Platform = 0
 	// Web 平台
-	Platform_PLATFORM_WEB Platform = 1
+	Platform_WEB Platform = 1
 	// iOS 平台
-	Platform_PLATFORM_IOS Platform = 2
+	Platform_IOS Platform = 2
 	// Android 平台
-	Platform_PLATFORM_ANDROID Platform = 3
+	Platform_ANDROID Platform = 3
 	// Windows 平台
-	Platform_PLATFORM_WINDOWS Platform = 4
+	Platform_WINDOWS Platform = 4
 	// macOS 平台
-	Platform_PLATFORM_MACOS Platform = 5
+	Platform_MACOS Platform = 5
 	// Linux 平台
-	Platform_PLATFORM_LINUX Platform = 6
+	Platform_LINUX Platform = 6
 	// 小程序平台
-	Platform_PLATFORM_MINI_PROGRAM Platform = 7
+	Platform_MINI_PROGRAM Platform = 7
+	// H5平台
+	Platform_H5 Platform = 8
 )
 
 // Enum value maps for Platform.
 var (
 	Platform_name = map[int32]string{
 		0: "PLATFORM_UNSPECIFIED",
-		1: "PLATFORM_WEB",
-		2: "PLATFORM_IOS",
-		3: "PLATFORM_ANDROID",
-		4: "PLATFORM_WINDOWS",
-		5: "PLATFORM_MACOS",
-		6: "PLATFORM_LINUX",
-		7: "PLATFORM_MINI_PROGRAM",
+		1: "WEB",
+		2: "IOS",
+		3: "ANDROID",
+		4: "WINDOWS",
+		5: "MACOS",
+		6: "LINUX",
+		7: "MINI_PROGRAM",
+		8: "H5",
 	}
 	Platform_value = map[string]int32{
-		"PLATFORM_UNSPECIFIED":  0,
-		"PLATFORM_WEB":          1,
-		"PLATFORM_IOS":          2,
-		"PLATFORM_ANDROID":      3,
-		"PLATFORM_WINDOWS":      4,
-		"PLATFORM_MACOS":        5,
-		"PLATFORM_LINUX":        6,
-		"PLATFORM_MINI_PROGRAM": 7,
+		"PLATFORM_UNSPECIFIED": 0,
+		"WEB":                  1,
+		"IOS":                  2,
+		"ANDROID":              3,
+		"WINDOWS":              4,
+		"MACOS":                5,
+		"LINUX":                6,
+		"MINI_PROGRAM":         7,
+		"H5":                   8,
 	}
 )
 
@@ -386,16 +390,17 @@ const file_uba_service_v1_common_proto_rawDesc = "" +
 	"\x13EVENT_CATEGORY_GAME\x10\x03\x12\x1a\n" +
 	"\x16EVENT_CATEGORY_CONTENT\x10\x04\x12\x1b\n" +
 	"\x17EVENT_CATEGORY_SECURITY\x10\x05\x12\x19\n" +
-	"\x15EVENT_CATEGORY_SYSTEM\x10\x06*\xb7\x01\n" +
+	"\x15EVENT_CATEGORY_SYSTEM\x10\x06*\x80\x01\n" +
 	"\bPlatform\x12\x18\n" +
-	"\x14PLATFORM_UNSPECIFIED\x10\x00\x12\x10\n" +
-	"\fPLATFORM_WEB\x10\x01\x12\x10\n" +
-	"\fPLATFORM_IOS\x10\x02\x12\x14\n" +
-	"\x10PLATFORM_ANDROID\x10\x03\x12\x14\n" +
-	"\x10PLATFORM_WINDOWS\x10\x04\x12\x12\n" +
-	"\x0ePLATFORM_MACOS\x10\x05\x12\x12\n" +
-	"\x0ePLATFORM_LINUX\x10\x06\x12\x19\n" +
-	"\x15PLATFORM_MINI_PROGRAM\x10\a*\x80\x01\n" +
+	"\x14PLATFORM_UNSPECIFIED\x10\x00\x12\a\n" +
+	"\x03WEB\x10\x01\x12\a\n" +
+	"\x03IOS\x10\x02\x12\v\n" +
+	"\aANDROID\x10\x03\x12\v\n" +
+	"\aWINDOWS\x10\x04\x12\t\n" +
+	"\x05MACOS\x10\x05\x12\t\n" +
+	"\x05LINUX\x10\x06\x12\x10\n" +
+	"\fMINI_PROGRAM\x10\a\x12\x06\n" +
+	"\x02H5\x10\b*\x80\x01\n" +
 	"\bOpResult\x12\x19\n" +
 	"\x15OP_RESULT_UNSPECIFIED\x10\x00\x12\x15\n" +
 	"\x11OP_RESULT_SUCCESS\x10\x01\x12\x14\n" +

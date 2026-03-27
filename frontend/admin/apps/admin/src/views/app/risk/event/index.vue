@@ -10,10 +10,8 @@ import {
   riskEventStatusList,
   riskEventStatusToColor,
   riskEventStatusToName,
-  riskEventTypeList,
   riskEventTypeToColor,
   riskEventTypeToName,
-  riskLevelList,
   riskLevelToColor,
   riskLevelToName,
   useRiskEventListStore,
@@ -49,29 +47,20 @@ const formOptions = {
       },
     },
     {
-      component: 'Select',
+      component: 'Input',
       fieldName: 'riskType',
       label: $t('page.riskEvent.riskType'),
       componentProps: {
-        options: riskEventTypeList,
-        placeholder: $t('ui.placeholder.select'),
-        filterOption: (input: string, option: any) =>
-          option.label.toLowerCase().includes(input.toLowerCase()),
+        placeholder: $t('ui.placeholder.input'),
         allowClear: true,
-        showSearch: true,
       },
     },
     {
-      component: 'Select',
+      component: 'Input',
       fieldName: 'riskLevel',
-      label: $t('page.riskEvent.riskLevel'),
       componentProps: {
-        options: riskLevelList,
-        placeholder: $t('ui.placeholder.select'),
-        filterOption: (input: string, option: any) =>
-          option.label.toLowerCase().includes(input.toLowerCase()),
+        placeholder: $t('ui.placeholder.input'),
         allowClear: true,
-        showSearch: true,
       },
     },
   ],
@@ -112,10 +101,16 @@ const gridOptions: VxeGridProps<RiskEvent> = {
   },
   columns: [
     {
+      title: $t('page.riskEvent.riskEventId'),
+      field: 'riskEventId',
+      minWidth: 200,
+      fixed: 'left',
+    },
+    {
       title: $t('page.riskEvent.userId'),
       field: 'userId',
       minWidth: 100,
-      fixed: 'left',
+      align: 'left',
     },
     {
       title: $t('page.riskEvent.deviceId'),
@@ -133,13 +128,11 @@ const gridOptions: VxeGridProps<RiskEvent> = {
       title: $t('page.riskEvent.riskType'),
       field: 'riskType',
       minWidth: 140,
-      slots: { default: 'riskType' },
     },
     {
       title: $t('page.riskEvent.riskLevel'),
       field: 'riskLevel',
       minWidth: 100,
-      slots: { default: 'riskLevel' },
     },
     {
       title: $t('page.riskEvent.status'),

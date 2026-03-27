@@ -140,7 +140,7 @@ export function tagCategoryToColor(category?: TagCategory) {
 export function tagCategoryToName(category?: TagCategory) {
   const values = tagCategoryList.value;
   const matchedItem = values.find((item) => item.value === category);
-  return matchedItem ? matchedItem.label : '';
+  return matchedItem ? matchedItem.label : category;
 }
 
 export const tagTypeList = computed(() => [
@@ -186,5 +186,5 @@ export function tagTypeToColor(type?: TagType) {
 export function tagTypeToName(type?: TagType) {
   const values = tagTypeList.value;
   const matchedItem = values.find((item) => item.value === type);
-  return matchedItem ? matchedItem.label : '';
+  return matchedItem ? matchedItem.label : type;
 }

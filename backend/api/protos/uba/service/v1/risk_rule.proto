@@ -63,12 +63,12 @@ message RiskRule {
   ];
 
   // 风险类型（规则对应的风险类型）
-  optional RiskType risk_type = 6 [
+  optional string risk_type = 6 [
     json_name = "riskType",
     (gnostic.openapi.v3.property) = {description: "风险类型，规则对应的风险类型"}
   ];
   // 默认风险等级（规则对应的默认风险等级）
-  optional RiskLevel default_level = 7 [
+  optional string default_level = 7 [
     json_name = "defaultLevel",
     (gnostic.openapi.v3.property) = {description: "默认风险等级，规则对应的默认风险等级"}
   ];
@@ -242,7 +242,7 @@ message RiskRuleVersion {
     json_name = "actions",
     (gnostic.openapi.v3.property) = {description: "版本动作列表"}
   ];
-  optional RiskLevel risk_level = 9 [
+  optional string risk_level = 9 [
     json_name = "riskLevel",
     (gnostic.openapi.v3.property) = {description: "风险等级"}
   ];

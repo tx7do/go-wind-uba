@@ -25,8 +25,8 @@
       "eventTime": "2026-03-27T12:00:00Z",
       "eventName": "page_view",
       "eventCategory": "content",
-      "sessionId": 202503271200001,
-      "platform": "iOS",
+      "sessionId": "202503271200001",
+      "platform": "IOS",
       "ip": "192.168.1.1",
       "properties": {
         "page_name": "home_page",
@@ -69,8 +69,8 @@
       "eventTime": "2026-03-27T12:05:00Z",
       "eventName": "login_failed",
       "eventCategory": "security",
-      "sessionId": 202503271205001,
-      "platform": "Android",
+      "sessionId": "202503271205001",
+      "platform": "ANDROID",
       "ip": "112.10.32.24",
       "properties": {},
       "tenantId": 1,
@@ -92,8 +92,8 @@
           "window_sec": 60,
           "current_count": 8
         },
-        "relatedEventIds": [1001, 1002, 1003],
-        "sessionId": 202503271205001,
+        "relatedEventIds": ["1001", "1002", "1003"],
+        "sessionId": "202503271205001",
         "description": "1分钟内登录失败8次，触发异常登录风险",
         "evidence": {
           "ip": "112.10.32.24",
@@ -130,8 +130,8 @@
       "eventTime": "2026-03-27T12:10:00Z",
       "eventName": "click",
       "eventCategory": "action",
-      "sessionId": 202603271210001,
-      "platform": "Web",
+      "sessionId": "202603271210001",
+      "platform": "WEB",
       "ip": "192.168.1.2",
       "properties": {
         "button": "buy"
@@ -156,8 +156,8 @@
       "eventTime": "2026-03-27T12:10:01Z",
       "eventName": "abnormal_click",
       "eventCategory": "security",
-      "sessionId": 202603271210001,
-      "platform": "Web",
+      "sessionId": "202603271210001",
+      "platform": "WEB",
       "ip": "192.168.1.2",
       "properties": {},
       "tenantId": 1,
@@ -173,8 +173,8 @@
         "riskScore": 65.0,
         "ruleId": 102,
         "ruleName": "1秒内点击超过10次",
-        "relatedEventIds": [1001],
-        "sessionId": 202603271210001,
+        "relatedEventIds": ["1001"],
+        "sessionId": "202603271210001",
         "description": "短时间内频繁点击，疑似机器操作",
         "evidence": {
           "ip": "192.168.1.2"

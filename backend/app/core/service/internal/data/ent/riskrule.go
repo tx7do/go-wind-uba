@@ -39,9 +39,9 @@ type RiskRule struct {
 	// 规则描述
 	Description *string `json:"description,omitempty"`
 	// 风险类型，规则对应的风险类型
-	RiskType *riskrule.RiskType `json:"risk_type,omitempty"`
+	RiskType *string `json:"risk_type,omitempty"`
 	// 默认风险等级，规则对应的默认风险等级
-	DefaultLevel *riskrule.DefaultLevel `json:"default_level,omitempty"`
+	DefaultLevel *string `json:"default_level,omitempty"`
 	// 规则条件，简化版，实际可用 CEL/JSON Schema
 	Condition map[string]interface{} `json:"condition,omitempty"`
 	// 动作配置，规则触发时的处置动作列表
@@ -168,15 +168,15 @@ func (_m *RiskRule) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field risk_type", values[i])
 			} else if value.Valid {
-				_m.RiskType = new(riskrule.RiskType)
-				*_m.RiskType = riskrule.RiskType(value.String)
+				_m.RiskType = new(string)
+				*_m.RiskType = value.String
 			}
 		case riskrule.FieldDefaultLevel:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field default_level", values[i])
 			} else if value.Valid {
-				_m.DefaultLevel = new(riskrule.DefaultLevel)
-				*_m.DefaultLevel = riskrule.DefaultLevel(value.String)
+				_m.DefaultLevel = new(string)
+				*_m.DefaultLevel = value.String
 			}
 		case riskrule.FieldCondition:
 			if value, ok := values[i].(*[]byte); !ok {
@@ -334,12 +334,12 @@ func (_m *RiskRule) String() string {
 	builder.WriteString(", ")
 	if v := _m.RiskType; v != nil {
 		builder.WriteString("risk_type=")
-		builder.WriteString(fmt.Sprintf("%v", *v))
+		builder.WriteString(*v)
 	}
 	builder.WriteString(", ")
 	if v := _m.DefaultLevel; v != nil {
 		builder.WriteString("default_level=")
-		builder.WriteString(fmt.Sprintf("%v", *v))
+		builder.WriteString(*v)
 	}
 	builder.WriteString(", ")
 	builder.WriteString("condition=")

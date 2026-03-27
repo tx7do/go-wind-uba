@@ -27,19 +27,21 @@ enum Platform {
   PLATFORM_UNSPECIFIED = 0;
 
   // Web 平台
-  PLATFORM_WEB = 1;
+  WEB = 1;
   // iOS 平台
-  PLATFORM_IOS = 2;
+  IOS = 2;
   // Android 平台
-  PLATFORM_ANDROID = 3;
+  ANDROID = 3;
   // Windows 平台
-  PLATFORM_WINDOWS = 4;
+  WINDOWS = 4;
   // macOS 平台
-  PLATFORM_MACOS = 5;
+  MACOS = 5;
   // Linux 平台
-  PLATFORM_LINUX = 6;
+  LINUX = 6;
   // 小程序平台
-  PLATFORM_MINI_PROGRAM = 7;
+  MINI_PROGRAM = 7;
+  // H5平台
+  H5 = 8;
 }
 
 // 操作结果（用于标识操作的执行结果状态）

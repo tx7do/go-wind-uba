@@ -1152,14 +1152,14 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ListEventPathResponse'
-    /admin/v1/event-paths/{id}:
+    /admin/v1/event-paths/{pathId}:
         get:
             tags:
                 - EventPathService
             description: 查询单条事件路径详情
             operationId: EventPathService_Get
             parameters:
-                - name: id
+                - name: pathId
                   in: path
                   required: true
                   schema:
@@ -6881,7 +6881,7 @@ components:
         EventPath:
             type: object
             properties:
-                id:
+                pathId:
                     type: string
                     description: 路径ID，唯一标识一条事件路径，hash 或 UUID
                 tenantId:
@@ -8271,11 +8271,7 @@ components:
         ObjectDim:
             type: object
             properties:
-                tenantId:
-                    type: integer
-                    description: 租户ID，多租户隔离，支持 SaaS 场景
-                    format: uint32
-                id:
+                objectId:
                     type: string
                     description: 对象ID，唯一标识一个对象
                 objectType:
@@ -8304,6 +8300,10 @@ components:
                 status:
                     type: string
                     description: 状态，对象当前状态，如上架、下架、有效、无效等
+                tenantId:
+                    type: integer
+                    description: 租户ID，多租户隔离，支持 SaaS 场景
+                    format: uint32
                 validFrom:
                     type: string
                     description: 有效期起始时间，对象有效期的开始时间
@@ -9052,9 +9052,9 @@ components:
         RiskEvent:
             type: object
             properties:
-                id:
+                riskEventId:
                     type: string
-                    description: ID
+                    description: 风险事件ID
                 tenantId:
                     type: integer
                     description: 租户ID，多租户隔离，支持 SaaS 场景
@@ -9070,32 +9070,11 @@ components:
                     type: string
                     description: 全局用户ID，跨平台唯一标识用户
                 riskType:
-                    enum:
-                        - RISK_TYPE_UNSPECIFIED
-                        - RISK_TYPE_LOGIN_ANOMALY
-                        - RISK_TYPE_BRUTE_FORCE
-                        - RISK_TYPE_CREDENTIAL_STUFFING
-                        - RISK_TYPE_FREQUENT_OPERATION
-                        - RISK_TYPE_ABNORMAL_FLOW
-                        - RISK_TYPE_DATA_EXFILTRATION
-                        - RISK_TYPE_DEVICE_CHANGE
-                        - RISK_TYPE_LOCATION_ANOMALY
-                        - RISK_TYPE_PROXY_DETECTED
-                        - RISK_TYPE_FRAUD_PAYMENT
-                        - RISK_TYPE_ABUSE_PROMOTION
                     type: string
                     description: 风险类型，标识风险事件的类型
-                    format: enum
                 riskLevel:
-                    enum:
-                        - RISK_LEVEL_UNSPECIFIED
-                        - RISK_LEVEL_NORMAL
-                        - RISK_LEVEL_SUSPICIOUS
-                        - RISK_LEVEL_HIGH
-                        - RISK_LEVEL_CRITICAL
                     type: string
                     description: 风险等级，标识风险事件的严重程度
-                    format: enum
                 riskScore:
                     type: number
                     description: 风险评分，0-100，风险事件的评分
@@ -9113,8 +9092,7 @@ components:
                 relatedEventIds:
                     type: array
                     items:
-                        type: integer
-                        format: uint32
+                        type: string
                     description: 关联行为事件ID列表，风险事件关联的行为事件
                 sessionId:
                     type: string
@@ -9204,32 +9182,11 @@ components:
                     type: string
                     description: 规则描述
                 riskType:
-                    enum:
-                        - RISK_TYPE_UNSPECIFIED
-                        - RISK_TYPE_LOGIN_ANOMALY
-                        - RISK_TYPE_BRUTE_FORCE
-                        - RISK_TYPE_CREDENTIAL_STUFFING
-                        - RISK_TYPE_FREQUENT_OPERATION
-                        - RISK_TYPE_ABNORMAL_FLOW
-                        - RISK_TYPE_DATA_EXFILTRATION
-                        - RISK_TYPE_DEVICE_CHANGE
-                        - RISK_TYPE_LOCATION_ANOMALY
-                        - RISK_TYPE_PROXY_DETECTED
-                        - RISK_TYPE_FRAUD_PAYMENT
-                        - RISK_TYPE_ABUSE_PROMOTION
                     type: string
                     description: 风险类型，规则对应的风险类型
-                    format: enum
                 defaultLevel:
-                    enum:
-                        - RISK_LEVEL_UNSPECIFIED
-                        - RISK_LEVEL_NORMAL
-                        - RISK_LEVEL_SUSPICIOUS
-                        - RISK_LEVEL_HIGH
-                        - RISK_LEVEL_CRITICAL
                     type: string
                     description: 默认风险等级，规则对应的默认风险等级
-                    format: enum
                 condition:
                     type: object
                     description: 规则条件，简化版，实际可用 CEL/JSON Schema
@@ -9399,10 +9356,9 @@ components:
         Session:
             type: object
             properties:
-                id:
-                    type: integer
+                sessionId:
+                    type: string
                     description: 会话ID，唯一标识一条会话
-                    format: uint32
                 tenantId:
                     type: integer
                     description: 租户ID，多租户隔离，支持 SaaS 场景
@@ -9450,18 +9406,8 @@ components:
                     type: boolean
                     description: 是否跳出，单页会话，true 表示跳出
                 platform:
-                    enum:
-                        - PLATFORM_UNSPECIFIED
-                        - PLATFORM_WEB
-                        - PLATFORM_IOS
-                        - PLATFORM_ANDROID
-                        - PLATFORM_WINDOWS
-                        - PLATFORM_MACOS
-                        - PLATFORM_LINUX
-                        - PLATFORM_MINI_PROGRAM
                     type: string
                     description: 平台类型，会话发生的平台，如 Web、iOS、Android 等
-                    format: enum
                 os:
                     type: string
                     description: 操作系统，会话发生时的操作系统信息
@@ -9482,15 +9428,8 @@ components:
                     description: 支付事件数，本会话内发生的支付事件总数
                     format: uint32
                 riskLevel:
-                    enum:
-                        - RISK_LEVEL_UNSPECIFIED
-                        - RISK_LEVEL_NORMAL
-                        - RISK_LEVEL_SUSPICIOUS
-                        - RISK_LEVEL_HIGH
-                        - RISK_LEVEL_CRITICAL
                     type: string
                     description: 风险等级，会话风险标记，枚举类型
-                    format: enum
                 riskTags:
                     type: array
                     items:
@@ -10523,15 +10462,8 @@ components:
                         type: string
                     description: 风险标签
                 riskLevel:
-                    enum:
-                        - RISK_LEVEL_UNSPECIFIED
-                        - RISK_LEVEL_NORMAL
-                        - RISK_LEVEL_SUSPICIOUS
-                        - RISK_LEVEL_HIGH
-                        - RISK_LEVEL_CRITICAL
                     type: string
                     description: 风险等级，枚举类型，标识用户当前的风险级别
-                    format: enum
                 lastRiskTime:
                     type: string
                     description: 最后风险时间，记录用户最近一次风险事件发生的时间
@@ -10547,18 +10479,8 @@ components:
                         type: string
                     description: 地理位置，经纬度信息或 GeoJSON，便于分析用户地理分布
                 platform:
-                    enum:
-                        - PLATFORM_UNSPECIFIED
-                        - PLATFORM_WEB
-                        - PLATFORM_IOS
-                        - PLATFORM_ANDROID
-                        - PLATFORM_WINDOWS
-                        - PLATFORM_MACOS
-                        - PLATFORM_LINUX
-                        - PLATFORM_MINI_PROGRAM
                     type: string
                     description: 平台类型，枚举类型，标识用户主要活跃的平台（如 Web、iOS、Android 等）
-                    format: enum
                 deviceType:
                     type: string
                     description: 设备类型，记录用户主要使用的设备类型（如手机、平板、PC 等）
@@ -10613,15 +10535,8 @@ components:
                     description: 置信度，算法打标时，范围0~1
                     format: double
                 source:
-                    enum:
-                        - TAG_SOURCE_UNSPECIFIED
-                        - TAG_SOURCE_MANUAL
-                        - TAG_SOURCE_RULE
-                        - TAG_SOURCE_MODEL
-                        - TAG_SOURCE_IMPORT
                     type: string
                     description: 标签来源，如人工打标、规则引擎、算法模型、批量导入等
-                    format: enum
                 sourceRuleId:
                     type: integer
                     description: 来源规则ID，如果是规则计算，记录规则ID

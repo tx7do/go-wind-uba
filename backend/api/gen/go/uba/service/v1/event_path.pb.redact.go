@@ -114,7 +114,7 @@ func (x *EventPath) Redact() string {
 		return ""
 	}
 
-	// Safe field: Id
+	// Safe field: PathId
 
 	// Safe field: TenantId
 

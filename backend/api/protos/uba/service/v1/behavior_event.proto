@@ -69,7 +69,7 @@ message BehaviorEvent {
   ]; // 服务器接收时间，记录事件被服务器接收的时间点，可以用于分析事件的传输延迟和时序关系
 
   // 行为：What
-  optional EventCategory event_category = 10 [
+  optional string event_category = 10 [
     json_name = "eventCategory",
     (gnostic.openapi.v3.property) = {description: "事件类别，事件的类型或分类，用于对事件进行分组和分析，具体类别由业务定义"}
   ]; // 事件类别，事件的类型或分类，用于对事件进行分组和分析，具体类别由业务定义
@@ -97,7 +97,7 @@ message BehaviorEvent {
   ]; // 对象名称，事件作用的对象名称，可以提供更友好的对象描述，便于分析和展示
 
   // 上下文：Context
-  uint64 session_id = 16 [
+  string session_id = 16 [
     json_name = "sessionId",
     (gnostic.openapi.v3.property) = {description: "会话ID，事件所属的会话标识，可以用于分析用户的会话行为和路径，通常由客户端上报，可能存在时钟偏差"}
   ]; // 会话ID，事件所属的会话标识，可以用于分析用户的会话行为和路径，通常由客户端上报，可能存在时钟偏差
@@ -107,55 +107,55 @@ message BehaviorEvent {
   ]; // 会话内序列号，事件在所属会话中的序列号，用于分析事件的顺序和路径，可以由客户端上报，也可以由服务器根据 session_id 进行计算生成
 
   // 环境
-  optional Platform platform = 18 [
+  optional string platform = 18 [
     json_name = "platform",
     (gnostic.openapi.v3.property) = {description: "平台，事件发生的环境平台，可以是 Web、iOS、Android、PC 等，具体类别由业务定义"}
   ]; // 平台，事件发生的环境平台，可以是 Web、iOS、Android、PC 等，具体类别由业务定义
-  string os = 19 [
+  optional string os = 19 [
     json_name = "os",
     (gnostic.openapi.v3.property) = {description: "操作系统，事件发生的操作系统信息，可以提供更细粒度的环境描述，便于分析不同操作系统上的行为差异"}
   ]; // 操作系统，事件发生的操作系统信息，可以提供更细粒度的环境描述，便于分析不同操作系统上的行为差异
-  string app_version = 20 [
+  optional string app_version = 20 [
     json_name = "appVersion",
     (gnostic.openapi.v3.property) = {description: "应用版本，事件发生的应用版本信息，可以用于分析不同版本上的行为差异和版本升级的影响"}
   ]; // 应用版本，事件发生的应用版本信息，可以用于分析不同版本上的行为差异和版本升级的影响
-  string channel = 21 [
+  optional string channel = 21 [
     json_name = "channel",
     (gnostic.openapi.v3.property) = {description: "渠道，事件发生的渠道信息，可以用于分析不同渠道上的行为差异和渠道推广的效果"}
   ]; // 渠道，事件发生的渠道信息，可以用于分析不同渠道上的行为差异和渠道推广的效果
 
   // 网络 & 位置
-  string ip = 22 [
+  optional string ip = 22 [
     json_name = "ip",
     (gnostic.openapi.v3.property) = {description: "IP地址，事件发生时的客户端IP地址，可以用于分析用户的地理位置和网络特征"}
   ]; // IP地址，事件发生时的客户端IP地址，可以用于分析用户的地理位置和网络特征
-  string ip_city = 23 [
+  optional string ip_city = 23 [
     json_name = "ipCity",
     (gnostic.openapi.v3.property) = {description: "IP城市，事件发生时的IP地址解析出的城市信息，可以用于分析用户的地理位置特征"}
   ]; // IP城市，事件发生时的IP地址解析出的城市信息，可以用于分析用户的地理位置特征
-  string country = 24 [
+  optional string country = 24 [
     json_name = "country",
     (gnostic.openapi.v3.property) = {description: "国家，事件发生时的IP地址解析出的国家信息，可以用于分析用户的地理位置特征"}
   ]; // 国家，事件发生时的IP地址解析出的国家信息，可以用于分析用户的地理位置特征
-  string network = 25 [
+  optional string network = 25 [
     json_name = "network",
     (gnostic.openapi.v3.property) = {description: "网络类型，事件发生时的网络类型，可以是 WiFi、4G、5G 等，具体类别由业务定义"}
   ]; // 网络类型，事件发生时的网络类型，可以是 WiFi、4G、5G 等，具体类别由业务定义
 
   // 地理位置
-  string geo = 39 [
+  optional string geo = 39 [
     json_name = "geo",
     (gnostic.openapi.v3.property) = {description: "地理位置，经纬度信息，格式如 'lat,lng' 或 GeoJSON，用于更精细的地理分析"}
   ]; // 地理位置，经纬度信息，格式如 'lat,lng' 或 GeoJSON，用于更精细的地理分析
 
   // 客户端 User-Agent
-  string user_agent = 40 [
+  optional string user_agent = 40 [
     json_name = "userAgent",
     (gnostic.openapi.v3.property) = {description: "客户端 User-Agent 信息，记录客户端类型、版本、操作系统等特征，便于分析设备和环境"}
   ]; // 客户端 User-Agent 信息，记录客户端类型、版本、操作系统等特征，便于分析设备和环境
 
   // 来源页面/地址
-  string referer = 41 [
+  optional string referer = 41 [
     json_name = "referer",
     (gnostic.openapi.v3.property) = {description: "来源页面或来源地址，记录事件发生时的来源信息，便于分析流量来源和用户路径"}
   ]; // 来源页面或来源地址，记录事件发生时的来源信息，便于分析流量来源和用户路径
@@ -195,7 +195,7 @@ message BehaviorEvent {
   ]; // 扩展属性，事件的其他相关属性信息，可以包含任意的键值对，由业务定义和使用，便于分析事件的其他特征和细节
 
   // 企业级字段
-  optional OpResult op_result = 33 [
+  optional string op_result = 33 [
     json_name = "opResult",
     (gnostic.openapi.v3.property) = {description: "操作结果，事件相关的操作结果信息，可以用于分析事件的成功率和失败原因，具体含义由业务定义"}
   ]; // 操作结果，事件相关的操作结果信息，可以用于分析事件的成功率和失败原因，具体含义由业务定义
@@ -203,7 +203,7 @@ message BehaviorEvent {
     json_name = "errorCode",
     (gnostic.openapi.v3.property) = {description: "错误码，事件相关的错误码信息，可以用于分析事件的失败原因和问题排查，具体含义由业务定义"}
   ]; // 错误码，事件相关的错误码信息，可以用于分析事件的失败原因和问题排查，具体含义由业务定义
-  optional RiskLevel risk_level = 35 [
+  optional string risk_level = 35 [
     json_name = "riskLevel",
     (gnostic.openapi.v3.property) = {description: "风险等级，事件相关的风险等级信息，可以用于分析事件的风险特征和安全问题，具体含义由业务定义"}
   ]; // 风险等级，事件相关的风险等级信息，可以用于分析事件的风险特征和安全问题，具体含义由业务定义

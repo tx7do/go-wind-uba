@@ -2046,10 +2046,10 @@ export function createEventPathServiceClient(
       }) as Promise<ubaservicev1_ListEventPathResponse>;
     },
     Get(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
-      if (!request.id) {
-        throw new Error("missing required field request.id");
+      if (!request.pathId) {
+        throw new Error("missing required field request.path_id");
       }
-      const path = `admin/v1/event-paths/${request.id}`; // eslint-disable-line quotes
+      const path = `admin/v1/event-paths/${request.pathId}`; // eslint-disable-line quotes
       const body = null;
       const queryParams: string[] = [];
       if (request.viewMask) {
@@ -2078,13 +2078,13 @@ export type ubaservicev1_ListEventPathResponse = {
 // 事件路径（用户行为路径，包含有序事件序列和路径指标）
 export type ubaservicev1_EventPath = {
   // 路径ID（唯一标识一条事件路径，hash 或 UUID）
-  id: string | undefined;
+  pathId: string | undefined;
   // 租户ID（多租户隔离，支持 SaaS 场景）
   tenantId: number | undefined;
   // 用户ID（路径所属用户）
   userId: number | undefined;
   // 会话ID（路径所属会话）
-  sessionId: number | undefined;
+  sessionId: string | undefined;
   // 有序事件序列（路径节点列表，按发生顺序排列）
   nodes: ubaservicev1_PathNode[] | undefined;
   pathHash: number | undefined;
@@ -2126,7 +2126,7 @@ export type ubaservicev1_PathNode = {
 
 // 查询事件路径详情请求
 export type ubaservicev1_GetEventPathRequest = {
-  id?: string;
+  pathId?: string;
   viewMask?: wellKnownFieldMask;
 };
 
@@ -4474,10 +4474,8 @@ export type ubaservicev1_ListObjectDimResponse = {
 
 // 对象维度（对应 objects_dim 表）
 export type ubaservicev1_ObjectDim = {
-  // 租户ID（多租户隔离，支持 SaaS 场景）
-  tenantId?: number;
   // 对象ID（唯一标识一个对象）
-  id: string | undefined;
+  objectId: string | undefined;
   // 对象类型（如商品、道具、内容等）
   objectType: string | undefined;
   // 对象名称（对象的显示名称）
@@ -4494,6 +4492,8 @@ export type ubaservicev1_ObjectDim = {
   attributes: { [key: string]: string } | undefined;
   // 状态（对象当前状态，如上架、下架、有效、无效等）
   status: string | undefined;
+  // 租户ID（多租户隔离，支持 SaaS 场景）
+  tenantId?: number;
   // 有效期起始时间（对象有效期的开始时间）
   validFrom: wellKnownTimestamp | undefined;
   // 有效期结束时间（对象有效期的结束时间）
@@ -6244,7 +6244,7 @@ export type ubaservicev1_ListRiskEventResponse = {
 
 // 风险事件
 export type ubaservicev1_RiskEvent = {
-  id: number | undefined;
+  riskEventId: string | undefined;
   // 租户ID（多租户隔离，支持 SaaS 场景）
   tenantId?: number;
   // 用户ID（关联主体，风险事件涉及的用户）
@@ -6254,9 +6254,9 @@ export type ubaservicev1_RiskEvent = {
   // 全局用户ID（跨平台唯一标识用户）
   globalUserId?: string;
   // 风险类型
-  riskType?: ubaservicev1_RiskType;
+  riskType?: string;
   // 风险等级
-  riskLevel?: ubaservicev1_RiskLevel;
+  riskLevel?: string;
   // 风险评分（0-100，风险事件的评分）
   riskScore?: number;
   // 触发规则ID
@@ -6266,9 +6266,9 @@ export type ubaservicev1_RiskEvent = {
   // 规则上下文（触发条件，结构化信息）
   ruleContext?: wellKnownStruct;
   // 关联行为事件ID列表（风险事件关联的行为事件）
-  relatedEventIds: number[] | undefined;
+  relatedEventIds: string[] | undefined;
   // 会话ID（风险事件发生时的会话标识）
-  sessionId?: number;
+  sessionId?: string;
   // 风险详情描述
   description?: string;
   // 证据（风险事件相关证据，键值对形式）
@@ -6293,44 +6293,6 @@ export type ubaservicev1_RiskEvent = {
   deletedAt?: wellKnownTimestamp;
 };
 
-// 风险等级
-export type ubaservicev1_RiskType =
-  // 未指定风险类型
-  | "RISK_TYPE_UNSPECIFIED"
-  // 异常登录风险
-  | "RISK_TYPE_LOGIN_ANOMALY"
-  // 暴力破解风险
-  | "RISK_TYPE_BRUTE_FORCE"
-  // 撞库风险
-  | "RISK_TYPE_CREDENTIAL_STUFFING"
-  // 高频操作风险
-  | "RISK_TYPE_FREQUENT_OPERATION"
-  // 异常流程风险
-  | "RISK_TYPE_ABNORMAL_FLOW"
-  // 数据泄露风险
-  | "RISK_TYPE_DATA_EXFILTRATION"
-  // 设备突变风险
-  | "RISK_TYPE_DEVICE_CHANGE"
-  // 异地登录风险
-  | "RISK_TYPE_LOCATION_ANOMALY"
-  // 代理/VPN风险
-  | "RISK_TYPE_PROXY_DETECTED"
-  // 欺诈支付风险
-  | "RISK_TYPE_FRAUD_PAYMENT"
-  // 薅羊毛风险
-  | "RISK_TYPE_ABUSE_PROMOTION";
-// 风险等级（用于标识事件或用户的风险级别）
-export type ubaservicev1_RiskLevel =
-  // 未指定风险等级
-  | "RISK_LEVEL_UNSPECIFIED"
-  // 正常风险
-  | "RISK_LEVEL_NORMAL"
-  // 可疑风险
-  | "RISK_LEVEL_SUSPICIOUS"
-  // 高风险
-  | "RISK_LEVEL_HIGH"
-  // 危急风险
-  | "RISK_LEVEL_CRITICAL";
 // Any JSON value.
 type wellKnownStruct = Record<string, unknown>;
 
@@ -6647,9 +6609,9 @@ export type ubaservicev1_RiskRule = {
   // 规则描述（规则的详细说明）
   description?: string;
   // 风险类型（规则对应的风险类型）
-  riskType?: ubaservicev1_RiskType;
+  riskType?: string;
   // 默认风险等级（规则对应的默认风险等级）
-  defaultLevel?: ubaservicev1_RiskLevel;
+  defaultLevel?: string;
   // 规则条件（简化版，实际可用 CEL/JSON Schema，支持复杂表达式）
   condition?: wellKnownStruct;
   // 动作配置（规则触发时的处置动作列表，支持多种动作）
@@ -7102,7 +7064,7 @@ export type ubaservicev1_ListSessionResponse = {
 // 会话（对应 sessions 表）
 export type ubaservicev1_Session = {
   // 会话ID（唯一标识一条会话）
-  id: number | undefined;
+  sessionId: string | undefined;
   // 租户ID（多租户隔离，支持 SaaS 场景）
   tenantId: number | undefined;
   // 用户ID（会话主体用户）
@@ -7130,7 +7092,7 @@ export type ubaservicev1_Session = {
   // 是否跳出（单页会话，true 表示跳出）
   isBounce: boolean | undefined;
   // 平台类型（会话发生的平台，如 Web、iOS、Android 等）
-  platform?: ubaservicev1_Platform;
+  platform?: string;
   // 操作系统，会话发生时的操作系统信息
   os: string | undefined;
   // 应用版本（会话发生时的应用版本号）
@@ -7143,7 +7105,7 @@ export type ubaservicev1_Session = {
   // 支付事件数（本会话内发生的支付事件总数）
   payEventCount: number | undefined;
   // 风险等级（会话风险标记，枚举类型）
-  riskLevel?: ubaservicev1_RiskLevel;
+  riskLevel?: string;
   // 风险标签（会话风险标记，字符串列表）
   riskTags: string[] | undefined;
   // 会话上下文
@@ -7152,24 +7114,6 @@ export type ubaservicev1_Session = {
   updateTime: wellKnownTimestamp | undefined;
 };
 
-// 平台类型（用于标识应用或事件发生的平台）
-export type ubaservicev1_Platform =
-  // 未指定平台类型
-  | "PLATFORM_UNSPECIFIED"
-  // Web 平台
-  | "PLATFORM_WEB"
-  // iOS 平台
-  | "PLATFORM_IOS"
-  // Android 平台
-  | "PLATFORM_ANDROID"
-  // Windows 平台
-  | "PLATFORM_WINDOWS"
-  // macOS 平台
-  | "PLATFORM_MACOS"
-  // Linux 平台
-  | "PLATFORM_LINUX"
-  // 小程序平台
-  | "PLATFORM_MINI_PROGRAM";
 // 查询会话详情请求
 export type ubaservicev1_GetSessionRequest = {
   id: number | undefined;
@@ -8789,7 +8733,7 @@ export type ubaservicev1_UserBehaviorProfile = {
   riskScore: number | undefined;
   riskTags: string[] | undefined;
   // 风险等级
-  riskLevel?: ubaservicev1_RiskLevel;
+  riskLevel?: string;
   // 最后风险时间
   lastRiskTime?: wellKnownTimestamp;
   // 扩展属性
@@ -8797,7 +8741,7 @@ export type ubaservicev1_UserBehaviorProfile = {
   // 地理位置
   geo: { [key: string]: string } | undefined;
   // 平台类型
-  platform?: ubaservicev1_Platform;
+  platform?: string;
   // 设备类型
   deviceType?: string;
   country?: string;
@@ -9294,7 +9238,7 @@ export type ubaservicev1_UserTag = {
   // 置信度（算法打标时，范围0~1）
   confidence?: number;
   // 标签来源（如人工打标、规则引擎、算法模型、批量导入等）
-  source?: ubaservicev1_TagSource;
+  source?: string;
   // 来源规则ID（如果是规则计算，记录规则ID）
   sourceRuleId?: number;
   // 有效时间（标签生效时间）
@@ -9309,18 +9253,6 @@ export type ubaservicev1_UserTag = {
   deletedAt?: wellKnownTimestamp;
 };
 
-// 标签来源枚举
-export type ubaservicev1_TagSource =
-  // 未指定标签来源
-  | "TAG_SOURCE_UNSPECIFIED"
-  // 人工打标
-  | "TAG_SOURCE_MANUAL"
-  // 规则引擎
-  | "TAG_SOURCE_RULE"
-  // 算法模型
-  | "TAG_SOURCE_MODEL"
-  // 批量导入
-  | "TAG_SOURCE_IMPORT";
 export type ubaservicev1_CountUserTagResponse = {
   count: number | undefined;
 };

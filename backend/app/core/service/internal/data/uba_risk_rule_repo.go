@@ -27,9 +27,6 @@ type RiskRuleRepo struct {
 
 	mapper *mapper.CopierMapper[ubaV1.RiskRule, ent.RiskRule]
 
-	typeConverter  *mapper.EnumTypeConverter[ubaV1.RiskType, riskrule.RiskType]
-	levelConverter *mapper.EnumTypeConverter[ubaV1.RiskLevel, riskrule.DefaultLevel]
-
 	repository *entCrud.Repository[
 		ent.RiskRuleQuery, ent.RiskRuleSelect,
 		ent.RiskRuleCreate, ent.RiskRuleCreateBulk,
@@ -45,13 +42,6 @@ func NewRiskRuleRepo(ctx *bootstrap.Context, entClient *entCrud.EntClient[*ent.C
 		log:       ctx.NewLoggerHelper("risk-rule/repo/core-service"),
 		entClient: entClient,
 		mapper:    mapper.NewCopierMapper[ubaV1.RiskRule, ent.RiskRule](),
-
-		typeConverter: mapper.NewEnumTypeConverter[ubaV1.RiskType, riskrule.RiskType](
-			ubaV1.RiskType_name, ubaV1.RiskType_value,
-		),
-		levelConverter: mapper.NewEnumTypeConverter[ubaV1.RiskLevel, riskrule.DefaultLevel](
-			ubaV1.RiskLevel_name, ubaV1.RiskLevel_value,
-		),
 	}
 
 	repo.init()
@@ -70,9 +60,6 @@ func (r *RiskRuleRepo) init() {
 
 	r.mapper.AppendConverters(copierutil.NewTimeStringConverterPair())
 	r.mapper.AppendConverters(copierutil.NewTimeTimestamppbConverterPair())
-
-	r.mapper.AppendConverters(r.typeConverter.NewConverterPair())
-	r.mapper.AppendConverters(r.levelConverter.NewConverterPair())
 }
 
 // Count 统计风险规则数量
@@ -155,8 +142,8 @@ func (r *RiskRuleRepo) Create(ctx context.Context, req *ubaV1.CreateRiskRuleRequ
 		SetNillableName(req.Data.Name).
 		SetNillableCode(req.Data.Code).
 		SetNillableDescription(req.Data.Description).
-		SetNillableRiskType(r.typeConverter.ToEntity(req.Data.RiskType)).
-		SetNillableDefaultLevel(r.levelConverter.ToEntity(req.Data.DefaultLevel)).
+		SetNillableRiskType(req.Data.RiskType).
+		SetNillableDefaultLevel(req.Data.DefaultLevel).
 		SetNillableEnabled(req.Data.Enabled).
 		SetNillablePriority(req.Data.Priority).
 		SetNillableCreatedBy(req.Data.CreatedBy).
@@ -203,8 +190,8 @@ func (r *RiskRuleRepo) Update(ctx context.Context, req *ubaV1.UpdateRiskRuleRequ
 				SetNillableName(req.Data.Name).
 				SetNillableCode(req.Data.Code).
 				SetNillableDescription(req.Data.Description).
-				SetNillableRiskType(r.typeConverter.ToEntity(req.Data.RiskType)).
-				SetNillableDefaultLevel(r.levelConverter.ToEntity(req.Data.DefaultLevel)).
+				SetNillableRiskType(req.Data.RiskType).
+				SetNillableDefaultLevel(req.Data.DefaultLevel).
 				SetNillableEnabled(req.Data.Enabled).
 				SetNillablePriority(req.Data.Priority).
 				SetNillableUpdatedBy(req.Data.UpdatedBy).

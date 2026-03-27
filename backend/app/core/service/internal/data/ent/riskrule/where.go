@@ -99,6 +99,16 @@ func Description(v string) predicate.RiskRule {
 	return predicate.RiskRule(sql.FieldEQ(FieldDescription, v))
 }
 
+// RiskType applies equality check predicate on the "risk_type" field. It's identical to RiskTypeEQ.
+func RiskType(v string) predicate.RiskRule {
+	return predicate.RiskRule(sql.FieldEQ(FieldRiskType, v))
+}
+
+// DefaultLevel applies equality check predicate on the "default_level" field. It's identical to DefaultLevelEQ.
+func DefaultLevel(v string) predicate.RiskRule {
+	return predicate.RiskRule(sql.FieldEQ(FieldDefaultLevel, v))
+}
+
 // Enabled applies equality check predicate on the "enabled" field. It's identical to EnabledEQ.
 func Enabled(v bool) predicate.RiskRule {
 	return predicate.RiskRule(sql.FieldEQ(FieldEnabled, v))
@@ -630,23 +640,58 @@ func DescriptionContainsFold(v string) predicate.RiskRule {
 }
 
 // RiskTypeEQ applies the EQ predicate on the "risk_type" field.
-func RiskTypeEQ(v RiskType) predicate.RiskRule {
+func RiskTypeEQ(v string) predicate.RiskRule {
 	return predicate.RiskRule(sql.FieldEQ(FieldRiskType, v))
 }
 
 // RiskTypeNEQ applies the NEQ predicate on the "risk_type" field.
-func RiskTypeNEQ(v RiskType) predicate.RiskRule {
+func RiskTypeNEQ(v string) predicate.RiskRule {
 	return predicate.RiskRule(sql.FieldNEQ(FieldRiskType, v))
 }
 
 // RiskTypeIn applies the In predicate on the "risk_type" field.
-func RiskTypeIn(vs ...RiskType) predicate.RiskRule {
+func RiskTypeIn(vs ...string) predicate.RiskRule {
 	return predicate.RiskRule(sql.FieldIn(FieldRiskType, vs...))
 }
 
 // RiskTypeNotIn applies the NotIn predicate on the "risk_type" field.
-func RiskTypeNotIn(vs ...RiskType) predicate.RiskRule {
+func RiskTypeNotIn(vs ...string) predicate.RiskRule {
 	return predicate.RiskRule(sql.FieldNotIn(FieldRiskType, vs...))
+}
+
+// RiskTypeGT applies the GT predicate on the "risk_type" field.
+func RiskTypeGT(v string) predicate.RiskRule {
+	return predicate.RiskRule(sql.FieldGT(FieldRiskType, v))
+}
+
+// RiskTypeGTE applies the GTE predicate on the "risk_type" field.
+func RiskTypeGTE(v string) predicate.RiskRule {
+	return predicate.RiskRule(sql.FieldGTE(FieldRiskType, v))
+}
+
+// RiskTypeLT applies the LT predicate on the "risk_type" field.
+func RiskTypeLT(v string) predicate.RiskRule {
+	return predicate.RiskRule(sql.FieldLT(FieldRiskType, v))
+}
+
+// RiskTypeLTE applies the LTE predicate on the "risk_type" field.
+func RiskTypeLTE(v string) predicate.RiskRule {
+	return predicate.RiskRule(sql.FieldLTE(FieldRiskType, v))
+}
+
+// RiskTypeContains applies the Contains predicate on the "risk_type" field.
+func RiskTypeContains(v string) predicate.RiskRule {
+	return predicate.RiskRule(sql.FieldContains(FieldRiskType, v))
+}
+
+// RiskTypeHasPrefix applies the HasPrefix predicate on the "risk_type" field.
+func RiskTypeHasPrefix(v string) predicate.RiskRule {
+	return predicate.RiskRule(sql.FieldHasPrefix(FieldRiskType, v))
+}
+
+// RiskTypeHasSuffix applies the HasSuffix predicate on the "risk_type" field.
+func RiskTypeHasSuffix(v string) predicate.RiskRule {
+	return predicate.RiskRule(sql.FieldHasSuffix(FieldRiskType, v))
 }
 
 // RiskTypeIsNil applies the IsNil predicate on the "risk_type" field.
@@ -659,24 +704,69 @@ func RiskTypeNotNil() predicate.RiskRule {
 	return predicate.RiskRule(sql.FieldNotNull(FieldRiskType))
 }
 
+// RiskTypeEqualFold applies the EqualFold predicate on the "risk_type" field.
+func RiskTypeEqualFold(v string) predicate.RiskRule {
+	return predicate.RiskRule(sql.FieldEqualFold(FieldRiskType, v))
+}
+
+// RiskTypeContainsFold applies the ContainsFold predicate on the "risk_type" field.
+func RiskTypeContainsFold(v string) predicate.RiskRule {
+	return predicate.RiskRule(sql.FieldContainsFold(FieldRiskType, v))
+}
+
 // DefaultLevelEQ applies the EQ predicate on the "default_level" field.
-func DefaultLevelEQ(v DefaultLevel) predicate.RiskRule {
+func DefaultLevelEQ(v string) predicate.RiskRule {
 	return predicate.RiskRule(sql.FieldEQ(FieldDefaultLevel, v))
 }
 
 // DefaultLevelNEQ applies the NEQ predicate on the "default_level" field.
-func DefaultLevelNEQ(v DefaultLevel) predicate.RiskRule {
+func DefaultLevelNEQ(v string) predicate.RiskRule {
 	return predicate.RiskRule(sql.FieldNEQ(FieldDefaultLevel, v))
 }
 
 // DefaultLevelIn applies the In predicate on the "default_level" field.
-func DefaultLevelIn(vs ...DefaultLevel) predicate.RiskRule {
+func DefaultLevelIn(vs ...string) predicate.RiskRule {
 	return predicate.RiskRule(sql.FieldIn(FieldDefaultLevel, vs...))
 }
 
 // DefaultLevelNotIn applies the NotIn predicate on the "default_level" field.
-func DefaultLevelNotIn(vs ...DefaultLevel) predicate.RiskRule {
+func DefaultLevelNotIn(vs ...string) predicate.RiskRule {
 	return predicate.RiskRule(sql.FieldNotIn(FieldDefaultLevel, vs...))
+}
+
+// DefaultLevelGT applies the GT predicate on the "default_level" field.
+func DefaultLevelGT(v string) predicate.RiskRule {
+	return predicate.RiskRule(sql.FieldGT(FieldDefaultLevel, v))
+}
+
+// DefaultLevelGTE applies the GTE predicate on the "default_level" field.
+func DefaultLevelGTE(v string) predicate.RiskRule {
+	return predicate.RiskRule(sql.FieldGTE(FieldDefaultLevel, v))
+}
+
+// DefaultLevelLT applies the LT predicate on the "default_level" field.
+func DefaultLevelLT(v string) predicate.RiskRule {
+	return predicate.RiskRule(sql.FieldLT(FieldDefaultLevel, v))
+}
+
+// DefaultLevelLTE applies the LTE predicate on the "default_level" field.
+func DefaultLevelLTE(v string) predicate.RiskRule {
+	return predicate.RiskRule(sql.FieldLTE(FieldDefaultLevel, v))
+}
+
+// DefaultLevelContains applies the Contains predicate on the "default_level" field.
+func DefaultLevelContains(v string) predicate.RiskRule {
+	return predicate.RiskRule(sql.FieldContains(FieldDefaultLevel, v))
+}
+
+// DefaultLevelHasPrefix applies the HasPrefix predicate on the "default_level" field.
+func DefaultLevelHasPrefix(v string) predicate.RiskRule {
+	return predicate.RiskRule(sql.FieldHasPrefix(FieldDefaultLevel, v))
+}
+
+// DefaultLevelHasSuffix applies the HasSuffix predicate on the "default_level" field.
+func DefaultLevelHasSuffix(v string) predicate.RiskRule {
+	return predicate.RiskRule(sql.FieldHasSuffix(FieldDefaultLevel, v))
 }
 
 // DefaultLevelIsNil applies the IsNil predicate on the "default_level" field.
@@ -687,6 +777,16 @@ func DefaultLevelIsNil() predicate.RiskRule {
 // DefaultLevelNotNil applies the NotNil predicate on the "default_level" field.
 func DefaultLevelNotNil() predicate.RiskRule {
 	return predicate.RiskRule(sql.FieldNotNull(FieldDefaultLevel))
+}
+
+// DefaultLevelEqualFold applies the EqualFold predicate on the "default_level" field.
+func DefaultLevelEqualFold(v string) predicate.RiskRule {
+	return predicate.RiskRule(sql.FieldEqualFold(FieldDefaultLevel, v))
+}
+
+// DefaultLevelContainsFold applies the ContainsFold predicate on the "default_level" field.
+func DefaultLevelContainsFold(v string) predicate.RiskRule {
+	return predicate.RiskRule(sql.FieldContainsFold(FieldDefaultLevel, v))
 }
 
 // ConditionIsNil applies the IsNil predicate on the "condition" field.

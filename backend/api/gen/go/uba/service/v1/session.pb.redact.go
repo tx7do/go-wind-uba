@@ -96,7 +96,7 @@ func (x *Session) Redact() string {
 		return ""
 	}
 
-	// Safe field: Id
+	// Safe field: SessionId
 
 	// Safe field: TenantId
 

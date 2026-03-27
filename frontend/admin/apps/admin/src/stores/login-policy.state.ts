@@ -126,7 +126,7 @@ export function loginPolicyMethodToColor(methodName: LoginPolicy_Method) {
 export function loginPolicyTypeToName(typeName: LoginPolicy_Type) {
   const values = loginPolicyTypeList.value;
   const matchedItem = values.find((item) => item.value === typeName);
-  return matchedItem ? matchedItem.label : '';
+  return matchedItem ? matchedItem.label : typeName;
 }
 
 export function loginPolicyTypeToColor(typeName: LoginPolicy_Type) {
@@ -147,5 +147,5 @@ export function loginPolicyTypeToColor(typeName: LoginPolicy_Type) {
 export function loginPolicyMethodToName(methodName: LoginPolicy_Method) {
   const values = loginPolicyMethodList.value;
   const matchedItem = values.find((item) => item.value === methodName);
-  return matchedItem ? matchedItem.label : '';
+  return matchedItem ? matchedItem.label : methodName;
 }

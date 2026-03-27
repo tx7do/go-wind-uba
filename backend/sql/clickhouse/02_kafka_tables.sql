@@ -64,7 +64,7 @@ SELECT JSONExtractString(raw, 'eventId')                                  AS eve
        JSONExtractString(raw, 'objectId')                                 AS object_id,
        JSONExtractString(raw, 'objectName')                               AS object_name,
 
-       toUInt64(JSONExtract(raw, 'sessionId', 'UInt64'))                  AS session_id,
+       JSONExtractString(raw, 'sessionId')                                AS session_id,
        toUInt32(JSONExtract(raw, 'sessionSeq', 'UInt32'))                 AS session_seq,
 
        JSONExtractString(raw, 'platform')                                 AS platform,
@@ -106,7 +106,7 @@ FROM gw_uba.kafka_events_raw;
 CREATE MATERIALIZED VIEW IF NOT EXISTS gw_uba.mv_kafka_risk_events_to_fact
     TO gw_uba.risk_events
 AS
-SELECT toUInt64(JSONExtractString(raw, 'id'))                              AS id,
+SELECT JSONExtractString(raw, 'riskEventId')                               AS risk_event_id,
        coalesce(toUInt32OrNull(JSONExtractString(raw, 'tenantId')), 0)     AS tenant_id,
 
        coalesce(toUInt32OrNull(JSONExtractString(raw, 'userId')), 0)       AS user_id,
@@ -122,7 +122,7 @@ SELECT toUInt64(JSONExtractString(raw, 'id'))                              AS id
        JSONExtract(raw, 'ruleContext', 'Map(String, String)')              AS rule_context,
 
        JSONExtract(raw, 'relatedEventIds', 'Array(String)')                AS related_event_ids,
-       coalesce(toUInt64OrNull(JSONExtractString(raw, 'session_id')), 0)   AS session_id,
+       JSONExtractString(raw, 'sessionId')                                 AS session_id,
 
        JSONExtractString(raw, 'description')                               AS description,
        JSONExtract(raw, 'evidence', 'Map(String, String)')                 AS evidence,

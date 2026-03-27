@@ -29,30 +29,30 @@ const (
 // 对象维度（对应 objects_dim 表）
 type ObjectDim struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// 租户ID（多租户隔离，支持 SaaS 场景）
-	TenantId *uint32 `protobuf:"varint,1,opt,name=tenant_id,json=tenantId,proto3,oneof" json:"tenant_id,omitempty"`
 	// 对象ID（唯一标识一个对象）
-	Id string `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
+	ObjectId string `protobuf:"bytes,1,opt,name=object_id,json=objectId,proto3" json:"object_id,omitempty"`
 	// 对象类型（如商品、道具、内容等）
-	ObjectType string `protobuf:"bytes,3,opt,name=object_type,json=objectType,proto3" json:"object_type,omitempty"`
+	ObjectType string `protobuf:"bytes,2,opt,name=object_type,json=objectType,proto3" json:"object_type,omitempty"`
 	// 对象名称（对象的显示名称）
-	ObjectName string `protobuf:"bytes,5,opt,name=object_name,json=objectName,proto3" json:"object_name,omitempty"`
+	ObjectName string `protobuf:"bytes,3,opt,name=object_name,json=objectName,proto3" json:"object_name,omitempty"`
 	// 分类路径（对象所属的分类层级路径）
-	CategoryPath string `protobuf:"bytes,6,opt,name=category_path,json=categoryPath,proto3" json:"category_path,omitempty"`
+	CategoryPath string `protobuf:"bytes,4,opt,name=category_path,json=categoryPath,proto3" json:"category_path,omitempty"`
 	// 价格（对象的价格，字符串类型，支持多币种格式）
-	Price string `protobuf:"bytes,7,opt,name=price,proto3" json:"price,omitempty"`
+	Price string `protobuf:"bytes,5,opt,name=price,proto3" json:"price,omitempty"`
 	// 币种（对象价格的币种，如 CNY、USD 等）
-	Currency string `protobuf:"bytes,8,opt,name=currency,proto3" json:"currency,omitempty"`
+	Currency string `protobuf:"bytes,6,opt,name=currency,proto3" json:"currency,omitempty"`
 	// 稀有度（对象的稀有等级，如普通、稀有、史诗等）
-	Rarity string `protobuf:"bytes,9,opt,name=rarity,proto3" json:"rarity,omitempty"`
+	Rarity string `protobuf:"bytes,7,opt,name=rarity,proto3" json:"rarity,omitempty"`
 	// 属性（对象的扩展属性，键值对形式，支持自定义属性）
-	Attributes map[string]string `protobuf:"bytes,10,rep,name=attributes,proto3" json:"attributes,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	Attributes map[string]string `protobuf:"bytes,8,rep,name=attributes,proto3" json:"attributes,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	// 状态（对象当前状态，如上架、下架、有效、无效等）
-	Status string `protobuf:"bytes,11,opt,name=status,proto3" json:"status,omitempty"`
+	Status string `protobuf:"bytes,9,opt,name=status,proto3" json:"status,omitempty"`
+	// 租户ID（多租户隔离，支持 SaaS 场景）
+	TenantId *uint32 `protobuf:"varint,10,opt,name=tenant_id,json=tenantId,proto3,oneof" json:"tenant_id,omitempty"`
 	// 有效期起始时间（对象有效期的开始时间）
-	ValidFrom *timestamppb.Timestamp `protobuf:"bytes,12,opt,name=valid_from,json=validFrom,proto3" json:"valid_from,omitempty"`
+	ValidFrom *timestamppb.Timestamp `protobuf:"bytes,20,opt,name=valid_from,json=validFrom,proto3" json:"valid_from,omitempty"`
 	// 有效期结束时间（对象有效期的结束时间）
-	ValidTo *timestamppb.Timestamp `protobuf:"bytes,13,opt,name=valid_to,json=validTo,proto3" json:"valid_to,omitempty"`
+	ValidTo *timestamppb.Timestamp `protobuf:"bytes,21,opt,name=valid_to,json=validTo,proto3" json:"valid_to,omitempty"`
 	// 创建者用户ID（记录创建该对象的用户）
 	CreatedBy *uint32 `protobuf:"varint,100,opt,name=created_by,json=createdBy,proto3,oneof" json:"created_by,omitempty"`
 	// 更新者用户ID（记录最近一次更新该对象的用户）
@@ -93,16 +93,9 @@ func (*ObjectDim) Descriptor() ([]byte, []int) {
 	return file_uba_service_v1_object_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *ObjectDim) GetTenantId() uint32 {
-	if x != nil && x.TenantId != nil {
-		return *x.TenantId
-	}
-	return 0
-}
-
-func (x *ObjectDim) GetId() string {
+func (x *ObjectDim) GetObjectId() string {
 	if x != nil {
-		return x.Id
+		return x.ObjectId
 	}
 	return ""
 }
@@ -161,6 +154,13 @@ func (x *ObjectDim) GetStatus() string {
 		return x.Status
 	}
 	return ""
+}
+
+func (x *ObjectDim) GetTenantId() uint32 {
+	if x != nil && x.TenantId != nil {
+		return *x.TenantId
+	}
+	return 0
 }
 
 func (x *ObjectDim) GetValidFrom() *timestamppb.Timestamp {
@@ -570,26 +570,26 @@ var File_uba_service_v1_object_proto protoreflect.FileDescriptor
 
 const file_uba_service_v1_object_proto_rawDesc = "" +
 	"\n" +
-	"\x1buba/service/v1/object.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a google/protobuf/field_mask.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1epagination/v1/pagination.proto\"\xa1\r\n" +
-	"\tObjectDim\x12W\n" +
-	"\ttenant_id\x18\x01 \x01(\rB5\xbaG2\x92\x02/租户ID，多租户隔离，支持 SaaS 场景H\x00R\btenantId\x88\x01\x01\x129\n" +
-	"\x02id\x18\x02 \x01(\tB)\xbaG&\x92\x02#对象ID，唯一标识一个对象R\x02id\x12T\n" +
-	"\vobject_type\x18\x03 \x01(\tB3\xbaG0\x92\x02-对象类型，如商品、道具、内容等R\n" +
+	"\x1buba/service/v1/object.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a google/protobuf/field_mask.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1epagination/v1/pagination.proto\"\xae\r\n" +
+	"\tObjectDim\x12F\n" +
+	"\tobject_id\x18\x01 \x01(\tB)\xbaG&\x92\x02#对象ID，唯一标识一个对象R\bobjectId\x12T\n" +
+	"\vobject_type\x18\x02 \x01(\tB3\xbaG0\x92\x02-对象类型，如商品、道具、内容等R\n" +
 	"objectType\x12K\n" +
-	"\vobject_name\x18\x05 \x01(\tB*\xbaG'\x92\x02$对象名称，对象的显示名称R\n" +
+	"\vobject_name\x18\x03 \x01(\tB*\xbaG'\x92\x02$对象名称，对象的显示名称R\n" +
 	"objectName\x12[\n" +
-	"\rcategory_path\x18\x06 \x01(\tB6\xbaG3\x92\x020分类路径，对象所属的分类层级路径R\fcategoryPath\x12^\n" +
-	"\x05price\x18\a \x01(\tBH\xbaGE\x92\x02B价格，对象的价格，字符串类型，支持多币种格式R\x05price\x12T\n" +
-	"\bcurrency\x18\b \x01(\tB8\xbaG5\x92\x022币种，对象价格的币种，如 CNY、USD 等R\bcurrency\x12`\n" +
-	"\x06rarity\x18\t \x01(\tBH\xbaGE\x92\x02B稀有度，对象的稀有等级，如普通、稀有、史诗等R\x06rarity\x12\x99\x01\n" +
+	"\rcategory_path\x18\x04 \x01(\tB6\xbaG3\x92\x020分类路径，对象所属的分类层级路径R\fcategoryPath\x12^\n" +
+	"\x05price\x18\x05 \x01(\tBH\xbaGE\x92\x02B价格，对象的价格，字符串类型，支持多币种格式R\x05price\x12T\n" +
+	"\bcurrency\x18\x06 \x01(\tB8\xbaG5\x92\x022币种，对象价格的币种，如 CNY、USD 等R\bcurrency\x12`\n" +
+	"\x06rarity\x18\a \x01(\tBH\xbaGE\x92\x02B稀有度，对象的稀有等级，如普通、稀有、史诗等R\x06rarity\x12\x99\x01\n" +
 	"\n" +
-	"attributes\x18\n" +
-	" \x03(\v2).uba.service.v1.ObjectDim.AttributesEntryBN\xbaGK\x92\x02H属性，对象的扩展属性，键值对形式，支持自定义属性R\n" +
+	"attributes\x18\b \x03(\v2).uba.service.v1.ObjectDim.AttributesEntryBN\xbaGK\x92\x02H属性，对象的扩展属性，键值对形式，支持自定义属性R\n" +
 	"attributes\x12c\n" +
-	"\x06status\x18\v \x01(\tBK\xbaGH\x92\x02E状态，对象当前状态，如上架、下架、有效、无效等R\x06status\x12w\n" +
+	"\x06status\x18\t \x01(\tBK\xbaGH\x92\x02E状态，对象当前状态，如上架、下架、有效、无效等R\x06status\x12W\n" +
+	"\ttenant_id\x18\n" +
+	" \x01(\rB5\xbaG2\x92\x02/租户ID，多租户隔离，支持 SaaS 场景H\x00R\btenantId\x88\x01\x01\x12w\n" +
 	"\n" +
-	"valid_from\x18\f \x01(\v2\x1a.google.protobuf.TimestampB<\xbaG9\x92\x026有效期起始时间，对象有效期的开始时间R\tvalidFrom\x12s\n" +
-	"\bvalid_to\x18\r \x01(\v2\x1a.google.protobuf.TimestampB<\xbaG9\x92\x026有效期结束时间，对象有效期的结束时间R\avalidTo\x12\\\n" +
+	"valid_from\x18\x14 \x01(\v2\x1a.google.protobuf.TimestampB<\xbaG9\x92\x026有效期起始时间，对象有效期的开始时间R\tvalidFrom\x12s\n" +
+	"\bvalid_to\x18\x15 \x01(\v2\x1a.google.protobuf.TimestampB<\xbaG9\x92\x026有效期结束时间，对象有效期的结束时间R\avalidTo\x12\\\n" +
 	"\n" +
 	"created_by\x18d \x01(\rB8\xbaG5\x92\x022创建者用户ID，记录创建该对象的用户H\x01R\tcreatedBy\x88\x01\x01\x12h\n" +
 	"\n" +

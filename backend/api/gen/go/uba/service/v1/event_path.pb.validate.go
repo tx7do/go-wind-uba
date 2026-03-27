@@ -193,7 +193,7 @@ func (m *EventPath) validate(all bool) error {
 
 	var errors []error
 
-	// no validation rules for Id
+	// no validation rules for PathId
 
 	// no validation rules for TenantId
 
@@ -603,7 +603,7 @@ func (m *GetEventPathRequest) validate(all bool) error {
 	var errors []error
 
 	switch v := m.QueryBy.(type) {
-	case *GetEventPathRequest_Id:
+	case *GetEventPathRequest_PathId:
 		if v == nil {
 			err := GetEventPathRequestValidationError{
 				field:  "QueryBy",
@@ -614,7 +614,7 @@ func (m *GetEventPathRequest) validate(all bool) error {
 			}
 			errors = append(errors, err)
 		}
-		// no validation rules for Id
+		// no validation rules for PathId
 	default:
 		_ = v // ensures v is used
 	}
@@ -1023,7 +1023,7 @@ func (m *DeleteEventPathRequest) validate(all bool) error {
 	var errors []error
 
 	switch v := m.QueryBy.(type) {
-	case *DeleteEventPathRequest_Id:
+	case *DeleteEventPathRequest_PathId:
 		if v == nil {
 			err := DeleteEventPathRequestValidationError{
 				field:  "QueryBy",
@@ -1034,7 +1034,7 @@ func (m *DeleteEventPathRequest) validate(all bool) error {
 			}
 			errors = append(errors, err)
 		}
-		// no validation rules for Id
+		// no validation rules for PathId
 	default:
 		_ = v // ensures v is used
 	}

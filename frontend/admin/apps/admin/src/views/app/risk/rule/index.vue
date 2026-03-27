@@ -12,7 +12,6 @@ import { notification } from 'ant-design-vue';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { $t } from '#/locales';
 import {
-  riskEventTypeList,
   riskEventTypeToColor,
   riskEventTypeToName,
   riskLevelToColor,
@@ -48,16 +47,12 @@ const formOptions = {
       },
     },
     {
-      component: 'Select',
+      component: 'Input',
       fieldName: 'riskType',
       label: $t('page.riskRule.riskType'),
       componentProps: {
-        options: riskEventTypeList,
-        placeholder: $t('ui.placeholder.select'),
-        filterOption: (input: string, option: any) =>
-          option.label.toLowerCase().includes(input.toLowerCase()),
+        placeholder: $t('ui.placeholder.input'),
         allowClear: true,
-        showSearch: true,
       },
     },
   ],
@@ -119,14 +114,14 @@ const gridOptions: VxeGridProps<RiskRule> = {
     {
       title: $t('page.riskRule.riskType'),
       field: 'riskType',
-      minWidth: 120,
-      slots: { default: 'riskType' },
+      minWidth: 160,
+      align: 'left',
     },
     {
       title: $t('page.riskRule.defaultLevel'),
       field: 'defaultLevel',
-      minWidth: 120,
-      slots: { default: 'riskLevel' },
+      minWidth: 160,
+      align: 'left',
     },
     { title: $t('page.riskRule.priority'), field: 'priority', minWidth: 80 },
     {

@@ -191,13 +191,13 @@ func (_c *UserTagCreate) SetNillableConfidence(v *float64) *UserTagCreate {
 }
 
 // SetSource sets the "source" field.
-func (_c *UserTagCreate) SetSource(v usertag.Source) *UserTagCreate {
+func (_c *UserTagCreate) SetSource(v string) *UserTagCreate {
 	_c.mutation.SetSource(v)
 	return _c
 }
 
 // SetNillableSource sets the "source" field if the given value is not nil.
-func (_c *UserTagCreate) SetNillableSource(v *usertag.Source) *UserTagCreate {
+func (_c *UserTagCreate) SetNillableSource(v *string) *UserTagCreate {
 	if v != nil {
 		_c.SetSource(*v)
 	}
@@ -325,11 +325,6 @@ func (_c *UserTagCreate) check() error {
 			return &ValidationError{Name: "value", err: fmt.Errorf(`ent: validator failed for field "UserTag.value": %w`, err)}
 		}
 	}
-	if v, ok := _c.mutation.Source(); ok {
-		if err := usertag.SourceValidator(v); err != nil {
-			return &ValidationError{Name: "source", err: fmt.Errorf(`ent: validator failed for field "UserTag.source": %w`, err)}
-		}
-	}
 	if v, ok := _c.mutation.ID(); ok {
 		if err := usertag.IDValidator(v); err != nil {
 			return &ValidationError{Name: "id", err: fmt.Errorf(`ent: validator failed for field "UserTag.id": %w`, err)}
@@ -417,7 +412,7 @@ func (_c *UserTagCreate) createSpec() (*UserTag, *sqlgraph.CreateSpec) {
 		_node.Confidence = &value
 	}
 	if value, ok := _c.mutation.Source(); ok {
-		_spec.SetField(usertag.FieldSource, field.TypeEnum, value)
+		_spec.SetField(usertag.FieldSource, field.TypeString, value)
 		_node.Source = &value
 	}
 	if value, ok := _c.mutation.SourceRuleID(); ok {
@@ -705,7 +700,7 @@ func (u *UserTagUpsert) ClearConfidence() *UserTagUpsert {
 }
 
 // SetSource sets the "source" field.
-func (u *UserTagUpsert) SetSource(v usertag.Source) *UserTagUpsert {
+func (u *UserTagUpsert) SetSource(v string) *UserTagUpsert {
 	u.Set(usertag.FieldSource, v)
 	return u
 }
@@ -1107,7 +1102,7 @@ func (u *UserTagUpsertOne) ClearConfidence() *UserTagUpsertOne {
 }
 
 // SetSource sets the "source" field.
-func (u *UserTagUpsertOne) SetSource(v usertag.Source) *UserTagUpsertOne {
+func (u *UserTagUpsertOne) SetSource(v string) *UserTagUpsertOne {
 	return u.Update(func(s *UserTagUpsert) {
 		s.SetSource(v)
 	})
@@ -1691,7 +1686,7 @@ func (u *UserTagUpsertBulk) ClearConfidence() *UserTagUpsertBulk {
 }
 
 // SetSource sets the "source" field.
-func (u *UserTagUpsertBulk) SetSource(v usertag.Source) *UserTagUpsertBulk {
+func (u *UserTagUpsertBulk) SetSource(v string) *UserTagUpsertBulk {
 	return u.Update(func(s *UserTagUpsert) {
 		s.SetSource(v)
 	})

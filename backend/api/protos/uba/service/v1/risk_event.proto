@@ -51,9 +51,10 @@ message RiskEvent {
     AUTO_BLOCKED = 6;
   }
 
-  uint64 id = 1 [
-    (gnostic.openapi.v3.property) = { description: "ID" }
-  ]; // ID
+  string risk_event_id = 1 [
+    json_name = "riskEventId",
+    (gnostic.openapi.v3.property) = { description: "风险事件ID" }
+  ]; // 风险事件ID
 
   // 租户ID（多租户隔离，支持 SaaS 场景）
   optional uint32 tenant_id = 2 [
@@ -78,12 +79,12 @@ message RiskEvent {
   ];
 
   // 风险类型
-  optional RiskType risk_type = 6 [
+  optional string risk_type = 6 [
     json_name = "riskType",
     (gnostic.openapi.v3.property) = {description: "风险类型，标识风险事件的类型"}
   ];
   // 风险等级
-  optional RiskLevel risk_level = 7 [
+  optional string risk_level = 7 [
     json_name = "riskLevel",
     (gnostic.openapi.v3.property) = {description: "风险等级，标识风险事件的严重程度"}
   ];
@@ -110,12 +111,12 @@ message RiskEvent {
   ];
 
   // 关联行为事件ID列表（风险事件关联的行为事件）
-  repeated uint32 related_event_ids = 13 [
+  repeated string related_event_ids = 13 [
     json_name = "relatedEventIds",
     (gnostic.openapi.v3.property) = {description: "关联行为事件ID列表，风险事件关联的行为事件"}
   ];
   // 会话ID（风险事件发生时的会话标识）
-  optional uint64 session_id = 14 [
+  optional string session_id = 14 [
     json_name = "sessionId",
     (gnostic.openapi.v3.property) = {description: "会话ID，风险事件发生时的会话标识"}
   ];

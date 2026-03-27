@@ -55,14 +55,8 @@ func (UserTag) Fields() []ent.Field {
 			Optional().
 			Nillable(),
 
-		field.Enum("source").
+		field.String("source").
 			Comment("标签来源").
-			NamedValues(
-				"TagSourceManual", "TAG_SOURCE_MANUAL",
-				"TagSourceRule", "TAG_SOURCE_RULE",
-				"TagSourceModel", "TAG_SOURCE_MODEL",
-				"TagSourceImport", "TAG_SOURCE_IMPORT",
-			).
 			Optional().
 			Nillable(),
 

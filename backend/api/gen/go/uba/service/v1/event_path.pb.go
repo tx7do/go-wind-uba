@@ -112,13 +112,13 @@ func (x *PathNode) GetStepIndex() uint32 {
 type EventPath struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// 路径ID（唯一标识一条事件路径，hash 或 UUID）
-	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	PathId string `protobuf:"bytes,1,opt,name=path_id,json=pathId,proto3" json:"path_id,omitempty"`
 	// 租户ID（多租户隔离，支持 SaaS 场景）
 	TenantId uint32 `protobuf:"varint,2,opt,name=tenant_id,json=tenantId,proto3" json:"tenant_id,omitempty"`
 	// 用户ID（路径所属用户）
 	UserId uint32 `protobuf:"varint,3,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	// 会话ID（路径所属会话）
-	SessionId uint64 `protobuf:"varint,4,opt,name=session_id,json=sessionId,proto3" json:"session_id,omitempty"`
+	SessionId string `protobuf:"bytes,4,opt,name=session_id,json=sessionId,proto3" json:"session_id,omitempty"`
 	// 有序事件序列（路径节点列表，按发生顺序排列）
 	Nodes    []*PathNode `protobuf:"bytes,5,rep,name=nodes,proto3" json:"nodes,omitempty"`
 	PathHash uint64      `protobuf:"varint,6,opt,name=path_hash,json=pathHash,proto3" json:"path_hash,omitempty"`
@@ -176,9 +176,9 @@ func (*EventPath) Descriptor() ([]byte, []int) {
 	return file_uba_service_v1_event_path_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *EventPath) GetId() string {
+func (x *EventPath) GetPathId() string {
 	if x != nil {
-		return x.Id
+		return x.PathId
 	}
 	return ""
 }
@@ -197,11 +197,11 @@ func (x *EventPath) GetUserId() uint32 {
 	return 0
 }
 
-func (x *EventPath) GetSessionId() uint64 {
+func (x *EventPath) GetSessionId() string {
 	if x != nil {
 		return x.SessionId
 	}
-	return 0
+	return ""
 }
 
 func (x *EventPath) GetNodes() []*PathNode {
@@ -359,7 +359,7 @@ type GetEventPathRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Types that are valid to be assigned to QueryBy:
 	//
-	//	*GetEventPathRequest_Id
+	//	*GetEventPathRequest_PathId
 	QueryBy       isGetEventPathRequest_QueryBy `protobuf_oneof:"query_by"`
 	ViewMask      *fieldmaskpb.FieldMask        `protobuf:"bytes,100,opt,name=view_mask,json=viewMask,proto3,oneof" json:"view_mask,omitempty"` // 视图字段过滤器，用于控制返回的字段
 	unknownFields protoimpl.UnknownFields
@@ -403,10 +403,10 @@ func (x *GetEventPathRequest) GetQueryBy() isGetEventPathRequest_QueryBy {
 	return nil
 }
 
-func (x *GetEventPathRequest) GetId() string {
+func (x *GetEventPathRequest) GetPathId() string {
 	if x != nil {
-		if x, ok := x.QueryBy.(*GetEventPathRequest_Id); ok {
-			return x.Id
+		if x, ok := x.QueryBy.(*GetEventPathRequest_PathId); ok {
+			return x.PathId
 		}
 	}
 	return ""
@@ -423,11 +423,11 @@ type isGetEventPathRequest_QueryBy interface {
 	isGetEventPathRequest_QueryBy()
 }
 
-type GetEventPathRequest_Id struct {
-	Id string `protobuf:"bytes,1,opt,name=id,proto3,oneof"` // 路径ID
+type GetEventPathRequest_PathId struct {
+	PathId string `protobuf:"bytes,1,opt,name=path_id,json=pathId,proto3,oneof"` // 路径ID
 }
 
-func (*GetEventPathRequest_Id) isGetEventPathRequest_QueryBy() {}
+func (*GetEventPathRequest_PathId) isGetEventPathRequest_QueryBy() {}
 
 // 创建事件路径请求
 type CreateEventPathRequest struct {
@@ -523,7 +523,7 @@ type DeleteEventPathRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Types that are valid to be assigned to QueryBy:
 	//
-	//	*DeleteEventPathRequest_Id
+	//	*DeleteEventPathRequest_PathId
 	QueryBy       isDeleteEventPathRequest_QueryBy `protobuf_oneof:"query_by"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -566,10 +566,10 @@ func (x *DeleteEventPathRequest) GetQueryBy() isDeleteEventPathRequest_QueryBy {
 	return nil
 }
 
-func (x *DeleteEventPathRequest) GetId() string {
+func (x *DeleteEventPathRequest) GetPathId() string {
 	if x != nil {
-		if x, ok := x.QueryBy.(*DeleteEventPathRequest_Id); ok {
-			return x.Id
+		if x, ok := x.QueryBy.(*DeleteEventPathRequest_PathId); ok {
+			return x.PathId
 		}
 	}
 	return ""
@@ -579,11 +579,11 @@ type isDeleteEventPathRequest_QueryBy interface {
 	isDeleteEventPathRequest_QueryBy()
 }
 
-type DeleteEventPathRequest_Id struct {
-	Id string `protobuf:"bytes,1,opt,name=id,proto3,oneof"` // ID
+type DeleteEventPathRequest_PathId struct {
+	PathId string `protobuf:"bytes,1,opt,name=path_id,json=pathId,proto3,oneof"` // ID
 }
 
-func (*DeleteEventPathRequest_Id) isDeleteEventPathRequest_QueryBy() {}
+func (*DeleteEventPathRequest_PathId) isDeleteEventPathRequest_QueryBy() {}
 
 var File_uba_service_v1_event_path_proto protoreflect.FileDescriptor
 
@@ -599,13 +599,13 @@ const file_uba_service_v1_event_path_proto_rawDesc = "" +
 	"\n" +
 	"event_time\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampB6\xbaG3\x92\x020事件时间，节点对应事件发生的时间R\teventTime\x12\\\n" +
 	"\n" +
-	"step_index\x18\x05 \x01(\rB=\xbaG:\x92\x027步骤索引，节点在路径中的位置，从0开始R\tstepIndex\"\xd2\x0e\n" +
-	"\tEventPath\x12O\n" +
-	"\x02id\x18\x01 \x01(\tB?\xbaG<\x92\x029路径ID，唯一标识一条事件路径，hash 或 UUIDR\x02id\x12R\n" +
+	"step_index\x18\x05 \x01(\rB=\xbaG:\x92\x027步骤索引，节点在路径中的位置，从0开始R\tstepIndex\"\xdb\x0e\n" +
+	"\tEventPath\x12X\n" +
+	"\apath_id\x18\x01 \x01(\tB?\xbaG<\x92\x029路径ID，唯一标识一条事件路径，hash 或 UUIDR\x06pathId\x12R\n" +
 	"\ttenant_id\x18\x02 \x01(\rB5\xbaG2\x92\x02/租户ID，多租户隔离，支持 SaaS 场景R\btenantId\x12<\n" +
 	"\auser_id\x18\x03 \x01(\rB#\xbaG \x92\x02\x1d用户ID，路径所属用户R\x06userId\x12B\n" +
 	"\n" +
-	"session_id\x18\x04 \x01(\x04B#\xbaG \x92\x02\x1d会话ID，路径所属会话R\tsessionId\x12u\n" +
+	"session_id\x18\x04 \x01(\tB#\xbaG \x92\x02\x1d会话ID，路径所属会话R\tsessionId\x12u\n" +
 	"\x05nodes\x18\x05 \x03(\v2\x18.uba.service.v1.PathNodeBE\xbaGB\x92\x02?有序事件序列，路径节点列表，按发生顺序排列R\x05nodes\x12\x83\x01\n" +
 	"\tpath_hash\x18\x06 \x01(\x04Bf\xbaGc\x92\x02`路径哈希值，根据事件序列计算得到的哈希值，用于快速路径识别和去重R\bpathHash\x12_\n" +
 	"\fis_converted\x18\n" +
@@ -628,9 +628,9 @@ const file_uba_service_v1_event_path_proto_rawDesc = "" +
 	"\rlast_3_events\x18+ \x03(\tBG\xbaGD\x92\x02A后3个事件名称，路径中后3个节点的事件名称列表R\vlast3Events\"^\n" +
 	"\x15ListEventPathResponse\x12/\n" +
 	"\x05items\x18\x01 \x03(\v2\x19.uba.service.v1.EventPathR\x05items\x12\x14\n" +
-	"\x05total\x18\x02 \x01(\x04R\x05total\"\xcc\x01\n" +
-	"\x13GetEventPathRequest\x12\"\n" +
-	"\x02id\x18\x01 \x01(\tB\x10\xbaG\r\x18\x01\x92\x02\b路径IDH\x00R\x02id\x12w\n" +
+	"\x05total\x18\x02 \x01(\x04R\x05total\"\xd5\x01\n" +
+	"\x13GetEventPathRequest\x12+\n" +
+	"\apath_id\x18\x01 \x01(\tB\x10\xbaG\r\x18\x01\x92\x02\b路径IDH\x00R\x06pathId\x12w\n" +
 	"\tview_mask\x18d \x01(\v2\x1a.google.protobuf.FieldMaskB9\xbaG6\x92\x023视图字段过滤器，用于控制返回的字段H\x01R\bviewMask\x88\x01\x01B\n" +
 	"\n" +
 	"\bquery_byB\f\n" +
@@ -639,9 +639,9 @@ const file_uba_service_v1_event_path_proto_rawDesc = "" +
 	"\x16CreateEventPathRequest\x12-\n" +
 	"\x04data\x18\x01 \x01(\v2\x19.uba.service.v1.EventPathR\x04data\"N\n" +
 	"\x1bBatchCreateEventPathRequest\x12/\n" +
-	"\x05items\x18\x01 \x03(\v2\x19.uba.service.v1.EventPathR\x05items\"H\n" +
-	"\x16DeleteEventPathRequest\x12\"\n" +
-	"\x02id\x18\x01 \x01(\tB\x10\xbaG\r\x18\x01\x92\x02\b路径IDH\x00R\x02idB\n" +
+	"\x05items\x18\x01 \x03(\v2\x19.uba.service.v1.EventPathR\x05items\"Q\n" +
+	"\x16DeleteEventPathRequest\x12+\n" +
+	"\apath_id\x18\x01 \x01(\tB\x10\xbaG\r\x18\x01\x92\x02\b路径IDH\x00R\x06pathIdB\n" +
 	"\n" +
 	"\bquery_by2\x80\x03\n" +
 	"\x10EventPathService\x12\x8d\x01\n" +
@@ -709,10 +709,10 @@ func file_uba_service_v1_event_path_proto_init() {
 		return
 	}
 	file_uba_service_v1_event_path_proto_msgTypes[3].OneofWrappers = []any{
-		(*GetEventPathRequest_Id)(nil),
+		(*GetEventPathRequest_PathId)(nil),
 	}
 	file_uba_service_v1_event_path_proto_msgTypes[6].OneofWrappers = []any{
-		(*DeleteEventPathRequest_Id)(nil),
+		(*DeleteEventPathRequest_PathId)(nil),
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{

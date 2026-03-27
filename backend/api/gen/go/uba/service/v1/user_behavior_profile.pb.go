@@ -54,7 +54,7 @@ type UserBehaviorProfile struct {
 	RiskScore uint32   `protobuf:"varint,20,opt,name=risk_score,json=riskScore,proto3" json:"risk_score,omitempty"` // 风险评分
 	RiskTags  []string `protobuf:"bytes,21,rep,name=risk_tags,json=riskTags,proto3" json:"risk_tags,omitempty"`     // 风险标签
 	// 风险等级
-	RiskLevel *RiskLevel `protobuf:"varint,22,opt,name=risk_level,json=riskLevel,proto3,enum=uba.service.v1.RiskLevel,oneof" json:"risk_level,omitempty"` // 风险等级，枚举类型，标识用户当前的风险级别
+	RiskLevel *string `protobuf:"bytes,22,opt,name=risk_level,json=riskLevel,proto3,oneof" json:"risk_level,omitempty"` // 风险等级，枚举类型，标识用户当前的风险级别
 	// 最后风险时间
 	LastRiskTime *timestamppb.Timestamp `protobuf:"bytes,23,opt,name=last_risk_time,json=lastRiskTime,proto3,oneof" json:"last_risk_time,omitempty"` // 最后风险时间，记录用户最近一次风险事件发生的时间
 	// 扩展属性
@@ -62,7 +62,7 @@ type UserBehaviorProfile struct {
 	// 地理位置
 	Geo map[string]string `protobuf:"bytes,40,rep,name=geo,proto3" json:"geo,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"` // 地理位置，经纬度信息或 GeoJSON，便于分析用户地理分布
 	// 平台类型
-	Platform *Platform `protobuf:"varint,41,opt,name=platform,proto3,enum=uba.service.v1.Platform,oneof" json:"platform,omitempty"` // 平台类型，枚举类型，标识用户主要活跃的平台（如 Web、iOS、Android 等）
+	Platform *string `protobuf:"bytes,41,opt,name=platform,proto3,oneof" json:"platform,omitempty"` // 平台类型，枚举类型，标识用户主要活跃的平台（如 Web、iOS、Android 等）
 	// 设备类型
 	DeviceType    *string                `protobuf:"bytes,42,opt,name=device_type,json=deviceType,proto3,oneof" json:"device_type,omitempty"` // 设备类型，记录用户主要使用的设备类型（如手机、平板、PC 等）
 	Country       *string                `protobuf:"bytes,43,opt,name=country,proto3,oneof" json:"country,omitempty"`                         // 国家，记录用户所在的国家信息，便于分析用户的地理分布特征
@@ -229,11 +229,11 @@ func (x *UserBehaviorProfile) GetRiskTags() []string {
 	return nil
 }
 
-func (x *UserBehaviorProfile) GetRiskLevel() RiskLevel {
+func (x *UserBehaviorProfile) GetRiskLevel() string {
 	if x != nil && x.RiskLevel != nil {
 		return *x.RiskLevel
 	}
-	return RiskLevel_RISK_LEVEL_UNSPECIFIED
+	return ""
 }
 
 func (x *UserBehaviorProfile) GetLastRiskTime() *timestamppb.Timestamp {
@@ -257,11 +257,11 @@ func (x *UserBehaviorProfile) GetGeo() map[string]string {
 	return nil
 }
 
-func (x *UserBehaviorProfile) GetPlatform() Platform {
+func (x *UserBehaviorProfile) GetPlatform() string {
 	if x != nil && x.Platform != nil {
 		return *x.Platform
 	}
-	return Platform_PLATFORM_UNSPECIFIED
+	return ""
 }
 
 func (x *UserBehaviorProfile) GetDeviceType() string {
@@ -664,7 +664,7 @@ var File_uba_service_v1_user_behavior_profile_proto protoreflect.FileDescriptor
 
 const file_uba_service_v1_user_behavior_profile_proto_rawDesc = "" +
 	"\n" +
-	"*uba/service/v1/user_behavior_profile.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a google/protobuf/field_mask.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1epagination/v1/pagination.proto\x1a\x1buba/service/v1/common.proto\"\xfb\x13\n" +
+	"*uba/service/v1/user_behavior_profile.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a google/protobuf/field_mask.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1epagination/v1/pagination.proto\x1a\x1buba/service/v1/common.proto\"\xc5\x13\n" +
 	"\x13UserBehaviorProfile\x12S\n" +
 	"\x02id\x18\x01 \x01(\rB>\xbaG;\x92\x028自增长主键ID，唯一标识一条用户画像记录H\x00R\x02id\x88\x01\x01\x12+\n" +
 	"\ttenant_id\x18\x02 \x01(\rB\x0e\xbaG\v\x92\x02\b租户IDR\btenantId\x12'\n" +
@@ -686,13 +686,13 @@ const file_uba_service_v1_user_behavior_profile_proto_rawDesc = "" +
 	"\x0eprefer_objects\x18\x11 \x03(\tB\x12\xbaG\x0f\x92\x02\f偏好对象R\rpreferObjects\x121\n" +
 	"\n" +
 	"risk_score\x18\x14 \x01(\rB\x12\xbaG\x0f\x92\x02\f风险评分R\triskScore\x12/\n" +
-	"\trisk_tags\x18\x15 \x03(\tB\x12\xbaG\x0f\x92\x02\f风险标签R\briskTags\x12\x84\x01\n" +
+	"\trisk_tags\x18\x15 \x03(\tB\x12\xbaG\x0f\x92\x02\f风险标签R\briskTags\x12i\n" +
 	"\n" +
-	"risk_level\x18\x16 \x01(\x0e2\x19.uba.service.v1.RiskLevelBE\xbaGB\x92\x02?风险等级，枚举类型，标识用户当前的风险级别H\x01R\triskLevel\x88\x01\x01\x12\x95\x01\n" +
+	"risk_level\x18\x16 \x01(\tBE\xbaGB\x92\x02?风险等级，枚举类型，标识用户当前的风险级别H\x01R\triskLevel\x88\x01\x01\x12\x95\x01\n" +
 	"\x0elast_risk_time\x18\x17 \x01(\v2\x1a.google.protobuf.TimestampBN\xbaGK\x92\x02H最后风险时间，记录用户最近一次风险事件发生的时间H\x02R\flastRiskTime\x88\x01\x01\x12^\n" +
 	"\aprofile\x18\x1e \x03(\v20.uba.service.v1.UserBehaviorProfile.ProfileEntryB\x12\xbaG\x0f\x92\x02\f扩展属性R\aprofile\x12\x90\x01\n" +
-	"\x03geo\x18( \x03(\v2,.uba.service.v1.UserBehaviorProfile.GeoEntryBP\xbaGM\x92\x02J地理位置，经纬度信息或 GeoJSON，便于分析用户地理分布R\x03geo\x12\xa1\x01\n" +
-	"\bplatform\x18) \x01(\x0e2\x18.uba.service.v1.PlatformBf\xbaGc\x92\x02`平台类型，枚举类型，标识用户主要活跃的平台（如 Web、iOS、Android 等）H\x03R\bplatform\x88\x01\x01\x12\x83\x01\n" +
+	"\x03geo\x18( \x03(\v2,.uba.service.v1.UserBehaviorProfile.GeoEntryBP\xbaGM\x92\x02J地理位置，经纬度信息或 GeoJSON，便于分析用户地理分布R\x03geo\x12\x87\x01\n" +
+	"\bplatform\x18) \x01(\tBf\xbaGc\x92\x02`平台类型，枚举类型，标识用户主要活跃的平台（如 Web、iOS、Android 等）H\x03R\bplatform\x88\x01\x01\x12\x83\x01\n" +
 	"\vdevice_type\x18* \x01(\tB]\xbaGZ\x92\x02W设备类型，记录用户主要使用的设备类型（如手机、平板、PC 等）H\x04R\n" +
 	"deviceType\x88\x01\x01\x12y\n" +
 	"\acountry\x18+ \x01(\tBZ\xbaGW\x92\x02T国家，记录用户所在的国家信息，便于分析用户的地理分布特征H\x05R\acountry\x88\x01\x01\x12!\n" +
@@ -777,43 +777,39 @@ var file_uba_service_v1_user_behavior_profile_proto_goTypes = []any{
 	nil,                                           // 7: uba.service.v1.UserBehaviorProfile.ProfileEntry
 	nil,                                           // 8: uba.service.v1.UserBehaviorProfile.GeoEntry
 	(*timestamppb.Timestamp)(nil),                 // 9: google.protobuf.Timestamp
-	(RiskLevel)(0),                                // 10: uba.service.v1.RiskLevel
-	(Platform)(0),                                 // 11: uba.service.v1.Platform
-	(*fieldmaskpb.FieldMask)(nil),                 // 12: google.protobuf.FieldMask
-	(*v1.PagingRequest)(nil),                      // 13: pagination.PagingRequest
-	(*emptypb.Empty)(nil),                         // 14: google.protobuf.Empty
+	(*fieldmaskpb.FieldMask)(nil),                 // 10: google.protobuf.FieldMask
+	(*v1.PagingRequest)(nil),                      // 11: pagination.PagingRequest
+	(*emptypb.Empty)(nil),                         // 12: google.protobuf.Empty
 }
 var file_uba_service_v1_user_behavior_profile_proto_depIdxs = []int32{
 	9,  // 0: uba.service.v1.UserBehaviorProfile.register_time:type_name -> google.protobuf.Timestamp
 	9,  // 1: uba.service.v1.UserBehaviorProfile.first_active_date:type_name -> google.protobuf.Timestamp
 	9,  // 2: uba.service.v1.UserBehaviorProfile.last_active_date:type_name -> google.protobuf.Timestamp
 	9,  // 3: uba.service.v1.UserBehaviorProfile.last_pay_time:type_name -> google.protobuf.Timestamp
-	10, // 4: uba.service.v1.UserBehaviorProfile.risk_level:type_name -> uba.service.v1.RiskLevel
-	9,  // 5: uba.service.v1.UserBehaviorProfile.last_risk_time:type_name -> google.protobuf.Timestamp
-	7,  // 6: uba.service.v1.UserBehaviorProfile.profile:type_name -> uba.service.v1.UserBehaviorProfile.ProfileEntry
-	8,  // 7: uba.service.v1.UserBehaviorProfile.geo:type_name -> uba.service.v1.UserBehaviorProfile.GeoEntry
-	11, // 8: uba.service.v1.UserBehaviorProfile.platform:type_name -> uba.service.v1.Platform
-	9,  // 9: uba.service.v1.UserBehaviorProfile.created_at:type_name -> google.protobuf.Timestamp
-	9,  // 10: uba.service.v1.UserBehaviorProfile.updated_at:type_name -> google.protobuf.Timestamp
-	0,  // 11: uba.service.v1.ListUserBehaviorProfileResponse.items:type_name -> uba.service.v1.UserBehaviorProfile
-	12, // 12: uba.service.v1.GetUserBehaviorProfileRequest.view_mask:type_name -> google.protobuf.FieldMask
-	0,  // 13: uba.service.v1.CreateUserBehaviorProfileRequest.data:type_name -> uba.service.v1.UserBehaviorProfile
-	0,  // 14: uba.service.v1.BatchCreateUserBehaviorProfileRequest.items:type_name -> uba.service.v1.UserBehaviorProfile
-	0,  // 15: uba.service.v1.UpdateUserBehaviorProfileRequest.data:type_name -> uba.service.v1.UserBehaviorProfile
-	12, // 16: uba.service.v1.UpdateUserBehaviorProfileRequest.update_mask:type_name -> google.protobuf.FieldMask
-	13, // 17: uba.service.v1.UserBehaviorProfileService.List:input_type -> pagination.PagingRequest
-	2,  // 18: uba.service.v1.UserBehaviorProfileService.Get:input_type -> uba.service.v1.GetUserBehaviorProfileRequest
-	0,  // 19: uba.service.v1.UserBehaviorProfileService.Create:input_type -> uba.service.v1.UserBehaviorProfile
-	4,  // 20: uba.service.v1.UserBehaviorProfileService.BatchCreate:input_type -> uba.service.v1.BatchCreateUserBehaviorProfileRequest
-	1,  // 21: uba.service.v1.UserBehaviorProfileService.List:output_type -> uba.service.v1.ListUserBehaviorProfileResponse
-	0,  // 22: uba.service.v1.UserBehaviorProfileService.Get:output_type -> uba.service.v1.UserBehaviorProfile
-	14, // 23: uba.service.v1.UserBehaviorProfileService.Create:output_type -> google.protobuf.Empty
-	14, // 24: uba.service.v1.UserBehaviorProfileService.BatchCreate:output_type -> google.protobuf.Empty
-	21, // [21:25] is the sub-list for method output_type
-	17, // [17:21] is the sub-list for method input_type
-	17, // [17:17] is the sub-list for extension type_name
-	17, // [17:17] is the sub-list for extension extendee
-	0,  // [0:17] is the sub-list for field type_name
+	9,  // 4: uba.service.v1.UserBehaviorProfile.last_risk_time:type_name -> google.protobuf.Timestamp
+	7,  // 5: uba.service.v1.UserBehaviorProfile.profile:type_name -> uba.service.v1.UserBehaviorProfile.ProfileEntry
+	8,  // 6: uba.service.v1.UserBehaviorProfile.geo:type_name -> uba.service.v1.UserBehaviorProfile.GeoEntry
+	9,  // 7: uba.service.v1.UserBehaviorProfile.created_at:type_name -> google.protobuf.Timestamp
+	9,  // 8: uba.service.v1.UserBehaviorProfile.updated_at:type_name -> google.protobuf.Timestamp
+	0,  // 9: uba.service.v1.ListUserBehaviorProfileResponse.items:type_name -> uba.service.v1.UserBehaviorProfile
+	10, // 10: uba.service.v1.GetUserBehaviorProfileRequest.view_mask:type_name -> google.protobuf.FieldMask
+	0,  // 11: uba.service.v1.CreateUserBehaviorProfileRequest.data:type_name -> uba.service.v1.UserBehaviorProfile
+	0,  // 12: uba.service.v1.BatchCreateUserBehaviorProfileRequest.items:type_name -> uba.service.v1.UserBehaviorProfile
+	0,  // 13: uba.service.v1.UpdateUserBehaviorProfileRequest.data:type_name -> uba.service.v1.UserBehaviorProfile
+	10, // 14: uba.service.v1.UpdateUserBehaviorProfileRequest.update_mask:type_name -> google.protobuf.FieldMask
+	11, // 15: uba.service.v1.UserBehaviorProfileService.List:input_type -> pagination.PagingRequest
+	2,  // 16: uba.service.v1.UserBehaviorProfileService.Get:input_type -> uba.service.v1.GetUserBehaviorProfileRequest
+	0,  // 17: uba.service.v1.UserBehaviorProfileService.Create:input_type -> uba.service.v1.UserBehaviorProfile
+	4,  // 18: uba.service.v1.UserBehaviorProfileService.BatchCreate:input_type -> uba.service.v1.BatchCreateUserBehaviorProfileRequest
+	1,  // 19: uba.service.v1.UserBehaviorProfileService.List:output_type -> uba.service.v1.ListUserBehaviorProfileResponse
+	0,  // 20: uba.service.v1.UserBehaviorProfileService.Get:output_type -> uba.service.v1.UserBehaviorProfile
+	12, // 21: uba.service.v1.UserBehaviorProfileService.Create:output_type -> google.protobuf.Empty
+	12, // 22: uba.service.v1.UserBehaviorProfileService.BatchCreate:output_type -> google.protobuf.Empty
+	19, // [19:23] is the sub-list for method output_type
+	15, // [15:19] is the sub-list for method input_type
+	15, // [15:15] is the sub-list for extension type_name
+	15, // [15:15] is the sub-list for extension extendee
+	0,  // [0:15] is the sub-list for field type_name
 }
 
 func init() { file_uba_service_v1_user_behavior_profile_proto_init() }

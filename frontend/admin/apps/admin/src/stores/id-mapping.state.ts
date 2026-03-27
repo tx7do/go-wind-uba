@@ -95,5 +95,5 @@ export function idMappingIdTypeToColor(type?: IDType) {
 export function idMappingIdTypeToName(type?: IDType) {
   const values = idTypeList.value;
   const matchedItem = values.find((item) => item.value === type);
-  return matchedItem ? matchedItem.label : '';
+  return matchedItem ? matchedItem.label : type;
 }

@@ -5,7 +5,7 @@ import (
 )
 
 type RiskEvents struct {
-	ID              *uint64           `json:"id"`
+	RiskEventID     *string           `json:"risk_event_id"`
 	TenantID        *uint32           `json:"tenant_id"`
 	UserID          *uint32           `json:"user_id"`
 	DeviceID        *string           `json:"device_id"`
@@ -17,7 +17,7 @@ type RiskEvents struct {
 	RuleName        *string           `json:"rule_name"`
 	RuleContext     map[string]string `json:"rule_context"`
 	RelatedEventIDs []string          `json:"related_event_ids"`
-	SessionID       *uint64           `json:"session_id"`
+	SessionID       *string           `json:"session_id"`
 	Description     *string           `json:"description"`
 	Evidence        map[string]string `json:"evidence"`
 	Status          *string           `json:"status"`

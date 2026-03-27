@@ -26,74 +26,74 @@ service ObjectService {
 
 // 对象维度（对应 objects_dim 表）
 message ObjectDim {
-  // 租户ID（多租户隔离，支持 SaaS 场景）
-  optional uint32 tenant_id = 1 [
-    json_name = "tenantId",
-    (gnostic.openapi.v3.property) = {description: "租户ID，多租户隔离，支持 SaaS 场景"}
-  ];
-
   // 对象ID（唯一标识一个对象）
-  string id = 2 [
-    json_name = "id",
+  string object_id = 1 [
+    json_name = "objectId",
     (gnostic.openapi.v3.property) = {description: "对象ID，唯一标识一个对象"}
   ];
 
   // 对象类型（如商品、道具、内容等）
-  string object_type = 3 [
+  string object_type = 2 [
     json_name = "objectType",
     (gnostic.openapi.v3.property) = {description: "对象类型，如商品、道具、内容等"}
   ];
 
   // 对象名称（对象的显示名称）
-  string object_name = 5 [
+  string object_name = 3 [
     json_name = "objectName",
     (gnostic.openapi.v3.property) = {description: "对象名称，对象的显示名称"}
   ];
 
   // 分类路径（对象所属的分类层级路径）
-  string category_path = 6 [
+  string category_path = 4 [
     json_name = "categoryPath",
     (gnostic.openapi.v3.property) = {description: "分类路径，对象所属的分类层级路径"}
   ];
 
   // 价格（对象的价格，字符串类型，支持多币种格式）
-  string price = 7 [
+  string price = 5 [
     json_name = "price",
     (gnostic.openapi.v3.property) = {description: "价格，对象的价格，字符串类型，支持多币种格式"}
   ];
 
   // 币种（对象价格的币种，如 CNY、USD 等）
-  string currency = 8 [
+  string currency = 6 [
     json_name = "currency",
     (gnostic.openapi.v3.property) = {description: "币种，对象价格的币种，如 CNY、USD 等"}
   ];
 
   // 稀有度（对象的稀有等级，如普通、稀有、史诗等）
-  string rarity = 9 [
+  string rarity = 7 [
     json_name = "rarity",
     (gnostic.openapi.v3.property) = {description: "稀有度，对象的稀有等级，如普通、稀有、史诗等"}
   ];
 
   // 属性（对象的扩展属性，键值对形式，支持自定义属性）
-  map<string, string> attributes = 10 [
+  map<string, string> attributes = 8 [
     json_name = "attributes",
     (gnostic.openapi.v3.property) = {description: "属性，对象的扩展属性，键值对形式，支持自定义属性"}
   ];
 
   // 状态（对象当前状态，如上架、下架、有效、无效等）
-  string status = 11 [
+  string status = 9 [
     json_name = "status",
     (gnostic.openapi.v3.property) = {description: "状态，对象当前状态，如上架、下架、有效、无效等"}
   ];
 
+  // 租户ID（多租户隔离，支持 SaaS 场景）
+  optional uint32 tenant_id = 10 [
+    json_name = "tenantId",
+    (gnostic.openapi.v3.property) = {description: "租户ID，多租户隔离，支持 SaaS 场景"}
+  ];
+
   // 有效期起始时间（对象有效期的开始时间）
-  google.protobuf.Timestamp valid_from = 12 [
+  google.protobuf.Timestamp valid_from = 20 [
     json_name = "validFrom",
     (gnostic.openapi.v3.property) = {description: "有效期起始时间，对象有效期的开始时间"}
   ];
 
   // 有效期结束时间（对象有效期的结束时间）
-  google.protobuf.Timestamp valid_to = 13 [
+  google.protobuf.Timestamp valid_to = 21 [
     json_name = "validTo",
     (gnostic.openapi.v3.property) = {description: "有效期结束时间，对象有效期的结束时间"}
   ];

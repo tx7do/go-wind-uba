@@ -8,7 +8,7 @@ import (
 // 对应表：gw_uba.risk_events
 
 type RiskEvents struct {
-	ID              *uint64           `ch:"id"`
+	RiskEventID     *string           `ch:"risk_event_id"`
 	TenantID        *uint32           `ch:"tenant_id"`
 	UserID          *uint32           `ch:"user_id"`
 	DeviceID        *string           `ch:"device_id"`
@@ -20,7 +20,7 @@ type RiskEvents struct {
 	RuleName        *string           `ch:"rule_name"`
 	RuleContext     map[string]string `ch:"rule_context"`
 	RelatedEventIDs []string          `ch:"related_event_ids"`
-	SessionID       *uint64           `ch:"session_id"`
+	SessionID       *string           `ch:"session_id"`
 	Description     *string           `ch:"description"`
 	Evidence        map[string]string `ch:"evidence"`
 	Status          *string           `ch:"status"`

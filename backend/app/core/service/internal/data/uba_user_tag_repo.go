@@ -28,8 +28,6 @@ type UserTagRepo struct {
 
 	mapper *mapper.CopierMapper[ubaV1.UserTag, ent.UserTag]
 
-	sourceConverter *mapper.EnumTypeConverter[ubaV1.TagSource, usertag.Source]
-
 	repository *entCrud.Repository[
 		ent.UserTagQuery, ent.UserTagSelect,
 		ent.UserTagCreate, ent.UserTagCreateBulk,
@@ -45,9 +43,6 @@ func NewUserTagRepo(ctx *bootstrap.Context, entClient *entCrud.EntClient[*ent.Cl
 		log:       ctx.NewLoggerHelper("user-tag/repo/core-service"),
 		entClient: entClient,
 		mapper:    mapper.NewCopierMapper[ubaV1.UserTag, ent.UserTag](),
-		sourceConverter: mapper.NewEnumTypeConverter[ubaV1.TagSource, usertag.Source](
-			ubaV1.TagSource_name, ubaV1.TagSource_value,
-		),
 	}
 
 	repo.init()
@@ -66,8 +61,6 @@ func (r *UserTagRepo) init() {
 
 	r.mapper.AppendConverters(copierutil.NewTimeStringConverterPair())
 	r.mapper.AppendConverters(copierutil.NewTimeTimestamppbConverterPair())
-
-	r.mapper.AppendConverters(r.sourceConverter.NewConverterPair())
 }
 
 // Count 统计用户标签数量
@@ -153,7 +146,7 @@ func (r *UserTagRepo) Create(ctx context.Context, req *ubaV1.CreateUserTagReques
 		SetNillableValueLabel(req.Data.ValueLabel).
 		SetNillableConfidence(req.Data.Confidence).
 		SetNillableSourceRuleID(req.Data.SourceRuleId).
-		SetNillableSource(r.sourceConverter.ToEntity(req.Data.Source)).
+		SetNillableSource(req.Data.Source).
 		SetNillableEffectiveTime(timeutil.TimestamppbToTime(req.Data.EffectiveTime)).
 		SetNillableExpireTime(timeutil.TimestamppbToTime(req.Data.ExpireTime)).
 		SetNillableSourceRuleID(req.Data.SourceRuleId).
@@ -197,7 +190,7 @@ func (r *UserTagRepo) Update(ctx context.Context, req *ubaV1.UpdateUserTagReques
 				SetNillableValueLabel(req.Data.ValueLabel).
 				SetNillableConfidence(req.Data.Confidence).
 				SetNillableSourceRuleID(req.Data.SourceRuleId).
-				SetNillableSource(r.sourceConverter.ToEntity(req.Data.Source)).
+				SetNillableSource(req.Data.Source).
 				SetNillableEffectiveTime(timeutil.TimestamppbToTime(req.Data.EffectiveTime)).
 				SetNillableExpireTime(timeutil.TimestamppbToTime(req.Data.ExpireTime)).
 				SetNillableSourceRuleID(req.Data.SourceRuleId).

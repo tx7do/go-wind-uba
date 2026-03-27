@@ -34,7 +34,7 @@ type EventPathServiceHTTPServer interface {
 func RegisterEventPathServiceHTTPServer(s *http.Server, srv EventPathServiceHTTPServer) {
 	r := s.Route("/")
 	r.GET("/admin/v1/event-paths", _EventPathService_List6_HTTP_Handler(srv))
-	r.GET("/admin/v1/event-paths/{id}", _EventPathService_Get6_HTTP_Handler(srv))
+	r.GET("/admin/v1/event-paths/{path_id}", _EventPathService_Get6_HTTP_Handler(srv))
 }
 
 func _EventPathService_List6_HTTP_Handler(srv EventPathServiceHTTPServer) func(ctx http.Context) error {
@@ -96,7 +96,7 @@ func NewEventPathServiceHTTPClient(client *http.Client) EventPathServiceHTTPClie
 // Get 查询单条事件路径详情
 func (c *EventPathServiceHTTPClientImpl) Get(ctx context.Context, in *v11.GetEventPathRequest, opts ...http.CallOption) (*v11.EventPath, error) {
 	var out v11.EventPath
-	pattern := "/admin/v1/event-paths/{id}"
+	pattern := "/admin/v1/event-paths/{path_id}"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationEventPathServiceGet))
 	opts = append(opts, http.PathTemplate(pattern))

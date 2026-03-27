@@ -52,16 +52,12 @@ const formOptions = {
       },
     },
     {
-      component: 'Select',
+      component: 'Input',
       fieldName: 'source',
       label: $t('page.userTag.source'),
       componentProps: {
-        options: tagSourceList,
-        placeholder: $t('ui.placeholder.select'),
-        filterOption: (input: string, option: any) =>
-          option.label.toLowerCase().includes(input.toLowerCase()),
+        placeholder: $t('ui.placeholder.input'),
         allowClear: true,
-        showSearch: true,
       },
     },
   ],
@@ -129,8 +125,8 @@ const gridOptions: VxeGridProps<UserTag> = {
     {
       title: $t('page.userTag.source'),
       field: 'source',
-      minWidth: 100,
-      slots: { default: 'source' },
+      minWidth: 160,
+      align: 'left',
     },
     {
       title: $t('page.userTag.effectiveTime'),

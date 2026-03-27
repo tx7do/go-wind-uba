@@ -154,9 +154,9 @@ type RiskRule struct {
 	// 规则描述（规则的详细说明）
 	Description *string `protobuf:"bytes,5,opt,name=description,proto3,oneof" json:"description,omitempty"`
 	// 风险类型（规则对应的风险类型）
-	RiskType *RiskType `protobuf:"varint,6,opt,name=risk_type,json=riskType,proto3,enum=uba.service.v1.RiskType,oneof" json:"risk_type,omitempty"`
+	RiskType *string `protobuf:"bytes,6,opt,name=risk_type,json=riskType,proto3,oneof" json:"risk_type,omitempty"`
 	// 默认风险等级（规则对应的默认风险等级）
-	DefaultLevel *RiskLevel `protobuf:"varint,7,opt,name=default_level,json=defaultLevel,proto3,enum=uba.service.v1.RiskLevel,oneof" json:"default_level,omitempty"`
+	DefaultLevel *string `protobuf:"bytes,7,opt,name=default_level,json=defaultLevel,proto3,oneof" json:"default_level,omitempty"`
 	// 规则条件（简化版，实际可用 CEL/JSON Schema，支持复杂表达式）
 	Condition *structpb.Struct `protobuf:"bytes,8,opt,name=condition,proto3,oneof" json:"condition,omitempty"`
 	// 动作配置（规则触发时的处置动作列表，支持多种动作）
@@ -246,18 +246,18 @@ func (x *RiskRule) GetDescription() string {
 	return ""
 }
 
-func (x *RiskRule) GetRiskType() RiskType {
+func (x *RiskRule) GetRiskType() string {
 	if x != nil && x.RiskType != nil {
 		return *x.RiskType
 	}
-	return RiskType_RISK_TYPE_UNSPECIFIED
+	return ""
 }
 
-func (x *RiskRule) GetDefaultLevel() RiskLevel {
+func (x *RiskRule) GetDefaultLevel() string {
 	if x != nil && x.DefaultLevel != nil {
 		return *x.DefaultLevel
 	}
-	return RiskLevel_RISK_LEVEL_UNSPECIFIED
+	return ""
 }
 
 func (x *RiskRule) GetCondition() *structpb.Struct {
@@ -574,7 +574,7 @@ type RiskRuleVersion struct {
 	RuleExpression *string           `protobuf:"bytes,6,opt,name=rule_expression,json=ruleExpression,proto3,oneof" json:"rule_expression,omitempty"`
 	RuleConfig     map[string]string `protobuf:"bytes,7,rep,name=rule_config,json=ruleConfig,proto3" json:"rule_config,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	Actions        []*RuleAction     `protobuf:"bytes,8,rep,name=actions,proto3" json:"actions,omitempty"`
-	RiskLevel      *RiskLevel        `protobuf:"varint,9,opt,name=risk_level,json=riskLevel,proto3,enum=uba.service.v1.RiskLevel,oneof" json:"risk_level,omitempty"`
+	RiskLevel      *string           `protobuf:"bytes,9,opt,name=risk_level,json=riskLevel,proto3,oneof" json:"risk_level,omitempty"`
 	// 变更说明
 	ChangeSummary *string `protobuf:"bytes,10,opt,name=change_summary,json=changeSummary,proto3,oneof" json:"change_summary,omitempty"`
 	ChangeReason  *string `protobuf:"bytes,11,opt,name=change_reason,json=changeReason,proto3,oneof" json:"change_reason,omitempty"`
@@ -674,11 +674,11 @@ func (x *RiskRuleVersion) GetActions() []*RuleAction {
 	return nil
 }
 
-func (x *RiskRuleVersion) GetRiskLevel() RiskLevel {
+func (x *RiskRuleVersion) GetRiskLevel() string {
 	if x != nil && x.RiskLevel != nil {
 		return *x.RiskLevel
 	}
-	return RiskLevel_RISK_LEVEL_UNSPECIFIED
+	return ""
 }
 
 func (x *RiskRuleVersion) GetChangeSummary() string {
@@ -1096,15 +1096,15 @@ var File_uba_service_v1_risk_rule_proto protoreflect.FileDescriptor
 
 const file_uba_service_v1_risk_rule_proto_rawDesc = "" +
 	"\n" +
-	"\x1euba/service/v1/risk_rule.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1egoogle/protobuf/duration.proto\x1a google/protobuf/field_mask.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1epagination/v1/pagination.proto\x1a\x1buba/service/v1/common.proto\"\xba\f\n" +
+	"\x1euba/service/v1/risk_rule.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1egoogle/protobuf/duration.proto\x1a google/protobuf/field_mask.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1epagination/v1/pagination.proto\x1a\x1buba/service/v1/common.proto\"\x84\f\n" +
 	"\bRiskRule\x12?\n" +
 	"\x02id\x18\x01 \x01(\rB/\xbaG,\x92\x02)规则ID，唯一标识一条风险规则R\x02id\x12W\n" +
 	"\ttenant_id\x18\x02 \x01(\rB5\xbaG2\x92\x02/租户ID，多租户隔离，支持 SaaS 场景H\x00R\btenantId\x88\x01\x01\x12+\n" +
 	"\x04name\x18\x03 \x01(\tB\x12\xbaG\x0f\x92\x02\f规则名称H\x01R\x04name\x88\x01\x01\x12+\n" +
 	"\x04code\x18\x04 \x01(\tB\x12\xbaG\x0f\x92\x02\f规则编码H\x02R\x04code\x88\x01\x01\x129\n" +
-	"\vdescription\x18\x05 \x01(\tB\x12\xbaG\x0f\x92\x02\f规则描述H\x03R\vdescription\x88\x01\x01\x12l\n" +
-	"\trisk_type\x18\x06 \x01(\x0e2\x18.uba.service.v1.RiskTypeB0\xbaG-\x92\x02*风险类型，规则对应的风险类型H\x04R\briskType\x88\x01\x01\x12\x81\x01\n" +
-	"\rdefault_level\x18\a \x01(\x0e2\x19.uba.service.v1.RiskLevelB<\xbaG9\x92\x026默认风险等级，规则对应的默认风险等级H\x05R\fdefaultLevel\x88\x01\x01\x12y\n" +
+	"\vdescription\x18\x05 \x01(\tB\x12\xbaG\x0f\x92\x02\f规则描述H\x03R\vdescription\x88\x01\x01\x12R\n" +
+	"\trisk_type\x18\x06 \x01(\tB0\xbaG-\x92\x02*风险类型，规则对应的风险类型H\x04R\briskType\x88\x01\x01\x12f\n" +
+	"\rdefault_level\x18\a \x01(\tB<\xbaG9\x92\x026默认风险等级，规则对应的默认风险等级H\x05R\fdefaultLevel\x88\x01\x01\x12y\n" +
 	"\tcondition\x18\b \x01(\v2\x17.google.protobuf.StructB=\xbaG:\x92\x027规则条件，简化版，实际可用 CEL/JSON SchemaH\x06R\tcondition\x88\x01\x01\x12o\n" +
 	"\aactions\x18\t \x03(\v2\x1a.uba.service.v1.RiskActionB9\xbaG6\x92\x023动作配置，规则触发时的处置动作列表R\aactions\x12P\n" +
 	"\aenabled\x18\n" +
@@ -1184,7 +1184,7 @@ const file_uba_service_v1_risk_rule_proto_rawDesc = "" +
 	"\f_field_valueB\x11\n" +
 	"\x0f_logic_operatorB\v\n" +
 	"\t_group_idB\r\n" +
-	"\v_sort_order\"\xdc\v\n" +
+	"\v_sort_order\"\xc1\v\n" +
 	"\x0fRiskRuleVersion\x127\n" +
 	"\x02id\x18\x01 \x01(\rB'\xbaG$\x92\x02!版本表 id，唯一标识版本R\x02id\x12G\n" +
 	"\arule_id\x18\x02 \x01(\rB)\xbaG&\x92\x02#所属规则ID，关联 RiskRule.idH\x00R\x06ruleId\x88\x01\x01\x120\n" +
@@ -1194,9 +1194,9 @@ const file_uba_service_v1_risk_rule_proto_rawDesc = "" +
 	"\x0frule_expression\x18\x06 \x01(\tB\x15\xbaG\x12\x92\x02\x0f规则表达式H\x04R\x0eruleExpression\x88\x01\x01\x12d\n" +
 	"\vrule_config\x18\a \x03(\v2/.uba.service.v1.RiskRuleVersion.RuleConfigEntryB\x12\xbaG\x0f\x92\x02\f规则配置R\n" +
 	"ruleConfig\x12N\n" +
-	"\aactions\x18\b \x03(\v2\x1a.uba.service.v1.RuleActionB\x18\xbaG\x15\x92\x02\x12版本动作列表R\aactions\x12Q\n" +
+	"\aactions\x18\b \x03(\v2\x1a.uba.service.v1.RuleActionB\x18\xbaG\x15\x92\x02\x12版本动作列表R\aactions\x126\n" +
 	"\n" +
-	"risk_level\x18\t \x01(\x0e2\x19.uba.service.v1.RiskLevelB\x12\xbaG\x0f\x92\x02\f风险等级H\x05R\triskLevel\x88\x01\x01\x12Y\n" +
+	"risk_level\x18\t \x01(\tB\x12\xbaG\x0f\x92\x02\f风险等级H\x05R\triskLevel\x88\x01\x01\x12Y\n" +
 	"\x0echange_summary\x18\n" +
 	" \x01(\tB-\xbaG*\x92\x02'变更摘要，简要说明变更内容H\x06R\rchangeSummary\x88\x01\x01\x12W\n" +
 	"\rchange_reason\x18\v \x01(\tB-\xbaG*\x92\x02'变更原因，详细说明变更原因H\aR\fchangeReason\x88\x01\x01\x12m\n" +
@@ -1301,54 +1301,49 @@ var file_uba_service_v1_risk_rule_proto_goTypes = []any{
 	(*CountRiskRuleResponse)(nil), // 12: uba.service.v1.CountRiskRuleResponse
 	nil,                           // 13: uba.service.v1.RuleAction.ConfigEntry
 	nil,                           // 14: uba.service.v1.RiskRuleVersion.RuleConfigEntry
-	(RiskType)(0),                 // 15: uba.service.v1.RiskType
-	(RiskLevel)(0),                // 16: uba.service.v1.RiskLevel
-	(*structpb.Struct)(nil),       // 17: google.protobuf.Struct
-	(*timestamppb.Timestamp)(nil), // 18: google.protobuf.Timestamp
-	(*durationpb.Duration)(nil),   // 19: google.protobuf.Duration
-	(*fieldmaskpb.FieldMask)(nil), // 20: google.protobuf.FieldMask
-	(*v1.PagingRequest)(nil),      // 21: pagination.PagingRequest
-	(*emptypb.Empty)(nil),         // 22: google.protobuf.Empty
+	(*structpb.Struct)(nil),       // 15: google.protobuf.Struct
+	(*timestamppb.Timestamp)(nil), // 16: google.protobuf.Timestamp
+	(*durationpb.Duration)(nil),   // 17: google.protobuf.Duration
+	(*fieldmaskpb.FieldMask)(nil), // 18: google.protobuf.FieldMask
+	(*v1.PagingRequest)(nil),      // 19: pagination.PagingRequest
+	(*emptypb.Empty)(nil),         // 20: google.protobuf.Empty
 }
 var file_uba_service_v1_risk_rule_proto_depIdxs = []int32{
-	15, // 0: uba.service.v1.RiskRule.risk_type:type_name -> uba.service.v1.RiskType
-	16, // 1: uba.service.v1.RiskRule.default_level:type_name -> uba.service.v1.RiskLevel
-	17, // 2: uba.service.v1.RiskRule.condition:type_name -> google.protobuf.Struct
-	3,  // 3: uba.service.v1.RiskRule.actions:type_name -> uba.service.v1.RiskAction
-	18, // 4: uba.service.v1.RiskRule.created_at:type_name -> google.protobuf.Timestamp
-	18, // 5: uba.service.v1.RiskRule.updated_at:type_name -> google.protobuf.Timestamp
-	18, // 6: uba.service.v1.RiskRule.deleted_at:type_name -> google.protobuf.Timestamp
-	1,  // 7: uba.service.v1.RiskAction.type:type_name -> uba.service.v1.RiskAction.ActionType
-	19, // 8: uba.service.v1.RiskAction.duration:type_name -> google.protobuf.Duration
-	13, // 9: uba.service.v1.RuleAction.config:type_name -> uba.service.v1.RuleAction.ConfigEntry
-	14, // 10: uba.service.v1.RiskRuleVersion.rule_config:type_name -> uba.service.v1.RiskRuleVersion.RuleConfigEntry
-	4,  // 11: uba.service.v1.RiskRuleVersion.actions:type_name -> uba.service.v1.RuleAction
-	16, // 12: uba.service.v1.RiskRuleVersion.risk_level:type_name -> uba.service.v1.RiskLevel
-	0,  // 13: uba.service.v1.RiskRuleVersion.status:type_name -> uba.service.v1.RuleVersionStatus
-	18, // 14: uba.service.v1.RiskRuleVersion.published_at:type_name -> google.protobuf.Timestamp
-	18, // 15: uba.service.v1.RiskRuleVersion.created_at:type_name -> google.protobuf.Timestamp
-	2,  // 16: uba.service.v1.ListRiskRuleResponse.items:type_name -> uba.service.v1.RiskRule
-	20, // 17: uba.service.v1.GetRiskRuleRequest.view_mask:type_name -> google.protobuf.FieldMask
-	2,  // 18: uba.service.v1.CreateRiskRuleRequest.data:type_name -> uba.service.v1.RiskRule
-	2,  // 19: uba.service.v1.UpdateRiskRuleRequest.data:type_name -> uba.service.v1.RiskRule
-	20, // 20: uba.service.v1.UpdateRiskRuleRequest.update_mask:type_name -> google.protobuf.FieldMask
-	21, // 21: uba.service.v1.RiskRuleService.List:input_type -> pagination.PagingRequest
-	21, // 22: uba.service.v1.RiskRuleService.Count:input_type -> pagination.PagingRequest
-	8,  // 23: uba.service.v1.RiskRuleService.Get:input_type -> uba.service.v1.GetRiskRuleRequest
-	9,  // 24: uba.service.v1.RiskRuleService.Create:input_type -> uba.service.v1.CreateRiskRuleRequest
-	10, // 25: uba.service.v1.RiskRuleService.Update:input_type -> uba.service.v1.UpdateRiskRuleRequest
-	11, // 26: uba.service.v1.RiskRuleService.Delete:input_type -> uba.service.v1.DeleteRiskRuleRequest
-	7,  // 27: uba.service.v1.RiskRuleService.List:output_type -> uba.service.v1.ListRiskRuleResponse
-	12, // 28: uba.service.v1.RiskRuleService.Count:output_type -> uba.service.v1.CountRiskRuleResponse
-	2,  // 29: uba.service.v1.RiskRuleService.Get:output_type -> uba.service.v1.RiskRule
-	2,  // 30: uba.service.v1.RiskRuleService.Create:output_type -> uba.service.v1.RiskRule
-	2,  // 31: uba.service.v1.RiskRuleService.Update:output_type -> uba.service.v1.RiskRule
-	22, // 32: uba.service.v1.RiskRuleService.Delete:output_type -> google.protobuf.Empty
-	27, // [27:33] is the sub-list for method output_type
-	21, // [21:27] is the sub-list for method input_type
-	21, // [21:21] is the sub-list for extension type_name
-	21, // [21:21] is the sub-list for extension extendee
-	0,  // [0:21] is the sub-list for field type_name
+	15, // 0: uba.service.v1.RiskRule.condition:type_name -> google.protobuf.Struct
+	3,  // 1: uba.service.v1.RiskRule.actions:type_name -> uba.service.v1.RiskAction
+	16, // 2: uba.service.v1.RiskRule.created_at:type_name -> google.protobuf.Timestamp
+	16, // 3: uba.service.v1.RiskRule.updated_at:type_name -> google.protobuf.Timestamp
+	16, // 4: uba.service.v1.RiskRule.deleted_at:type_name -> google.protobuf.Timestamp
+	1,  // 5: uba.service.v1.RiskAction.type:type_name -> uba.service.v1.RiskAction.ActionType
+	17, // 6: uba.service.v1.RiskAction.duration:type_name -> google.protobuf.Duration
+	13, // 7: uba.service.v1.RuleAction.config:type_name -> uba.service.v1.RuleAction.ConfigEntry
+	14, // 8: uba.service.v1.RiskRuleVersion.rule_config:type_name -> uba.service.v1.RiskRuleVersion.RuleConfigEntry
+	4,  // 9: uba.service.v1.RiskRuleVersion.actions:type_name -> uba.service.v1.RuleAction
+	0,  // 10: uba.service.v1.RiskRuleVersion.status:type_name -> uba.service.v1.RuleVersionStatus
+	16, // 11: uba.service.v1.RiskRuleVersion.published_at:type_name -> google.protobuf.Timestamp
+	16, // 12: uba.service.v1.RiskRuleVersion.created_at:type_name -> google.protobuf.Timestamp
+	2,  // 13: uba.service.v1.ListRiskRuleResponse.items:type_name -> uba.service.v1.RiskRule
+	18, // 14: uba.service.v1.GetRiskRuleRequest.view_mask:type_name -> google.protobuf.FieldMask
+	2,  // 15: uba.service.v1.CreateRiskRuleRequest.data:type_name -> uba.service.v1.RiskRule
+	2,  // 16: uba.service.v1.UpdateRiskRuleRequest.data:type_name -> uba.service.v1.RiskRule
+	18, // 17: uba.service.v1.UpdateRiskRuleRequest.update_mask:type_name -> google.protobuf.FieldMask
+	19, // 18: uba.service.v1.RiskRuleService.List:input_type -> pagination.PagingRequest
+	19, // 19: uba.service.v1.RiskRuleService.Count:input_type -> pagination.PagingRequest
+	8,  // 20: uba.service.v1.RiskRuleService.Get:input_type -> uba.service.v1.GetRiskRuleRequest
+	9,  // 21: uba.service.v1.RiskRuleService.Create:input_type -> uba.service.v1.CreateRiskRuleRequest
+	10, // 22: uba.service.v1.RiskRuleService.Update:input_type -> uba.service.v1.UpdateRiskRuleRequest
+	11, // 23: uba.service.v1.RiskRuleService.Delete:input_type -> uba.service.v1.DeleteRiskRuleRequest
+	7,  // 24: uba.service.v1.RiskRuleService.List:output_type -> uba.service.v1.ListRiskRuleResponse
+	12, // 25: uba.service.v1.RiskRuleService.Count:output_type -> uba.service.v1.CountRiskRuleResponse
+	2,  // 26: uba.service.v1.RiskRuleService.Get:output_type -> uba.service.v1.RiskRule
+	2,  // 27: uba.service.v1.RiskRuleService.Create:output_type -> uba.service.v1.RiskRule
+	2,  // 28: uba.service.v1.RiskRuleService.Update:output_type -> uba.service.v1.RiskRule
+	20, // 29: uba.service.v1.RiskRuleService.Delete:output_type -> google.protobuf.Empty
+	24, // [24:30] is the sub-list for method output_type
+	18, // [18:24] is the sub-list for method input_type
+	18, // [18:18] is the sub-list for extension type_name
+	18, // [18:18] is the sub-list for extension extendee
+	0,  // [0:18] is the sub-list for field type_name
 }
 
 func init() { file_uba_service_v1_risk_rule_proto_init() }

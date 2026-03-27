@@ -3,8 +3,6 @@
 package usertag
 
 import (
-	"fmt"
-
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 )
@@ -103,31 +101,6 @@ var (
 	// IDValidator is a validator for the "id" field. It is called by the builders before save.
 	IDValidator func(uint32) error
 )
-
-// Source defines the type for the "source" enum field.
-type Source string
-
-// Source values.
-const (
-	SourceTagSourceManual Source = "TAG_SOURCE_MANUAL"
-	SourceTagSourceRule   Source = "TAG_SOURCE_RULE"
-	SourceTagSourceModel  Source = "TAG_SOURCE_MODEL"
-	SourceTagSourceImport Source = "TAG_SOURCE_IMPORT"
-)
-
-func (s Source) String() string {
-	return string(s)
-}
-
-// SourceValidator is a validator for the "source" field enum values. It is called by the builders before save.
-func SourceValidator(s Source) error {
-	switch s {
-	case SourceTagSourceManual, SourceTagSourceRule, SourceTagSourceModel, SourceTagSourceImport:
-		return nil
-	default:
-		return fmt.Errorf("usertag: invalid enum value for source field: %q", s)
-	}
-}
 
 // OrderOption defines the ordering options for the UserTag queries.
 type OrderOption func(*sql.Selector)

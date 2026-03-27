@@ -113,7 +113,7 @@ message UserBehaviorProfile {
     (gnostic.openapi.v3.property) = {description: "风险标签"}
   ]; // 风险标签
   // 风险等级
-  optional RiskLevel risk_level = 22 [
+  optional string risk_level = 22 [
     json_name = "riskLevel",
     (gnostic.openapi.v3.property) = {description: "风险等级，枚举类型，标识用户当前的风险级别"}
   ]; // 风险等级，枚举类型，标识用户当前的风险级别
@@ -136,7 +136,7 @@ message UserBehaviorProfile {
   ]; // 地理位置，经纬度信息或 GeoJSON，便于分析用户地理分布
 
   // 平台类型
-  optional Platform platform = 41 [
+  optional string platform = 41 [
     json_name = "platform",
     (gnostic.openapi.v3.property) = {description: "平台类型，枚举类型，标识用户主要活跃的平台（如 Web、iOS、Android 等）"}
   ]; // 平台类型，枚举类型，标识用户主要活跃的平台（如 Web、iOS、Android 等）

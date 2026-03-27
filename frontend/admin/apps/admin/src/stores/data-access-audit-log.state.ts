@@ -134,5 +134,5 @@ export function dataAccessAuditLogAccessTypeToColor(accessType: AccessType) {
 export function dataAccessAuditLogAccessTypeToName(accessType: AccessType) {
   const values = dataAccessAuditLogAccessTypeList.value;
   const matchedItem = values.find((item) => item.value === accessType);
-  return matchedItem ? matchedItem.label : '';
+  return matchedItem ? matchedItem.label : accessType;
 }

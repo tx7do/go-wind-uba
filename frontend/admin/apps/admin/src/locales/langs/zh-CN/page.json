@@ -484,6 +484,7 @@
   },
   "riskEvent": {
     "moduleName": "风险事件",
+    "riskEventId": "风险事件ID",
     "userId": "用户ID",
     "deviceId": "设备ID",
     "globalUserId": "全局用户ID",
@@ -587,7 +588,7 @@
   },
   "eventPath": {
     "moduleName": "事件路径",
-    "id": "路径ID",
+    "pathId": "路径ID",
     "userId": "用户ID",
     "sessionId": "会话ID",
     "startTime": "起始时间",
@@ -640,7 +641,7 @@
   },
   "session": {
     "moduleName": "会话管理",
-    "id": "ID",
+    "sessionId": "会话ID",
     "userId": "用户ID",
     "deviceId": "设备ID",
     "globalUserId": "全局用户ID",

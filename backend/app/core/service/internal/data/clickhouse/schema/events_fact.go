@@ -22,7 +22,7 @@ type EventsFact struct {
 	ObjectType    *string            `ch:"object_type"`
 	ObjectID      *string            `ch:"object_id"`
 	ObjectName    *string            `ch:"object_name"`
-	SessionID     *uint32            `ch:"session_id"`
+	SessionID     *string            `ch:"session_id"`
 	SessionSeq    *uint32            `ch:"session_seq"`
 	Platform      *string            `ch:"platform"`
 	Os            *string            `ch:"os"`

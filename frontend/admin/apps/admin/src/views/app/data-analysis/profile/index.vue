@@ -145,9 +145,6 @@ const gridOptions: VxeGridProps<UserBehaviorProfile> = {
       title: $t('page.userBehaviorProfile.riskLevel'),
       field: 'riskLevel',
       minWidth: 100,
-      slots: {
-        default: 'riskLevel',
-      },
     },
     {
       title: $t('page.userBehaviorProfile.deviceType'),
@@ -158,9 +155,6 @@ const gridOptions: VxeGridProps<UserBehaviorProfile> = {
       title: $t('page.userBehaviorProfile.platform'),
       field: 'platform',
       minWidth: 100,
-      slots: {
-        default: 'platform',
-      },
     },
     {
       title: $t('ui.table.createdAt'),
@@ -174,7 +168,7 @@ const gridOptions: VxeGridProps<UserBehaviorProfile> = {
 
 const gridEvents: VxeGridListeners<UserBehaviorProfile> = {};
 
-const [Grid, gridApi] = useVbenVxeGrid({
+const [Grid] = useVbenVxeGrid({
   gridOptions,
   formOptions,
   gridEvents,

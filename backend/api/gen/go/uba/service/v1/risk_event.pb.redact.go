@@ -109,7 +109,7 @@ func (x *RiskEvent) Redact() string {
 		return ""
 	}
 
-	// Safe field: Id
+	// Safe field: RiskEventId
 
 	// Safe field: TenantId
 

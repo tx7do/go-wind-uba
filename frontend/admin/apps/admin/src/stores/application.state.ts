@@ -8,7 +8,6 @@ import { defineStore } from 'pinia';
 import {
   type ubaservicev1_Application_Type as Application_Type,
   createApplicationServiceClient,
-  type ubaservicev1_Platform as Platform,
 } from '#/generated/api/admin/service/v1';
 import { makeOrderBy, makeQueryString, makeUpdateMask } from '#/utils/query';
 import { type Paging, requestClientRequestHandler } from '#/utils/request';
@@ -122,17 +121,17 @@ const PLATFORM_COLOR_MAP = {
   DEFAULT: '#86909C', // 默认中性灰
 } as const;
 
-export function platformToColor(platform?: Platform) {
+export function platformToColor(platform?: any) {
   return (
     PLATFORM_COLOR_MAP[platform as keyof typeof PLATFORM_COLOR_MAP] ||
     PLATFORM_COLOR_MAP.DEFAULT
   );
 }
 
-export function platformToName(platform?: Platform) {
+export function platformToName(platform?: any) {
   const values = platformList.value;
   const matchedItem = values.find((item) => item.value === platform);
-  return matchedItem ? matchedItem.label : '';
+  return matchedItem ? matchedItem.label : platform;
 }
 
 export const applicationTypeList = computed(() => [
@@ -169,5 +168,5 @@ export function applicationTypeToColor(type?: Application_Type) {
 export function applicationTypeToName(type?: Application_Type) {
   const values = applicationTypeList.value;
   const matchedItem = values.find((item) => item.value === type);
-  return matchedItem ? matchedItem.label : '';
+  return matchedItem ? matchedItem.label : type;
 }

@@ -8,7 +8,7 @@ import (
 
 type ObjectsDim struct {
 	TenantID     *uint32           `json:"tenant_id"`
-	ID           *string           `json:"id"`
+	ObjectID     *string           `json:"object_id"`
 	ObjectType   *string           `json:"object_type"`
 	ObjectName   *string           `json:"object_name"`
 	CategoryPath *string           `json:"category_path"`

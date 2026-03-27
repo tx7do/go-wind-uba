@@ -21,8 +21,8 @@ const formOptions = {
   schema: [
     {
       component: 'Input',
-      fieldName: 'id',
-      label: $t('page.eventPath.id'),
+      fieldName: 'pathId',
+      label: $t('page.eventPath.pathId'),
       componentProps: {
         placeholder: $t('ui.placeholder.input'),
         allowClear: true,
@@ -86,18 +86,18 @@ const gridOptions: VxeGridProps<EventPath> = {
   },
   columns: [
     {
-      title: $t('page.eventPath.id'),
-      field: 'id',
+      title: $t('page.eventPath.pathId'),
+      field: 'pathId',
       minWidth: 200,
       fixed: 'left',
       align: 'left',
     },
-    { title: $t('page.eventPath.userId'), field: 'userId', minWidth: 100 },
     {
       title: $t('page.eventPath.sessionId'),
       field: 'sessionId',
-      minWidth: 100,
+      minWidth: 200,
     },
+    { title: $t('page.eventPath.userId'), field: 'userId', minWidth: 100 },
     {
       title: $t('page.eventPath.totalDurationMs'),
       field: 'totalDurationMs',

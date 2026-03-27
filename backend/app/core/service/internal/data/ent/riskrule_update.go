@@ -193,13 +193,13 @@ func (_u *RiskRuleUpdate) ClearDescription() *RiskRuleUpdate {
 }
 
 // SetRiskType sets the "risk_type" field.
-func (_u *RiskRuleUpdate) SetRiskType(v riskrule.RiskType) *RiskRuleUpdate {
+func (_u *RiskRuleUpdate) SetRiskType(v string) *RiskRuleUpdate {
 	_u.mutation.SetRiskType(v)
 	return _u
 }
 
 // SetNillableRiskType sets the "risk_type" field if the given value is not nil.
-func (_u *RiskRuleUpdate) SetNillableRiskType(v *riskrule.RiskType) *RiskRuleUpdate {
+func (_u *RiskRuleUpdate) SetNillableRiskType(v *string) *RiskRuleUpdate {
 	if v != nil {
 		_u.SetRiskType(*v)
 	}
@@ -213,13 +213,13 @@ func (_u *RiskRuleUpdate) ClearRiskType() *RiskRuleUpdate {
 }
 
 // SetDefaultLevel sets the "default_level" field.
-func (_u *RiskRuleUpdate) SetDefaultLevel(v riskrule.DefaultLevel) *RiskRuleUpdate {
+func (_u *RiskRuleUpdate) SetDefaultLevel(v string) *RiskRuleUpdate {
 	_u.mutation.SetDefaultLevel(v)
 	return _u
 }
 
 // SetNillableDefaultLevel sets the "default_level" field if the given value is not nil.
-func (_u *RiskRuleUpdate) SetNillableDefaultLevel(v *riskrule.DefaultLevel) *RiskRuleUpdate {
+func (_u *RiskRuleUpdate) SetNillableDefaultLevel(v *string) *RiskRuleUpdate {
 	if v != nil {
 		_u.SetDefaultLevel(*v)
 	}
@@ -467,16 +467,6 @@ func (_u *RiskRuleUpdate) check() error {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "RiskRule.name": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.RiskType(); ok {
-		if err := riskrule.RiskTypeValidator(v); err != nil {
-			return &ValidationError{Name: "risk_type", err: fmt.Errorf(`ent: validator failed for field "RiskRule.risk_type": %w`, err)}
-		}
-	}
-	if v, ok := _u.mutation.DefaultLevel(); ok {
-		if err := riskrule.DefaultLevelValidator(v); err != nil {
-			return &ValidationError{Name: "default_level", err: fmt.Errorf(`ent: validator failed for field "RiskRule.default_level": %w`, err)}
-		}
-	}
 	if v, ok := _u.mutation.Code(); ok {
 		if err := riskrule.CodeValidator(v); err != nil {
 			return &ValidationError{Name: "code", err: fmt.Errorf(`ent: validator failed for field "RiskRule.code": %w`, err)}
@@ -566,16 +556,16 @@ func (_u *RiskRuleUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		_spec.ClearField(riskrule.FieldDescription, field.TypeString)
 	}
 	if value, ok := _u.mutation.RiskType(); ok {
-		_spec.SetField(riskrule.FieldRiskType, field.TypeEnum, value)
+		_spec.SetField(riskrule.FieldRiskType, field.TypeString, value)
 	}
 	if _u.mutation.RiskTypeCleared() {
-		_spec.ClearField(riskrule.FieldRiskType, field.TypeEnum)
+		_spec.ClearField(riskrule.FieldRiskType, field.TypeString)
 	}
 	if value, ok := _u.mutation.DefaultLevel(); ok {
-		_spec.SetField(riskrule.FieldDefaultLevel, field.TypeEnum, value)
+		_spec.SetField(riskrule.FieldDefaultLevel, field.TypeString, value)
 	}
 	if _u.mutation.DefaultLevelCleared() {
-		_spec.ClearField(riskrule.FieldDefaultLevel, field.TypeEnum)
+		_spec.ClearField(riskrule.FieldDefaultLevel, field.TypeString)
 	}
 	if value, ok := _u.mutation.Condition(); ok {
 		_spec.SetField(riskrule.FieldCondition, field.TypeJSON, value)
@@ -832,13 +822,13 @@ func (_u *RiskRuleUpdateOne) ClearDescription() *RiskRuleUpdateOne {
 }
 
 // SetRiskType sets the "risk_type" field.
-func (_u *RiskRuleUpdateOne) SetRiskType(v riskrule.RiskType) *RiskRuleUpdateOne {
+func (_u *RiskRuleUpdateOne) SetRiskType(v string) *RiskRuleUpdateOne {
 	_u.mutation.SetRiskType(v)
 	return _u
 }
 
 // SetNillableRiskType sets the "risk_type" field if the given value is not nil.
-func (_u *RiskRuleUpdateOne) SetNillableRiskType(v *riskrule.RiskType) *RiskRuleUpdateOne {
+func (_u *RiskRuleUpdateOne) SetNillableRiskType(v *string) *RiskRuleUpdateOne {
 	if v != nil {
 		_u.SetRiskType(*v)
 	}
@@ -852,13 +842,13 @@ func (_u *RiskRuleUpdateOne) ClearRiskType() *RiskRuleUpdateOne {
 }
 
 // SetDefaultLevel sets the "default_level" field.
-func (_u *RiskRuleUpdateOne) SetDefaultLevel(v riskrule.DefaultLevel) *RiskRuleUpdateOne {
+func (_u *RiskRuleUpdateOne) SetDefaultLevel(v string) *RiskRuleUpdateOne {
 	_u.mutation.SetDefaultLevel(v)
 	return _u
 }
 
 // SetNillableDefaultLevel sets the "default_level" field if the given value is not nil.
-func (_u *RiskRuleUpdateOne) SetNillableDefaultLevel(v *riskrule.DefaultLevel) *RiskRuleUpdateOne {
+func (_u *RiskRuleUpdateOne) SetNillableDefaultLevel(v *string) *RiskRuleUpdateOne {
 	if v != nil {
 		_u.SetDefaultLevel(*v)
 	}
@@ -1119,16 +1109,6 @@ func (_u *RiskRuleUpdateOne) check() error {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "RiskRule.name": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.RiskType(); ok {
-		if err := riskrule.RiskTypeValidator(v); err != nil {
-			return &ValidationError{Name: "risk_type", err: fmt.Errorf(`ent: validator failed for field "RiskRule.risk_type": %w`, err)}
-		}
-	}
-	if v, ok := _u.mutation.DefaultLevel(); ok {
-		if err := riskrule.DefaultLevelValidator(v); err != nil {
-			return &ValidationError{Name: "default_level", err: fmt.Errorf(`ent: validator failed for field "RiskRule.default_level": %w`, err)}
-		}
-	}
 	if v, ok := _u.mutation.Code(); ok {
 		if err := riskrule.CodeValidator(v); err != nil {
 			return &ValidationError{Name: "code", err: fmt.Errorf(`ent: validator failed for field "RiskRule.code": %w`, err)}
@@ -1235,16 +1215,16 @@ func (_u *RiskRuleUpdateOne) sqlSave(ctx context.Context) (_node *RiskRule, err 
 		_spec.ClearField(riskrule.FieldDescription, field.TypeString)
 	}
 	if value, ok := _u.mutation.RiskType(); ok {
-		_spec.SetField(riskrule.FieldRiskType, field.TypeEnum, value)
+		_spec.SetField(riskrule.FieldRiskType, field.TypeString, value)
 	}
 	if _u.mutation.RiskTypeCleared() {
-		_spec.ClearField(riskrule.FieldRiskType, field.TypeEnum)
+		_spec.ClearField(riskrule.FieldRiskType, field.TypeString)
 	}
 	if value, ok := _u.mutation.DefaultLevel(); ok {
-		_spec.SetField(riskrule.FieldDefaultLevel, field.TypeEnum, value)
+		_spec.SetField(riskrule.FieldDefaultLevel, field.TypeString, value)
 	}
 	if _u.mutation.DefaultLevelCleared() {
-		_spec.ClearField(riskrule.FieldDefaultLevel, field.TypeEnum)
+		_spec.ClearField(riskrule.FieldDefaultLevel, field.TypeString)
 	}
 	if value, ok := _u.mutation.Condition(); ok {
 		_spec.SetField(riskrule.FieldCondition, field.TypeJSON, value)

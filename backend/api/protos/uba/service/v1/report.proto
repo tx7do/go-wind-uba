@@ -82,7 +82,7 @@ message ReportEvent {
   ];
 
   // 上下文（所有事件类型共有）
-  uint64 session_id = 8 [
+  string session_id = 8 [
     json_name = "sessionId",
     (gnostic.openapi.v3.property) = {description: "会话ID，事件所属会话的唯一标识，关联分析关键字段"}
   ];

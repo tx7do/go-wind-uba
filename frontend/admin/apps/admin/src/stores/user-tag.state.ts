@@ -7,7 +7,6 @@ import { defineStore } from 'pinia';
 
 import {
   createUserTagServiceClient,
-  type ubaservicev1_TagSource as TagSource,
 } from '#/generated/api/admin/service/v1';
 import { makeOrderBy, makeQueryString, makeUpdateMask } from '#/utils/query';
 import { type Paging, requestClientRequestHandler } from '#/utils/request';
@@ -120,14 +119,14 @@ const TAG_SOURCE_COLOR_MAP = {
   DEFAULT: '#86909C',
 } as const;
 
-export function userTagSourceToColor(source?: TagSource) {
+export function userTagSourceToColor(source?: any) {
   return (
     TAG_SOURCE_COLOR_MAP[source as keyof typeof TAG_SOURCE_COLOR_MAP] ||
     TAG_SOURCE_COLOR_MAP.DEFAULT
   );
 }
 
-export function userTagSourceToName(source?: TagSource) {
+export function userTagSourceToName(source?: any) {
   const values = tagSourceList.value;
   const matchedItem = values.find((item) => item.value === source);
   return matchedItem ? matchedItem.label : '';
