@@ -268,7 +268,7 @@ CREATE TABLE IF NOT EXISTS gw_uba.page_visit_daily
 
     pv             SimpleAggregateFunction(sum, UInt64),
     uv             AggregateFunction(uniqCombined, UInt32),
-    session_count  SimpleAggregateFunction(sum, UInt64),
+    session_count  AggregateFunction(uniqCombined, UInt64),
 
     --avg_duration   SimpleAggregateFunction(sum, Float64),
     duration_sum   SimpleAggregateFunction(sum, Float64),
@@ -587,3 +587,45 @@ SELECT tenant_id,
 
 FROM gw_uba.pay_agg_daily
 GROUP BY tenant_id, stat_date, platform, country, pay_level;
+
+
+-- -----------------------------------------------------------
+-- 12. 物化视图：会话日聚合查询视图
+-- 说明：对 sessions_agg_daily 的聚合结果进行二次聚合，支持更灵活的查询（如按国家/平台汇总）
+-- 注意：聚合函数字段必须使用 Merge 进行二次聚合，普通 sum 字段直接 sum
+-- -----------------------------------------------------------
+CREATE VIEW IF NOT EXISTS gw_uba.sessions_agg_daily_view AS
+SELECT tenant_id,
+       stat_date,
+       platform,
+       sum(session_count)                      AS session_count,
+       uniqCombinedMerge(unique_users)         AS unique_users,
+       sum(duration_sum) / sum(duration_count) AS avg_duration,
+       sum(bounce_sum) / sum(bounce_count)     AS bounce_rate,
+       sum(total_amount)                       AS total_amount,
+       quantileTimingMerge(0.5)(p50_duration)  AS p50_duration,
+       quantileTimingMerge(0.9)(p90_duration)  AS p90_duration,
+       quantileTimingMerge(0.99)(p99_duration) AS p99_duration
+FROM gw_uba.sessions_agg_daily
+GROUP BY tenant_id, stat_date, platform;
+
+
+-- -----------------------------------------------------------
+-- 13. 物化视图：风险统计日聚合查询视图
+-- 说明：对 risk_stats_daily 的聚合结果进行二次聚合，支持更灵活的查询（如按国家/平台汇总）
+-- 注意：聚合函数字段必须使用 Merge 进行二次聚合，普通 sum 字段直接 sum
+-- -----------------------------------------------------------
+CREATE VIEW IF NOT EXISTS gw_uba.risk_stats_daily_view AS
+SELECT tenant_id,
+       stat_date,
+       risk_type,
+       risk_level,
+       status,
+
+       uniqCombinedMerge(unique_users) AS unique_users,
+       sum(event_count)                AS event_count,
+       sum(confirmed_count)            AS confirmed_count,
+       sum(risk_score_sum)             AS risk_score_sum,
+       sum(risk_score_count)           AS risk_score_count
+FROM gw_uba.risk_stats_daily
+GROUP BY tenant_id, stat_date, risk_type, risk_level, status;
