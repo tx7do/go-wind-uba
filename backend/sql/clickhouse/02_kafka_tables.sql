@@ -51,7 +51,7 @@ SELECT JSONExtractString(raw, 'eventId')                                  AS eve
        toUInt32(JSONExtract(raw, 'userId', 'UInt32'))                     AS user_id,
        JSONExtractString(raw, 'deviceId')                                 AS device_id,
        JSONExtractString(raw, 'accountId')                                AS account_id,
-       JSONExtractString(raw, 'globalUserId')                            AS global_user_id,
+       JSONExtractString(raw, 'globalUserId')                             AS global_user_id,
 
        parseDateTime64BestEffort(JSONExtractString(raw, 'eventTime'), 3)  AS event_time,
        parseDateTime64BestEffort(JSONExtractString(raw, 'serverTime'), 3) AS server_time,
@@ -67,43 +67,43 @@ SELECT JSONExtractString(raw, 'eventId')                                  AS eve
        toUInt64(JSONExtract(raw, 'sessionId', 'UInt64'))                  AS session_id,
        toUInt32(JSONExtract(raw, 'sessionSeq', 'UInt32'))                 AS session_seq,
 
-       JSONExtractString(raw, 'platform')                                  AS platform,
-       JSONExtractString(raw, 'os')                                        AS os,
+       JSONExtractString(raw, 'platform')                                 AS platform,
+       JSONExtractString(raw, 'os')                                       AS os,
        JSONExtractString(raw, 'appVersion')                               AS app_version,
-       JSONExtractString(raw, 'channel')                                   AS channel,
+       JSONExtractString(raw, 'channel')                                  AS channel,
        JSONExtractString(raw, 'userAgent')                                AS user_agent,
 
-       JSONExtractString(raw, 'ip')                                        AS ip,
+       JSONExtractString(raw, 'ip')                                       AS ip,
        JSONExtractString(raw, 'ipCity')                                   AS ip_city,
-       JSONExtractString(raw, 'country')                                   AS country,
-       JSONExtractString(raw, 'network')                                   AS network,
-       JSONExtractString(raw, 'geo')                                       AS geo,
-       JSONExtractString(raw, 'referer')                                   AS referer,
+       JSONExtractString(raw, 'country')                                  AS country,
+       JSONExtractString(raw, 'network')                                  AS network,
+       JSONExtractString(raw, 'geo')                                      AS geo,
+       JSONExtractString(raw, 'referer')                                  AS referer,
 
-       JSONExtract(raw, 'context', 'Map(String, String)')                  AS context,
+       JSONExtract(raw, 'context', 'Map(String, String)')                 AS context,
 
        toUInt32(JSONExtract(raw, 'durationMs', 'UInt32'))                 AS duration_ms,
-       toDecimal128(JSONExtract(raw, 'amount', 'Decimal(18,2)'), 2)        AS amount,
-       toUInt32(JSONExtract(raw, 'quantity', 'UInt32'))                    AS quantity,
-       toInt32(JSONExtract(raw, 'score', 'Int32'))                         AS score,
+       toDecimal128(JSONExtract(raw, 'amount', 'Decimal(18,2)'), 2)       AS amount,
+       toUInt32(JSONExtract(raw, 'quantity', 'UInt32'))                   AS quantity,
+       toInt32(JSONExtract(raw, 'score', 'Int32'))                        AS score,
 
-       JSONExtract(raw, 'metrics', 'Map(String, Float64)')                 AS metrics,
-       JSONExtract(raw, 'properties', 'Map(String, String)')               AS properties,
+       JSONExtract(raw, 'metrics', 'Map(String, Float64)')                AS metrics,
+       JSONExtract(raw, 'properties', 'Map(String, String)')              AS properties,
 
        JSONExtractString(raw, 'opResult')                                 AS op_result,
        JSONExtractString(raw, 'errorCode')                                AS error_code,
        JSONExtractString(raw, 'riskLevel')                                AS risk_level,
        JSONExtractString(raw, 'traceId')                                  AS trace_id,
 
-       now()                                                               AS created_at,
-       now()                                                               AS updated_at
+       now()                                                              AS created_at,
+       now()                                                              AS updated_at
 FROM gw_uba.kafka_events_raw;
 
 
 -- ============================================================
 -- 4. 物化视图 - Kafka 风险事件 → 事实表
 -- ============================================================
-CREATE MATERIALIZED VIEW gw_uba.mv_kafka_risk_events_to_fact
+CREATE MATERIALIZED VIEW IF NOT EXISTS gw_uba.mv_kafka_risk_events_to_fact
     TO gw_uba.risk_events
 AS
 SELECT toUInt64(JSONExtractString(raw, 'id'))                              AS id,

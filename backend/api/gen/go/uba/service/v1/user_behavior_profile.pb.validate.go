@@ -248,6 +248,10 @@ func (m *UserBehaviorProfile) validate(all bool) error {
 		// no validation rules for DeviceType
 	}
 
+	if m.Country != nil {
+		// no validation rules for Country
+	}
+
 	if m.CreatedAt != nil {
 
 		if all {

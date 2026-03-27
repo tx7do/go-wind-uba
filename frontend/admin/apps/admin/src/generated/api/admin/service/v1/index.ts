@@ -8800,6 +8800,7 @@ export type ubaservicev1_UserBehaviorProfile = {
   platform?: ubaservicev1_Platform;
   // 设备类型
   deviceType?: string;
+  country?: string;
   ver: number | undefined;
   createdAt?: wellKnownTimestamp;
   updatedAt?: wellKnownTimestamp;

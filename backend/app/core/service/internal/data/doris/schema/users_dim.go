@@ -30,6 +30,7 @@ type UsersDim struct {
 	Geo              map[string]string `json:"geo"`
 	DeviceType       *string           `json:"device_type"`
 	Platform         *string           `ch:"platform"`
+	Country          *string           `ch:"country"`
 	Ver              *uint64           `json:"ver"`
 	CreatedAt        *time.Time        `json:"created_at"`
 	UpdatedAt        *time.Time        `json:"updated_at"`

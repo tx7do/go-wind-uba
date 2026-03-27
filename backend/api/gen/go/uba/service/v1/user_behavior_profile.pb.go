@@ -65,6 +65,7 @@ type UserBehaviorProfile struct {
 	Platform *Platform `protobuf:"varint,41,opt,name=platform,proto3,enum=uba.service.v1.Platform,oneof" json:"platform,omitempty"` // 平台类型，枚举类型，标识用户主要活跃的平台（如 Web、iOS、Android 等）
 	// 设备类型
 	DeviceType    *string                `protobuf:"bytes,42,opt,name=device_type,json=deviceType,proto3,oneof" json:"device_type,omitempty"` // 设备类型，记录用户主要使用的设备类型（如手机、平板、PC 等）
+	Country       *string                `protobuf:"bytes,43,opt,name=country,proto3,oneof" json:"country,omitempty"`                         // 国家，记录用户所在的国家信息，便于分析用户的地理分布特征
 	Ver           uint64                 `protobuf:"varint,50,opt,name=ver,proto3" json:"ver,omitempty"`                                      // 版本号
 	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,100,opt,name=created_at,json=createdAt,proto3,oneof" json:"created_at,omitempty"`   // 创建时间
 	UpdatedAt     *timestamppb.Timestamp `protobuf:"bytes,101,opt,name=updated_at,json=updatedAt,proto3,oneof" json:"updated_at,omitempty"`   // 更新时间
@@ -266,6 +267,13 @@ func (x *UserBehaviorProfile) GetPlatform() Platform {
 func (x *UserBehaviorProfile) GetDeviceType() string {
 	if x != nil && x.DeviceType != nil {
 		return *x.DeviceType
+	}
+	return ""
+}
+
+func (x *UserBehaviorProfile) GetCountry() string {
+	if x != nil && x.Country != nil {
+		return *x.Country
 	}
 	return ""
 }
@@ -656,7 +664,7 @@ var File_uba_service_v1_user_behavior_profile_proto protoreflect.FileDescriptor
 
 const file_uba_service_v1_user_behavior_profile_proto_rawDesc = "" +
 	"\n" +
-	"*uba/service/v1/user_behavior_profile.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a google/protobuf/field_mask.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1epagination/v1/pagination.proto\x1a\x1buba/service/v1/common.proto\"\xf4\x12\n" +
+	"*uba/service/v1/user_behavior_profile.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a google/protobuf/field_mask.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1epagination/v1/pagination.proto\x1a\x1buba/service/v1/common.proto\"\xfb\x13\n" +
 	"\x13UserBehaviorProfile\x12S\n" +
 	"\x02id\x18\x01 \x01(\rB>\xbaG;\x92\x028自增长主键ID，唯一标识一条用户画像记录H\x00R\x02id\x88\x01\x01\x12+\n" +
 	"\ttenant_id\x18\x02 \x01(\rB\x0e\xbaG\v\x92\x02\b租户IDR\btenantId\x12'\n" +
@@ -686,12 +694,13 @@ const file_uba_service_v1_user_behavior_profile_proto_rawDesc = "" +
 	"\x03geo\x18( \x03(\v2,.uba.service.v1.UserBehaviorProfile.GeoEntryBP\xbaGM\x92\x02J地理位置，经纬度信息或 GeoJSON，便于分析用户地理分布R\x03geo\x12\xa1\x01\n" +
 	"\bplatform\x18) \x01(\x0e2\x18.uba.service.v1.PlatformBf\xbaGc\x92\x02`平台类型，枚举类型，标识用户主要活跃的平台（如 Web、iOS、Android 等）H\x03R\bplatform\x88\x01\x01\x12\x83\x01\n" +
 	"\vdevice_type\x18* \x01(\tB]\xbaGZ\x92\x02W设备类型，记录用户主要使用的设备类型（如手机、平板、PC 等）H\x04R\n" +
-	"deviceType\x88\x01\x01\x12!\n" +
+	"deviceType\x88\x01\x01\x12y\n" +
+	"\acountry\x18+ \x01(\tBZ\xbaGW\x92\x02T国家，记录用户所在的国家信息，便于分析用户的地理分布特征H\x05R\acountry\x88\x01\x01\x12!\n" +
 	"\x03ver\x182 \x01(\x04B\x0f\xbaG\f\x92\x02\t版本号R\x03ver\x12R\n" +
 	"\n" +
-	"created_at\x18d \x01(\v2\x1a.google.protobuf.TimestampB\x12\xbaG\x0f\x92\x02\f创建时间H\x05R\tcreatedAt\x88\x01\x01\x12R\n" +
+	"created_at\x18d \x01(\v2\x1a.google.protobuf.TimestampB\x12\xbaG\x0f\x92\x02\f创建时间H\x06R\tcreatedAt\x88\x01\x01\x12R\n" +
 	"\n" +
-	"updated_at\x18e \x01(\v2\x1a.google.protobuf.TimestampB\x12\xbaG\x0f\x92\x02\f更新时间H\x06R\tupdatedAt\x88\x01\x01\x1a:\n" +
+	"updated_at\x18e \x01(\v2\x1a.google.protobuf.TimestampB\x12\xbaG\x0f\x92\x02\f更新时间H\aR\tupdatedAt\x88\x01\x01\x1a:\n" +
 	"\fProfileEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1a6\n" +
@@ -702,7 +711,9 @@ const file_uba_service_v1_user_behavior_profile_proto_rawDesc = "" +
 	"\v_risk_levelB\x11\n" +
 	"\x0f_last_risk_timeB\v\n" +
 	"\t_platformB\x0e\n" +
-	"\f_device_typeB\r\n" +
+	"\f_device_typeB\n" +
+	"\n" +
+	"\b_countryB\r\n" +
 	"\v_created_atB\r\n" +
 	"\v_updated_at\"r\n" +
 	"\x1fListUserBehaviorProfileResponse\x129\n" +

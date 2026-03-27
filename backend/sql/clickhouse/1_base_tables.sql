@@ -222,15 +222,15 @@ CREATE TABLE IF NOT EXISTS gw_uba.risk_events
     INDEX idx_rule_id rule_id TYPE bloom_filter(0.01) GRANULARITY 4,            -- 加速规则效果分析
     INDEX idx_description description TYPE tokenbf_v1(1024, 3, 0) GRANULARITY 2 -- 加速风险描述全文搜索
 ) ENGINE = ReplacingMergeTree(updated_at) -- 使用 ReplacingMergeTree（风险事件处置时需要更新 status、handler_id 等字段）
-    PARTITION BY toYYYYMM(event_date) -- 按月分区，平衡管理粒度和查询性能
-    ORDER BY (tenant_id, event_date, risk_level, occur_time) -- 按租户 + 日期 + 风险等级 + 发生时间排序，优化待处理风险查询
-    TTL event_date + INTERVAL 180 DAY -- 180 天前的风险事件自动清理，节省存储空间
-    SETTINGS
-        index_granularity = 8192, -- 索引粒度，平衡查询性能和存储开销
-        enable_mixed_granularity_parts = 1, -- 启用混合粒度分区，支持大文本字段
-        ttl_only_drop_parts = 1, -- TTL 只删除完整分区，避免部分删除开销
-        min_bytes_for_wide_part = 10485760 -- 10MB，宽分区最小字节数，优化合并策略
-    COMMENT '风险事件表（存储风控规则触发的风险事件，支持风险处置、误报分析、规则优化）';
+      PARTITION BY toYYYYMM(event_date) -- 按月分区，平衡管理粒度和查询性能
+      ORDER BY (tenant_id, event_date, risk_level, occur_time) -- 按租户 + 日期 + 风险等级 + 发生时间排序，优化待处理风险查询
+      TTL event_date + INTERVAL 180 DAY -- 180 天前的风险事件自动清理，节省存储空间
+      SETTINGS
+          index_granularity = 8192, -- 索引粒度，平衡查询性能和存储开销
+          enable_mixed_granularity_parts = 1, -- 启用混合粒度分区，支持大文本字段
+          ttl_only_drop_parts = 1, -- TTL 只删除完整分区，避免部分删除开销
+          min_bytes_for_wide_part = 10485760 -- 10MB，宽分区最小字节数，优化合并策略
+      COMMENT '风险事件表（存储风控规则触发的风险事件，支持风险处置、误报分析、规则优化）';
 
 
 -- ============================================================
@@ -273,12 +273,13 @@ CREATE TABLE IF NOT EXISTS gw_uba.users_dim
     geo               Map(String, String) COMMENT '地理位置 country/province/city/isp',
     platform          LowCardinality(String) COMMENT '平台 ios/android/web/mini_program',
     device_type       LowCardinality(String) COMMENT '设备类型 mobile/pad/desktop',
+    country           LowCardinality(String) COMMENT '国家/地区（用于国际化分析）',
 
     -- ========== 扩展属性：Extension（用户扩展信息）==========
     profile           Map(String, String) COMMENT '自定义用户画像（扩展字段：{guild_id: 1001, server: cn-1, ab_group: B}）',
 
     -- ========== 审计字段：Audit（系统管理）==========
-    ver               UInt64 DEFAULT 1 COMMENT '数据版本号，更新+1',
+    ver               UInt64   DEFAULT 1 COMMENT '数据版本号，更新+1',
     created_at        DateTime DEFAULT now() COMMENT '记录创建时间（用户画像首次写入 ClickHouse 的时间）',
     updated_at        DateTime DEFAULT now() COMMENT '记录更新时间（用于 ReplacingMergeTree 版本控制，用户画像更新时变化）',
 
@@ -358,8 +359,8 @@ CREATE TABLE IF NOT EXISTS gw_uba.id_mapping
     link_source    LowCardinality(String) COMMENT '关联来源：login（用户登录）/bind（手动绑定）/algorithm（算法推荐）/device（同设备识别）',
 
     -- ========== 时效字段 ==========
-    first_seen     Nullable (DateTime) COMMENT '首次关联时间（该身份标识第一次出现的时间）',
-    last_seen      Nullable (DateTime) COMMENT '最后活跃时间（该身份标识最后一次活跃的时间，用于 TTL 清理）',
+    first_seen     Nullable(DateTime) COMMENT '首次关联时间（该身份标识第一次出现的时间）',
+    last_seen      Nullable(DateTime) COMMENT '最后活跃时间（该身份标识最后一次活跃的时间，用于 TTL 清理）',
     is_active      UInt8    DEFAULT 1 COMMENT '是否有效：1（有效）/0（已失效，如用户解绑）',
 
     -- ========== 审计字段 ==========
@@ -452,7 +453,7 @@ CREATE TABLE IF NOT EXISTS gw_uba.path_features
     last_3_events     Array(String) COMMENT '后 3 步事件序列（用于快速匹配路径后缀，如["cart", "checkout", "pay"]）',
 
     -- ========== 转化标记字段 ==========
-    is_converted      UInt8    DEFAULT 0 COMMENT '是否转化：0（未转化）/1（已转化，如完成购买）',
+    is_converted      UInt8 DEFAULT 0 COMMENT '是否转化：0（未转化）/1（已转化，如完成购买）',
     conversion_event  LowCardinality(String) COMMENT '转化事件名称（触发转化的事件，如"purchase_success"）',
     conversion_time   Nullable(DateTime64(3)) COMMENT '转化时间（转化发生的时间点，用于计算转化时长）',
 
@@ -502,9 +503,9 @@ CREATE TABLE IF NOT EXISTS gw_uba.user_risk_profile
 
     -- 索引
     INDEX idx_user (tenant_id, user_id) TYPE minmax GRANULARITY 1
-    )
-ENGINE = ReplacingMergeTree(updated_at)
-    ORDER BY (tenant_id, user_id)
-    SETTINGS
-        index_granularity = 8192
-    COMMENT '用户风险画像表（独立存储风险相关字段，避免覆盖主画像）';
+)
+    ENGINE = ReplacingMergeTree(updated_at)
+        ORDER BY (tenant_id, user_id)
+        SETTINGS
+            index_granularity = 8192
+        COMMENT '用户风险画像表（独立存储风险相关字段，避免覆盖主画像）';

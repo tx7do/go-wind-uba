@@ -10562,6 +10562,9 @@ components:
                 deviceType:
                     type: string
                     description: 设备类型，记录用户主要使用的设备类型（如手机、平板、PC 等）
+                country:
+                    type: string
+                    description: 国家，记录用户所在的国家信息，便于分析用户的地理分布特征
                 ver:
                     type: string
                     description: 版本号

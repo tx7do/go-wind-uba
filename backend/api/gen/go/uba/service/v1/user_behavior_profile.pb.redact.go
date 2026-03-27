@@ -144,6 +144,8 @@ func (x *UserBehaviorProfile) Redact() string {
 
 	// Safe field: DeviceType
 
+	// Safe field: Country
+
 	// Safe field: Ver
 
 	// Safe field: CreatedAt

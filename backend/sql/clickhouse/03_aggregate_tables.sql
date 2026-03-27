@@ -165,12 +165,106 @@ CREATE TABLE IF NOT EXISTS gw_uba.popular_paths_daily
 
 
 -- ============================================================
+-- 6. 用户日活聚合表（DAU/MAU 核心）
+-- ============================================================
+CREATE TABLE IF NOT EXISTS gw_uba.user_activity_daily
+(
+    tenant_id      UInt32,
+    stat_date      Date,
+    platform       LowCardinality(String),
+    country        LowCardinality(String),
+    user_level     LowCardinality(String),
+
+    active_users   AggregateFunction(uniqCombined, UInt32),
+    new_users      AggregateFunction(uniqCombined, UInt32),
+    pay_users      AggregateFunction(uniqCombined, UInt32),
+    risk_users     AggregateFunction(uniqCombined, UInt32),
+
+    total_sessions SimpleAggregateFunction(sum, UInt64),
+    total_events   SimpleAggregateFunction(sum, UInt64)
+)
+    ENGINE = AggregatingMergeTree()
+        PARTITION BY toYYYYMM(stat_date)
+        ORDER BY (tenant_id, stat_date, platform, country, user_level)
+        TTL stat_date + INTERVAL 730 DAY;
+
+
+-- ============================================================
+-- 7. 用户留存日表（次日 / 7 日留存分析）
+-- ============================================================
+CREATE TABLE IF NOT EXISTS gw_uba.user_retention_daily
+(
+    tenant_id      UInt32,
+    register_date  Date,
+    stat_date      Date,
+    platform       LowCardinality(String),
+    country        LowCardinality(String),
+
+    register_users AggregateFunction(uniqCombined, UInt32),
+    retained_users AggregateFunction(uniqCombined, UInt32),
+    retention_days UInt32
+)
+    ENGINE = AggregatingMergeTree()
+        PARTITION BY toYYYYMM(register_date)
+        ORDER BY (tenant_id, register_date, stat_date, platform, country)
+        TTL register_date + INTERVAL 730 DAY;
+
+
+-- ============================================================
+-- 8. 付费日聚合表（收入 / 付费人数 / 客单价）
+-- ============================================================
+CREATE TABLE IF NOT EXISTS gw_uba.pay_agg_daily
+(
+    tenant_id       UInt32,
+    stat_date       Date,
+    platform        LowCardinality(String),
+    country         LowCardinality(String),
+    pay_level       LowCardinality(String),
+
+    pay_user_count  AggregateFunction(uniqCombined, UInt32),
+    pay_order_count SimpleAggregateFunction(sum, UInt64),
+    total_amount    SimpleAggregateFunction(sum, Decimal(38, 2)),
+    per_user_amount SimpleAggregateFunction(sum, Decimal(38, 2)),
+    refund_amount   SimpleAggregateFunction(sum, Decimal(38, 2))
+)
+    ENGINE = AggregatingMergeTree()
+        PARTITION BY toYYYYMM(stat_date)
+        ORDER BY (tenant_id, stat_date, platform, country, pay_level)
+        TTL stat_date + INTERVAL 730 DAY;
+
+
+-- ============================================================
+-- 9. 页面 / 功能访问聚合表（页面热度 & 漏斗）
+-- ============================================================
+CREATE TABLE IF NOT EXISTS gw_uba.page_visit_daily
+(
+    tenant_id     UInt32,
+    stat_date     Date,
+    page_id       String,
+    page_type     LowCardinality(String),
+    platform      LowCardinality(String),
+
+    pv            SimpleAggregateFunction(sum, UInt64),
+    uv            AggregateFunction(uniqCombined, UInt32),
+    session_count SimpleAggregateFunction(sum, UInt64),
+    avg_duration  SimpleAggregateFunction(sum, Float64),
+    enter_count   SimpleAggregateFunction(sum, UInt64),
+    exit_count    SimpleAggregateFunction(sum, UInt64)
+)
+    ENGINE = AggregatingMergeTree()
+        PARTITION BY toYYYYMM(stat_date)
+        ORDER BY (tenant_id, stat_date, page_id, page_type, platform)
+        TTL stat_date + INTERVAL 365 DAY;
+
+
+
+-- ============================================================
 -- 物化视图（自动聚合）
 -- ============================================================
 
 
 -- -----------------------------------------------------------
--- 物化视图：会话日聚合
+-- 1. 物化视图：会话日聚合
 -- 源表：gw_uba.sessions_fact
 -- 目标表：gw_uba.sessions_agg_daily
 -- 触发：sessions_fact 有新数据时自动执行
@@ -201,7 +295,7 @@ GROUP BY tenant_id, stat_date, platform;
 
 
 -- -----------------------------------------------------------
--- 物化视图：风险统计日聚合
+-- 2. 物化视图：风险统计日聚合
 -- 源表：gw_uba.risk_events
 -- 目标表：gw_uba.risk_stats_daily
 -- 触发：risk_events 有新数据时自动执行
@@ -227,7 +321,7 @@ GROUP BY tenant_id, event_date, risk_type, risk_level, status;
 
 
 -- -----------------------------------------------------------
--- 物化视图：用户标签聚合
+-- 3. 物化视图：用户标签聚合
 -- 源表：gw_uba.user_tags
 -- 目标表：gw_uba.user_tags_agg
 -- 触发：user_tags 有新数据时自动执行
@@ -249,7 +343,7 @@ GROUP BY tenant_id, tag_id, tag_value, toDate(updated_at);
 
 
 -- -----------------------------------------------------------
--- 物化视图：热门路径日聚合
+-- 4. 物化视图：热门路径日聚合
 -- 源表：gw_uba.path_features
 -- 目标表：gw_uba.popular_paths_daily
 -- 触发：path_features 有新数据时自动执行
@@ -275,7 +369,7 @@ GROUP BY tenant_id, event_date, event_sequence;
 
 
 -- -----------------------------------------------------------
--- 物化视图：事件日聚合
+-- 5. 物化视图：事件日聚合
 -- 源表：gw_uba.events_fact
 -- 目标表：gw_uba.events_agg_daily
 -- 触发：events_fact 有新数据时自动执行
@@ -300,3 +394,103 @@ SELECT tenant_id,
        uniqCombinedStateIf(user_id, amount > 0) as pay_user_count
 FROM gw_uba.events_fact
 GROUP BY tenant_id, stat_date, event_category, event_name, platform, country;
+
+
+-- -----------------------------------------------------------
+-- 6. 物化视图：用户日活聚合
+-- 源表：gw_uba.events_fact
+-- 目标表：gw_uba.user_activity_daily
+-- 触发：events_fact 有新数据时自动执行
+-- 过滤：只统计有效用户（user_id != 0）
+-- -----------------------------------------------------------
+CREATE MATERIALIZED VIEW IF NOT EXISTS gw_uba.mv_user_activity_daily
+    TO gw_uba.user_activity_daily
+AS
+SELECT tenant_id,
+       toDate(event_time)                                   AS stat_date,
+       platform,
+       country,
+       ''                                                   AS user_level,
+       uniqCombinedState(user_id)                           AS active_users,
+       uniqCombinedStateIf(user_id, 0)                      AS new_users,
+       uniqCombinedStateIf(user_id, amount > 0)             AS pay_users,
+       uniqCombinedStateIf(user_id, risk_level != 'normal') AS risk_users,
+       count(DISTINCT session_id)                           AS total_sessions,
+       count()                                              AS total_events
+FROM gw_uba.events_fact
+WHERE user_id != 0
+GROUP BY tenant_id, stat_date, platform, country, user_level;
+
+
+-- -----------------------------------------------------------
+-- 7. 物化视图：用户留存日聚合
+-- 源表：gw_uba.users_dim
+-- 目标表：gw_uba.user_retention_daily
+-- 触发：users_dim 有新数据时自动执行
+-- 过滤：只统计有效用户（user_id != 0）
+-- -----------------------------------------------------------
+CREATE MATERIALIZED VIEW IF NOT EXISTS gw_uba.mv_user_retention_daily
+    TO gw_uba.user_retention_daily
+AS
+SELECT tenant_id,
+       toDate(first_active_date)                 AS register_date,
+       toDate(now())                             AS stat_date,
+       platform,
+       country,
+       uniqCombinedState(user_id)                AS register_users,
+       uniqCombinedState(user_id)                AS retained_users,
+       dateDiff('day', register_date, stat_date) AS retention_days
+FROM gw_uba.users_dim
+WHERE user_id != 0
+GROUP BY tenant_id, register_date, stat_date, platform, country;
+
+
+-- -----------------------------------------------------------
+-- 8. 物化视图：付费日聚合
+-- 源表：gw_uba.events_fact
+-- 目标表：gw_uba.pay_agg_daily
+-- 触发：events_fact 有新数据时自动执行
+-- 过滤：只统计付费事件（event_category = 'pay' 且 amount > 0）
+-- -----------------------------------------------------------
+CREATE MATERIALIZED VIEW IF NOT EXISTS gw_uba.mv_pay_agg_daily
+    TO gw_uba.pay_agg_daily
+AS
+SELECT tenant_id,
+       toDate(event_time)                       AS stat_date,
+       platform,
+       country,
+       ''                                       AS pay_level,
+       uniqCombinedStateIf(user_id, amount > 0) AS pay_user_count,
+       countIf(amount > 0)                      AS pay_order_count,
+       sum(amount)                              AS total_amount,
+       sum(amount)                              AS per_user_amount,
+       sum(0)                                   AS refund_amount
+FROM gw_uba.events_fact
+WHERE event_category = 'pay'
+GROUP BY tenant_id, stat_date, platform, country, pay_level;
+
+
+-- -----------------------------------------------------------
+-- 9. 物化视图：页面访问日聚合
+-- 源表：gw_uba.events_fact
+-- 目标表：gw_uba.page_visit_daily
+-- 触发：events_fact 有新数据时自动执行
+-- 过滤：只统计页面访问事件（event_name = 'page_view'）
+-- -----------------------------------------------------------
+CREATE MATERIALIZED VIEW IF NOT EXISTS gw_uba.mv_page_visit_daily
+    TO gw_uba.page_visit_daily
+AS
+SELECT tenant_id,
+       toDate(event_time)         AS stat_date,
+       object_id                  AS page_id,
+       'page'                     AS page_type,
+       platform,
+       count()                    AS pv,
+       uniqCombinedState(user_id) AS uv,
+       count(DISTINCT session_id) AS session_count,
+       sum(duration_ms)           AS avg_duration,
+       0                          AS enter_count,
+       0                          AS exit_count
+FROM gw_uba.events_fact
+WHERE event_name = 'page_view'
+GROUP BY tenant_id, stat_date, page_id, page_type, platform;

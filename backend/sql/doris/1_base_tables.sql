@@ -211,6 +211,7 @@ CREATE TABLE IF NOT EXISTS users_dim (
     geo               MAP<STRING,STRING> COMMENT '地理位置 country/province/city/isp',
     platform          VARCHAR(64) COMMENT '客户端平台 ios/android/web/mini_program',
     device_type       VARCHAR(64) COMMENT '设备类型 mobile/pad/desktop/unknown',
+    country           VARCHAR(128) COMMENT '国家',
 
     profile           MAP<STRING,STRING> COMMENT '自定义用户画像',
 
