@@ -405,7 +405,10 @@ CREATE TABLE IF NOT EXISTS gw_uba.user_tags
     -- ========== 时效字段 ==========
     effective_time Nullable(DateTime64(3)) COMMENT '标签生效时间（标签开始生效的时间点）',
     expire_time    Nullable(DateTime64(3)) COMMENT '标签过期时间（标签失效的时间点，NULL 表示永久有效）',
-    expire_date    Date MATERIALIZED COALESCE(toDate(expire_time), toDateTime('2100-01-01')) COMMENT '过期日期（物化列，用于 TTL 清理，永久有效标签设为 2100 年）',
+
+    effective_date Date MATERIALIZED COALESCE(toDate(effective_time), toDate(now())) COMMENT '生效日期（物化列）',
+    expire_date    Date MATERIALIZED COALESCE(toDate(expire_time), toDate('2100-01-01')) COMMENT '过期日期（物化列，用于 TTL 清理）',
+
     is_active      UInt8    DEFAULT 1 COMMENT '是否有效：1（有效）/0（已失效，如手动取消标签）',
 
     -- ========== 审计字段 ==========
@@ -417,14 +420,14 @@ CREATE TABLE IF NOT EXISTS gw_uba.user_tags
     INDEX idx_source source TYPE set(10) GRANULARITY 1,                 -- 加速按来源筛选
     INDEX idx_tag_value tag_value TYPE bloom_filter(0.01) GRANULARITY 4 -- 加速标签值模糊查询
 ) ENGINE = ReplacingMergeTree(updated_at) -- 使用 updated_at 作为版本列，支持标签更新/覆盖
-      PARTITION BY toYYYYMM(effective_time) -- 按标签生效时间月度分区，便于按时间范围查询
-      ORDER BY (tenant_id, user_id, tag_id, effective_time) -- 按租户 + 用户 + 标签 + 生效时间排序
+      PARTITION BY toYYYYMM(effective_date) -- 按标签生效时间月度分区，便于按时间范围查询
+      ORDER BY (tenant_id, user_id, tag_id, effective_date) -- 按租户 + 用户 + 标签 + 生效时间排序
       TTL expire_date + INTERVAL 1 DAY
           DELETE -- 过期标签 1 天后自动删除，节省存储空间
       SETTINGS
           index_granularity = 8192, -- 索引粒度，平衡查询性能和存储开销
           enable_mixed_granularity_parts = 1, -- 启用混合粒度分区，支持大文本字段
-          ttl_only_drop_parts = 1, -- TTL 只删除完整分区，避免部分删除开销
+          ttl_only_drop_parts = 0, -- TTL 删除过期标签时直接删除记录，避免分区删除的开销（标签粒度较小）
           min_bytes_for_wide_part = 10485760 -- 10MB，宽分区最小字节数，优化合并策略
       COMMENT '用户标签关联表（存储用户与标签的关联关系，支持手动打标、规则打标、算法打标，支持标签有效期管理）';
 
@@ -473,7 +476,7 @@ CREATE TABLE IF NOT EXISTS gw_uba.path_features
     INDEX idx_first_3 first_3_events TYPE bloom_filter(0.01) GRANULARITY 4 -- 加速路径前缀匹配
 ) ENGINE = MergeTree -- 使用 MergeTree（只追加写入，路径特征不需要更新）
       PARTITION BY toYYYYMM(event_date) -- 按路径开始时间月度分区，便于按时间范围查询
-      ORDER BY (tenant_id, event_date, path_hash, start_time) -- 按租户 + 日期 + 路径哈希 + 开始时间排序
+      ORDER BY (tenant_id, event_date, path_hash) -- 按租户 + 日期 + 路径哈希 + 开始时间排序
       TTL event_date + INTERVAL 90 DAY -- 90 天前的路径自动清理，节省存储空间
       SETTINGS
           index_granularity = 8192, -- 索引粒度，平衡查询性能和存储开销

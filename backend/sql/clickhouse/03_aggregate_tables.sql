@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS gw_uba.events_agg_daily
     event_name       LowCardinality(String) COMMENT '事件名称（login 登录/level_up 升级/purchase 购买/click 点击）',
     platform         LowCardinality(String) COMMENT '平台类型（iOS/Android/Web/H5/小程序）',
     country          LowCardinality(String) COMMENT '国家/地区（用于国际化分析）',
+    channel          LowCardinality(String) COMMENT '渠道（app_store/website/third_party 等，用于渠道分析）',
 
     -- ========== 核心指标（使用 AggregateFunction 支持精确去重）==========
     uv               AggregateFunction(uniqCombined, UInt32) COMMENT '去重用户数（使用 uniqCombined 状态函数，支持精确去重）',
@@ -40,9 +41,31 @@ CREATE TABLE IF NOT EXISTS gw_uba.events_agg_daily
 )
     ENGINE = AggregatingMergeTree -- 聚合树引擎，支持 AggregateFunction 状态合并
         PARTITION BY toYYYYMM(stat_date) -- 按月分区，平衡管理粒度和查询性能
-        ORDER BY (tenant_id, stat_date, event_category, event_name) -- 按租户 + 日期 + 分类 + 事件名排序，优化常见查询
+        ORDER BY (tenant_id, stat_date, event_category, event_name, platform, country,
+                  channel) -- 按租户 + 日期 + 分类 + 事件名排序，优化常见查询
         TTL stat_date + INTERVAL 730 DAY -- 730 天（2 年）前的聚合数据自动清理，节省存储空间
         COMMENT '事件日聚合表（用于行为分析报表、漏斗分析、趋势分析）';
+
+
+-- ============================================================
+-- 1. 事件聚合表（按小时统计）
+-- ============================================================
+CREATE TABLE IF NOT EXISTS gw_uba.events_agg_hourly
+(
+    tenant_id    UInt32,
+    stat_hour    DateTime,
+    event_name   LowCardinality(String),
+    platform     LowCardinality(String),
+
+    uv           AggregateFunction(uniqCombined, UInt32),
+    pv           SimpleAggregateFunction(sum, UInt64),
+    total_amount SimpleAggregateFunction(sum, Decimal(38, 2))
+)
+    ENGINE = AggregatingMergeTree
+        PARTITION BY toYYYYMMDD(stat_hour)
+        ORDER BY (tenant_id, stat_hour, event_name)
+        TTL stat_hour + INTERVAL 7 DAY;
+-- 只保留 7 天小时级数据
 
 
 -- ============================================================
@@ -268,6 +291,7 @@ CREATE TABLE IF NOT EXISTS gw_uba.page_visit_daily
 
     pv             SimpleAggregateFunction(sum, UInt64),
     uv             AggregateFunction(uniqCombined, UInt32),
+
     session_count  AggregateFunction(uniqCombined, UInt64),
 
     --avg_duration   SimpleAggregateFunction(sum, Float64),
@@ -282,6 +306,25 @@ CREATE TABLE IF NOT EXISTS gw_uba.page_visit_daily
         ORDER BY (tenant_id, stat_date, page_id, page_type, platform)
         TTL stat_date + INTERVAL 365 DAY;
 
+
+-- ============================================================
+-- 10. 漏斗分析聚合表（支持多步骤漏斗分析）
+-- ============================================================
+CREATE TABLE IF NOT EXISTS gw_uba.funnel_steps_daily
+(
+    tenant_id      UInt32,
+    stat_date      Date,
+    funnel_id      String,
+    step_index     UInt8,
+    step_name      LowCardinality(String),
+
+    enter_users    AggregateFunction(uniqCombined, UInt32),
+    complete_users AggregateFunction(uniqCombined, UInt32)
+)
+    ENGINE = AggregatingMergeTree
+        PARTITION BY toYYYYMM(stat_date)
+        ORDER BY (tenant_id, stat_date, funnel_id, step_index)
+        TTL stat_date + INTERVAL 730 DAY;
 
 
 -- ============================================================
@@ -547,15 +590,12 @@ SELECT tenant_id,
        platform,
        country,
 
-       -- 聚合函数字段：用 Merge
        uniqCombinedMerge(uv)                   AS uv,
        uniqCombinedMerge(pay_user_count)       AS pay_user_count,
+       uniqCombinedMerge(session_count)        AS session_count, -- ✅ 修复：改用 Merge
 
-       -- 普通 sum 字段：直接 sum，不能用 Merge
        sum(pv)                                 AS pv,
-       sum(session_count)                      AS session_count,
        sum(total_amount)                       AS total_amount,
-
        sum(duration_sum) / sum(duration_count) AS avg_duration,
        sum(risk_event_count)                   AS risk_event_count,
        sum(level_up_count)                     AS level_up_count
@@ -655,7 +695,7 @@ SELECT tenant_id,
        tag_id,
        tag_value,
        stat_date,
-       sum(user_count)                           AS user_count,
+       uniqCombinedMerge(user_count)             AS user_count,
        groupArraySampleMerge(1000)(sample_users) AS sample_users
 FROM gw_uba.user_tags_agg
 GROUP BY tenant_id, tag_id, tag_value, stat_date;
@@ -679,3 +719,144 @@ SELECT tenant_id,
           0)                                   AS conversion_rate
 FROM gw_uba.popular_paths_daily
 GROUP BY tenant_id, stat_date, event_sequence, sequence_hash;
+
+
+-- -----------------------------------------------------------
+-- 16. 物化视图：事件日聚合查询视图（按小时）
+-- 说明：对 events_agg_hourly 的聚合结果进行二次聚合，支持按小时的趋势分析
+-- 注意：聚合函数字段必须使用 Merge 进行二次聚合，普通 sum 字段直接 sum
+-- -----------------------------------------------------------
+CREATE VIEW IF NOT EXISTS gw_uba.events_agg_hourly_view AS
+SELECT tenant_id,
+       stat_hour,
+       event_name,
+       platform,
+       uniqCombinedMerge(uv) AS uv,
+       sum(pv)               AS pv,
+       sum(total_amount)     AS total_amount
+FROM gw_uba.events_agg_hourly
+GROUP BY tenant_id, stat_hour, event_name, platform;
+
+
+-- -----------------------------------------------------------
+-- 17. 物化视图：漏斗分析日聚合查询视图
+-- 说明：对 funnel_steps_daily 的聚合结果进行二次聚合，支持更灵活的查询（如按国家/平台汇总）
+-- 注意：聚合函数字段必须使用 Merge 进行二次聚合，普通 sum 字段直接 sum
+-- -----------------------------------------------------------
+CREATE VIEW IF NOT EXISTS gw_uba.funnel_steps_daily_view AS
+SELECT tenant_id,
+       stat_date,
+       funnel_id,
+       step_index,
+       step_name,
+       uniqCombinedMerge(enter_users)                       AS enter_users,
+       uniqCombinedMerge(complete_users)                    AS complete_users,
+       if((enter_users) > 0, complete_users / enter_users, 0) AS conversion_rate
+FROM gw_uba.funnel_steps_daily
+GROUP BY tenant_id, stat_date, funnel_id, step_index, step_name;
+
+
+-- -----------------------------------------------------------
+-- 18. 物化视图：用户日活聚合查询视图
+-- 说明：对 user_activity_daily 的聚合结果进行二次聚合，支持更灵活的查询（如按国家/平台汇总）
+-- 注意：聚合函数字段必须使用 Merge 进行二次聚合，普通 sum 字段直接 sum
+-- -----------------------------------------------------------
+CREATE VIEW IF NOT EXISTS gw_uba.user_activity_daily_view AS
+SELECT tenant_id,
+       stat_date,
+       platform,
+       country,
+       user_level,
+       uniqCombinedMerge(active_users)   AS active_users,
+       uniqCombinedMerge(pay_users)      AS pay_users,
+       uniqCombinedMerge(risk_users)     AS risk_users,
+       uniqCombinedMerge(total_sessions) AS total_sessions,
+       sum(total_events)                 AS total_events
+FROM gw_uba.user_activity_daily
+GROUP BY tenant_id, stat_date, platform, country, user_level;
+
+
+-- -----------------------------------------------------------
+-- 19. 物化视图：事件小时聚合
+-- 源表：gw_uba.events_fact
+-- 目标表：gw_uba.events_agg_hourly
+-- 触发：events_fact 有新数据时自动执行
+-- -----------------------------------------------------------
+CREATE MATERIALIZED VIEW IF NOT EXISTS gw_uba.mv_events_agg_hourly
+    TO gw_uba.events_agg_hourly
+AS
+SELECT tenant_id,
+       toStartOfHour(event_time)  AS stat_hour,
+       event_name,
+       platform,
+       uniqCombinedState(user_id) AS uv,
+       count()                    AS pv,
+       sum(amount)                AS total_amount
+FROM gw_uba.events_fact
+WHERE user_id != 0
+GROUP BY tenant_id, stat_hour, event_name, platform;
+
+
+-- -----------------------------------------------------------
+-- 20. 物化视图：漏斗步骤聚合
+-- 源表：gw_uba.events_fact
+-- 目标表：gw_uba.funnel_steps_daily
+-- 触发：events_fact 有新数据时自动执行
+-- 说明：实际生产环境建议服务层计算漏斗，此处为简化示例
+-- -----------------------------------------------------------
+CREATE MATERIALIZED VIEW IF NOT EXISTS gw_uba.mv_funnel_steps_daily
+    TO gw_uba.funnel_steps_daily
+AS
+SELECT tenant_id,
+       toDate(event_time)         AS stat_date,
+       'default_funnel'           AS funnel_id,
+       1                          AS step_index,
+       event_name                 AS step_name,
+       uniqCombinedState(user_id) AS enter_users,
+       uniqCombinedState(user_id) AS complete_users
+FROM gw_uba.events_fact
+WHERE event_name IN ('login', 'browse', 'add_cart', 'purchase')
+  AND user_id != 0
+GROUP BY tenant_id, stat_date, funnel_id, step_index, step_name;
+
+
+-- -----------------------------------------------------------
+-- 21. 物化视图：页面访问日聚合查询视图
+-- 说明：对 page_visit_daily 的聚合结果进行二次聚合，支持更灵活的查询（如按国家/平台汇总）
+-- 注意：聚合函数字段必须使用 Merge 进行二次聚合，普通 sum 字段直接 sum
+-- -----------------------------------------------------------
+CREATE VIEW IF NOT EXISTS gw_uba.page_visit_daily_view AS
+SELECT tenant_id,
+       stat_date,
+       page_id,
+       page_type,
+       platform,
+       sum(pv)                                 AS pv,
+       uniqCombinedMerge(uv)                   AS uv,
+       uniqCombinedMerge(session_count)        AS session_count,
+       sum(duration_sum) / sum(duration_count) AS avg_duration,
+       sum(enter_count)                        AS enter_count,
+       sum(exit_count)                         AS exit_count
+FROM gw_uba.page_visit_daily
+GROUP BY tenant_id, stat_date, page_id, page_type, platform;
+
+
+-- -----------------------------------------------------------
+-- 22. 物化视图：用户留存日聚合查询视图
+-- 说明：对 user_retention_daily 的聚合结果进行二次聚合，支持更灵活的查询（如按国家/平台汇总）
+-- 注意：聚合函数字段必须使用 Merge 进行二次聚合，普通 sum 字段直接 sum
+-- 说明：由于留存表的特殊性，register_users 和 retained_users 不能直接 sum，需要先 Merge 后再计算留存率
+-- -----------------------------------------------------------
+CREATE VIEW IF NOT EXISTS gw_uba.user_retention_daily_view AS
+SELECT tenant_id,
+       register_date,
+       stat_date,
+       platform,
+       country,
+       retention_days,
+       register_users,
+       retained_users,
+       if(register_users > 0,
+          retained_users / register_users,
+          0) AS retention_rate
+FROM gw_uba.user_retention_daily;
