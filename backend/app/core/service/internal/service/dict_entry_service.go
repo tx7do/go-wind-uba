@@ -66,3 +66,11 @@ func (s *DictEntryService) Delete(ctx context.Context, req *dictV1.DeleteDictEnt
 
 	return &emptypb.Empty{}, nil
 }
+
+func (s *DictEntryService) ListByTypeCode(ctx context.Context, req *dictV1.ListDictEntryByTypeCodeRequest) (*dictV1.ListDictEntryByTypeCodeResponse, error) {
+	if req.GetTypeCode() == "" {
+		return nil, dictV1.ErrorBadRequest("invalid parameter")
+	}
+
+	return s.dictEntryRepo.ListByTypeCode(ctx, req)
+}

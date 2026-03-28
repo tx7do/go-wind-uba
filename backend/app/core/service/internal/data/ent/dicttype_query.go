@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"go-wind-uba/app/core/service/internal/data/ent/dictentry"
 	"go-wind-uba/app/core/service/internal/data/ent/dicttype"
-	"go-wind-uba/app/core/service/internal/data/ent/dicttypei18n"
 	"go-wind-uba/app/core/service/internal/data/ent/predicate"
 	"math"
 
@@ -28,7 +27,6 @@ type DictTypeQuery struct {
 	inters      []Interceptor
 	predicates  []predicate.DictType
 	withEntries *DictEntryQuery
-	withI18ns   *DictTypeI18nQuery
 	modifiers   []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -81,28 +79,6 @@ func (_q *DictTypeQuery) QueryEntries() *DictEntryQuery {
 			sqlgraph.From(dicttype.Table, dicttype.FieldID, selector),
 			sqlgraph.To(dictentry.Table, dictentry.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, dicttype.EntriesTable, dicttype.EntriesColumn),
-		)
-		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
-}
-
-// QueryI18ns chains the current query on the "i18ns" edge.
-func (_q *DictTypeQuery) QueryI18ns() *DictTypeI18nQuery {
-	query := (&DictTypeI18nClient{config: _q.config}).Query()
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := _q.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		selector := _q.sqlQuery(ctx)
-		if err := selector.Err(); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(dicttype.Table, dicttype.FieldID, selector),
-			sqlgraph.To(dicttypei18n.Table, dicttypei18n.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, dicttype.I18nsTable, dicttype.I18nsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
@@ -303,7 +279,6 @@ func (_q *DictTypeQuery) Clone() *DictTypeQuery {
 		inters:      append([]Interceptor{}, _q.inters...),
 		predicates:  append([]predicate.DictType{}, _q.predicates...),
 		withEntries: _q.withEntries.Clone(),
-		withI18ns:   _q.withI18ns.Clone(),
 		// clone intermediate query.
 		sql:       _q.sql.Clone(),
 		path:      _q.path,
@@ -319,17 +294,6 @@ func (_q *DictTypeQuery) WithEntries(opts ...func(*DictEntryQuery)) *DictTypeQue
 		opt(query)
 	}
 	_q.withEntries = query
-	return _q
-}
-
-// WithI18ns tells the query-builder to eager-load the nodes that are connected to
-// the "i18ns" edge. The optional arguments are used to configure the query builder of the edge.
-func (_q *DictTypeQuery) WithI18ns(opts ...func(*DictTypeI18nQuery)) *DictTypeQuery {
-	query := (&DictTypeI18nClient{config: _q.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	_q.withI18ns = query
 	return _q
 }
 
@@ -417,9 +381,8 @@ func (_q *DictTypeQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Dic
 	var (
 		nodes       = []*DictType{}
 		_spec       = _q.querySpec()
-		loadedTypes = [2]bool{
+		loadedTypes = [1]bool{
 			_q.withEntries != nil,
-			_q.withI18ns != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -450,13 +413,6 @@ func (_q *DictTypeQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Dic
 			return nil, err
 		}
 	}
-	if query := _q.withI18ns; query != nil {
-		if err := _q.loadI18ns(ctx, query, nodes,
-			func(n *DictType) { n.Edges.I18ns = []*DictTypeI18n{} },
-			func(n *DictType, e *DictTypeI18n) { n.Edges.I18ns = append(n.Edges.I18ns, e) }); err != nil {
-			return nil, err
-		}
-	}
 	return nodes, nil
 }
 
@@ -473,37 +429,6 @@ func (_q *DictTypeQuery) loadEntries(ctx context.Context, query *DictEntryQuery,
 	query.withFKs = true
 	query.Where(predicate.DictEntry(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(dicttype.EntriesColumn), fks...))
-	}))
-	neighbors, err := query.All(ctx)
-	if err != nil {
-		return err
-	}
-	for _, n := range neighbors {
-		fk := n.type_id
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "type_id" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
-		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "type_id" returned %v for node %v`, *fk, n.ID)
-		}
-		assign(node, n)
-	}
-	return nil
-}
-func (_q *DictTypeQuery) loadI18ns(ctx context.Context, query *DictTypeI18nQuery, nodes []*DictType, init func(*DictType), assign func(*DictType, *DictTypeI18n)) error {
-	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[uint32]*DictType)
-	for i := range nodes {
-		fks = append(fks, nodes[i].ID)
-		nodeids[nodes[i].ID] = nodes[i]
-		if init != nil {
-			init(nodes[i])
-		}
-	}
-	query.withFKs = true
-	query.Where(predicate.DictTypeI18n(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(dicttype.I18nsColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {

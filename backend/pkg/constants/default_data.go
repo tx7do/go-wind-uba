@@ -98,7 +98,7 @@ var DefaultPermissions = []*permissionV1.Permission{
 			30, 31, 32,
 			40, 41, 42,
 			50, 51, 52, 53, 54, 55,
-			60, 61, 62, 63, 64, 65, 66,
+			60, 61, 62, 63, 64, 65, 66, 67,
 		},
 		ApiIds: []uint32{
 			1, 2, 3, 4, 5, 6, 7, 8, 9,
@@ -254,13 +254,13 @@ var DefaultUserRoles = []*permissionV1.UserRole{
 
 // DefaultLanguages 系统初始化默认语言数据
 var DefaultLanguages = []*dictV1.Language{
-	{LanguageCode: trans.Ptr("zh-CN"), LanguageName: trans.Ptr("中文（简体）"), NativeName: trans.Ptr("简体中文"), IsDefault: trans.Ptr(true), IsEnabled: trans.Ptr(true)},
-	{LanguageCode: trans.Ptr("zh-TW"), LanguageName: trans.Ptr("中文（繁体）"), NativeName: trans.Ptr("繁體中文"), IsDefault: trans.Ptr(false), IsEnabled: trans.Ptr(true)},
-	{LanguageCode: trans.Ptr("en-US"), LanguageName: trans.Ptr("英语"), NativeName: trans.Ptr("English"), IsDefault: trans.Ptr(false), IsEnabled: trans.Ptr(true)},
-	{LanguageCode: trans.Ptr("ja-JP"), LanguageName: trans.Ptr("日语"), NativeName: trans.Ptr("日本語"), IsDefault: trans.Ptr(false), IsEnabled: trans.Ptr(true)},
-	{LanguageCode: trans.Ptr("ko-KR"), LanguageName: trans.Ptr("韩语"), NativeName: trans.Ptr("한국어"), IsDefault: trans.Ptr(false), IsEnabled: trans.Ptr(true)},
-	{LanguageCode: trans.Ptr("es-ES"), LanguageName: trans.Ptr("西班牙语"), NativeName: trans.Ptr("Español"), IsDefault: trans.Ptr(false), IsEnabled: trans.Ptr(true)},
-	{LanguageCode: trans.Ptr("fr-FR"), LanguageName: trans.Ptr("法语"), NativeName: trans.Ptr("Français"), IsDefault: trans.Ptr(false), IsEnabled: trans.Ptr(true)},
+	{LanguageCode: trans.Ptr("zh-CN"), LanguageName: trans.Ptr("中文（简体）"), NativeName: trans.Ptr("简体中文"), IsDefault: trans.Ptr(true), IsEnabled: trans.Ptr(true), SortOrder: trans.Uint32(0)},
+	{LanguageCode: trans.Ptr("zh-TW"), LanguageName: trans.Ptr("中文（繁体）"), NativeName: trans.Ptr("繁體中文"), IsDefault: trans.Ptr(false), IsEnabled: trans.Ptr(true), SortOrder: trans.Uint32(100)},
+	{LanguageCode: trans.Ptr("en-US"), LanguageName: trans.Ptr("英语"), NativeName: trans.Ptr("English"), IsDefault: trans.Ptr(false), IsEnabled: trans.Ptr(true), SortOrder: trans.Uint32(1)},
+	{LanguageCode: trans.Ptr("ja-JP"), LanguageName: trans.Ptr("日语"), NativeName: trans.Ptr("日本語"), IsDefault: trans.Ptr(false), IsEnabled: trans.Ptr(true), SortOrder: trans.Uint32(100)},
+	{LanguageCode: trans.Ptr("ko-KR"), LanguageName: trans.Ptr("韩语"), NativeName: trans.Ptr("한국어"), IsDefault: trans.Ptr(false), IsEnabled: trans.Ptr(true), SortOrder: trans.Uint32(100)},
+	{LanguageCode: trans.Ptr("es-ES"), LanguageName: trans.Ptr("西班牙语"), NativeName: trans.Ptr("Español"), IsDefault: trans.Ptr(false), IsEnabled: trans.Ptr(true), SortOrder: trans.Uint32(100)},
+	{LanguageCode: trans.Ptr("fr-FR"), LanguageName: trans.Ptr("法语"), NativeName: trans.Ptr("Français"), IsDefault: trans.Ptr(false), IsEnabled: trans.Ptr(true), SortOrder: trans.Uint32(100)},
 }
 
 // DefaultMenus 系统初始化默认菜单数据
@@ -757,6 +757,21 @@ var DefaultMenus = []*resourceV1.Menu{
 			Title:     trans.Ptr("menu.system.loginPolicy"),
 			Icon:      trans.Ptr("lucide:shield-x"),
 			Order:     trans.Ptr(int32(6)),
+			Authority: []string{"sys:platform_admin"},
+		},
+	},
+	{
+		Id:        trans.Ptr(uint32(67)),
+		ParentId:  trans.Ptr(uint32(60)),
+		Type:      resourceV1.Menu_MENU.Enum(),
+		Name:      trans.Ptr("LanguageManagement"),
+		Path:      trans.Ptr("languages"),
+		Component: trans.Ptr("app/system/language/index.vue"),
+		CreatedAt: timeutil.TimeToTimestamppb(trans.Ptr(time.Now())),
+		Meta: &resourceV1.MenuMeta{
+			Title:     trans.Ptr("menu.system.language"),
+			Icon:      trans.Ptr("lucide:globe"),
+			Order:     trans.Ptr(int32(7)),
 			Authority: []string{"sys:platform_admin"},
 		},
 	},

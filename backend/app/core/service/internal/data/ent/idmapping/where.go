@@ -94,6 +94,11 @@ func GlobalUserID(v string) predicate.IDMapping {
 	return predicate.IDMapping(sql.FieldEQ(FieldGlobalUserID, v))
 }
 
+// IDType applies equality check predicate on the "id_type" field. It's identical to IDTypeEQ.
+func IDType(v string) predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldEQ(FieldIDType, v))
+}
+
 // IDValue applies equality check predicate on the "id_value" field. It's identical to IDValueEQ.
 func IDValue(v string) predicate.IDMapping {
 	return predicate.IDMapping(sql.FieldEQ(FieldIDValue, v))
@@ -550,23 +555,58 @@ func GlobalUserIDContainsFold(v string) predicate.IDMapping {
 }
 
 // IDTypeEQ applies the EQ predicate on the "id_type" field.
-func IDTypeEQ(v IDType) predicate.IDMapping {
+func IDTypeEQ(v string) predicate.IDMapping {
 	return predicate.IDMapping(sql.FieldEQ(FieldIDType, v))
 }
 
 // IDTypeNEQ applies the NEQ predicate on the "id_type" field.
-func IDTypeNEQ(v IDType) predicate.IDMapping {
+func IDTypeNEQ(v string) predicate.IDMapping {
 	return predicate.IDMapping(sql.FieldNEQ(FieldIDType, v))
 }
 
 // IDTypeIn applies the In predicate on the "id_type" field.
-func IDTypeIn(vs ...IDType) predicate.IDMapping {
+func IDTypeIn(vs ...string) predicate.IDMapping {
 	return predicate.IDMapping(sql.FieldIn(FieldIDType, vs...))
 }
 
 // IDTypeNotIn applies the NotIn predicate on the "id_type" field.
-func IDTypeNotIn(vs ...IDType) predicate.IDMapping {
+func IDTypeNotIn(vs ...string) predicate.IDMapping {
 	return predicate.IDMapping(sql.FieldNotIn(FieldIDType, vs...))
+}
+
+// IDTypeGT applies the GT predicate on the "id_type" field.
+func IDTypeGT(v string) predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldGT(FieldIDType, v))
+}
+
+// IDTypeGTE applies the GTE predicate on the "id_type" field.
+func IDTypeGTE(v string) predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldGTE(FieldIDType, v))
+}
+
+// IDTypeLT applies the LT predicate on the "id_type" field.
+func IDTypeLT(v string) predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldLT(FieldIDType, v))
+}
+
+// IDTypeLTE applies the LTE predicate on the "id_type" field.
+func IDTypeLTE(v string) predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldLTE(FieldIDType, v))
+}
+
+// IDTypeContains applies the Contains predicate on the "id_type" field.
+func IDTypeContains(v string) predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldContains(FieldIDType, v))
+}
+
+// IDTypeHasPrefix applies the HasPrefix predicate on the "id_type" field.
+func IDTypeHasPrefix(v string) predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldHasPrefix(FieldIDType, v))
+}
+
+// IDTypeHasSuffix applies the HasSuffix predicate on the "id_type" field.
+func IDTypeHasSuffix(v string) predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldHasSuffix(FieldIDType, v))
 }
 
 // IDTypeIsNil applies the IsNil predicate on the "id_type" field.
@@ -577,6 +617,16 @@ func IDTypeIsNil() predicate.IDMapping {
 // IDTypeNotNil applies the NotNil predicate on the "id_type" field.
 func IDTypeNotNil() predicate.IDMapping {
 	return predicate.IDMapping(sql.FieldNotNull(FieldIDType))
+}
+
+// IDTypeEqualFold applies the EqualFold predicate on the "id_type" field.
+func IDTypeEqualFold(v string) predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldEqualFold(FieldIDType, v))
+}
+
+// IDTypeContainsFold applies the ContainsFold predicate on the "id_type" field.
+func IDTypeContainsFold(v string) predicate.IDMapping {
+	return predicate.IDMapping(sql.FieldContainsFold(FieldIDType, v))
 }
 
 // IDValueEQ applies the EQ predicate on the "id_value" field.

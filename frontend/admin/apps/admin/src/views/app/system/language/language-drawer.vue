@@ -6,17 +6,17 @@ import { $t } from '@vben/locales';
 
 import { notification } from 'ant-design-vue';
 
-import { useVbenForm, z } from '#/adapter/form';
-import { enableBoolList, useDictStore } from '#/stores';
+import { useVbenForm } from '#/adapter/form';
+import { useLanguageStore } from '#/stores';
 
-const dictStore = useDictStore();
+const languageStore = useLanguageStore();
 
 const data = ref();
 
 const getTitle = computed(() =>
   data.value?.create
-    ? $t('ui.modal.create', { moduleName: $t('page.dict.dictType') })
-    : $t('ui.modal.update', { moduleName: $t('page.dict.dictType') }),
+    ? $t('page.language.button.create')
+    : $t('page.language.button.update'),
 );
 // const isCreate = computed(() => data.value?.create);
 
@@ -32,23 +32,33 @@ const [BaseForm, baseFormApi] = useVbenForm({
   schema: [
     {
       component: 'Input',
-      fieldName: 'typeName',
-      label: $t('page.dict.typeName'),
+      fieldName: 'languageName',
+      label: $t('page.language.languageName'),
+      rules: 'required',
       componentProps: {
         placeholder: $t('ui.placeholder.input'),
         allowClear: true,
       },
-      rules: z.string().min(1, { message: $t('ui.formRules.required') }),
     },
     {
       component: 'Input',
-      fieldName: 'typeCode',
-      label: $t('page.dict.typeCode'),
+      fieldName: 'languageCode',
+      label: $t('page.language.languageCode'),
+      rules: 'required',
       componentProps: {
         placeholder: $t('ui.placeholder.input'),
         allowClear: true,
       },
-      rules: z.string().min(1, { message: $t('ui.formRules.required') }),
+    },
+    {
+      component: 'Input',
+      fieldName: 'nativeName',
+      label: $t('page.language.nativeName'),
+      rules: 'required',
+      componentProps: {
+        placeholder: $t('ui.placeholder.input'),
+        allowClear: true,
+      },
     },
     {
       component: 'InputNumber',
@@ -61,16 +71,21 @@ const [BaseForm, baseFormApi] = useVbenForm({
       },
     },
     {
-      component: 'RadioGroup',
+      component: 'Switch',
       fieldName: 'isEnabled',
-      label: $t('ui.table.status'),
       defaultValue: true,
-      rules: 'selectRequired',
+      label: $t('page.language.isEnabled'),
       componentProps: {
-        optionType: 'button',
-        buttonStyle: 'solid',
-        class: 'flex flex-wrap', // 如果选项过多，可以添加class来自动折叠
-        options: enableBoolList,
+        class: 'w-auto',
+      },
+    },
+    {
+      component: 'Switch',
+      fieldName: 'isDefault',
+      defaultValue: false,
+      label: $t('page.language.isDefault'),
+      componentProps: {
+        class: 'w-auto',
       },
     },
   ],
@@ -100,8 +115,8 @@ const [Drawer, drawerApi] = useVbenDrawer({
 
     try {
       await (data.value?.create
-        ? dictStore.createDictType(values)
-        : dictStore.updateDictType(data.value.row.id, values));
+        ? languageStore.createLanguage(values)
+        : languageStore.updateLanguage(data.value.row.id, values));
 
       notification.success({
         message: data.value?.create
@@ -144,7 +159,7 @@ function setLoading(loading: boolean) {
 </script>
 
 <template>
-  <Drawer :title="getTitle" class="w-full max-w-[800px]">
-    <BaseForm class="mx-0" />
+  <Drawer :title="getTitle">
+    <BaseForm />
   </Drawer>
 </template>

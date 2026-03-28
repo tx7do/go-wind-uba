@@ -87,3 +87,14 @@ func (s *redactedDictEntryServiceServer) Delete(ctx context.Context, in *dictpb.
 	}
 	return res, err
 }
+
+// ListByTypeCode is the redacted wrapper for the actual DictEntryServiceServer.ListByTypeCode method
+// Unary RPC
+func (s *redactedDictEntryServiceServer) ListByTypeCode(ctx context.Context, in *dictpb.ListDictEntryByTypeCodeRequest) (*dictpb.ListDictEntryByTypeCodeResponse, error) {
+	res, err := s.srv.ListByTypeCode(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}

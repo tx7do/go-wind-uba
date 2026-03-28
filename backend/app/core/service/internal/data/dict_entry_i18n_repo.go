@@ -89,8 +89,8 @@ func (r *DictEntryI18nRepo) Upsert(ctx context.Context,
 	return err
 }
 
-// Get 获取字典项多语言数据
-func (r *DictEntryI18nRepo) Get(ctx context.Context, entryID uint32) (map[string]*dictV1.DictEntryI18N, error) {
+// ListByEntryID 根据字典项ID查询多语言数据列表
+func (r *DictEntryI18nRepo) ListByEntryID(ctx context.Context, entryID uint32) (map[string]*dictV1.DictEntryI18N, error) {
 
 	entities, err := r.entClient.Client().DictEntryI18n.Query().
 		WithDictEntry(func(query *ent.DictEntryQuery) {
@@ -113,6 +113,25 @@ func (r *DictEntryI18nRepo) Get(ctx context.Context, entryID uint32) (map[string
 	}
 
 	return result, nil
+}
+
+// GetByEntryIDAndLangCode 根据字典项ID和语言代码查询多语言数据
+func (r *DictEntryI18nRepo) GetByEntryIDAndLangCode(ctx context.Context, entryID uint32, langCode string) (*dictV1.DictEntryI18N, error) {
+	entity, err := r.entClient.Client().DictEntryI18n.Query().
+		WithDictEntry(func(query *ent.DictEntryQuery) {
+			query.Where(dictentry.IDEQ(entryID))
+		}).
+		Where(
+			dictentryi18n.HasDictEntryWith(dictentry.IDEQ(entryID)),
+			dictentryi18n.LanguageCodeEQ(langCode),
+		).
+		Only(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	dto := r.mapper.ToDTO(entity)
+	return dto, nil
 }
 
 // Truncate 清理字典类型多语言数据

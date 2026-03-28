@@ -4,9 +4,6 @@ package dict.service.v1;
 
 import "gnostic/openapi/v3/annotations.proto";
 
-import "google/api/annotations.proto";
-import "google/api/field_behavior.proto";
-
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/field_mask.proto";
@@ -29,6 +26,9 @@ service DictEntryService {
 
   // 删除字典项
   rpc Delete (DeleteDictEntryRequest) returns (google.protobuf.Empty) {}
+
+  // 查询启用的字典项
+  rpc ListByTypeCode(ListDictEntryByTypeCodeRequest) returns (ListDictEntryByTypeCodeResponse) {}
 }
 
 // 字典项
@@ -183,4 +183,20 @@ message DeleteDictEntryRequest {
 
 message CountDictEntryResponse {
   uint64 count = 1;
+}
+
+message ListDictEntryByTypeCodeRequest {
+  string type_code = 1 [
+    json_name = "typeCode",
+    (gnostic.openapi.v3.property) = {description: "字典类型编码：app_type、platform、risk_type"}
+  ];
+
+  optional string local = 2 [
+    json_name = "local",
+    (gnostic.openapi.v3.property) = {description: "语言环境，默认为zh-CN"}
+  ];
+}
+
+message ListDictEntryByTypeCodeResponse {
+  repeated DictEntry items = 1;
 }

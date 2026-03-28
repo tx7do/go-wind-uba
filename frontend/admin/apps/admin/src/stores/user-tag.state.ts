@@ -1,19 +1,21 @@
-import { computed } from 'vue';
-
-import { $t } from '@vben/locales';
 import { useUserStore } from '@vben/stores';
 
 import { defineStore } from 'pinia';
 
 import {
   createUserTagServiceClient,
+  type dictservicev1_DictEntry,
 } from '#/generated/api/admin/service/v1';
+import { useDictStore } from '#/stores/dict.state';
 import { makeOrderBy, makeQueryString, makeUpdateMask } from '#/utils/query';
 import { type Paging, requestClientRequestHandler } from '#/utils/request';
 
 export const useUserTagListStore = defineStore('user-tag-list', () => {
   const service = createUserTagServiceClient(requestClientRequestHandler);
   const userStore = useUserStore();
+  const dictStore = useDictStore();
+
+  let cachedTagSourceDict: dictservicev1_DictEntry[] | undefined;
 
   /**
    * 查询用户标签列表
@@ -80,6 +82,24 @@ export const useUserTagListStore = defineStore('user-tag-list', () => {
     return await service.Delete({ id });
   }
 
+  async function getTagSourceDict() {
+    if (cachedTagSourceDict !== undefined && cachedTagSourceDict.length > 0) {
+      return cachedTagSourceDict;
+    }
+
+    try {
+      const result = await dictStore.listDictEntriesByTypeCode('TAG_SOURCE');
+      if (result) {
+        cachedTagSourceDict = result.items || [];
+      }
+    } catch (error) {
+      console.error('获取字典类型列表失败:', error);
+      return [];
+    }
+
+    return cachedTagSourceDict;
+  }
+
   function $reset() {}
 
   return {
@@ -89,45 +109,41 @@ export const useUserTagListStore = defineStore('user-tag-list', () => {
     createUserTag,
     updateUserTag,
     deleteUserTag,
+    getTagSourceDict,
+    cachedTagSourceDict,
   };
 });
 
-export const tagSourceList = computed(() => [
-  {
-    value: 'TAG_SOURCE_MANUAL',
-    label: $t('enum.userTag.tagSource.TAG_SOURCE_MANUAL'),
-  },
-  {
-    value: 'TAG_SOURCE_RULE',
-    label: $t('enum.userTag.tagSource.TAG_SOURCE_RULE'),
-  },
-  {
-    value: 'TAG_SOURCE_MODEL',
-    label: $t('enum.userTag.tagSource.TAG_SOURCE_MODEL'),
-  },
-  {
-    value: 'TAG_SOURCE_IMPORT',
-    label: $t('enum.userTag.tagSource.TAG_SOURCE_IMPORT'),
-  },
-]);
-
 const TAG_SOURCE_COLOR_MAP = {
-  TAG_SOURCE_MANUAL: '#4096FF',
-  TAG_SOURCE_RULE: '#00B42A',
-  TAG_SOURCE_MODEL: '#F77234',
-  TAG_SOURCE_IMPORT: '#722ED1',
+  manual: '#4096FF',
+  rule: '#00B42A',
+  model: '#F77234',
+  import: '#722ED1',
   DEFAULT: '#86909C',
 } as const;
 
-export function userTagSourceToColor(source?: any) {
+export function userTagSourceToColor(source?: string) {
   return (
     TAG_SOURCE_COLOR_MAP[source as keyof typeof TAG_SOURCE_COLOR_MAP] ||
     TAG_SOURCE_COLOR_MAP.DEFAULT
   );
 }
 
-export function userTagSourceToName(source?: any) {
-  const values = tagSourceList.value;
-  const matchedItem = values.find((item) => item.value === source);
-  return matchedItem ? matchedItem.label : '';
+export function userTagSourceToName(
+  source?: string,
+  dictEntries?: dictservicev1_DictEntry[],
+): string {
+  console.log('dictEntries', dictEntries);
+
+  if (source === undefined) {
+    return '';
+  }
+  if (dictEntries === undefined) {
+    return source;
+  }
+
+  return (
+    dictEntries.find((item) => item.entryValue === source)?.currentI18n
+      ?.entryLabel || source
+  );
 }

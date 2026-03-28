@@ -28,8 +28,6 @@ type IDMappingRepo struct {
 
 	mapper *mapper.CopierMapper[ubaV1.IDMapping, ent.IDMapping]
 
-	typeConverter *mapper.EnumTypeConverter[ubaV1.IDType, idmapping.IDType]
-
 	repository *entCrud.Repository[
 		ent.IDMappingQuery, ent.IDMappingSelect,
 		ent.IDMappingCreate, ent.IDMappingCreateBulk,
@@ -45,10 +43,6 @@ func NewIDMappingRepo(ctx *bootstrap.Context, entClient *entCrud.EntClient[*ent.
 		log:       ctx.NewLoggerHelper("id-mapping/repo/core-service"),
 		entClient: entClient,
 		mapper:    mapper.NewCopierMapper[ubaV1.IDMapping, ent.IDMapping](),
-
-		typeConverter: mapper.NewEnumTypeConverter[ubaV1.IDType, idmapping.IDType](
-			ubaV1.IDType_name, ubaV1.IDType_value,
-		),
 	}
 
 	repo.init()
@@ -67,8 +61,6 @@ func (r *IDMappingRepo) init() {
 
 	r.mapper.AppendConverters(copierutil.NewTimeStringConverterPair())
 	r.mapper.AppendConverters(copierutil.NewTimeTimestamppbConverterPair())
-
-	r.mapper.AppendConverters(r.typeConverter.NewConverterPair())
 }
 
 // Count 统计ID映射数量
@@ -148,7 +140,7 @@ func (r *IDMappingRepo) Create(ctx context.Context, req *ubaV1.CreateIDMappingRe
 	builder := r.entClient.Client().IDMapping.Create().
 		SetNillableTenantID(req.Data.TenantId).
 		SetNillableGlobalUserID(req.Data.GlobalUserId).
-		SetNillableIDType(r.typeConverter.ToEntity(req.Data.IdType)).
+		SetNillableIDType(req.Data.IdType).
 		SetNillableIDValue(req.Data.IdValue).
 		SetNillableConfidence(req.Data.Confidence).
 		SetNillableLinkSource(req.Data.LinkSource).
@@ -192,7 +184,7 @@ func (r *IDMappingRepo) Update(ctx context.Context, req *ubaV1.UpdateIDMappingRe
 		func(dto *ubaV1.IDMapping) {
 			builder.
 				SetNillableGlobalUserID(req.Data.GlobalUserId).
-				SetNillableIDType(r.typeConverter.ToEntity(req.Data.IdType)).
+				SetNillableIDType(req.Data.IdType).
 				SetNillableIDValue(req.Data.IdValue).
 				SetNillableConfidence(req.Data.Confidence).
 				SetNillableLinkSource(req.Data.LinkSource).

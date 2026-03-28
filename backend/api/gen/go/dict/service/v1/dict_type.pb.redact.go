@@ -7,7 +7,6 @@ import (
 	context "context"
 	redact "github.com/menta2k/protoc-gen-redact/v3/redact/v3"
 	pagination "github.com/tx7do/go-crud/api/gen/go/pagination/v1"
-	annotations "google.golang.org/genproto/googleapis/api/annotations"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -23,7 +22,6 @@ var (
 	_ redact.Redactor
 	_ codes.Code
 	_ status.Status
-	_ annotations.FieldBehavior
 	_ emptypb.Empty
 	_ timestamppb.Timestamp
 	_ fieldmaskpb.FieldMask
@@ -124,13 +122,11 @@ func (x *DictType) Redact() string {
 
 	// Safe field: TypeCode
 
+	// Safe field: TypeName
+
 	// Safe field: IsEnabled
 
 	// Safe field: SortOrder
-
-	// Safe field: I18N
-
-	// Safe field: CurrentI18N
 
 	// Safe field: TenantId
 
@@ -147,22 +143,6 @@ func (x *DictType) Redact() string {
 	// Safe field: UpdatedAt
 
 	// Safe field: DeletedAt
-	return x.String()
-}
-
-// Redact method implementation for DictTypeI18N
-func (x *DictTypeI18N) Redact() string {
-	if x == nil {
-		return ""
-	}
-
-	// Safe field: TypeName
-
-	// Safe field: Description
-
-	// Safe field: LanguageCode
-
-	// Safe field: LanguageName
 	return x.String()
 }
 

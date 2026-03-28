@@ -39,4 +39,11 @@ service DictEntryService {
       delete: "/admin/v1/dict/entries"
     };
   }
+
+  // 查询启用的字典条目
+  rpc ListByTypeCode(dict.service.v1.ListDictEntryByTypeCodeRequest) returns (dict.service.v1.ListDictEntryByTypeCodeResponse) {
+    option (google.api.http) = {
+      get: "/admin/v1/dict/entries/by-type-code"
+    };
+  }
 }

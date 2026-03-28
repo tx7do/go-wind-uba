@@ -34,16 +34,8 @@ func (IDMapping) Fields() []ent.Field {
 			Optional().
 			Nillable(),
 
-		field.Enum("id_type").
+		field.String("id_type").
 			Comment("ID类型").
-			NamedValues(
-				"IdTypeUserId", "ID_TYPE_USER_ID",
-				"IdTypeDeviceId", "ID_TYPE_DEVICE_ID",
-				"IdTypeCookie", "ID_TYPE_COOKIE",
-				"IdTypeEmail", "ID_TYPE_EMAIL",
-				"IdTypePhone", "ID_TYPE_PHONE",
-				"IdTypeOpenid", "ID_TYPE_OPENID",
-			).
 			Optional().
 			Nillable(),
 

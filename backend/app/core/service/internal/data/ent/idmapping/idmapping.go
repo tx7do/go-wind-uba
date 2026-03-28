@@ -3,8 +3,6 @@
 package idmapping
 
 import (
-	"fmt"
-
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 )
@@ -104,33 +102,6 @@ var (
 	// IDValidator is a validator for the "id" field. It is called by the builders before save.
 	IDValidator func(uint32) error
 )
-
-// IDType defines the type for the "id_type" enum field.
-type IDType string
-
-// IDType values.
-const (
-	IDTypeIdTypeUserId   IDType = "ID_TYPE_USER_ID"
-	IDTypeIdTypeDeviceId IDType = "ID_TYPE_DEVICE_ID"
-	IDTypeIdTypeCookie   IDType = "ID_TYPE_COOKIE"
-	IDTypeIdTypeEmail    IDType = "ID_TYPE_EMAIL"
-	IDTypeIdTypePhone    IDType = "ID_TYPE_PHONE"
-	IDTypeIdTypeOpenid   IDType = "ID_TYPE_OPENID"
-)
-
-func (it IDType) String() string {
-	return string(it)
-}
-
-// IDTypeValidator is a validator for the "id_type" field enum values. It is called by the builders before save.
-func IDTypeValidator(it IDType) error {
-	switch it {
-	case IDTypeIdTypeUserId, IDTypeIdTypeDeviceId, IDTypeIdTypeCookie, IDTypeIdTypeEmail, IDTypeIdTypePhone, IDTypeIdTypeOpenid:
-		return nil
-	default:
-		return fmt.Errorf("idmapping: invalid enum value for id_type field: %q", it)
-	}
-}
 
 // OrderOption defines the ordering options for the IDMapping queries.
 type OrderOption func(*sql.Selector)

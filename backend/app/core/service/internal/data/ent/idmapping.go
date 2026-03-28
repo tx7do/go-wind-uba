@@ -36,7 +36,7 @@ type IDMapping struct {
 	// 全局用户唯一标识
 	GlobalUserID *string `json:"global_user_id,omitempty"`
 	// ID类型
-	IDType *idmapping.IDType `json:"id_type,omitempty"`
+	IDType *string `json:"id_type,omitempty"`
 	// ID值
 	IDValue *string `json:"id_value,omitempty"`
 	// 置信度，映射关系可信度评分，范围0~1，默认1.0
@@ -152,8 +152,8 @@ func (_m *IDMapping) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field id_type", values[i])
 			} else if value.Valid {
-				_m.IDType = new(idmapping.IDType)
-				*_m.IDType = idmapping.IDType(value.String)
+				_m.IDType = new(string)
+				*_m.IDType = value.String
 			}
 		case idmapping.FieldIDValue:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -283,7 +283,7 @@ func (_m *IDMapping) String() string {
 	builder.WriteString(", ")
 	if v := _m.IDType; v != nil {
 		builder.WriteString("id_type=")
-		builder.WriteString(fmt.Sprintf("%v", *v))
+		builder.WriteString(*v)
 	}
 	builder.WriteString(", ")
 	if v := _m.IDValue; v != nil {

@@ -86,3 +86,7 @@ func (s *DictEntryService) Update(ctx context.Context, req *dictV1.UpdateDictEnt
 func (s *DictEntryService) Delete(ctx context.Context, req *dictV1.DeleteDictEntryRequest) (*emptypb.Empty, error) {
 	return s.dictEntryServiceClient.Delete(ctx, req)
 }
+
+func (s *DictEntryService) ListByTypeCode(ctx context.Context, req *dictV1.ListDictEntryByTypeCodeRequest) (*dictV1.ListDictEntryByTypeCodeResponse, error) {
+	return s.dictEntryServiceClient.ListByTypeCode(ctx, req)
+}

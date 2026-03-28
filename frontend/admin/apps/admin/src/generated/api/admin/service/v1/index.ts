@@ -1515,6 +1515,8 @@ export interface DictEntryService {
   Update(request: dictservicev1_UpdateDictEntryRequest): Promise<wellKnownEmpty>;
   // 删除字典条目
   Delete(request: dictservicev1_DeleteDictEntryRequest): Promise<wellKnownEmpty>;
+  // 查询启用的字典条目
+  ListByTypeCode(request: dictservicev1_ListDictEntryByTypeCodeRequest): Promise<dictservicev1_ListDictEntryByTypeCodeResponse>;
 }
 
 export function createDictEntryServiceClient(
@@ -1659,6 +1661,29 @@ export function createDictEntryServiceClient(
         method: "Delete",
       }) as Promise<wellKnownEmpty>;
     },
+    ListByTypeCode(request) { // eslint-disable-line @typescript-eslint/no-unused-vars
+      const path = `admin/v1/dict/entries/by-type-code`; // eslint-disable-line quotes
+      const body = null;
+      const queryParams: string[] = [];
+      if (request.typeCode) {
+        queryParams.push(`typeCode=${encodeURIComponent(request.typeCode.toString())}`)
+      }
+      if (request.local) {
+        queryParams.push(`local=${encodeURIComponent(request.local.toString())}`)
+      }
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join("&")}`
+      }
+      return handler({
+        path: uri,
+        method: "GET",
+        body,
+      }, {
+        service: "DictEntryService",
+        method: "ListByTypeCode",
+      }) as Promise<dictservicev1_ListDictEntryByTypeCodeResponse>;
+    },
   };
 }
 // 查询字典项列表 - 回应
@@ -1711,6 +1736,15 @@ export type dictservicev1_UpdateDictEntryRequest = {
 // 批量删除字典 - 请求
 export type dictservicev1_DeleteDictEntryRequest = {
   ids: number[] | undefined;
+};
+
+export type dictservicev1_ListDictEntryByTypeCodeRequest = {
+  typeCode: string | undefined;
+  local?: string;
+};
+
+export type dictservicev1_ListDictEntryByTypeCodeResponse = {
+  items: dictservicev1_DictEntry[] | undefined;
 };
 
 // 数据字典分类管理服务
@@ -1907,10 +1941,9 @@ export type dictservicev1_ListDictTypeResponse = {
 export type dictservicev1_DictType = {
   id?: number;
   typeCode?: string;
+  typeName?: string;
   isEnabled?: boolean;
   sortOrder?: number;
-  i18n: { [key: string]: dictservicev1_DictTypeI18n } | undefined;
-  currentI18n?: dictservicev1_DictTypeI18n;
   tenantId?: number;
   tenantName?: string;
   createdBy?: number;
@@ -1919,14 +1952,6 @@ export type dictservicev1_DictType = {
   createdAt?: wellKnownTimestamp;
   updatedAt?: wellKnownTimestamp;
   deletedAt?: wellKnownTimestamp;
-};
-
-// 字典类型多语言信息
-export type dictservicev1_DictTypeI18n = {
-  typeName: string | undefined;
-  description?: string;
-  languageCode?: string;
-  languageName?: string;
 };
 
 // 查询字典类型详情 - 请求
@@ -2664,7 +2689,7 @@ export type ubaservicev1_IDMapping = {
   // 租户ID（多租户隔离，支持 SaaS 场景）
   tenantId?: number;
   // ID类型（如用户ID、设备ID、Cookie、邮箱、手机号、OpenID 等）
-  idType?: ubaservicev1_IDType;
+  idType?: string;
   // ID值（具体的标识符，如用户ID、设备ID、邮箱等）
   idValue?: string;
   // 置信度（映射关系可信度评分，范围0~1）
@@ -2693,22 +2718,6 @@ export type ubaservicev1_IDMapping = {
   deletedAt?: wellKnownTimestamp;
 };
 
-// ID类型枚举（用于标识不同类型的用户、设备、账号等标识符）
-export type ubaservicev1_IDType =
-  // 未指定ID类型
-  | "ID_TYPE_UNSPECIFIED"
-  // 用户ID（如系统内唯一用户标识）
-  | "ID_TYPE_USER_ID"
-  // 设备ID（如设备序列号、IMEI、MAC地址等）
-  | "ID_TYPE_DEVICE_ID"
-  // Cookie（如 Web 端唯一标识）
-  | "ID_TYPE_COOKIE"
-  // 邮箱（如用户邮箱地址）
-  | "ID_TYPE_EMAIL"
-  // 手机号（如用户手机号码）
-  | "ID_TYPE_PHONE"
-  // OpenID（如第三方平台用户标识，微信、支付宝等）
-  | "ID_TYPE_OPENID";
 // 获取ID映射数据 - 请求
 export type ubaservicev1_GetIDMappingRequest = {
   id?: number;

@@ -686,6 +686,28 @@ paths:
                 "200":
                     description: OK
                     content: {}
+    /admin/v1/dict/entries/by-type-code:
+        get:
+            tags:
+                - DictEntryService
+            description: 查询启用的字典条目
+            operationId: DictEntryService_ListByTypeCode
+            parameters:
+                - name: typeCode
+                  in: query
+                  schema:
+                    type: string
+                - name: local
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListDictEntryByTypeCodeResponse'
     /admin/v1/dict/entries/{id}:
         put:
             tags:
@@ -6761,22 +6783,17 @@ components:
                     format: uint32
                 typeCode:
                     type: string
-                    description: 字典类型唯一代码
+                    description: 字典类型唯一编码，如 app_type、platform、risk_type
+                typeName:
+                    type: string
+                    description: 字典类型名称（中文，仅后台用）
                 isEnabled:
                     type: boolean
                     description: 是否启用
                 sortOrder:
                     type: integer
-                    description: 排序顺序，值越小越靠前
+                    description: 排序号，越小越靠前
                     format: uint32
-                i18n:
-                    example: {"zh-CN": {"typeName": "性别"}, "en-US": {"typeName": "Gender"}}
-                    type: object
-                    additionalProperties:
-                        $ref: '#/components/schemas/DictTypeI18n'
-                    description: 多语言信息，key 为 BCP-47 语言标签（如 zh-CN、en-US）
-                currentI18n:
-                    $ref: '#/components/schemas/DictTypeI18n'
                 tenantId:
                     type: integer
                     description: 租户ID，0代表系统全局角色
@@ -6809,22 +6826,6 @@ components:
                     description: 删除时间
                     format: date-time
             description: 字典类型
-        DictTypeI18n:
-            type: object
-            properties:
-                typeName:
-                    type: string
-                    description: 类型名称
-                description:
-                    type: string
-                    description: 描述信息
-                languageCode:
-                    type: string
-                    description: 语言代码，如 zh-CN、en-US 等
-                languageName:
-                    type: string
-                    description: 语言名称
-            description: 字典类型多语言信息
         DownloadFileResponse:
             type: object
             properties:
@@ -7078,17 +7079,8 @@ components:
                     description: 租户ID，多租户隔离，支持 SaaS 场景
                     format: uint32
                 idType:
-                    enum:
-                        - ID_TYPE_UNSPECIFIED
-                        - ID_TYPE_USER_ID
-                        - ID_TYPE_DEVICE_ID
-                        - ID_TYPE_COOKIE
-                        - ID_TYPE_EMAIL
-                        - ID_TYPE_PHONE
-                        - ID_TYPE_OPENID
                     type: string
                     description: ID类型，标识不同类型的用户、设备、账号等标识符
-                    format: enum
                 idValue:
                     type: string
                     description: ID值，具体的标识符，如用户ID、设备ID、邮箱等
@@ -7463,6 +7455,13 @@ components:
                 total:
                     type: string
             description: 查询数据访问审计日志列表 - 回应
+        ListDictEntryByTypeCodeResponse:
+            type: object
+            properties:
+                items:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/DictEntry'
         ListDictEntryResponse:
             type: object
             properties:

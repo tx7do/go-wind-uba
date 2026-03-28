@@ -1,35 +1,38 @@
 <script lang="ts" setup>
-import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
-import type { ubaservicev1_UserTag as UserTag } from '#/generated/api/admin/service/v1';
+import type { VxeGridProps } from '#/adapter/vxe-table';
 
-import { h, onMounted } from 'vue';
+import { h } from 'vue';
 
-import { Page, useVbenDrawer } from '@vben/common-ui';
+import { Page, useVbenDrawer, type VbenFormProps } from '@vben/common-ui';
 import { LucideFilePenLine, LucideTrash2 } from '@vben/icons';
 
 import { notification } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { type dictservicev1_Language } from '#/generated/api/admin/service/v1';
 import { $t } from '#/locales';
 import {
-  userTagSourceToColor,
-  userTagSourceToName,
-  useUserTagListStore,
+  enableBoolToColor,
+  enableBoolToName,
+  useLanguageStore,
 } from '#/stores';
 
-import UserTagDrawer from './user-tag-drawer.vue';
+import LanguageDrawer from './language-drawer.vue';
 
-const userTagListStore = useUserTagListStore();
+const languageStore = useLanguageStore();
 
-const formOptions = {
+const formOptions: VbenFormProps = {
+  // 默认展开
   collapsed: false,
-  showCollapseButton: true,
+  // 控制表单是否显示折叠按钮
+  showCollapseButton: false,
+  // 按下回车时是否提交表单
   submitOnEnter: true,
   schema: [
     {
       component: 'Input',
-      fieldName: 'user_id',
-      label: $t('page.userTag.userId'),
+      fieldName: 'languageName',
+      label: $t('page.language.languageName'),
       componentProps: {
         placeholder: $t('ui.placeholder.input'),
         allowClear: true,
@@ -37,26 +40,8 @@ const formOptions = {
     },
     {
       component: 'Input',
-      fieldName: 'tag_id',
-      label: $t('page.userTag.tagId'),
-      componentProps: {
-        placeholder: $t('ui.placeholder.input'),
-        allowClear: true,
-      },
-    },
-    {
-      component: 'Input',
-      fieldName: 'value_label',
-      label: $t('page.userTag.valueLabel'),
-      componentProps: {
-        placeholder: $t('ui.placeholder.input'),
-        allowClear: true,
-      },
-    },
-    {
-      component: 'Input',
-      fieldName: 'source',
-      label: $t('page.userTag.source'),
+      fieldName: 'languageCode',
+      label: $t('page.language.languageCode'),
       componentProps: {
         placeholder: $t('ui.placeholder.input'),
         allowClear: true,
@@ -65,30 +50,28 @@ const formOptions = {
   ],
 };
 
-const gridOptions: VxeGridProps<UserTag> = {
-  height: 'auto',
-  stripe: true,
-  autoResize: true,
+const gridOptions: VxeGridProps<dictservicev1_Language> = {
   toolbarConfig: {
     custom: true,
     export: true,
+    // import: true,
     refresh: true,
     zoom: true,
   },
+  height: 'auto',
   exportConfig: {},
   pagerConfig: {},
   rowConfig: {
     isHover: true,
-    resizable: true,
   },
-  tooltipConfig: {
-    showAll: true,
-    enterable: true,
-  },
+  stripe: true,
+
   proxyConfig: {
     ajax: {
       query: async ({ page }, formValues) => {
-        return await userTagListStore.listUserTag(
+        // console.log('query:', filters, form, formValues);
+
+        return await languageStore.listLanguage(
           {
             page: page.currentPage,
             pageSize: page.pageSize,
@@ -98,80 +81,62 @@ const gridOptions: VxeGridProps<UserTag> = {
       },
     },
   },
+
   columns: [
     {
-      title: $t('page.userTag.valueLabel'),
-      field: 'valueLabel',
-      minWidth: 150,
-      align: 'left',
+      title: $t('page.language.nativeName'),
+      field: 'nativeName',
       fixed: 'left',
-    },
-    {
-      title: $t('page.userTag.value'),
-      field: 'value',
-      minWidth: 150,
-      align: 'left',
-    },
-    {
-      title: $t('page.userTag.userId'),
-      field: 'userId',
-      minWidth: 100,
-    },
-    { title: $t('page.userTag.tagId'), field: 'tagId', minWidth: 100 },
-
-    {
-      title: $t('page.userTag.confidence'),
-      field: 'confidence',
-      minWidth: 100,
-    },
-    {
-      title: $t('page.userTag.source'),
-      field: 'source',
-      minWidth: 160,
-      align: 'left',
-      slots: {
-        default: 'source',
-      },
-    },
-    {
-      title: $t('page.userTag.effectiveTime'),
-      field: 'effectiveTime',
-      formatter: 'formatDateTime',
       minWidth: 120,
     },
     {
-      title: $t('page.userTag.expireTime'),
-      field: 'expireTime',
-      formatter: 'formatDateTime',
+      title: $t('page.language.languageName'),
+      field: 'languageName',
       minWidth: 120,
+    },
+    {
+      title: $t('page.language.languageCode'),
+      field: 'languageCode',
+      minWidth: 120,
+    },
+    {
+      title: $t('page.language.isEnabled'),
+      field: 'isEnabled',
+      slots: { default: 'isEnabled' },
+      minWidth: 50,
+    },
+    {
+      title: $t('page.language.isDefault'),
+      field: 'isDefault',
+      slots: { default: 'isDefault' },
+      minWidth: 50,
+    },
+    {
+      title: $t('ui.table.sortOrder'),
+      field: 'sortOrder',
+      minWidth: 100,
     },
     {
       title: $t('ui.table.createdAt'),
       field: 'createdAt',
       formatter: 'formatDateTime',
-      minWidth: 120,
+      minWidth: 140,
     },
     {
       title: $t('ui.table.action'),
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      width: 90,
+      minWidth: 90,
     },
   ],
 };
 
-const gridEvents: VxeGridListeners<UserTag> = {};
-
-const [Grid, gridApi] = useVbenVxeGrid({
-  gridOptions,
-  formOptions,
-  gridEvents,
-});
+const [Grid, gridApi] = useVbenVxeGrid({ gridOptions, formOptions });
 
 const [Drawer, drawerApi] = useVbenDrawer({
   // 连接抽离的组件
-  connectedComponent: UserTagDrawer,
+  connectedComponent: LanguageDrawer,
 
   onOpenChange(isOpen: boolean) {
     if (!isOpen) {
@@ -203,12 +168,17 @@ function handleEdit(row: any) {
   openDrawer(false, row);
 }
 
+/* 删除 */
 async function handleDelete(row: any) {
+  console.log('删除', row);
+
   try {
-    await userTagListStore.deleteUserTag(row.id);
+    await languageStore.deleteLanguage(row.id);
+
     notification.success({
       message: $t('ui.notification.delete_success'),
     });
+
     await gridApi.reload();
   } catch {
     notification.error({
@@ -216,28 +186,24 @@ async function handleDelete(row: any) {
     });
   }
 }
-
-onMounted(async () => {
-  await userTagListStore.getTagSourceDict();
-});
 </script>
 
 <template>
   <Page auto-content-height>
-    <Grid :table-title="$t('menu.tag.userTags')">
+    <Grid :table-title="$t('menu.system.language')">
       <template #toolbar-tools>
         <a-button type="primary" class="mr-2" @click="handleCreate">
-          {{ $t('page.userTag.button.create') }}
+          {{ $t('page.language.button.create') }}
         </a-button>
       </template>
-      <template #source="{ row }">
-        <a-tag :color="userTagSourceToColor(row.source)">
-          {{
-            userTagSourceToName(
-              row.source,
-              userTagListStore.cachedTagSourceDict,
-            )
-          }}
+      <template #isEnabled="{ row }">
+        <a-tag :color="enableBoolToColor(row.isEnabled)">
+          {{ enableBoolToName(row.isEnabled) }}
+        </a-tag>
+      </template>
+      <template #isDefault="{ row }">
+        <a-tag :color="enableBoolToColor(row.isDefault)">
+          {{ enableBoolToName(row.isDefault) }}
         </a-tag>
       </template>
       <template #action="{ row }">
@@ -251,7 +217,7 @@ onMounted(async () => {
           :ok-text="$t('ui.button.ok')"
           :title="
             $t('ui.text.do_you_want_delete', {
-              moduleName: $t('page.loginPolicy.moduleName'),
+              moduleName: $t('page.language.moduleName'),
             })
           "
           @confirm="handleDelete(row)"
@@ -263,5 +229,3 @@ onMounted(async () => {
     <Drawer />
   </Page>
 </template>
-
-<style scoped></style>

@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"go-wind-uba/app/core/service/internal/data/ent/dictentry"
 	"go-wind-uba/app/core/service/internal/data/ent/dicttype"
-	"go-wind-uba/app/core/service/internal/data/ent/dicttypei18n"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
@@ -164,6 +163,20 @@ func (_c *DictTypeCreate) SetNillableTypeCode(v *string) *DictTypeCreate {
 	return _c
 }
 
+// SetTypeName sets the "type_name" field.
+func (_c *DictTypeCreate) SetTypeName(v string) *DictTypeCreate {
+	_c.mutation.SetTypeName(v)
+	return _c
+}
+
+// SetNillableTypeName sets the "type_name" field if the given value is not nil.
+func (_c *DictTypeCreate) SetNillableTypeName(v *string) *DictTypeCreate {
+	if v != nil {
+		_c.SetTypeName(*v)
+	}
+	return _c
+}
+
 // SetID sets the "id" field.
 func (_c *DictTypeCreate) SetID(v uint32) *DictTypeCreate {
 	_c.mutation.SetID(v)
@@ -183,21 +196,6 @@ func (_c *DictTypeCreate) AddEntries(v ...*DictEntry) *DictTypeCreate {
 		ids[i] = v[i].ID
 	}
 	return _c.AddEntryIDs(ids...)
-}
-
-// AddI18nIDs adds the "i18ns" edge to the DictTypeI18n entity by IDs.
-func (_c *DictTypeCreate) AddI18nIDs(ids ...uint32) *DictTypeCreate {
-	_c.mutation.AddI18nIDs(ids...)
-	return _c
-}
-
-// AddI18ns adds the "i18ns" edges to the DictTypeI18n entity.
-func (_c *DictTypeCreate) AddI18ns(v ...*DictTypeI18n) *DictTypeCreate {
-	ids := make([]uint32, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _c.AddI18nIDs(ids...)
 }
 
 // Mutation returns the DictTypeMutation object of the builder.
@@ -259,6 +257,11 @@ func (_c *DictTypeCreate) check() error {
 			return &ValidationError{Name: "type_code", err: fmt.Errorf(`ent: validator failed for field "DictType.type_code": %w`, err)}
 		}
 	}
+	if v, ok := _c.mutation.TypeName(); ok {
+		if err := dicttype.TypeNameValidator(v); err != nil {
+			return &ValidationError{Name: "type_name", err: fmt.Errorf(`ent: validator failed for field "DictType.type_name": %w`, err)}
+		}
+	}
 	if v, ok := _c.mutation.ID(); ok {
 		if err := dicttype.IDValidator(v); err != nil {
 			return &ValidationError{Name: "id", err: fmt.Errorf(`ent: validator failed for field "DictType.id": %w`, err)}
@@ -266,9 +269,6 @@ func (_c *DictTypeCreate) check() error {
 	}
 	if len(_c.mutation.EntriesIDs()) == 0 {
 		return &ValidationError{Name: "entries", err: errors.New(`ent: missing required edge "DictType.entries"`)}
-	}
-	if len(_c.mutation.I18nsIDs()) == 0 {
-		return &ValidationError{Name: "i18ns", err: errors.New(`ent: missing required edge "DictType.i18ns"`)}
 	}
 	return nil
 }
@@ -343,6 +343,10 @@ func (_c *DictTypeCreate) createSpec() (*DictType, *sqlgraph.CreateSpec) {
 		_spec.SetField(dicttype.FieldTypeCode, field.TypeString, value)
 		_node.TypeCode = &value
 	}
+	if value, ok := _c.mutation.TypeName(); ok {
+		_spec.SetField(dicttype.FieldTypeName, field.TypeString, value)
+		_node.TypeName = &value
+	}
 	if nodes := _c.mutation.EntriesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -352,22 +356,6 @@ func (_c *DictTypeCreate) createSpec() (*DictType, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(dictentry.FieldID, field.TypeUint32),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges = append(_spec.Edges, edge)
-	}
-	if nodes := _c.mutation.I18nsIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   dicttype.I18nsTable,
-			Columns: []string{dicttype.I18nsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(dicttypei18n.FieldID, field.TypeUint32),
 			},
 		}
 		for _, k := range nodes {
@@ -574,6 +562,24 @@ func (u *DictTypeUpsert) AddSortOrder(v uint32) *DictTypeUpsert {
 // ClearSortOrder clears the value of the "sort_order" field.
 func (u *DictTypeUpsert) ClearSortOrder() *DictTypeUpsert {
 	u.SetNull(dicttype.FieldSortOrder)
+	return u
+}
+
+// SetTypeName sets the "type_name" field.
+func (u *DictTypeUpsert) SetTypeName(v string) *DictTypeUpsert {
+	u.Set(dicttype.FieldTypeName, v)
+	return u
+}
+
+// UpdateTypeName sets the "type_name" field to the value that was provided on create.
+func (u *DictTypeUpsert) UpdateTypeName() *DictTypeUpsert {
+	u.SetExcluded(dicttype.FieldTypeName)
+	return u
+}
+
+// ClearTypeName clears the value of the "type_name" field.
+func (u *DictTypeUpsert) ClearTypeName() *DictTypeUpsert {
+	u.SetNull(dicttype.FieldTypeName)
 	return u
 }
 
@@ -806,6 +812,27 @@ func (u *DictTypeUpsertOne) UpdateSortOrder() *DictTypeUpsertOne {
 func (u *DictTypeUpsertOne) ClearSortOrder() *DictTypeUpsertOne {
 	return u.Update(func(s *DictTypeUpsert) {
 		s.ClearSortOrder()
+	})
+}
+
+// SetTypeName sets the "type_name" field.
+func (u *DictTypeUpsertOne) SetTypeName(v string) *DictTypeUpsertOne {
+	return u.Update(func(s *DictTypeUpsert) {
+		s.SetTypeName(v)
+	})
+}
+
+// UpdateTypeName sets the "type_name" field to the value that was provided on create.
+func (u *DictTypeUpsertOne) UpdateTypeName() *DictTypeUpsertOne {
+	return u.Update(func(s *DictTypeUpsert) {
+		s.UpdateTypeName()
+	})
+}
+
+// ClearTypeName clears the value of the "type_name" field.
+func (u *DictTypeUpsertOne) ClearTypeName() *DictTypeUpsertOne {
+	return u.Update(func(s *DictTypeUpsert) {
+		s.ClearTypeName()
 	})
 }
 
@@ -1204,6 +1231,27 @@ func (u *DictTypeUpsertBulk) UpdateSortOrder() *DictTypeUpsertBulk {
 func (u *DictTypeUpsertBulk) ClearSortOrder() *DictTypeUpsertBulk {
 	return u.Update(func(s *DictTypeUpsert) {
 		s.ClearSortOrder()
+	})
+}
+
+// SetTypeName sets the "type_name" field.
+func (u *DictTypeUpsertBulk) SetTypeName(v string) *DictTypeUpsertBulk {
+	return u.Update(func(s *DictTypeUpsert) {
+		s.SetTypeName(v)
+	})
+}
+
+// UpdateTypeName sets the "type_name" field to the value that was provided on create.
+func (u *DictTypeUpsertBulk) UpdateTypeName() *DictTypeUpsertBulk {
+	return u.Update(func(s *DictTypeUpsert) {
+		s.UpdateTypeName()
+	})
+}
+
+// ClearTypeName clears the value of the "type_name" field.
+func (u *DictTypeUpsertBulk) ClearTypeName() *DictTypeUpsertBulk {
+	return u.Update(func(s *DictTypeUpsert) {
+		s.ClearTypeName()
 	})
 }
 

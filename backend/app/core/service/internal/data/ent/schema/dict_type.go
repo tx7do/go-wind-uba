@@ -32,9 +32,15 @@ func (DictType) Annotations() []schema.Annotation {
 func (DictType) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("type_code").
-			Comment("字典类型唯一代码").
+			Comment("字典类型唯一编码").
 			NotEmpty().
 			Immutable().
+			Optional().
+			Nillable(),
+
+		field.String("type_name").
+			Comment("字典类型名称（中文，仅后台用）").
+			NotEmpty().
 			Optional().
 			Nillable(),
 	}
@@ -56,13 +62,6 @@ func (DictType) Mixin() []ent.Mixin {
 func (DictType) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("entries", DictEntry.Type).
-			Required().
-			Annotations(entsql.Annotation{
-				OnDelete: entsql.Cascade,
-			}).
-			StorageKey(edge.Column("type_id")),
-
-		edge.To("i18ns", DictTypeI18n.Type).
 			Required().
 			Annotations(entsql.Annotation{
 				OnDelete: entsql.Cascade,

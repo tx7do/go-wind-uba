@@ -4,7 +4,6 @@ import { defineStore } from 'pinia';
 
 import {
   type dictservicev1_DictEntry as DictEntry,
-  type dictservicev1_DictType as DictType,
   type dictservicev1_ListDictEntryResponse as ListDictEntryResponse,
   type dictservicev1_ListDictTypeResponse as ListDictTypeResponse,
   type dictservicev1_ListLanguageResponse as ListLanguageResponse,
@@ -58,6 +57,8 @@ export const useDictViewStore = defineStore('dict-view', {
             pageSize,
           },
           formValues,
+          undefined,
+          ['sortOrder'],
         );
 
         await this.setCurrentTypeId(null);
@@ -161,14 +162,6 @@ export const useDictViewStore = defineStore('dict-view', {
     },
   },
 });
-
-export function getTypeName(row: DictType) {
-  const currentI18n = row.i18n?.[preferences.app.locale];
-  if (currentI18n === undefined) {
-    return '';
-  }
-  return currentI18n.typeName;
-}
 
 export function getEntryLabel(row: DictEntry) {
   const currentI18n = row.i18n?.[preferences.app.locale];

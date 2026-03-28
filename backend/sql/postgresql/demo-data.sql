@@ -99,53 +99,53 @@ INSERT INTO public.uba_user_tags (
 VALUES
     -- 1. 用户10001：性别-男（静态标签，tag_id=1）
     (0, NOW(), NOW(), NULL, 1001, 1001, NULL,
-     10001, 1, '男', '男', 1.0,
-     'TAG_SOURCE_MANUAL', NULL, NOW() - INTERVAL '365 days', NULL, TRUE),
+     10001, 1, 'male', '男', 1.0,
+     'manual', NULL, NOW() - INTERVAL '365 days', NULL, TRUE),
 
     -- 2. 用户10001：会员等级-金卡（tag_id=3）
     (1, NOW(), NOW(), NULL, 1002, 1002, NULL,
-     10001, 3, '金卡会员', '金卡会员', 1.0,
-     'TAG_SOURCE_RULE', 1001, NOW() - INTERVAL '180 days', NOW() + INTERVAL '180 days', TRUE),
+     10001, 3, 'gold', '金卡会员', 1.0,
+     'rule', 1001, NOW() - INTERVAL '180 days', NOW() + INTERVAL '180 days', TRUE),
 
     -- 3. 用户10001：近30天活跃用户（动态标签，tag_id=2）
     (0, NOW(), NOW(), NULL, 1001, 1001, NULL,
      10001, 2, 'true', '活跃用户', 0.98,
-     'TAG_SOURCE_RULE', 2001, NOW() - INTERVAL '7 days', NOW() + INTERVAL '30 days', TRUE),
+     'rule', 2001, NOW() - INTERVAL '7 days', NOW() + INTERVAL '30 days', TRUE),
 
     -- 4. 用户10002：性别-女（tag_id=1）
     (0, NOW(), NOW(), NULL, 1001, 1001, NULL,
-     10002, 1, '女', '女', 1.0,
-     'TAG_SOURCE_MANUAL', NULL, NOW() - INTERVAL '200 days', NULL, TRUE),
+     10002, 1, 'female', '女', 1.0,
+     'manual', NULL, NOW() - INTERVAL '200 days', NULL, TRUE),
 
     -- 5. 用户10002：注册渠道-微信小程序（tag_id=4）
     (0, NOW(), NOW(), NULL, 1001, 1001, NULL,
-     10002, 4, '微信小程序', '微信小程序', 1.0,
-     'TAG_SOURCE_RULE', NULL, NOW() - INTERVAL '200 days', NULL, TRUE),
+     10002, 4, 'wechat_mini', '微信小程序', 1.0,
+     'rule', NULL, NOW() - INTERVAL '200 days', NULL, TRUE),
 
     -- 6. 用户10003：高价值消费用户（动态标签，tag_id=5）
     (1, NOW(), NOW(), NULL, 1003, 1003, NULL,
      10003, 5, 'true', '高价值用户', 0.95,
-     'TAG_SOURCE_RULE', 2002, NOW() - INTERVAL '15 days', NOW() + INTERVAL '15 days', TRUE),
+     'rule', 2002, NOW() - INTERVAL '15 days', NOW() + INTERVAL '15 days', TRUE),
 
     -- 7. 用户10003：商品偏好-电子产品（tag_id=6）
     (2, NOW(), NOW(), NULL, 1002, 1004, NULL,
-     10003, 6, '电子产品', '电子产品', 0.92,
-     'TAG_SOURCE_MODEL', 3001, NOW() - INTERVAL '60 days', NULL, TRUE),
+     10003, 6, 'electronics', '电子产品', 0.92,
+     'model', 3001, NOW() - INTERVAL '60 days', NULL, TRUE),
 
     -- 8. 用户10004：年龄段-19-30岁（tag_id=8）
     (2, NOW(), NOW(), NULL, 1004, 1004, NULL,
-     10004, 8, '19-30岁', '19-30岁', 1.0,
-     'TAG_SOURCE_MANUAL', NULL, NOW() - INTERVAL '90 days', NULL, TRUE),
+     10004, 8, '19-30', '19-30岁', 1.0,
+     'manual', NULL, NOW() - INTERVAL '90 days', NULL, TRUE),
 
     -- 9. 已过期标签（测试过期逻辑）
     (0, NOW(), NOW(), NULL, 1001, 1001, NULL,
-     10004, 3, '普通会员', '普通会员', 1.0,
-     'TAG_SOURCE_MODEL', 1002, NOW() - INTERVAL '365 days', NOW() - INTERVAL '10 days', FALSE),
+     10004, 3, 'normal', '普通会员', 1.0,
+     'model', 1002, NOW() - INTERVAL '365 days', NOW() - INTERVAL '10 days', FALSE),
 
     -- 10. 软删除标签（测试软删除）
     (0, NOW(), NOW(), NOW() - INTERVAL '5 days', 1001, 1005, 1005,
      10005, 7, 'test', '测试标签', 1.0,
-     'TAG_SOURCE_IMPORT', NULL, NOW() - INTERVAL '30 days', NOW() - INTERVAL '10 days', FALSE);
+     'import', NULL, NOW() - INTERVAL '30 days', NOW() - INTERVAL '10 days', FALSE);
 
 
 -- 插入 uba_id_mappings 用户ID映射测试数据
@@ -172,7 +172,7 @@ VALUES
     (0, 1001, 1001, NULL,
      NOW(), NOW(), NULL,
      'GLOBAL_USER_10001',
-     'ID_TYPE_PHONE',
+     'phone',
      '13800138000',
      1.0,
      'login',
@@ -185,7 +185,7 @@ VALUES
     (0, 1001, 1001, NULL,
      NOW(), NOW(), NULL,
      'GLOBAL_USER_10001',
-     'ID_TYPE_OPENID',
+     'openid',
      'oVwx1s5XKZLH7aQ8bZ9xY0c1D2e',
      0.99,
      'wechat_auth',
@@ -198,7 +198,7 @@ VALUES
     (0, 1001, 1001, NULL,
      NOW(), NOW(), NULL,
      'GLOBAL_USER_10002',
-     'ID_TYPE_PHONE',
+     'phone',
      '13900139000',
      1.0,
      'login',
@@ -211,7 +211,7 @@ VALUES
     (0, 1001, 1001, NULL,
      NOW(), NOW(), NULL,
      'GLOBAL_USER_10002',
-     'ID_TYPE_DEVICE_ID',
+     'device_id',
      '867530912345678',
      0.95,
      'device_bind',
@@ -224,7 +224,7 @@ VALUES
     (1, 1003, 1003, NULL,
      NOW(), NOW(), NULL,
      'GLOBAL_USER_10003',
-     'ID_TYPE_PHONE',
+     'phone',
      '13700137000',
      1.0,
      'login',
@@ -237,7 +237,7 @@ VALUES
     (2, 1004, 1004, NULL,
      NOW(), NOW(), NULL,
      'GLOBAL_USER_10004',
-     'ID_TYPE_PHONE',
+     'phone',
      '13600136000',
      1.0,
      'login',
@@ -250,7 +250,7 @@ VALUES
     (2, 1004, 1004, NULL,
      NOW(), NOW(), NULL,
      'GLOBAL_USER_10004',
-     'ID_TYPE_EMAIL',
+     'email',
      'user10004@test.com',
      0.98,
      'email_bind',
@@ -263,7 +263,7 @@ VALUES
     (0, 1001, 1005, 1005,
      NOW(), NOW(), NOW() - INTERVAL '7 days',
      'GLOBAL_USER_10005',
-     'ID_TYPE_DEVICE_ID',
+     'device_id',
      '00000000123456789',
      0.8,
      'deprecated',
@@ -276,7 +276,7 @@ VALUES
     (0, 1001, 1001, NULL,
      NOW(), NOW(), NULL,
      'GLOBAL_USER_10001',
-     'ID_TYPE_OPENID',
+     'openid',
      '2088123456789012',
      0.99,
      'alipay_auth',

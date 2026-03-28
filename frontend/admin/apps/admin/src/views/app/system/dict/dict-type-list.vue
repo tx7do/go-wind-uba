@@ -12,10 +12,7 @@ import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { type dictservicev1_DictType as DictType } from '#/generated/api/admin/service/v1';
 import { $t } from '#/locales';
 import { enableBoolToColor, enableBoolToName, useDictStore } from '#/stores';
-import {
-  getTypeName,
-  useDictViewStore,
-} from '#/views/app/system/dict/dict-view.state';
+import { useDictViewStore } from '#/views/app/system/dict/dict-view.state';
 
 import DictTypeDrawer from './dict-type-drawer.vue';
 
@@ -76,21 +73,28 @@ const gridOptions: VxeGridProps<DictType> = {
     {
       title: $t('page.dict.typeName'),
       field: 'typeName',
-      slots: { default: 'typeName' },
+      fixed: 'left',
+      align: 'left',
+      minWidth: 150,
     },
-    { title: $t('page.dict.typeCode'), field: 'typeCode' },
+    {
+      title: $t('page.dict.typeCode'),
+      field: 'typeCode',
+      align: 'left',
+      minWidth: 150,
+    },
     {
       title: $t('ui.table.status'),
       field: 'isEnabled',
       slots: { default: 'isEnabled' },
-      width: 95,
+      minWidth: 95,
     },
     {
       title: $t('ui.table.action'),
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      width: 90,
+      minWidth: 90,
     },
   ],
 };
@@ -175,9 +179,6 @@ async function handleDelete(row: any) {
       <a-tag :color="enableBoolToColor(row.isEnabled)">
         {{ enableBoolToName(row.isEnabled) }}
       </a-tag>
-    </template>
-    <template #typeName="{ row }">
-      {{ getTypeName(row) }}
     </template>
     <template #action="{ row }">
       <a-button

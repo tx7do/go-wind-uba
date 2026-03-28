@@ -105,7 +105,7 @@ type IDMapping struct {
 	// 租户ID（多租户隔离，支持 SaaS 场景）
 	TenantId *uint32 `protobuf:"varint,3,opt,name=tenant_id,json=tenantId,proto3,oneof" json:"tenant_id,omitempty"`
 	// ID类型（如用户ID、设备ID、Cookie、邮箱、手机号、OpenID 等）
-	IdType *IDType `protobuf:"varint,4,opt,name=id_type,json=idType,proto3,enum=uba.service.v1.IDType,oneof" json:"id_type,omitempty"`
+	IdType *string `protobuf:"bytes,4,opt,name=id_type,json=idType,proto3,oneof" json:"id_type,omitempty"`
 	// ID值（具体的标识符，如用户ID、设备ID、邮箱等）
 	IdValue *string `protobuf:"bytes,5,opt,name=id_value,json=idValue,proto3,oneof" json:"id_value,omitempty"`
 	// 置信度（映射关系可信度评分，范围0~1）
@@ -187,11 +187,11 @@ func (x *IDMapping) GetTenantId() uint32 {
 	return 0
 }
 
-func (x *IDMapping) GetIdType() IDType {
+func (x *IDMapping) GetIdType() string {
 	if x != nil && x.IdType != nil {
 		return *x.IdType
 	}
-	return IDType_ID_TYPE_UNSPECIFIED
+	return ""
 }
 
 func (x *IDMapping) GetIdValue() string {
@@ -650,12 +650,12 @@ var File_uba_service_v1_id_mapping_proto protoreflect.FileDescriptor
 
 const file_uba_service_v1_id_mapping_proto_rawDesc = "" +
 	"\n" +
-	"\x1fuba/service/v1/id_mapping.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a google/protobuf/field_mask.proto\x1a\x1epagination/v1/pagination.proto\"\xde\x11\n" +
+	"\x1fuba/service/v1/id_mapping.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a google/protobuf/field_mask.proto\x1a\x1epagination/v1/pagination.proto\"\xc5\x11\n" +
 	"\tIDMapping\x12J\n" +
 	"\x02id\x18\x01 \x01(\rB:\xbaG7\x92\x024自增长主键ID，唯一标识一条ID映射记录R\x02id\x12s\n" +
 	"\x0eglobal_user_id\x18\x02 \x01(\tBH\xbaGE\x92\x02B全局用户唯一标识，用于跨平台、跨租户用户关联H\x00R\fglobalUserId\x88\x01\x01\x12W\n" +
-	"\ttenant_id\x18\x03 \x01(\rB5\xbaG2\x92\x02/租户ID，多租户隔离，支持 SaaS 场景H\x01R\btenantId\x88\x01\x01\x12\x80\x01\n" +
-	"\aid_type\x18\x04 \x01(\x0e2\x16.uba.service.v1.IDTypeBJ\xbaGG\x92\x02DID类型，标识不同类型的用户、设备、账号等标识符H\x02R\x06idType\x88\x01\x01\x12e\n" +
+	"\ttenant_id\x18\x03 \x01(\rB5\xbaG2\x92\x02/租户ID，多租户隔离，支持 SaaS 场景H\x01R\btenantId\x88\x01\x01\x12h\n" +
+	"\aid_type\x18\x04 \x01(\tBJ\xbaGG\x92\x02DID类型，标识不同类型的用户、设备、账号等标识符H\x02R\x06idType\x88\x01\x01\x12e\n" +
 	"\bid_value\x18\x05 \x01(\tBE\xbaGB\x92\x02?ID值，具体的标识符，如用户ID、设备ID、邮箱等H\x03R\aidValue\x88\x01\x01\x12^\n" +
 	"\n" +
 	"confidence\x18\x06 \x01(\x02B9\xbaG6\x92\x023置信度，映射关系可信度评分，范围0~1H\x04R\n" +
@@ -782,35 +782,34 @@ var file_uba_service_v1_id_mapping_proto_goTypes = []any{
 	(*emptypb.Empty)(nil),          // 12: google.protobuf.Empty
 }
 var file_uba_service_v1_id_mapping_proto_depIdxs = []int32{
-	0,  // 0: uba.service.v1.IDMapping.id_type:type_name -> uba.service.v1.IDType
-	9,  // 1: uba.service.v1.IDMapping.first_seen:type_name -> google.protobuf.Timestamp
-	9,  // 2: uba.service.v1.IDMapping.last_seen:type_name -> google.protobuf.Timestamp
-	8,  // 3: uba.service.v1.IDMapping.properties:type_name -> uba.service.v1.IDMapping.PropertiesEntry
-	9,  // 4: uba.service.v1.IDMapping.created_at:type_name -> google.protobuf.Timestamp
-	9,  // 5: uba.service.v1.IDMapping.updated_at:type_name -> google.protobuf.Timestamp
-	9,  // 6: uba.service.v1.IDMapping.deleted_at:type_name -> google.protobuf.Timestamp
-	1,  // 7: uba.service.v1.ListIDMappingResponse.items:type_name -> uba.service.v1.IDMapping
-	10, // 8: uba.service.v1.GetIDMappingRequest.view_mask:type_name -> google.protobuf.FieldMask
-	1,  // 9: uba.service.v1.CreateIDMappingRequest.data:type_name -> uba.service.v1.IDMapping
-	1,  // 10: uba.service.v1.UpdateIDMappingRequest.data:type_name -> uba.service.v1.IDMapping
-	10, // 11: uba.service.v1.UpdateIDMappingRequest.update_mask:type_name -> google.protobuf.FieldMask
-	11, // 12: uba.service.v1.IDMappingService.List:input_type -> pagination.PagingRequest
-	11, // 13: uba.service.v1.IDMappingService.Count:input_type -> pagination.PagingRequest
-	3,  // 14: uba.service.v1.IDMappingService.Get:input_type -> uba.service.v1.GetIDMappingRequest
-	4,  // 15: uba.service.v1.IDMappingService.Create:input_type -> uba.service.v1.CreateIDMappingRequest
-	5,  // 16: uba.service.v1.IDMappingService.Update:input_type -> uba.service.v1.UpdateIDMappingRequest
-	6,  // 17: uba.service.v1.IDMappingService.Delete:input_type -> uba.service.v1.DeleteIDMappingRequest
-	2,  // 18: uba.service.v1.IDMappingService.List:output_type -> uba.service.v1.ListIDMappingResponse
-	7,  // 19: uba.service.v1.IDMappingService.Count:output_type -> uba.service.v1.CountIDMappingResponse
-	1,  // 20: uba.service.v1.IDMappingService.Get:output_type -> uba.service.v1.IDMapping
-	1,  // 21: uba.service.v1.IDMappingService.Create:output_type -> uba.service.v1.IDMapping
-	1,  // 22: uba.service.v1.IDMappingService.Update:output_type -> uba.service.v1.IDMapping
-	12, // 23: uba.service.v1.IDMappingService.Delete:output_type -> google.protobuf.Empty
-	18, // [18:24] is the sub-list for method output_type
-	12, // [12:18] is the sub-list for method input_type
-	12, // [12:12] is the sub-list for extension type_name
-	12, // [12:12] is the sub-list for extension extendee
-	0,  // [0:12] is the sub-list for field type_name
+	9,  // 0: uba.service.v1.IDMapping.first_seen:type_name -> google.protobuf.Timestamp
+	9,  // 1: uba.service.v1.IDMapping.last_seen:type_name -> google.protobuf.Timestamp
+	8,  // 2: uba.service.v1.IDMapping.properties:type_name -> uba.service.v1.IDMapping.PropertiesEntry
+	9,  // 3: uba.service.v1.IDMapping.created_at:type_name -> google.protobuf.Timestamp
+	9,  // 4: uba.service.v1.IDMapping.updated_at:type_name -> google.protobuf.Timestamp
+	9,  // 5: uba.service.v1.IDMapping.deleted_at:type_name -> google.protobuf.Timestamp
+	1,  // 6: uba.service.v1.ListIDMappingResponse.items:type_name -> uba.service.v1.IDMapping
+	10, // 7: uba.service.v1.GetIDMappingRequest.view_mask:type_name -> google.protobuf.FieldMask
+	1,  // 8: uba.service.v1.CreateIDMappingRequest.data:type_name -> uba.service.v1.IDMapping
+	1,  // 9: uba.service.v1.UpdateIDMappingRequest.data:type_name -> uba.service.v1.IDMapping
+	10, // 10: uba.service.v1.UpdateIDMappingRequest.update_mask:type_name -> google.protobuf.FieldMask
+	11, // 11: uba.service.v1.IDMappingService.List:input_type -> pagination.PagingRequest
+	11, // 12: uba.service.v1.IDMappingService.Count:input_type -> pagination.PagingRequest
+	3,  // 13: uba.service.v1.IDMappingService.Get:input_type -> uba.service.v1.GetIDMappingRequest
+	4,  // 14: uba.service.v1.IDMappingService.Create:input_type -> uba.service.v1.CreateIDMappingRequest
+	5,  // 15: uba.service.v1.IDMappingService.Update:input_type -> uba.service.v1.UpdateIDMappingRequest
+	6,  // 16: uba.service.v1.IDMappingService.Delete:input_type -> uba.service.v1.DeleteIDMappingRequest
+	2,  // 17: uba.service.v1.IDMappingService.List:output_type -> uba.service.v1.ListIDMappingResponse
+	7,  // 18: uba.service.v1.IDMappingService.Count:output_type -> uba.service.v1.CountIDMappingResponse
+	1,  // 19: uba.service.v1.IDMappingService.Get:output_type -> uba.service.v1.IDMapping
+	1,  // 20: uba.service.v1.IDMappingService.Create:output_type -> uba.service.v1.IDMapping
+	1,  // 21: uba.service.v1.IDMappingService.Update:output_type -> uba.service.v1.IDMapping
+	12, // 22: uba.service.v1.IDMappingService.Delete:output_type -> google.protobuf.Empty
+	17, // [17:23] is the sub-list for method output_type
+	11, // [11:17] is the sub-list for method input_type
+	11, // [11:11] is the sub-list for extension type_name
+	11, // [11:11] is the sub-list for extension extendee
+	0,  // [0:11] is the sub-list for field type_name
 }
 
 func init() { file_uba_service_v1_id_mapping_proto_init() }

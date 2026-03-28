@@ -342,98 +342,7 @@ CREATE TABLE IF NOT EXISTS gw_uba.objects_dim
 
 
 -- ============================================================
--- 6. 用户身份 ID 关联映射表
--- ============================================================
-CREATE TABLE IF NOT EXISTS gw_uba.id_mapping
-(
-    -- ========== 主键字段 ==========
-    global_user_id String COMMENT '全局用户 ID（打通后的统一标识，用于跨设备/跨账号关联）',
-    tenant_id      UInt32 COMMENT '租户 ID（SaaS 多租户隔离）',
-
-    -- ========== 身份标识字段 ==========
-    id_type        LowCardinality(String) COMMENT '身份标识类型：user_id（登录用户）/device_id（设备指纹）/cookie（浏览器 Cookie）/email（邮箱）/phone（手机号）',
-    id_value       String COMMENT '身份标识值（具体 ID 值，如用户 ID 数字、设备 UUID 等）',
-
-    -- ========== 关联信息字段 ==========
-    confidence     Float32  DEFAULT 1.0 COMMENT '关联置信度（0-1，1 表示确定关联，用于算法关联时区分可信度）',
-    link_source    LowCardinality(String) COMMENT '关联来源：login（用户登录）/bind（手动绑定）/algorithm（算法推荐）/device（同设备识别）',
-
-    -- ========== 时效字段 ==========
-    first_seen     Nullable(DateTime) COMMENT '首次关联时间（该身份标识第一次出现的时间）',
-    last_seen      Nullable(DateTime) COMMENT '最后活跃时间（该身份标识最后一次活跃的时间，用于 TTL 清理）',
-    is_active      UInt8    DEFAULT 1 COMMENT '是否有效：1（有效）/0（已失效，如用户解绑）',
-
-    -- ========== 审计字段 ==========
-    created_at     DateTime DEFAULT now() COMMENT '记录创建时间（数据写入 ClickHouse 的时间）',
-    updated_at     DateTime DEFAULT now() COMMENT '记录更新时间（用于 ReplacingMergeTree 版本控制）',
-    updated_date   Date MATERIALIZED toDate(updated_at) COMMENT '更新日期（物化列，用于 TTL 分区清理）',
-
-    INDEX idx_active is_active TYPE set(2) GRANULARITY 1 -- 加速有效关联关系查询
-) ENGINE = ReplacingMergeTree(updated_at) -- 使用 updated_at 作为版本列，支持关联关系更新
-      PARTITION BY tenant_id -- 按租户分区，支持多租户隔离
-      ORDER BY (tenant_id, id_type, id_value) -- 按租户 + 标识类型 + 标识值排序，支持快速查找
-      TTL updated_date + INTERVAL 365 DAY -- 365 天未更新的关联关系自动清理
-      SETTINGS
-          index_granularity = 8192, -- 索引粒度，平衡查询性能和存储开销
-          enable_mixed_granularity_parts = 1, -- 启用混合粒度分区，支持大文本字段
-          ttl_only_drop_parts = 1, -- TTL 只删除完整分区，避免部分删除开销
-          min_bytes_for_wide_part = 10485760 -- 10MB，宽分区最小字节数，优化合并策略
-      COMMENT 'ID 关联映射表（打通匿名用户与登录用户的身份关联，支持跨设备/跨账号用户识别）';
-
-
--- ============================================================
--- 7. 用户标签关联表
--- ============================================================
-CREATE TABLE IF NOT EXISTS gw_uba.user_tags
-(
-    -- ========== 主键字段 ==========
-    tenant_id      UInt32 COMMENT '租户 ID（SaaS 多租户隔离）',
-    user_id        UInt32 COMMENT '登录用户 ID（可为 0 表示匿名用户）',
-    tag_id         UInt32 COMMENT '标签定义 ID（关联 uba_tag_definitions.id）',
-
-    -- ========== 标签值字段 ==========
-    tag_value      String COMMENT '标签值（统一用 String 存储，数值/枚举在应用层解析）',
-    value_label    String COMMENT '标签值显示名称（枚举值的中文/英文显示名，如"高价值"）',
-
-    -- ========== 置信度字段 ==========
-    confidence     Float32  DEFAULT 1.0 COMMENT '标签置信度（0-1，算法打标时区分可信度，手动打标为 1.0）',
-
-    -- ========== 来源字段 ==========
-    source         LowCardinality(String) COMMENT '标签来源：manual（人工打标）/rule（规则引擎）/model（算法模型）/import（批量导入）',
-    source_rule_id UInt32 COMMENT '来源规则 ID（当 source=rule 时，关联触发该标签的规则 ID）',
-
-    -- ========== 时效字段 ==========
-    effective_time Nullable(DateTime64(3)) COMMENT '标签生效时间（标签开始生效的时间点）',
-    expire_time    Nullable(DateTime64(3)) COMMENT '标签过期时间（标签失效的时间点，NULL 表示永久有效）',
-
-    effective_date Date MATERIALIZED COALESCE(toDate(effective_time), toDate(now())) COMMENT '生效日期（物化列）',
-    expire_date    Date MATERIALIZED COALESCE(toDate(expire_time), toDate('2100-01-01')) COMMENT '过期日期（物化列，用于 TTL 清理）',
-
-    is_active      UInt8    DEFAULT 1 COMMENT '是否有效：1（有效）/0（已失效，如手动取消标签）',
-
-    -- ========== 审计字段 ==========
-    created_at     DateTime DEFAULT now() COMMENT '记录创建时间（标签关联创建的时间）',
-    updated_at     DateTime DEFAULT now() COMMENT '记录更新时间（用于 ReplacingMergeTree 版本控制）',
-
-    -- ========== 跳数索引 ==========
-    INDEX idx_active is_active TYPE set(2) GRANULARITY 1,               -- 加速有效标签查询
-    INDEX idx_source source TYPE set(10) GRANULARITY 1,                 -- 加速按来源筛选
-    INDEX idx_tag_value tag_value TYPE bloom_filter(0.01) GRANULARITY 4 -- 加速标签值模糊查询
-) ENGINE = ReplacingMergeTree(updated_at) -- 使用 updated_at 作为版本列，支持标签更新/覆盖
-      PARTITION BY toYYYYMM(effective_date) -- 按标签生效时间月度分区，便于按时间范围查询
-      ORDER BY (tenant_id, user_id, tag_id, effective_date) -- 按租户 + 用户 + 标签 + 生效时间排序
-      TTL expire_date + INTERVAL 1 DAY
-          DELETE -- 过期标签 1 天后自动删除，节省存储空间
-      SETTINGS
-          index_granularity = 8192, -- 索引粒度，平衡查询性能和存储开销
-          enable_mixed_granularity_parts = 1, -- 启用混合粒度分区，支持大文本字段
-          ttl_only_drop_parts = 0, -- TTL 删除过期标签时直接删除记录，避免分区删除的开销（标签粒度较小）
-          min_bytes_for_wide_part = 10485760 -- 10MB，宽分区最小字节数，优化合并策略
-      COMMENT '用户标签关联表（存储用户与标签的关联关系，支持手动打标、规则打标、算法打标，支持标签有效期管理）';
-
-
--- ============================================================
--- 8. 用户行为路径特征表
+-- 6. 用户行为路径特征表
 -- ============================================================
 CREATE TABLE IF NOT EXISTS gw_uba.path_features
 (
@@ -487,7 +396,7 @@ CREATE TABLE IF NOT EXISTS gw_uba.path_features
 
 
 -- ============================================================
--- 9 用户风险画像表（独立存储风险相关字段）
+-- 7 用户风险画像表（独立存储风险相关字段）
 -- ============================================================
 CREATE TABLE IF NOT EXISTS gw_uba.user_risk_profile
 (
@@ -512,3 +421,94 @@ CREATE TABLE IF NOT EXISTS gw_uba.user_risk_profile
         SETTINGS
             index_granularity = 8192
         COMMENT '用户风险画像表（独立存储风险相关字段，避免覆盖主画像）';
+
+
+-- ============================================================
+-- 8. 用户身份 ID 关联映射表
+-- ============================================================
+CREATE TABLE IF NOT EXISTS gw_uba.id_mapping
+(
+    -- ========== 主键字段 ==========
+    global_user_id String COMMENT '全局用户 ID（打通后的统一标识，用于跨设备/跨账号关联）',
+    tenant_id      UInt32 COMMENT '租户 ID（SaaS 多租户隔离）',
+
+    -- ========== 身份标识字段 ==========
+    id_type        LowCardinality(String) COMMENT '身份标识类型：user_id（登录用户）/device_id（设备指纹）/cookie（浏览器 Cookie）/email（邮箱）/phone（手机号）',
+    id_value       String COMMENT '身份标识值（具体 ID 值，如用户 ID 数字、设备 UUID 等）',
+
+    -- ========== 关联信息字段 ==========
+    confidence     Float32  DEFAULT 1.0 COMMENT '关联置信度（0-1，1 表示确定关联，用于算法关联时区分可信度）',
+    link_source    LowCardinality(String) COMMENT '关联来源：login（用户登录）/bind（手动绑定）/algorithm（算法推荐）/device（同设备识别）',
+
+    -- ========== 时效字段 ==========
+    first_seen     Nullable(DateTime) COMMENT '首次关联时间（该身份标识第一次出现的时间）',
+    last_seen      Nullable(DateTime) COMMENT '最后活跃时间（该身份标识最后一次活跃的时间，用于 TTL 清理）',
+    is_active      UInt8    DEFAULT 1 COMMENT '是否有效：1（有效）/0（已失效，如用户解绑）',
+
+    -- ========== 审计字段 ==========
+    created_at     DateTime DEFAULT now() COMMENT '记录创建时间（数据写入 ClickHouse 的时间）',
+    updated_at     DateTime DEFAULT now() COMMENT '记录更新时间（用于 ReplacingMergeTree 版本控制）',
+    updated_date   Date MATERIALIZED toDate(updated_at) COMMENT '更新日期（物化列，用于 TTL 分区清理）',
+
+    INDEX idx_active is_active TYPE set(2) GRANULARITY 1 -- 加速有效关联关系查询
+) ENGINE = ReplacingMergeTree(updated_at) -- 使用 updated_at 作为版本列，支持关联关系更新
+      PARTITION BY tenant_id -- 按租户分区，支持多租户隔离
+      ORDER BY (tenant_id, id_type, id_value) -- 按租户 + 标识类型 + 标识值排序，支持快速查找
+      TTL updated_date + INTERVAL 365 DAY -- 365 天未更新的关联关系自动清理
+      SETTINGS
+          index_granularity = 8192, -- 索引粒度，平衡查询性能和存储开销
+          enable_mixed_granularity_parts = 1, -- 启用混合粒度分区，支持大文本字段
+          ttl_only_drop_parts = 1, -- TTL 只删除完整分区，避免部分删除开销
+          min_bytes_for_wide_part = 10485760 -- 10MB，宽分区最小字节数，优化合并策略
+      COMMENT 'ID 关联映射表（打通匿名用户与登录用户的身份关联，支持跨设备/跨账号用户识别）';
+
+
+-- ============================================================
+-- 9. 用户标签关联表
+-- ============================================================
+CREATE TABLE IF NOT EXISTS gw_uba.user_tags
+(
+    -- ========== 主键字段 ==========
+    tenant_id      UInt32 COMMENT '租户 ID（SaaS 多租户隔离）',
+    user_id        UInt32 COMMENT '登录用户 ID（可为 0 表示匿名用户）',
+    tag_id         UInt32 COMMENT '标签定义 ID（关联 uba_tag_definitions.id）',
+
+    -- ========== 标签值字段 ==========
+    tag_value      String COMMENT '标签值（统一用 String 存储，数值/枚举在应用层解析）',
+    value_label    String COMMENT '标签值显示名称（枚举值的中文/英文显示名，如"高价值"）',
+
+    -- ========== 置信度字段 ==========
+    confidence     Float32  DEFAULT 1.0 COMMENT '标签置信度（0-1，算法打标时区分可信度，手动打标为 1.0）',
+
+    -- ========== 来源字段 ==========
+    source         LowCardinality(String) COMMENT '标签来源：manual（人工打标）/rule（规则引擎）/model（算法模型）/import（批量导入）',
+    source_rule_id UInt32 COMMENT '来源规则 ID（当 source=rule 时，关联触发该标签的规则 ID）',
+
+    -- ========== 时效字段 ==========
+    effective_time Nullable(DateTime64(3)) COMMENT '标签生效时间（标签开始生效的时间点）',
+    expire_time    Nullable(DateTime64(3)) COMMENT '标签过期时间（标签失效的时间点，NULL 表示永久有效）',
+
+    effective_date Date MATERIALIZED COALESCE(toDate(effective_time), toDate(now())) COMMENT '生效日期（物化列）',
+    expire_date    Date MATERIALIZED COALESCE(toDate(expire_time), toDate('2100-01-01')) COMMENT '过期日期（物化列，用于 TTL 清理）',
+
+    is_active      UInt8    DEFAULT 1 COMMENT '是否有效：1（有效）/0（已失效，如手动取消标签）',
+
+    -- ========== 审计字段 ==========
+    created_at     DateTime DEFAULT now() COMMENT '记录创建时间（标签关联创建的时间）',
+    updated_at     DateTime DEFAULT now() COMMENT '记录更新时间（用于 ReplacingMergeTree 版本控制）',
+
+    -- ========== 跳数索引 ==========
+    INDEX idx_active is_active TYPE set(2) GRANULARITY 1,               -- 加速有效标签查询
+    INDEX idx_source source TYPE set(10) GRANULARITY 1,                 -- 加速按来源筛选
+    INDEX idx_tag_value tag_value TYPE bloom_filter(0.01) GRANULARITY 4 -- 加速标签值模糊查询
+) ENGINE = ReplacingMergeTree(updated_at) -- 使用 updated_at 作为版本列，支持标签更新/覆盖
+      PARTITION BY toYYYYMM(effective_date) -- 按标签生效时间月度分区，便于按时间范围查询
+      ORDER BY (tenant_id, user_id, tag_id, effective_date) -- 按租户 + 用户 + 标签 + 生效时间排序
+      TTL expire_date + INTERVAL 1 DAY
+          DELETE -- 过期标签 1 天后自动删除，节省存储空间
+      SETTINGS
+          index_granularity = 8192, -- 索引粒度，平衡查询性能和存储开销
+          enable_mixed_granularity_parts = 1, -- 启用混合粒度分区，支持大文本字段
+          ttl_only_drop_parts = 0, -- TTL 删除过期标签时直接删除记录，避免分区删除的开销（标签粒度较小）
+          min_bytes_for_wide_part = 10485760 -- 10MB，宽分区最小字节数，优化合并策略
+      COMMENT '用户标签关联表（存储用户与标签的关联关系，支持手动打标、规则打标、算法打标，支持标签有效期管理）';

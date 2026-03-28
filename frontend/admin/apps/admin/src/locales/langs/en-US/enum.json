@@ -320,15 +320,6 @@
       "TAG_TYPE_LIST": "List"
     }
   },
-  "userTag": {
-    "tagSource": {
-      "SOURCE_UNSPECIFIED": "Unspecified",
-      "TAG_SOURCE_MANUAL": "Manual",
-      "TAG_SOURCE_MODEL": "Algorithm Model",
-      "TAG_SOURCE_RULE": "Rule Engine",
-      "TAG_SOURCE_IMPORT": "Batch Import"
-    }
-  },
   "idMapping": {
     "idType": {
       "ID_TYPE_UNSPECIFIED": "Unspecified",

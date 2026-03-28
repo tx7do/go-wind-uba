@@ -15,10 +15,7 @@ import { notification } from 'ant-design-vue';
 import { useVbenForm, z } from '#/adapter/form';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { enableBoolList, useDictStore } from '#/stores';
-import {
-  getTypeName,
-  useDictViewStore,
-} from '#/views/app/system/dict/dict-view.state';
+import { useDictViewStore } from '#/views/app/system/dict/dict-view.state';
 
 const dictStore = useDictStore();
 const dictViewStore = useDictViewStore();
@@ -56,7 +53,7 @@ const [BaseForm, baseFormApi] = useVbenForm({
           option.label.toLowerCase().includes(input.toLowerCase()),
         afterFetch: (data: DictType[]) => {
           return data.map((item: DictType) => ({
-            label: getTypeName(item),
+            label: item.typeName,
             value: item.id,
           }));
         },

@@ -444,7 +444,8 @@ var (
 		{Name: "is_enabled", Type: field.TypeBool, Nullable: true, Comment: "是否启用", Default: true},
 		{Name: "sort_order", Type: field.TypeUint32, Nullable: true, Comment: "排序值（越小越靠前）", Default: 0},
 		{Name: "tenant_id", Type: field.TypeUint32, Nullable: true, Comment: "租户ID", Default: 0},
-		{Name: "type_code", Type: field.TypeString, Nullable: true, Comment: "字典类型唯一代码"},
+		{Name: "type_code", Type: field.TypeString, Nullable: true, Comment: "字典类型唯一编码"},
+		{Name: "type_name", Type: field.TypeString, Nullable: true, Comment: "字典类型名称（中文，仅后台用）"},
 	}
 	// SysDictTypesTable holds the schema information for the "sys_dict_types" table.
 	SysDictTypesTable = &schema.Table{
@@ -472,43 +473,6 @@ var (
 				Name:    "idx_sys_dict_types_sort_order",
 				Unique:  false,
 				Columns: []*schema.Column{SysDictTypesColumns[8]},
-			},
-		},
-	}
-	// SysDictTypeI18nColumns holds the columns for the "sys_dict_type_i18n" table.
-	SysDictTypeI18nColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeUint32, Increment: true, Comment: "id"},
-		{Name: "created_at", Type: field.TypeTime, Nullable: true, Comment: "创建时间"},
-		{Name: "updated_at", Type: field.TypeTime, Nullable: true, Comment: "更新时间"},
-		{Name: "deleted_at", Type: field.TypeTime, Nullable: true, Comment: "删除时间"},
-		{Name: "created_by", Type: field.TypeUint32, Nullable: true, Comment: "创建者ID"},
-		{Name: "updated_by", Type: field.TypeUint32, Nullable: true, Comment: "更新者ID"},
-		{Name: "deleted_by", Type: field.TypeUint32, Nullable: true, Comment: "删除者ID"},
-		{Name: "description", Type: field.TypeString, Nullable: true, Comment: "描述"},
-		{Name: "tenant_id", Type: field.TypeUint32, Nullable: true, Comment: "租户ID", Default: 0},
-		{Name: "language_code", Type: field.TypeString, Nullable: true, Comment: "语言代码"},
-		{Name: "type_name", Type: field.TypeString, Nullable: true, Comment: "字典类型名称"},
-		{Name: "type_id", Type: field.TypeUint32, Nullable: true},
-	}
-	// SysDictTypeI18nTable holds the schema information for the "sys_dict_type_i18n" table.
-	SysDictTypeI18nTable = &schema.Table{
-		Name:       "sys_dict_type_i18n",
-		Comment:    "字典类型翻译表",
-		Columns:    SysDictTypeI18nColumns,
-		PrimaryKey: []*schema.Column{SysDictTypeI18nColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "sys_dict_type_i18n_sys_dict_types_i18ns",
-				Columns:    []*schema.Column{SysDictTypeI18nColumns[11]},
-				RefColumns: []*schema.Column{SysDictTypesColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-		Indexes: []*schema.Index{
-			{
-				Name:    "idx_sys_dict_type_i18n_lang_code",
-				Unique:  false,
-				Columns: []*schema.Column{SysDictTypeI18nColumns[9]},
 			},
 		},
 	}
@@ -600,7 +564,7 @@ var (
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true, Comment: "更新时间"},
 		{Name: "deleted_at", Type: field.TypeTime, Nullable: true, Comment: "删除时间"},
 		{Name: "global_user_id", Type: field.TypeString, Nullable: true, Comment: "全局用户唯一标识"},
-		{Name: "id_type", Type: field.TypeEnum, Nullable: true, Comment: "ID类型", Enums: []string{"ID_TYPE_USER_ID", "ID_TYPE_DEVICE_ID", "ID_TYPE_COOKIE", "ID_TYPE_EMAIL", "ID_TYPE_PHONE", "ID_TYPE_OPENID"}},
+		{Name: "id_type", Type: field.TypeString, Nullable: true, Comment: "ID类型"},
 		{Name: "id_value", Type: field.TypeString, Nullable: true, Comment: "ID值"},
 		{Name: "confidence", Type: field.TypeFloat32, Nullable: true, Comment: "置信度，映射关系可信度评分，范围0~1，默认1.0", Default: 1},
 		{Name: "link_source", Type: field.TypeString, Nullable: true, Comment: "关联来源：login/bind/algorithm", Default: "login"},
@@ -2893,7 +2857,6 @@ var (
 		SysDictEntriesTable,
 		SysDictEntryI18nTable,
 		SysDictTypesTable,
-		SysDictTypeI18nTable,
 		FilesTable,
 		UbaIDMappingsTable,
 		InternalMessagesTable,
@@ -2968,12 +2931,6 @@ func init() {
 	}
 	SysDictTypesTable.Annotation = &entsql.Annotation{
 		Table:     "sys_dict_types",
-		Charset:   "utf8mb4",
-		Collation: "utf8mb4_bin",
-	}
-	SysDictTypeI18nTable.ForeignKeys[0].RefTable = SysDictTypesTable
-	SysDictTypeI18nTable.Annotation = &entsql.Annotation{
-		Table:     "sys_dict_type_i18n",
 		Charset:   "utf8mb4",
 		Collation: "utf8mb4_bin",
 	}

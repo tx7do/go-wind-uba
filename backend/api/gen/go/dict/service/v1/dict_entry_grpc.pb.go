@@ -21,11 +21,12 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	DictEntryService_List_FullMethodName   = "/dict.service.v1.DictEntryService/List"
-	DictEntryService_Count_FullMethodName  = "/dict.service.v1.DictEntryService/Count"
-	DictEntryService_Create_FullMethodName = "/dict.service.v1.DictEntryService/Create"
-	DictEntryService_Update_FullMethodName = "/dict.service.v1.DictEntryService/Update"
-	DictEntryService_Delete_FullMethodName = "/dict.service.v1.DictEntryService/Delete"
+	DictEntryService_List_FullMethodName           = "/dict.service.v1.DictEntryService/List"
+	DictEntryService_Count_FullMethodName          = "/dict.service.v1.DictEntryService/Count"
+	DictEntryService_Create_FullMethodName         = "/dict.service.v1.DictEntryService/Create"
+	DictEntryService_Update_FullMethodName         = "/dict.service.v1.DictEntryService/Update"
+	DictEntryService_Delete_FullMethodName         = "/dict.service.v1.DictEntryService/Delete"
+	DictEntryService_ListByTypeCode_FullMethodName = "/dict.service.v1.DictEntryService/ListByTypeCode"
 )
 
 // DictEntryServiceClient is the client API for DictEntryService service.
@@ -44,6 +45,8 @@ type DictEntryServiceClient interface {
 	Update(ctx context.Context, in *UpdateDictEntryRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// 删除字典项
 	Delete(ctx context.Context, in *DeleteDictEntryRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// 查询启用的字典项
+	ListByTypeCode(ctx context.Context, in *ListDictEntryByTypeCodeRequest, opts ...grpc.CallOption) (*ListDictEntryByTypeCodeResponse, error)
 }
 
 type dictEntryServiceClient struct {
@@ -104,6 +107,16 @@ func (c *dictEntryServiceClient) Delete(ctx context.Context, in *DeleteDictEntry
 	return out, nil
 }
 
+func (c *dictEntryServiceClient) ListByTypeCode(ctx context.Context, in *ListDictEntryByTypeCodeRequest, opts ...grpc.CallOption) (*ListDictEntryByTypeCodeResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListDictEntryByTypeCodeResponse)
+	err := c.cc.Invoke(ctx, DictEntryService_ListByTypeCode_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DictEntryServiceServer is the server API for DictEntryService service.
 // All implementations must embed UnimplementedDictEntryServiceServer
 // for forward compatibility.
@@ -120,6 +133,8 @@ type DictEntryServiceServer interface {
 	Update(context.Context, *UpdateDictEntryRequest) (*emptypb.Empty, error)
 	// 删除字典项
 	Delete(context.Context, *DeleteDictEntryRequest) (*emptypb.Empty, error)
+	// 查询启用的字典项
+	ListByTypeCode(context.Context, *ListDictEntryByTypeCodeRequest) (*ListDictEntryByTypeCodeResponse, error)
 	mustEmbedUnimplementedDictEntryServiceServer()
 }
 
@@ -144,6 +159,9 @@ func (UnimplementedDictEntryServiceServer) Update(context.Context, *UpdateDictEn
 }
 func (UnimplementedDictEntryServiceServer) Delete(context.Context, *DeleteDictEntryRequest) (*emptypb.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method Delete not implemented")
+}
+func (UnimplementedDictEntryServiceServer) ListByTypeCode(context.Context, *ListDictEntryByTypeCodeRequest) (*ListDictEntryByTypeCodeResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ListByTypeCode not implemented")
 }
 func (UnimplementedDictEntryServiceServer) mustEmbedUnimplementedDictEntryServiceServer() {}
 func (UnimplementedDictEntryServiceServer) testEmbeddedByValue()                          {}
@@ -256,6 +274,24 @@ func _DictEntryService_Delete_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DictEntryService_ListByTypeCode_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListDictEntryByTypeCodeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DictEntryServiceServer).ListByTypeCode(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DictEntryService_ListByTypeCode_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DictEntryServiceServer).ListByTypeCode(ctx, req.(*ListDictEntryByTypeCodeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // DictEntryService_ServiceDesc is the grpc.ServiceDesc for DictEntryService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -282,6 +318,10 @@ var DictEntryService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Delete",
 			Handler:    _DictEntryService_Delete_Handler,
+		},
+		{
+			MethodName: "ListByTypeCode",
+			Handler:    _DictEntryService_ListByTypeCode_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

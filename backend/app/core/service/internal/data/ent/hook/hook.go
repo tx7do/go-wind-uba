@@ -92,18 +92,6 @@ func (f DictTypeFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, er
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.DictTypeMutation", m)
 }
 
-// The DictTypeI18nFunc type is an adapter to allow the use of ordinary
-// function as DictTypeI18n mutator.
-type DictTypeI18nFunc func(context.Context, *ent.DictTypeI18nMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f DictTypeI18nFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.DictTypeI18nMutation); ok {
-		return f(ctx, mv)
-	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.DictTypeI18nMutation", m)
-}
-
 // The FileFunc type is an adapter to allow the use of ordinary
 // function as File mutator.
 type FileFunc func(context.Context, *ent.FileMutation) (ent.Value, error)

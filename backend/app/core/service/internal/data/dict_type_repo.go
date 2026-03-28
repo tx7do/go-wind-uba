@@ -2,7 +2,6 @@ package data
 
 import (
 	"context"
-	"strings"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
@@ -36,20 +35,16 @@ type DictTypeRepo struct {
 		predicate.DictType,
 		dictV1.DictType, ent.DictType,
 	]
-
-	i18n *DictTypeI18nRepo
 }
 
 func NewDictTypeRepo(
 	ctx *bootstrap.Context,
 	entClient *entCrud.EntClient[*ent.Client],
-	i18n *DictTypeI18nRepo,
 ) *DictTypeRepo {
 	repo := &DictTypeRepo{
-		log:       ctx.NewLoggerHelper("dict-type/repo/core-service"),
+		log:       ctx.NewLoggerHelper("dict-type/repo/admin-service"),
 		entClient: entClient,
 		mapper:    mapper.NewCopierMapper[dictV1.DictType, ent.DictType](),
-		i18n:      i18n,
 	}
 
 	repo.init()
@@ -101,14 +96,6 @@ func (r *DictTypeRepo) List(ctx context.Context, req *paginationV1.PagingRequest
 		return &dictV1.ListDictTypeResponse{Total: 0, Items: nil}, nil
 	}
 
-	for _, item := range ret.Items {
-		i18ns, err := r.i18n.Get(ctx, item.GetId())
-		if err != nil {
-			return nil, err
-		}
-		item.I18N = i18ns
-	}
-
 	return &dictV1.ListDictTypeResponse{
 		Total: ret.Total,
 		Items: ret.Items,
@@ -147,12 +134,6 @@ func (r *DictTypeRepo) Get(ctx context.Context, req *dictV1.GetDictTypeRequest) 
 		return nil, err
 	}
 
-	i18ns, err := r.i18n.Get(ctx, dto.GetId())
-	if err != nil {
-		return nil, err
-	}
-	dto.I18N = i18ns
-
 	return dto, err
 }
 
@@ -183,6 +164,7 @@ func (r *DictTypeRepo) Create(ctx context.Context, req *dictV1.CreateDictTypeReq
 	builder := tx.DictType.Create().
 		SetNillableTenantID(req.Data.TenantId).
 		SetNillableTypeCode(req.Data.TypeCode).
+		SetNillableTypeName(req.Data.TypeName).
 		SetNillableSortOrder(req.Data.SortOrder).
 		SetNillableIsEnabled(req.Data.IsEnabled).
 		SetNillableCreatedBy(req.Data.CreatedBy).
@@ -192,23 +174,9 @@ func (r *DictTypeRepo) Create(ctx context.Context, req *dictV1.CreateDictTypeReq
 		builder.SetID(req.GetData().GetId())
 	}
 
-	var entity *ent.DictType
-	if entity, err = builder.Save(ctx); err != nil {
+	if _, err = builder.Save(ctx); err != nil {
 		r.log.Errorf("insert dict type failed: %s", err.Error())
 		return dictV1.ErrorInternalServerError("insert dict type failed")
-	}
-
-	if len(req.Data.I18N) > 0 {
-		if err = r.i18n.ReplaceByTypeID(
-			ctx,
-			tx,
-			req.Data.GetTenantId(),
-			req.Data.GetCreatedBy(),
-			entity.ID,
-			req.Data.I18N,
-		); err != nil {
-			return err
-		}
 	}
 
 	return nil
@@ -253,22 +221,11 @@ func (r *DictTypeRepo) Update(ctx context.Context, req *dictV1.UpdateDictTypeReq
 		}
 	}()
 
-	var hasI18n bool
-	var i18n map[string]*dictV1.DictTypeI18N
-	for n, p := range req.GetUpdateMask().GetPaths() {
-		if strings.ToLower(p) == "i18n" {
-			hasI18n = true
-			req.GetUpdateMask().Paths = append(req.GetUpdateMask().GetPaths()[:n], req.GetUpdateMask().GetPaths()[n+1:]...)
-			i18n = req.Data.I18N
-			break
-		}
-	}
-
 	builder := tx.DictType.UpdateOneID(req.GetId())
-	dto, err := r.repository.UpdateOne(ctx, builder, req.Data, req.GetUpdateMask(),
+	_, err = r.repository.UpdateOne(ctx, builder, req.Data, req.GetUpdateMask(),
 		func(dto *dictV1.DictType) {
 			builder.
-				//SetNillableTypeCode(req.Data.TypeCode).
+				SetNillableTypeName(req.Data.TypeName).
 				SetNillableSortOrder(req.Data.SortOrder).
 				SetNillableIsEnabled(req.Data.IsEnabled).
 				SetNillableUpdatedBy(req.Data.UpdatedBy).
@@ -281,19 +238,6 @@ func (r *DictTypeRepo) Update(ctx context.Context, req *dictV1.UpdateDictTypeReq
 	if err != nil {
 		r.log.Errorf("update dict type failed: %s", err.Error())
 		return dictV1.ErrorInternalServerError("update dict type failed")
-	}
-
-	if hasI18n && len(i18n) > 0 {
-		if err = r.i18n.ReplaceByTypeID(
-			ctx,
-			tx,
-			req.Data.GetTenantId(),
-			req.Data.GetUpdatedBy(),
-			dto.GetId(),
-			i18n,
-		); err != nil {
-			return err
-		}
 	}
 
 	return err

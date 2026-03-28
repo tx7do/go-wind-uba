@@ -1274,3 +1274,249 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = CountDictEntryResponseValidationError{}
+
+// Validate checks the field values on ListDictEntryByTypeCodeRequest with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *ListDictEntryByTypeCodeRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on ListDictEntryByTypeCodeRequest with
+// the rules defined in the proto definition for this message. If any rules
+// are violated, the result is a list of violation errors wrapped in
+// ListDictEntryByTypeCodeRequestMultiError, or nil if none found.
+func (m *ListDictEntryByTypeCodeRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *ListDictEntryByTypeCodeRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for TypeCode
+
+	if m.Local != nil {
+		// no validation rules for Local
+	}
+
+	if len(errors) > 0 {
+		return ListDictEntryByTypeCodeRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// ListDictEntryByTypeCodeRequestMultiError is an error wrapping multiple
+// validation errors returned by ListDictEntryByTypeCodeRequest.ValidateAll()
+// if the designated constraints aren't met.
+type ListDictEntryByTypeCodeRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m ListDictEntryByTypeCodeRequestMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m ListDictEntryByTypeCodeRequestMultiError) AllErrors() []error { return m }
+
+// ListDictEntryByTypeCodeRequestValidationError is the validation error
+// returned by ListDictEntryByTypeCodeRequest.Validate if the designated
+// constraints aren't met.
+type ListDictEntryByTypeCodeRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e ListDictEntryByTypeCodeRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e ListDictEntryByTypeCodeRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e ListDictEntryByTypeCodeRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e ListDictEntryByTypeCodeRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e ListDictEntryByTypeCodeRequestValidationError) ErrorName() string {
+	return "ListDictEntryByTypeCodeRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e ListDictEntryByTypeCodeRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sListDictEntryByTypeCodeRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = ListDictEntryByTypeCodeRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = ListDictEntryByTypeCodeRequestValidationError{}
+
+// Validate checks the field values on ListDictEntryByTypeCodeResponse with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *ListDictEntryByTypeCodeResponse) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on ListDictEntryByTypeCodeResponse with
+// the rules defined in the proto definition for this message. If any rules
+// are violated, the result is a list of violation errors wrapped in
+// ListDictEntryByTypeCodeResponseMultiError, or nil if none found.
+func (m *ListDictEntryByTypeCodeResponse) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *ListDictEntryByTypeCodeResponse) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	for idx, item := range m.GetItems() {
+		_, _ = idx, item
+
+		if all {
+			switch v := interface{}(item).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, ListDictEntryByTypeCodeResponseValidationError{
+						field:  fmt.Sprintf("Items[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, ListDictEntryByTypeCodeResponseValidationError{
+						field:  fmt.Sprintf("Items[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(item).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return ListDictEntryByTypeCodeResponseValidationError{
+					field:  fmt.Sprintf("Items[%v]", idx),
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
+	if len(errors) > 0 {
+		return ListDictEntryByTypeCodeResponseMultiError(errors)
+	}
+
+	return nil
+}
+
+// ListDictEntryByTypeCodeResponseMultiError is an error wrapping multiple
+// validation errors returned by ListDictEntryByTypeCodeResponse.ValidateAll()
+// if the designated constraints aren't met.
+type ListDictEntryByTypeCodeResponseMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m ListDictEntryByTypeCodeResponseMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m ListDictEntryByTypeCodeResponseMultiError) AllErrors() []error { return m }
+
+// ListDictEntryByTypeCodeResponseValidationError is the validation error
+// returned by ListDictEntryByTypeCodeResponse.Validate if the designated
+// constraints aren't met.
+type ListDictEntryByTypeCodeResponseValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e ListDictEntryByTypeCodeResponseValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e ListDictEntryByTypeCodeResponseValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e ListDictEntryByTypeCodeResponseValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e ListDictEntryByTypeCodeResponseValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e ListDictEntryByTypeCodeResponseValidationError) ErrorName() string {
+	return "ListDictEntryByTypeCodeResponseValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e ListDictEntryByTypeCodeResponseValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sListDictEntryByTypeCodeResponse.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = ListDictEntryByTypeCodeResponseValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = ListDictEntryByTypeCodeResponseValidationError{}

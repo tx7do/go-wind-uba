@@ -12,7 +12,6 @@ import (
 	"go-wind-uba/app/core/service/internal/data/ent/dictentry"
 	"go-wind-uba/app/core/service/internal/data/ent/dictentryi18n"
 	"go-wind-uba/app/core/service/internal/data/ent/dicttype"
-	"go-wind-uba/app/core/service/internal/data/ent/dicttypei18n"
 	"go-wind-uba/app/core/service/internal/data/ent/file"
 	"go-wind-uba/app/core/service/internal/data/ent/idmapping"
 	"go-wind-uba/app/core/service/internal/data/ent/internalmessage"
@@ -264,42 +263,14 @@ func init() {
 	dicttypeDescTypeCode := dicttypeFields[0].Descriptor()
 	// dicttype.TypeCodeValidator is a validator for the "type_code" field. It is called by the builders before save.
 	dicttype.TypeCodeValidator = dicttypeDescTypeCode.Validators[0].(func(string) error)
+	// dicttypeDescTypeName is the schema descriptor for type_name field.
+	dicttypeDescTypeName := dicttypeFields[1].Descriptor()
+	// dicttype.TypeNameValidator is a validator for the "type_name" field. It is called by the builders before save.
+	dicttype.TypeNameValidator = dicttypeDescTypeName.Validators[0].(func(string) error)
 	// dicttypeDescID is the schema descriptor for id field.
 	dicttypeDescID := dicttypeMixinFields0[0].Descriptor()
 	// dicttype.IDValidator is a validator for the "id" field. It is called by the builders before save.
 	dicttype.IDValidator = dicttypeDescID.Validators[0].(func(uint32) error)
-	dicttypei18nMixin := schema.DictTypeI18n{}.Mixin()
-	dicttypei18n.Policy = privacy.NewPolicies(dicttypei18nMixin[4], schema.DictTypeI18n{})
-	dicttypei18n.Hooks[0] = func(next ent.Mutator) ent.Mutator {
-		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-			if err := dicttypei18n.Policy.EvalMutation(ctx, m); err != nil {
-				return nil, err
-			}
-			return next.Mutate(ctx, m)
-		})
-	}
-	dicttypei18nMixinFields0 := dicttypei18nMixin[0].Fields()
-	_ = dicttypei18nMixinFields0
-	dicttypei18nMixinFields4 := dicttypei18nMixin[4].Fields()
-	_ = dicttypei18nMixinFields4
-	dicttypei18nFields := schema.DictTypeI18n{}.Fields()
-	_ = dicttypei18nFields
-	// dicttypei18nDescTenantID is the schema descriptor for tenant_id field.
-	dicttypei18nDescTenantID := dicttypei18nMixinFields4[0].Descriptor()
-	// dicttypei18n.DefaultTenantID holds the default value on creation for the tenant_id field.
-	dicttypei18n.DefaultTenantID = dicttypei18nDescTenantID.Default.(uint32)
-	// dicttypei18nDescLanguageCode is the schema descriptor for language_code field.
-	dicttypei18nDescLanguageCode := dicttypei18nFields[0].Descriptor()
-	// dicttypei18n.LanguageCodeValidator is a validator for the "language_code" field. It is called by the builders before save.
-	dicttypei18n.LanguageCodeValidator = dicttypei18nDescLanguageCode.Validators[0].(func(string) error)
-	// dicttypei18nDescTypeName is the schema descriptor for type_name field.
-	dicttypei18nDescTypeName := dicttypei18nFields[1].Descriptor()
-	// dicttypei18n.TypeNameValidator is a validator for the "type_name" field. It is called by the builders before save.
-	dicttypei18n.TypeNameValidator = dicttypei18nDescTypeName.Validators[0].(func(string) error)
-	// dicttypei18nDescID is the schema descriptor for id field.
-	dicttypei18nDescID := dicttypei18nMixinFields0[0].Descriptor()
-	// dicttypei18n.IDValidator is a validator for the "id" field. It is called by the builders before save.
-	dicttypei18n.IDValidator = dicttypei18nDescID.Validators[0].(func(uint32) error)
 	fileMixin := schema.File{}.Mixin()
 	file.Policy = privacy.NewPolicies(fileMixin[4], schema.File{})
 	file.Hooks[0] = func(next ent.Mutator) ent.Mutator {

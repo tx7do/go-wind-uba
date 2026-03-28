@@ -450,6 +450,18 @@
       "update": "更新登录策略"
     }
   },
+  "language": {
+    "moduleName": "语言管理",
+    "languageName": "语言名称",
+    "languageCode": "语言代码",
+    "nativeName": "本地名称",
+    "isEnabled": "是否启用",
+    "isDefault": "是否默认",
+    "button": {
+      "create": "创建语言",
+      "update": "更新语言"
+    }
+  },
   "application": {
     "moduleName": "应用管理",
     "name": "应用名称",
@@ -563,7 +575,7 @@
     "confidence": "置信度",
     "source": "标签来源",
     "sourceRuleId": "来源规则ID",
-    "effectiveTime": "有效时间",
+    "effectiveTime": "生效时间",
     "expireTime": "过期时间",
     "button": {
       "create": "创建用户标签",

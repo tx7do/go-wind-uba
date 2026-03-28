@@ -6,71 +6,97 @@ import { $t } from '@vben/locales';
 
 import { notification } from 'ant-design-vue';
 
-import { useVbenForm, z } from '#/adapter/form';
-import { enableBoolList, useDictStore } from '#/stores';
+import { useVbenForm } from '#/adapter/form';
+import { useDictStore, useUserTagListStore } from '#/stores';
 
+const userTagListStore = useUserTagListStore();
 const dictStore = useDictStore();
 
 const data = ref();
 
 const getTitle = computed(() =>
   data.value?.create
-    ? $t('ui.modal.create', { moduleName: $t('page.dict.dictType') })
-    : $t('ui.modal.update', { moduleName: $t('page.dict.dictType') }),
+    ? $t('page.userTag.button.create')
+    : $t('page.userTag.button.update'),
 );
+
 // const isCreate = computed(() => data.value?.create);
 
 const [BaseForm, baseFormApi] = useVbenForm({
   showDefaultActions: false,
-  // 所有表单项共用，可单独在表单内覆盖
-  commonConfig: {
-    // 所有表单项
-    componentProps: {
-      class: 'w-full',
-    },
-  },
   schema: [
     {
       component: 'Input',
-      fieldName: 'typeName',
-      label: $t('page.dict.typeName'),
+      fieldName: 'userId',
+      label: $t('page.userTag.userId'),
+      rules: 'required',
       componentProps: {
         placeholder: $t('ui.placeholder.input'),
         allowClear: true,
       },
-      rules: z.string().min(1, { message: $t('ui.formRules.required') }),
     },
     {
       component: 'Input',
-      fieldName: 'typeCode',
-      label: $t('page.dict.typeCode'),
-      componentProps: {
-        placeholder: $t('ui.placeholder.input'),
-        allowClear: true,
-      },
-      rules: z.string().min(1, { message: $t('ui.formRules.required') }),
-    },
-    {
-      component: 'InputNumber',
-      fieldName: 'sortOrder',
-      defaultValue: 1,
-      label: $t('ui.table.sortOrder'),
+      fieldName: 'tagId',
+      label: $t('page.userTag.tagId'),
+      rules: 'required',
       componentProps: {
         placeholder: $t('ui.placeholder.input'),
         allowClear: true,
       },
     },
     {
-      component: 'RadioGroup',
-      fieldName: 'isEnabled',
-      label: $t('ui.table.status'),
-      defaultValue: true,
-      rules: 'selectRequired',
+      component: 'Input',
+      fieldName: 'value',
+      label: $t('page.userTag.value'),
+      rules: 'required',
       componentProps: {
-        optionType: 'button',
-        buttonStyle: 'solid',
-        class: 'flex flex-wrap', // 如果选项过多，可以添加class来自动折叠
-        options: enableBoolList,
+        placeholder: $t('ui.placeholder.input'),
+        allowClear: true,
+      },
+    },
+    {
+      component: 'Input',
+      fieldName: 'valueLabel',
+      label: $t('page.userTag.valueLabel'),
+      rules: 'required',
+      componentProps: {
+        placeholder: $t('ui.placeholder.input'),
+        allowClear: true,
+      },
+    },
+    {
+      component: 'Input',
+      fieldName: 'confidence',
+      label: $t('page.userTag.confidence'),
+      rules: 'required',
+      componentProps: {
+        class: 'w-full',
+        placeholder: $t('ui.placeholder.input'),
+        allowClear: true,
+      },
+    },
+    {
+      component: 'ApiSelect',
+      fieldName: 'source',
+      label: $t('page.userTag.source'),
+      rules: 'required',
+      componentProps: {
+        class: 'w-full',
+        allowClear: true,
+        showSearch: true,
+        placeholder: $t('ui.placeholder.select'),
+        api: async () => {
+          const result =
+            await dictStore.listDictEntriesByTypeCode('TAG_SOURCE');
+          return result.items;
+        },
+        afterFetch: (data: { name: string; path: string }[]) => {
+          return data.map((item: any) => ({
+            label: dictStore.getDictEntryLabel(item),
+            value: item.entryValue,
+          }));
+        },
       },
     },
   ],
@@ -90,18 +116,17 @@ const [Drawer, drawerApi] = useVbenDrawer({
       return;
     }
 
-    // 加载条设置为加载状态
     setLoading(true);
 
     // 获取表单数据
     const values = await baseFormApi.getValues();
 
-    console.log(getTitle.value, Object.keys(values));
+    console.log(getTitle.value, values);
 
     try {
       await (data.value?.create
-        ? dictStore.createDictType(values)
-        : dictStore.updateDictType(data.value.row.id, values));
+        ? userTagListStore.createUserTag(values)
+        : userTagListStore.updateUserTag(data.value.row.id, values));
 
       notification.success({
         message: data.value?.create
@@ -115,36 +140,31 @@ const [Drawer, drawerApi] = useVbenDrawer({
           : $t('ui.notification.update_failed'),
       });
     } finally {
-      // 关闭窗口
       drawerApi.close();
       setLoading(false);
     }
   },
 
-  onOpenChange(isOpen: boolean) {
+  onOpenChange(isOpen) {
     if (isOpen) {
       // 获取传入的数据
       data.value = drawerApi.getData<Record<string, any>>();
 
       // 为表单赋值
-      if (data.value.row !== undefined) {
-        baseFormApi.setValues(data.value?.row);
-      }
+      baseFormApi.setValues(data.value?.row);
 
       setLoading(false);
-
-      console.log('onOpenChange', data.value, data.value?.create);
     }
   },
 });
 
 function setLoading(loading: boolean) {
-  drawerApi.setState({ confirmLoading: loading });
+  drawerApi.setState({ loading });
 }
 </script>
 
 <template>
-  <Drawer :title="getTitle" class="w-full max-w-[800px]">
-    <BaseForm class="mx-0" />
+  <Drawer :title="getTitle">
+    <BaseForm class="mx-4" />
   </Drawer>
 </template>

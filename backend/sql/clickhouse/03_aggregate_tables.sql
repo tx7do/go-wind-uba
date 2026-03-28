@@ -437,7 +437,7 @@ GROUP BY tenant_id, stat_date, platform, country, user_level;
 
 
 -- -----------------------------------------------------------
--- 8. 物化视图：付费日聚合（修复版）
+-- 8. 物化视图：付费日聚合
 -- 源表：gw_uba.events_fact
 -- 目标表：gw_uba.pay_agg_daily
 -- 触发：events_fact 有新数据时自动执行

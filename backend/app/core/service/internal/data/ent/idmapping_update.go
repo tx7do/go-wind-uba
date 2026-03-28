@@ -171,13 +171,13 @@ func (_u *IDMappingUpdate) ClearGlobalUserID() *IDMappingUpdate {
 }
 
 // SetIDType sets the "id_type" field.
-func (_u *IDMappingUpdate) SetIDType(v idmapping.IDType) *IDMappingUpdate {
+func (_u *IDMappingUpdate) SetIDType(v string) *IDMappingUpdate {
 	_u.mutation.SetIDType(v)
 	return _u
 }
 
 // SetNillableIDType sets the "id_type" field if the given value is not nil.
-func (_u *IDMappingUpdate) SetNillableIDType(v *idmapping.IDType) *IDMappingUpdate {
+func (_u *IDMappingUpdate) SetNillableIDType(v *string) *IDMappingUpdate {
 	if v != nil {
 		_u.SetIDType(*v)
 	}
@@ -368,11 +368,6 @@ func (_u *IDMappingUpdate) check() error {
 			return &ValidationError{Name: "global_user_id", err: fmt.Errorf(`ent: validator failed for field "IDMapping.global_user_id": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.IDType(); ok {
-		if err := idmapping.IDTypeValidator(v); err != nil {
-			return &ValidationError{Name: "id_type", err: fmt.Errorf(`ent: validator failed for field "IDMapping.id_type": %w`, err)}
-		}
-	}
 	if v, ok := _u.mutation.IDValue(); ok {
 		if err := idmapping.IDValueValidator(v); err != nil {
 			return &ValidationError{Name: "id_value", err: fmt.Errorf(`ent: validator failed for field "IDMapping.id_value": %w`, err)}
@@ -451,10 +446,10 @@ func (_u *IDMappingUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		_spec.ClearField(idmapping.FieldGlobalUserID, field.TypeString)
 	}
 	if value, ok := _u.mutation.IDType(); ok {
-		_spec.SetField(idmapping.FieldIDType, field.TypeEnum, value)
+		_spec.SetField(idmapping.FieldIDType, field.TypeString, value)
 	}
 	if _u.mutation.IDTypeCleared() {
-		_spec.ClearField(idmapping.FieldIDType, field.TypeEnum)
+		_spec.ClearField(idmapping.FieldIDType, field.TypeString)
 	}
 	if value, ok := _u.mutation.IDValue(); ok {
 		_spec.SetField(idmapping.FieldIDValue, field.TypeString, value)
@@ -665,13 +660,13 @@ func (_u *IDMappingUpdateOne) ClearGlobalUserID() *IDMappingUpdateOne {
 }
 
 // SetIDType sets the "id_type" field.
-func (_u *IDMappingUpdateOne) SetIDType(v idmapping.IDType) *IDMappingUpdateOne {
+func (_u *IDMappingUpdateOne) SetIDType(v string) *IDMappingUpdateOne {
 	_u.mutation.SetIDType(v)
 	return _u
 }
 
 // SetNillableIDType sets the "id_type" field if the given value is not nil.
-func (_u *IDMappingUpdateOne) SetNillableIDType(v *idmapping.IDType) *IDMappingUpdateOne {
+func (_u *IDMappingUpdateOne) SetNillableIDType(v *string) *IDMappingUpdateOne {
 	if v != nil {
 		_u.SetIDType(*v)
 	}
@@ -875,11 +870,6 @@ func (_u *IDMappingUpdateOne) check() error {
 			return &ValidationError{Name: "global_user_id", err: fmt.Errorf(`ent: validator failed for field "IDMapping.global_user_id": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.IDType(); ok {
-		if err := idmapping.IDTypeValidator(v); err != nil {
-			return &ValidationError{Name: "id_type", err: fmt.Errorf(`ent: validator failed for field "IDMapping.id_type": %w`, err)}
-		}
-	}
 	if v, ok := _u.mutation.IDValue(); ok {
 		if err := idmapping.IDValueValidator(v); err != nil {
 			return &ValidationError{Name: "id_value", err: fmt.Errorf(`ent: validator failed for field "IDMapping.id_value": %w`, err)}
@@ -975,10 +965,10 @@ func (_u *IDMappingUpdateOne) sqlSave(ctx context.Context) (_node *IDMapping, er
 		_spec.ClearField(idmapping.FieldGlobalUserID, field.TypeString)
 	}
 	if value, ok := _u.mutation.IDType(); ok {
-		_spec.SetField(idmapping.FieldIDType, field.TypeEnum, value)
+		_spec.SetField(idmapping.FieldIDType, field.TypeString, value)
 	}
 	if _u.mutation.IDTypeCleared() {
-		_spec.ClearField(idmapping.FieldIDType, field.TypeEnum)
+		_spec.ClearField(idmapping.FieldIDType, field.TypeString)
 	}
 	if value, ok := _u.mutation.IDValue(); ok {
 		_spec.SetField(idmapping.FieldIDValue, field.TypeString, value)

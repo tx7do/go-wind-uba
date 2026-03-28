@@ -135,13 +135,13 @@ func (_c *IDMappingCreate) SetNillableGlobalUserID(v *string) *IDMappingCreate {
 }
 
 // SetIDType sets the "id_type" field.
-func (_c *IDMappingCreate) SetIDType(v idmapping.IDType) *IDMappingCreate {
+func (_c *IDMappingCreate) SetIDType(v string) *IDMappingCreate {
 	_c.mutation.SetIDType(v)
 	return _c
 }
 
 // SetNillableIDType sets the "id_type" field if the given value is not nil.
-func (_c *IDMappingCreate) SetNillableIDType(v *idmapping.IDType) *IDMappingCreate {
+func (_c *IDMappingCreate) SetNillableIDType(v *string) *IDMappingCreate {
 	if v != nil {
 		_c.SetIDType(*v)
 	}
@@ -307,11 +307,6 @@ func (_c *IDMappingCreate) check() error {
 			return &ValidationError{Name: "global_user_id", err: fmt.Errorf(`ent: validator failed for field "IDMapping.global_user_id": %w`, err)}
 		}
 	}
-	if v, ok := _c.mutation.IDType(); ok {
-		if err := idmapping.IDTypeValidator(v); err != nil {
-			return &ValidationError{Name: "id_type", err: fmt.Errorf(`ent: validator failed for field "IDMapping.id_type": %w`, err)}
-		}
-	}
 	if v, ok := _c.mutation.IDValue(); ok {
 		if err := idmapping.IDValueValidator(v); err != nil {
 			return &ValidationError{Name: "id_value", err: fmt.Errorf(`ent: validator failed for field "IDMapping.id_value": %w`, err)}
@@ -388,7 +383,7 @@ func (_c *IDMappingCreate) createSpec() (*IDMapping, *sqlgraph.CreateSpec) {
 		_node.GlobalUserID = &value
 	}
 	if value, ok := _c.mutation.IDType(); ok {
-		_spec.SetField(idmapping.FieldIDType, field.TypeEnum, value)
+		_spec.SetField(idmapping.FieldIDType, field.TypeString, value)
 		_node.IDType = &value
 	}
 	if value, ok := _c.mutation.IDValue(); ok {
@@ -598,7 +593,7 @@ func (u *IDMappingUpsert) ClearGlobalUserID() *IDMappingUpsert {
 }
 
 // SetIDType sets the "id_type" field.
-func (u *IDMappingUpsert) SetIDType(v idmapping.IDType) *IDMappingUpsert {
+func (u *IDMappingUpsert) SetIDType(v string) *IDMappingUpsert {
 	u.Set(idmapping.FieldIDType, v)
 	return u
 }
@@ -949,7 +944,7 @@ func (u *IDMappingUpsertOne) ClearGlobalUserID() *IDMappingUpsertOne {
 }
 
 // SetIDType sets the "id_type" field.
-func (u *IDMappingUpsertOne) SetIDType(v idmapping.IDType) *IDMappingUpsertOne {
+func (u *IDMappingUpsertOne) SetIDType(v string) *IDMappingUpsertOne {
 	return u.Update(func(s *IDMappingUpsert) {
 		s.SetIDType(v)
 	})
@@ -1491,7 +1486,7 @@ func (u *IDMappingUpsertBulk) ClearGlobalUserID() *IDMappingUpsertBulk {
 }
 
 // SetIDType sets the "id_type" field.
-func (u *IDMappingUpsertBulk) SetIDType(v idmapping.IDType) *IDMappingUpsertBulk {
+func (u *IDMappingUpsertBulk) SetIDType(v string) *IDMappingUpsertBulk {
 	return u.Update(func(s *IDMappingUpsert) {
 		s.SetIDType(v)
 	})

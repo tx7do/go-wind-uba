@@ -307,15 +307,6 @@
       "TAG_TYPE_LIST": "列表型标签"
     }
   },
-  "userTag": {
-    "tagSource": {
-      "SOURCE_UNSPECIFIED": "未指定",
-      "TAG_SOURCE_MANUAL": "人工打标",
-      "TAG_SOURCE_MODEL": "算法模型",
-      "TAG_SOURCE_RULE": "规则引擎",
-      "TAG_SOURCE_IMPORT": "批量导入"
-    }
-  },
   "idMapping": {
     "idType": {
       "ID_TYPE_UNSPECIFIED": "未指定",

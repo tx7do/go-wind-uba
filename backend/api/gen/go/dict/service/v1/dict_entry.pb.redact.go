@@ -7,7 +7,6 @@ import (
 	context "context"
 	redact "github.com/menta2k/protoc-gen-redact/v3/redact/v3"
 	pagination "github.com/tx7do/go-crud/api/gen/go/pagination/v1"
-	annotations "google.golang.org/genproto/googleapis/api/annotations"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -23,7 +22,6 @@ var (
 	_ redact.Redactor
 	_ codes.Code
 	_ status.Status
-	_ annotations.FieldBehavior
 	_ emptypb.Empty
 	_ timestamppb.Timestamp
 	_ fieldmaskpb.FieldMask
@@ -96,6 +94,17 @@ func (s *redactedDictEntryServiceServer) Update(ctx context.Context, in *UpdateD
 // Unary RPC
 func (s *redactedDictEntryServiceServer) Delete(ctx context.Context, in *DeleteDictEntryRequest) (*emptypb.Empty, error) {
 	res, err := s.srv.Delete(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
+// ListByTypeCode is the redacted wrapper for the actual DictEntryServiceServer.ListByTypeCode method
+// Unary RPC
+func (s *redactedDictEntryServiceServer) ListByTypeCode(ctx context.Context, in *ListDictEntryByTypeCodeRequest) (*ListDictEntryByTypeCodeResponse, error) {
+	res, err := s.srv.ListByTypeCode(ctx, in)
 	if !s.bypass.CheckInternal(ctx) {
 		// Apply redaction to the response
 		redact.Apply(res)
@@ -224,5 +233,27 @@ func (x *CountDictEntryResponse) Redact() string {
 	}
 
 	// Safe field: Count
+	return x.String()
+}
+
+// Redact method implementation for ListDictEntryByTypeCodeRequest
+func (x *ListDictEntryByTypeCodeRequest) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: TypeCode
+
+	// Safe field: Local
+	return x.String()
+}
+
+// Redact method implementation for ListDictEntryByTypeCodeResponse
+func (x *ListDictEntryByTypeCodeResponse) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Items
 	return x.String()
 }

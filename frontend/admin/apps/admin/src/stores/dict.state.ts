@@ -1,3 +1,4 @@
+import { i18n } from '@vben/locales';
 import { useUserStore } from '@vben/stores';
 
 import { defineStore } from 'pinia';
@@ -5,6 +6,7 @@ import { defineStore } from 'pinia';
 import {
   createDictEntryServiceClient,
   createDictTypeServiceClient,
+  type dictservicev1_DictEntry,
 } from '#/generated/api/admin/service/v1';
 import { makeOrderBy, makeQueryString, makeUpdateMask } from '#/utils/query';
 import { type Paging, requestClientRequestHandler } from '#/utils/request';
@@ -148,19 +150,43 @@ export const useDictStore = defineStore('dict', () => {
     return await dictEntryService.Delete({ ids });
   }
 
+  /**
+   * 根据字典类型编码查询字典项列表
+   */
+  async function listDictEntriesByTypeCode(code: string) {
+    return await dictEntryService.ListByTypeCode({
+      typeCode: code,
+    });
+  }
+
+  /**
+   * 获取字典项标签
+   */
+  function getDictEntryLabel(row: dictservicev1_DictEntry) {
+    const currentI18n = row.i18n?.[i18n.global.locale.value];
+    if (currentI18n === undefined) {
+      return '';
+    }
+    return currentI18n.entryLabel;
+  }
+
   function $reset() {}
 
   return {
     $reset,
+
     listDictType,
-    listDictEntry,
     getDictType,
     getDictTypeByCode,
     createDictType,
-    createDictEntry,
     updateDictType,
-    updateDictEntry,
     deleteDictType,
+
+    listDictEntry,
+    createDictEntry,
+    updateDictEntry,
     deleteDictEntry,
+    listDictEntriesByTypeCode,
+    getDictEntryLabel,
   };
 });

@@ -25,6 +25,7 @@ const _ = http.SupportPackageIsVersion1
 const OperationDictEntryServiceCreate = "/admin.service.v1.DictEntryService/Create"
 const OperationDictEntryServiceDelete = "/admin.service.v1.DictEntryService/Delete"
 const OperationDictEntryServiceList = "/admin.service.v1.DictEntryService/List"
+const OperationDictEntryServiceListByTypeCode = "/admin.service.v1.DictEntryService/ListByTypeCode"
 const OperationDictEntryServiceUpdate = "/admin.service.v1.DictEntryService/Update"
 
 type DictEntryServiceHTTPServer interface {
@@ -34,6 +35,8 @@ type DictEntryServiceHTTPServer interface {
 	Delete(context.Context, *v11.DeleteDictEntryRequest) (*emptypb.Empty, error)
 	// List 分页查询字典条目列表
 	List(context.Context, *v1.PagingRequest) (*v11.ListDictEntryResponse, error)
+	// ListByTypeCode 查询启用的字典条目
+	ListByTypeCode(context.Context, *v11.ListDictEntryByTypeCodeRequest) (*v11.ListDictEntryByTypeCodeResponse, error)
 	// Update 更新字典条目
 	Update(context.Context, *v11.UpdateDictEntryRequest) (*emptypb.Empty, error)
 }
@@ -44,6 +47,7 @@ func RegisterDictEntryServiceHTTPServer(s *http.Server, srv DictEntryServiceHTTP
 	r.POST("/admin/v1/dict/entries", _DictEntryService_Create2_HTTP_Handler(srv))
 	r.PUT("/admin/v1/dict/entries/{id}", _DictEntryService_Update2_HTTP_Handler(srv))
 	r.DELETE("/admin/v1/dict/entries", _DictEntryService_Delete2_HTTP_Handler(srv))
+	r.GET("/admin/v1/dict/entries/by-type-code", _DictEntryService_ListByTypeCode0_HTTP_Handler(srv))
 }
 
 func _DictEntryService_List4_HTTP_Handler(srv DictEntryServiceHTTPServer) func(ctx http.Context) error {
@@ -131,6 +135,25 @@ func _DictEntryService_Delete2_HTTP_Handler(srv DictEntryServiceHTTPServer) func
 	}
 }
 
+func _DictEntryService_ListByTypeCode0_HTTP_Handler(srv DictEntryServiceHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in v11.ListDictEntryByTypeCodeRequest
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationDictEntryServiceListByTypeCode)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.ListByTypeCode(ctx, req.(*v11.ListDictEntryByTypeCodeRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*v11.ListDictEntryByTypeCodeResponse)
+		return ctx.Result(200, reply)
+	}
+}
+
 type DictEntryServiceHTTPClient interface {
 	// Create 创建字典条目
 	Create(ctx context.Context, req *v11.CreateDictEntryRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
@@ -138,6 +161,8 @@ type DictEntryServiceHTTPClient interface {
 	Delete(ctx context.Context, req *v11.DeleteDictEntryRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 	// List 分页查询字典条目列表
 	List(ctx context.Context, req *v1.PagingRequest, opts ...http.CallOption) (rsp *v11.ListDictEntryResponse, err error)
+	// ListByTypeCode 查询启用的字典条目
+	ListByTypeCode(ctx context.Context, req *v11.ListDictEntryByTypeCodeRequest, opts ...http.CallOption) (rsp *v11.ListDictEntryByTypeCodeResponse, err error)
 	// Update 更新字典条目
 	Update(ctx context.Context, req *v11.UpdateDictEntryRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 }
@@ -184,6 +209,20 @@ func (c *DictEntryServiceHTTPClientImpl) List(ctx context.Context, in *v1.Paging
 	pattern := "/admin/v1/dict/entries"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationDictEntryServiceList))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+// ListByTypeCode 查询启用的字典条目
+func (c *DictEntryServiceHTTPClientImpl) ListByTypeCode(ctx context.Context, in *v11.ListDictEntryByTypeCodeRequest, opts ...http.CallOption) (*v11.ListDictEntryByTypeCodeResponse, error) {
+	var out v11.ListDictEntryByTypeCodeResponse
+	pattern := "/admin/v1/dict/entries/by-type-code"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation(OperationDictEntryServiceListByTypeCode))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {

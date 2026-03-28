@@ -70,7 +70,7 @@ message IDMapping {
   ];
 
   // ID类型（如用户ID、设备ID、Cookie、邮箱、手机号、OpenID 等）
-  optional IDType id_type = 4 [
+  optional string id_type = 4 [
     json_name = "idType",
     (gnostic.openapi.v3.property) = {description: "ID类型，标识不同类型的用户、设备、账号等标识符"}
   ];
