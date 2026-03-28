@@ -11,8 +11,6 @@ import "google/protobuf/struct.proto";
 
 import "pagination/v1/pagination.proto";
 
-import "uba/service/v1/common.proto";
-
 // 风险规则服务接口
 service RiskRuleService {
   // 查询风险规则列表，支持分页

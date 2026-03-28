@@ -177,13 +177,13 @@ func (_c *ApplicationCreate) SetNillableAppSecret(v *string) *ApplicationCreate 
 }
 
 // SetType sets the "type" field.
-func (_c *ApplicationCreate) SetType(v application.Type) *ApplicationCreate {
+func (_c *ApplicationCreate) SetType(v string) *ApplicationCreate {
 	_c.mutation.SetType(v)
 	return _c
 }
 
 // SetNillableType sets the "type" field if the given value is not nil.
-func (_c *ApplicationCreate) SetNillableType(v *application.Type) *ApplicationCreate {
+func (_c *ApplicationCreate) SetNillableType(v *string) *ApplicationCreate {
 	if v != nil {
 		_c.SetType(*v)
 	}
@@ -332,11 +332,6 @@ func (_c *ApplicationCreate) check() error {
 			return &ValidationError{Name: "app_id", err: fmt.Errorf(`ent: validator failed for field "Application.app_id": %w`, err)}
 		}
 	}
-	if v, ok := _c.mutation.GetType(); ok {
-		if err := application.TypeValidator(v); err != nil {
-			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "Application.type": %w`, err)}
-		}
-	}
 	if v, ok := _c.mutation.Status(); ok {
 		if err := application.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "Application.status": %w`, err)}
@@ -425,7 +420,7 @@ func (_c *ApplicationCreate) createSpec() (*Application, *sqlgraph.CreateSpec) {
 		_node.AppSecret = &value
 	}
 	if value, ok := _c.mutation.GetType(); ok {
-		_spec.SetField(application.FieldType, field.TypeEnum, value)
+		_spec.SetField(application.FieldType, field.TypeString, value)
 		_node.Type = &value
 	}
 	if value, ok := _c.mutation.Status(); ok {
@@ -685,7 +680,7 @@ func (u *ApplicationUpsert) ClearAppSecret() *ApplicationUpsert {
 }
 
 // SetType sets the "type" field.
-func (u *ApplicationUpsert) SetType(v application.Type) *ApplicationUpsert {
+func (u *ApplicationUpsert) SetType(v string) *ApplicationUpsert {
 	u.Set(application.FieldType, v)
 	return u
 }
@@ -1075,7 +1070,7 @@ func (u *ApplicationUpsertOne) ClearAppSecret() *ApplicationUpsertOne {
 }
 
 // SetType sets the "type" field.
-func (u *ApplicationUpsertOne) SetType(v application.Type) *ApplicationUpsertOne {
+func (u *ApplicationUpsertOne) SetType(v string) *ApplicationUpsertOne {
 	return u.Update(func(s *ApplicationUpsert) {
 		s.SetType(v)
 	})
@@ -1652,7 +1647,7 @@ func (u *ApplicationUpsertBulk) ClearAppSecret() *ApplicationUpsertBulk {
 }
 
 // SetType sets the "type" field.
-func (u *ApplicationUpsertBulk) SetType(v application.Type) *ApplicationUpsertBulk {
+func (u *ApplicationUpsertBulk) SetType(v string) *ApplicationUpsertBulk {
 	return u.Update(func(s *ApplicationUpsert) {
 		s.SetType(v)
 	})

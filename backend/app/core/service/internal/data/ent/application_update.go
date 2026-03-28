@@ -232,13 +232,13 @@ func (_u *ApplicationUpdate) ClearAppSecret() *ApplicationUpdate {
 }
 
 // SetType sets the "type" field.
-func (_u *ApplicationUpdate) SetType(v application.Type) *ApplicationUpdate {
+func (_u *ApplicationUpdate) SetType(v string) *ApplicationUpdate {
 	_u.mutation.SetType(v)
 	return _u
 }
 
 // SetNillableType sets the "type" field if the given value is not nil.
-func (_u *ApplicationUpdate) SetNillableType(v *application.Type) *ApplicationUpdate {
+func (_u *ApplicationUpdate) SetNillableType(v *string) *ApplicationUpdate {
 	if v != nil {
 		_u.SetType(*v)
 	}
@@ -413,11 +413,6 @@ func (_u *ApplicationUpdate) check() error {
 			return &ValidationError{Name: "app_id", err: fmt.Errorf(`ent: validator failed for field "Application.app_id": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.GetType(); ok {
-		if err := application.TypeValidator(v); err != nil {
-			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "Application.type": %w`, err)}
-		}
-	}
 	if v, ok := _u.mutation.Status(); ok {
 		if err := application.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "Application.status": %w`, err)}
@@ -514,10 +509,10 @@ func (_u *ApplicationUpdate) sqlSave(ctx context.Context) (_node int, err error)
 		_spec.ClearField(application.FieldAppSecret, field.TypeString)
 	}
 	if value, ok := _u.mutation.GetType(); ok {
-		_spec.SetField(application.FieldType, field.TypeEnum, value)
+		_spec.SetField(application.FieldType, field.TypeString, value)
 	}
 	if _u.mutation.TypeCleared() {
-		_spec.ClearField(application.FieldType, field.TypeEnum)
+		_spec.ClearField(application.FieldType, field.TypeString)
 	}
 	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(application.FieldStatus, field.TypeEnum, value)
@@ -784,13 +779,13 @@ func (_u *ApplicationUpdateOne) ClearAppSecret() *ApplicationUpdateOne {
 }
 
 // SetType sets the "type" field.
-func (_u *ApplicationUpdateOne) SetType(v application.Type) *ApplicationUpdateOne {
+func (_u *ApplicationUpdateOne) SetType(v string) *ApplicationUpdateOne {
 	_u.mutation.SetType(v)
 	return _u
 }
 
 // SetNillableType sets the "type" field if the given value is not nil.
-func (_u *ApplicationUpdateOne) SetNillableType(v *application.Type) *ApplicationUpdateOne {
+func (_u *ApplicationUpdateOne) SetNillableType(v *string) *ApplicationUpdateOne {
 	if v != nil {
 		_u.SetType(*v)
 	}
@@ -978,11 +973,6 @@ func (_u *ApplicationUpdateOne) check() error {
 			return &ValidationError{Name: "app_id", err: fmt.Errorf(`ent: validator failed for field "Application.app_id": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.GetType(); ok {
-		if err := application.TypeValidator(v); err != nil {
-			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "Application.type": %w`, err)}
-		}
-	}
 	if v, ok := _u.mutation.Status(); ok {
 		if err := application.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "Application.status": %w`, err)}
@@ -1096,10 +1086,10 @@ func (_u *ApplicationUpdateOne) sqlSave(ctx context.Context) (_node *Application
 		_spec.ClearField(application.FieldAppSecret, field.TypeString)
 	}
 	if value, ok := _u.mutation.GetType(); ok {
-		_spec.SetField(application.FieldType, field.TypeEnum, value)
+		_spec.SetField(application.FieldType, field.TypeString, value)
 	}
 	if _u.mutation.TypeCleared() {
-		_spec.ClearField(application.FieldType, field.TypeEnum)
+		_spec.ClearField(application.FieldType, field.TypeString)
 	}
 	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(application.FieldStatus, field.TypeEnum, value)

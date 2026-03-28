@@ -22,9 +22,6 @@ type UsersDimRepo struct {
 
 	mapper     *mapper.CopierMapper[ubaV1.UserBehaviorProfile, schema.UsersDim]
 	repository *clickhouseCrud.Repository[ubaV1.UserBehaviorProfile, schema.UsersDim]
-
-	riskLevelConverter *mapper.EnumTypeConverter[ubaV1.RiskLevel, string]
-	platformConverter  *mapper.EnumTypeConverter[ubaV1.Platform, string]
 }
 
 func NewUsersDimRepo(
@@ -36,12 +33,6 @@ func NewUsersDimRepo(
 		db:        db,
 		tableName: "users_dim",
 		mapper:    mapper.NewCopierMapper[ubaV1.UserBehaviorProfile, schema.UsersDim](),
-		riskLevelConverter: mapper.NewEnumTypeConverter[ubaV1.RiskLevel, string](
-			ubaV1.RiskLevel_name, ubaV1.RiskLevel_value,
-		),
-		platformConverter: mapper.NewEnumTypeConverter[ubaV1.Platform, string](
-			ubaV1.Platform_name, ubaV1.Platform_value,
-		),
 	}
 	repo.init()
 	return repo
@@ -56,9 +47,6 @@ func (r *UsersDimRepo) init() {
 	)
 	r.mapper.AppendConverters(copierutil.NewTimeStringConverterPair())
 	r.mapper.AppendConverters(copierutil.NewTimeTimestamppbConverterPair())
-
-	r.mapper.AppendConverters(r.riskLevelConverter.NewConverterPair())
-	r.mapper.AppendConverters(r.platformConverter.NewConverterPair())
 }
 
 func (r *UsersDimRepo) Create(ctx context.Context, dto *ubaV1.UserBehaviorProfile) error {

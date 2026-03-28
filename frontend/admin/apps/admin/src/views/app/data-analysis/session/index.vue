@@ -7,10 +7,10 @@ import { Page } from '@vben/common-ui';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { $t } from '#/locales';
 import {
+  appPlatformToName,
   enableBoolToColor,
   enableBoolToName,
   platformToColor,
-  platformToName,
   riskLevelToColor,
   riskLevelToName,
   useSessionListStore,
@@ -148,6 +148,7 @@ const gridOptions: VxeGridProps<Session> = {
       title: $t('page.session.platform'),
       field: 'platform',
       minWidth: 100,
+      slots: { default: 'platform' },
     },
     { title: $t('page.session.os'), field: 'os', minWidth: 100 },
     {
@@ -171,6 +172,7 @@ const gridOptions: VxeGridProps<Session> = {
       title: $t('page.session.riskLevel'),
       field: 'riskLevel',
       minWidth: 100,
+      slots: { default: 'riskLevel' },
     },
     {
       title: $t('page.session.startTime'),
@@ -201,7 +203,7 @@ const [Grid] = useVbenVxeGrid({
     <Grid :table-title="$t('menu.dataAnalysis.session')">
       <template #platform="{ row }">
         <a-tag :color="platformToColor(row.platform)">
-          {{ platformToName(row.platform) }}
+          {{ appPlatformToName(row.platform) }}
         </a-tag>
       </template>
       <template #riskLevel="{ row }">

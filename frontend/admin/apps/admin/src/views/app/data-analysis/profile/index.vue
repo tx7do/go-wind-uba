@@ -7,9 +7,9 @@ import { Page } from '@vben/common-ui';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { $t } from '#/locales';
 import {
-  platformList,
+  appPlatformDict,
+  appPlatformToName,
   platformToColor,
-  platformToName,
   riskLevelToColor,
   riskLevelToName,
   useUserBehaviorProfileListStore,
@@ -36,7 +36,7 @@ const formOptions = {
       fieldName: 'platform',
       label: $t('page.userBehaviorProfile.platform'),
       componentProps: {
-        options: platformList,
+        options: appPlatformDict(),
         placeholder: $t('ui.placeholder.select'),
         filterOption: (input: string, option: any) =>
           option.label.toLowerCase().includes(input.toLowerCase()),
@@ -145,6 +145,7 @@ const gridOptions: VxeGridProps<UserBehaviorProfile> = {
       title: $t('page.userBehaviorProfile.riskLevel'),
       field: 'riskLevel',
       minWidth: 100,
+      slots: { default: 'riskLevel' },
     },
     {
       title: $t('page.userBehaviorProfile.deviceType'),
@@ -155,6 +156,7 @@ const gridOptions: VxeGridProps<UserBehaviorProfile> = {
       title: $t('page.userBehaviorProfile.platform'),
       field: 'platform',
       minWidth: 100,
+      slots: { default: 'platform' },
     },
     {
       title: $t('ui.table.createdAt'),
@@ -180,7 +182,7 @@ const [Grid] = useVbenVxeGrid({
     <Grid :table-title="$t('menu.dataAnalysis.userBehaviorProfile')">
       <template #platform="{ row }">
         <a-tag :color="platformToColor(row.platform)">
-          {{ platformToName(row.platform) }}
+          {{ appPlatformToName(row.platform) }}
         </a-tag>
       </template>
       <template #riskLevel="{ row }">

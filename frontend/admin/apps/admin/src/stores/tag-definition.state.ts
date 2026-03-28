@@ -1,6 +1,3 @@
-import { computed } from 'vue';
-
-import { $t } from '@vben/locales';
 import { useUserStore } from '@vben/stores';
 
 import { defineStore } from 'pinia';
@@ -10,6 +7,7 @@ import {
   type ubaservicev1_TagCategory as TagCategory,
   type ubaservicev1_TagType as TagType,
 } from '#/generated/api/admin/service/v1';
+import { getDictEntryLabelByValue, useDictStore } from '#/stores/dict.state';
 import { makeOrderBy, makeQueryString, makeUpdateMask } from '#/utils/query';
 import { type Paging, requestClientRequestHandler } from '#/utils/request';
 
@@ -102,24 +100,31 @@ export const useTagDefinitionListStore = defineStore(
   },
 );
 
-export const tagCategoryList = computed(() => [
-  {
-    value: 'TAG_CATEGORY_USER',
-    label: $t('enum.tagDefinition.category.TAG_CATEGORY_USER'),
-  },
-  {
-    value: 'TAG_CATEGORY_BEHAVIOR',
-    label: $t('enum.tagDefinition.category.TAG_CATEGORY_BEHAVIOR'),
-  },
-  {
-    value: 'TAG_CATEGORY_RISK',
-    label: $t('enum.tagDefinition.category.TAG_CATEGORY_RISK'),
-  },
-  {
-    value: 'TAG_CATEGORY_BUSINESS',
-    label: $t('enum.tagDefinition.category.TAG_CATEGORY_BUSINESS'),
-  },
-]);
+export function tagCategoryDict() {
+  const dictStore = useDictStore();
+  return dictStore.getDictEntriesOptionsByTypeCode('TAG_CATEGORY');
+}
+
+export function tagCategoryToName(source?: string) {
+  const dictStore = useDictStore();
+  return getDictEntryLabelByValue(
+    source,
+    dictStore.getDictEntriesByTypeCode('TAG_CATEGORY'),
+  );
+}
+
+export function tagTypeDict() {
+  const dictStore = useDictStore();
+  return dictStore.getDictEntriesOptionsByTypeCode('TAG_TYPE');
+}
+
+export function tagTypeToName(source?: string) {
+  const dictStore = useDictStore();
+  return getDictEntryLabelByValue(
+    source,
+    dictStore.getDictEntriesByTypeCode('TAG_TYPE'),
+  );
+}
 
 const TAG_CATEGORY_COLOR_MAP = {
   TAG_CATEGORY_UNSPECIFIED: '#86909C',
@@ -137,35 +142,6 @@ export function tagCategoryToColor(category?: TagCategory) {
   );
 }
 
-export function tagCategoryToName(category?: TagCategory) {
-  const values = tagCategoryList.value;
-  const matchedItem = values.find((item) => item.value === category);
-  return matchedItem ? matchedItem.label : category;
-}
-
-export const tagTypeList = computed(() => [
-  {
-    value: 'TAG_TYPE_BOOLEAN',
-    label: $t('enum.tagDefinition.type.TAG_TYPE_BOOLEAN'),
-  },
-  {
-    value: 'TAG_TYPE_ENUM',
-    label: $t('enum.tagDefinition.type.TAG_TYPE_ENUM'),
-  },
-  {
-    value: 'TAG_TYPE_NUMERIC',
-    label: $t('enum.tagDefinition.type.TAG_TYPE_NUMERIC'),
-  },
-  {
-    value: 'TAG_TYPE_STRING',
-    label: $t('enum.tagDefinition.type.TAG_TYPE_STRING'),
-  },
-  {
-    value: 'TAG_TYPE_LIST',
-    label: $t('enum.tagDefinition.type.TAG_TYPE_LIST'),
-  },
-]);
-
 const TAG_TYPE_COLOR_MAP = {
   TAG_TYPE_UNSPECIFIED: '#86909C',
   TAG_TYPE_BOOLEAN: '#4096FF',
@@ -181,10 +157,4 @@ export function tagTypeToColor(type?: TagType) {
     TAG_TYPE_COLOR_MAP[type as keyof typeof TAG_TYPE_COLOR_MAP] ||
     TAG_TYPE_COLOR_MAP.DEFAULT
   );
-}
-
-export function tagTypeToName(type?: TagType) {
-  const values = tagTypeList.value;
-  const matchedItem = values.find((item) => item.value === type);
-  return matchedItem ? matchedItem.label : type;
 }

@@ -39,9 +39,9 @@ type TagDefinition struct {
 	// 标签描述，详细说明
 	Description *string `json:"description,omitempty"`
 	// 标签分类，如用户属性、行为偏好、风险、业务等
-	Category *tagdefinition.Category `json:"category,omitempty"`
+	Category *string `json:"category,omitempty"`
 	// 标签类型，如布尔、枚举、数值、字符串、列表等
-	TagType *tagdefinition.TagType `json:"tag_type,omitempty"`
+	TagType *string `json:"tag_type,omitempty"`
 	// 计算规则，简化，实际可用表达式引擎，如 CEL/SQL
 	Rule *ubapb.TagRule `json:"rule,omitempty"`
 	// 取值范围，枚举型标签的允许值列表
@@ -160,15 +160,15 @@ func (_m *TagDefinition) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field category", values[i])
 			} else if value.Valid {
-				_m.Category = new(tagdefinition.Category)
-				*_m.Category = tagdefinition.Category(value.String)
+				_m.Category = new(string)
+				*_m.Category = value.String
 			}
 		case tagdefinition.FieldTagType:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field tag_type", values[i])
 			} else if value.Valid {
-				_m.TagType = new(tagdefinition.TagType)
-				*_m.TagType = tagdefinition.TagType(value.String)
+				_m.TagType = new(string)
+				*_m.TagType = value.String
 			}
 		case tagdefinition.FieldRule:
 			if value, ok := values[i].(*[]byte); !ok {
@@ -297,12 +297,12 @@ func (_m *TagDefinition) String() string {
 	builder.WriteString(", ")
 	if v := _m.Category; v != nil {
 		builder.WriteString("category=")
-		builder.WriteString(fmt.Sprintf("%v", *v))
+		builder.WriteString(*v)
 	}
 	builder.WriteString(", ")
 	if v := _m.TagType; v != nil {
 		builder.WriteString("tag_type=")
-		builder.WriteString(fmt.Sprintf("%v", *v))
+		builder.WriteString(*v)
 	}
 	builder.WriteString(", ")
 	builder.WriteString("rule=")

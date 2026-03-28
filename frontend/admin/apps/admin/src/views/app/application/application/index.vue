@@ -12,13 +12,13 @@ import { notification } from 'ant-design-vue';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { $t } from '#/locales';
 import {
-  applicationTypeList,
   applicationTypeToColor,
-  applicationTypeToName,
+  appPlatformToName,
+  appTypeDict,
+  appTypeToName,
   enableBoolToColor,
   enableBoolToName,
   platformToColor,
-  platformToName,
   statusList,
   statusToColor,
   statusToName,
@@ -57,7 +57,7 @@ const formOptions = {
       fieldName: 'type',
       label: $t('page.application.type'),
       componentProps: {
-        options: applicationTypeList,
+        options: appTypeDict(),
         placeholder: $t('ui.placeholder.select'),
         filterOption: (input: string, option: any) =>
           option.label.toLowerCase().includes(input.toLowerCase()),
@@ -264,7 +264,7 @@ async function handleDelete(row: any) {
       </template>
       <template #type="{ row }">
         <a-tag :color="applicationTypeToColor(row.type)">
-          {{ applicationTypeToName(row.type) }}
+          {{ appTypeToName(row.type) }}
         </a-tag>
       </template>
       <template #platforms="{ row }">
@@ -273,7 +273,7 @@ async function handleDelete(row: any) {
           :key="item"
           :color="platformToColor(item)"
         >
-          {{ platformToName(item) }}
+          {{ appPlatformToName(item) }}
         </a-tag>
       </template>
       <template #status="{ row }">

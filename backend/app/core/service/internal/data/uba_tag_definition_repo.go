@@ -27,9 +27,6 @@ type TagDefinitionRepo struct {
 
 	mapper *mapper.CopierMapper[ubaV1.TagDefinition, ent.TagDefinition]
 
-	categoryConverter *mapper.EnumTypeConverter[ubaV1.TagCategory, tagdefinition.Category]
-	typeConverter     *mapper.EnumTypeConverter[ubaV1.TagType, tagdefinition.TagType]
-
 	repository *entCrud.Repository[
 		ent.TagDefinitionQuery, ent.TagDefinitionSelect,
 		ent.TagDefinitionCreate, ent.TagDefinitionCreateBulk,
@@ -45,12 +42,6 @@ func NewTagDefinitionRepo(ctx *bootstrap.Context, entClient *entCrud.EntClient[*
 		log:       ctx.NewLoggerHelper("tag-definition/repo/core-service"),
 		entClient: entClient,
 		mapper:    mapper.NewCopierMapper[ubaV1.TagDefinition, ent.TagDefinition](),
-		categoryConverter: mapper.NewEnumTypeConverter[ubaV1.TagCategory, tagdefinition.Category](
-			ubaV1.TagCategory_name, ubaV1.TagCategory_value,
-		),
-		typeConverter: mapper.NewEnumTypeConverter[ubaV1.TagType, tagdefinition.TagType](
-			ubaV1.TagType_name, ubaV1.TagType_value,
-		),
 	}
 
 	repo.init()
@@ -69,9 +60,6 @@ func (r *TagDefinitionRepo) init() {
 
 	r.mapper.AppendConverters(copierutil.NewTimeStringConverterPair())
 	r.mapper.AppendConverters(copierutil.NewTimeTimestamppbConverterPair())
-
-	r.mapper.AppendConverters(r.categoryConverter.NewConverterPair())
-	r.mapper.AppendConverters(r.typeConverter.NewConverterPair())
 }
 
 // Count 统计标签数量
@@ -153,8 +141,8 @@ func (r *TagDefinitionRepo) Create(ctx context.Context, req *ubaV1.CreateTagDefi
 		SetNillableTenantID(req.Data.TenantId).
 		SetNillableName(req.Data.Name).
 		SetNillableCode(req.Data.Code).
-		SetNillableCategory(r.categoryConverter.ToEntity(req.Data.Category)).
-		SetNillableTagType(r.typeConverter.ToEntity(req.Data.TagType)).
+		SetNillableCategory(req.Data.Category).
+		SetNillableTagType(req.Data.TagType).
 		SetNillableIsSystem(req.Data.IsSystem).
 		SetNillableIsDynamic(req.Data.IsDynamic).
 		SetNillableRefreshIntervalSeconds(req.Data.RefreshIntervalSeconds).
@@ -202,8 +190,8 @@ func (r *TagDefinitionRepo) Update(ctx context.Context, req *ubaV1.UpdateTagDefi
 			builder.
 				SetNillableName(req.Data.Name).
 				SetNillableCode(req.Data.Code).
-				SetNillableCategory(r.categoryConverter.ToEntity(req.Data.Category)).
-				SetNillableTagType(r.typeConverter.ToEntity(req.Data.TagType)).
+				SetNillableCategory(req.Data.Category).
+				SetNillableTagType(req.Data.TagType).
 				SetNillableIsSystem(req.Data.IsSystem).
 				SetNillableIsDynamic(req.Data.IsDynamic).
 				SetNillableRefreshIntervalSeconds(req.Data.RefreshIntervalSeconds).

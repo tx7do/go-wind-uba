@@ -1146,7 +1146,7 @@ export type ubaservicev1_Application = {
   appId?: string;
   appKey?: string;
   appSecret?: string;
-  type?: ubaservicev1_Application_Type;
+  type?: string;
   // 支持平台列表
   platforms: string[] | undefined;
   status?: ubaservicev1_Application_Status;
@@ -1164,17 +1164,6 @@ export type ubaservicev1_Application = {
   deletedAt?: wellKnownTimestamp;
 };
 
-// 应用类型
-export type ubaservicev1_Application_Type =
-  | "APPLICATION_TYPE_UNSPECIFIED"
-  | "GAME"
-  | "ECOMMERCE"
-  | "CONTENT"
-  | "TOOL"
-  | "FINANCE"
-  | "SOCIAL"
-  | "EDUCATION"
-  | "OTHER";
 // 应用状态
 export type ubaservicev1_Application_Status =
   | "STATUS_UNSPECIFIED"
@@ -7410,9 +7399,9 @@ export type ubaservicev1_TagDefinition = {
   // 标签描述（详细说明）
   description?: string;
   // 标签分类（如用户属性、行为偏好、风险、业务等）
-  category?: ubaservicev1_TagCategory;
+  category?: string;
   // 标签类型（如布尔、枚举、数值、字符串、列表等）
-  tagType?: ubaservicev1_TagType;
+  tagType?: string;
   // 计算规则（简化，实际可用表达式引擎，如 CEL/SQL）
   rule?: ubaservicev1_TagRule;
   // 取值范围（枚举型标签的允许值列表）
@@ -7431,32 +7420,6 @@ export type ubaservicev1_TagDefinition = {
   deletedAt?: wellKnownTimestamp;
 };
 
-// 标签分类枚举
-export type ubaservicev1_TagCategory =
-  // 未指定标签分类
-  | "TAG_CATEGORY_UNSPECIFIED"
-  // 用户属性标签
-  | "TAG_CATEGORY_USER"
-  // 行为偏好标签
-  | "TAG_CATEGORY_BEHAVIOR"
-  // 风险标签
-  | "TAG_CATEGORY_RISK"
-  // 业务标签
-  | "TAG_CATEGORY_BUSINESS";
-// 标签类型枚举
-export type ubaservicev1_TagType =
-  // 未指定标签类型
-  | "TAG_TYPE_UNSPECIFIED"
-  // 布尔型标签（是/否）
-  | "TAG_TYPE_BOOLEAN"
-  // 枚举型标签
-  | "TAG_TYPE_ENUM"
-  // 数值型标签
-  | "TAG_TYPE_NUMERIC"
-  // 字符串型标签
-  | "TAG_TYPE_STRING"
-  // 列表型标签
-  | "TAG_TYPE_LIST";
 // 标签规则定义（简化，实际可根据需求扩展为更复杂的表达式结构）
 export type ubaservicev1_TagRule = {
   // 规则表达式（如 CEL/SQL，示例: "total_pay_amount > 1000 AND last_pay_time > now() - 30d"）

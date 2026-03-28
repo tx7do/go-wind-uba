@@ -30,38 +30,6 @@ service TagDefinitionService {
   rpc Delete (DeleteTagDefinitionRequest) returns (google.protobuf.Empty) {}
 }
 
-// 标签分类枚举
-enum TagCategory {
-  // 未指定标签分类
-  TAG_CATEGORY_UNSPECIFIED = 0;
-
-  // 用户属性标签
-  TAG_CATEGORY_USER = 1;
-  // 行为偏好标签
-  TAG_CATEGORY_BEHAVIOR = 2;
-  // 风险标签
-  TAG_CATEGORY_RISK = 3;
-  // 业务标签
-  TAG_CATEGORY_BUSINESS = 4;
-}
-
-// 标签类型枚举
-enum TagType {
-  // 未指定标签类型
-  TAG_TYPE_UNSPECIFIED = 0;
-
-  // 布尔型标签（是/否）
-  TAG_TYPE_BOOLEAN = 1;
-  // 枚举型标签
-  TAG_TYPE_ENUM = 2;
-  // 数值型标签
-  TAG_TYPE_NUMERIC = 3;
-  // 字符串型标签
-  TAG_TYPE_STRING = 4;
-  // 列表型标签
-  TAG_TYPE_LIST = 5;
-}
-
 // 标签定义（对应 tag_definition 表）
 message TagDefinition {
   // 标签ID（唯一标识一个标签）
@@ -92,13 +60,13 @@ message TagDefinition {
     (gnostic.openapi.v3.property) = {description: "标签描述，详细说明"}
   ];
   // 标签分类（如用户属性、行为偏好、风险、业务等）
-  optional TagCategory category = 6 [
+  optional string category = 6 [
     json_name = "category",
     (gnostic.openapi.v3.property) = {description: "标签分类，如用户属性、行为偏好、风险、业务等"}
   ];
 
   // 标签类型（如布尔、枚举、数值、字符串、列表等）
-  optional TagType tag_type = 10 [
+  optional string tag_type = 10 [
     json_name = "tagType",
     (gnostic.openapi.v3.property) = {description: "标签类型，如布尔、枚举、数值、字符串、列表等"}
   ];

@@ -41,26 +41,13 @@ func (TagDefinition) Fields() []ent.Field {
 			Optional().
 			Nillable(),
 
-		field.Enum("category").
+		field.String("category").
 			Comment("标签分类，如用户属性、行为偏好、风险、业务等").
-			NamedValues(
-				"TagCategoryUser", "TAG_CATEGORY_USER",
-				"TagCategoryBehavior", "TAG_CATEGORY_BEHAVIOR",
-				"TagCategoryRisk", "TAG_CATEGORY_RISK",
-				"TagCategoryBusiness", "TAG_CATEGORY_BUSINESS",
-			).
 			Optional().
 			Nillable(),
 
-		field.Enum("tag_type").
+		field.String("tag_type").
 			Comment("标签类型，如布尔、枚举、数值、字符串、列表等").
-			NamedValues(
-				"TagTypeBoolean", "TAG_TYPE_BOOLEAN",
-				"TagTypeEnum", "TAG_TYPE_ENUM",
-				"TagTypeNumeric", "TAG_TYPE_NUMERIC",
-				"TagTypeString", "TAG_TYPE_STRING",
-				"TagTypeList", "TAG_TYPE_LIST",
-			).
 			Optional().
 			Nillable(),
 

@@ -482,7 +482,7 @@
   },
   "object": {
     "moduleName": "对象管理",
-    "id": "对象ID",
+    "objectId": "对象ID",
     "objectType": "对象类型",
     "objectName": "对象名称",
     "categoryPath": "分类路径",

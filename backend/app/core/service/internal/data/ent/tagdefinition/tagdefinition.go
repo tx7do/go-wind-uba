@@ -3,8 +3,6 @@
 package tagdefinition
 
 import (
-	"fmt"
-
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 )
@@ -107,57 +105,6 @@ var (
 	// IDValidator is a validator for the "id" field. It is called by the builders before save.
 	IDValidator func(uint32) error
 )
-
-// Category defines the type for the "category" enum field.
-type Category string
-
-// Category values.
-const (
-	CategoryTagCategoryUser     Category = "TAG_CATEGORY_USER"
-	CategoryTagCategoryBehavior Category = "TAG_CATEGORY_BEHAVIOR"
-	CategoryTagCategoryRisk     Category = "TAG_CATEGORY_RISK"
-	CategoryTagCategoryBusiness Category = "TAG_CATEGORY_BUSINESS"
-)
-
-func (c Category) String() string {
-	return string(c)
-}
-
-// CategoryValidator is a validator for the "category" field enum values. It is called by the builders before save.
-func CategoryValidator(c Category) error {
-	switch c {
-	case CategoryTagCategoryUser, CategoryTagCategoryBehavior, CategoryTagCategoryRisk, CategoryTagCategoryBusiness:
-		return nil
-	default:
-		return fmt.Errorf("tagdefinition: invalid enum value for category field: %q", c)
-	}
-}
-
-// TagType defines the type for the "tag_type" enum field.
-type TagType string
-
-// TagType values.
-const (
-	TagTypeTagTypeBoolean TagType = "TAG_TYPE_BOOLEAN"
-	TagTypeTagTypeEnum    TagType = "TAG_TYPE_ENUM"
-	TagTypeTagTypeNumeric TagType = "TAG_TYPE_NUMERIC"
-	TagTypeTagTypeString  TagType = "TAG_TYPE_STRING"
-	TagTypeTagTypeList    TagType = "TAG_TYPE_LIST"
-)
-
-func (tt TagType) String() string {
-	return string(tt)
-}
-
-// TagTypeValidator is a validator for the "tag_type" field enum values. It is called by the builders before save.
-func TagTypeValidator(tt TagType) error {
-	switch tt {
-	case TagTypeTagTypeBoolean, TagTypeTagTypeEnum, TagTypeTagTypeNumeric, TagTypeTagTypeString, TagTypeTagTypeList:
-		return nil
-	default:
-		return fmt.Errorf("tagdefinition: invalid enum value for tag_type field: %q", tt)
-	}
-}
 
 // OrderOption defines the ordering options for the TagDefinition queries.
 type OrderOption func(*sql.Selector)

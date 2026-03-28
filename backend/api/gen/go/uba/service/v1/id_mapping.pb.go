@@ -26,75 +26,6 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// ID类型枚举（用于标识不同类型的用户、设备、账号等标识符）
-type IDType int32
-
-const (
-	// 未指定ID类型
-	IDType_ID_TYPE_UNSPECIFIED IDType = 0
-	// 用户ID（如系统内唯一用户标识）
-	IDType_ID_TYPE_USER_ID IDType = 1
-	// 设备ID（如设备序列号、IMEI、MAC地址等）
-	IDType_ID_TYPE_DEVICE_ID IDType = 2
-	// Cookie（如 Web 端唯一标识）
-	IDType_ID_TYPE_COOKIE IDType = 3
-	// 邮箱（如用户邮箱地址）
-	IDType_ID_TYPE_EMAIL IDType = 4
-	// 手机号（如用户手机号码）
-	IDType_ID_TYPE_PHONE IDType = 5
-	// OpenID（如第三方平台用户标识，微信、支付宝等）
-	IDType_ID_TYPE_OPENID IDType = 6
-)
-
-// Enum value maps for IDType.
-var (
-	IDType_name = map[int32]string{
-		0: "ID_TYPE_UNSPECIFIED",
-		1: "ID_TYPE_USER_ID",
-		2: "ID_TYPE_DEVICE_ID",
-		3: "ID_TYPE_COOKIE",
-		4: "ID_TYPE_EMAIL",
-		5: "ID_TYPE_PHONE",
-		6: "ID_TYPE_OPENID",
-	}
-	IDType_value = map[string]int32{
-		"ID_TYPE_UNSPECIFIED": 0,
-		"ID_TYPE_USER_ID":     1,
-		"ID_TYPE_DEVICE_ID":   2,
-		"ID_TYPE_COOKIE":      3,
-		"ID_TYPE_EMAIL":       4,
-		"ID_TYPE_PHONE":       5,
-		"ID_TYPE_OPENID":      6,
-	}
-)
-
-func (x IDType) Enum() *IDType {
-	p := new(IDType)
-	*p = x
-	return p
-}
-
-func (x IDType) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (IDType) Descriptor() protoreflect.EnumDescriptor {
-	return file_uba_service_v1_id_mapping_proto_enumTypes[0].Descriptor()
-}
-
-func (IDType) Type() protoreflect.EnumType {
-	return &file_uba_service_v1_id_mapping_proto_enumTypes[0]
-}
-
-func (x IDType) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
-// Deprecated: Use IDType.Descriptor instead.
-func (IDType) EnumDescriptor() ([]byte, []int) {
-	return file_uba_service_v1_id_mapping_proto_rawDescGZIP(), []int{0}
-}
-
 // ID 关联记录（对应 id_mapping 表）
 type IDMapping struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -734,15 +665,7 @@ const file_uba_service_v1_id_mapping_proto_rawDesc = "" +
 	"\bquery_byB\r\n" +
 	"\v_deleted_by\".\n" +
 	"\x16CountIDMappingResponse\x12\x14\n" +
-	"\x05count\x18\x01 \x01(\x04R\x05count*\x9b\x01\n" +
-	"\x06IDType\x12\x17\n" +
-	"\x13ID_TYPE_UNSPECIFIED\x10\x00\x12\x13\n" +
-	"\x0fID_TYPE_USER_ID\x10\x01\x12\x15\n" +
-	"\x11ID_TYPE_DEVICE_ID\x10\x02\x12\x12\n" +
-	"\x0eID_TYPE_COOKIE\x10\x03\x12\x11\n" +
-	"\rID_TYPE_EMAIL\x10\x04\x12\x11\n" +
-	"\rID_TYPE_PHONE\x10\x05\x12\x12\n" +
-	"\x0eID_TYPE_OPENID\x10\x062\xdf\x03\n" +
+	"\x05count\x18\x01 \x01(\x04R\x05count2\xdf\x03\n" +
 	"\x10IDMappingService\x12J\n" +
 	"\x04List\x12\x19.pagination.PagingRequest\x1a%.uba.service.v1.ListIDMappingResponse\"\x00\x12L\n" +
 	"\x05Count\x12\x19.pagination.PagingRequest\x1a&.uba.service.v1.CountIDMappingResponse\"\x00\x12G\n" +
@@ -764,47 +687,45 @@ func file_uba_service_v1_id_mapping_proto_rawDescGZIP() []byte {
 	return file_uba_service_v1_id_mapping_proto_rawDescData
 }
 
-var file_uba_service_v1_id_mapping_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_uba_service_v1_id_mapping_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_uba_service_v1_id_mapping_proto_goTypes = []any{
-	(IDType)(0),                    // 0: uba.service.v1.IDType
-	(*IDMapping)(nil),              // 1: uba.service.v1.IDMapping
-	(*ListIDMappingResponse)(nil),  // 2: uba.service.v1.ListIDMappingResponse
-	(*GetIDMappingRequest)(nil),    // 3: uba.service.v1.GetIDMappingRequest
-	(*CreateIDMappingRequest)(nil), // 4: uba.service.v1.CreateIDMappingRequest
-	(*UpdateIDMappingRequest)(nil), // 5: uba.service.v1.UpdateIDMappingRequest
-	(*DeleteIDMappingRequest)(nil), // 6: uba.service.v1.DeleteIDMappingRequest
-	(*CountIDMappingResponse)(nil), // 7: uba.service.v1.CountIDMappingResponse
-	nil,                            // 8: uba.service.v1.IDMapping.PropertiesEntry
-	(*timestamppb.Timestamp)(nil),  // 9: google.protobuf.Timestamp
-	(*fieldmaskpb.FieldMask)(nil),  // 10: google.protobuf.FieldMask
-	(*v1.PagingRequest)(nil),       // 11: pagination.PagingRequest
-	(*emptypb.Empty)(nil),          // 12: google.protobuf.Empty
+	(*IDMapping)(nil),              // 0: uba.service.v1.IDMapping
+	(*ListIDMappingResponse)(nil),  // 1: uba.service.v1.ListIDMappingResponse
+	(*GetIDMappingRequest)(nil),    // 2: uba.service.v1.GetIDMappingRequest
+	(*CreateIDMappingRequest)(nil), // 3: uba.service.v1.CreateIDMappingRequest
+	(*UpdateIDMappingRequest)(nil), // 4: uba.service.v1.UpdateIDMappingRequest
+	(*DeleteIDMappingRequest)(nil), // 5: uba.service.v1.DeleteIDMappingRequest
+	(*CountIDMappingResponse)(nil), // 6: uba.service.v1.CountIDMappingResponse
+	nil,                            // 7: uba.service.v1.IDMapping.PropertiesEntry
+	(*timestamppb.Timestamp)(nil),  // 8: google.protobuf.Timestamp
+	(*fieldmaskpb.FieldMask)(nil),  // 9: google.protobuf.FieldMask
+	(*v1.PagingRequest)(nil),       // 10: pagination.PagingRequest
+	(*emptypb.Empty)(nil),          // 11: google.protobuf.Empty
 }
 var file_uba_service_v1_id_mapping_proto_depIdxs = []int32{
-	9,  // 0: uba.service.v1.IDMapping.first_seen:type_name -> google.protobuf.Timestamp
-	9,  // 1: uba.service.v1.IDMapping.last_seen:type_name -> google.protobuf.Timestamp
-	8,  // 2: uba.service.v1.IDMapping.properties:type_name -> uba.service.v1.IDMapping.PropertiesEntry
-	9,  // 3: uba.service.v1.IDMapping.created_at:type_name -> google.protobuf.Timestamp
-	9,  // 4: uba.service.v1.IDMapping.updated_at:type_name -> google.protobuf.Timestamp
-	9,  // 5: uba.service.v1.IDMapping.deleted_at:type_name -> google.protobuf.Timestamp
-	1,  // 6: uba.service.v1.ListIDMappingResponse.items:type_name -> uba.service.v1.IDMapping
-	10, // 7: uba.service.v1.GetIDMappingRequest.view_mask:type_name -> google.protobuf.FieldMask
-	1,  // 8: uba.service.v1.CreateIDMappingRequest.data:type_name -> uba.service.v1.IDMapping
-	1,  // 9: uba.service.v1.UpdateIDMappingRequest.data:type_name -> uba.service.v1.IDMapping
-	10, // 10: uba.service.v1.UpdateIDMappingRequest.update_mask:type_name -> google.protobuf.FieldMask
-	11, // 11: uba.service.v1.IDMappingService.List:input_type -> pagination.PagingRequest
-	11, // 12: uba.service.v1.IDMappingService.Count:input_type -> pagination.PagingRequest
-	3,  // 13: uba.service.v1.IDMappingService.Get:input_type -> uba.service.v1.GetIDMappingRequest
-	4,  // 14: uba.service.v1.IDMappingService.Create:input_type -> uba.service.v1.CreateIDMappingRequest
-	5,  // 15: uba.service.v1.IDMappingService.Update:input_type -> uba.service.v1.UpdateIDMappingRequest
-	6,  // 16: uba.service.v1.IDMappingService.Delete:input_type -> uba.service.v1.DeleteIDMappingRequest
-	2,  // 17: uba.service.v1.IDMappingService.List:output_type -> uba.service.v1.ListIDMappingResponse
-	7,  // 18: uba.service.v1.IDMappingService.Count:output_type -> uba.service.v1.CountIDMappingResponse
-	1,  // 19: uba.service.v1.IDMappingService.Get:output_type -> uba.service.v1.IDMapping
-	1,  // 20: uba.service.v1.IDMappingService.Create:output_type -> uba.service.v1.IDMapping
-	1,  // 21: uba.service.v1.IDMappingService.Update:output_type -> uba.service.v1.IDMapping
-	12, // 22: uba.service.v1.IDMappingService.Delete:output_type -> google.protobuf.Empty
+	8,  // 0: uba.service.v1.IDMapping.first_seen:type_name -> google.protobuf.Timestamp
+	8,  // 1: uba.service.v1.IDMapping.last_seen:type_name -> google.protobuf.Timestamp
+	7,  // 2: uba.service.v1.IDMapping.properties:type_name -> uba.service.v1.IDMapping.PropertiesEntry
+	8,  // 3: uba.service.v1.IDMapping.created_at:type_name -> google.protobuf.Timestamp
+	8,  // 4: uba.service.v1.IDMapping.updated_at:type_name -> google.protobuf.Timestamp
+	8,  // 5: uba.service.v1.IDMapping.deleted_at:type_name -> google.protobuf.Timestamp
+	0,  // 6: uba.service.v1.ListIDMappingResponse.items:type_name -> uba.service.v1.IDMapping
+	9,  // 7: uba.service.v1.GetIDMappingRequest.view_mask:type_name -> google.protobuf.FieldMask
+	0,  // 8: uba.service.v1.CreateIDMappingRequest.data:type_name -> uba.service.v1.IDMapping
+	0,  // 9: uba.service.v1.UpdateIDMappingRequest.data:type_name -> uba.service.v1.IDMapping
+	9,  // 10: uba.service.v1.UpdateIDMappingRequest.update_mask:type_name -> google.protobuf.FieldMask
+	10, // 11: uba.service.v1.IDMappingService.List:input_type -> pagination.PagingRequest
+	10, // 12: uba.service.v1.IDMappingService.Count:input_type -> pagination.PagingRequest
+	2,  // 13: uba.service.v1.IDMappingService.Get:input_type -> uba.service.v1.GetIDMappingRequest
+	3,  // 14: uba.service.v1.IDMappingService.Create:input_type -> uba.service.v1.CreateIDMappingRequest
+	4,  // 15: uba.service.v1.IDMappingService.Update:input_type -> uba.service.v1.UpdateIDMappingRequest
+	5,  // 16: uba.service.v1.IDMappingService.Delete:input_type -> uba.service.v1.DeleteIDMappingRequest
+	1,  // 17: uba.service.v1.IDMappingService.List:output_type -> uba.service.v1.ListIDMappingResponse
+	6,  // 18: uba.service.v1.IDMappingService.Count:output_type -> uba.service.v1.CountIDMappingResponse
+	0,  // 19: uba.service.v1.IDMappingService.Get:output_type -> uba.service.v1.IDMapping
+	0,  // 20: uba.service.v1.IDMappingService.Create:output_type -> uba.service.v1.IDMapping
+	0,  // 21: uba.service.v1.IDMappingService.Update:output_type -> uba.service.v1.IDMapping
+	11, // 22: uba.service.v1.IDMappingService.Delete:output_type -> google.protobuf.Empty
 	17, // [17:23] is the sub-list for method output_type
 	11, // [11:17] is the sub-list for method input_type
 	11, // [11:11] is the sub-list for extension type_name
@@ -830,14 +751,13 @@ func file_uba_service_v1_id_mapping_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_uba_service_v1_id_mapping_proto_rawDesc), len(file_uba_service_v1_id_mapping_proto_rawDesc)),
-			NumEnums:      1,
+			NumEnums:      0,
 			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
 		GoTypes:           file_uba_service_v1_id_mapping_proto_goTypes,
 		DependencyIndexes: file_uba_service_v1_id_mapping_proto_depIdxs,
-		EnumInfos:         file_uba_service_v1_id_mapping_proto_enumTypes,
 		MessageInfos:      file_uba_service_v1_id_mapping_proto_msgTypes,
 	}.Build()
 	File_uba_service_v1_id_mapping_proto = out.File

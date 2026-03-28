@@ -7,13 +7,15 @@ import { Page } from '@vben/common-ui';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { $t } from '#/locales';
 import {
-  riskEventStatusList,
+  riskEventStatusDict,
   riskEventStatusToColor,
   riskEventStatusToName,
   riskEventTypeToColor,
-  riskEventTypeToName,
+  riskLevelDict,
   riskLevelToColor,
   riskLevelToName,
+  riskTypeDict,
+  riskTypeToName,
   useRiskEventListStore,
 } from '#/stores';
 
@@ -38,7 +40,7 @@ const formOptions = {
       fieldName: 'status',
       label: $t('page.riskEvent.status'),
       componentProps: {
-        options: riskEventStatusList,
+        options: riskEventStatusDict(),
         placeholder: $t('ui.placeholder.select'),
         filterOption: (input: string, option: any) =>
           option.label.toLowerCase().includes(input.toLowerCase()),
@@ -47,20 +49,29 @@ const formOptions = {
       },
     },
     {
-      component: 'Input',
+      component: 'Select',
       fieldName: 'riskType',
       label: $t('page.riskEvent.riskType'),
       componentProps: {
-        placeholder: $t('ui.placeholder.input'),
+        options: riskTypeDict(),
+        placeholder: $t('ui.placeholder.select'),
+        filterOption: (input: string, option: any) =>
+          option.label.toLowerCase().includes(input.toLowerCase()),
         allowClear: true,
+        showSearch: true,
       },
     },
     {
-      component: 'Input',
+      component: 'Select',
       fieldName: 'riskLevel',
+      label: $t('page.riskEvent.riskLevel'),
       componentProps: {
-        placeholder: $t('ui.placeholder.input'),
+        options: riskLevelDict(),
+        placeholder: $t('ui.placeholder.select'),
+        filterOption: (input: string, option: any) =>
+          option.label.toLowerCase().includes(input.toLowerCase()),
         allowClear: true,
+        showSearch: true,
       },
     },
   ],
@@ -128,11 +139,13 @@ const gridOptions: VxeGridProps<RiskEvent> = {
       title: $t('page.riskEvent.riskType'),
       field: 'riskType',
       minWidth: 140,
+      slots: { default: 'riskType' },
     },
     {
       title: $t('page.riskEvent.riskLevel'),
       field: 'riskLevel',
       minWidth: 100,
+      slots: { default: 'riskLevel' },
     },
     {
       title: $t('page.riskEvent.status'),
@@ -191,7 +204,7 @@ const [Grid] = useVbenVxeGrid({
     <Grid :table-title="$t('menu.risk.event')">
       <template #riskType="{ row }">
         <a-tag :color="riskEventTypeToColor(row.riskType)">
-          {{ riskEventTypeToName(row.riskType) }}
+          {{ riskTypeToName(row.riskType) }}
         </a-tag>
       </template>
       <template #riskLevel="{ row }">

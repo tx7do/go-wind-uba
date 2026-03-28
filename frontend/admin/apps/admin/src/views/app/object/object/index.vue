@@ -80,8 +80,8 @@ const gridOptions: VxeGridProps<ObjectDim> = {
   },
   columns: [
     {
-      title: $t('page.object.id'),
-      field: 'id',
+      title: $t('page.object.objectId'),
+      field: 'objectId',
       minWidth: 100,
       fixed: 'left',
       align: 'left',

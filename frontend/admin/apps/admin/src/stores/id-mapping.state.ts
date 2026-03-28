@@ -1,14 +1,11 @@
-import { computed } from 'vue';
-
-import { $t } from '@vben/locales';
 import { useUserStore } from '@vben/stores';
 
 import { defineStore } from 'pinia';
 
 import {
   createIDMappingServiceClient,
-  type ubaservicev1_IDType as IDType,
 } from '#/generated/api/admin/service/v1';
+import { getDictEntryLabelByValue, useDictStore } from '#/stores/dict.state';
 import { makeOrderBy, makeQueryString } from '#/utils/query';
 import { type Paging, requestClientRequestHandler } from '#/utils/request';
 
@@ -54,46 +51,34 @@ export const useIdMappingListStore = defineStore('id-mapping-list', () => {
   };
 });
 
-export const idTypeList = computed(() => [
-  {
-    value: 'ID_TYPE_USER_ID',
-    label: $t('enum.idMapping.idType.ID_TYPE_USER_ID'),
-  },
-  {
-    value: 'ID_TYPE_DEVICE_ID',
-    label: $t('enum.idMapping.idType.ID_TYPE_DEVICE_ID'),
-  },
-  {
-    value: 'ID_TYPE_COOKIE',
-    label: $t('enum.idMapping.idType.ID_TYPE_COOKIE'),
-  },
-  { value: 'ID_TYPE_EMAIL', label: $t('enum.idMapping.idType.ID_TYPE_EMAIL') },
-  { value: 'ID_TYPE_PHONE', label: $t('enum.idMapping.idType.ID_TYPE_PHONE') },
-  {
-    value: 'ID_TYPE_OPENID',
-    label: $t('enum.idMapping.idType.ID_TYPE_OPENID'),
-  },
-]);
+export function idTypeDict() {
+  const dictStore = useDictStore();
+  return dictStore.getDictEntriesOptionsByTypeCode('ID_TYPE');
+}
+
+export function idTypeToName(source?: string) {
+  const dictStore = useDictStore();
+  return getDictEntryLabelByValue(
+    source,
+    dictStore.getDictEntriesByTypeCode('ID_TYPE'),
+  );
+}
 
 const ID_TYPE_COLOR_MAP = {
-  ID_TYPE_USER_ID: '#4096FF',
-  ID_TYPE_DEVICE_ID: '#00B42A',
-  ID_TYPE_COOKIE: '#F77234',
-  ID_TYPE_EMAIL: '#722ED1',
-  ID_TYPE_PHONE: '#FF9A2E',
-  ID_TYPE_OPENID: '#1FB5AD',
+  user_id: '#4096FF',
+  device_id: '#00B42A',
+  cookie: '#F77234',
+  email: '#722ED1',
+  phone: '#FF9A2E',
+  openid: '#1FB5AD',
+  unionid: '#1FB5AD',
+  global_user_id: '#1FB5AD',
   DEFAULT: '#86909C',
 } as const;
 
-export function idMappingIdTypeToColor(type?: IDType) {
+export function idMappingIdTypeToColor(type?: string) {
   return (
     ID_TYPE_COLOR_MAP[type as keyof typeof ID_TYPE_COLOR_MAP] ||
     ID_TYPE_COLOR_MAP.DEFAULT
   );
-}
-
-export function idMappingIdTypeToName(type?: IDType) {
-  const values = idTypeList.value;
-  const matchedItem = values.find((item) => item.value === type);
-  return matchedItem ? matchedItem.label : type;
 }

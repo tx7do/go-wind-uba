@@ -193,13 +193,13 @@ func (_u *TagDefinitionUpdate) ClearDescription() *TagDefinitionUpdate {
 }
 
 // SetCategory sets the "category" field.
-func (_u *TagDefinitionUpdate) SetCategory(v tagdefinition.Category) *TagDefinitionUpdate {
+func (_u *TagDefinitionUpdate) SetCategory(v string) *TagDefinitionUpdate {
 	_u.mutation.SetCategory(v)
 	return _u
 }
 
 // SetNillableCategory sets the "category" field if the given value is not nil.
-func (_u *TagDefinitionUpdate) SetNillableCategory(v *tagdefinition.Category) *TagDefinitionUpdate {
+func (_u *TagDefinitionUpdate) SetNillableCategory(v *string) *TagDefinitionUpdate {
 	if v != nil {
 		_u.SetCategory(*v)
 	}
@@ -213,13 +213,13 @@ func (_u *TagDefinitionUpdate) ClearCategory() *TagDefinitionUpdate {
 }
 
 // SetTagType sets the "tag_type" field.
-func (_u *TagDefinitionUpdate) SetTagType(v tagdefinition.TagType) *TagDefinitionUpdate {
+func (_u *TagDefinitionUpdate) SetTagType(v string) *TagDefinitionUpdate {
 	_u.mutation.SetTagType(v)
 	return _u
 }
 
 // SetNillableTagType sets the "tag_type" field if the given value is not nil.
-func (_u *TagDefinitionUpdate) SetNillableTagType(v *tagdefinition.TagType) *TagDefinitionUpdate {
+func (_u *TagDefinitionUpdate) SetNillableTagType(v *string) *TagDefinitionUpdate {
 	if v != nil {
 		_u.SetTagType(*v)
 	}
@@ -388,16 +388,6 @@ func (_u *TagDefinitionUpdate) check() error {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "TagDefinition.name": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.Category(); ok {
-		if err := tagdefinition.CategoryValidator(v); err != nil {
-			return &ValidationError{Name: "category", err: fmt.Errorf(`ent: validator failed for field "TagDefinition.category": %w`, err)}
-		}
-	}
-	if v, ok := _u.mutation.TagType(); ok {
-		if err := tagdefinition.TagTypeValidator(v); err != nil {
-			return &ValidationError{Name: "tag_type", err: fmt.Errorf(`ent: validator failed for field "TagDefinition.tag_type": %w`, err)}
-		}
-	}
 	if v, ok := _u.mutation.Rule(); ok {
 		if err := v.Validate(); err != nil {
 			return &ValidationError{Name: "rule", err: fmt.Errorf(`ent: validator failed for field "TagDefinition.rule": %w`, err)}
@@ -487,16 +477,16 @@ func (_u *TagDefinitionUpdate) sqlSave(ctx context.Context) (_node int, err erro
 		_spec.ClearField(tagdefinition.FieldDescription, field.TypeString)
 	}
 	if value, ok := _u.mutation.Category(); ok {
-		_spec.SetField(tagdefinition.FieldCategory, field.TypeEnum, value)
+		_spec.SetField(tagdefinition.FieldCategory, field.TypeString, value)
 	}
 	if _u.mutation.CategoryCleared() {
-		_spec.ClearField(tagdefinition.FieldCategory, field.TypeEnum)
+		_spec.ClearField(tagdefinition.FieldCategory, field.TypeString)
 	}
 	if value, ok := _u.mutation.TagType(); ok {
-		_spec.SetField(tagdefinition.FieldTagType, field.TypeEnum, value)
+		_spec.SetField(tagdefinition.FieldTagType, field.TypeString, value)
 	}
 	if _u.mutation.TagTypeCleared() {
-		_spec.ClearField(tagdefinition.FieldTagType, field.TypeEnum)
+		_spec.ClearField(tagdefinition.FieldTagType, field.TypeString)
 	}
 	if value, ok := _u.mutation.Rule(); ok {
 		_spec.SetField(tagdefinition.FieldRule, field.TypeJSON, value)
@@ -726,13 +716,13 @@ func (_u *TagDefinitionUpdateOne) ClearDescription() *TagDefinitionUpdateOne {
 }
 
 // SetCategory sets the "category" field.
-func (_u *TagDefinitionUpdateOne) SetCategory(v tagdefinition.Category) *TagDefinitionUpdateOne {
+func (_u *TagDefinitionUpdateOne) SetCategory(v string) *TagDefinitionUpdateOne {
 	_u.mutation.SetCategory(v)
 	return _u
 }
 
 // SetNillableCategory sets the "category" field if the given value is not nil.
-func (_u *TagDefinitionUpdateOne) SetNillableCategory(v *tagdefinition.Category) *TagDefinitionUpdateOne {
+func (_u *TagDefinitionUpdateOne) SetNillableCategory(v *string) *TagDefinitionUpdateOne {
 	if v != nil {
 		_u.SetCategory(*v)
 	}
@@ -746,13 +736,13 @@ func (_u *TagDefinitionUpdateOne) ClearCategory() *TagDefinitionUpdateOne {
 }
 
 // SetTagType sets the "tag_type" field.
-func (_u *TagDefinitionUpdateOne) SetTagType(v tagdefinition.TagType) *TagDefinitionUpdateOne {
+func (_u *TagDefinitionUpdateOne) SetTagType(v string) *TagDefinitionUpdateOne {
 	_u.mutation.SetTagType(v)
 	return _u
 }
 
 // SetNillableTagType sets the "tag_type" field if the given value is not nil.
-func (_u *TagDefinitionUpdateOne) SetNillableTagType(v *tagdefinition.TagType) *TagDefinitionUpdateOne {
+func (_u *TagDefinitionUpdateOne) SetNillableTagType(v *string) *TagDefinitionUpdateOne {
 	if v != nil {
 		_u.SetTagType(*v)
 	}
@@ -934,16 +924,6 @@ func (_u *TagDefinitionUpdateOne) check() error {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "TagDefinition.name": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.Category(); ok {
-		if err := tagdefinition.CategoryValidator(v); err != nil {
-			return &ValidationError{Name: "category", err: fmt.Errorf(`ent: validator failed for field "TagDefinition.category": %w`, err)}
-		}
-	}
-	if v, ok := _u.mutation.TagType(); ok {
-		if err := tagdefinition.TagTypeValidator(v); err != nil {
-			return &ValidationError{Name: "tag_type", err: fmt.Errorf(`ent: validator failed for field "TagDefinition.tag_type": %w`, err)}
-		}
-	}
 	if v, ok := _u.mutation.Rule(); ok {
 		if err := v.Validate(); err != nil {
 			return &ValidationError{Name: "rule", err: fmt.Errorf(`ent: validator failed for field "TagDefinition.rule": %w`, err)}
@@ -1050,16 +1030,16 @@ func (_u *TagDefinitionUpdateOne) sqlSave(ctx context.Context) (_node *TagDefini
 		_spec.ClearField(tagdefinition.FieldDescription, field.TypeString)
 	}
 	if value, ok := _u.mutation.Category(); ok {
-		_spec.SetField(tagdefinition.FieldCategory, field.TypeEnum, value)
+		_spec.SetField(tagdefinition.FieldCategory, field.TypeString, value)
 	}
 	if _u.mutation.CategoryCleared() {
-		_spec.ClearField(tagdefinition.FieldCategory, field.TypeEnum)
+		_spec.ClearField(tagdefinition.FieldCategory, field.TypeString)
 	}
 	if value, ok := _u.mutation.TagType(); ok {
-		_spec.SetField(tagdefinition.FieldTagType, field.TypeEnum, value)
+		_spec.SetField(tagdefinition.FieldTagType, field.TypeString, value)
 	}
 	if _u.mutation.TagTypeCleared() {
-		_spec.ClearField(tagdefinition.FieldTagType, field.TypeEnum)
+		_spec.ClearField(tagdefinition.FieldTagType, field.TypeString)
 	}
 	if value, ok := _u.mutation.Rule(); ok {
 		_spec.SetField(tagdefinition.FieldRule, field.TypeJSON, value)

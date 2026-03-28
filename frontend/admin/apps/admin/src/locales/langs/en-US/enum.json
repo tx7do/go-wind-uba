@@ -248,15 +248,6 @@
       "STATUS_DISABLED": "Disabled"
     }
   },
-  "platform": {
-    "PLATFORM_WEB": "Web",
-    "PLATFORM_ANDROID": "Android",
-    "PLATFORM_IOS": "iOS",
-    "PLATFORM_WINDOWS": "Windows",
-    "PLATFORM_MACOS": "macOS",
-    "PLATFORM_LINUX": "Linux",
-    "PLATFORM_MINI_PROGRAM": "Mini Program"
-  },
   "riskLevel": {
     "RISK_LEVEL_NORMAL": "Normal",
     "RISK_LEVEL_SUSPICIOUS": "Suspicious",

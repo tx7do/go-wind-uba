@@ -3917,7 +3917,7 @@ type ApplicationMutation struct {
 	app_id          *string
 	app_key         *string
 	app_secret      *string
-	_type           *application.Type
+	_type           *string
 	status          *application.Status
 	platforms       *[]string
 	appendplatforms []string
@@ -4659,12 +4659,12 @@ func (m *ApplicationMutation) ResetAppSecret() {
 }
 
 // SetType sets the "type" field.
-func (m *ApplicationMutation) SetType(a application.Type) {
-	m._type = &a
+func (m *ApplicationMutation) SetType(s string) {
+	m._type = &s
 }
 
 // GetType returns the value of the "type" field in the mutation.
-func (m *ApplicationMutation) GetType() (r application.Type, exists bool) {
+func (m *ApplicationMutation) GetType() (r string, exists bool) {
 	v := m._type
 	if v == nil {
 		return
@@ -4675,7 +4675,7 @@ func (m *ApplicationMutation) GetType() (r application.Type, exists bool) {
 // OldType returns the old "type" field's value of the Application entity.
 // If the Application object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ApplicationMutation) OldType(ctx context.Context) (v *application.Type, err error) {
+func (m *ApplicationMutation) OldType(ctx context.Context) (v *string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldType is only allowed on UpdateOne operations")
 	}
@@ -5282,7 +5282,7 @@ func (m *ApplicationMutation) SetField(name string, value ent.Value) error {
 		m.SetAppSecret(v)
 		return nil
 	case application.FieldType:
-		v, ok := value.(application.Type)
+		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -51275,8 +51275,8 @@ type TagDefinitionMutation struct {
 	addtenant_id                *int32
 	name                        *string
 	description                 *string
-	category                    *tagdefinition.Category
-	tag_type                    *tagdefinition.TagType
+	category                    *string
+	tag_type                    *string
 	rule                        **ubapb.TagRule
 	allowed_values              *[]*ubapb.TagValue
 	appendallowed_values        []*ubapb.TagValue
@@ -51921,12 +51921,12 @@ func (m *TagDefinitionMutation) ResetDescription() {
 }
 
 // SetCategory sets the "category" field.
-func (m *TagDefinitionMutation) SetCategory(t tagdefinition.Category) {
-	m.category = &t
+func (m *TagDefinitionMutation) SetCategory(s string) {
+	m.category = &s
 }
 
 // Category returns the value of the "category" field in the mutation.
-func (m *TagDefinitionMutation) Category() (r tagdefinition.Category, exists bool) {
+func (m *TagDefinitionMutation) Category() (r string, exists bool) {
 	v := m.category
 	if v == nil {
 		return
@@ -51937,7 +51937,7 @@ func (m *TagDefinitionMutation) Category() (r tagdefinition.Category, exists boo
 // OldCategory returns the old "category" field's value of the TagDefinition entity.
 // If the TagDefinition object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TagDefinitionMutation) OldCategory(ctx context.Context) (v *tagdefinition.Category, err error) {
+func (m *TagDefinitionMutation) OldCategory(ctx context.Context) (v *string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldCategory is only allowed on UpdateOne operations")
 	}
@@ -51970,12 +51970,12 @@ func (m *TagDefinitionMutation) ResetCategory() {
 }
 
 // SetTagType sets the "tag_type" field.
-func (m *TagDefinitionMutation) SetTagType(tt tagdefinition.TagType) {
-	m.tag_type = &tt
+func (m *TagDefinitionMutation) SetTagType(s string) {
+	m.tag_type = &s
 }
 
 // TagType returns the value of the "tag_type" field in the mutation.
-func (m *TagDefinitionMutation) TagType() (r tagdefinition.TagType, exists bool) {
+func (m *TagDefinitionMutation) TagType() (r string, exists bool) {
 	v := m.tag_type
 	if v == nil {
 		return
@@ -51986,7 +51986,7 @@ func (m *TagDefinitionMutation) TagType() (r tagdefinition.TagType, exists bool)
 // OldTagType returns the old "tag_type" field's value of the TagDefinition entity.
 // If the TagDefinition object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TagDefinitionMutation) OldTagType(ctx context.Context) (v *tagdefinition.TagType, err error) {
+func (m *TagDefinitionMutation) OldTagType(ctx context.Context) (v *string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldTagType is only allowed on UpdateOne operations")
 	}
@@ -52593,14 +52593,14 @@ func (m *TagDefinitionMutation) SetField(name string, value ent.Value) error {
 		m.SetDescription(v)
 		return nil
 	case tagdefinition.FieldCategory:
-		v, ok := value.(tagdefinition.Category)
+		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetCategory(v)
 		return nil
 	case tagdefinition.FieldTagType:
-		v, ok := value.(tagdefinition.TagType)
+		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}

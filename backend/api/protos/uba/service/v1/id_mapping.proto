@@ -30,25 +30,6 @@ service IDMappingService {
   rpc Delete (DeleteIDMappingRequest) returns (google.protobuf.Empty) {}
 }
 
-// ID类型枚举（用于标识不同类型的用户、设备、账号等标识符）
-enum IDType {
-  // 未指定ID类型
-  ID_TYPE_UNSPECIFIED = 0;
-
-  // 用户ID（如系统内唯一用户标识）
-  ID_TYPE_USER_ID = 1;
-  // 设备ID（如设备序列号、IMEI、MAC地址等）
-  ID_TYPE_DEVICE_ID = 2;
-  // Cookie（如 Web 端唯一标识）
-  ID_TYPE_COOKIE = 3;
-  // 邮箱（如用户邮箱地址）
-  ID_TYPE_EMAIL = 4;
-  // 手机号（如用户手机号码）
-  ID_TYPE_PHONE = 5;
-  // OpenID（如第三方平台用户标识，微信、支付宝等）
-  ID_TYPE_OPENID = 6;
-}
-
 // ID 关联记录（对应 id_mapping 表）
 message IDMapping {
   // 自增长主键ID

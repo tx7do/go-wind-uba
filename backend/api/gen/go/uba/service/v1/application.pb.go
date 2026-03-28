@@ -76,74 +76,6 @@ func (Application_Status) EnumDescriptor() ([]byte, []int) {
 	return file_uba_service_v1_application_proto_rawDescGZIP(), []int{0, 0}
 }
 
-// 应用类型
-type Application_Type int32
-
-const (
-	Application_APPLICATION_TYPE_UNSPECIFIED Application_Type = 0
-	Application_GAME                         Application_Type = 1 // 游戏
-	Application_ECOMMERCE                    Application_Type = 2 // 电商
-	Application_CONTENT                      Application_Type = 3 // 内容
-	Application_TOOL                         Application_Type = 4 // 工具
-	Application_FINANCE                      Application_Type = 5 // 金融
-	Application_SOCIAL                       Application_Type = 6 // 社交
-	Application_EDUCATION                    Application_Type = 7 // 教育
-	Application_OTHER                        Application_Type = 8 // 其他
-)
-
-// Enum value maps for Application_Type.
-var (
-	Application_Type_name = map[int32]string{
-		0: "APPLICATION_TYPE_UNSPECIFIED",
-		1: "GAME",
-		2: "ECOMMERCE",
-		3: "CONTENT",
-		4: "TOOL",
-		5: "FINANCE",
-		6: "SOCIAL",
-		7: "EDUCATION",
-		8: "OTHER",
-	}
-	Application_Type_value = map[string]int32{
-		"APPLICATION_TYPE_UNSPECIFIED": 0,
-		"GAME":                         1,
-		"ECOMMERCE":                    2,
-		"CONTENT":                      3,
-		"TOOL":                         4,
-		"FINANCE":                      5,
-		"SOCIAL":                       6,
-		"EDUCATION":                    7,
-		"OTHER":                        8,
-	}
-)
-
-func (x Application_Type) Enum() *Application_Type {
-	p := new(Application_Type)
-	*p = x
-	return p
-}
-
-func (x Application_Type) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (Application_Type) Descriptor() protoreflect.EnumDescriptor {
-	return file_uba_service_v1_application_proto_enumTypes[1].Descriptor()
-}
-
-func (Application_Type) Type() protoreflect.EnumType {
-	return &file_uba_service_v1_application_proto_enumTypes[1]
-}
-
-func (x Application_Type) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
-// Deprecated: Use Application_Type.Descriptor instead.
-func (Application_Type) EnumDescriptor() ([]byte, []int) {
-	return file_uba_service_v1_application_proto_rawDescGZIP(), []int{0, 1}
-}
-
 // UBA应用
 type Application struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -151,10 +83,10 @@ type Application struct {
 	Id   uint32  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`          // ID
 	Name *string `protobuf:"bytes,2,opt,name=name,proto3,oneof" json:"name,omitempty"` // UBA应用名称
 	// 业务唯一标识（对外使用，上报/回调/配置都用它）
-	AppId     *string           `protobuf:"bytes,3,opt,name=app_id,json=appId,proto3,oneof" json:"app_id,omitempty"`                        // UBA应用唯一标识（上报时使用）
-	AppKey    *string           `protobuf:"bytes,4,opt,name=app_key,json=appKey,proto3,oneof" json:"app_key,omitempty"`                     // 应用Key
-	AppSecret *string           `protobuf:"bytes,5,opt,name=app_secret,json=appSecret,proto3,oneof" json:"app_secret,omitempty"`            // 应用密钥
-	Type      *Application_Type `protobuf:"varint,6,opt,name=type,proto3,enum=uba.service.v1.Application_Type,oneof" json:"type,omitempty"` // 应用类型
+	AppId     *string `protobuf:"bytes,3,opt,name=app_id,json=appId,proto3,oneof" json:"app_id,omitempty"`             // UBA应用唯一标识（上报时使用）
+	AppKey    *string `protobuf:"bytes,4,opt,name=app_key,json=appKey,proto3,oneof" json:"app_key,omitempty"`          // 应用Key
+	AppSecret *string `protobuf:"bytes,5,opt,name=app_secret,json=appSecret,proto3,oneof" json:"app_secret,omitempty"` // 应用密钥
+	Type      *string `protobuf:"bytes,6,opt,name=type,proto3,oneof" json:"type,omitempty"`                            // 应用类型
 	// 支持平台列表
 	Platforms     []string               `protobuf:"bytes,7,rep,name=platforms,proto3" json:"platforms,omitempty"`
 	Status        *Application_Status    `protobuf:"varint,8,opt,name=status,proto3,enum=uba.service.v1.Application_Status,oneof" json:"status,omitempty"` // 应用状态
@@ -239,11 +171,11 @@ func (x *Application) GetAppSecret() string {
 	return ""
 }
 
-func (x *Application) GetType() Application_Type {
+func (x *Application) GetType() string {
 	if x != nil && x.Type != nil {
 		return *x.Type
 	}
-	return Application_APPLICATION_TYPE_UNSPECIFIED
+	return ""
 }
 
 func (x *Application) GetPlatforms() []string {
@@ -725,15 +657,15 @@ var File_uba_service_v1_application_proto protoreflect.FileDescriptor
 
 const file_uba_service_v1_application_proto_rawDesc = "" +
 	"\n" +
-	" uba/service/v1/application.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a google/protobuf/field_mask.proto\x1a\x1epagination/v1/pagination.proto\x1a\x1buba/service/v1/common.proto\"\xe5\r\n" +
+	" uba/service/v1/application.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a google/protobuf/field_mask.proto\x1a\x1epagination/v1/pagination.proto\"\xb5\f\n" +
 	"\vApplication\x12\x18\n" +
 	"\x02id\x18\x01 \x01(\rB\b\xbaG\x05\x92\x02\x02IDR\x02id\x12.\n" +
 	"\x04name\x18\x02 \x01(\tB\x15\xbaG\x12\x92\x02\x0fUBA应用名称H\x00R\x04name\x88\x01\x01\x12g\n" +
 	"\x06app_id\x18\x03 \x01(\tBK\xbaGH\x92\x02E应用唯一标识（上报/回调/配置时使用，如'game_001'）H\x01R\x05appId\x88\x01\x01\x12-\n" +
 	"\aapp_key\x18\x04 \x01(\tB\x0f\xbaG\f\x92\x02\t应用KeyH\x02R\x06appKey\x88\x01\x01\x126\n" +
 	"\n" +
-	"app_secret\x18\x05 \x01(\tB\x12\xbaG\x0f\x92\x02\f应用密钥H\x03R\tappSecret\x88\x01\x01\x12M\n" +
-	"\x04type\x18\x06 \x01(\x0e2 .uba.service.v1.Application.TypeB\x12\xbaG\x0f\x92\x02\f应用类型H\x04R\x04type\x88\x01\x01\x12?\n" +
+	"app_secret\x18\x05 \x01(\tB\x12\xbaG\x0f\x92\x02\f应用密钥H\x03R\tappSecret\x88\x01\x01\x12+\n" +
+	"\x04type\x18\x06 \x01(\tB\x12\xbaG\x0f\x92\x02\f应用类型H\x04R\x04type\x88\x01\x01\x12?\n" +
 	"\tplatforms\x18\a \x03(\tB!\xbaG\x1e\x92\x02\x1b应用支持的平台列表R\tplatforms\x12Z\n" +
 	"\x06status\x18\b \x01(\x0e2\".uba.service.v1.Application.StatusB\x19\xbaG\x16\x8a\x02\x04\x1a\x02ON\x92\x02\f应用状态H\x05R\x06status\x88\x01\x01\x12/\n" +
 	"\x06remark\x18\t \x01(\tB\x12\xbaG\x0f\x92\x02\f备注信息H\x06R\x06remark\x88\x01\x01\x12?\n" +
@@ -761,18 +693,7 @@ const file_uba_service_v1_application_proto_rawDesc = "" +
 	"\x06Status\x12\x16\n" +
 	"\x12STATUS_UNSPECIFIED\x10\x00\x12\x06\n" +
 	"\x02ON\x10\x01\x12\a\n" +
-	"\x03OFF\x10\x02\"\x8b\x01\n" +
-	"\x04Type\x12 \n" +
-	"\x1cAPPLICATION_TYPE_UNSPECIFIED\x10\x00\x12\b\n" +
-	"\x04GAME\x10\x01\x12\r\n" +
-	"\tECOMMERCE\x10\x02\x12\v\n" +
-	"\aCONTENT\x10\x03\x12\b\n" +
-	"\x04TOOL\x10\x04\x12\v\n" +
-	"\aFINANCE\x10\x05\x12\n" +
-	"\n" +
-	"\x06SOCIAL\x10\x06\x12\r\n" +
-	"\tEDUCATION\x10\a\x12\t\n" +
-	"\x05OTHER\x10\bB\a\n" +
+	"\x03OFF\x10\x02B\a\n" +
 	"\x05_nameB\t\n" +
 	"\a_app_idB\n" +
 	"\n" +
@@ -845,51 +766,49 @@ func file_uba_service_v1_application_proto_rawDescGZIP() []byte {
 	return file_uba_service_v1_application_proto_rawDescData
 }
 
-var file_uba_service_v1_application_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
+var file_uba_service_v1_application_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_uba_service_v1_application_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_uba_service_v1_application_proto_goTypes = []any{
 	(Application_Status)(0),          // 0: uba.service.v1.Application.Status
-	(Application_Type)(0),            // 1: uba.service.v1.Application.Type
-	(*Application)(nil),              // 2: uba.service.v1.Application
-	(*ListApplicationResponse)(nil),  // 3: uba.service.v1.ListApplicationResponse
-	(*GetApplicationRequest)(nil),    // 4: uba.service.v1.GetApplicationRequest
-	(*CreateApplicationRequest)(nil), // 5: uba.service.v1.CreateApplicationRequest
-	(*UpdateApplicationRequest)(nil), // 6: uba.service.v1.UpdateApplicationRequest
-	(*DeleteApplicationRequest)(nil), // 7: uba.service.v1.DeleteApplicationRequest
-	(*CountApplicationResponse)(nil), // 8: uba.service.v1.CountApplicationResponse
-	(*timestamppb.Timestamp)(nil),    // 9: google.protobuf.Timestamp
-	(*fieldmaskpb.FieldMask)(nil),    // 10: google.protobuf.FieldMask
-	(*v1.PagingRequest)(nil),         // 11: pagination.PagingRequest
-	(*emptypb.Empty)(nil),            // 12: google.protobuf.Empty
+	(*Application)(nil),              // 1: uba.service.v1.Application
+	(*ListApplicationResponse)(nil),  // 2: uba.service.v1.ListApplicationResponse
+	(*GetApplicationRequest)(nil),    // 3: uba.service.v1.GetApplicationRequest
+	(*CreateApplicationRequest)(nil), // 4: uba.service.v1.CreateApplicationRequest
+	(*UpdateApplicationRequest)(nil), // 5: uba.service.v1.UpdateApplicationRequest
+	(*DeleteApplicationRequest)(nil), // 6: uba.service.v1.DeleteApplicationRequest
+	(*CountApplicationResponse)(nil), // 7: uba.service.v1.CountApplicationResponse
+	(*timestamppb.Timestamp)(nil),    // 8: google.protobuf.Timestamp
+	(*fieldmaskpb.FieldMask)(nil),    // 9: google.protobuf.FieldMask
+	(*v1.PagingRequest)(nil),         // 10: pagination.PagingRequest
+	(*emptypb.Empty)(nil),            // 11: google.protobuf.Empty
 }
 var file_uba_service_v1_application_proto_depIdxs = []int32{
-	1,  // 0: uba.service.v1.Application.type:type_name -> uba.service.v1.Application.Type
-	0,  // 1: uba.service.v1.Application.status:type_name -> uba.service.v1.Application.Status
-	9,  // 2: uba.service.v1.Application.created_at:type_name -> google.protobuf.Timestamp
-	9,  // 3: uba.service.v1.Application.updated_at:type_name -> google.protobuf.Timestamp
-	9,  // 4: uba.service.v1.Application.deleted_at:type_name -> google.protobuf.Timestamp
-	2,  // 5: uba.service.v1.ListApplicationResponse.items:type_name -> uba.service.v1.Application
-	10, // 6: uba.service.v1.GetApplicationRequest.view_mask:type_name -> google.protobuf.FieldMask
-	2,  // 7: uba.service.v1.CreateApplicationRequest.data:type_name -> uba.service.v1.Application
-	2,  // 8: uba.service.v1.UpdateApplicationRequest.data:type_name -> uba.service.v1.Application
-	10, // 9: uba.service.v1.UpdateApplicationRequest.update_mask:type_name -> google.protobuf.FieldMask
-	11, // 10: uba.service.v1.ApplicationService.List:input_type -> pagination.PagingRequest
-	11, // 11: uba.service.v1.ApplicationService.Count:input_type -> pagination.PagingRequest
-	4,  // 12: uba.service.v1.ApplicationService.Get:input_type -> uba.service.v1.GetApplicationRequest
-	5,  // 13: uba.service.v1.ApplicationService.Create:input_type -> uba.service.v1.CreateApplicationRequest
-	6,  // 14: uba.service.v1.ApplicationService.Update:input_type -> uba.service.v1.UpdateApplicationRequest
-	7,  // 15: uba.service.v1.ApplicationService.Delete:input_type -> uba.service.v1.DeleteApplicationRequest
-	3,  // 16: uba.service.v1.ApplicationService.List:output_type -> uba.service.v1.ListApplicationResponse
-	8,  // 17: uba.service.v1.ApplicationService.Count:output_type -> uba.service.v1.CountApplicationResponse
-	2,  // 18: uba.service.v1.ApplicationService.Get:output_type -> uba.service.v1.Application
-	2,  // 19: uba.service.v1.ApplicationService.Create:output_type -> uba.service.v1.Application
-	2,  // 20: uba.service.v1.ApplicationService.Update:output_type -> uba.service.v1.Application
-	12, // 21: uba.service.v1.ApplicationService.Delete:output_type -> google.protobuf.Empty
-	16, // [16:22] is the sub-list for method output_type
-	10, // [10:16] is the sub-list for method input_type
-	10, // [10:10] is the sub-list for extension type_name
-	10, // [10:10] is the sub-list for extension extendee
-	0,  // [0:10] is the sub-list for field type_name
+	0,  // 0: uba.service.v1.Application.status:type_name -> uba.service.v1.Application.Status
+	8,  // 1: uba.service.v1.Application.created_at:type_name -> google.protobuf.Timestamp
+	8,  // 2: uba.service.v1.Application.updated_at:type_name -> google.protobuf.Timestamp
+	8,  // 3: uba.service.v1.Application.deleted_at:type_name -> google.protobuf.Timestamp
+	1,  // 4: uba.service.v1.ListApplicationResponse.items:type_name -> uba.service.v1.Application
+	9,  // 5: uba.service.v1.GetApplicationRequest.view_mask:type_name -> google.protobuf.FieldMask
+	1,  // 6: uba.service.v1.CreateApplicationRequest.data:type_name -> uba.service.v1.Application
+	1,  // 7: uba.service.v1.UpdateApplicationRequest.data:type_name -> uba.service.v1.Application
+	9,  // 8: uba.service.v1.UpdateApplicationRequest.update_mask:type_name -> google.protobuf.FieldMask
+	10, // 9: uba.service.v1.ApplicationService.List:input_type -> pagination.PagingRequest
+	10, // 10: uba.service.v1.ApplicationService.Count:input_type -> pagination.PagingRequest
+	3,  // 11: uba.service.v1.ApplicationService.Get:input_type -> uba.service.v1.GetApplicationRequest
+	4,  // 12: uba.service.v1.ApplicationService.Create:input_type -> uba.service.v1.CreateApplicationRequest
+	5,  // 13: uba.service.v1.ApplicationService.Update:input_type -> uba.service.v1.UpdateApplicationRequest
+	6,  // 14: uba.service.v1.ApplicationService.Delete:input_type -> uba.service.v1.DeleteApplicationRequest
+	2,  // 15: uba.service.v1.ApplicationService.List:output_type -> uba.service.v1.ListApplicationResponse
+	7,  // 16: uba.service.v1.ApplicationService.Count:output_type -> uba.service.v1.CountApplicationResponse
+	1,  // 17: uba.service.v1.ApplicationService.Get:output_type -> uba.service.v1.Application
+	1,  // 18: uba.service.v1.ApplicationService.Create:output_type -> uba.service.v1.Application
+	1,  // 19: uba.service.v1.ApplicationService.Update:output_type -> uba.service.v1.Application
+	11, // 20: uba.service.v1.ApplicationService.Delete:output_type -> google.protobuf.Empty
+	15, // [15:21] is the sub-list for method output_type
+	9,  // [9:15] is the sub-list for method input_type
+	9,  // [9:9] is the sub-list for extension type_name
+	9,  // [9:9] is the sub-list for extension extendee
+	0,  // [0:9] is the sub-list for field type_name
 }
 
 func init() { file_uba_service_v1_application_proto_init() }
@@ -897,7 +816,6 @@ func file_uba_service_v1_application_proto_init() {
 	if File_uba_service_v1_application_proto != nil {
 		return
 	}
-	file_uba_service_v1_common_proto_init()
 	file_uba_service_v1_application_proto_msgTypes[0].OneofWrappers = []any{}
 	file_uba_service_v1_application_proto_msgTypes[2].OneofWrappers = []any{
 		(*GetApplicationRequest_Id)(nil),
@@ -912,7 +830,7 @@ func file_uba_service_v1_application_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_uba_service_v1_application_proto_rawDesc), len(file_uba_service_v1_application_proto_rawDesc)),
-			NumEnums:      2,
+			NumEnums:      1,
 			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,

@@ -1096,7 +1096,7 @@ var File_uba_service_v1_risk_rule_proto protoreflect.FileDescriptor
 
 const file_uba_service_v1_risk_rule_proto_rawDesc = "" +
 	"\n" +
-	"\x1euba/service/v1/risk_rule.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1egoogle/protobuf/duration.proto\x1a google/protobuf/field_mask.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1epagination/v1/pagination.proto\x1a\x1buba/service/v1/common.proto\"\x84\f\n" +
+	"\x1euba/service/v1/risk_rule.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1egoogle/protobuf/duration.proto\x1a google/protobuf/field_mask.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1epagination/v1/pagination.proto\"\x84\f\n" +
 	"\bRiskRule\x12?\n" +
 	"\x02id\x18\x01 \x01(\rB/\xbaG,\x92\x02)规则ID，唯一标识一条风险规则R\x02id\x12W\n" +
 	"\ttenant_id\x18\x02 \x01(\rB5\xbaG2\x92\x02/租户ID，多租户隔离，支持 SaaS 场景H\x00R\btenantId\x88\x01\x01\x12+\n" +
@@ -1351,7 +1351,6 @@ func file_uba_service_v1_risk_rule_proto_init() {
 	if File_uba_service_v1_risk_rule_proto != nil {
 		return
 	}
-	file_uba_service_v1_common_proto_init()
 	file_uba_service_v1_risk_rule_proto_msgTypes[0].OneofWrappers = []any{}
 	file_uba_service_v1_risk_rule_proto_msgTypes[1].OneofWrappers = []any{}
 	file_uba_service_v1_risk_rule_proto_msgTypes[3].OneofWrappers = []any{}

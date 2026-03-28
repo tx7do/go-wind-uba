@@ -7,7 +7,7 @@ import { $t } from '@vben/locales';
 import { notification } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import { riskLevelList, useRiskRuleListStore } from '#/stores';
+import {riskLevelDict, riskTypeDict, useRiskRuleListStore} from '#/stores';
 
 const riskRuleListStore = useRiskRuleListStore();
 
@@ -55,12 +55,17 @@ const [BaseForm, baseFormApi] = useVbenForm({
       },
     },
     {
-      component: 'Input',
+      component: 'Select',
       fieldName: 'riskType',
       label: $t('page.riskRule.riskType'),
       componentProps: {
-        placeholder: $t('ui.placeholder.input'),
+        class: 'w-full',
+        options: riskTypeDict(),
+        placeholder: $t('ui.placeholder.select'),
+        filterOption: (input: string, option: any) =>
+          option.label.toLowerCase().includes(input.toLowerCase()),
         allowClear: true,
+        showSearch: true,
       },
     },
     {
@@ -68,7 +73,7 @@ const [BaseForm, baseFormApi] = useVbenForm({
       fieldName: 'defaultLevel',
       label: $t('page.riskRule.defaultLevel'),
       componentProps: {
-        options: riskLevelList,
+        options: riskLevelDict(),
         placeholder: $t('ui.placeholder.select'),
         class: 'w-full',
         filterOption: (input: string, option: any) =>

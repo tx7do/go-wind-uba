@@ -28,9 +28,7 @@ type ApplicationRepo struct {
 
 	mapper *mapper.CopierMapper[ubaV1.Application, ent.Application]
 
-	statusConverter   *mapper.EnumTypeConverter[ubaV1.Application_Status, application.Status]
-	typeConverter     *mapper.EnumTypeConverter[ubaV1.Application_Type, application.Type]
-	platformConverter *mapper.EnumTypeConverter[ubaV1.Platform, string]
+	statusConverter *mapper.EnumTypeConverter[ubaV1.Application_Status, application.Status]
 
 	repository *entCrud.Repository[
 		ent.ApplicationQuery, ent.ApplicationSelect,
@@ -49,12 +47,6 @@ func NewApplicationRepo(ctx *bootstrap.Context, entClient *entCrud.EntClient[*en
 		mapper:    mapper.NewCopierMapper[ubaV1.Application, ent.Application](),
 		statusConverter: mapper.NewEnumTypeConverter[ubaV1.Application_Status, application.Status](
 			ubaV1.Application_Status_name, ubaV1.Application_Status_value,
-		),
-		typeConverter: mapper.NewEnumTypeConverter[ubaV1.Application_Type, application.Type](
-			ubaV1.Application_Type_name, ubaV1.Application_Type_value,
-		),
-		platformConverter: mapper.NewEnumTypeConverter[ubaV1.Platform, string](
-			ubaV1.Platform_name, ubaV1.Platform_value,
 		),
 	}
 
@@ -77,8 +69,6 @@ func (r *ApplicationRepo) init() {
 	r.mapper.AppendConverters(copierutil.NewTimeTimestamppbConverterPair())
 
 	r.mapper.AppendConverters(r.statusConverter.NewConverterPair())
-	r.mapper.AppendConverters(r.typeConverter.NewConverterPair())
-	r.mapper.AppendConverters(r.platformConverter.NewConverterPair())
 }
 
 func (r *ApplicationRepo) Count(ctx context.Context, req *paginationV1.PagingRequest) (*ubaV1.CountApplicationResponse, error) {
@@ -177,7 +167,7 @@ func (r *ApplicationRepo) newApplicationCreate(data *ubaV1.Application) *ent.App
 		SetNillableAppID(data.AppId).
 		SetNillableAppKey(data.AppKey).
 		SetNillableAppSecret(data.AppSecret).
-		SetNillableType(r.typeConverter.ToEntity(data.Type)).
+		SetNillableType(data.Type).
 		SetNillableStatus(r.statusConverter.ToEntity(data.Status)).
 		SetNillableRemark(data.Remark).
 		SetNillableDesensitize(data.Desensitize).
@@ -241,7 +231,7 @@ func (r *ApplicationRepo) Update(ctx context.Context, req *ubaV1.UpdateApplicati
 				SetNillableAppID(req.Data.AppId).
 				SetNillableAppKey(req.Data.AppKey).
 				SetNillableAppSecret(req.Data.AppSecret).
-				SetNillableType(r.typeConverter.ToEntity(req.Data.Type)).
+				SetNillableType(req.Data.Type).
 				SetNillableStatus(r.statusConverter.ToEntity(req.Data.Status)).
 				SetNillableRemark(req.Data.Remark).
 				SetNillableDesensitize(req.Data.Desensitize).

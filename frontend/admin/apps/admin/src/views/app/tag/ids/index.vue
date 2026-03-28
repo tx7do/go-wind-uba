@@ -10,8 +10,8 @@ import {
   enableBoolToColor,
   enableBoolToName,
   idMappingIdTypeToColor,
-  idMappingIdTypeToName,
-  idTypeList,
+  idTypeDict,
+  idTypeToName,
   useIdMappingListStore,
 } from '#/stores';
 
@@ -36,7 +36,7 @@ const formOptions = {
       fieldName: 'idType',
       label: $t('page.idMapping.idType'),
       componentProps: {
-        options: idTypeList,
+        options: idTypeDict(),
         placeholder: $t('ui.placeholder.select'),
         filterOption: (input: string, option: any) =>
           option.label.toLowerCase().includes(input.toLowerCase()),
@@ -153,7 +153,7 @@ const [Grid] = useVbenVxeGrid({
     <Grid :table-title="$t('menu.tag.ids')">
       <template #idType="{ row }">
         <a-tag :color="idMappingIdTypeToColor(row.idType)">
-          {{ idMappingIdTypeToName(row.idType) }}
+          {{ idTypeToName(row.idType) }}
         </a-tag>
       </template>
       <template #isActive="{ row }">

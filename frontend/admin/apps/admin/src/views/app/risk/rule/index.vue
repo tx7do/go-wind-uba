@@ -13,9 +13,9 @@ import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { $t } from '#/locales';
 import {
   riskEventTypeToColor,
-  riskEventTypeToName,
   riskLevelToColor,
-  riskLevelToName,
+  riskLevelToName, riskTypeDict,
+  riskTypeToName,
   useRiskRuleListStore,
 } from '#/stores';
 
@@ -47,12 +47,16 @@ const formOptions = {
       },
     },
     {
-      component: 'Input',
+      component: 'Select',
       fieldName: 'riskType',
       label: $t('page.riskRule.riskType'),
       componentProps: {
-        placeholder: $t('ui.placeholder.input'),
+        options: riskTypeDict(),
+        placeholder: $t('ui.placeholder.select'),
+        filterOption: (input: string, option: any) =>
+          option.label.toLowerCase().includes(input.toLowerCase()),
         allowClear: true,
+        showSearch: true,
       },
     },
   ],
@@ -116,12 +120,14 @@ const gridOptions: VxeGridProps<RiskRule> = {
       field: 'riskType',
       minWidth: 160,
       align: 'left',
+      slots: { default: 'riskType' },
     },
     {
       title: $t('page.riskRule.defaultLevel'),
       field: 'defaultLevel',
       minWidth: 160,
       align: 'left',
+      slots: { default: 'riskLevel' },
     },
     { title: $t('page.riskRule.priority'), field: 'priority', minWidth: 80 },
     {
@@ -212,7 +218,7 @@ async function handleDelete(row: any) {
       </template>
       <template #riskType="{ row }">
         <a-tag :color="riskEventTypeToColor(row.riskType)">
-          {{ riskEventTypeToName(row.riskType) }}
+          {{ riskTypeToName(row.riskType) }}
         </a-tag>
       </template>
       <template #riskLevel="{ row }">

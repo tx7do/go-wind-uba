@@ -99,6 +99,16 @@ func Description(v string) predicate.TagDefinition {
 	return predicate.TagDefinition(sql.FieldEQ(FieldDescription, v))
 }
 
+// Category applies equality check predicate on the "category" field. It's identical to CategoryEQ.
+func Category(v string) predicate.TagDefinition {
+	return predicate.TagDefinition(sql.FieldEQ(FieldCategory, v))
+}
+
+// TagType applies equality check predicate on the "tag_type" field. It's identical to TagTypeEQ.
+func TagType(v string) predicate.TagDefinition {
+	return predicate.TagDefinition(sql.FieldEQ(FieldTagType, v))
+}
+
 // IsSystem applies equality check predicate on the "is_system" field. It's identical to IsSystemEQ.
 func IsSystem(v bool) predicate.TagDefinition {
 	return predicate.TagDefinition(sql.FieldEQ(FieldIsSystem, v))
@@ -620,23 +630,58 @@ func DescriptionContainsFold(v string) predicate.TagDefinition {
 }
 
 // CategoryEQ applies the EQ predicate on the "category" field.
-func CategoryEQ(v Category) predicate.TagDefinition {
+func CategoryEQ(v string) predicate.TagDefinition {
 	return predicate.TagDefinition(sql.FieldEQ(FieldCategory, v))
 }
 
 // CategoryNEQ applies the NEQ predicate on the "category" field.
-func CategoryNEQ(v Category) predicate.TagDefinition {
+func CategoryNEQ(v string) predicate.TagDefinition {
 	return predicate.TagDefinition(sql.FieldNEQ(FieldCategory, v))
 }
 
 // CategoryIn applies the In predicate on the "category" field.
-func CategoryIn(vs ...Category) predicate.TagDefinition {
+func CategoryIn(vs ...string) predicate.TagDefinition {
 	return predicate.TagDefinition(sql.FieldIn(FieldCategory, vs...))
 }
 
 // CategoryNotIn applies the NotIn predicate on the "category" field.
-func CategoryNotIn(vs ...Category) predicate.TagDefinition {
+func CategoryNotIn(vs ...string) predicate.TagDefinition {
 	return predicate.TagDefinition(sql.FieldNotIn(FieldCategory, vs...))
+}
+
+// CategoryGT applies the GT predicate on the "category" field.
+func CategoryGT(v string) predicate.TagDefinition {
+	return predicate.TagDefinition(sql.FieldGT(FieldCategory, v))
+}
+
+// CategoryGTE applies the GTE predicate on the "category" field.
+func CategoryGTE(v string) predicate.TagDefinition {
+	return predicate.TagDefinition(sql.FieldGTE(FieldCategory, v))
+}
+
+// CategoryLT applies the LT predicate on the "category" field.
+func CategoryLT(v string) predicate.TagDefinition {
+	return predicate.TagDefinition(sql.FieldLT(FieldCategory, v))
+}
+
+// CategoryLTE applies the LTE predicate on the "category" field.
+func CategoryLTE(v string) predicate.TagDefinition {
+	return predicate.TagDefinition(sql.FieldLTE(FieldCategory, v))
+}
+
+// CategoryContains applies the Contains predicate on the "category" field.
+func CategoryContains(v string) predicate.TagDefinition {
+	return predicate.TagDefinition(sql.FieldContains(FieldCategory, v))
+}
+
+// CategoryHasPrefix applies the HasPrefix predicate on the "category" field.
+func CategoryHasPrefix(v string) predicate.TagDefinition {
+	return predicate.TagDefinition(sql.FieldHasPrefix(FieldCategory, v))
+}
+
+// CategoryHasSuffix applies the HasSuffix predicate on the "category" field.
+func CategoryHasSuffix(v string) predicate.TagDefinition {
+	return predicate.TagDefinition(sql.FieldHasSuffix(FieldCategory, v))
 }
 
 // CategoryIsNil applies the IsNil predicate on the "category" field.
@@ -649,24 +694,69 @@ func CategoryNotNil() predicate.TagDefinition {
 	return predicate.TagDefinition(sql.FieldNotNull(FieldCategory))
 }
 
+// CategoryEqualFold applies the EqualFold predicate on the "category" field.
+func CategoryEqualFold(v string) predicate.TagDefinition {
+	return predicate.TagDefinition(sql.FieldEqualFold(FieldCategory, v))
+}
+
+// CategoryContainsFold applies the ContainsFold predicate on the "category" field.
+func CategoryContainsFold(v string) predicate.TagDefinition {
+	return predicate.TagDefinition(sql.FieldContainsFold(FieldCategory, v))
+}
+
 // TagTypeEQ applies the EQ predicate on the "tag_type" field.
-func TagTypeEQ(v TagType) predicate.TagDefinition {
+func TagTypeEQ(v string) predicate.TagDefinition {
 	return predicate.TagDefinition(sql.FieldEQ(FieldTagType, v))
 }
 
 // TagTypeNEQ applies the NEQ predicate on the "tag_type" field.
-func TagTypeNEQ(v TagType) predicate.TagDefinition {
+func TagTypeNEQ(v string) predicate.TagDefinition {
 	return predicate.TagDefinition(sql.FieldNEQ(FieldTagType, v))
 }
 
 // TagTypeIn applies the In predicate on the "tag_type" field.
-func TagTypeIn(vs ...TagType) predicate.TagDefinition {
+func TagTypeIn(vs ...string) predicate.TagDefinition {
 	return predicate.TagDefinition(sql.FieldIn(FieldTagType, vs...))
 }
 
 // TagTypeNotIn applies the NotIn predicate on the "tag_type" field.
-func TagTypeNotIn(vs ...TagType) predicate.TagDefinition {
+func TagTypeNotIn(vs ...string) predicate.TagDefinition {
 	return predicate.TagDefinition(sql.FieldNotIn(FieldTagType, vs...))
+}
+
+// TagTypeGT applies the GT predicate on the "tag_type" field.
+func TagTypeGT(v string) predicate.TagDefinition {
+	return predicate.TagDefinition(sql.FieldGT(FieldTagType, v))
+}
+
+// TagTypeGTE applies the GTE predicate on the "tag_type" field.
+func TagTypeGTE(v string) predicate.TagDefinition {
+	return predicate.TagDefinition(sql.FieldGTE(FieldTagType, v))
+}
+
+// TagTypeLT applies the LT predicate on the "tag_type" field.
+func TagTypeLT(v string) predicate.TagDefinition {
+	return predicate.TagDefinition(sql.FieldLT(FieldTagType, v))
+}
+
+// TagTypeLTE applies the LTE predicate on the "tag_type" field.
+func TagTypeLTE(v string) predicate.TagDefinition {
+	return predicate.TagDefinition(sql.FieldLTE(FieldTagType, v))
+}
+
+// TagTypeContains applies the Contains predicate on the "tag_type" field.
+func TagTypeContains(v string) predicate.TagDefinition {
+	return predicate.TagDefinition(sql.FieldContains(FieldTagType, v))
+}
+
+// TagTypeHasPrefix applies the HasPrefix predicate on the "tag_type" field.
+func TagTypeHasPrefix(v string) predicate.TagDefinition {
+	return predicate.TagDefinition(sql.FieldHasPrefix(FieldTagType, v))
+}
+
+// TagTypeHasSuffix applies the HasSuffix predicate on the "tag_type" field.
+func TagTypeHasSuffix(v string) predicate.TagDefinition {
+	return predicate.TagDefinition(sql.FieldHasSuffix(FieldTagType, v))
 }
 
 // TagTypeIsNil applies the IsNil predicate on the "tag_type" field.
@@ -677,6 +767,16 @@ func TagTypeIsNil() predicate.TagDefinition {
 // TagTypeNotNil applies the NotNil predicate on the "tag_type" field.
 func TagTypeNotNil() predicate.TagDefinition {
 	return predicate.TagDefinition(sql.FieldNotNull(FieldTagType))
+}
+
+// TagTypeEqualFold applies the EqualFold predicate on the "tag_type" field.
+func TagTypeEqualFold(v string) predicate.TagDefinition {
+	return predicate.TagDefinition(sql.FieldEqualFold(FieldTagType, v))
+}
+
+// TagTypeContainsFold applies the ContainsFold predicate on the "tag_type" field.
+func TagTypeContainsFold(v string) predicate.TagDefinition {
+	return predicate.TagDefinition(sql.FieldContainsFold(FieldTagType, v))
 }
 
 // RuleIsNil applies the IsNil predicate on the "rule" field.

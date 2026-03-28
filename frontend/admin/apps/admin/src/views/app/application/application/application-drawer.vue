@@ -8,8 +8,8 @@ import { notification } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import {
-  applicationTypeList,
-  platformList,
+  appPlatformDict,
+  appTypeDict,
   statusList,
   useApplicationListStore,
 } from '#/stores';
@@ -75,7 +75,7 @@ const [BaseForm, baseFormApi] = useVbenForm({
       label: $t('page.application.type'),
       rules: 'selectRequired',
       componentProps: {
-        options: applicationTypeList,
+        options: appTypeDict(),
         placeholder: $t('ui.placeholder.select'),
         class: 'w-full',
         allowClear: true,
@@ -107,7 +107,7 @@ const [BaseForm, baseFormApi] = useVbenForm({
       rules: 'selectRequired',
       componentProps: {
         class: 'w-full',
-        options: platformList,
+        options: appPlatformDict(),
         placeholder: $t('ui.placeholder.select'),
         showSearch: true,
         allowClear: true,

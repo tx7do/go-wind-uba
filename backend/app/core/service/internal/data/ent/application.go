@@ -42,7 +42,7 @@ type Application struct {
 	// 密钥
 	AppSecret *string `json:"app_secret,omitempty"`
 	// 应用类型
-	Type *application.Type `json:"type,omitempty"`
+	Type *string `json:"type,omitempty"`
 	// 应用状态
 	Status *application.Status `json:"status,omitempty"`
 	// 应用支持的平台列表
@@ -175,8 +175,8 @@ func (_m *Application) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field type", values[i])
 			} else if value.Valid {
-				_m.Type = new(application.Type)
-				*_m.Type = application.Type(value.String)
+				_m.Type = new(string)
+				*_m.Type = value.String
 			}
 		case application.FieldStatus:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -314,7 +314,7 @@ func (_m *Application) String() string {
 	builder.WriteString(", ")
 	if v := _m.Type; v != nil {
 		builder.WriteString("type=")
-		builder.WriteString(fmt.Sprintf("%v", *v))
+		builder.WriteString(*v)
 	}
 	builder.WriteString(", ")
 	if v := _m.Status; v != nil {

@@ -8,8 +8,8 @@ import { notification } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import {
-  tagCategoryList,
-  tagTypeList,
+  tagCategoryDict,
+  tagTypeDict,
   useTagDefinitionListStore,
 } from '#/stores';
 
@@ -64,7 +64,7 @@ const [BaseForm, baseFormApi] = useVbenForm({
       label: $t('page.tagDefinition.category'),
       rules: 'selectRequired',
       componentProps: {
-        options: tagCategoryList,
+        options: tagCategoryDict(),
         class: 'w-full',
         placeholder: $t('ui.placeholder.select'),
         filterOption: (input: string, option: any) =>
@@ -79,7 +79,7 @@ const [BaseForm, baseFormApi] = useVbenForm({
       label: $t('page.tagDefinition.tagType'),
       rules: 'selectRequired',
       componentProps: {
-        options: tagTypeList,
+        options: tagTypeDict(),
         class: 'w-full',
         placeholder: $t('ui.placeholder.select'),
         filterOption: (input: string, option: any) =>

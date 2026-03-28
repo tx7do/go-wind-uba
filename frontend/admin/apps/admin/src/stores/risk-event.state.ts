@@ -1,6 +1,3 @@
-import { computed } from 'vue';
-
-import { $t } from '@vben/locales';
 import { useUserStore } from '@vben/stores';
 
 import { defineStore } from 'pinia';
@@ -9,6 +6,7 @@ import {
   createRiskEventServiceClient,
   type ubaservicev1_RiskEvent_Status as RiskEvent_Status,
 } from '#/generated/api/admin/service/v1';
+import { getDictEntryLabelByValue, useDictStore } from '#/stores/dict.state';
 import { makeOrderBy, makeQueryString } from '#/utils/query';
 import { type Paging, requestClientRequestHandler } from '#/utils/request';
 
@@ -67,65 +65,57 @@ export const useRiskEventListStore = defineStore('risk-event-list', () => {
   };
 });
 
-export const riskEventTypeList = computed(() => [
-  {
-    value: 'RISK_TYPE_LOGIN_ANOMALY',
-    label: $t('enum.riskType.RISK_TYPE_LOGIN_ANOMALY'),
-  },
-  {
-    value: 'RISK_TYPE_BRUTE_FORCE',
-    label: $t('enum.riskType.RISK_TYPE_BRUTE_FORCE'),
-  },
-  {
-    value: 'RISK_TYPE_CREDENTIAL_STUFFING',
-    label: $t('enum.riskType.RISK_TYPE_CREDENTIAL_STUFFING'),
-  },
-  {
-    value: 'RISK_TYPE_FREQUENT_OPERATION',
-    label: $t('enum.riskType.RISK_TYPE_FREQUENT_OPERATION'),
-  },
-  {
-    value: 'RISK_TYPE_ABNORMAL_FLOW',
-    label: $t('enum.riskType.RISK_TYPE_ABNORMAL_FLOW'),
-  },
-  {
-    value: 'RISK_TYPE_DATA_EXFILTRATION',
-    label: $t('enum.riskType.RISK_TYPE_DATA_EXFILTRATION'),
-  },
-  {
-    value: 'RISK_TYPE_DEVICE_CHANGE',
-    label: $t('enum.riskType.RISK_TYPE_DEVICE_CHANGE'),
-  },
-  {
-    value: 'RISK_TYPE_LOCATION_ANOMALY',
-    label: $t('enum.riskType.RISK_TYPE_LOCATION_ANOMALY'),
-  },
-  {
-    value: 'RISK_TYPE_PROXY_DETECTED',
-    label: $t('enum.riskType.RISK_TYPE_PROXY_DETECTED'),
-  },
-  {
-    value: 'RISK_TYPE_FRAUD_PAYMENT',
-    label: $t('enum.riskType.RISK_TYPE_FRAUD_PAYMENT'),
-  },
-  {
-    value: 'RISK_TYPE_ABUSE_PROMOTION',
-    label: $t('enum.riskType.RISK_TYPE_ABUSE_PROMOTION'),
-  },
-]);
+export function riskLevelDict() {
+  const dictStore = useDictStore();
+  return dictStore.getDictEntriesOptionsByTypeCode('RISK_LEVEL');
+}
+
+export function riskLevelToName(source?: string) {
+  const dictStore = useDictStore();
+  return getDictEntryLabelByValue(
+    source,
+    dictStore.getDictEntriesByTypeCode('RISK_LEVEL'),
+  );
+}
+
+export function riskTypeDict() {
+  const dictStore = useDictStore();
+  return dictStore.getDictEntriesOptionsByTypeCode('RISK_TYPE');
+}
+
+export function riskTypeToName(source?: string) {
+  const dictStore = useDictStore();
+  return getDictEntryLabelByValue(
+    source,
+    dictStore.getDictEntriesByTypeCode('RISK_TYPE'),
+  );
+}
+
+export function riskEventStatusDict() {
+  const dictStore = useDictStore();
+  return dictStore.getDictEntriesOptionsByTypeCode('RISK_EVENT_STATUS');
+}
+
+export function riskEventStatusToName(source?: string) {
+  const dictStore = useDictStore();
+  return getDictEntryLabelByValue(
+    source,
+    dictStore.getDictEntriesByTypeCode('RISK_EVENT_STATUS'),
+  );
+}
 
 const RISK_TYPE_COLOR_MAP = {
-  RISK_TYPE_LOGIN_ANOMALY: '#F53F3F',
-  RISK_TYPE_BRUTE_FORCE: '#F77234',
-  RISK_TYPE_CREDENTIAL_STUFFING: '#FF9A2E',
-  RISK_TYPE_FREQUENT_OPERATION: '#4096FF',
-  RISK_TYPE_ABNORMAL_FLOW: '#722ED1',
-  RISK_TYPE_DATA_EXFILTRATION: '#F53F3F',
-  RISK_TYPE_DEVICE_CHANGE: '#F77234',
-  RISK_TYPE_LOCATION_ANOMALY: '#FF9A2E',
-  RISK_TYPE_PROXY_DETECTED: '#4096FF',
-  RISK_TYPE_FRAUD_PAYMENT: '#F53F3F',
-  RISK_TYPE_ABUSE_PROMOTION: '#722ED1',
+  login_anomaly: '#F53F3F',
+  brute_force: '#F77234',
+  credential_stuffing: '#FF9A2E',
+  frequent_operation: '#4096FF',
+  abnormal_flow: '#722ED1',
+  data_exfiltration: '#F53F3F',
+  device_change: '#F77234',
+  location_anomaly: '#FF9A2E',
+  proxy_detected: '#4096FF',
+  fraud_payment: '#F53F3F',
+  abuse_promotion: '#722ED1',
   DEFAULT: '#86909C',
 } as const;
 
@@ -136,30 +126,11 @@ export function riskEventTypeToColor(type?: any) {
   );
 }
 
-export function riskEventTypeToName(type?: any) {
-  const values = riskEventTypeList.value;
-  const matchedItem = values.find((item) => item.value === type);
-  return matchedItem ? matchedItem.label : type;
-}
-
-export const riskLevelList = computed(() => [
-  { value: 'RISK_LEVEL_NORMAL', label: $t('enum.riskLevel.RISK_LEVEL_NORMAL') },
-  {
-    value: 'RISK_LEVEL_SUSPICIOUS',
-    label: $t('enum.riskLevel.RISK_LEVEL_SUSPICIOUS'),
-  },
-  { value: 'RISK_LEVEL_HIGH', label: $t('enum.riskLevel.RISK_LEVEL_HIGH') },
-  {
-    value: 'RISK_LEVEL_CRITICAL',
-    label: $t('enum.riskLevel.RISK_LEVEL_CRITICAL'),
-  },
-]);
-
 const RISK_LEVEL_COLOR_MAP = {
-  RISK_LEVEL_NORMAL: '#00B42A',
-  RISK_LEVEL_SUSPICIOUS: '#FF9A2E',
-  RISK_LEVEL_HIGH: '#F77234',
-  RISK_LEVEL_CRITICAL: '#F53F3F',
+  low: '#00B42A',
+  medium: '#FF9A2E',
+  high: '#F77234',
+  critical: '#F53F3F',
   DEFAULT: '#86909C',
 } as const;
 
@@ -170,31 +141,14 @@ export function riskLevelToColor(level?: any) {
   );
 }
 
-export function riskLevelToName(level?: any) {
-  const values = riskLevelList.value;
-  const matchedItem = values.find((item) => item.value === level);
-  return matchedItem ? matchedItem.label : level;
-}
-
-export const riskEventStatusList = computed(() => [
-  { value: 'PENDING', label: $t('enum.riskEvent.status.PENDING') },
-  { value: 'INVESTIGATING', label: $t('enum.riskEvent.status.INVESTIGATING') },
-  { value: 'CONFIRMED', label: $t('enum.riskEvent.status.CONFIRMED') },
-  {
-    value: 'FALSE_POSITIVE',
-    label: $t('enum.riskEvent.status.FALSE_POSITIVE'),
-  },
-  { value: 'IGNORED', label: $t('enum.riskEvent.status.IGNORED') },
-  { value: 'AUTO_BLOCKED', label: $t('enum.riskEvent.status.AUTO_BLOCKED') },
-]);
-
 const RISK_EVENT_STATUS_COLOR_MAP = {
-  PENDING: '#FF9A2E',
-  INVESTIGATING: '#4096FF',
-  CONFIRMED: '#F53F3F',
-  FALSE_POSITIVE: '#00B42A',
-  IGNORED: '#C9CDD4',
-  AUTO_BLOCKED: '#F77234',
+  pending: '#FF9A2E',
+  investigating: '#4096FF',
+  confirmed: '#F53F3F',
+  false_positive: '#00B42A',
+  ignored: '#C9CDD4',
+  auto_blocked: '#F77234',
+
   DEFAULT: '#86909C',
 } as const;
 
@@ -204,10 +158,4 @@ export function riskEventStatusToColor(status?: RiskEvent_Status) {
       status as keyof typeof RISK_EVENT_STATUS_COLOR_MAP
     ] || RISK_EVENT_STATUS_COLOR_MAP.DEFAULT
   );
-}
-
-export function riskEventStatusToName(status?: RiskEvent_Status) {
-  const values = riskEventStatusList.value;
-  const matchedItem = values.find((item) => item.value === status);
-  return matchedItem ? matchedItem.label : status;
 }

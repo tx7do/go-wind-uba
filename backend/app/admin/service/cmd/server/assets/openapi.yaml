@@ -6173,19 +6173,8 @@ components:
                     type: string
                     description: 应用密钥
                 type:
-                    enum:
-                        - APPLICATION_TYPE_UNSPECIFIED
-                        - GAME
-                        - ECOMMERCE
-                        - CONTENT
-                        - TOOL
-                        - FINANCE
-                        - SOCIAL
-                        - EDUCATION
-                        - OTHER
                     type: string
                     description: 应用类型
-                    format: enum
                 platforms:
                     type: array
                     items:
@@ -9480,26 +9469,11 @@ components:
                     type: string
                     description: 标签描述，详细说明
                 category:
-                    enum:
-                        - TAG_CATEGORY_UNSPECIFIED
-                        - TAG_CATEGORY_USER
-                        - TAG_CATEGORY_BEHAVIOR
-                        - TAG_CATEGORY_RISK
-                        - TAG_CATEGORY_BUSINESS
                     type: string
                     description: 标签分类，如用户属性、行为偏好、风险、业务等
-                    format: enum
                 tagType:
-                    enum:
-                        - TAG_TYPE_UNSPECIFIED
-                        - TAG_TYPE_BOOLEAN
-                        - TAG_TYPE_ENUM
-                        - TAG_TYPE_NUMERIC
-                        - TAG_TYPE_STRING
-                        - TAG_TYPE_LIST
                     type: string
                     description: 标签类型，如布尔、枚举、数值、字符串、列表等
-                    format: enum
                 rule:
                     allOf:
                         - $ref: '#/components/schemas/TagRule'

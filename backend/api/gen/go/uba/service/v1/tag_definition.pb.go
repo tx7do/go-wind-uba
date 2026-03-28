@@ -26,132 +26,6 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// 标签分类枚举
-type TagCategory int32
-
-const (
-	// 未指定标签分类
-	TagCategory_TAG_CATEGORY_UNSPECIFIED TagCategory = 0
-	// 用户属性标签
-	TagCategory_TAG_CATEGORY_USER TagCategory = 1
-	// 行为偏好标签
-	TagCategory_TAG_CATEGORY_BEHAVIOR TagCategory = 2
-	// 风险标签
-	TagCategory_TAG_CATEGORY_RISK TagCategory = 3
-	// 业务标签
-	TagCategory_TAG_CATEGORY_BUSINESS TagCategory = 4
-)
-
-// Enum value maps for TagCategory.
-var (
-	TagCategory_name = map[int32]string{
-		0: "TAG_CATEGORY_UNSPECIFIED",
-		1: "TAG_CATEGORY_USER",
-		2: "TAG_CATEGORY_BEHAVIOR",
-		3: "TAG_CATEGORY_RISK",
-		4: "TAG_CATEGORY_BUSINESS",
-	}
-	TagCategory_value = map[string]int32{
-		"TAG_CATEGORY_UNSPECIFIED": 0,
-		"TAG_CATEGORY_USER":        1,
-		"TAG_CATEGORY_BEHAVIOR":    2,
-		"TAG_CATEGORY_RISK":        3,
-		"TAG_CATEGORY_BUSINESS":    4,
-	}
-)
-
-func (x TagCategory) Enum() *TagCategory {
-	p := new(TagCategory)
-	*p = x
-	return p
-}
-
-func (x TagCategory) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (TagCategory) Descriptor() protoreflect.EnumDescriptor {
-	return file_uba_service_v1_tag_definition_proto_enumTypes[0].Descriptor()
-}
-
-func (TagCategory) Type() protoreflect.EnumType {
-	return &file_uba_service_v1_tag_definition_proto_enumTypes[0]
-}
-
-func (x TagCategory) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
-// Deprecated: Use TagCategory.Descriptor instead.
-func (TagCategory) EnumDescriptor() ([]byte, []int) {
-	return file_uba_service_v1_tag_definition_proto_rawDescGZIP(), []int{0}
-}
-
-// 标签类型枚举
-type TagType int32
-
-const (
-	// 未指定标签类型
-	TagType_TAG_TYPE_UNSPECIFIED TagType = 0
-	// 布尔型标签（是/否）
-	TagType_TAG_TYPE_BOOLEAN TagType = 1
-	// 枚举型标签
-	TagType_TAG_TYPE_ENUM TagType = 2
-	// 数值型标签
-	TagType_TAG_TYPE_NUMERIC TagType = 3
-	// 字符串型标签
-	TagType_TAG_TYPE_STRING TagType = 4
-	// 列表型标签
-	TagType_TAG_TYPE_LIST TagType = 5
-)
-
-// Enum value maps for TagType.
-var (
-	TagType_name = map[int32]string{
-		0: "TAG_TYPE_UNSPECIFIED",
-		1: "TAG_TYPE_BOOLEAN",
-		2: "TAG_TYPE_ENUM",
-		3: "TAG_TYPE_NUMERIC",
-		4: "TAG_TYPE_STRING",
-		5: "TAG_TYPE_LIST",
-	}
-	TagType_value = map[string]int32{
-		"TAG_TYPE_UNSPECIFIED": 0,
-		"TAG_TYPE_BOOLEAN":     1,
-		"TAG_TYPE_ENUM":        2,
-		"TAG_TYPE_NUMERIC":     3,
-		"TAG_TYPE_STRING":      4,
-		"TAG_TYPE_LIST":        5,
-	}
-)
-
-func (x TagType) Enum() *TagType {
-	p := new(TagType)
-	*p = x
-	return p
-}
-
-func (x TagType) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (TagType) Descriptor() protoreflect.EnumDescriptor {
-	return file_uba_service_v1_tag_definition_proto_enumTypes[1].Descriptor()
-}
-
-func (TagType) Type() protoreflect.EnumType {
-	return &file_uba_service_v1_tag_definition_proto_enumTypes[1]
-}
-
-func (x TagType) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
-// Deprecated: Use TagType.Descriptor instead.
-func (TagType) EnumDescriptor() ([]byte, []int) {
-	return file_uba_service_v1_tag_definition_proto_rawDescGZIP(), []int{1}
-}
-
 // 标签定义（对应 tag_definition 表）
 type TagDefinition struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -166,9 +40,9 @@ type TagDefinition struct {
 	// 标签描述（详细说明）
 	Description *string `protobuf:"bytes,5,opt,name=description,proto3,oneof" json:"description,omitempty"`
 	// 标签分类（如用户属性、行为偏好、风险、业务等）
-	Category *TagCategory `protobuf:"varint,6,opt,name=category,proto3,enum=uba.service.v1.TagCategory,oneof" json:"category,omitempty"`
+	Category *string `protobuf:"bytes,6,opt,name=category,proto3,oneof" json:"category,omitempty"`
 	// 标签类型（如布尔、枚举、数值、字符串、列表等）
-	TagType *TagType `protobuf:"varint,10,opt,name=tag_type,json=tagType,proto3,enum=uba.service.v1.TagType,oneof" json:"tag_type,omitempty"`
+	TagType *string `protobuf:"bytes,10,opt,name=tag_type,json=tagType,proto3,oneof" json:"tag_type,omitempty"`
 	// 计算规则（简化，实际可用表达式引擎，如 CEL/SQL）
 	Rule *TagRule `protobuf:"bytes,11,opt,name=rule,proto3,oneof" json:"rule,omitempty"`
 	// 取值范围（枚举型标签的允许值列表）
@@ -254,18 +128,18 @@ func (x *TagDefinition) GetDescription() string {
 	return ""
 }
 
-func (x *TagDefinition) GetCategory() TagCategory {
+func (x *TagDefinition) GetCategory() string {
 	if x != nil && x.Category != nil {
 		return *x.Category
 	}
-	return TagCategory_TAG_CATEGORY_UNSPECIFIED
+	return ""
 }
 
-func (x *TagDefinition) GetTagType() TagType {
+func (x *TagDefinition) GetTagType() string {
 	if x != nil && x.TagType != nil {
 		return *x.TagType
 	}
-	return TagType_TAG_TYPE_UNSPECIFIED
+	return ""
 }
 
 func (x *TagDefinition) GetRule() *TagRule {
@@ -907,16 +781,16 @@ var File_uba_service_v1_tag_definition_proto protoreflect.FileDescriptor
 
 const file_uba_service_v1_tag_definition_proto_rawDesc = "" +
 	"\n" +
-	"#uba/service/v1/tag_definition.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a google/protobuf/field_mask.proto\x1a\x1epagination/v1/pagination.proto\"\xf1\x0e\n" +
+	"#uba/service/v1/tag_definition.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a google/protobuf/field_mask.proto\x1a\x1epagination/v1/pagination.proto\"\xb9\x0e\n" +
 	"\rTagDefinition\x129\n" +
 	"\x02id\x18\x01 \x01(\rB)\xbaG&\x92\x02#标签ID，唯一标识一个标签R\x02id\x12W\n" +
 	"\ttenant_id\x18\x02 \x01(\rB5\xbaG2\x92\x02/租户ID，多租户隔离，支持 SaaS 场景H\x00R\btenantId\x88\x01\x01\x12:\n" +
 	"\x04name\x18\x03 \x01(\tB!\xbaG\x1e\x92\x02\x1b标签名称，显示名称H\x01R\x04name\x88\x01\x01\x12j\n" +
 	"\x04code\x18\x04 \x01(\tBQ\xbaGN\x92\x02K标签唯一代码，业务唯一标识，支持英文、数字、下划线H\x02R\x04code\x88\x01\x01\x12H\n" +
-	"\vdescription\x18\x05 \x01(\tB!\xbaG\x1e\x92\x02\x1b标签描述，详细说明H\x03R\vdescription\x88\x01\x01\x12\x86\x01\n" +
-	"\bcategory\x18\x06 \x01(\x0e2\x1b.uba.service.v1.TagCategoryBH\xbaGE\x92\x02B标签分类，如用户属性、行为偏好、风险、业务等H\x04R\bcategory\x88\x01\x01\x12\x81\x01\n" +
+	"\vdescription\x18\x05 \x01(\tB!\xbaG\x1e\x92\x02\x1b标签描述，详细说明H\x03R\vdescription\x88\x01\x01\x12i\n" +
+	"\bcategory\x18\x06 \x01(\tBH\xbaGE\x92\x02B标签分类，如用户属性、行为偏好、风险、业务等H\x04R\bcategory\x88\x01\x01\x12h\n" +
 	"\btag_type\x18\n" +
-	" \x01(\x0e2\x17.uba.service.v1.TagTypeBH\xbaGE\x92\x02B标签类型，如布尔、枚举、数值、字符串、列表等H\x05R\atagType\x88\x01\x01\x12y\n" +
+	" \x01(\tBH\xbaGE\x92\x02B标签类型，如布尔、枚举、数值、字符串、列表等H\x05R\atagType\x88\x01\x01\x12y\n" +
 	"\x04rule\x18\v \x01(\v2\x17.uba.service.v1.TagRuleBG\xbaGD\x92\x02A计算规则，简化，实际可用表达式引擎，如 CEL/SQLH\x06R\x04rule\x88\x01\x01\x12w\n" +
 	"\x0eallowed_values\x18\f \x03(\v2\x18.uba.service.v1.TagValueB6\xbaG3\x92\x020取值范围，枚举型标签的允许值列表R\rallowedValues\x12h\n" +
 	"\tis_system\x18\r \x01(\bBF\xbaGC\x92\x02@是否系统预置，true: 系统预置，false: 用户自定义H\aR\bisSystem\x88\x01\x01\x12g\n" +
@@ -1023,20 +897,7 @@ const file_uba_service_v1_tag_definition_proto_rawDesc = "" +
 	"\bquery_byB\r\n" +
 	"\v_deleted_by\"@\n" +
 	"\x1aCountTagDefinitionResponse\x12\"\n" +
-	"\x05count\x18\x01 \x01(\x04B\f\xbaG\t\x92\x02\x06数量R\x05count*\x8f\x01\n" +
-	"\vTagCategory\x12\x1c\n" +
-	"\x18TAG_CATEGORY_UNSPECIFIED\x10\x00\x12\x15\n" +
-	"\x11TAG_CATEGORY_USER\x10\x01\x12\x19\n" +
-	"\x15TAG_CATEGORY_BEHAVIOR\x10\x02\x12\x15\n" +
-	"\x11TAG_CATEGORY_RISK\x10\x03\x12\x19\n" +
-	"\x15TAG_CATEGORY_BUSINESS\x10\x04*\x8a\x01\n" +
-	"\aTagType\x12\x18\n" +
-	"\x14TAG_TYPE_UNSPECIFIED\x10\x00\x12\x14\n" +
-	"\x10TAG_TYPE_BOOLEAN\x10\x01\x12\x11\n" +
-	"\rTAG_TYPE_ENUM\x10\x02\x12\x14\n" +
-	"\x10TAG_TYPE_NUMERIC\x10\x03\x12\x13\n" +
-	"\x0fTAG_TYPE_STRING\x10\x04\x12\x11\n" +
-	"\rTAG_TYPE_LIST\x10\x052\x87\x04\n" +
+	"\x05count\x18\x01 \x01(\x04B\f\xbaG\t\x92\x02\x06数量R\x05count2\x87\x04\n" +
 	"\x14TagDefinitionService\x12N\n" +
 	"\x04List\x12\x19.pagination.PagingRequest\x1a).uba.service.v1.ListTagDefinitionResponse\"\x00\x12P\n" +
 	"\x05Count\x12\x19.pagination.PagingRequest\x1a*.uba.service.v1.CountTagDefinitionResponse\"\x00\x12O\n" +
@@ -1058,60 +919,55 @@ func file_uba_service_v1_tag_definition_proto_rawDescGZIP() []byte {
 	return file_uba_service_v1_tag_definition_proto_rawDescData
 }
 
-var file_uba_service_v1_tag_definition_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
 var file_uba_service_v1_tag_definition_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
 var file_uba_service_v1_tag_definition_proto_goTypes = []any{
-	(TagCategory)(0),                   // 0: uba.service.v1.TagCategory
-	(TagType)(0),                       // 1: uba.service.v1.TagType
-	(*TagDefinition)(nil),              // 2: uba.service.v1.TagDefinition
-	(*TagRule)(nil),                    // 3: uba.service.v1.TagRule
-	(*TagValue)(nil),                   // 4: uba.service.v1.TagValue
-	(*ListTagDefinitionResponse)(nil),  // 5: uba.service.v1.ListTagDefinitionResponse
-	(*GetTagDefinitionRequest)(nil),    // 6: uba.service.v1.GetTagDefinitionRequest
-	(*CreateTagDefinitionRequest)(nil), // 7: uba.service.v1.CreateTagDefinitionRequest
-	(*UpdateTagDefinitionRequest)(nil), // 8: uba.service.v1.UpdateTagDefinitionRequest
-	(*DeleteTagDefinitionRequest)(nil), // 9: uba.service.v1.DeleteTagDefinitionRequest
-	(*CountTagDefinitionResponse)(nil), // 10: uba.service.v1.CountTagDefinitionResponse
-	nil,                                // 11: uba.service.v1.TagRule.ParamsEntry
-	(*timestamppb.Timestamp)(nil),      // 12: google.protobuf.Timestamp
-	(*fieldmaskpb.FieldMask)(nil),      // 13: google.protobuf.FieldMask
-	(*v1.PagingRequest)(nil),           // 14: pagination.PagingRequest
-	(*emptypb.Empty)(nil),              // 15: google.protobuf.Empty
+	(*TagDefinition)(nil),              // 0: uba.service.v1.TagDefinition
+	(*TagRule)(nil),                    // 1: uba.service.v1.TagRule
+	(*TagValue)(nil),                   // 2: uba.service.v1.TagValue
+	(*ListTagDefinitionResponse)(nil),  // 3: uba.service.v1.ListTagDefinitionResponse
+	(*GetTagDefinitionRequest)(nil),    // 4: uba.service.v1.GetTagDefinitionRequest
+	(*CreateTagDefinitionRequest)(nil), // 5: uba.service.v1.CreateTagDefinitionRequest
+	(*UpdateTagDefinitionRequest)(nil), // 6: uba.service.v1.UpdateTagDefinitionRequest
+	(*DeleteTagDefinitionRequest)(nil), // 7: uba.service.v1.DeleteTagDefinitionRequest
+	(*CountTagDefinitionResponse)(nil), // 8: uba.service.v1.CountTagDefinitionResponse
+	nil,                                // 9: uba.service.v1.TagRule.ParamsEntry
+	(*timestamppb.Timestamp)(nil),      // 10: google.protobuf.Timestamp
+	(*fieldmaskpb.FieldMask)(nil),      // 11: google.protobuf.FieldMask
+	(*v1.PagingRequest)(nil),           // 12: pagination.PagingRequest
+	(*emptypb.Empty)(nil),              // 13: google.protobuf.Empty
 }
 var file_uba_service_v1_tag_definition_proto_depIdxs = []int32{
-	0,  // 0: uba.service.v1.TagDefinition.category:type_name -> uba.service.v1.TagCategory
-	1,  // 1: uba.service.v1.TagDefinition.tag_type:type_name -> uba.service.v1.TagType
-	3,  // 2: uba.service.v1.TagDefinition.rule:type_name -> uba.service.v1.TagRule
-	4,  // 3: uba.service.v1.TagDefinition.allowed_values:type_name -> uba.service.v1.TagValue
-	12, // 4: uba.service.v1.TagDefinition.created_at:type_name -> google.protobuf.Timestamp
-	12, // 5: uba.service.v1.TagDefinition.updated_at:type_name -> google.protobuf.Timestamp
-	12, // 6: uba.service.v1.TagDefinition.deleted_at:type_name -> google.protobuf.Timestamp
-	11, // 7: uba.service.v1.TagRule.params:type_name -> uba.service.v1.TagRule.ParamsEntry
-	12, // 8: uba.service.v1.TagValue.created_at:type_name -> google.protobuf.Timestamp
-	12, // 9: uba.service.v1.TagValue.updated_at:type_name -> google.protobuf.Timestamp
-	12, // 10: uba.service.v1.TagValue.deleted_at:type_name -> google.protobuf.Timestamp
-	2,  // 11: uba.service.v1.ListTagDefinitionResponse.items:type_name -> uba.service.v1.TagDefinition
-	13, // 12: uba.service.v1.GetTagDefinitionRequest.view_mask:type_name -> google.protobuf.FieldMask
-	2,  // 13: uba.service.v1.CreateTagDefinitionRequest.data:type_name -> uba.service.v1.TagDefinition
-	2,  // 14: uba.service.v1.UpdateTagDefinitionRequest.data:type_name -> uba.service.v1.TagDefinition
-	13, // 15: uba.service.v1.UpdateTagDefinitionRequest.update_mask:type_name -> google.protobuf.FieldMask
-	14, // 16: uba.service.v1.TagDefinitionService.List:input_type -> pagination.PagingRequest
-	14, // 17: uba.service.v1.TagDefinitionService.Count:input_type -> pagination.PagingRequest
-	6,  // 18: uba.service.v1.TagDefinitionService.Get:input_type -> uba.service.v1.GetTagDefinitionRequest
-	7,  // 19: uba.service.v1.TagDefinitionService.Create:input_type -> uba.service.v1.CreateTagDefinitionRequest
-	8,  // 20: uba.service.v1.TagDefinitionService.Update:input_type -> uba.service.v1.UpdateTagDefinitionRequest
-	9,  // 21: uba.service.v1.TagDefinitionService.Delete:input_type -> uba.service.v1.DeleteTagDefinitionRequest
-	5,  // 22: uba.service.v1.TagDefinitionService.List:output_type -> uba.service.v1.ListTagDefinitionResponse
-	10, // 23: uba.service.v1.TagDefinitionService.Count:output_type -> uba.service.v1.CountTagDefinitionResponse
-	2,  // 24: uba.service.v1.TagDefinitionService.Get:output_type -> uba.service.v1.TagDefinition
-	2,  // 25: uba.service.v1.TagDefinitionService.Create:output_type -> uba.service.v1.TagDefinition
-	2,  // 26: uba.service.v1.TagDefinitionService.Update:output_type -> uba.service.v1.TagDefinition
-	15, // 27: uba.service.v1.TagDefinitionService.Delete:output_type -> google.protobuf.Empty
-	22, // [22:28] is the sub-list for method output_type
-	16, // [16:22] is the sub-list for method input_type
-	16, // [16:16] is the sub-list for extension type_name
-	16, // [16:16] is the sub-list for extension extendee
-	0,  // [0:16] is the sub-list for field type_name
+	1,  // 0: uba.service.v1.TagDefinition.rule:type_name -> uba.service.v1.TagRule
+	2,  // 1: uba.service.v1.TagDefinition.allowed_values:type_name -> uba.service.v1.TagValue
+	10, // 2: uba.service.v1.TagDefinition.created_at:type_name -> google.protobuf.Timestamp
+	10, // 3: uba.service.v1.TagDefinition.updated_at:type_name -> google.protobuf.Timestamp
+	10, // 4: uba.service.v1.TagDefinition.deleted_at:type_name -> google.protobuf.Timestamp
+	9,  // 5: uba.service.v1.TagRule.params:type_name -> uba.service.v1.TagRule.ParamsEntry
+	10, // 6: uba.service.v1.TagValue.created_at:type_name -> google.protobuf.Timestamp
+	10, // 7: uba.service.v1.TagValue.updated_at:type_name -> google.protobuf.Timestamp
+	10, // 8: uba.service.v1.TagValue.deleted_at:type_name -> google.protobuf.Timestamp
+	0,  // 9: uba.service.v1.ListTagDefinitionResponse.items:type_name -> uba.service.v1.TagDefinition
+	11, // 10: uba.service.v1.GetTagDefinitionRequest.view_mask:type_name -> google.protobuf.FieldMask
+	0,  // 11: uba.service.v1.CreateTagDefinitionRequest.data:type_name -> uba.service.v1.TagDefinition
+	0,  // 12: uba.service.v1.UpdateTagDefinitionRequest.data:type_name -> uba.service.v1.TagDefinition
+	11, // 13: uba.service.v1.UpdateTagDefinitionRequest.update_mask:type_name -> google.protobuf.FieldMask
+	12, // 14: uba.service.v1.TagDefinitionService.List:input_type -> pagination.PagingRequest
+	12, // 15: uba.service.v1.TagDefinitionService.Count:input_type -> pagination.PagingRequest
+	4,  // 16: uba.service.v1.TagDefinitionService.Get:input_type -> uba.service.v1.GetTagDefinitionRequest
+	5,  // 17: uba.service.v1.TagDefinitionService.Create:input_type -> uba.service.v1.CreateTagDefinitionRequest
+	6,  // 18: uba.service.v1.TagDefinitionService.Update:input_type -> uba.service.v1.UpdateTagDefinitionRequest
+	7,  // 19: uba.service.v1.TagDefinitionService.Delete:input_type -> uba.service.v1.DeleteTagDefinitionRequest
+	3,  // 20: uba.service.v1.TagDefinitionService.List:output_type -> uba.service.v1.ListTagDefinitionResponse
+	8,  // 21: uba.service.v1.TagDefinitionService.Count:output_type -> uba.service.v1.CountTagDefinitionResponse
+	0,  // 22: uba.service.v1.TagDefinitionService.Get:output_type -> uba.service.v1.TagDefinition
+	0,  // 23: uba.service.v1.TagDefinitionService.Create:output_type -> uba.service.v1.TagDefinition
+	0,  // 24: uba.service.v1.TagDefinitionService.Update:output_type -> uba.service.v1.TagDefinition
+	13, // 25: uba.service.v1.TagDefinitionService.Delete:output_type -> google.protobuf.Empty
+	20, // [20:26] is the sub-list for method output_type
+	14, // [14:20] is the sub-list for method input_type
+	14, // [14:14] is the sub-list for extension type_name
+	14, // [14:14] is the sub-list for extension extendee
+	0,  // [0:14] is the sub-list for field type_name
 }
 
 func init() { file_uba_service_v1_tag_definition_proto_init() }
@@ -1133,14 +989,13 @@ func file_uba_service_v1_tag_definition_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_uba_service_v1_tag_definition_proto_rawDesc), len(file_uba_service_v1_tag_definition_proto_rawDesc)),
-			NumEnums:      2,
+			NumEnums:      0,
 			NumMessages:   10,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
 		GoTypes:           file_uba_service_v1_tag_definition_proto_goTypes,
 		DependencyIndexes: file_uba_service_v1_tag_definition_proto_depIdxs,
-		EnumInfos:         file_uba_service_v1_tag_definition_proto_enumTypes,
 		MessageInfos:      file_uba_service_v1_tag_definition_proto_msgTypes,
 	}.Build()
 	File_uba_service_v1_tag_definition_proto = out.File

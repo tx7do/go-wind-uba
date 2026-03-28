@@ -8,7 +8,13 @@ INSERT INTO public.sys_dict_types (
       (4, 'RISK_TYPE', '风险类型', 80, true, now(), now()),
       (5, 'RISK_LEVEL', '风险等级', 90, true, now(), now()),
       (6, 'TAG_SOURCE', '标签来源', 100, true, now(), now()),
-      (7, 'ID_TYPE', 'ID类型', 110, true, now(), now())
+      (7, 'ID_TYPE', 'ID类型', 110, true, now(), now()),
+      (8, 'RISK_EVENT_STATUS', '风险事件处置状态', 120, true, now(), now()),
+      (9, 'EVENT_CATEGORY', '事件分类', 130, true, now(), now()),
+      (10, 'OBJECT_TYPE', '对象类型', 140, true, now(), now()),
+      (11, 'OBJECT_STATUS', '对象状态', 150, true, now(), now()),
+      (12, 'TAG_CATEGORY', '标签分类', 160, true, now(), now()),
+      (13, 'TAG_TYPE', '标签类型', 170, true, now(), now())
 ;
 SELECT setval('sys_dict_types_id_seq', (SELECT MAX(id) FROM sys_dict_types));
 
@@ -17,9 +23,9 @@ INSERT INTO public.sys_dict_entries (
     id, type_id, entry_value, numeric_value, sort_order, is_enabled, created_at, updated_at, tenant_id
 ) VALUES
       -- 性别
-      (12, 1, 'MALE', 1, 1, true, now(), now(), 0),
-      (13, 1, 'FEMALE', 2, 2, true, now(), now(), 0),
-      (14, 1, 'SECRET', 0, 3, true, now(), now(), 0),
+      (12, 1, 'male', 1, 1, true, now(), now(), 0),
+      (13, 1, 'female', 2, 2, true, now(), now(), 0),
+      (14, 1, 'secret', 0, 3, true, now(), now(), 0),
 
       -- ========== APP_TYPE 应用类型 (type_id=6) ==========
       (20, 2, 'game', 1, 1, true, now(), now(), 0),
@@ -64,7 +70,53 @@ INSERT INTO public.sys_dict_entries (
       (72, 7, 'openid', 3, 3, true, now(), now(), 0),
       (73, 7, 'unionid', 4, 4, true, now(), now(), 0),
       (74, 7, 'phone', 5, 5, true, now(), now(), 0),
-      (75, 7, 'global_user_id', 6, 6, true, now(), now(), 0)
+      (75, 7, 'global_user_id', 6, 6, true, now(), now(), 0),
+
+      -- ========== RISK_EVENT_STATUS 风险事件处置状态 (type_id=12) ==========
+      (80, 8, 'pending', 1, 1, true, now(), now(), 0),
+      (81, 8, 'investigating', 2, 2, true, now(), now(), 0),
+      (82, 8, 'confirmed', 3, 3, true, now(), now(), 0),
+      (83, 8, 'false_positive', 4, 4, true, now(), now(), 0),
+      (84, 8, 'ignored', 5, 5, true, now(), now(), 0),
+      (85, 8, 'auto_blocked', 6, 6, true, now(), now(), 0),
+
+      -- ========== EVENT_CATEGORY 事件分类 (type_id=13) ==========
+      (90, 9, 'auth',     1, 1, true, now(), now(), 0),
+      (91, 9, 'pay',      2, 2, true, now(), now(), 0),
+      (92, 9, 'game',     3, 3, true, now(), now(), 0),
+      (93, 9, 'content',  4, 4, true, now(), now(), 0),
+      (94, 9, 'security', 5, 5, true, now(), now(), 0),
+      (95, 9, 'system',   6, 6, true, now(), now(), 0),
+
+      -- ========== OBJECT_TYPE 对象类型 (type_id=10) ==========
+      (100, 10, 'goods',        1, 1, true, now(), now(), 0),    -- 商品
+      (101, 10, 'prop',         2, 2, true, now(), now(), 0),    -- 道具
+      (102, 10, 'content',      3, 3, true, now(), now(), 0),    -- 内容
+      (103, 10, 'coupon',       4, 4, true, now(), now(), 0),    -- 优惠券
+      (104, 10, 'ticket',       5, 5, true, now(), now(), 0),    -- 门票
+      (105, 10, 'membership',   6, 6, true, now(), now(), 0),    -- 会员
+      (106, 10, 'virtual_item', 7, 7, true, now(), now(), 0),    -- 虚拟物品
+      (107, 10, 'other',       99, 99, true, now(), now(), 0),   -- 其他
+
+      -- ========== OBJECT_STATUS 对象状态 (type_id=11) ==========
+      (110, 11, 'active',    1, 1, true, now(), now(), 0),    -- 上架/有效
+      (111, 11, 'inactive',  2, 2, true, now(), now(), 0),    -- 下架/无效
+      (112, 11, 'sold_out',  3, 3, true, now(), now(), 0),    -- 售罄
+      (113, 11, 'expired',   4, 4, true, now(), now(), 0),    -- 已过期
+      (114, 11, 'draft',     5, 5, true, now(), now(), 0),     -- 草稿
+
+      -- ========== TAG_CATEGORY 标签分类 (type_id=12) ==========
+      (120, 12, 'user',      1, 1, true, now(), now(), 0),   -- 用户属性标签
+      (121, 12, 'behavior',  2, 2, true, now(), now(), 0),   -- 行为偏好标签
+      (122, 12, 'risk',      3, 3, true, now(), now(), 0),   -- 风险标签
+      (123, 12, 'business',  4, 4, true, now(), now(), 0),   -- 业务标签
+
+      -- ========== TAG_TYPE 标签类型 (type_id=13) ==========
+      (130, 13, 'boolean',   1, 1, true, now(), now(), 0),   -- 布尔型标签
+      (131, 13, 'enum',      2, 2, true, now(), now(), 0),   -- 枚举型标签
+      (132, 13, 'numeric',   3, 3, true, now(), now(), 0),   -- 数值型标签
+      (133, 13, 'string',    4, 4, true, now(), now(), 0),   -- 字符串型标签
+      (134, 13, 'list',      5, 5, true, now(), now(), 0)    -- 列表型标签
 ;
 SELECT setval('sys_dict_entries_id_seq', (SELECT MAX(id) FROM sys_dict_entries));
 
@@ -76,7 +128,7 @@ INSERT INTO public.sys_dict_entry_i18n (
       -- 中文
       -- --------------------
 
-      -- 性别
+      -- GENDER
       (12, 'zh-CN', '男', '', 1, 0, now(), now()),
       (13, 'zh-CN', '女', '', 2, 0, now(), now()),
       (14, 'zh-CN', '未知', '用户未填写时默认值', 3, 0, now(), now()),
@@ -126,11 +178,57 @@ INSERT INTO public.sys_dict_entry_i18n (
       (74, 'zh-CN', '手机号', '', 5, 0, now(), now()),
       (75, 'zh-CN', '全局用户ID', '', 6, 0, now(), now()),
 
+      -- RISK_EVENT_STATUS
+      (80, 'zh-CN', '待处理', '', 1, 0, now(), now()),
+      (81, 'zh-CN', '调查中', '', 2, 0, now(), now()),
+      (82, 'zh-CN', '确认为风险', '', 3, 0, now(), now()),
+      (83, 'zh-CN', '误报', '', 4, 0, now(), now()),
+      (84, 'zh-CN', '忽略', '', 5, 0, now(), now()),
+      (85, 'zh-CN', '自动拦截', '', 6, 0, now(), now()),
+
+      -- EVENT_CATEGORY
+      (90, 'zh-CN', '认证', '', 1, 0, now(), now()),
+      (91, 'zh-CN', '支付', '', 2, 0, now(), now()),
+      (92, 'zh-CN', '游戏', '', 3, 0, now(), now()),
+      (93, 'zh-CN', '内容', '', 4, 0, now(), now()),
+      (94, 'zh-CN', '安全', '', 5, 0, now(), now()),
+      (95, 'zh-CN', '系统', '', 6, 0, now(), now()),
+
+      -- OBJECT_TYPE
+      (100, 'zh-CN', '商品', '', 1, 0, now(), now()),
+      (101, 'zh-CN', '道具', '', 2, 0, now(), now()),
+      (102, 'zh-CN', '内容', '', 3, 0, now(), now()),
+      (103, 'zh-CN', '优惠券', '', 4, 0, now(), now()),
+      (104, 'zh-CN', '门票', '', 5, 0, now(), now()),
+      (105, 'zh-CN', '会员', '', 6, 0, now(), now()),
+      (106, 'zh-CN', '虚拟物品', '', 7, 0, now(), now()),
+      (107, 'zh-CN', '其他', '', 99, 0, now(), now()),
+
+      -- OBJECT_STATUS
+      (110, 'zh-CN', '有效/上架', '', 1, 0, now(), now()),
+      (111, 'zh-CN', '无效/下架', '', 2, 0, now(), now()),
+      (112, 'zh-CN', '售罄', '', 3, 0, now(), now()),
+      (113, 'zh-CN', '已过期', '', 4, 0, now(), now()),
+      (114, 'zh-CN', '草稿', '', 5, 0, now(), now()),
+
+      -- TAG_CATEGORY
+      (120, 'zh-CN', '用户属性标签', '', 1, 0, now(), now()),
+      (121, 'zh-CN', '行为偏好标签', '', 2, 0, now(), now()),
+      (122, 'zh-CN', '风险标签', '', 3, 0, now(), now()),
+      (123, 'zh-CN', '业务标签', '', 4, 0, now(), now()),
+
+      -- TAG_TYPE
+      (130, 'zh-CN', '布尔型标签', '', 1, 0, now(), now()),
+      (131, 'zh-CN', '枚举型标签', '', 2, 0, now(), now()),
+      (132, 'zh-CN', '数值型标签', '', 3, 0, now(), now()),
+      (133, 'zh-CN', '字符串型标签', '', 4, 0, now(), now()),
+      (134, 'zh-CN', '列表型标签', '', 5, 0, now(), now()),
+
       -- --------------------
       -- 英文
       -- --------------------
 
-      -- Gender
+      -- GENDER
       (12, 'en-US', 'Male', '', 1, 0, now(), now()),
       (13, 'en-US', 'Female', '', 2, 0, now(), now()),
       (14, 'en-US', 'Unknown', 'Default value when user does not specify', 3, 0, now(), now()),
@@ -178,6 +276,52 @@ INSERT INTO public.sys_dict_entry_i18n (
       (72, 'en-US', 'OpenID', '', 3, 0, now(), now()),
       (73, 'en-US', 'UnionID', '', 4, 0, now(), now()),
       (74, 'en-US', 'Phone', '', 5, 0, now(), now()),
-      (75, 'en-US', 'Global User ID', '', 6, 0, now(), now())
+      (75, 'en-US', 'Global User ID', '', 6, 0, now(), now()),
+
+      -- RISK_EVENT_STATUS
+      (80, 'en-US', 'Pending', '', 1, 0, now(), now()),
+      (81, 'en-US', 'Investigating', '', 2, 0, now(), now()),
+      (82, 'en-US', 'Confirmed', '', 3, 0, now(), now()),
+      (83, 'en-US', 'False Positive', '', 4, 0, now(), now()),
+      (84, 'en-US', 'Ignored', '', 5, 0, now(), now()),
+      (85, 'en-US', 'Auto Blocked', '', 6, 0, now(), now()),
+
+      -- EVENT_CATEGORY
+      (90, 'en-US', 'Auth', '', 1, 0, now(), now()),
+      (91, 'en-US', 'Pay', '', 2, 0, now(), now()),
+      (92, 'en-US', 'Game', '', 3, 0, now(), now()),
+      (93, 'en-US', 'Content', '', 4, 0, now(), now()),
+      (94, 'en-US', 'Security', '', 5, 0, now(), now()),
+      (95, 'en-US', 'System', '', 6, 0, now(), now()),
+
+      -- OBJECT_TYPE
+      (100, 'en-US', 'Goods', '', 1, 0, now(), now()),
+      (101, 'en-US', 'Prop', '', 2, 0, now(), now()),
+      (102, 'en-US', 'Content', '', 3, 0, now(), now()),
+      (103, 'en-US', 'Coupon', '', 4, 0, now(), now()),
+      (104, 'en-US', 'Ticket', '', 5, 0, now(), now()),
+      (105, 'en-US', 'Membership', '', 6, 0, now(), now()),
+      (106, 'en-US', 'Virtual Item', '', 7, 0, now(), now()),
+      (107, 'en-US', 'Other', '', 99, 0, now(), now()),
+
+      -- OBJECT_STATUS
+      (110, 'en-US', 'Active', '', 1, 0, now(), now()),
+      (111, 'en-US', 'Inactive', '', 2, 0, now(), now()),
+      (112, 'en-US', 'Sold Out', '', 3, 0, now(), now()),
+      (113, 'en-US', 'Expired', '', 4, 0, now(), now()),
+      (114, 'en-US', 'Draft', '', 5, 0, now(), now()),
+
+      -- TAG_CATEGORY
+      (120, 'en-US', 'User Attribute Tag', '', 1, 0, now(), now()),
+      (121, 'en-US', 'Behavior Preference Tag', '', 2, 0, now(), now()),
+      (122, 'en-US', 'Risk Tag', '', 3, 0, now(), now()),
+      (123, 'en-US', 'Business Tag', '', 4, 0, now(), now()),
+
+      -- TAG_TYPE
+      (130, 'en-US', 'Boolean Tag', '', 1, 0, now(), now()),
+      (131, 'en-US', 'Enum Tag', '', 2, 0, now(), now()),
+      (132, 'en-US', 'Numeric Tag', '', 3, 0, now(), now()),
+      (133, 'en-US', 'String Tag', '', 4, 0, now(), now()),
+      (134, 'en-US', 'List Tag', '', 5, 0, now(), now())
 ;
 SELECT setval('sys_dict_entry_i18n_id_seq', (SELECT MAX(id) FROM sys_dict_entry_i18n));

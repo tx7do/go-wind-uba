@@ -150,13 +150,13 @@ func (_c *TagDefinitionCreate) SetNillableDescription(v *string) *TagDefinitionC
 }
 
 // SetCategory sets the "category" field.
-func (_c *TagDefinitionCreate) SetCategory(v tagdefinition.Category) *TagDefinitionCreate {
+func (_c *TagDefinitionCreate) SetCategory(v string) *TagDefinitionCreate {
 	_c.mutation.SetCategory(v)
 	return _c
 }
 
 // SetNillableCategory sets the "category" field if the given value is not nil.
-func (_c *TagDefinitionCreate) SetNillableCategory(v *tagdefinition.Category) *TagDefinitionCreate {
+func (_c *TagDefinitionCreate) SetNillableCategory(v *string) *TagDefinitionCreate {
 	if v != nil {
 		_c.SetCategory(*v)
 	}
@@ -164,13 +164,13 @@ func (_c *TagDefinitionCreate) SetNillableCategory(v *tagdefinition.Category) *T
 }
 
 // SetTagType sets the "tag_type" field.
-func (_c *TagDefinitionCreate) SetTagType(v tagdefinition.TagType) *TagDefinitionCreate {
+func (_c *TagDefinitionCreate) SetTagType(v string) *TagDefinitionCreate {
 	_c.mutation.SetTagType(v)
 	return _c
 }
 
 // SetNillableTagType sets the "tag_type" field if the given value is not nil.
-func (_c *TagDefinitionCreate) SetNillableTagType(v *tagdefinition.TagType) *TagDefinitionCreate {
+func (_c *TagDefinitionCreate) SetNillableTagType(v *string) *TagDefinitionCreate {
 	if v != nil {
 		_c.SetTagType(*v)
 	}
@@ -314,16 +314,6 @@ func (_c *TagDefinitionCreate) check() error {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "TagDefinition.name": %w`, err)}
 		}
 	}
-	if v, ok := _c.mutation.Category(); ok {
-		if err := tagdefinition.CategoryValidator(v); err != nil {
-			return &ValidationError{Name: "category", err: fmt.Errorf(`ent: validator failed for field "TagDefinition.category": %w`, err)}
-		}
-	}
-	if v, ok := _c.mutation.TagType(); ok {
-		if err := tagdefinition.TagTypeValidator(v); err != nil {
-			return &ValidationError{Name: "tag_type", err: fmt.Errorf(`ent: validator failed for field "TagDefinition.tag_type": %w`, err)}
-		}
-	}
 	if v, ok := _c.mutation.Rule(); ok {
 		if err := v.Validate(); err != nil {
 			return &ValidationError{Name: "rule", err: fmt.Errorf(`ent: validator failed for field "TagDefinition.rule": %w`, err)}
@@ -409,11 +399,11 @@ func (_c *TagDefinitionCreate) createSpec() (*TagDefinition, *sqlgraph.CreateSpe
 		_node.Description = &value
 	}
 	if value, ok := _c.mutation.Category(); ok {
-		_spec.SetField(tagdefinition.FieldCategory, field.TypeEnum, value)
+		_spec.SetField(tagdefinition.FieldCategory, field.TypeString, value)
 		_node.Category = &value
 	}
 	if value, ok := _c.mutation.TagType(); ok {
-		_spec.SetField(tagdefinition.FieldTagType, field.TypeEnum, value)
+		_spec.SetField(tagdefinition.FieldTagType, field.TypeString, value)
 		_node.TagType = &value
 	}
 	if value, ok := _c.mutation.Rule(); ok {
@@ -637,7 +627,7 @@ func (u *TagDefinitionUpsert) ClearDescription() *TagDefinitionUpsert {
 }
 
 // SetCategory sets the "category" field.
-func (u *TagDefinitionUpsert) SetCategory(v tagdefinition.Category) *TagDefinitionUpsert {
+func (u *TagDefinitionUpsert) SetCategory(v string) *TagDefinitionUpsert {
 	u.Set(tagdefinition.FieldCategory, v)
 	return u
 }
@@ -655,7 +645,7 @@ func (u *TagDefinitionUpsert) ClearCategory() *TagDefinitionUpsert {
 }
 
 // SetTagType sets the "tag_type" field.
-func (u *TagDefinitionUpsert) SetTagType(v tagdefinition.TagType) *TagDefinitionUpsert {
+func (u *TagDefinitionUpsert) SetTagType(v string) *TagDefinitionUpsert {
 	u.Set(tagdefinition.FieldTagType, v)
 	return u
 }
@@ -1009,7 +999,7 @@ func (u *TagDefinitionUpsertOne) ClearDescription() *TagDefinitionUpsertOne {
 }
 
 // SetCategory sets the "category" field.
-func (u *TagDefinitionUpsertOne) SetCategory(v tagdefinition.Category) *TagDefinitionUpsertOne {
+func (u *TagDefinitionUpsertOne) SetCategory(v string) *TagDefinitionUpsertOne {
 	return u.Update(func(s *TagDefinitionUpsert) {
 		s.SetCategory(v)
 	})
@@ -1030,7 +1020,7 @@ func (u *TagDefinitionUpsertOne) ClearCategory() *TagDefinitionUpsertOne {
 }
 
 // SetTagType sets the "tag_type" field.
-func (u *TagDefinitionUpsertOne) SetTagType(v tagdefinition.TagType) *TagDefinitionUpsertOne {
+func (u *TagDefinitionUpsertOne) SetTagType(v string) *TagDefinitionUpsertOne {
 	return u.Update(func(s *TagDefinitionUpsert) {
 		s.SetTagType(v)
 	})
@@ -1572,7 +1562,7 @@ func (u *TagDefinitionUpsertBulk) ClearDescription() *TagDefinitionUpsertBulk {
 }
 
 // SetCategory sets the "category" field.
-func (u *TagDefinitionUpsertBulk) SetCategory(v tagdefinition.Category) *TagDefinitionUpsertBulk {
+func (u *TagDefinitionUpsertBulk) SetCategory(v string) *TagDefinitionUpsertBulk {
 	return u.Update(func(s *TagDefinitionUpsert) {
 		s.SetCategory(v)
 	})
@@ -1593,7 +1583,7 @@ func (u *TagDefinitionUpsertBulk) ClearCategory() *TagDefinitionUpsertBulk {
 }
 
 // SetTagType sets the "tag_type" field.
-func (u *TagDefinitionUpsertBulk) SetTagType(v tagdefinition.TagType) *TagDefinitionUpsertBulk {
+func (u *TagDefinitionUpsertBulk) SetTagType(v string) *TagDefinitionUpsertBulk {
 	return u.Update(func(s *TagDefinitionUpsert) {
 		s.SetTagType(v)
 	})

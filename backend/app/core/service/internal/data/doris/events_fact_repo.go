@@ -22,11 +22,6 @@ type EventsFactRepo struct {
 
 	mapper *mapper.CopierMapper[ubaV1.BehaviorEvent, schema.EventsFact]
 
-	categoryConverter  *mapper.EnumTypeConverter[ubaV1.EventCategory, string]
-	platformConverter  *mapper.EnumTypeConverter[ubaV1.Platform, string]
-	opResultConverter  *mapper.EnumTypeConverter[ubaV1.OpResult, string]
-	riskLevelConverter *mapper.EnumTypeConverter[ubaV1.RiskLevel, string]
-
 	repository *dorisCrud.Repository[ubaV1.BehaviorEvent, schema.EventsFact]
 }
 
@@ -39,18 +34,6 @@ func NewEventsFactRepo(
 		db:        db,
 		tableName: "events_fact",
 		mapper:    mapper.NewCopierMapper[ubaV1.BehaviorEvent, schema.EventsFact](),
-		categoryConverter: mapper.NewEnumTypeConverter[ubaV1.EventCategory, string](
-			ubaV1.EventCategory_name, ubaV1.EventCategory_value,
-		),
-		platformConverter: mapper.NewEnumTypeConverter[ubaV1.Platform, string](
-			ubaV1.Platform_name, ubaV1.Platform_value,
-		),
-		opResultConverter: mapper.NewEnumTypeConverter[ubaV1.OpResult, string](
-			ubaV1.OpResult_name, ubaV1.OpResult_value,
-		),
-		riskLevelConverter: mapper.NewEnumTypeConverter[ubaV1.RiskLevel, string](
-			ubaV1.RiskLevel_name, ubaV1.RiskLevel_value,
-		),
 	}
 
 	repo.init()
@@ -68,11 +51,6 @@ func (r *EventsFactRepo) init() {
 
 	r.mapper.AppendConverters(copierutil.NewTimeStringConverterPair())
 	r.mapper.AppendConverters(copierutil.NewTimeTimestamppbConverterPair())
-
-	r.mapper.AppendConverters(r.categoryConverter.NewConverterPair())
-	r.mapper.AppendConverters(r.platformConverter.NewConverterPair())
-	r.mapper.AppendConverters(r.opResultConverter.NewConverterPair())
-	r.mapper.AppendConverters(r.riskLevelConverter.NewConverterPair())
 }
 
 func (r *EventsFactRepo) Create(ctx context.Context, dto *ubaV1.BehaviorEvent) error {

@@ -105,35 +105,6 @@ var (
 	IDValidator func(uint32) error
 )
 
-// Type defines the type for the "type" enum field.
-type Type string
-
-// Type values.
-const (
-	TypeGame      Type = "GAME"
-	TypeEcommerce Type = "ECOMMERCE"
-	TypeContent   Type = "CONTENT"
-	TypeTool      Type = "TOOL"
-	TypeFinance   Type = "FINANCE"
-	TypeSocial    Type = "SOCIAL"
-	TypeEducation Type = "EDUCATION"
-	TypeOther     Type = "OTHER"
-)
-
-func (_type Type) String() string {
-	return string(_type)
-}
-
-// TypeValidator is a validator for the "type" field enum values. It is called by the builders before save.
-func TypeValidator(_type Type) error {
-	switch _type {
-	case TypeGame, TypeEcommerce, TypeContent, TypeTool, TypeFinance, TypeSocial, TypeEducation, TypeOther:
-		return nil
-	default:
-		return fmt.Errorf("application: invalid enum value for type field: %q", _type)
-	}
-}
-
 // Status defines the type for the "status" enum field.
 type Status string
 

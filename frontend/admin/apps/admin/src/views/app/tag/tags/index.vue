@@ -14,10 +14,10 @@ import { $t } from '#/locales';
 import {
   enableBoolToColor,
   enableBoolToName,
-  tagCategoryList,
+  tagCategoryDict,
   tagCategoryToColor,
   tagCategoryToName,
-  tagTypeList,
+  tagTypeDict,
   tagTypeToColor,
   tagTypeToName,
   useTagDefinitionListStore,
@@ -55,7 +55,7 @@ const formOptions = {
       fieldName: 'category',
       label: $t('page.tagDefinition.category'),
       componentProps: {
-        options: tagCategoryList,
+        options: tagCategoryDict(),
         placeholder: $t('ui.placeholder.select'),
         filterOption: (input: string, option: any) =>
           option.label.toLowerCase().includes(input.toLowerCase()),
@@ -68,7 +68,7 @@ const formOptions = {
       fieldName: 'tagType',
       label: $t('page.tagDefinition.tagType'),
       componentProps: {
-        options: tagTypeList,
+        options: tagTypeDict(),
         placeholder: $t('ui.placeholder.select'),
         filterOption: (input: string, option: any) =>
           option.label.toLowerCase().includes(input.toLowerCase()),

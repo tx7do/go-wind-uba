@@ -50,18 +50,8 @@ func (Application) Fields() []ent.Field {
 			Optional().
 			Nillable(),
 
-		field.Enum("type").
+		field.String("type").
 			Comment("应用类型").
-			NamedValues(
-				"Game", "GAME",
-				"Ecommerce", "ECOMMERCE",
-				"Content", "CONTENT",
-				"Tool", "TOOL",
-				"Finance", "FINANCE",
-				"Social", "SOCIAL",
-				"Education", "EDUCATION",
-				"Other", "OTHER",
-			).
 			Optional().
 			Nillable(),
 
