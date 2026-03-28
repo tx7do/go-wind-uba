@@ -2,20 +2,14 @@ import { useUserStore } from '@vben/stores';
 
 import { defineStore } from 'pinia';
 
-import {
-  createUserTagServiceClient,
-  type dictservicev1_DictEntry,
-} from '#/generated/api/admin/service/v1';
-import { useDictStore } from '#/stores/dict.state';
+import { createUserTagServiceClient } from '#/generated/api/admin/service/v1';
+import {getDictEntryLabelByValue, useDictStore} from '#/stores/dict.state';
 import { makeOrderBy, makeQueryString, makeUpdateMask } from '#/utils/query';
 import { type Paging, requestClientRequestHandler } from '#/utils/request';
 
 export const useUserTagListStore = defineStore('user-tag-list', () => {
   const service = createUserTagServiceClient(requestClientRequestHandler);
   const userStore = useUserStore();
-  const dictStore = useDictStore();
-
-  let cachedTagSourceDict: dictservicev1_DictEntry[] | undefined;
 
   /**
    * 查询用户标签列表
@@ -82,24 +76,6 @@ export const useUserTagListStore = defineStore('user-tag-list', () => {
     return await service.Delete({ id });
   }
 
-  async function getTagSourceDict() {
-    if (cachedTagSourceDict !== undefined && cachedTagSourceDict.length > 0) {
-      return cachedTagSourceDict;
-    }
-
-    try {
-      const result = await dictStore.listDictEntriesByTypeCode('TAG_SOURCE');
-      if (result) {
-        cachedTagSourceDict = result.items || [];
-      }
-    } catch (error) {
-      console.error('获取字典类型列表失败:', error);
-      return [];
-    }
-
-    return cachedTagSourceDict;
-  }
-
   function $reset() {}
 
   return {
@@ -109,8 +85,6 @@ export const useUserTagListStore = defineStore('user-tag-list', () => {
     createUserTag,
     updateUserTag,
     deleteUserTag,
-    getTagSourceDict,
-    cachedTagSourceDict,
   };
 });
 
@@ -129,21 +103,15 @@ export function userTagSourceToColor(source?: string) {
   );
 }
 
-export function userTagSourceToName(
-  source?: string,
-  dictEntries?: dictservicev1_DictEntry[],
-): string {
-  console.log('dictEntries', dictEntries);
+export function userTagSourceDict() {
+  const dictStore = useDictStore();
+  return dictStore.getDictEntriesOptionsByTypeCode('TAG_SOURCE');
+}
 
-  if (source === undefined) {
-    return '';
-  }
-  if (dictEntries === undefined) {
-    return source;
-  }
-
-  return (
-    dictEntries.find((item) => item.entryValue === source)?.currentI18n
-      ?.entryLabel || source
+export function userTagSourceToName(source?: string) {
+  const dictStore = useDictStore();
+  return getDictEntryLabelByValue(
+    source,
+    dictStore.getDictEntriesByTypeCode('TAG_SOURCE'),
   );
 }

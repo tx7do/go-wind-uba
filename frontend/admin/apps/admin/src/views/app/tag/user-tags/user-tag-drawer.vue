@@ -7,10 +7,9 @@ import { $t } from '@vben/locales';
 import { notification } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import { useDictStore, useUserTagListStore } from '#/stores';
+import { userTagSourceDict, useUserTagListStore } from '#/stores';
 
 const userTagListStore = useUserTagListStore();
-const dictStore = useDictStore();
 
 const data = ref();
 
@@ -77,26 +76,18 @@ const [BaseForm, baseFormApi] = useVbenForm({
       },
     },
     {
-      component: 'ApiSelect',
+      component: 'Select',
       fieldName: 'source',
       label: $t('page.userTag.source'),
       rules: 'required',
       componentProps: {
         class: 'w-full',
+        options: userTagSourceDict(),
+        placeholder: $t('ui.placeholder.select'),
+        filterOption: (input: string, option: any) =>
+          option.label.toLowerCase().includes(input.toLowerCase()),
         allowClear: true,
         showSearch: true,
-        placeholder: $t('ui.placeholder.select'),
-        api: async () => {
-          const result =
-            await dictStore.listDictEntriesByTypeCode('TAG_SOURCE');
-          return result.items;
-        },
-        afterFetch: (data: { name: string; path: string }[]) => {
-          return data.map((item: any) => ({
-            label: dictStore.getDictEntryLabel(item),
-            value: item.entryValue,
-          }));
-        },
       },
     },
   ],

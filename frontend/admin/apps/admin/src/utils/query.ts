@@ -143,7 +143,7 @@ export function makeQueryString(
   formValues?: null | object,
   needCleanTenant: boolean = false,
 ): string | undefined {
-  if (formValues === null) {
+  if (formValues === null || formValues === undefined) {
     return undefined;
   }
 
@@ -186,7 +186,7 @@ export function makeQueryString(
 export function makeFilterString(
   filterValues?: null | object,
 ): string | undefined {
-  if (filterValues === null) {
+  if (filterValues === null || filterValues === undefined) {
     return undefined;
   }
 
@@ -199,10 +199,7 @@ export function makeFilterString(
  * @param orderBy
  */
 export function makeOrderBy(orderBy?: null | string[]): string | undefined {
-  if (orderBy === undefined) {
-    orderBy = ['-created_at'];
-  }
-  if (orderBy === null) {
+  if (orderBy === undefined || orderBy === null) {
     orderBy = ['-created_at'];
   }
   return JSON.stringify(orderBy) ?? undefined;
@@ -213,7 +210,7 @@ export function makeOrderBy(orderBy?: null | string[]): string | undefined {
  * @param keys
  */
 export function makeUpdateMask(keys: string[]): string {
-  if (keys.length === 0) {
+  if (keys === undefined || keys.length === 0) {
     return '';
   }
   return keys.join(',');

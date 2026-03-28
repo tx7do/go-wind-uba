@@ -42,7 +42,7 @@ func NewDictTypeRepo(
 	entClient *entCrud.EntClient[*ent.Client],
 ) *DictTypeRepo {
 	repo := &DictTypeRepo{
-		log:       ctx.NewLoggerHelper("dict-type/repo/admin-service"),
+		log:       ctx.NewLoggerHelper("dict-type/repo/core-service"),
 		entClient: entClient,
 		mapper:    mapper.NewCopierMapper[dictV1.DictType, ent.DictType](),
 	}

@@ -2,7 +2,7 @@
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 import type { ubaservicev1_UserTag as UserTag } from '#/generated/api/admin/service/v1';
 
-import { h, onMounted } from 'vue';
+import { h } from 'vue';
 
 import { Page, useVbenDrawer } from '@vben/common-ui';
 import { LucideFilePenLine, LucideTrash2 } from '@vben/icons';
@@ -12,6 +12,7 @@ import { notification } from 'ant-design-vue';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { $t } from '#/locales';
 import {
+  useDictStore,
   userTagSourceToColor,
   userTagSourceToName,
   useUserTagListStore,
@@ -20,6 +21,7 @@ import {
 import UserTagDrawer from './user-tag-drawer.vue';
 
 const userTagListStore = useUserTagListStore();
+const dictStore = useDictStore();
 
 const formOptions = {
   collapsed: false,
@@ -54,12 +56,16 @@ const formOptions = {
       },
     },
     {
-      component: 'Input',
+      component: 'Select',
       fieldName: 'source',
       label: $t('page.userTag.source'),
       componentProps: {
-        placeholder: $t('ui.placeholder.input'),
+        options: dictStore.getDictEntriesOptionsByTypeCode('TAG_SOURCE'),
+        placeholder: $t('ui.placeholder.select'),
+        filterOption: (input: string, option: any) =>
+          option.label.toLowerCase().includes(input.toLowerCase()),
         allowClear: true,
+        showSearch: true,
       },
     },
   ],
@@ -216,10 +222,6 @@ async function handleDelete(row: any) {
     });
   }
 }
-
-onMounted(async () => {
-  await userTagListStore.getTagSourceDict();
-});
 </script>
 
 <template>
@@ -232,12 +234,7 @@ onMounted(async () => {
       </template>
       <template #source="{ row }">
         <a-tag :color="userTagSourceToColor(row.source)">
-          {{
-            userTagSourceToName(
-              row.source,
-              userTagListStore.cachedTagSourceDict,
-            )
-          }}
+          {{ userTagSourceToName(row.source) }}
         </a-tag>
       </template>
       <template #action="{ row }">
