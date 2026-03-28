@@ -7,6 +7,7 @@ import (
 
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/stretchr/testify/assert"
+	paginationV1 "github.com/tx7do/go-crud/api/gen/go/pagination/v1"
 	dorisCrud "github.com/tx7do/go-crud/doris"
 	"github.com/tx7do/go-utils/trans"
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
@@ -27,7 +28,7 @@ func newDorisTestClient() *dorisCrud.Client {
 	return cli
 }
 
-func TestEventsFactRepo(t *testing.T) {
+func TestEventsFactRepo_Create(t *testing.T) {
 	ctx := context.Background()
 
 	db := newDorisTestClient()
@@ -90,4 +91,29 @@ func TestEventsFactRepo(t *testing.T) {
 	}
 	err := repo.Create(ctx, event)
 	assert.Nil(t, err)
+}
+
+func TestEventsFactRepo_List(t *testing.T) {
+	ctx := context.Background()
+
+	db := newDorisTestClient()
+	if db == nil {
+		t.Fatal("failed to create doris client")
+	}
+
+	cfg := &conf.Bootstrap{}
+
+	bctx := bootstrap.NewContextWithParam(ctx, &conf.AppInfo{}, cfg, log.DefaultLogger)
+	repo := NewEventsFactRepo(bctx, db)
+	assert.NotNil(t, repo)
+
+	resp, err := repo.List(ctx, &paginationV1.PagingRequest{
+		NoPaging: trans.Bool(false),
+	})
+	assert.Nil(t, err)
+	assert.NotNil(t, resp)
+	t.Logf("total: %d", resp.Total)
+	for i, item := range resp.Items {
+		t.Logf("item %d: %+v", i, item)
+	}
 }

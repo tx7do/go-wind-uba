@@ -2,11 +2,7 @@ import { useUserStore } from '@vben/stores';
 
 import { defineStore } from 'pinia';
 
-import {
-  createTagDefinitionServiceClient,
-  type ubaservicev1_TagCategory as TagCategory,
-  type ubaservicev1_TagType as TagType,
-} from '#/generated/api/admin/service/v1';
+import { createTagDefinitionServiceClient } from '#/generated/api/admin/service/v1';
 import { getDictEntryLabelByValue, useDictStore } from '#/stores/dict.state';
 import { makeOrderBy, makeQueryString, makeUpdateMask } from '#/utils/query';
 import { type Paging, requestClientRequestHandler } from '#/utils/request';
@@ -135,7 +131,7 @@ const TAG_CATEGORY_COLOR_MAP = {
   DEFAULT: '#86909C',
 } as const;
 
-export function tagCategoryToColor(category?: TagCategory) {
+export function tagCategoryToColor(category?: string) {
   return (
     TAG_CATEGORY_COLOR_MAP[category as keyof typeof TAG_CATEGORY_COLOR_MAP] ||
     TAG_CATEGORY_COLOR_MAP.DEFAULT
@@ -152,7 +148,7 @@ const TAG_TYPE_COLOR_MAP = {
   DEFAULT: '#86909C',
 } as const;
 
-export function tagTypeToColor(type?: TagType) {
+export function tagTypeToColor(type?: string) {
   return (
     TAG_TYPE_COLOR_MAP[type as keyof typeof TAG_TYPE_COLOR_MAP] ||
     TAG_TYPE_COLOR_MAP.DEFAULT

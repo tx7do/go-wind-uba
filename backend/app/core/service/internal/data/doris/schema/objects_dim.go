@@ -7,18 +7,18 @@ import (
 )
 
 type ObjectsDim struct {
-	TenantID     *uint32           `json:"tenant_id"`
-	ObjectID     *string           `json:"object_id"`
-	ObjectType   *string           `json:"object_type"`
-	ObjectName   *string           `json:"object_name"`
-	CategoryPath *string           `json:"category_path"`
-	Price        *decimal.Decimal  `json:"price"`
-	Currency     *string           `json:"currency"`
-	Rarity       *string           `json:"rarity"`
-	Attributes   map[string]string `json:"attributes"`
-	Status       *string           `json:"status"`
-	ValidFrom    *time.Time        `json:"valid_from"`
-	ValidTo      *time.Time        `json:"valid_to"`
-	CreatedAt    *time.Time        `json:"created_at"`
-	UpdatedAt    *time.Time        `json:"updated_at"`
+	TenantID     *uint32          `db:"tenant_id"`
+	ObjectID     *string          `db:"object_id"`
+	ObjectType   *string          `db:"object_type"`
+	ObjectName   *string          `db:"object_name"`
+	CategoryPath *string          `db:"category_path"`
+	Price        *decimal.Decimal `db:"price"`
+	Currency     *string          `db:"currency"`
+	Rarity       *string          `db:"rarity"`
+	Attributes   MapStringString  `db:"attributes"`
+	Status       *string          `db:"status"`
+	ValidFrom    *time.Time       `db:"valid_from"`
+	ValidTo      *time.Time       `db:"valid_to"`
+	CreatedAt    *time.Time       `db:"created_at"`
+	UpdatedAt    *time.Time       `db:"updated_at"`
 }

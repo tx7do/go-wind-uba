@@ -114,7 +114,6 @@ func (r *DictEntryRepo) List(ctx context.Context, req *paginationV1.PagingReques
 			dto.TypeId = &entity.Edges.DictType.ID
 		}
 		dtos = append(dtos, dto)
-		r.log.Debugf("dict entry entity ID: %v", entity.Edges.DictType.ID)
 	}
 
 	count, err := r.Count(ctx, whereSelectors)

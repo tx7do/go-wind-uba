@@ -7,7 +7,7 @@ import { $t } from '@vben/locales';
 import { notification } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import {riskLevelDict, riskTypeDict, useRiskRuleListStore} from '#/stores';
+import { riskLevelDict, riskTypeDict, useRiskRuleListStore } from '#/stores';
 
 const riskRuleListStore = useRiskRuleListStore();
 

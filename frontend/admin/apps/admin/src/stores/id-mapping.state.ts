@@ -2,9 +2,7 @@ import { useUserStore } from '@vben/stores';
 
 import { defineStore } from 'pinia';
 
-import {
-  createIDMappingServiceClient,
-} from '#/generated/api/admin/service/v1';
+import { createIDMappingServiceClient } from '#/generated/api/admin/service/v1';
 import { getDictEntryLabelByValue, useDictStore } from '#/stores/dict.state';
 import { makeOrderBy, makeQueryString } from '#/utils/query';
 import { type Paging, requestClientRequestHandler } from '#/utils/request';
