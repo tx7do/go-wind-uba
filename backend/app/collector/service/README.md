@@ -77,7 +77,7 @@
       "traceId": "trace_risk_123",
       "serverTime": "2026-03-27T12:05:01Z",
       "risk": {
-        "id": 10001,
+        "riskEventId": "10001",
         "tenantId": 1,
         "userId": 1001,
         "deviceId": "device_android_789",
@@ -164,7 +164,7 @@
       "traceId": "trace_risk_001",
       "serverTime": "2026-03-27T12:10:01Z",
       "risk": {
-        "id": 1002,
+        "riskEventId": "1002",
         "tenantId": 1,
         "userId": 1001,
         "deviceId": "device_web_123",

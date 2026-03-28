@@ -14,7 +14,7 @@ USE gw_uba;
 -- 1. 事件事实表
 -- ============================================================
 CREATE TABLE IF NOT EXISTS events_fact (
-    event_id VARCHAR(64) NOT NULL COMMENT '全局唯一事件ID',
+    event_id VARCHAR(128) NOT NULL COMMENT '全局唯一事件ID',
     tenant_id INT NOT NULL COMMENT '租户ID',
     event_time DATETIMEV2(3) NOT NULL COMMENT '客户端事件时间',
 
@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS events_fact (
     object_type VARCHAR(64) COMMENT '对象类型',
     object_id VARCHAR(128) COMMENT '对象ID',
     object_name VARCHAR(256) COMMENT '对象名称',
-    session_id BIGINT DEFAULT 0 COMMENT '会话ID',
+    session_id VARCHAR(128) COMMENT '会话ID',
     session_seq INT DEFAULT 0 COMMENT '会话内序号',
     platform VARCHAR(64) COMMENT '平台',
     os VARCHAR(128) COMMENT '系统',
@@ -55,7 +55,20 @@ CREATE TABLE IF NOT EXISTS events_fact (
     risk_level VARCHAR(64) COMMENT '风险等级',
     trace_id VARCHAR(128) COMMENT '链路ID',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间'
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+
+    INDEX idx_user_id (user_id) USING INVERTED COMMENT '登录用户ID倒排索引',
+    INDEX idx_device_id (device_id) USING INVERTED COMMENT '设备ID倒排索引',
+    INDEX idx_account_id (account_id) USING INVERTED COMMENT '业务账号ID倒排索引',
+    INDEX idx_global_user_id (global_user_id) USING INVERTED COMMENT '全局用户ID倒排索引',
+    INDEX idx_event_category (event_category) USING INVERTED COMMENT '事件大类倒排索引',
+    INDEX idx_event_name (event_name) USING INVERTED COMMENT '事件名称倒排索引',
+    INDEX idx_object_type (object_type) USING INVERTED COMMENT '对象类型倒排索引',
+    INDEX idx_platform (platform) USING INVERTED COMMENT '平台倒排索引',
+    INDEX idx_country (country) USING INVERTED COMMENT '国家倒排索引',
+    INDEX idx_event_time (event_time) USING INVERTED COMMENT '事件时间倒排索引',
+    INDEX idx_risk_level (risk_level) USING INVERTED COMMENT '风险等级倒排索引',
+    INDEX idx_trace_id (trace_id) USING INVERTED COMMENT '链路ID倒排索引'
 )
     UNIQUE KEY(event_id, tenant_id, event_time) -- 顺序必须和顶部字段一致
     PARTITION BY RANGE(event_time) ()
@@ -71,21 +84,16 @@ CREATE TABLE IF NOT EXISTS events_fact (
                    "enable_unique_key_merge_on_write" = "true"
                );
 ALTER TABLE events_fact MODIFY COMMENT "用户行为事件事实表";
-ALTER TABLE events_fact ADD INDEX idx_object_id (object_id) USING INVERTED;
-ALTER TABLE events_fact ADD INDEX idx_referer (referer) USING INVERTED;
-ALTER TABLE events_fact ADD INDEX idx_user_agent (user_agent) USING INVERTED;
-ALTER TABLE events_fact ADD INDEX idx_geo (geo) USING INVERTED;
-ALTER TABLE events_fact ADD INDEX idx_risk (risk_level) USING INVERTED;
-ALTER TABLE events_fact ADD INDEX idx_event_name (event_name) USING INVERTED;
 
 
 -- ============================================================
 -- 2. 用户会话事实表
 -- ============================================================
 CREATE TABLE IF NOT EXISTS sessions_fact (
-    id              BIGINT NOT NULL COMMENT '会话唯一ID',
+    session_id      VARCHAR(128) NOT NULL COMMENT '会话唯一ID',
     tenant_id       INT NOT NULL COMMENT '租户ID',
     session_date    DATE NOT NULL COMMENT '会话日期',
+
     user_id         INT DEFAULT 0 COMMENT '登录用户ID',
     device_id       VARCHAR(128) COMMENT '设备指纹',
     global_user_id  VARCHAR(128) DEFAULT '' COMMENT '全局用户ID',
@@ -109,11 +117,17 @@ CREATE TABLE IF NOT EXISTS sessions_fact (
     risk_tags       ARRAY<STRING> COMMENT '风险标签数组',
     context         MAP<STRING,STRING> COMMENT '会话上下文',
     created_at      DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    updated_at      DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间'
+    updated_at      DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+
+    INDEX idx_platform (platform) USING INVERTED COMMENT '平台倒排索引',
+    INDEX idx_entry_page (entry_page) USING INVERTED COMMENT '入口页面倒排索引',
+    INDEX idx_exit_page (exit_page) USING INVERTED COMMENT '出口页面倒排索引',
+    INDEX idx_risk_level (risk_level) USING INVERTED COMMENT '风险等级倒排索引',
+    INDEX idx_is_bounce (is_bounce) USING INVERTED COMMENT '是否跳出倒排索引'
 )
-    UNIQUE KEY(id, tenant_id, session_date)
+    UNIQUE KEY(session_id, tenant_id, session_date)
     PARTITION BY RANGE(session_date) ()
-    DISTRIBUTED BY HASH(id, tenant_id) BUCKETS 16
+    DISTRIBUTED BY HASH(session_id, tenant_id) BUCKETS 16
     PROPERTIES (
                    "replication_num" = "1",
                    "dynamic_partition.enable" = "true",
@@ -124,19 +138,17 @@ CREATE TABLE IF NOT EXISTS sessions_fact (
                    "light_schema_change" = "true",
                    "enable_unique_key_merge_on_write" = "true"
                );
-ALTER TABLE events_fact MODIFY COMMENT "会话事实表（存储用户会话级聚合指标）";
-ALTER TABLE sessions_fact ADD INDEX idx_entry_page (entry_page) USING INVERTED;
-ALTER TABLE sessions_fact ADD INDEX idx_risk_level (risk_level) USING INVERTED;
-ALTER TABLE sessions_fact ADD INDEX idx_is_bounce (is_bounce) USING INVERTED;
+ALTER TABLE sessions_fact MODIFY COMMENT "会话事实表（存储用户会话级聚合指标）";
 
 
 -- ============================================================
 -- 3. 风险事件表
 -- ============================================================
 CREATE TABLE IF NOT EXISTS risk_events (
-    id              BIGINT NOT NULL COMMENT '风险事件唯一ID',
+    risk_event_id   VARCHAR(128) NOT NULL COMMENT '风险事件唯一ID',
     tenant_id       INT NOT NULL COMMENT '租户ID',
     event_date      DATE NOT NULL COMMENT '风险日期',
+
     user_id         INT DEFAULT 0 COMMENT '登录用户ID',
     device_id       VARCHAR(128) COMMENT '设备指纹',
     global_user_id  VARCHAR(128) DEFAULT '' COMMENT '全局用户ID',
@@ -147,7 +159,7 @@ CREATE TABLE IF NOT EXISTS risk_events (
     rule_name       VARCHAR(256) COMMENT '触发规则名称',
     rule_context    MAP<STRING,STRING> COMMENT '规则触发上下文',
     related_event_ids ARRAY<STRING> COMMENT '关联行为事件ID数组',
-    session_id      BIGINT DEFAULT 0 COMMENT '关联会话ID',
+    session_id      VARCHAR(128) COMMENT '关联会话ID',
     description     VARCHAR(1024) COMMENT '风险描述',
     evidence        MAP<STRING,STRING> COMMENT '证据键值对',
     status          VARCHAR(64) COMMENT '处置状态',
@@ -157,11 +169,20 @@ CREATE TABLE IF NOT EXISTS risk_events (
     occur_time      DATETIMEV2(3) NOT NULL COMMENT '风险发生时间',
     report_time     DATETIMEV2(3) DEFAULT CURRENT_TIMESTAMP(3) COMMENT '风险上报时间',
     created_at      DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间',
-    updated_at      DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '记录更新时间'
+    updated_at      DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '记录更新时间',
+
+    INDEX idx_risk_type (risk_type) USING INVERTED COMMENT '风险类型倒排索引',
+    INDEX idx_risk_level (risk_level) USING INVERTED COMMENT '风险等级倒排索引',
+    INDEX idx_status (status) USING INVERTED COMMENT '处置状态倒排索引',
+    INDEX idx_occur_time (occur_time) USING INVERTED COMMENT '风险发生时间倒排索引',
+    INDEX idx_handler_id (handler_id) USING INVERTED COMMENT '处置人ID倒排索引',
+    INDEX idx_rule_id (rule_id) USING INVERTED COMMENT '触发规则ID倒排索引',
+    INDEX idx_related_event_ids (related_event_ids) USING INVERTED COMMENT '关联事件ID数组倒排索引',
+    INDEX idx_description (description) USING INVERTED COMMENT '风险描述倒排索引'
 )
-    UNIQUE KEY(id, tenant_id, event_date)
+    UNIQUE KEY(risk_event_id, tenant_id, event_date)
     PARTITION BY RANGE(event_date) ()
-    DISTRIBUTED BY HASH(id, tenant_id) BUCKETS 16
+    DISTRIBUTED BY HASH(risk_event_id, tenant_id) BUCKETS 16
     PROPERTIES (
                    "replication_num" = "1",
                    "dynamic_partition.enable" = "true",
@@ -173,9 +194,6 @@ CREATE TABLE IF NOT EXISTS risk_events (
                    "enable_unique_key_merge_on_write" = "true"
                );
 ALTER TABLE risk_events MODIFY COMMENT "风险事件表（存储风控规则触发的风险事件，支持风险处置、误报分析、规则优化）";
-ALTER TABLE risk_events ADD INDEX idx_description (description) USING INVERTED;
-ALTER TABLE risk_events ADD INDEX idx_status (status) USING INVERTED;
-ALTER TABLE risk_events ADD INDEX idx_risk_level (risk_level) USING INVERTED;
 
 
 -- ============================================================
@@ -218,7 +236,12 @@ CREATE TABLE IF NOT EXISTS users_dim (
     -- 版本控制
     ver               BIGINT DEFAULT 1 COMMENT '数据版本号，更新+1',
     created_at        DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间',
-    updated_at        DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '记录更新时间'
+    updated_at        DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '记录更新时间',
+
+    INDEX idx_risk_level (risk_level) USING INVERTED COMMENT '风险等级倒排索引',
+    INDEX idx_last_active (last_active_date) USING INVERTED COMMENT '最后活跃日期倒排索引',
+    INDEX idx_user_role (user_role) USING INVERTED COMMENT '用户角色倒排索引',
+    INDEX idx_risk_score (risk_score) USING INVERTED COMMENT '用户风险评分倒排索引'
 )
     UNIQUE KEY(tenant_id, user_id)
     DISTRIBUTED BY HASH(tenant_id, user_id) BUCKETS 10
@@ -228,18 +251,16 @@ CREATE TABLE IF NOT EXISTS users_dim (
                    "enable_unique_key_merge_on_write" = "true"
                );
 ALTER TABLE users_dim MODIFY COMMENT '用户维度表（存储用户级别的预计算画像指标，支持用户圈选、分群分析、个性化推荐）';
-ALTER TABLE users_dim ADD INDEX idx_risk_score (risk_score) USING INVERTED;
-ALTER TABLE users_dim ADD INDEX idx_last_active (last_active_date) USING INVERTED;
-ALTER TABLE users_dim ADD INDEX idx_risk_level (risk_level) USING INVERTED;
 
 
 -- ============================================================
 -- 5. 对象维度表
 -- ============================================================
 CREATE TABLE IF NOT EXISTS objects_dim (
-    id            VARCHAR(128) NOT NULL COMMENT '对象ID',
+    object_id     VARCHAR(128) NOT NULL COMMENT '对象ID',
     tenant_id     INT NOT NULL COMMENT '租户ID',
     object_type   VARCHAR(64) NOT NULL COMMENT '对象类型',
+
     object_name   VARCHAR(256) COMMENT '对象名称',
     category_path VARCHAR(512) COMMENT '分类路径',
     price         DECIMAL(18,2) DEFAULT 0 COMMENT '对象价格',
@@ -250,19 +271,20 @@ CREATE TABLE IF NOT EXISTS objects_dim (
     valid_from    DATETIME COMMENT '生效时间',
     valid_to      DATETIME COMMENT '失效时间',
     created_at    DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间',
-    updated_at    DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '记录更新时间'
+    updated_at    DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '记录更新时间',
+
+    INDEX idx_object_name (object_name) USING INVERTED COMMENT '对象名称倒排索引',
+    INDEX idx_status (status) USING INVERTED COMMENT '对象状态倒排索引',
+    INDEX idx_rarity (rarity) USING INVERTED COMMENT '稀有度倒排索引'
 )
-    UNIQUE KEY(tenant_id, object_type, id)
-    DISTRIBUTED BY HASH(tenant_id, object_type, id) BUCKETS 10
+    UNIQUE KEY(object_id, tenant_id, object_type)
+    DISTRIBUTED BY HASH(object_id, tenant_id, object_type) BUCKETS 10
     PROPERTIES (
                    "replication_num" = "1",
                    "light_schema_change" = "true",
                    "enable_unique_key_merge_on_write" = "true"
                );
 ALTER TABLE objects_dim MODIFY COMMENT '对象维度表（存储业务对象的基本信息，如商品/道具/关卡/页面等，支持对象分析）';
-ALTER TABLE objects_dim ADD INDEX idx_object_name (object_name) USING INVERTED;
-ALTER TABLE objects_dim ADD INDEX idx_status (status) USING INVERTED;
-ALTER TABLE objects_dim ADD INDEX idx_rarity (rarity) USING INVERTED;
 
 
 -- ============================================================
@@ -273,6 +295,7 @@ CREATE TABLE IF NOT EXISTS id_mapping (
     tenant_id      INT NOT NULL COMMENT '租户ID',
     id_type        VARCHAR(64) NOT NULL COMMENT '身份标识类型',
     id_value       VARCHAR(256) NOT NULL COMMENT '身份标识值',
+
     confidence     FLOAT DEFAULT 1.0 COMMENT '关联置信度',
     link_source    VARCHAR(64) COMMENT '关联来源',
     first_seen     DATETIME COMMENT '首次关联时间',
@@ -280,15 +303,13 @@ CREATE TABLE IF NOT EXISTS id_mapping (
     is_active      TINYINT DEFAULT 1 COMMENT '是否有效',
     created_at     DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间',
     updated_at     DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '记录更新时间',
-    updated_date   DATE GENERATED ALWAYS AS (DATE(updated_at)) COMMENT '更新日期'
+    updated_date   DATE GENERATED ALWAYS AS (DATE(updated_at)) COMMENT '更新日期',
+
+    INDEX idx_is_active (is_active) USING INVERTED COMMENT '是否有效倒排索引',
+    INDEX idx_id_type (id_type) USING INVERTED COMMENT '身份标识类型倒排索引',
+    INDEX idx_id_value (id_value) USING INVERTED COMMENT '身份标识值倒排索引'
 )
     UNIQUE KEY(global_user_id, tenant_id, id_type, id_value)
-    PARTITION BY LIST (tenant_id)
-(
-    PARTITION p1 VALUES IN (1),
-    PARTITION p2 VALUES IN (2),
-    PARTITION p3 VALUES IN (3)
-)
     DISTRIBUTED BY HASH (tenant_id, id_type, id_value) BUCKETS 10
     PROPERTIES (
                    "replication_num" = "1",
@@ -296,7 +317,6 @@ CREATE TABLE IF NOT EXISTS id_mapping (
                    "enable_unique_key_merge_on_write" = "true"
                );
 ALTER TABLE id_mapping MODIFY COMMENT 'ID关联映射表（打通匿名用户与登录用户的身份关联，支持跨设备/跨账号用户识别）';
-ALTER TABLE id_mapping ADD INDEX idx_is_active (is_active) USING INVERTED;
 
 
 -- ============================================================
@@ -307,6 +327,7 @@ CREATE TABLE IF NOT EXISTS user_tags (
     user_id        INT NOT NULL COMMENT '登录用户ID',
     tag_id         INT NOT NULL COMMENT '标签定义ID',
     expire_date    DATE NOT NULL COMMENT '过期日期',
+
     tag_value      VARCHAR(256) COMMENT '标签值',
     value_label    VARCHAR(256) COMMENT '标签值显示名',
     confidence     FLOAT DEFAULT 1.0 COMMENT '标签置信度',
@@ -316,7 +337,11 @@ CREATE TABLE IF NOT EXISTS user_tags (
     expire_time    DATETIMEV2(3) COMMENT '标签过期时间',
     is_active      TINYINT DEFAULT 1 COMMENT '是否有效',
     created_at     DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间',
-    updated_at     DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '记录更新时间'
+    updated_at     DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '记录更新时间',
+
+    INDEX idx_is_active (is_active) USING INVERTED COMMENT '是否有效倒排索引',
+    INDEX idx_source (source) USING INVERTED COMMENT '标签来源倒排索引',
+    INDEX idx_expire_date (expire_date) USING INVERTED COMMENT '过期日期倒排索引'
 )
     UNIQUE KEY(tenant_id, user_id, tag_id, expire_date)
     PARTITION BY RANGE(expire_date) ()
@@ -332,18 +357,18 @@ CREATE TABLE IF NOT EXISTS user_tags (
                    "enable_unique_key_merge_on_write" = "true"
                );
 ALTER TABLE user_tags MODIFY COMMENT '用户标签关联表（存储用户与标签的关联关系，支持手动/规则/算法打标，支持有效期管理）';
-ALTER TABLE user_tags ADD INDEX idx_is_active (is_active) USING INVERTED;
-ALTER TABLE user_tags ADD INDEX idx_source (source) USING INVERTED;
 
 
 -- ============================================================
 -- 8. 用户行为路径特征表
 -- ============================================================
 CREATE TABLE IF NOT EXISTS path_features (
-    id                VARCHAR(128) NOT NULL COMMENT '路径特征ID',
+    path_id           VARCHAR(128) NOT NULL COMMENT '路径特征ID',
     tenant_id         INT NOT NULL COMMENT '租户ID',
+    event_date        DATE NOT NULL COMMENT '路径日期',
+
     user_id           INT DEFAULT 0 COMMENT '登录用户ID',
-    session_id        BIGINT DEFAULT 0 COMMENT '会话ID',
+    session_id        VARCHAR(128) COMMENT '会话ID',
     path_hash         VARCHAR(128) COMMENT '路径序列哈希值',
     first_event       VARCHAR(128) COMMENT '入口事件',
     last_event        VARCHAR(128) COMMENT '出口事件',
@@ -355,13 +380,16 @@ CREATE TABLE IF NOT EXISTS path_features (
     conversion_time   DATETIMEV2(3) COMMENT '转化时间',
     start_time        DATETIMEV2(3) NOT NULL COMMENT '路径开始时间',
     end_time          DATETIMEV2(3) COMMENT '路径结束时间',
-    event_date        DATE NOT NULL COMMENT '路径日期',
     total_duration_ms BIGINT DEFAULT 0 COMMENT '路径总耗时',
-    step_count        TINYINT DEFAULT 0 COMMENT '路径步数'
+    step_count        TINYINT DEFAULT 0 COMMENT '路径步数',
+
+    INDEX idx_first_event (first_event) USING INVERTED COMMENT '入口事件倒排索引',
+    INDEX idx_is_converted (is_converted) USING INVERTED COMMENT '是否转化倒排索引',
+    INDEX idx_path_length (path_length) USING INVERTED COMMENT '路径步数倒排索引'
 )
     UNIQUE KEY(path_id, tenant_id, event_date)
     PARTITION BY RANGE(event_date) ()
-    DISTRIBUTED BY HASH(tenant_id, id) BUCKETS 16
+    DISTRIBUTED BY HASH(path_id, tenant_id, event_date) BUCKETS 16
     PROPERTIES (
                    "replication_num" = "1",
                    "dynamic_partition.enable" = "true",
@@ -373,6 +401,3 @@ CREATE TABLE IF NOT EXISTS path_features (
                    "enable_unique_key_merge_on_write" = "true"
                );
 ALTER TABLE path_features MODIFY COMMENT '用户行为路径特征表（存储用户会话内的行为序列，用于路径分析、漏斗分析、热门路径挖掘，支持转化追踪）';
-ALTER TABLE path_features ADD INDEX idx_first_event (first_event) USING INVERTED;
-ALTER TABLE path_features ADD INDEX idx_is_converted (is_converted) USING INVERTED;
-ALTER TABLE path_features ADD INDEX idx_path_length (path_length) USING INVERTED;
