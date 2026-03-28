@@ -28,6 +28,30 @@
 | `uba_tag_values`             | 配置表 | MySQL / Postgresql | ✅ 是  | ✅ 是  | MySQL → OLAP | CDC/Routine Load | P1  |
 | `uba_webhooks`               | 配置表 | MySQL / Postgresql | ✅ 是  | ✅ 是  | MySQL → OLAP | CDC/Routine Load | P1  |
 
+## Doris方案
+
+| 表名                       | 表类型 | 主存储           | 同步 | 同步方向          | 原因                |
+|--------------------------|-----|---------------|----|---------------|-------------------|
+| events_fact              | 事实表 | Doris         | 否  | -             | 流水只写 Doris        |
+| sessions_fact            | 事实表 | Doris         | 否  | -             | 会话只写 Doris        |
+| risk_events              | 事实表 | Doris         | 否  | -             | 风险事件 Doris        |
+| path_features            | 事实表 | Doris         | 否  | -             | 路径分析 Doris        |
+| users_dim                | 维度表 | Doris         | 否  | -             | Doris 支持实时更新，一张搞定 |
+| objects_dim              | 维度表 | MySQL + Doris | 是  | MySQL → Doris | 商品 / 对象需要后台编辑     |
+| id_mapping               | 维度表 | MySQL + Doris | 是  | MySQL → Doris | ID 映射需要事务         |
+| user_tags                | 维度表 | Doris         | 否  | -             | 标签直接在 Doris 更新    |
+| events_agg_daily         | 聚合表 | Doris         | 否  | -             | 物化视图              |
+| sessions_agg_daily       | 聚合表 | Doris         | 否  | -             | 物化视图              |
+| risk_stats_daily         | 聚合表 | Doris         | 否  | -             | 物化视图              |
+| popular_paths_daily      | 聚合表 | Doris         | 否  | -             | 物化视图              |
+| user_tags_agg            | 聚合表 | Doris         | 否  | -             | 物化视图              |
+| uba_applications         | 配置表 | MySQL         | 是  | MySQL→Doris   | 后台管理              |
+| uba_risk_rules           | 配置表 | MySQL         | 是  | MySQL→Doris   | 规则编辑              |
+| uba_risk_rule_conditions | 配置表 | MySQL         | 是  | MySQL→Doris   | 规则条件              |
+| uba_tag_definitions      | 配置表 | MySQL         | 是  | MySQL→Doris   | 标签定义              |
+| uba_tag_values           | 配置表 | MySQL         | 是  | MySQL→Doris   | 标签值               |
+| uba_webhooks             | 配置表 | MySQL         | 是  | MySQL→Doris   | 回调配置              |
+
 ## 详细同步方案
 
 ### 1. 需要同步的表（MySQL → OLAP）
@@ -89,19 +113,15 @@ flowchart TB
     Config --> Flink
     Dim --> Routine
     Config --> Kafka
-
     Flink -.-> SyncT
     Routine -.-> SyncT
     Kafka -.-> SyncT
-
     Report ==> DirectT
     Risk ==> DirectT
     Session ==> DirectT
-
     DirectT -.-> AggT
-
-    style MySQL fill:#e1f5ff,stroke:#0066cc,stroke-width:2px
-    style Sync fill:#fff4e1,stroke:#ff9900,stroke-width:2px
-    style OLAP fill:#e8f5e9,stroke:#009933,stroke-width:2px
-    style SDK fill:#f3e5f5,stroke:#9933cc,stroke-width:2px
+    style MySQL fill: #e1f5ff, stroke: #0066cc, stroke-width: 2px
+    style Sync fill: #fff4e1, stroke: #ff9900, stroke-width: 2px
+    style OLAP fill: #e8f5e9, stroke: #009933, stroke-width: 2px
+    style SDK fill: #f3e5f5, stroke: #9933cc, stroke-width: 2px
 ```
