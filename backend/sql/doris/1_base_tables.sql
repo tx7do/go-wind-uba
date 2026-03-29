@@ -3,7 +3,7 @@
 -- 数据库：gw_uba
 -- 用途：存储原始行为数据、会话数据、风险数据及维度数据
 -- 执行顺序：1
--- 兼容版本：Apache Doris 2.0+
+-- 兼容版本：Apache Doris 2.0+ / 4.x
 -- ============================================================
 
 CREATE DATABASE IF NOT EXISTS gw_uba;
@@ -71,6 +71,7 @@ CREATE TABLE IF NOT EXISTS events_fact (
     INDEX idx_trace_id (trace_id) USING INVERTED COMMENT '链路ID倒排索引'
 )
     UNIQUE KEY(event_id, tenant_id, event_time) -- 顺序必须和顶部字段一致
+    COMMENT "用户行为事件事实表"
     PARTITION BY RANGE(event_time) ()
     DISTRIBUTED BY HASH(event_id, tenant_id) BUCKETS 16
     PROPERTIES (
@@ -83,7 +84,6 @@ CREATE TABLE IF NOT EXISTS events_fact (
                    "light_schema_change" = "true",
                    "enable_unique_key_merge_on_write" = "true"
                );
-ALTER TABLE events_fact MODIFY COMMENT "用户行为事件事实表";
 
 
 -- ============================================================
@@ -126,6 +126,7 @@ CREATE TABLE IF NOT EXISTS sessions_fact (
     INDEX idx_is_bounce (is_bounce) USING INVERTED COMMENT '是否跳出倒排索引'
 )
     UNIQUE KEY(session_id, tenant_id, session_date)
+    COMMENT "会话事实表（存储用户会话级聚合指标）"
     PARTITION BY RANGE(session_date) ()
     DISTRIBUTED BY HASH(session_id, tenant_id) BUCKETS 16
     PROPERTIES (
@@ -138,7 +139,6 @@ CREATE TABLE IF NOT EXISTS sessions_fact (
                    "light_schema_change" = "true",
                    "enable_unique_key_merge_on_write" = "true"
                );
-ALTER TABLE sessions_fact MODIFY COMMENT "会话事实表（存储用户会话级聚合指标）";
 
 
 -- ============================================================
@@ -181,6 +181,7 @@ CREATE TABLE IF NOT EXISTS risk_events (
     INDEX idx_description (description) USING INVERTED COMMENT '风险描述倒排索引'
 )
     UNIQUE KEY(risk_event_id, tenant_id, event_date)
+    COMMENT "风险事件表（存储风控规则触发的风险事件，支持风险处置、误报分析、规则优化）"
     PARTITION BY RANGE(event_date) ()
     DISTRIBUTED BY HASH(risk_event_id, tenant_id) BUCKETS 16
     PROPERTIES (
@@ -193,7 +194,6 @@ CREATE TABLE IF NOT EXISTS risk_events (
                    "light_schema_change" = "true",
                    "enable_unique_key_merge_on_write" = "true"
                );
-ALTER TABLE risk_events MODIFY COMMENT "风险事件表（存储风控规则触发的风险事件，支持风险处置、误报分析、规则优化）";
 
 
 -- ============================================================
@@ -244,13 +244,13 @@ CREATE TABLE IF NOT EXISTS users_dim (
     INDEX idx_risk_score (risk_score) USING INVERTED COMMENT '用户风险评分倒排索引'
 )
     UNIQUE KEY(tenant_id, user_id)
+    COMMENT '用户维度表（存储用户级别的预计算画像指标，支持用户圈选、分群分析、个性化推荐）'
     DISTRIBUTED BY HASH(tenant_id, user_id) BUCKETS 10
     PROPERTIES (
                    "replication_num" = "1",
                    "light_schema_change" = "true",
                    "enable_unique_key_merge_on_write" = "true"
                );
-ALTER TABLE users_dim MODIFY COMMENT '用户维度表（存储用户级别的预计算画像指标，支持用户圈选、分群分析、个性化推荐）';
 
 
 -- ============================================================
@@ -278,13 +278,13 @@ CREATE TABLE IF NOT EXISTS objects_dim (
     INDEX idx_rarity (rarity) USING INVERTED COMMENT '稀有度倒排索引'
 )
     UNIQUE KEY(object_id, tenant_id, object_type)
+    COMMENT '对象维度表（存储业务对象的基本信息，如商品/道具/关卡/页面等，支持对象分析）'
     DISTRIBUTED BY HASH(object_id, tenant_id, object_type) BUCKETS 10
     PROPERTIES (
                    "replication_num" = "1",
                    "light_schema_change" = "true",
                    "enable_unique_key_merge_on_write" = "true"
                );
-ALTER TABLE objects_dim MODIFY COMMENT '对象维度表（存储业务对象的基本信息，如商品/道具/关卡/页面等，支持对象分析）';
 
 
 -- ============================================================
@@ -310,13 +310,13 @@ CREATE TABLE IF NOT EXISTS id_mapping (
     INDEX idx_id_value (id_value) USING INVERTED COMMENT '身份标识值倒排索引'
 )
     UNIQUE KEY(global_user_id, tenant_id, id_type, id_value)
+    COMMENT 'ID关联映射表（打通匿名用户与登录用户的身份关联，支持跨设备/跨账号用户识别）'
     DISTRIBUTED BY HASH (tenant_id, id_type, id_value) BUCKETS 10
     PROPERTIES (
                    "replication_num" = "1",
                    "light_schema_change" = "true",
                    "enable_unique_key_merge_on_write" = "true"
                );
-ALTER TABLE id_mapping MODIFY COMMENT 'ID关联映射表（打通匿名用户与登录用户的身份关联，支持跨设备/跨账号用户识别）';
 
 
 -- ============================================================
@@ -344,6 +344,7 @@ CREATE TABLE IF NOT EXISTS user_tags (
     INDEX idx_expire_date (expire_date) USING INVERTED COMMENT '过期日期倒排索引'
 )
     UNIQUE KEY(tenant_id, user_id, tag_id, expire_date)
+    COMMENT '用户标签关联表（存储用户与标签的关联关系，支持手动/规则/算法打标，支持有效期管理）'
     PARTITION BY RANGE(expire_date) ()
     DISTRIBUTED BY HASH(tenant_id, user_id, tag_id) BUCKETS 16
     PROPERTIES (
@@ -356,7 +357,6 @@ CREATE TABLE IF NOT EXISTS user_tags (
                    "light_schema_change" = "true",
                    "enable_unique_key_merge_on_write" = "true"
                );
-ALTER TABLE user_tags MODIFY COMMENT '用户标签关联表（存储用户与标签的关联关系，支持手动/规则/算法打标，支持有效期管理）';
 
 
 -- ============================================================
@@ -388,6 +388,7 @@ CREATE TABLE IF NOT EXISTS path_features (
     INDEX idx_path_length (path_length) USING INVERTED COMMENT '路径步数倒排索引'
 )
     UNIQUE KEY(path_id, tenant_id, event_date)
+    COMMENT '用户行为路径特征表（存储用户会话内的行为序列，用于路径分析、漏斗分析、热门路径挖掘，支持转化追踪）'
     PARTITION BY RANGE(event_date) ()
     DISTRIBUTED BY HASH(path_id, tenant_id, event_date) BUCKETS 16
     PROPERTIES (
@@ -400,4 +401,3 @@ CREATE TABLE IF NOT EXISTS path_features (
                    "light_schema_change" = "true",
                    "enable_unique_key_merge_on_write" = "true"
                );
-ALTER TABLE path_features MODIFY COMMENT '用户行为路径特征表（存储用户会话内的行为序列，用于路径分析、漏斗分析、热门路径挖掘，支持转化追踪）';
