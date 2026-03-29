@@ -2,6 +2,8 @@ package schema
 
 import (
 	"time"
+
+	"github.com/shopspring/decimal"
 )
 
 type EventsFact struct {
@@ -12,7 +14,7 @@ type EventsFact struct {
 	AccountID     *string          `db:"account_id"`
 	GlobalUserID  *string          `db:"global_user_id"`
 	EventTime     *time.Time       `db:"event_time"`
-	EventTs       *int64           `db:"event_ts"`
+	EventTs       *int64           `db:"event_ts,readonly"`
 	ServerTime    *time.Time       `db:"server_time"`
 	EventCategory *string          `db:"event_category"`
 	EventName     *string          `db:"event_name"`
@@ -42,7 +44,7 @@ type EventsFact struct {
 	TraceID       *string          `db:"trace_id"`
 	Score         *int32           `db:"score"`
 	Quantity      *uint32          `db:"quantity"`
-	Amount        *uint32          `db:"amount"`
+	Amount        *decimal.Decimal `db:"amount"`
 	DurationMs    *uint32          `db:"duration_ms"`
 	CreatedAt     *time.Time       `db:"created_at"`
 	UpdatedAt     *time.Time       `db:"updated_at"`

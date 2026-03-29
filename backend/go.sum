@@ -430,8 +430,8 @@ github.com/tx7do/go-crud/audit v0.0.2 h1:fXoy2Bbqjow/fpK+0DESYt4vf7tswR4VVaKCA0U
 github.com/tx7do/go-crud/audit v0.0.2/go.mod h1:cBcCo1uDvAjhCpRF29L4NmIUnEX7qDl2FF83a1xPeA4=
 github.com/tx7do/go-crud/clickhouse v0.0.17 h1:rQ7kGuxHg4puwb3j0wjR7PhfFJ9SAFoSuSkzZVPhZo4=
 github.com/tx7do/go-crud/clickhouse v0.0.17/go.mod h1:zahAttDKIn2wLHS9AzyLDVuzlJwb6A1xh2GpJ1ihlUQ=
-github.com/tx7do/go-crud/doris v0.0.6 h1:OU9B1Wr7bhnXQ8dxM+l7fysygw+xUOXMLbQmR4ZnDtY=
-github.com/tx7do/go-crud/doris v0.0.6/go.mod h1:PgQVww2Rw7SilgDOsh1DIqyfqVJ+rvRMFAxQ9pXZ4Sw=
+github.com/tx7do/go-crud/doris v0.0.8 h1:bg6Q+i7RUsOSGZMeKfWVw3orSaRSCsx+wdQX3AJe5v4=
+github.com/tx7do/go-crud/doris v0.0.8/go.mod h1:PgQVww2Rw7SilgDOsh1DIqyfqVJ+rvRMFAxQ9pXZ4Sw=
 github.com/tx7do/go-crud/entgo v0.0.47 h1:udb4QMhYDEkVDFIAXZGxq//N4ETJJ7q+6oIMrcoTDL0=
 github.com/tx7do/go-crud/entgo v0.0.47/go.mod h1:0nIkHC13Om5S6evqaRS5PsSeGmSLm5l+0wbXNsvv87I=
 github.com/tx7do/go-crud/pagination v0.0.13 h1:LPUkBPAj0WC9VzFKcTWHzk7ozl1gZVAN3tq5Oj8uBbQ=

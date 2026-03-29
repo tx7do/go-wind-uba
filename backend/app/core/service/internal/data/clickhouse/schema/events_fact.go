@@ -1,6 +1,10 @@
 package schema
 
-import "time"
+import (
+	"time"
+
+	"github.com/shopspring/decimal"
+)
 
 // 事件事实表
 // 对应表：gw_uba.events_fact
@@ -43,6 +47,6 @@ type EventsFact struct {
 	ErrorCode     *string            `ch:"error_code"`
 	Score         *int32             `ch:"score"`
 	Quantity      *uint32            `ch:"quantity"`
-	Amount        *uint32            `ch:"amount"`
+	Amount        *decimal.Decimal   `ch:"amount"`
 	DurationMs    *uint32            `ch:"duration_ms"`
 }

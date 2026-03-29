@@ -26,7 +26,7 @@ require (
 	github.com/stretchr/testify v1.11.1
 	github.com/tx7do/go-crud/api v0.0.7
 	github.com/tx7do/go-crud/clickhouse v0.0.17
-	github.com/tx7do/go-crud/doris v0.0.6
+	github.com/tx7do/go-crud/doris v0.0.8
 	github.com/tx7do/go-crud/entgo v0.0.47
 	github.com/tx7do/go-crud/pagination v0.0.13
 	github.com/tx7do/go-crud/viewer v0.0.6
