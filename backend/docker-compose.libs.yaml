@@ -168,7 +168,7 @@ services:
 #      - TZ=Asia/Shanghai
 
 #  clickhouse:
-#    image: docker.io/bitnami/clickhouse:latest
+#    image: docker.io/clickhouse/clickhouse-server:latest
 #    container_name: clickhouse
 #    hostname: clickhouse
 #    restart: always
