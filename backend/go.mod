@@ -4,9 +4,9 @@ go 1.25.7
 
 require (
 	entgo.io/ent v0.14.6
-	github.com/alicebob/miniredis/v2 v2.37.0
+	github.com/alicebob/miniredis/v2 v2.38.0
 	github.com/envoyproxy/protoc-gen-validate v1.3.3
-	github.com/getkin/kin-openapi v0.137.0
+	github.com/getkin/kin-openapi v0.138.0
 	github.com/go-kratos/kratos/v2 v2.9.2
 	github.com/go-sql-driver/mysql v1.10.0
 	github.com/golang-jwt/jwt/v5 v5.3.1
@@ -17,7 +17,7 @@ require (
 	github.com/jackc/pgx/v5 v5.9.2
 	github.com/jinzhu/copier v0.4.0
 	github.com/jinzhu/inflection v1.0.0
-	github.com/lib/pq v1.10.9
+	github.com/lib/pq v1.12.3
 	github.com/menta2k/protoc-gen-redact/v3 v3.0.0-20260213125431-7688a38967d4
 	github.com/mileusna/useragent v1.3.5
 	github.com/minio/minio-go/v7 v7.0.99
@@ -27,10 +27,10 @@ require (
 	github.com/tx7do/go-crud/api v0.0.7
 	github.com/tx7do/go-crud/clickhouse v0.0.18
 	github.com/tx7do/go-crud/doris v0.0.16
-	github.com/tx7do/go-crud/entgo v0.0.50
-	github.com/tx7do/go-crud/pagination v0.0.13
+	github.com/tx7do/go-crud/entgo v0.0.51
+	github.com/tx7do/go-crud/pagination v0.0.14
 	github.com/tx7do/go-crud/viewer v0.0.6
-	github.com/tx7do/go-utils v1.1.38
+	github.com/tx7do/go-utils v1.1.39
 	github.com/tx7do/go-utils/aggregator v0.0.5
 	github.com/tx7do/go-utils/copierutil v0.0.8
 	github.com/tx7do/go-utils/crypto v0.0.2
@@ -61,16 +61,16 @@ require (
 	github.com/tx7do/kratos-transport/broker v1.3.2
 	github.com/tx7do/kratos-transport/broker/kafka v1.3.7
 	github.com/tx7do/kratos-transport/transport/asynq v1.3.12
-	github.com/tx7do/kratos-transport/transport/sse v1.3.2
+	github.com/tx7do/kratos-transport/transport/sse v1.3.4
 	go.opentelemetry.io/otel/trace v1.43.0
-	google.golang.org/genproto v0.0.0-20260311181403-84a4fc48630c
-	google.golang.org/genproto/googleapis/api v0.0.0-20260504160031-60b97b32f348
-	google.golang.org/grpc v1.81.0
+	google.golang.org/genproto v0.0.0-20260519071638-aa98bba5eb94
+	google.golang.org/genproto/googleapis/api v0.0.0-20260519071638-aa98bba5eb94
+	google.golang.org/grpc v1.81.1
 	google.golang.org/protobuf v1.36.11
 )
 
 require (
-	ariga.io/atlas v1.1.0 // indirect
+	ariga.io/atlas v1.2.0 // indirect
 	buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go v1.36.11-20260209202127-80ab13bee0bf.1 // indirect
 	buf.build/go/protovalidate v1.1.2 // indirect
 	cel.dev/expr v0.25.1 // indirect
@@ -194,6 +194,7 @@ require (
 	github.com/tklauser/go-sysconf v0.3.16 // indirect
 	github.com/tklauser/numcpus v0.11.0 // indirect
 	github.com/tx7do/go-crud/audit v0.0.2 // indirect
+	github.com/tx7do/go-crud/cache v0.0.1 // indirect
 	github.com/tx7do/kratos-bootstrap/config v0.2.2 // indirect
 	github.com/tx7do/kratos-bootstrap/logger v0.1.2 // indirect
 	github.com/tx7do/kratos-transport/tracing v1.1.1 // indirect
@@ -210,11 +211,11 @@ require (
 	github.com/xeipuuv/gojsonpointer v0.0.0-20190905194746-02993c407bfb // indirect
 	github.com/xeipuuv/gojsonreference v0.0.0-20180127040603-bd5ef7bd5415 // indirect
 	github.com/yashtewari/glob-intersection v0.2.0 // indirect
-	github.com/yuin/gopher-lua v1.1.1 // indirect
+	github.com/yuin/gopher-lua v1.1.2 // indirect
 	github.com/yusufpapurcu/wmi v1.2.4 // indirect
-	github.com/zclconf/go-cty v1.18.0 // indirect
+	github.com/zclconf/go-cty v1.18.1 // indirect
 	github.com/zclconf/go-cty-yaml v1.2.0 // indirect
-	go.einride.tech/aip v0.86.1 // indirect
+	go.einride.tech/aip v0.86.3 // indirect
 	go.etcd.io/etcd/api/v3 v3.6.8 // indirect
 	go.etcd.io/etcd/client/pkg/v3 v3.6.8 // indirect
 	go.etcd.io/etcd/client/v3 v3.6.8 // indirect
@@ -234,16 +235,16 @@ require (
 	go.uber.org/zap v1.27.1 // indirect
 	go.yaml.in/yaml/v2 v2.4.4 // indirect
 	go.yaml.in/yaml/v3 v3.0.4 // indirect
-	golang.org/x/crypto v0.50.0 // indirect
+	golang.org/x/crypto v0.51.0 // indirect
 	golang.org/x/exp v0.0.0-20260410095643-746e56fc9e2f // indirect
-	golang.org/x/mod v0.35.0 // indirect
-	golang.org/x/net v0.53.0 // indirect
+	golang.org/x/mod v0.36.0 // indirect
+	golang.org/x/net v0.54.0 // indirect
 	golang.org/x/sync v0.20.0 // indirect
-	golang.org/x/sys v0.43.0 // indirect
-	golang.org/x/text v0.36.0 // indirect
+	golang.org/x/sys v0.44.0 // indirect
+	golang.org/x/text v0.37.0 // indirect
 	golang.org/x/time v0.15.0 // indirect
-	golang.org/x/tools v0.44.0 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20260504160031-60b97b32f348 // indirect
+	golang.org/x/tools v0.45.0 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20260519071638-aa98bba5eb94 // indirect
 	gopkg.in/cenkalti/backoff.v1 v1.1.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	sigs.k8s.io/yaml v1.6.0 // indirect
