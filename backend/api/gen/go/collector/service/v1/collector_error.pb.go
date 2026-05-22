@@ -26,73 +26,220 @@ const (
 type CollectorErrorReason int32
 
 const (
-	CollectorErrorReason_NOT_LOGGED_IN         CollectorErrorReason = 0  // 401
-	CollectorErrorReason_ACCESS_FORBIDDEN      CollectorErrorReason = 1  // 403
-	CollectorErrorReason_RESOURCE_NOT_FOUND    CollectorErrorReason = 2  // 404
-	CollectorErrorReason_METHOD_NOT_ALLOWED    CollectorErrorReason = 3  // 405
-	CollectorErrorReason_REQUEST_TIMEOUT       CollectorErrorReason = 4  // 408
-	CollectorErrorReason_INTERNAL_SERVER_ERROR CollectorErrorReason = 5  // 500
-	CollectorErrorReason_NOT_IMPLEMENTED       CollectorErrorReason = 6  // 501
-	CollectorErrorReason_NETWORK_ERROR         CollectorErrorReason = 7  // 502
-	CollectorErrorReason_SERVICE_UNAVAILABLE   CollectorErrorReason = 8  // 503
-	CollectorErrorReason_NETWORK_TIMEOUT       CollectorErrorReason = 9  // 504
-	CollectorErrorReason_REQUEST_NOT_SUPPORT   CollectorErrorReason = 10 // 505
-	CollectorErrorReason_USER_NOT_FOUND        CollectorErrorReason = 11
-	CollectorErrorReason_INCORRECT_PASSWORD    CollectorErrorReason = 12
-	CollectorErrorReason_USER_FREEZE           CollectorErrorReason = 13
-	CollectorErrorReason_INVALID_USERID        CollectorErrorReason = 14 // 用户ID无效
-	CollectorErrorReason_INVALID_PASSWORD      CollectorErrorReason = 15 // 密码无效
-	CollectorErrorReason_TOKEN_EXPIRED         CollectorErrorReason = 16 // token过期
-	CollectorErrorReason_INVALID_TOKEN         CollectorErrorReason = 17 // token无效
-	CollectorErrorReason_TOKEN_NOT_EXIST       CollectorErrorReason = 18 // token不存在
-	CollectorErrorReason_USER_NOT_EXIST        CollectorErrorReason = 19 // 用户不存在
+	// 400
+	CollectorErrorReason_BAD_REQUEST        CollectorErrorReason = 0 // 错误请求
+	CollectorErrorReason_INVALID_GRANT_TYPE CollectorErrorReason = 1 // 400
+	CollectorErrorReason_INVALID_USERID     CollectorErrorReason = 2 // 用户ID无效
+	CollectorErrorReason_INVALID_TOKEN      CollectorErrorReason = 3 // token无效
+	CollectorErrorReason_INVALID_PASSWORD   CollectorErrorReason = 4 // 密码无效
+	// 401
+	CollectorErrorReason_UNAUTHORIZED            CollectorErrorReason = 100 // 未授权
+	CollectorErrorReason_USER_FREEZE             CollectorErrorReason = 101 // 用户被冻结
+	CollectorErrorReason_INCORRECT_APP_SECRET    CollectorErrorReason = 103 // 密钥错误
+	CollectorErrorReason_INCORRECT_ACCESS_TOKEN  CollectorErrorReason = 104 // 访问令牌错误
+	CollectorErrorReason_INCORRECT_REFRESH_TOKEN CollectorErrorReason = 105 // 刷新令牌错误
+	CollectorErrorReason_TOKEN_EXPIRED           CollectorErrorReason = 106 // token过期
+	CollectorErrorReason_TOKEN_NOT_EXIST         CollectorErrorReason = 107 // token不存在
+	// 402
+	CollectorErrorReason_PAYMENT_REQUIRED CollectorErrorReason = 200 // 需要支付
+	// 403
+	CollectorErrorReason_FORBIDDEN CollectorErrorReason = 300 // 禁止访问
+	// 404
+	CollectorErrorReason_NOT_FOUND               CollectorErrorReason = 400 // 找不到资源
+	CollectorErrorReason_USER_NOT_FOUND          CollectorErrorReason = 401 // 用户不存在
+	CollectorErrorReason_ACCESS_TOKEN_NOT_FOUND  CollectorErrorReason = 402 // 访问令牌不存在
+	CollectorErrorReason_REFRESH_TOKEN_NOT_FOUND CollectorErrorReason = 403 // 刷新令牌不存在
+	// 405
+	CollectorErrorReason_METHOD_NOT_ALLOWED CollectorErrorReason = 500 // 方法不允许
+	// 406
+	CollectorErrorReason_NOT_ACCEPTABLE CollectorErrorReason = 600 // 不可接受的请求
+	// 407
+	CollectorErrorReason_PROXY_AUTHENTICATION_REQUIRED CollectorErrorReason = 700 // 代理身份验证需要
+	// 408
+	CollectorErrorReason_REQUEST_TIMEOUT CollectorErrorReason = 800 // 请求超时
+	// 409
+	CollectorErrorReason_CONFLICT CollectorErrorReason = 900 // 冲突
+	// 410
+	CollectorErrorReason_GONE CollectorErrorReason = 1000 // 已删除
+	// 411
+	CollectorErrorReason_LENGTH_REQUIRED CollectorErrorReason = 1010 // 需要Content-Length
+	// 412
+	CollectorErrorReason_PRECONDITION_FAILED CollectorErrorReason = 1020 // 前置条件失败
+	// 413
+	CollectorErrorReason_PAYLOAD_TOO_LARGE CollectorErrorReason = 1030 // 负载过大
+	// 414
+	CollectorErrorReason_URI_TOO_LONG CollectorErrorReason = 1040 // URI过长
+	// 415
+	CollectorErrorReason_UNSUPPORTED_MEDIA_TYPE CollectorErrorReason = 1050 // 不支持的媒体类型
+	// 416
+	CollectorErrorReason_RANGE_NOT_SATISFIABLE CollectorErrorReason = 1060 // 请求范围无法满足
+	// 417
+	CollectorErrorReason_EXPECTATION_FAILED CollectorErrorReason = 1070 // 期望失败
+	// 418
+	CollectorErrorReason_IM_A_TEAPOT CollectorErrorReason = 1080 // 我是茶壶 (RFC 2324)
+	// 421
+	CollectorErrorReason_MISDIRECTED_REQUEST CollectorErrorReason = 1090 // 错误的请求
+	// 422
+	CollectorErrorReason_UNPROCESSABLE_ENTITY CollectorErrorReason = 1100 // 不可处理的实体
+	// 423
+	CollectorErrorReason_LOCKED CollectorErrorReason = 1110 // 已锁定
+	// 424
+	CollectorErrorReason_FAILED_DEPENDENCY CollectorErrorReason = 1120 // 依赖失败
+	// 425
+	CollectorErrorReason_TOO_EARLY CollectorErrorReason = 1130 // 请求过早
+	// 426
+	CollectorErrorReason_UPGRADE_REQUIRED CollectorErrorReason = 1140 // 需要升级
+	// 428
+	CollectorErrorReason_PRECONDITION_REQUIRED CollectorErrorReason = 1150 // 需要前置条件
+	// 429
+	CollectorErrorReason_TOO_MANY_REQUESTS CollectorErrorReason = 1160 // 请求过多
+	// 431
+	CollectorErrorReason_REQUEST_HEADER_FIELDS_TOO_LARGE CollectorErrorReason = 1170 // 请求头字段过大
+	// 451
+	CollectorErrorReason_UNAVAILABLE_FOR_LEGAL_REASONS CollectorErrorReason = 1180 // 因法律原因不可用
+	// 500
+	CollectorErrorReason_INTERNAL_SERVER_ERROR CollectorErrorReason = 2000 // 内部服务器错误
+	// 501
+	CollectorErrorReason_NOT_IMPLEMENTED CollectorErrorReason = 2100 // 未实现
+	// 502
+	CollectorErrorReason_BAD_GATEWAY CollectorErrorReason = 2200 // 错误网关
+	// 503
+	CollectorErrorReason_SERVICE_UNAVAILABLE CollectorErrorReason = 2300 // 服务不可用
+	// 504
+	CollectorErrorReason_GATEWAY_TIMEOUT CollectorErrorReason = 2400 // 网关超时
+	// 505
+	CollectorErrorReason_HTTP_VERSION_NOT_SUPPORTED CollectorErrorReason = 2500 // HTTP版本不支持
+	// 506
+	CollectorErrorReason_VARIANT_ALSO_NEGOTIATES CollectorErrorReason = 2600 // 变体也协商
+	// 507
+	CollectorErrorReason_INSUFFICIENT_STORAGE CollectorErrorReason = 2700 // 存储空间不足
+	// 508
+	CollectorErrorReason_LOOP_DETECTED CollectorErrorReason = 2800 // 检测到循环
+	// 510
+	CollectorErrorReason_NOT_EXTENDED CollectorErrorReason = 2900 // 未扩展
+	// 511
+	CollectorErrorReason_NETWORK_AUTHENTICATION_REQUIRED CollectorErrorReason = 3000 // 需要网络认证
+	// 598
+	CollectorErrorReason_NETWORK_READ_TIMEOUT_ERROR CollectorErrorReason = 3100 // 网络读取超时
+	// 599
+	CollectorErrorReason_NETWORK_CONNECT_TIMEOUT_ERROR CollectorErrorReason = 3200 // 网络连接超时
 )
 
 // Enum value maps for CollectorErrorReason.
 var (
 	CollectorErrorReason_name = map[int32]string{
-		0:  "NOT_LOGGED_IN",
-		1:  "ACCESS_FORBIDDEN",
-		2:  "RESOURCE_NOT_FOUND",
-		3:  "METHOD_NOT_ALLOWED",
-		4:  "REQUEST_TIMEOUT",
-		5:  "INTERNAL_SERVER_ERROR",
-		6:  "NOT_IMPLEMENTED",
-		7:  "NETWORK_ERROR",
-		8:  "SERVICE_UNAVAILABLE",
-		9:  "NETWORK_TIMEOUT",
-		10: "REQUEST_NOT_SUPPORT",
-		11: "USER_NOT_FOUND",
-		12: "INCORRECT_PASSWORD",
-		13: "USER_FREEZE",
-		14: "INVALID_USERID",
-		15: "INVALID_PASSWORD",
-		16: "TOKEN_EXPIRED",
-		17: "INVALID_TOKEN",
-		18: "TOKEN_NOT_EXIST",
-		19: "USER_NOT_EXIST",
+		0:    "BAD_REQUEST",
+		1:    "INVALID_GRANT_TYPE",
+		2:    "INVALID_USERID",
+		3:    "INVALID_TOKEN",
+		4:    "INVALID_PASSWORD",
+		100:  "UNAUTHORIZED",
+		101:  "USER_FREEZE",
+		103:  "INCORRECT_APP_SECRET",
+		104:  "INCORRECT_ACCESS_TOKEN",
+		105:  "INCORRECT_REFRESH_TOKEN",
+		106:  "TOKEN_EXPIRED",
+		107:  "TOKEN_NOT_EXIST",
+		200:  "PAYMENT_REQUIRED",
+		300:  "FORBIDDEN",
+		400:  "NOT_FOUND",
+		401:  "USER_NOT_FOUND",
+		402:  "ACCESS_TOKEN_NOT_FOUND",
+		403:  "REFRESH_TOKEN_NOT_FOUND",
+		500:  "METHOD_NOT_ALLOWED",
+		600:  "NOT_ACCEPTABLE",
+		700:  "PROXY_AUTHENTICATION_REQUIRED",
+		800:  "REQUEST_TIMEOUT",
+		900:  "CONFLICT",
+		1000: "GONE",
+		1010: "LENGTH_REQUIRED",
+		1020: "PRECONDITION_FAILED",
+		1030: "PAYLOAD_TOO_LARGE",
+		1040: "URI_TOO_LONG",
+		1050: "UNSUPPORTED_MEDIA_TYPE",
+		1060: "RANGE_NOT_SATISFIABLE",
+		1070: "EXPECTATION_FAILED",
+		1080: "IM_A_TEAPOT",
+		1090: "MISDIRECTED_REQUEST",
+		1100: "UNPROCESSABLE_ENTITY",
+		1110: "LOCKED",
+		1120: "FAILED_DEPENDENCY",
+		1130: "TOO_EARLY",
+		1140: "UPGRADE_REQUIRED",
+		1150: "PRECONDITION_REQUIRED",
+		1160: "TOO_MANY_REQUESTS",
+		1170: "REQUEST_HEADER_FIELDS_TOO_LARGE",
+		1180: "UNAVAILABLE_FOR_LEGAL_REASONS",
+		2000: "INTERNAL_SERVER_ERROR",
+		2100: "NOT_IMPLEMENTED",
+		2200: "BAD_GATEWAY",
+		2300: "SERVICE_UNAVAILABLE",
+		2400: "GATEWAY_TIMEOUT",
+		2500: "HTTP_VERSION_NOT_SUPPORTED",
+		2600: "VARIANT_ALSO_NEGOTIATES",
+		2700: "INSUFFICIENT_STORAGE",
+		2800: "LOOP_DETECTED",
+		2900: "NOT_EXTENDED",
+		3000: "NETWORK_AUTHENTICATION_REQUIRED",
+		3100: "NETWORK_READ_TIMEOUT_ERROR",
+		3200: "NETWORK_CONNECT_TIMEOUT_ERROR",
 	}
 	CollectorErrorReason_value = map[string]int32{
-		"NOT_LOGGED_IN":         0,
-		"ACCESS_FORBIDDEN":      1,
-		"RESOURCE_NOT_FOUND":    2,
-		"METHOD_NOT_ALLOWED":    3,
-		"REQUEST_TIMEOUT":       4,
-		"INTERNAL_SERVER_ERROR": 5,
-		"NOT_IMPLEMENTED":       6,
-		"NETWORK_ERROR":         7,
-		"SERVICE_UNAVAILABLE":   8,
-		"NETWORK_TIMEOUT":       9,
-		"REQUEST_NOT_SUPPORT":   10,
-		"USER_NOT_FOUND":        11,
-		"INCORRECT_PASSWORD":    12,
-		"USER_FREEZE":           13,
-		"INVALID_USERID":        14,
-		"INVALID_PASSWORD":      15,
-		"TOKEN_EXPIRED":         16,
-		"INVALID_TOKEN":         17,
-		"TOKEN_NOT_EXIST":       18,
-		"USER_NOT_EXIST":        19,
+		"BAD_REQUEST":                     0,
+		"INVALID_GRANT_TYPE":              1,
+		"INVALID_USERID":                  2,
+		"INVALID_TOKEN":                   3,
+		"INVALID_PASSWORD":                4,
+		"UNAUTHORIZED":                    100,
+		"USER_FREEZE":                     101,
+		"INCORRECT_APP_SECRET":            103,
+		"INCORRECT_ACCESS_TOKEN":          104,
+		"INCORRECT_REFRESH_TOKEN":         105,
+		"TOKEN_EXPIRED":                   106,
+		"TOKEN_NOT_EXIST":                 107,
+		"PAYMENT_REQUIRED":                200,
+		"FORBIDDEN":                       300,
+		"NOT_FOUND":                       400,
+		"USER_NOT_FOUND":                  401,
+		"ACCESS_TOKEN_NOT_FOUND":          402,
+		"REFRESH_TOKEN_NOT_FOUND":         403,
+		"METHOD_NOT_ALLOWED":              500,
+		"NOT_ACCEPTABLE":                  600,
+		"PROXY_AUTHENTICATION_REQUIRED":   700,
+		"REQUEST_TIMEOUT":                 800,
+		"CONFLICT":                        900,
+		"GONE":                            1000,
+		"LENGTH_REQUIRED":                 1010,
+		"PRECONDITION_FAILED":             1020,
+		"PAYLOAD_TOO_LARGE":               1030,
+		"URI_TOO_LONG":                    1040,
+		"UNSUPPORTED_MEDIA_TYPE":          1050,
+		"RANGE_NOT_SATISFIABLE":           1060,
+		"EXPECTATION_FAILED":              1070,
+		"IM_A_TEAPOT":                     1080,
+		"MISDIRECTED_REQUEST":             1090,
+		"UNPROCESSABLE_ENTITY":            1100,
+		"LOCKED":                          1110,
+		"FAILED_DEPENDENCY":               1120,
+		"TOO_EARLY":                       1130,
+		"UPGRADE_REQUIRED":                1140,
+		"PRECONDITION_REQUIRED":           1150,
+		"TOO_MANY_REQUESTS":               1160,
+		"REQUEST_HEADER_FIELDS_TOO_LARGE": 1170,
+		"UNAVAILABLE_FOR_LEGAL_REASONS":   1180,
+		"INTERNAL_SERVER_ERROR":           2000,
+		"NOT_IMPLEMENTED":                 2100,
+		"BAD_GATEWAY":                     2200,
+		"SERVICE_UNAVAILABLE":             2300,
+		"GATEWAY_TIMEOUT":                 2400,
+		"HTTP_VERSION_NOT_SUPPORTED":      2500,
+		"VARIANT_ALSO_NEGOTIATES":         2600,
+		"INSUFFICIENT_STORAGE":            2700,
+		"LOOP_DETECTED":                   2800,
+		"NOT_EXTENDED":                    2900,
+		"NETWORK_AUTHENTICATION_REQUIRED": 3000,
+		"NETWORK_READ_TIMEOUT_ERROR":      3100,
+		"NETWORK_CONNECT_TIMEOUT_ERROR":   3200,
 	}
 )
 
@@ -127,29 +274,63 @@ var File_collector_service_v1_collector_error_proto protoreflect.FileDescriptor
 
 const file_collector_service_v1_collector_error_proto_rawDesc = "" +
 	"\n" +
-	"*collector/service/v1/collector_error.proto\x12\x14collector.service.v1\x1a\x13errors/errors.proto*\xbc\x04\n" +
-	"\x14CollectorErrorReason\x12\x17\n" +
-	"\rNOT_LOGGED_IN\x10\x00\x1a\x04\xa8E\x91\x03\x12\x1a\n" +
-	"\x10ACCESS_FORBIDDEN\x10\x01\x1a\x04\xa8E\x93\x03\x12\x1c\n" +
-	"\x12RESOURCE_NOT_FOUND\x10\x02\x1a\x04\xa8E\x94\x03\x12\x1c\n" +
-	"\x12METHOD_NOT_ALLOWED\x10\x03\x1a\x04\xa8E\x95\x03\x12\x19\n" +
-	"\x0fREQUEST_TIMEOUT\x10\x04\x1a\x04\xa8E\x98\x03\x12\x1f\n" +
-	"\x15INTERNAL_SERVER_ERROR\x10\x05\x1a\x04\xa8E\xf4\x03\x12\x19\n" +
-	"\x0fNOT_IMPLEMENTED\x10\x06\x1a\x04\xa8E\xf5\x03\x12\x17\n" +
-	"\rNETWORK_ERROR\x10\a\x1a\x04\xa8E\xf6\x03\x12\x1d\n" +
-	"\x13SERVICE_UNAVAILABLE\x10\b\x1a\x04\xa8E\xf7\x03\x12\x19\n" +
-	"\x0fNETWORK_TIMEOUT\x10\t\x1a\x04\xa8E\xf8\x03\x12\x1d\n" +
-	"\x13REQUEST_NOT_SUPPORT\x10\n" +
-	"\x1a\x04\xa8E\xf9\x03\x12\x18\n" +
-	"\x0eUSER_NOT_FOUND\x10\v\x1a\x04\xa8E\xd8\x04\x12\x1c\n" +
-	"\x12INCORRECT_PASSWORD\x10\f\x1a\x04\xa8E\xd7\x04\x12\x15\n" +
-	"\vUSER_FREEZE\x10\r\x1a\x04\xa8E\xd6\x04\x12\x17\n" +
-	"\x0eINVALID_USERID\x10\x0e\x1a\x03\xa8Ee\x12\x19\n" +
-	"\x10INVALID_PASSWORD\x10\x0f\x1a\x03\xa8Ef\x12\x16\n" +
-	"\rTOKEN_EXPIRED\x10\x10\x1a\x03\xa8Eg\x12\x16\n" +
-	"\rINVALID_TOKEN\x10\x11\x1a\x03\xa8Eh\x12\x18\n" +
-	"\x0fTOKEN_NOT_EXIST\x10\x12\x1a\x03\xa8Ei\x12\x17\n" +
-	"\x0eUSER_NOT_EXIST\x10\x13\x1a\x03\xa8Ej\x1a\x04\xa0E\xf4\x03B\xd8\x01\n" +
+	"*collector/service/v1/collector_error.proto\x12\x14collector.service.v1\x1a\x13errors/errors.proto*\x91\r\n" +
+	"\x14CollectorErrorReason\x12\x15\n" +
+	"\vBAD_REQUEST\x10\x00\x1a\x04\xa8E\x90\x03\x12\x1c\n" +
+	"\x12INVALID_GRANT_TYPE\x10\x01\x1a\x04\xa8E\x90\x03\x12\x18\n" +
+	"\x0eINVALID_USERID\x10\x02\x1a\x04\xa8E\x90\x03\x12\x17\n" +
+	"\rINVALID_TOKEN\x10\x03\x1a\x04\xa8E\x90\x03\x12\x1a\n" +
+	"\x10INVALID_PASSWORD\x10\x04\x1a\x04\xa8E\x90\x03\x12\x16\n" +
+	"\fUNAUTHORIZED\x10d\x1a\x04\xa8E\x91\x03\x12\x15\n" +
+	"\vUSER_FREEZE\x10e\x1a\x04\xa8E\x91\x03\x12\x1e\n" +
+	"\x14INCORRECT_APP_SECRET\x10g\x1a\x04\xa8E\x91\x03\x12 \n" +
+	"\x16INCORRECT_ACCESS_TOKEN\x10h\x1a\x04\xa8E\x91\x03\x12!\n" +
+	"\x17INCORRECT_REFRESH_TOKEN\x10i\x1a\x04\xa8E\x91\x03\x12\x17\n" +
+	"\rTOKEN_EXPIRED\x10j\x1a\x04\xa8E\x91\x03\x12\x19\n" +
+	"\x0fTOKEN_NOT_EXIST\x10k\x1a\x04\xa8E\x91\x03\x12\x1b\n" +
+	"\x10PAYMENT_REQUIRED\x10\xc8\x01\x1a\x04\xa8E\x92\x03\x12\x14\n" +
+	"\tFORBIDDEN\x10\xac\x02\x1a\x04\xa8E\x93\x03\x12\x14\n" +
+	"\tNOT_FOUND\x10\x90\x03\x1a\x04\xa8E\x94\x03\x12\x19\n" +
+	"\x0eUSER_NOT_FOUND\x10\x91\x03\x1a\x04\xa8E\x94\x03\x12!\n" +
+	"\x16ACCESS_TOKEN_NOT_FOUND\x10\x92\x03\x1a\x04\xa8E\x94\x03\x12\"\n" +
+	"\x17REFRESH_TOKEN_NOT_FOUND\x10\x93\x03\x1a\x04\xa8E\x94\x03\x12\x1d\n" +
+	"\x12METHOD_NOT_ALLOWED\x10\xf4\x03\x1a\x04\xa8E\x95\x03\x12\x19\n" +
+	"\x0eNOT_ACCEPTABLE\x10\xd8\x04\x1a\x04\xa8E\x96\x03\x12(\n" +
+	"\x1dPROXY_AUTHENTICATION_REQUIRED\x10\xbc\x05\x1a\x04\xa8E\x97\x03\x12\x1a\n" +
+	"\x0fREQUEST_TIMEOUT\x10\xa0\x06\x1a\x04\xa8E\x98\x03\x12\x13\n" +
+	"\bCONFLICT\x10\x84\a\x1a\x04\xa8E\x99\x03\x12\x0f\n" +
+	"\x04GONE\x10\xe8\a\x1a\x04\xa8E\x9a\x03\x12\x1a\n" +
+	"\x0fLENGTH_REQUIRED\x10\xf2\a\x1a\x04\xa8E\x9b\x03\x12\x1e\n" +
+	"\x13PRECONDITION_FAILED\x10\xfc\a\x1a\x04\xa8E\x9c\x03\x12\x1c\n" +
+	"\x11PAYLOAD_TOO_LARGE\x10\x86\b\x1a\x04\xa8E\x9d\x03\x12\x17\n" +
+	"\fURI_TOO_LONG\x10\x90\b\x1a\x04\xa8E\x9e\x03\x12!\n" +
+	"\x16UNSUPPORTED_MEDIA_TYPE\x10\x9a\b\x1a\x04\xa8E\x9f\x03\x12 \n" +
+	"\x15RANGE_NOT_SATISFIABLE\x10\xa4\b\x1a\x04\xa8E\xa0\x03\x12\x1d\n" +
+	"\x12EXPECTATION_FAILED\x10\xae\b\x1a\x04\xa8E\xa1\x03\x12\x16\n" +
+	"\vIM_A_TEAPOT\x10\xb8\b\x1a\x04\xa8E\xa2\x03\x12\x1e\n" +
+	"\x13MISDIRECTED_REQUEST\x10\xc2\b\x1a\x04\xa8E\xa5\x03\x12\x1f\n" +
+	"\x14UNPROCESSABLE_ENTITY\x10\xcc\b\x1a\x04\xa8E\xa6\x03\x12\x11\n" +
+	"\x06LOCKED\x10\xd6\b\x1a\x04\xa8E\xa7\x03\x12\x1c\n" +
+	"\x11FAILED_DEPENDENCY\x10\xe0\b\x1a\x04\xa8E\xa8\x03\x12\x14\n" +
+	"\tTOO_EARLY\x10\xea\b\x1a\x04\xa8E\xa9\x03\x12\x1b\n" +
+	"\x10UPGRADE_REQUIRED\x10\xf4\b\x1a\x04\xa8E\xaa\x03\x12 \n" +
+	"\x15PRECONDITION_REQUIRED\x10\xfe\b\x1a\x04\xa8E\xac\x03\x12\x1c\n" +
+	"\x11TOO_MANY_REQUESTS\x10\x88\t\x1a\x04\xa8E\xad\x03\x12*\n" +
+	"\x1fREQUEST_HEADER_FIELDS_TOO_LARGE\x10\x92\t\x1a\x04\xa8E\xaf\x03\x12(\n" +
+	"\x1dUNAVAILABLE_FOR_LEGAL_REASONS\x10\x9c\t\x1a\x04\xa8E\xc3\x03\x12 \n" +
+	"\x15INTERNAL_SERVER_ERROR\x10\xd0\x0f\x1a\x04\xa8E\xf4\x03\x12\x1a\n" +
+	"\x0fNOT_IMPLEMENTED\x10\xb4\x10\x1a\x04\xa8E\xf5\x03\x12\x16\n" +
+	"\vBAD_GATEWAY\x10\x98\x11\x1a\x04\xa8E\xf6\x03\x12\x1e\n" +
+	"\x13SERVICE_UNAVAILABLE\x10\xfc\x11\x1a\x04\xa8E\xf7\x03\x12\x1a\n" +
+	"\x0fGATEWAY_TIMEOUT\x10\xe0\x12\x1a\x04\xa8E\xf8\x03\x12%\n" +
+	"\x1aHTTP_VERSION_NOT_SUPPORTED\x10\xc4\x13\x1a\x04\xa8E\xf9\x03\x12\"\n" +
+	"\x17VARIANT_ALSO_NEGOTIATES\x10\xa8\x14\x1a\x04\xa8E\xfa\x03\x12\x1f\n" +
+	"\x14INSUFFICIENT_STORAGE\x10\x8c\x15\x1a\x04\xa8E\xfb\x03\x12\x18\n" +
+	"\rLOOP_DETECTED\x10\xf0\x15\x1a\x04\xa8E\xfc\x03\x12\x17\n" +
+	"\fNOT_EXTENDED\x10\xd4\x16\x1a\x04\xa8E\xfe\x03\x12*\n" +
+	"\x1fNETWORK_AUTHENTICATION_REQUIRED\x10\xb8\x17\x1a\x04\xa8E\xff\x03\x12%\n" +
+	"\x1aNETWORK_READ_TIMEOUT_ERROR\x10\x9c\x18\x1a\x04\xa8E\xd6\x04\x12(\n" +
+	"\x1dNETWORK_CONNECT_TIMEOUT_ERROR\x10\x80\x19\x1a\x04\xa8E\xd7\x04\x1a\x04\xa0E\xf4\x03B\xd8\x01\n" +
 	"\x18com.collector.service.v1B\x13CollectorErrorProtoP\x01Z5go-wind-uba/api/gen/go/collector/service/v1;servicev1\xa2\x02\x03CSX\xaa\x02\x14Collector.Service.V1\xca\x02\x14Collector\\Service\\V1\xe2\x02 Collector\\Service\\V1\\GPBMetadata\xea\x02\x16Collector::Service::V1b\x06proto3"
 
 var (
