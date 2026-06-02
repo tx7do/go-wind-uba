@@ -44,7 +44,7 @@ fi
 
 popd >/dev/null
 
-project_name="${PROJECT_NAME:-gwu}"
+project_name="${PROJECT_NAME:-gwua}"
 install_root="${HOME}/app/${project_name}"
 app_root="${project_root}/app"
 
