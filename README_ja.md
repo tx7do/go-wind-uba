@@ -25,7 +25,7 @@
 ## プロジェクトの特徴
 
 - **10の分析モデル**：イベント分析、ファネル分析、リテンション分析、アトリビューション分析、分布分析、ユーザーパス分析、ユーザーセグメンテーション、クリック分析、ユーザー属性分析、行動シーケンス分析 — ユーザー行動分析の全シナリオをカバー
-- **デュアルOLAPエンジン**：ClickHouseとApache Dorisの両方をネイティブサポート、自由に切り替え可能、極致のクエリパフォーマンス
+- **切替可能なデュアルOLAPエンジン**：ClickHouseとApache Dorisの両方をネイティブサポート、必要に応じていずれかをデプロイ、極致のクエリパフォーマンス
 - **フルリンクイベント収集**：独自開発のWeb SDK、ゼロコードトラッキング＋カスタムイベント、Kafka経由でリアルタイムにデータウェアハウスへ書き込み
 - **マルチテナントアーキテクチャ**：テナントデータの物理的隔離、部門・ロール・管理者の自動初期化、すぐに使用可能
 - **マイクロサービスアーキテクチャ**：go-kratosマイクロサービスフレームワークに基づき、サービスディスカバリ、分散トレーシング、分散キャッシュをサポート
@@ -107,15 +107,12 @@ graph TB
     SDK["クライアント層<br/>Web SDK · アプリSDK · ミニプログラムSDK"]
     Collector["Collector Service<br/>イベントデータ受信 · 検証 · 転送"]
     Core["Core Service<br/>イベント保存 · 分析モデリング · リスク検出 · タグ管理 · データ同期"]
-    CH[(ClickHouse)]
-    Doris[(Apache Doris)]
     Admin["Admin Service<br/>管理画面BFF · 権限管理 · レポート · 設定"]
     Frontend["管理画面フロントエンド<br/>Vue 3 + Ant Design Vue + Vben Admin"]
 
     SDK -->|"イベント報告"| Collector
     Collector -->|"Kafka"| Core
-    Core --- CH
-    Core --- Doris
+    Core --- OLAP[(OLAPエンジン<br/>ClickHouse または Apache Doris いずれかを選択)]
     Core -->|"gRPC"| Admin
     Admin -->|"HTTP / gRPC"| Frontend
 ```
@@ -130,7 +127,7 @@ graph TB
 | --- | --- |
 | イベント収集 | カスタムイベント報告、Web SDKゼロコード統合 |
 | アプリケーション管理 | 収集アプリ管理、AppID/AppKey生成、収集パラメータ設定 |
-| データ同期 | ClickHouse ↔ Doris 双方向スキーマ自動同期、フィールド・パーティション・インデックスの整合性維持 |
+| データ同期 | 同じビジネスモデルをClickHouseまたはDorisのいずれかにデプロイ可能、フィールド・パーティション・インデックス・主キーの整合性を維持 |
 | セッション管理 | ユーザーセッションの自動関連付け、セッションレベルの行動分析 |
 
 ### 分析モデル
@@ -322,10 +319,10 @@ go run ./app/collector/service/cmd/server/ -c ./app/collector/service/configs
 # PostgreSQL（業務データベース）
 psql -h localhost -U postgres -d gwubd -f sql/postgresql/schema.sql
 
-# ClickHouse（分析エンジン）
+# ClickHouse（分析エンジン、Dorisといずれかを選択）
 clickhouse-client --queries-file sql/clickhouse/schema.sql
 
-# Doris（分析エンジン）
+# Doris（分析エンジン、ClickHouseといずれかを選択）
 mysql -h localhost -P 9030 -u root < sql/doris/schema.sql
 ```
 
@@ -386,12 +383,13 @@ make docker-up
 
 ---
 
-## データ同期とスキーマ設計
+## OLAPエンジン選択とスキーマ設計
 
-- ClickHouseとDoris間の双方向スキーマ自動同期、フィールド・パーティション・インデックス・主キーの整合性維持
+- **ClickHouseとApache Dorisは相互排他**——デプロイ時にいずれか一方を分析エンジンとして選択、実行時に `data.UseClickHouse` フラグで切り替え可能
+- 両エンジンは同じビジネスモデルを共有し、フィールド・パーティション・インデックス・主キー定義を一致して維持
 - struct定義の自動生成、アノテーション（json、ch）の自動処理
-- バッチデータ同期と挿入、strictモードでのNOT NULLフィールドの自動補完
-- 同期後のフィールドタイプ・インデックス・パーティションの最適化は `backend/sql/` スクリプトを参照
+- バッチデータ書き込み、strictモードでのNOT NULLフィールドの自動補完
+- データロード後のフィールドタイプ・インデックス・パーティションの最適化は `backend/sql/` スクリプトを参照
 
 ---
 

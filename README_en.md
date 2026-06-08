@@ -25,7 +25,7 @@
 ## Highlights
 
 - **10 Analysis Models**: Event Analysis, Funnel Analysis, Retention Analysis, Attribution Analysis, Distribution Analysis, User Path Analysis, User Segmentation, Click Analysis, User Attribute Analysis, and Behavior Sequence Analysis — covering the full spectrum of user behavior analytics
-- **Dual OLAP Engines**: Native support for both ClickHouse and Apache Doris, freely switchable with extreme query performance
+- **Switchable Dual OLAP Engines**: Native support for both ClickHouse and Apache Doris — deploy either one as needed, with extreme query performance
 - **Full-Link Event Collection**: Custom Web SDK with zero-code auto-tracking and custom events, real-time data ingestion via Kafka into data warehouse
 - **Multi-Tenancy**: Tenant data isolation with automatic initialization of departments, roles, and administrators — ready out of the box
 - **Microservice Architecture**: Built on go-kratos microservice framework with service discovery, distributed tracing, and distributed caching
@@ -107,15 +107,12 @@ graph TB
     SDK["Client Layer<br/>Web SDK · App SDK · Mini Program SDK"]
     Collector["Collector Service<br/>Event Data Reception · Validation · Forwarding"]
     Core["Core Service<br/>Event Storage · Analysis · Risk Detection · Tags · Sync"]
-    CH[(ClickHouse)]
-    Doris[(Apache Doris)]
     Admin["Admin Service<br/>Admin BFF · Permissions · Reports · Configuration"]
     Frontend["Admin Frontend<br/>Vue 3 + Ant Design Vue + Vben Admin"]
 
     SDK -->|"Event Reporting"| Collector
     Collector -->|"Kafka"| Core
-    Core --- CH
-    Core --- Doris
+    Core --- OLAP[(OLAP Engine<br/>ClickHouse or Apache Doris — choose one)]
     Core -->|"gRPC"| Admin
     Admin -->|"HTTP / gRPC"| Frontend
 ```
@@ -130,7 +127,7 @@ graph TB
 | --- | --- |
 | Event Collection | Custom event reporting with zero-code Web SDK integration |
 | Application Management | Manage collection apps, generate AppID/AppKey, configure collection parameters |
-| Data Sync | ClickHouse ↔ Doris bidirectional schema auto-sync with consistent fields, partitions, and indexes |
+| Data Sync | The same business model can be deployed to either ClickHouse or Doris, with consistent fields, partitions, indexes, and primary keys |
 | Session Management | Auto-correlate user sessions for session-level behavior analysis |
 
 ### Analysis Models
@@ -322,10 +319,10 @@ Execute the schema scripts in the `sql/` directory:
 # PostgreSQL (business database)
 psql -h localhost -U postgres -d gwubd -f sql/postgresql/schema.sql
 
-# ClickHouse (analytical engine)
+# ClickHouse (analytical engine, choose one with Doris)
 clickhouse-client --queries-file sql/clickhouse/schema.sql
 
-# Doris (analytical engine)
+# Doris (analytical engine, choose one with ClickHouse)
 mysql -h localhost -P 9030 -u root < sql/doris/schema.sql
 ```
 
@@ -386,12 +383,13 @@ make docker-up
 
 ---
 
-## Data Sync & Schema Design
+## OLAP Engine Selection & Schema Design
 
-- Bidirectional schema auto-sync between ClickHouse and Doris with consistent fields, partitions, indexes, and primary keys
+- **ClickHouse and Apache Doris are mutually exclusive** — choose either one as the analytical engine during deployment; switch at runtime via the `data.UseClickHouse` flag
+- Both engines share the same business model with consistent fields, partitions, indexes, and primary keys
 - Automatic struct generation with annotation processing (json, ch tags)
-- Batch data sync and insertion with auto-fill for NOT NULL fields in strict mode
-- Post-sync optimization for field types, indexes, and partitions — see `backend/sql/` scripts
+- Batch data ingestion with auto-fill for NOT NULL fields in strict mode
+- Post-ingestion optimization for field types, indexes, and partitions — see `backend/sql/` scripts
 
 ---
 

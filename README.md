@@ -25,7 +25,7 @@
 ## 项目亮点
 
 - **十大分析模型**：事件分析、漏斗分析、留存分析、归因分析、分布分析、用户路径分析、用户分群、点击分析、用户属性分析、行为序列分析，覆盖用户行为分析全场景
-- **双引擎数据仓库**：原生支持 ClickHouse 与 Apache Doris 两种 OLAP 引擎，自由切换，极致查询性能
+- **双引擎可切换数据仓库**：原生支持 ClickHouse 与 Apache Doris 两种 OLAP 引擎，按需二选一部署，极致查询性能
 - **全链路事件采集**：自研 Web SDK，零代码埋点 + 自定义事件，数据经 Kafka 实时写入数仓
 - **多租户架构**：租户数据物理隔离，自动初始化部门、角色与管理员，开箱即用
 - **微服务架构**：基于 go-kratos 微服务框架，支持服务发现、链路追踪、分布式缓存
@@ -107,15 +107,12 @@ graph TB
     SDK["客户端层<br/>Web SDK · App SDK · 小程序 SDK"]
     Collector["Collector Service<br/>埋点数据接收 · 校验 · 转发"]
     Core["Core Service<br/>事件存储 · 分析建模 · 风险检测 · 标签管理 · 数据同步"]
-    CH[(ClickHouse)]
-    Doris[(Apache Doris)]
     Admin["Admin Service<br/>管理后台 BFF · 权限管理 · 报表 · 配置"]
     Frontend["管理后台前端<br/>Vue 3 + Ant Design Vue + Vben Admin"]
 
     SDK -->|"事件上报"| Collector
     Collector -->|"Kafka"| Core
-    Core --- CH
-    Core --- Doris
+    Core --- OLAP[(OLAP 引擎<br/>ClickHouse 或 Apache Doris 二选一)]
     Core -->|"gRPC"| Admin
     Admin -->|"HTTP / gRPC"| Frontend
 ```
@@ -126,12 +123,12 @@ graph TB
 
 ### 数据采集与管理
 
-| 功能   | 说明                                             |
-|------|------------------------------------------------|
-| 事件采集 | 支持自定义事件上报，Web SDK 零代码接入                        |
-| 应用管理 | 管理采集应用，生成 AppID / AppKey，配置采集参数                |
-| 数据同步 | ClickHouse ↔ Doris 双向 Schema 自动同步，字段、分区、索引保持一致 |
-| 会话管理 | 自动关联用户会话，支持会话级行为分析                             |
+| 功能   | 说明                                                 |
+|------|----------------------------------------------------|
+| 事件采集 | 支持自定义事件上报，Web SDK 零代码接入                            |
+| 应用管理 | 管理采集应用，生成 AppID / AppKey，配置采集参数                    |
+| 数据同步 | 同一份业务模型可落到 ClickHouse 或 Doris 任一引擎，字段、分区、索引、主键保持一致 |
+| 会话管理 | 自动关联用户会话，支持会话级行为分析                                 |
 
 ### 分析模型
 
@@ -236,13 +233,13 @@ go-wind-uba/
 
 ### 环境要求
 
-| 工具 | 版本 |
-| --- | --- |
-| Go | 1.25+ |
+| 工具      | 版本         |
+|---------|------------|
+| Go      | 1.25+      |
 | Node.js | >= 20.10.0 |
-| pnpm | >= 9.12.0 |
-| Docker | 20.0+ |
-| buf | 最新版 |
+| pnpm    | >= 9.12.0  |
+| Docker  | 20.0+      |
+| buf     | 最新版        |
 
 ### 环境脚本
 
@@ -322,10 +319,10 @@ go run ./app/collector/service/cmd/server/ -c ./app/collector/service/configs
 # PostgreSQL（业务库）
 psql -h localhost -U postgres -d gwubd -f sql/postgresql/schema.sql
 
-# ClickHouse（分析引擎）
+# ClickHouse（分析引擎，与 Doris 二选一）
 clickhouse-client --queries-file sql/clickhouse/schema.sql
 
-# Doris（分析引擎）
+# Doris（分析引擎，与 ClickHouse 二选一）
 mysql -h localhost -P 9030 -u root < sql/doris/schema.sql
 ```
 
@@ -378,20 +375,21 @@ make docker-up
 
 ## 后端服务说明
 
-| 服务 | 说明 | 端口 |
-| --- | --- | --- |
-| **Core Service** | 核心业务服务，负责事件存储、分析建模、风险检测、标签管理、数据同步等核心逻辑 | - |
-| **Admin Service** | 管理后台 BFF，提供用户管理、权限管理、配置管理、报表查询等接口 | HTTP: 9700 / gRPC: 9701 |
-| **Collector Service** | 埋点采集 BFF，接收客户端事件上报数据，校验并转发至消息队列 | HTTP: 9800 / gRPC: 9801 |
+| 服务                    | 说明                                     | 端口                      |
+|-----------------------|----------------------------------------|-------------------------|
+| **Core Service**      | 核心业务服务，负责事件存储、分析建模、风险检测、标签管理、数据同步等核心逻辑 | -                       |
+| **Admin Service**     | 管理后台 BFF，提供用户管理、权限管理、配置管理、报表查询等接口      | HTTP: 9700 / gRPC: 9701 |
+| **Collector Service** | 埋点采集 BFF，接收客户端事件上报数据，校验并转发至消息队列        | HTTP: 9800 / gRPC: 9801 |
 
 ---
 
-## 数据同步与 Schema 设计
+## OLAP 引擎选型与 Schema 设计
 
-- 支持 ClickHouse 与 Doris 的 Schema 自动同步，字段、分区、索引、主键保持一致
+- **ClickHouse 与 Apache Doris 为二选一关系**，部署时按需选择其一作为分析引擎即可，运行时通过 `data.UseClickHouse` 配置项切换
+- 两种引擎共用同一份业务模型，字段、分区、索引、主键定义保持一致
 - 支持 struct 定义自动生成、注解（json、ch）自动处理
-- 支持批量数据同步与插入，严格模式下自动补齐 NOT NULL 字段
-- 数据同步后可优化字段类型、索引、分区等，参考 `backend/sql/` 脚本
+- 支持批量数据写入，严格模式下自动补齐 NOT NULL 字段
+- 落库后可进一步优化字段类型、索引、分区等，参考 `backend/sql/` 脚本
 
 ---
 
