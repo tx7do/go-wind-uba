@@ -5,10 +5,7 @@ import { $t } from '@vben/locales';
 import { notification } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import { useUserProfileStore } from '#/stores';
-
-const userProfileStore = useUserProfileStore();
-
+import { changePassword, getMe } from '#/api';
 const [BaseForm, baseFormApi] = useVbenForm({
   showDefaultActions: false,
   // 所有表单项共用，可单独在表单内覆盖
@@ -75,9 +72,8 @@ async function handleSubmit() {
   }
 
   try {
-    await userProfileStore.changePassword(
-      values.oldPassword,
-      values.newPassword,
+    await changePassword(
+      values.oldPassword, values.newPassword,
     );
 
     notification.success({
@@ -98,7 +94,7 @@ function setLoading(_loading: boolean) {}
  * 重新加载用户信息
  */
 async function reload() {
-  const data = await userProfileStore.getMe();
+  const data = await getMe();
   await baseFormApi.setValues(data || {});
 }
 

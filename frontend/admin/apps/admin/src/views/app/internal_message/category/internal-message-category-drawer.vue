@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+const { mutateAsync: createInternalMessageCategory } = useCreateInternalMessageCategory();
+const { mutateAsync: updateInternalMessageCategory } = useUpdateInternalMessageCategory();
 import { computed, ref } from 'vue';
 
 import { useVbenDrawer } from '@vben/common-ui';
@@ -7,10 +9,7 @@ import { $t } from '@vben/locales';
 import { notification } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import { enableBoolList, useInternalMessageCategoryStore } from '#/stores';
-
-const internalMessageCategoryStore = useInternalMessageCategoryStore();
-
+import { enableBoolList, useCreateInternalMessageCategory, useUpdateInternalMessageCategory } from '#/api';
 const data = ref();
 
 const getTitle = computed(() =>
@@ -112,11 +111,8 @@ const [Drawer, drawerApi] = useVbenDrawer({
 
     try {
       await (data.value?.create
-        ? internalMessageCategoryStore.createInternalMessageCategory(values)
-        : internalMessageCategoryStore.updateInternalMessageCategory(
-            data.value.row.id,
-            values,
-          ));
+        ? createInternalMessageCategory(values)
+        : updateInternalMessageCategory({ id: data.value.row.id, values: values, }));
 
       notification.success({
         message: data.value?.create

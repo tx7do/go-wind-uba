@@ -5,8 +5,9 @@ import { preferences } from '@vben/preferences';
 import { useAccessStore, useUserStore } from '@vben/stores';
 import { startProgress, stopProgress } from '@vben/utils';
 
+import { fetchAllDictEntries } from '#/api';
 import { accessRoutes, coreRouteNames } from '#/router/routes';
-import { useAuthStore, useDictStore } from '#/stores';
+import { useAuthStore } from '#/stores';
 
 import { generateAccess } from './access';
 
@@ -49,7 +50,6 @@ function setupAccessGuard(router: Router) {
     const accessStore = useAccessStore();
     const userStore = useUserStore();
     const authStore = useAuthStore();
-    const dictStore = useDictStore();
 
     // 基本路由，这些路由不需要进入权限拦截
     if (coreRouteNames.includes(to.name as string)) {
@@ -100,7 +100,7 @@ function setupAccessGuard(router: Router) {
     }
 
     // 预先加载字典数据，部分页面可能会用到字典数据，如果没有预先加载，可能会导致页面闪烁
-    await dictStore.fetchAllDictEntries();
+    await fetchAllDictEntries();
 
     // 生成菜单和路由
     const { accessibleMenus, accessibleRoutes } = await generateAccess({

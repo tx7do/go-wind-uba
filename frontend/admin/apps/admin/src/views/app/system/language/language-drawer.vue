@@ -7,9 +7,9 @@ import { $t } from '@vben/locales';
 import { notification } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import { useLanguageStore } from '#/stores';
-
-const languageStore = useLanguageStore();
+import { useCreateLanguage, useUpdateLanguage } from '#/api';
+const { mutateAsync: createLanguage } = useCreateLanguage();
+const { mutateAsync: updateLanguage } = useUpdateLanguage();
 
 const data = ref();
 
@@ -115,8 +115,8 @@ const [Drawer, drawerApi] = useVbenDrawer({
 
     try {
       await (data.value?.create
-        ? languageStore.createLanguage(values)
-        : languageStore.updateLanguage(data.value.row.id, values));
+        ? createLanguage(values)
+        : updateLanguage({ id: data.value.row.id, values: values }));
 
       notification.success({
         message: data.value?.create

@@ -9,13 +9,15 @@ import { $t } from '@vben/locales';
 import { notification } from 'ant-design-vue';
 
 import { router } from '#/router';
-import { useUserListStore } from '#/stores';
 import { TabEnum } from '#/views/app/opm/user/detail/types';
 
 import ApiLogPage from './api-log-page.vue';
 import BasicInfoPage from './basic-info-page.vue';
 import EditPasswordModal from './components/edit-password-modal.vue';
 import InternalMessagePage from './internal-message-page.vue';
+
+import { useUpdateUser } from '#/api';
+const { mutateAsync: updateUser } = useUpdateUser();
 
 const activeTab = ref<TabEnum>(TabEnum.BASIC_INFO);
 
@@ -25,9 +27,6 @@ const userId = computed(() => {
   const id = route.params.id ?? -1;
   return Number(id);
 });
-
-const userListStore = useUserListStore();
-
 const [Modal, modalApi] = useVbenModal({
   // 连接抽离的组件
   connectedComponent: EditPasswordModal,
@@ -55,7 +54,7 @@ function goBack() {
  */
 async function handleBanAccount() {
   try {
-    await userListStore.updateUser(userId.value, { status: 'DISABLED' });
+    await updateUser({ id: userId.value, values: { status: 'DISABLED' } });
 
     notification.success({
       message: $t('ui.notification.update_status_success'),

@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+const { mutateAsync: createRiskRule } = useCreateRiskRule();
+const { mutateAsync: updateRiskRule } = useUpdateRiskRule();
 import { computed, ref } from 'vue';
 
 import { useVbenDrawer } from '@vben/common-ui';
@@ -7,10 +9,7 @@ import { $t } from '@vben/locales';
 import { notification } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import { riskLevelDict, riskTypeDict, useRiskRuleListStore } from '#/stores';
-
-const riskRuleListStore = useRiskRuleListStore();
-
+import { riskLevelDict, riskTypeDict, useCreateRiskRule, useUpdateRiskRule } from '#/api';
 const data = ref();
 
 const getTitle = computed(() =>
@@ -125,8 +124,8 @@ const [Drawer, drawerApi] = useVbenDrawer({
 
     try {
       await (data.value?.create
-        ? riskRuleListStore.createRiskRule(values)
-        : riskRuleListStore.updateRiskRule(data.value.row.id, values));
+        ? createRiskRule(values)
+        : updateRiskRule({ id: data.value.row.id, values: values }));
 
       notification.success({
         message: data.value?.create

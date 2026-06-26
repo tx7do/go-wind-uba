@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<script lang="ts" setup>const { mutateAsync: deleteWebhook } = useDeleteWebhook();
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 import type { ubaservicev1_Webhook as Webhook } from '#/generated/api/admin/service/v1';
 
@@ -11,16 +11,8 @@ import { notification } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { $t } from '#/locales';
-import {
-  enableBoolToColor,
-  enableBoolToName,
-  useWebhookListStore,
-} from '#/stores';
-
+import { PaginationQuery, enableBoolToColor, enableBoolToName, fetchListWebhooks, useDeleteWebhook } from '#/api';
 import WebhookDrawer from './webhook-drawer.vue';
-
-const webhookListStore = useWebhookListStore();
-
 const formOptions = {
   collapsed: false,
   showCollapseButton: true,
@@ -79,13 +71,7 @@ const gridOptions: VxeGridProps<Webhook> = {
   proxyConfig: {
     ajax: {
       query: async ({ page }, formValues) => {
-        return await webhookListStore.listWebhook(
-          {
-            page: page.currentPage,
-            pageSize: page.pageSize,
-          },
-          formValues,
-        );
+        return await fetchListWebhooks(new PaginationQuery({ paging: { page: page.currentPage, pageSize: page.pageSize }, formValues: formValues }));
       },
     },
   },
@@ -189,7 +175,7 @@ async function handleDelete(row: any) {
   console.log('删除', row);
 
   try {
-    await webhookListStore.deleteWebhook(row.id);
+    await deleteWebhook(row.id );
 
     notification.success({
       message: $t('ui.notification.delete_success'),

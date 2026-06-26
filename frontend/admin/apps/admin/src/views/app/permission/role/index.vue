@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<script lang="ts" setup>const userStore = useUserStore();
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { h } from 'vue';
@@ -9,18 +9,13 @@ import { LucideFilePenLine, LucideTrash2 } from '@vben/icons';
 import { notification } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { fetchListRoles, PaginationQuery, statusList, statusToColor, statusToName, useDeleteRole,  } from '#/api';
 import { type permissionservicev1_Role as Role } from '#/generated/api/admin/service/v1';
 import { $t } from '#/locales';
-import {
-  statusList,
-  statusToColor,
-  statusToName,
-  useRoleStore,
-} from '#/stores';
+import { useUserStore } from '@vben/stores';
 
 import RoleDrawer from './role-drawer.vue';
-
-const roleStore = useRoleStore();
+const { mutateAsync: deleteRole } = useDeleteRole();
 
 const formOptions: VbenFormProps = {
   // 默认展开
@@ -85,12 +80,15 @@ const gridOptions: VxeGridProps<Role> = {
       query: async ({ page }, formValues) => {
         console.log('query:', formValues);
 
-        return await roleStore.listRole(
-          {
-            page: page.currentPage,
-            pageSize: page.pageSize,
-          },
-          formValues,
+        return await fetchListRoles(
+          new PaginationQuery({
+            paging: {
+              page: page.currentPage,
+              pageSize: page.pageSize,
+            },
+            formValues,
+            isTenantUser: userStore.isTenantUser(),
+          }),
         );
       },
     },
@@ -164,7 +162,7 @@ async function handleDelete(row: any) {
   console.log('删除', row);
 
   try {
-    await roleStore.deleteRole(row.id);
+    await deleteRole(row.id);
 
     notification.success({
       message: $t('ui.notification.delete_success'),

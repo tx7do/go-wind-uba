@@ -1,4 +1,9 @@
-<script lang="ts" setup>
+<script lang="ts" setup>const { mutateAsync: deleteTask } = useDeleteTask();
+const { mutateAsync: updateTask } = useUpdateTask();
+const { mutateAsync: startAllTasks } = useStartAllTasks();
+const { mutateAsync: stopAllTasks } = useStopAllTasks();
+const { mutateAsync: restartAllTasks } = useRestartAllTasks();
+const { mutateAsync: controlTaskMut } = useControlTask();
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { h } from 'vue';
@@ -20,18 +25,8 @@ import {
   type taskservicev1_Task as Task,
 } from '#/generated/api/admin/service/v1';
 import { $t } from '#/locales';
-import {
-  enableList,
-  taskTypeList,
-  taskTypeToColor,
-  taskTypeToName,
-  useTaskStore,
-} from '#/stores';
-
+import { PaginationQuery, enableList, fetchListTaskTypeNames, fetchListTasks, taskTypeList, taskTypeToColor, taskTypeToName, useControlTask, useDeleteTask, useRestartAllTasks, useStartAllTasks, useStopAllTasks, useUpdateTask } from '#/api';
 import TaskDrawer from './task-drawer.vue';
-
-const taskStore = useTaskStore();
-
 const formOptions: VbenFormProps = {
   // 默认展开
   collapsed: false,
@@ -63,7 +58,7 @@ const formOptions: VbenFormProps = {
         showSearch: true,
         placeholder: $t('ui.placeholder.select'),
         api: async () => {
-          const result = await taskStore.listTaskTypeName();
+          const result = await fetchListTaskTypeNames();
           return result.typeNames;
         },
         afterFetch: (data: { name: string; path: string }[]) => {
@@ -112,13 +107,7 @@ const gridOptions: VxeGridProps<Task> = {
       query: async ({ page }, formValues) => {
         console.log('query:', formValues);
 
-        return await taskStore.listTask(
-          {
-            page: page.currentPage,
-            pageSize: page.pageSize,
-          },
-          formValues,
-        );
+        return await fetchListTasks(new PaginationQuery({ paging: { page: page.currentPage, pageSize: page.pageSize }, formValues: formValues }));
       },
     },
   },
@@ -187,7 +176,7 @@ async function handleRestartAllTask() {
   console.log('重启所有任务');
 
   try {
-    await taskStore.restartAllTask();
+    await restartAllTasks();
 
     notification.success({
       message: $t('ui.notification.operation_success'),
@@ -205,7 +194,7 @@ async function handleStartAllTask() {
   console.log('启动所有任务');
 
   try {
-    await taskStore.startAllTask();
+    await startAllTasks();
 
     notification.success({
       message: $t('ui.notification.operation_success'),
@@ -223,7 +212,7 @@ async function handleStopAllTask() {
   console.log('停止所有任务');
 
   try {
-    await taskStore.stopAllTask();
+    await stopAllTasks();
 
     notification.success({
       message: $t('ui.notification.operation_success'),
@@ -247,7 +236,7 @@ async function controlTask(
   controlType: ControlTaskRequest_ControlType,
 ) {
   try {
-    await taskStore.controlTask(typeName, controlType);
+    await controlTaskMut({ typeName: typeName, controlType: controlType });
 
     notification.success({
       message: $t('ui.notification.operation_success'),
@@ -284,7 +273,7 @@ async function handleDelete(row: any) {
   console.log('删除', row);
 
   try {
-    await taskStore.deleteTask(row.id);
+    await deleteTask({ id: row.id });
 
     notification.success({
       message: $t('ui.notification.delete_success'),
@@ -306,7 +295,7 @@ async function handleEnableChanged(row: any, checked: boolean) {
   row.enable = checked;
 
   try {
-    await taskStore.updateTask(row.id, { enable: row.enable });
+    await updateTask({ id: row.id, values: { enable: row.enable } });
 
     await controlTask(row.typeName, row.enable ? 'Start' : 'Stop');
 

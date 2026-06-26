@@ -6,21 +6,7 @@ import { Page } from '@vben/common-ui';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { $t } from '#/locales';
-import {
-  riskEventStatusDict,
-  riskEventStatusToColor,
-  riskEventStatusToName,
-  riskEventTypeToColor,
-  riskLevelDict,
-  riskLevelToColor,
-  riskLevelToName,
-  riskTypeDict,
-  riskTypeToName,
-  useRiskEventListStore,
-} from '#/stores';
-
-const riskEventListStore = useRiskEventListStore();
-
+import { PaginationQuery, fetchListRiskEvents, riskEventStatusDict, riskEventStatusToColor, riskEventStatusToName, riskEventTypeToColor, riskLevelDict, riskLevelToColor, riskLevelToName, riskTypeDict, riskTypeToName } from '#/api';
 const formOptions = {
   collapsed: false,
   showCollapseButton: true,
@@ -100,13 +86,7 @@ const gridOptions: VxeGridProps<RiskEvent> = {
   proxyConfig: {
     ajax: {
       query: async ({ page }, formValues) => {
-        return await riskEventListStore.listRiskEvent(
-          {
-            page: page.currentPage,
-            pageSize: page.pageSize,
-          },
-          formValues,
-        );
+        return await fetchListRiskEvents(new PaginationQuery({ paging: { page: page.currentPage, pageSize: page.pageSize }, formValues: formValues }));
       },
     },
   },

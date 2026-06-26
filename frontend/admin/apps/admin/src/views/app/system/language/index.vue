@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<script lang="ts" setup>const { mutateAsync: deleteLanguage } = useDeleteLanguage();
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { h } from 'vue';
@@ -11,16 +11,8 @@ import { notification } from 'ant-design-vue';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { type dictservicev1_Language } from '#/generated/api/admin/service/v1';
 import { $t } from '#/locales';
-import {
-  enableBoolToColor,
-  enableBoolToName,
-  useLanguageStore,
-} from '#/stores';
-
+import { PaginationQuery, enableBoolToColor, enableBoolToName, fetchListLanguages, useDeleteLanguage } from '#/api';
 import LanguageDrawer from './language-drawer.vue';
-
-const languageStore = useLanguageStore();
-
 const formOptions: VbenFormProps = {
   // 默认展开
   collapsed: false,
@@ -71,13 +63,7 @@ const gridOptions: VxeGridProps<dictservicev1_Language> = {
       query: async ({ page }, formValues) => {
         // console.log('query:', filters, form, formValues);
 
-        return await languageStore.listLanguage(
-          {
-            page: page.currentPage,
-            pageSize: page.pageSize,
-          },
-          formValues,
-        );
+        return await fetchListLanguages(new PaginationQuery({ paging: { page: page.currentPage, pageSize: page.pageSize }, formValues: formValues }));
       },
     },
   },
@@ -173,7 +159,7 @@ async function handleDelete(row: any) {
   console.log('删除', row);
 
   try {
-    await languageStore.deleteLanguage(row.id);
+    await deleteLanguage({ id: row.id });
 
     notification.success({
       message: $t('ui.notification.delete_success'),

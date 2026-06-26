@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<script lang="ts" setup>const permissionViewStore = usePermissionViewStore();
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
 import { h, watch } from 'vue';
@@ -12,18 +12,11 @@ import { notification } from 'ant-design-vue';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { type permissionservicev1_PermissionGroup as PermissionGroup } from '#/generated/api/admin/service/v1';
 import { $t } from '#/locales';
-import {
-  statusList,
-  statusToColor,
-  statusToName,
-  usePermissionGroupStore,
-} from '#/stores';
+import { statusList, statusToColor, statusToName, useDeletePermissionGroup } from '#/api';
 import { usePermissionViewStore } from '#/views/app/permission/permission/permission-view.state';
 
 import PermissionGroupDrawer from './permission-group-drawer.vue';
-
-const permissionViewStore = usePermissionViewStore();
-const permissionGroupStore = usePermissionGroupStore();
+const { mutateAsync: deletePermissionGroup } = useDeletePermissionGroup();
 
 const formOptions: VbenFormProps = {
   // 默认展开
@@ -188,7 +181,7 @@ async function handleDelete(row: any) {
   console.log('删除', row);
 
   try {
-    await permissionGroupStore.deletePermissionGroup(row.id);
+    await deletePermissionGroup({ id: row.id });
 
     notification.success({
       message: $t('ui.notification.delete_success'),

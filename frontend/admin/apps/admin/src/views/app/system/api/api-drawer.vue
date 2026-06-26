@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+const { mutateAsync: createApi } = useCreateApi();
+const { mutateAsync: updateApi } = useUpdateApi();
 import { computed, ref } from 'vue';
 
 import { useVbenDrawer } from '@vben/common-ui';
@@ -7,10 +9,7 @@ import { $t } from '@vben/locales';
 import { notification } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import { methodList, useApiStore } from '#/stores';
-
-const apiStore = useApiStore();
-
+import { methodList, useCreateApi, useUpdateApi } from '#/api';
 const data = ref();
 
 const getTitle = computed(() =>
@@ -108,8 +107,8 @@ const [Drawer, drawerApi] = useVbenDrawer({
 
     try {
       await (data.value?.create
-        ? apiStore.createApi(values)
-        : apiStore.updateApi(data.value.row.id, values));
+        ? createApi(values)
+        : updateApi({ id: data.value.row.id, values: values }));
 
       notification.success({
         message: data.value?.create

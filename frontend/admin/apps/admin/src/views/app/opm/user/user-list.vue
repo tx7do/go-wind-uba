@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<script lang="ts" setup>const userViewStore = useUserViewStore();
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
 import { h, watch } from 'vue';
@@ -13,25 +13,13 @@ import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { type identityservicev1_User as User } from '#/generated/api/admin/service/v1';
 import { $t } from '#/locales';
 import { router } from '#/router';
-import {
-  genderToColor,
-  genderToName,
-  usePositionStore,
-  useRoleStore,
-  userStatusList,
-  userStatusToColor,
-  userStatusToName,
-  useUserListStore,
-} from '#/stores';
+import { PaginationQuery, fetchListPositions, fetchListRoles, genderToColor, genderToName, useDeleteUser, userStatusList, userStatusToColor, userStatusToName } from '#/api';
+
 import { getRandomColor } from '#/utils/color';
 import { useUserViewStore } from '#/views/app/opm/user/user-view.state';
 
 import UserDrawer from './user-drawer.vue';
-
-const userListStore = useUserListStore();
-const roleStore = useRoleStore();
-const positionStore = usePositionStore();
-const userViewStore = useUserViewStore();
+const { mutateAsync: deleteUser } = useDeleteUser();
 
 const formOptions: VbenFormProps = {
   // 默认展开
@@ -98,11 +86,11 @@ const formOptions: VbenFormProps = {
           }));
         },
         api: async () => {
-          const result = await roleStore.listRole(undefined, {
+          const result = await fetchListRoles(new PaginationQuery({ formValues: {
             status: 'ON',
             type__not: 'TEMPLATE',
             tenant_id: userViewStore.currentTenantId ?? 0,
-          });
+          } }));
           return result.items;
         },
       },
@@ -126,11 +114,11 @@ const formOptions: VbenFormProps = {
           }));
         },
         api: async () => {
-          const result = await positionStore.listPosition(undefined, {
+          const result = await fetchListPositions(new PaginationQuery({ formValues: {
             status: 'ON',
             org_unit_id: userViewStore.currentOrgUnitId,
             tenant_id: userViewStore.currentTenantId ?? 0,
-          });
+          } }));
           return result.items;
         },
       },
@@ -290,7 +278,7 @@ async function handleDelete(row: any) {
   console.log('删除', row);
 
   try {
-    await userListStore.deleteUser(row.id);
+    await deleteUser(row.id);
 
     notification.success({
       message: $t('ui.notification.delete_success'),

@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<script lang="ts" setup>const { mutateAsync: deleteTagDefinition } = useDeleteTagDefinition();
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 import type { ubaservicev1_TagDefinition as TagDefinition } from '#/generated/api/admin/service/v1';
 
@@ -11,22 +11,8 @@ import { notification } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { $t } from '#/locales';
-import {
-  enableBoolToColor,
-  enableBoolToName,
-  tagCategoryDict,
-  tagCategoryToColor,
-  tagCategoryToName,
-  tagTypeDict,
-  tagTypeToColor,
-  tagTypeToName,
-  useTagDefinitionListStore,
-} from '#/stores';
-
+import { PaginationQuery, enableBoolToColor, enableBoolToName, fetchListTagDefinitions, tagCategoryDict, tagCategoryToColor, tagCategoryToName, tagTypeDict, tagTypeToColor, tagTypeToName, useDeleteTagDefinition } from '#/api';
 import TagDrawer from './tag-drawer.vue';
-
-const tagDefinitionListStore = useTagDefinitionListStore();
-
 const formOptions = {
   collapsed: false,
   showCollapseButton: true,
@@ -102,13 +88,7 @@ const gridOptions: VxeGridProps<TagDefinition> = {
   proxyConfig: {
     ajax: {
       query: async ({ page }, formValues) => {
-        return await tagDefinitionListStore.listTagDefinition(
-          {
-            page: page.currentPage,
-            pageSize: page.pageSize,
-          },
-          formValues,
-        );
+        return await fetchListTagDefinitions(new PaginationQuery({ paging: { page: page.currentPage, pageSize: page.pageSize }, formValues: formValues }));
       },
     },
   },
@@ -183,7 +163,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 async function handleDelete(row: any) {
   console.log('Delete', row);
   try {
-    await tagDefinitionListStore.deleteTagDefinition(row.id);
+    await deleteTagDefinition(row.id );
     notification.success({
       message: $t('ui.notification.delete_success'),
     });

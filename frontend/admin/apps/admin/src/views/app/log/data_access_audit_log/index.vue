@@ -8,18 +8,7 @@ import dayjs from 'dayjs';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { type auditservicev1_ApiAuditLog as ApiAuditLog } from '#/generated/api/admin/service/v1';
 import { $t } from '#/locales';
-import {
-  dataAccessAuditLogAccessTypeList,
-  dataAccessAuditLogAccessTypeToColor,
-  dataAccessAuditLogAccessTypeToName,
-  successStatusList,
-  successToColor,
-  successToNameWithStatusCode,
-  useDataAccessAuditLogStore,
-} from '#/stores';
-
-const dataAccessAuditLogStore = useDataAccessAuditLogStore();
-
+import { PaginationQuery, dataAccessAuditLogAccessTypeList, dataAccessAuditLogAccessTypeToColor, dataAccessAuditLogAccessTypeToName, fetchListDataAccessAuditLogs, successStatusList, successToColor, successToNameWithStatusCode } from '#/api';
 const formOptions: VbenFormProps = {
   // 默认展开
   collapsed: false,
@@ -129,12 +118,7 @@ const gridOptions: VxeGridProps<ApiAuditLog> = {
           console.log(startTime, endTime);
         }
 
-        return await dataAccessAuditLogStore.listDataAccessAuditLog(
-          {
-            page: page.currentPage,
-            pageSize: page.pageSize,
-          },
-          {
+        return await fetchListDataAccessAuditLogs(new PaginationQuery({ paging: { page: page.currentPage, pageSize: page.pageSize }, formValues: {
             username: formValues.username,
             accessType: formValues.accessType,
             tableName: formValues.tableName,
@@ -142,10 +126,7 @@ const gridOptions: VxeGridProps<ApiAuditLog> = {
             success: formValues.success,
             created_at__gte: startTime,
             created_at__lte: endTime,
-          },
-          null,
-          ['-created_at'],
-        );
+          }, orderBy: ['-created_at'] }));
       },
     },
   },

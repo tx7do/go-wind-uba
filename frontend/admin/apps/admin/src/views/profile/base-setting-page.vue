@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+
 import type { identityservicev1_User as User } from '#/generated/api/admin/service/v1';
 
 import { ref } from 'vue';
@@ -9,10 +10,7 @@ import { $t } from '@vben/locales';
 import { Col, notification, Row } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import { genderList, useUserProfileStore } from '#/stores';
-
-const userProfileStore = useUserProfileStore();
-
+import { genderList, getMe, updateUser } from '#/api';
 const data = ref<null | User>();
 
 const [BaseForm, baseFormApi] = useVbenForm({
@@ -94,7 +92,7 @@ async function handleSubmit() {
   const values = await baseFormApi.getValues();
 
   try {
-    await userProfileStore.updateUser(values);
+    await updateUser(values);
 
     notification.success({
       message: $t('ui.notification.update_success'),
@@ -114,7 +112,7 @@ function setLoading(_loading: boolean) {}
  * 重新加载用户信息
  */
 async function reload() {
-  data.value = await userProfileStore.getMe();
+  data.value = await getMe();
   await baseFormApi.setValues(data.value || {});
 }
 

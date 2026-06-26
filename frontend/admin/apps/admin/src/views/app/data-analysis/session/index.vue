@@ -6,18 +6,7 @@ import { Page } from '@vben/common-ui';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { $t } from '#/locales';
-import {
-  appPlatformToName,
-  enableBoolToColor,
-  enableBoolToName,
-  platformToColor,
-  riskLevelToColor,
-  riskLevelToName,
-  useSessionListStore,
-} from '#/stores';
-
-const sessionListStore = useSessionListStore();
-
+import { PaginationQuery, appPlatformToName, enableBoolToColor, enableBoolToName, fetchListSessions, platformToColor, riskLevelToColor, riskLevelToName } from '#/api';
 const formOptions = {
   collapsed: false,
   showCollapseButton: true,
@@ -86,13 +75,7 @@ const gridOptions: VxeGridProps<Session> = {
   proxyConfig: {
     ajax: {
       query: async ({ page }, formValues) => {
-        return await sessionListStore.listSession(
-          {
-            page: page.currentPage,
-            pageSize: page.pageSize,
-          },
-          formValues,
-        );
+        return await fetchListSessions(new PaginationQuery({ paging: { page: page.currentPage, pageSize: page.pageSize }, formValues: formValues }));
       },
     },
   },

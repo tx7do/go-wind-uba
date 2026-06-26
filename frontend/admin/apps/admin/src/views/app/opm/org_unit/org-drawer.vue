@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+const { mutateAsync: createOrgUnit } = useCreateOrgUnit();
+const { mutateAsync: updateOrgUnit } = useUpdateOrgUnit();
 import { computed, ref } from 'vue';
 
 import { useVbenDrawer } from '@vben/common-ui';
@@ -7,15 +9,7 @@ import { $t } from '@vben/locales';
 import { notification } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import {
-  orgUnitStatusList,
-  orgUnitTypeList,
-  useOrgUnitStore,
-  useUserListStore,
-} from '#/stores';
-
-const orgUnitStore = useOrgUnitStore();
-const userListStore = useUserListStore();
+import { PaginationQuery, fetchListOrgUnits, fetchListUsers, orgUnitStatusList, orgUnitTypeList, useCreateOrgUnit, useUpdateOrgUnit } from '#/api';
 
 const data = ref();
 
@@ -71,10 +65,10 @@ const [BaseForm, baseFormApi] = useVbenForm({
         valueField: 'id',
         treeNodeFilterProp: 'label',
         api: async () => {
-          const result = await orgUnitStore.listOrgUnit(undefined, {
+          const result = await fetchListOrgUnits(new PaginationQuery({ formValues: {
             // parent_id: 0,
             status: 'ON',
-          });
+          } }));
           return result.items;
         },
       },
@@ -96,9 +90,9 @@ const [BaseForm, baseFormApi] = useVbenForm({
           }));
         },
         api: async () => {
-          const result = await userListStore.listUser(undefined, {
+          const result = await fetchListUsers(new PaginationQuery({ formValues: {
             // parent_id: 0,
-          });
+          } }));
           return result.items;
         },
       },
@@ -221,8 +215,8 @@ const [Drawer, drawerApi] = useVbenDrawer({
 
     try {
       await (data.value?.create
-        ? orgUnitStore.createOrgUnit(values)
-        : orgUnitStore.updateOrgUnit(data.value.row.id, values));
+        ? createOrgUnit(values)
+        : updateOrgUnit({ id: data.value.row.id, values: values }));
 
       notification.success({
         message: data.value?.create

@@ -20,7 +20,7 @@ const formSchema = computed((): VbenFormSchema[] => {
         placeholder: $t('authentication.usernameTip'),
       },
       dependencies: {
-        trigger(values, form) {
+        trigger(values, _form) {
           if (values.selectAccount) {
           }
         },

@@ -5,11 +5,8 @@ import type { ubaservicev1_ObjectDim as ObjectDim } from '#/generated/api/admin/
 import { Page } from '@vben/common-ui';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { fetchListObjectDims, PaginationQuery } from '#/api';
 import { $t } from '#/locales';
-import { useObjectDimListStore } from '#/stores';
-
-const objectDimListStore = useObjectDimListStore();
-
 const formOptions = {
   collapsed: false,
   showCollapseButton: true,
@@ -68,13 +65,7 @@ const gridOptions: VxeGridProps<ObjectDim> = {
   proxyConfig: {
     ajax: {
       query: async ({ page }, formValues) => {
-        return await objectDimListStore.listObjectDim(
-          {
-            page: page.currentPage,
-            pageSize: page.pageSize,
-          },
-          formValues,
-        );
+        return await fetchListObjectDims(new PaginationQuery({ paging: { page: page.currentPage, pageSize: page.pageSize }, formValues: formValues }));
       },
     },
   },

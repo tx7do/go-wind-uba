@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+const { mutateAsync: createPermission } = useCreatePermission();
+const { mutateAsync: updatePermission } = useUpdatePermission();
 import { computed, ref } from 'vue';
 
 import { useVbenDrawer } from '@vben/common-ui';
@@ -7,23 +9,9 @@ import { $t } from '@vben/locales';
 import { notification } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import {
-  buildMenuTree,
-  buildPermissionGroupTree,
-  convertApiToTree,
-  statusList,
-  useApiStore,
-  useMenuStore,
-  usePermissionGroupStore,
-  usePermissionStore,
-} from '#/stores';
+import { PaginationQuery, buildMenuTree, buildPermissionGroupTree, convertApiToTree, fetchListApis, fetchListMenus, fetchListPermissionGroups, statusList, useCreatePermission, useUpdatePermission } from '#/api';
+
 import { deepClone, filterNumbers } from '#/utils';
-
-const permissionStore = usePermissionStore();
-const permissionGroupStore = usePermissionGroupStore();
-const apiStore = useApiStore();
-const menuStore = useMenuStore();
-
 const data = ref();
 
 const getTitle = computed(() =>
@@ -92,12 +80,10 @@ const [BaseForm, baseFormApi] = useVbenForm({
         },
         api: async () => {
           const fieldValue = baseFormApi.form.values;
-          const result = await permissionGroupStore.listPermissionGroup(
-            undefined,
-            {
-              parentId: fieldValue.groupId,
-              status: 'ON',
-            },
+          const result = await fetchListPermissionGroups(
+            new PaginationQuery({
+              formValues: { parentId: fieldValue.groupId, status: 'ON' },
+            }),
           );
           return result.items;
         },
@@ -129,9 +115,9 @@ const [BaseForm, baseFormApi] = useVbenForm({
         valueField: 'id',
         resultField: 'items',
         api: async () => {
-          return await menuStore.listMenu(undefined, {
-            status: 'ON',
-          });
+          return await fetchListMenus(
+            new PaginationQuery({ formValues: { status: 'ON' } }),
+          );
         },
         afterFetch: (data: any) => {
           return buildMenuTree(data.items);
@@ -152,7 +138,7 @@ const [BaseForm, baseFormApi] = useVbenForm({
         labelField: 'title',
         valueField: 'key',
         api: async () => {
-          const data = await apiStore.listApi(undefined, {});
+          const data = await fetchListApis(new PaginationQuery({ formValues: {} }));
           return convertApiToTree(data.items ?? []);
         },
       },
@@ -202,8 +188,8 @@ const [Drawer, drawerApi] = useVbenDrawer({
 
     try {
       await (data.value?.create
-        ? permissionStore.createPermission(finalValues)
-        : permissionStore.updatePermission(data.value.row.id, finalValues));
+        ? createPermission(finalValues)
+        : updatePermission({ id: data.value.row.id, values: finalValues }));
 
       notification.success({
         message: data.value?.create

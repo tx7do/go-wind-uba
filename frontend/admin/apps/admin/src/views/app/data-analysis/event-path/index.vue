@@ -6,14 +6,7 @@ import { Page } from '@vben/common-ui';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { $t } from '#/locales';
-import {
-  enableBoolToColor,
-  enableBoolToName,
-  useEventPathListStore,
-} from '#/stores';
-
-const eventPathListStore = useEventPathListStore();
-
+import { PaginationQuery, enableBoolToColor, enableBoolToName, fetchListEventPaths } from '#/api';
 const formOptions = {
   collapsed: false,
   showCollapseButton: true,
@@ -72,14 +65,12 @@ const gridOptions: VxeGridProps<EventPath> = {
   proxyConfig: {
     ajax: {
       query: async ({ page }, formValues) => {
-        return await eventPathListStore.listEventPath(
-          {
-            page: page.currentPage,
-            pageSize: page.pageSize,
-          },
-          formValues,
-          undefined,
-          ['-start_time'],
+        return await fetchListEventPaths(
+          new PaginationQuery({
+            paging: { page: page.currentPage, pageSize: page.pageSize },
+            formValues,
+            orderBy: ['-start_time'],
+          }),
         );
       },
     },

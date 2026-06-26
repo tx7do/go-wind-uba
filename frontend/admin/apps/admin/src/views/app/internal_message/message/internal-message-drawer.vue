@@ -13,15 +13,9 @@ import {
   type internal_messageservicev1_InternalMessage as InternalMessage,
   type internal_messageservicev1_SendMessageRequest as SendMessageRequest,
 } from '#/generated/api/admin/service/v1';
-import {
-  internalMessageStatusList,
-  internalMessageTypeList,
-  useInternalMessageCategoryStore,
-  useInternalMessageStore,
-} from '#/stores';
+import { PaginationQuery, fetchListInternalMessageCategories, internalMessageStatusList, internalMessageTypeList, useSendMessage, useUpdateInternalMessage } from '#/api';
 
-const internalMessageStore = useInternalMessageStore();
-const internalMessageCategoryStore = useInternalMessageCategoryStore();
+const { mutateAsync: updateMessage } = useUpdateInternalMessage();
 
 const storageManager = new StorageManager({
   prefix: 'internal_message',
@@ -93,11 +87,8 @@ const [BaseForm, baseFormApi] = useVbenForm({
         treeNodeFilterProp: 'label',
         api: async () => {
           const result =
-            await internalMessageCategoryStore.listInternalMessageCategory(
-              undefined,
-              {
-                is_enabled: 'true',
-              },
+            await fetchListInternalMessageCategories(
+              new PaginationQuery({ formValues: { is_enabled: 'true' } }),
             );
           return result.items;
         },
@@ -152,12 +143,13 @@ const [Drawer, drawerApi] = useVbenDrawer({
     console.log(getTitle.value, values);
 
     try {
+      const { mutateAsync: sendMessage } = useSendMessage();
       await (data.value?.create
-        ? internalMessageStore.sendMessage({
+        ? sendMessage({
             ...values,
             targetAll: true,
           } as SendMessageRequest)
-        : internalMessageStore.updateMessage(data.value.row.id, values));
+        : updateMessage({ id: data.value.row.id, values: values }));
 
       notification.success({
         message: data.value?.create

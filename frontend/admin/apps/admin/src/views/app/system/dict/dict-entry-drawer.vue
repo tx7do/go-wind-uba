@@ -1,4 +1,6 @@
-<script lang="ts" setup>
+<script lang="ts" setup>const dictViewStore = useDictViewStore();
+const { mutateAsync: createDictEntry } = useCreateDictEntry();
+const { mutateAsync: updateDictEntry } = useUpdateDictEntry();
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
   dictservicev1_DictEntryI18n as DictEntryI18n,
@@ -14,12 +16,8 @@ import { notification } from 'ant-design-vue';
 
 import { useVbenForm, z } from '#/adapter/form';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { enableBoolList, useDictStore } from '#/stores';
+import { PaginationQuery, enableBoolList, fetchListDictTypes, useCreateDictEntry, useUpdateDictEntry } from '#/api';
 import { useDictViewStore } from '#/views/app/system/dict/dict-view.state';
-
-const dictStore = useDictStore();
-const dictViewStore = useDictViewStore();
-
 const data = ref();
 
 const getTitle = computed(() =>
@@ -58,9 +56,9 @@ const [BaseForm, baseFormApi] = useVbenForm({
           }));
         },
         api: async () => {
-          const result = await dictStore.listDictType(undefined, {
+          const result = await fetchListDictTypes(new PaginationQuery({ formValues: {
             is_enabled: 'true',
-          });
+          } }));
           return result.items;
         },
       },
@@ -223,8 +221,8 @@ const [Drawer, drawerApi] = useVbenDrawer({
 
     try {
       await (data.value?.create
-        ? dictStore.createDictEntry(values)
-        : dictStore.updateDictEntry(data.value.row.id, values));
+        ? createDictEntry(values)
+        : updateDictEntry({ id: data.value.row.id, values: values }));
 
       notification.success({
         message: data.value?.create
@@ -291,10 +289,10 @@ async function saveRowEvent(row: DictEntryI18n) {
 
   try {
     const values = await baseFormApi.getValues();
-    await dictStore.updateDictEntry(data.value.row.id, {
+    await updateDictEntry({ id: data.value.row.id, values: {
       ...values,
       i18n: data.value.row.i18n,
-    });
+    } });
 
     notification.success({
       message: $t('ui.notification.save_success'),

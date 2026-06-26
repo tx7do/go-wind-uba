@@ -1,7 +1,6 @@
 import type { Recordable, UserInfo } from '@vben/types';
 
 import { ref } from 'vue';
-import { useRouter } from 'vue-router';
 
 import { DEFAULT_HOME_PATH, LOGIN_PATH } from '@vben/constants';
 import { preferences } from '@vben/preferences';
@@ -12,13 +11,16 @@ import CryptoJS from 'crypto-js';
 import { defineStore } from 'pinia';
 
 import {
-  createAdminPortalServiceClient,
-  createAuthenticationServiceClient,
-  createUserProfileServiceClient,
-} from '#/generated/api/admin/service/v1';
+  fetchMyPermissionCode,
+  fetchUserProfile,
+  loginMutation,
+  logoutMutation,
+  refreshTokenMutation,
+} from '#/api/composables';
 import { $t } from '#/locales';
+import { queryClient } from '#/plugins/vue-query';
+import { router } from '#/router';
 import { globalSSEClient } from '#/transport/sse';
-import { requestClientRequestHandler } from '#/utils/request';
 
 type RefreshTokenFunc = () => Promise<string> | string;
 
@@ -36,19 +38,8 @@ let isReauthenticating = false;
 export const useAuthStore = defineStore('auth', () => {
   const accessStore = useAccessStore();
   const userStore = useUserStore();
-  const router = useRouter();
 
   const loginLoading = ref(false);
-
-  const authnService = createAuthenticationServiceClient(
-    requestClientRequestHandler,
-  );
-  const adminPortalService = createAdminPortalServiceClient(
-    requestClientRequestHandler,
-  );
-  const userProfileService = createUserProfileServiceClient(
-    requestClientRequestHandler,
-  );
 
   /**
    * 加密数据
@@ -94,7 +85,7 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       loginLoading.value = true;
 
-      const resp = await authnService.Login({
+      const resp = await loginMutation.execute({
         username: params.username,
         password: encryptPassword(params.password),
         grant_type: 'password',
@@ -192,7 +183,7 @@ export const useAuthStore = defineStore('auth', () => {
   async function logout(redirect: boolean = true) {
     try {
       if (accessStore.accessToken !== null && accessStore.accessToken !== '') {
-        await authnService.Logout({});
+        await logoutMutation.execute(undefined);
       }
     } catch {
       // 忽略错误
@@ -213,7 +204,14 @@ export const useAuthStore = defineStore('auth', () => {
 
     resetAllStores();
 
+    // resetAllStores 可能从持久化中恢复 token，必须再次清除
+    accessStore.setAccessToken(null);
+    accessStore.setRefreshToken(null);
     accessStore.setLoginExpired(false);
+
+    // 清除 queryClient 缓存，防止登出期间被缓存污染的查询结果
+    // （如 getMe 因 401 返回 null 被 fetchQuery 缓存）导致重新登录时命中脏数据
+    queryClient.clear();
 
     globalSSEClient.close();
 
@@ -244,10 +242,9 @@ export const useAuthStore = defineStore('auth', () => {
     }
 
     try {
-      const resp = await authnService.RefreshToken({
-        grant_type: 'refresh_token',
-        refresh_token: accessStore.refreshToken ?? '',
-      });
+      const resp = await refreshTokenMutation.execute(
+        accessStore.refreshToken ?? '',
+      );
 
       const newAccessToken = (resp as any).access_token;
       const newRefreshToken = (resp as any).refresh_token;
@@ -320,7 +317,7 @@ export const useAuthStore = defineStore('auth', () => {
    */
   async function fetchUserInfo() {
     try {
-      return (await userProfileService.GetUser({})) as unknown as UserInfo;
+      return (await fetchUserProfile()) as unknown as UserInfo;
     } catch (error) {
       console.error('fetchUserInfo failed:', error);
       await _doLogout();
@@ -332,7 +329,7 @@ export const useAuthStore = defineStore('auth', () => {
    * 获取用户权限码
    */
   async function fetchAccessCodes() {
-    return await adminPortalService.GetMyPermissionCode({});
+    return await fetchMyPermissionCode();
   }
 
   /**

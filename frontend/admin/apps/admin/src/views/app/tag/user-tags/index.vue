@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<script lang="ts" setup>const { mutateAsync: deleteUserTag } = useDeleteUserTag();
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 import type { ubaservicev1_UserTag as UserTag } from '#/generated/api/admin/service/v1';
 
@@ -11,18 +11,9 @@ import { notification } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { $t } from '#/locales';
-import {
-  useDictStore,
-  userTagSourceToColor,
-  userTagSourceToName,
-  useUserTagListStore,
-} from '#/stores';
+import { PaginationQuery, fetchListUserTags, useDeleteUserTag, userTagSourceDict, userTagSourceToColor, userTagSourceToName } from '#/api';
 
 import UserTagDrawer from './user-tag-drawer.vue';
-
-const userTagListStore = useUserTagListStore();
-const dictStore = useDictStore();
-
 const formOptions = {
   collapsed: false,
   showCollapseButton: true,
@@ -60,7 +51,7 @@ const formOptions = {
       fieldName: 'source',
       label: $t('page.userTag.source'),
       componentProps: {
-        options: dictStore.getDictEntriesOptionsByTypeCode('TAG_SOURCE'),
+        options: userTagSourceDict(),
         placeholder: $t('ui.placeholder.select'),
         filterOption: (input: string, option: any) =>
           option.label.toLowerCase().includes(input.toLowerCase()),
@@ -94,13 +85,7 @@ const gridOptions: VxeGridProps<UserTag> = {
   proxyConfig: {
     ajax: {
       query: async ({ page }, formValues) => {
-        return await userTagListStore.listUserTag(
-          {
-            page: page.currentPage,
-            pageSize: page.pageSize,
-          },
-          formValues,
-        );
+        return await fetchListUserTags(new PaginationQuery({ paging: { page: page.currentPage, pageSize: page.pageSize }, formValues: formValues }));
       },
     },
   },
@@ -211,7 +196,7 @@ function handleEdit(row: any) {
 
 async function handleDelete(row: any) {
   try {
-    await userTagListStore.deleteUserTag(row.id);
+    await deleteUserTag(row.id );
     notification.success({
       message: $t('ui.notification.delete_success'),
     });

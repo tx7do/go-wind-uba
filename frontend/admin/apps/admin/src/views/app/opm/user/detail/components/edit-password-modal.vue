@@ -7,12 +7,10 @@ import { $t } from '@vben/locales';
 import { notification } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import { useUserListStore } from '#/stores';
+import { useEditUserPassword } from '#/api';
+const { mutateAsync: editUserPassword } = useEditUserPassword();
 
 const data = ref();
-
-const userListStore = useUserListStore();
-
 const [BaseForm, baseFormApi] = useVbenForm({
   showDefaultActions: false,
   // 所有表单项共用，可单独在表单内覆盖
@@ -75,10 +73,9 @@ const [Modal, modalApi] = useVbenModal({
     }
 
     try {
-      await userListStore.editUserPassword(
-        data.value?.userId,
-        values.new_password,
-      );
+      await editUserPassword({ userId: 
+        data.value?.userId, newPassword: values.new_password,
+       } as any);
 
       setLoading(false);
       modalApi.close();

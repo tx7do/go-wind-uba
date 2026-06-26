@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<script lang="ts" setup>const { mutateAsync: deleteApplication } = useDeleteApplication();
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 import type { ubaservicev1_Application as Application } from '#/generated/api/admin/service/v1';
 
@@ -11,24 +11,8 @@ import { notification } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { $t } from '#/locales';
-import {
-  applicationTypeToColor,
-  appPlatformToName,
-  appTypeDict,
-  appTypeToName,
-  enableBoolToColor,
-  enableBoolToName,
-  platformToColor,
-  statusList,
-  statusToColor,
-  statusToName,
-  useApplicationListStore,
-} from '#/stores';
-
+import { PaginationQuery, appPlatformToName, appTypeDict, appTypeToName, applicationTypeToColor, enableBoolToColor, enableBoolToName, fetchListApplications, platformToColor, statusList, statusToColor, statusToName, useDeleteApplication } from '#/api';
 import ApplicationDrawer from './application-drawer.vue';
-
-const applicationStore = useApplicationListStore();
-
 const formOptions = {
   collapsed: false,
   showCollapseButton: true,
@@ -104,13 +88,7 @@ const gridOptions: VxeGridProps<Application> = {
   proxyConfig: {
     ajax: {
       query: async ({ page }, formValues) => {
-        return await applicationStore.listApplication(
-          {
-            page: page.currentPage,
-            pageSize: page.pageSize,
-          },
-          formValues,
-        );
+        return await fetchListApplications(new PaginationQuery({ paging: { page: page.currentPage, pageSize: page.pageSize }, formValues: formValues }));
       },
     },
   },
@@ -239,7 +217,7 @@ async function handleDelete(row: any) {
   console.log('删除', row);
 
   try {
-    await applicationStore.deleteApplication(row.id);
+    await deleteApplication(row.id );
 
     notification.success({
       message: $t('ui.notification.delete_success'),

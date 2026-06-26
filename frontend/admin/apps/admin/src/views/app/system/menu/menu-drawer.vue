@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+const { mutateAsync: createMenu } = useCreateMenu();
+const { mutateAsync: updateMenu } = useUpdateMenu();
 import type { ChangeEvent } from 'ant-design-vue/es/_util/EventInterface';
 
 import { computed, reactive, ref } from 'vue';
@@ -11,18 +13,7 @@ import { addCollection } from '@iconify/vue';
 import { notification } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import {
-  buildMenuTree,
-  isButton,
-  isCatalog,
-  isMenu,
-  menuTypeList,
-  statusList,
-  useMenuStore,
-} from '#/stores';
-
-const menuStore = useMenuStore();
-
+import { PaginationQuery, buildMenuTree, fetchListMenus, isButton, isCatalog, isMenu, menuTypeList, statusList, useCreateMenu, useUpdateMenu } from '#/api';
 addCollection(lucide);
 
 const data = ref();
@@ -93,10 +84,10 @@ const [BaseForm, baseFormApi] = useVbenForm({
         treeNodeFilterProp: 'label',
         api: async () => {
           const fieldValue = baseFormApi.form.values;
-          const result = await menuStore.listMenu(undefined, {
+          const result = await fetchListMenus(new PaginationQuery({ formValues: {
             parentId: fieldValue.parentId,
             status: 'ON',
-          });
+          } }));
           return result.items;
         },
 
@@ -314,12 +305,15 @@ const [Drawer, drawerApi] = useVbenDrawer({
     // 获取表单数据
     const values = await baseFormApi.getValues();
 
+    // 剔除纯 UI 字段（分割线），避免进入 updateMask 导致后端校验失败
+    delete values.divider1;
+
     console.log(getTitle.value, values);
 
     try {
       await (data.value?.create
-        ? menuStore.createMenu(values)
-        : menuStore.updateMenu(data.value.row.id, values));
+        ? createMenu(values)
+        : updateMenu({ id: data.value.row.id, values: values }));
 
       notification.success({
         message: data.value?.create

@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<script lang="ts" setup>const { mutateAsync: deleteTenant } = useDeleteTenant();
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { h } from 'vue';
@@ -11,23 +11,8 @@ import { notification } from 'ant-design-vue';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { type identityservicev1_Tenant as Tenant } from '#/generated/api/admin/service/v1';
 import { $t } from '#/locales';
-import {
-  tenantAuditStatusList,
-  tenantAuditStatusToColor,
-  tenantAuditStatusToName,
-  tenantStatusList,
-  tenantStatusToColor,
-  tenantStatusToName,
-  tenantTypeList,
-  tenantTypeToColor,
-  tenantTypeToName,
-  useTenantStore,
-} from '#/stores';
-
+import { PaginationQuery, fetchListTenants, tenantAuditStatusList, tenantAuditStatusToColor, tenantAuditStatusToName, tenantStatusList, tenantStatusToColor, tenantStatusToName, tenantTypeList, tenantTypeToColor, tenantTypeToName, useDeleteTenant } from '#/api';
 import TenantDrawer from './tenant-drawer.vue';
-
-const tenantStore = useTenantStore();
-
 const formOptions: VbenFormProps = {
   // 默认展开
   collapsed: false,
@@ -118,13 +103,7 @@ const gridOptions: VxeGridProps<Tenant> = {
     ajax: {
       query: async ({ page }, formValues) => {
         console.log('query:', formValues);
-        return await tenantStore.listTenant(
-          {
-            page: page.currentPage,
-            pageSize: page.pageSize,
-          },
-          formValues,
-        );
+        return await fetchListTenants(new PaginationQuery({ paging: { page: page.currentPage, pageSize: page.pageSize }, formValues: formValues }));
       },
     },
   },
@@ -211,7 +190,7 @@ async function handleDelete(row: any) {
   console.log('删除', row);
 
   try {
-    await tenantStore.deleteTenant(row.id);
+    await deleteTenant({ id: row.id });
 
     notification.success({
       message: $t('ui.notification.delete_success'),

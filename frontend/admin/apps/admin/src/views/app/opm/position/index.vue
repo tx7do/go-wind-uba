@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<script lang="ts" setup>const { mutateAsync: deletePosition } = useDeletePosition();
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { h } from 'vue';
@@ -11,22 +11,9 @@ import { notification } from 'ant-design-vue';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { type identityservicev1_Position as Position } from '#/generated/api/admin/service/v1';
 import { $t } from '#/locales';
-import {
-  positionTypeList,
-  positionTypeToColor,
-  positionTypeToName,
-  statusList,
-  statusToColor,
-  statusToName,
-  useOrgUnitStore,
-  usePositionStore,
-} from '#/stores';
+import { PaginationQuery, fetchListOrgUnits, fetchListPositions, positionTypeList, positionTypeToColor, positionTypeToName, statusList, statusToColor, statusToName, useDeletePosition } from '#/api';
 
 import PositionDrawer from './position-drawer.vue';
-
-const positionStore = usePositionStore();
-const orgUnitStore = useOrgUnitStore();
-
 const formOptions: VbenFormProps = {
   // 默认展开
   collapsed: false,
@@ -94,10 +81,10 @@ const formOptions: VbenFormProps = {
         valueField: 'id',
         treeNodeFilterProp: 'label',
         api: async () => {
-          const result = await orgUnitStore.listOrgUnit(undefined, {
+          const result = await fetchListOrgUnits(new PaginationQuery({ formValues: {
             // parent_id: 0,
             status: 'ON',
-          });
+          } }));
           return result.items;
         },
       },
@@ -126,13 +113,7 @@ const gridOptions: VxeGridProps<Position> = {
       query: async ({ page }, formValues) => {
         console.log('query:', formValues);
 
-        return await positionStore.listPosition(
-          {
-            page: page.currentPage,
-            pageSize: page.pageSize,
-          },
-          formValues,
-        );
+        return await fetchListPositions(new PaginationQuery({ paging: { page: page.currentPage, pageSize: page.pageSize }, formValues: formValues }));
       },
     },
   },
@@ -217,7 +198,7 @@ async function handleDelete(row: any) {
   console.log('删除', row);
 
   try {
-    await positionStore.deletePosition(row.id);
+    await deletePosition({ id: row.id });
 
     notification.success({
       message: $t('ui.notification.delete_success'),

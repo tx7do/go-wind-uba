@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+const { mutateAsync: deleteInternalMessage } = useDeleteInternalMessage();
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { h } from 'vue';
@@ -11,22 +12,9 @@ import { notification } from 'ant-design-vue';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { type internal_messageservicev1_InternalMessage as InternalMessage } from '#/generated/api/admin/service/v1';
 import { $t } from '#/locales';
-import {
-  internalMessageStatusColor,
-  internalMessageStatusLabel,
-  internalMessageStatusList,
-  internalMessageTypeColor,
-  internalMessageTypeLabel,
-  internalMessageTypeList,
-  useInternalMessageCategoryStore,
-  useInternalMessageStore,
-} from '#/stores';
+import { PaginationQuery, fetchListInternalMessageCategories, fetchListInternalMessages, internalMessageStatusColor, internalMessageStatusLabel, internalMessageStatusList, internalMessageTypeColor, internalMessageTypeLabel, internalMessageTypeList, useDeleteInternalMessage } from '#/api';
 
 import InternalMessageDrawer from './internal-message-drawer.vue';
-
-const internalMessageStore = useInternalMessageStore();
-const internalMessageCategoryStore = useInternalMessageCategoryStore();
-
 const formOptions: VbenFormProps = {
   // 默认展开
   collapsed: false,
@@ -83,11 +71,8 @@ const formOptions: VbenFormProps = {
         treeNodeFilterProp: 'label',
         api: async () => {
           const result =
-            await internalMessageCategoryStore.listInternalMessageCategory(
-              undefined,
-              {
-                is_enabled: 'true',
-              },
+            await fetchListInternalMessageCategories(
+              new PaginationQuery({ formValues: { is_enabled: 'true' } }),
             );
           return result.items;
         },
@@ -119,12 +104,11 @@ const gridOptions: VxeGridProps<InternalMessage> = {
       query: async ({ page }, formValues) => {
         console.log('query:', formValues);
 
-        return await internalMessageStore.listMessage(
-          {
-            page: page.currentPage,
-            pageSize: page.pageSize,
-          },
-          formValues,
+        return await fetchListInternalMessages(
+          new PaginationQuery({
+            paging: { page: page.currentPage, pageSize: page.pageSize },
+            formValues,
+          }),
         );
       },
     },
@@ -210,7 +194,7 @@ async function handleDelete(row: any) {
   console.log('删除', row);
 
   try {
-    await internalMessageStore.deleteMessage(row.id);
+    await deleteInternalMessage({ id: row.id });
 
     notification.success({
       message: $t('ui.notification.delete_success'),

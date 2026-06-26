@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<script lang="ts" setup>const permissionViewStore = usePermissionViewStore();
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { h, watch } from 'vue';
@@ -12,19 +12,13 @@ import { notification } from 'ant-design-vue';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { type permissionservicev1_Permission as Permission } from '#/generated/api/admin/service/v1';
 import { $t } from '#/locales';
-import {
-  statusList,
-  statusToColor,
-  statusToName,
-  usePermissionStore,
-} from '#/stores';
+import { statusList, statusToColor, statusToName, useDeletePermission, useSyncPermissions } from '#/api';
 import { usePermissionViewStore } from '#/views/app/permission/permission/permission-view.state';
 
 import PermissionDrawer from './permission-drawer.vue';
 
-const permissionStore = usePermissionStore();
-const permissionViewStore = usePermissionViewStore();
-
+const { mutateAsync: deletePermission } = useDeletePermission();
+const { mutateAsync: syncPermissions } = useSyncPermissions();
 const formOptions: VbenFormProps = {
   // 默认展开
   collapsed: false,
@@ -176,7 +170,7 @@ async function handleDelete(row: any) {
   console.log('删除', row);
 
   try {
-    await permissionStore.deletePermission(row.id);
+    await deletePermission({ id: row.id });
 
     notification.success({
       message: $t('ui.notification.delete_success'),
@@ -195,7 +189,7 @@ async function handleSyncPermissions() {
   console.log('同步');
 
   try {
-    await permissionStore.syncPermissions();
+    await syncPermissions();
     permissionViewStore.reloadGroupList();
 
     notification.success({

@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+const { mutateAsync: createUserTag } = useCreateUserTag();
+const { mutateAsync: updateUserTag } = useUpdateUserTag();
 import { computed, ref } from 'vue';
 
 import { useVbenDrawer } from '@vben/common-ui';
@@ -7,10 +9,7 @@ import { $t } from '@vben/locales';
 import { notification } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import { userTagSourceDict, useUserTagListStore } from '#/stores';
-
-const userTagListStore = useUserTagListStore();
-
+import { useCreateUserTag, useUpdateUserTag, userTagSourceDict } from '#/api';
 const data = ref();
 
 const getTitle = computed(() =>
@@ -116,8 +115,8 @@ const [Drawer, drawerApi] = useVbenDrawer({
 
     try {
       await (data.value?.create
-        ? userTagListStore.createUserTag(values)
-        : userTagListStore.updateUserTag(data.value.row.id, values));
+        ? createUserTag(values)
+        : updateUserTag({ id: data.value.row.id, values: values }));
 
       notification.success({
         message: data.value?.create

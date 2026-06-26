@@ -8,18 +8,10 @@ import dayjs from 'dayjs';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { type internal_messageservicev1_InternalMessageRecipient as InternalMessageRecipient } from '#/generated/api/admin/service/v1';
 import { $t } from '#/locales';
-import {
-  internalMessageRecipientStatusColor,
-  internalMessageRecipientStatusLabel,
-  useInternalMessageStore,
-} from '#/stores';
-
+import { PaginationQuery, fetchListUserInbox, internalMessageRecipientStatusColor, internalMessageRecipientStatusLabel } from '#/api';
 const props = defineProps({
   userId: { type: Number, default: undefined },
 });
-
-const internalMessageStore = useInternalMessageStore();
-
 const formOptions: VbenFormProps = {
   // 默认展开
   collapsed: false,
@@ -70,16 +62,15 @@ const gridOptions: VxeGridProps<InternalMessageRecipient> = {
           console.log(startTime, endTime);
         }
 
-        return await internalMessageStore.listUserInbox(
-          {
-            page: page.currentPage,
-            pageSize: page.pageSize,
-          },
-          {
-            recipient_user_id: props.userId?.toString(),
-            created_at__gte: startTime,
-            created_at__lte: endTime,
-          },
+        return await fetchListUserInbox(
+          new PaginationQuery({
+            paging: { page: page.currentPage, pageSize: page.pageSize },
+            formValues: {
+              recipient_user_id: props.userId?.toString(),
+              created_at__gte: startTime,
+              created_at__lte: endTime,
+            },
+          }),
         );
       },
     },

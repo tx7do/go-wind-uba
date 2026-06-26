@@ -7,16 +7,12 @@ import { $t } from '@vben/locales';
 import { notification } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import {
-  tenantAuditStatusList,
-  tenantStatusList,
-  tenantTypeList,
-  useTenantStore,
-  useUserListStore,
-} from '#/stores';
+import { tenantAuditStatusList, tenantStatusList, tenantTypeList, useCreateTenantWithAdminUser, useTenantExists, useUpdateTenant, useUserExists } from '#/api';
 
-const tenantStore = useTenantStore();
-const userListStore = useUserListStore();
+const { mutateAsync: updateTenantMut } = useUpdateTenant();
+const { mutateAsync: createTenantWithAdminUserMut } = useCreateTenantWithAdminUser();
+const { mutateAsync: tenantExists } = useTenantExists();
+const { mutateAsync: userExists } = useUserExists();
 
 const data = ref();
 
@@ -264,7 +260,7 @@ function setLoading(loading: boolean) {
 //   console.log('createTenant', values);
 //
 //   try {
-//     await tenantStore.createTenant(values);
+//     await createTenant(values);
 //
 //     notification.success({
 //       message: $t('ui.notification.create_success'),
@@ -294,7 +290,14 @@ async function createTenantWithAdminUser(values: any) {
 
   // 检查租户编码是否存在
   try {
-    await tenantStore.tenantExists(values.code, values.name);
+    const tenantExistResp: any = await tenantExists({ code: values.code, name: values.name });
+    if (tenantExistResp?.exist) {
+      notification.error({
+        message: $t('page.tenant.tenant_code_exists'),
+      });
+      setLoading(false);
+      return;
+    }
   } catch {
     notification.error({
       message: $t('page.tenant.tenant_code_exists'),
@@ -305,7 +308,14 @@ async function createTenantWithAdminUser(values: any) {
 
   // 检查用户名是否存在
   try {
-    await userListStore.userExists(values.user.username);
+    const userExistResp: any = await userExists({ username: values.user.username });
+    if (userExistResp?.exist) {
+      notification.error({
+        message: $t('page.tenant.notification.user_username_exists'),
+      });
+      setLoading(false);
+      return;
+    }
   } catch {
     notification.error({
       message: $t('page.tenant.notification.user_username_exists'),
@@ -315,7 +325,7 @@ async function createTenantWithAdminUser(values: any) {
   }
 
   try {
-    await tenantStore.createTenantWithAdminUser({
+    await createTenantWithAdminUserMut({
       tenant: {
         name: values.name,
         code: values.code,
@@ -346,7 +356,7 @@ async function updateTenant(values: any) {
   console.log('updateTenant', values);
 
   try {
-    await tenantStore.updateTenant(data.value.row.id, values);
+    await updateTenantMut({ id: data.value.row.id, values: values });
 
     notification.success({
       message: $t('ui.notification.update_success'),

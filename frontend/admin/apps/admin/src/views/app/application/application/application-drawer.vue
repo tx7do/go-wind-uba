@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+const { mutateAsync: createApplication } = useCreateApplication();
+const { mutateAsync: updateApplication } = useUpdateApplication();
 import { computed, ref } from 'vue';
 
 import { useVbenDrawer } from '@vben/common-ui';
@@ -7,15 +9,7 @@ import { $t } from '@vben/locales';
 import { notification } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import {
-  appPlatformDict,
-  appTypeDict,
-  statusList,
-  useApplicationListStore,
-} from '#/stores';
-
-const applicationStore = useApplicationListStore();
-
+import { appPlatformDict, appTypeDict, statusList, useCreateApplication, useUpdateApplication } from '#/api';
 const data = ref();
 
 const getTitle = computed(() =>
@@ -169,8 +163,8 @@ const [Drawer, drawerApi] = useVbenDrawer({
 
     try {
       await (data.value?.create
-        ? applicationStore.createApplication(values)
-        : applicationStore.updateApplication(data.value.row.id, values));
+        ? createApplication(values)
+        : updateApplication({ id: data.value.row.id, values: values }));
 
       notification.success({
         message: data.value?.create

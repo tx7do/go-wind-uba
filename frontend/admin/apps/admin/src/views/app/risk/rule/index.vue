@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<script lang="ts" setup>const { mutateAsync: deleteRiskRule } = useDeleteRiskRule();
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 import type { ubaservicev1_RiskRule as RiskRule } from '#/generated/api/admin/service/v1';
 
@@ -11,18 +11,8 @@ import { notification } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { $t } from '#/locales';
-import {
-  riskEventTypeToColor,
-  riskLevelToColor,
-  riskLevelToName, riskTypeDict,
-  riskTypeToName,
-  useRiskRuleListStore,
-} from '#/stores';
-
+import { PaginationQuery, fetchListRiskRules, riskEventTypeToColor, riskLevelToColor, riskLevelToName, riskTypeDict, riskTypeToName, useDeleteRiskRule } from '#/api';
 import RiskRuleDrawer from './risk-rule-drawer.vue';
-
-const riskRuleListStore = useRiskRuleListStore();
-
 const formOptions = {
   collapsed: false,
   showCollapseButton: true,
@@ -85,13 +75,7 @@ const gridOptions: VxeGridProps<RiskRule> = {
   proxyConfig: {
     ajax: {
       query: async ({ page }, formValues) => {
-        return await riskRuleListStore.listRiskRule(
-          {
-            page: page.currentPage,
-            pageSize: page.pageSize,
-          },
-          formValues,
-        );
+        return await fetchListRiskRules(new PaginationQuery({ paging: { page: page.currentPage, pageSize: page.pageSize }, formValues: formValues }));
       },
     },
   },
@@ -195,7 +179,7 @@ function handleEdit(row: any) {
 
 async function handleDelete(row: any) {
   try {
-    await riskRuleListStore.deleteRiskRule(row.id);
+    await deleteRiskRule(row.id );
     notification.success({
       message: $t('ui.notification.delete_success'),
     });

@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+const { mutateAsync: createTagDefinition } = useCreateTagDefinition();
+const { mutateAsync: updateTagDefinition } = useUpdateTagDefinition();
 import { computed, ref } from 'vue';
 
 import { useVbenDrawer } from '@vben/common-ui';
@@ -7,14 +9,7 @@ import { $t } from '@vben/locales';
 import { notification } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import {
-  tagCategoryDict,
-  tagTypeDict,
-  useTagDefinitionListStore,
-} from '#/stores';
-
-const tagDefinitionListStore = useTagDefinitionListStore();
-
+import { tagCategoryDict, tagTypeDict, useCreateTagDefinition, useUpdateTagDefinition } from '#/api';
 const data = ref();
 
 const getTitle = computed(() =>
@@ -137,11 +132,8 @@ const [Drawer, drawerApi] = useVbenDrawer({
 
     try {
       await (data.value?.create
-        ? tagDefinitionListStore.createTagDefinition(values)
-        : tagDefinitionListStore.updateTagDefinition(
-            data.value.row.id,
-            values,
-          ));
+        ? createTagDefinition(values)
+        : updateTagDefinition({ id: data.value.row.id, values: values, }));
 
       notification.success({
         message: data.value?.create

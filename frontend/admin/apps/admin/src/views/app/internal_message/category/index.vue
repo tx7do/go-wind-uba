@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<script lang="ts" setup>const { mutateAsync: deleteInternalMessageCategory } = useDeleteInternalMessageCategory();
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { h } from 'vue';
@@ -11,16 +11,8 @@ import { notification } from 'ant-design-vue';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { type internal_messageservicev1_InternalMessageCategory as InternalMessageCategory } from '#/generated/api/admin/service/v1';
 import { $t } from '#/locales';
-import {
-  enableBoolToColor,
-  enableBoolToName,
-  useInternalMessageCategoryStore,
-} from '#/stores';
-
+import { PaginationQuery, enableBoolToColor, enableBoolToName, fetchListInternalMessageCategories, useDeleteInternalMessageCategory } from '#/api';
 import InternalMessageCategoryDrawer from './internal-message-category-drawer.vue';
-
-const internalMessageCategoryStore = useInternalMessageCategoryStore();
-
 const formOptions: VbenFormProps = {
   // 默认展开
   collapsed: false,
@@ -71,13 +63,7 @@ const gridOptions: VxeGridProps<InternalMessageCategory> = {
     ajax: {
       query: async ({ page }, formValues) => {
         console.log('query:', formValues);
-        return await internalMessageCategoryStore.listInternalMessageCategory(
-          {
-            page: page.currentPage,
-            pageSize: page.pageSize,
-          },
-          formValues,
-        );
+        return await fetchListInternalMessageCategories(new PaginationQuery({ paging: { page: page.currentPage, pageSize: page.pageSize }, formValues: formValues }));
       },
     },
   },
@@ -157,7 +143,7 @@ async function handleDelete(row: any) {
   console.log('删除', row);
 
   try {
-    await internalMessageCategoryStore.deleteInternalMessageCategory(row.id);
+    await deleteInternalMessageCategory({ id: row.id });
 
     notification.success({
       message: $t('ui.notification.delete_success'),

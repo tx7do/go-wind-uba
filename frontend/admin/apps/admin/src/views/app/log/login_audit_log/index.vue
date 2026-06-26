@@ -8,21 +8,7 @@ import dayjs from 'dayjs';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { type auditservicev1_LoginAuditLog as LoginAuditLog } from '#/generated/api/admin/service/v1';
 import { $t } from '#/locales';
-import {
-  getLoginAuditLogActionTypeColor,
-  getLoginAuditLogRiskLevelColor,
-  getLoginAuditLogStatusColor,
-  loginAuditLogActionTypeList,
-  loginAuditLogActionTypeToName,
-  loginAuditLogRiskLevelList,
-  loginAuditLogRiskLevelToName,
-  loginAuditLogStatusList,
-  loginAuditLogStatusToName,
-  useLoginAuditLogStore,
-} from '#/stores';
-
-const loginAuditLogStore = useLoginAuditLogStore();
-
+import { PaginationQuery, fetchListLoginAuditLogs, getLoginAuditLogActionTypeColor, getLoginAuditLogRiskLevelColor, getLoginAuditLogStatusColor, loginAuditLogActionTypeList, loginAuditLogActionTypeToName, loginAuditLogRiskLevelList, loginAuditLogRiskLevelToName, loginAuditLogStatusList, loginAuditLogStatusToName } from '#/api';
 const formOptions: VbenFormProps = {
   // 默认展开
   collapsed: false,
@@ -136,12 +122,7 @@ const gridOptions: VxeGridProps<LoginAuditLog> = {
           console.log(startTime, endTime);
         }
 
-        return await loginAuditLogStore.listLoginAuditLog(
-          {
-            page: page.currentPage,
-            pageSize: page.pageSize,
-          },
-          {
+        return await fetchListLoginAuditLogs(new PaginationQuery({ paging: { page: page.currentPage, pageSize: page.pageSize }, formValues: {
             username: formValues.username,
             ipAddress: formValues.ipAddress,
             status: formValues.status,
@@ -149,10 +130,7 @@ const gridOptions: VxeGridProps<LoginAuditLog> = {
             riskType: formValues.riskType,
             created_at__gte: startTime,
             created_at__lte: endTime,
-          },
-          null,
-          ['-created_at'],
-        );
+          }, orderBy: ['-created_at'] }));
       },
     },
   },

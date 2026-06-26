@@ -7,9 +7,9 @@ import { $t } from '@vben/locales';
 import { notification } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import { useWebhookListStore } from '#/stores';
-
-const webhookListStore = useWebhookListStore();
+import { useCreateWebhook, useUpdateWebhook } from '#/api';
+const { mutateAsync: createWebhook } = useCreateWebhook();
+const { mutateAsync: updateWebhook } = useUpdateWebhook();
 
 const data = ref();
 
@@ -96,8 +96,8 @@ const [Drawer, drawerApi] = useVbenDrawer({
 
     try {
       await (data.value?.create
-        ? webhookListStore.createWebhook(values)
-        : webhookListStore.updateWebhook(data.value.row.id, values));
+        ? createWebhook(values)
+        : updateWebhook({ id: data.value.row.id, values: values }));
 
       notification.success({
         message: data.value?.create

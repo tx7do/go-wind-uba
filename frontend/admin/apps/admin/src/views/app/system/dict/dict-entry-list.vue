@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<script lang="ts" setup>const dictViewStore = useDictViewStore();
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { h, watch } from 'vue';
@@ -11,16 +11,14 @@ import { notification } from 'ant-design-vue';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { type dictservicev1_DictEntry as DictEntry } from '#/generated/api/admin/service/v1';
 import { $t } from '#/locales';
-import { enableBoolToColor, enableBoolToName, useDictStore } from '#/stores';
+import { enableBoolToColor, enableBoolToName, useDeleteDictEntry } from '#/api';
 import {
   getEntryLabel,
   useDictViewStore,
 } from '#/views/app/system/dict/dict-view.state';
 
 import DictEntryDrawer from './dict-entry-drawer.vue';
-
-const dictStore = useDictStore();
-const dictViewStore = useDictViewStore();
+const { mutateAsync: deleteDictEntry } = useDeleteDictEntry();
 
 const formOptions: VbenFormProps = {
   // 默认展开
@@ -150,7 +148,7 @@ async function handleDelete(row: any) {
   console.log('删除', row);
 
   try {
-    await dictStore.deleteDictEntry([row.id]);
+    await deleteDictEntry({ ids: [row.id] });
 
     notification.success({
       message: $t('ui.notification.delete_success'),

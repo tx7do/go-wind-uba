@@ -1,4 +1,5 @@
-<script lang="ts" setup>
+<script lang="ts" setup>const { mutateAsync: deleteApi } = useDeleteApi();
+const { mutateAsync: syncApisApi } = useSyncApisApi();
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { h } from 'vue';
@@ -11,12 +12,8 @@ import { notification } from 'ant-design-vue';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { type resourceservicev1_Api as Api } from '#/generated/api/admin/service/v1';
 import { $t } from '#/locales';
-import { methodList, useApiStore } from '#/stores';
-
+import { PaginationQuery, fetchListApis, methodList, useDeleteApi, useSyncApisApi } from '#/api';
 import ApiDrawer from './api-drawer.vue';
-
-const apiStore = useApiStore();
-
 const formOptions: VbenFormProps = {
   // 默认展开
   collapsed: false,
@@ -80,14 +77,12 @@ const gridOptions: VxeGridProps<Api> = {
       query: async ({ page }, formValues) => {
         // console.log('query:', filters, form, formValues);
 
-        return await apiStore.listApi(
-          {
-            page: page.currentPage,
-            pageSize: page.pageSize,
-          },
-          formValues,
-          null,
-          ['path'],
+        return await fetchListApis(
+          new PaginationQuery({
+            paging: { page: page.currentPage, pageSize: page.pageSize },
+            formValues,
+            orderBy: ['path'],
+          }),
         );
       },
     },
@@ -159,7 +154,7 @@ async function handleDelete(row: any) {
   console.log('删除', row);
 
   try {
-    await apiStore.deleteApi(row.id);
+    await deleteApi({ id: row.id });
 
     notification.success({
       message: $t('ui.notification.delete_success'),
@@ -177,7 +172,7 @@ async function handleSync() {
   console.log('同步');
 
   try {
-    await apiStore.syncApis();
+    await syncApisApi();
 
     notification.success({
       message: $t('ui.notification.sync_success'),

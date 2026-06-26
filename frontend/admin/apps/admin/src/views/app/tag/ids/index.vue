@@ -6,17 +6,7 @@ import { Page } from '@vben/common-ui';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { $t } from '#/locales';
-import {
-  enableBoolToColor,
-  enableBoolToName,
-  idMappingIdTypeToColor,
-  idTypeDict,
-  idTypeToName,
-  useIdMappingListStore,
-} from '#/stores';
-
-const idMappingListStore = useIdMappingListStore();
-
+import { PaginationQuery, enableBoolToColor, enableBoolToName, fetchListIDMappings, idMappingIdTypeToColor, idTypeDict, idTypeToName } from '#/api';
 const formOptions = {
   collapsed: true,
   showCollapseButton: true,
@@ -70,13 +60,7 @@ const gridOptions: VxeGridProps<IDMapping> = {
   proxyConfig: {
     ajax: {
       query: async ({ page }, formValues) => {
-        return await idMappingListStore.listIDMapping(
-          {
-            page: page.currentPage,
-            pageSize: page.pageSize,
-          },
-          formValues,
-        );
+        return await fetchListIDMappings(new PaginationQuery({ paging: { page: page.currentPage, pageSize: page.pageSize }, formValues: formValues }));
       },
     },
   },

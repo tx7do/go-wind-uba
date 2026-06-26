@@ -8,17 +8,7 @@ import dayjs from 'dayjs';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { type auditservicev1_ApiAuditLog as ApiAuditLog } from '#/generated/api/admin/service/v1';
 import { $t } from '#/locales';
-import {
-  permissionAuditLogActionList,
-  permissionAuditLogActionToColor,
-  permissionAuditLogActionToName,
-  successToColor,
-  successToNameWithStatusCode,
-  usePermissionAuditLogStore,
-} from '#/stores';
-
-const permissionAuditLogStore = usePermissionAuditLogStore();
-
+import { PaginationQuery, fetchListPermissionAuditLogs, permissionAuditLogActionList, permissionAuditLogActionToColor, permissionAuditLogActionToName, successToColor, successToNameWithStatusCode } from '#/api';
 const formOptions: VbenFormProps = {
   // 默认展开
   collapsed: false,
@@ -115,22 +105,14 @@ const gridOptions: VxeGridProps<ApiAuditLog> = {
           console.log(startTime, endTime);
         }
 
-        return await permissionAuditLogStore.listPermissionAuditLog(
-          {
-            page: page.currentPage,
-            pageSize: page.pageSize,
-          },
-          {
+        return await fetchListPermissionAuditLogs(new PaginationQuery({ paging: { page: page.currentPage, pageSize: page.pageSize }, formValues: {
             username: formValues.username,
             action: formValues.action,
             path: formValues.path,
             ipAddress: formValues.ipAddress,
             created_at__gte: startTime,
             created_at__lte: endTime,
-          },
-          null,
-          ['-created_at'],
-        );
+          }, orderBy: ['-created_at'] }));
       },
     },
   },
