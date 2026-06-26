@@ -155,17 +155,16 @@ export const useAuthStore = defineStore('auth', () => {
       await _doLogout();
 
       // 处理登录错误
-      if (error instanceof Error) {
-        notification.error({
-          message: $t('authentication.loginFailed'),
-          description: error.message,
-        });
-      } else {
-        notification.error({
-          message: $t('authentication.loginFailed'),
-          description: $t('authentication.loginFailedDesc'),
-        });
-      }
+      // request() 方法可能抛出 Error 实例或纯响应数据对象（含 message 字段）
+      const errorMsg =
+        error instanceof Error
+          ? error.message
+          : (error as any)?.message || $t('authentication.loginFailedDesc');
+
+      notification.error({
+        message: $t('authentication.loginFailed'),
+        description: errorMsg,
+      });
       return null;
     } finally {
       loginLoading.value = false;
@@ -304,8 +303,10 @@ export const useAuthStore = defineStore('auth', () => {
       ) {
         accessStore.setLoginExpired(true);
       } else {
-        // 非 modal 模式直接登出并跳转登录页
-        await logout();
+        // 非 modal 模式直接清理并跳转登录页
+        // 注意：不调用 logout()，因为 logout() 会调后端 logout API，
+        // 但此时 token 已过期，后端会返回 401 又触发一轮拦截器循环
+        await _doLogout();
       }
     } finally {
       isReauthenticating = false;
