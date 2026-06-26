@@ -21,4 +21,4 @@ inputs:
 
 plugins:
   - local: protoc-gen-typescript-http
-    out: ../../frontend/admin/apps/admin/src/generated/api
+    out: ../../frontend/admin/apps/admin/src/api/generated

@@ -240,8 +240,8 @@ function Install-GoPlugins {
         'github.com/go-kratos/kratos/cmd/protoc-gen-go-errors/v2@latest',
         'github.com/google/gnostic/cmd/protoc-gen-openapi@latest',
         'github.com/envoyproxy/protoc-gen-validate@latest',
-        'github.com/menta2k/protoc-gen-redact/v3@latest',
-        'github.com/go-kratos/protoc-gen-typescript-http@latest'
+        'github.com/tx7do/go-wind-toolkit/protoc-gen-go-redact@latest',
+        'github.com/tx7do/go-wind-toolkit/protoc-gen-typescript-http@latest'
     )
     
     Install-GoPackages -Packages $plugins
