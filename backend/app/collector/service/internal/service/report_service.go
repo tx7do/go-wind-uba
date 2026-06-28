@@ -255,6 +255,57 @@ func (s *ReportService) handleBehavior(ctx context.Context, evt *ubaV1.ReportEve
 	behaviorEvent.ServerTime = evt.GetServerTime()
 	behaviorEvent.Ip = trans.Ptr(evt.GetIp())
 
+	// 业务扩展字段透传：优先保留 behavior oneof 内已填的值，
+	// 否则回退到 ReportEvent 顶层字段（兼容两种 SDK 上报方式）。
+	if behaviorEvent.EventAction == "" {
+		behaviorEvent.EventAction = evt.GetEventAction()
+	}
+	if behaviorEvent.ObjectType == "" {
+		behaviorEvent.ObjectType = evt.GetObjectType()
+	}
+	if behaviorEvent.ObjectId == "" {
+		behaviorEvent.ObjectId = evt.GetObjectId()
+	}
+	if behaviorEvent.ObjectName == "" {
+		behaviorEvent.ObjectName = evt.GetObjectName()
+	}
+	if behaviorEvent.SessionSeq == 0 {
+		behaviorEvent.SessionSeq = evt.GetSessionSeq()
+	}
+	if behaviorEvent.DurationMs == 0 {
+		behaviorEvent.DurationMs = evt.GetDurationMs()
+	}
+	if behaviorEvent.Quantity == 0 {
+		behaviorEvent.Quantity = evt.GetQuantity()
+	}
+	if behaviorEvent.Score == 0 {
+		behaviorEvent.Score = evt.GetScore()
+	}
+	if behaviorEvent.Amount == "" {
+		behaviorEvent.Amount = evt.GetAmount()
+	}
+	if behaviorEvent.ErrorCode == "" {
+		behaviorEvent.ErrorCode = evt.GetErrorCode()
+	}
+	if behaviorEvent.Os == nil && evt.Os != nil {
+		behaviorEvent.Os = trans.Ptr(evt.GetOs())
+	}
+	if behaviorEvent.AppVersion == nil && evt.AppVersion != nil {
+		behaviorEvent.AppVersion = trans.Ptr(evt.GetAppVersion())
+	}
+	if behaviorEvent.Channel == nil && evt.Channel != nil {
+		behaviorEvent.Channel = trans.Ptr(evt.GetChannel())
+	}
+	if behaviorEvent.Network == nil && evt.Network != nil {
+		behaviorEvent.Network = trans.Ptr(evt.GetNetwork())
+	}
+	if behaviorEvent.OpResult == nil && evt.OpResult != nil {
+		behaviorEvent.OpResult = trans.Ptr(evt.GetOpResult())
+	}
+	if len(behaviorEvent.Metrics) == 0 && len(evt.GetMetrics()) > 0 {
+		behaviorEvent.Metrics = evt.GetMetrics()
+	}
+
 	if err := s.kafkaBroker.Publish(ctx, topic.UbaEventRaw, broker.NewMessage(behaviorEvent)); err != nil {
 		s.log.Errorf("failed to publish behavior event to kafka: %v", err)
 		return ubaV1.ErrorInternalServerError("failed to process behavior event")
@@ -277,6 +328,28 @@ func (s *ReportService) handleRisk(ctx context.Context, evt *ubaV1.ReportEvent, 
 	riskEvent := evt.GetRisk()
 	if riskEvent == nil {
 		return ubaV1.ErrorBadRequest("risk event data is required")
+	}
+
+	// risk_event_id（兜底生成，risk_events 表的 UNIQUE KEY 首列且 NOT NULL）
+	if riskEvent.RiskEventId == "" {
+		riskEvent.RiskEventId = uuid.New().String()
+	}
+
+	// occur_time（风险发生时间，risk_events 表 NOT NULL 且为分区键 event_date 的来源）
+	// 客户端未单独上报时，以事件时间为准；事件时间缺失则用当前时间兜底。
+	if riskEvent.OccurTime == nil {
+		if evt.EventTime != nil {
+			riskEvent.OccurTime = evt.EventTime
+		} else {
+			now := time.Now()
+			riskEvent.OccurTime = timeutil.TimeToTimestamppb(&now)
+		}
+	}
+
+	// report_time（上报时间，缺失则用当前时间）
+	if riskEvent.ReportTime == nil {
+		now := time.Now()
+		riskEvent.ReportTime = timeutil.TimeToTimestamppb(&now)
 	}
 
 	riskEvent.TenantId = trans.Ptr(evt.GetTenantId())

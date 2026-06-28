@@ -25,13 +25,17 @@ COLUMNS(
     event_id, tenant_id, user_id, device_id, account_id, global_user_id,
     temp_event_time, event_category, event_name, event_action, object_type,
     object_id, object_name, session_id, session_seq, platform, ip,
-    ip_city, country, user_agent, referer, context, duration_ms,
-    temp_amount, quantity, score, metrics, properties, error_code, trace_id,
+    ip_city, country, geo, user_agent, referer, network, context, duration_ms,
+    temp_amount, quantity, score, metrics, properties, error_code, op_result,
+    risk_level, trace_id, os, app_version, channel, temp_server_time,
 
     event_time = str_to_date(replace(replace(temp_event_time, 'T', ' '), 'Z', ''), '%Y-%m-%d %H:%i:%s'),
-    amount = if(temp_amount = '', 0, temp_amount),
+    -- amount：清理千分位/货币符号等非数字字符，空或非法时落 0（DECIMAL 列默认值）
+    amount = CAST(NULLIF(REGEXP_REPLACE(temp_amount, '[^0-9.-]', ''), '') AS DECIMAL(18,2)),
+    -- server_time：优先用 collector 写入的接收时间，缺失/非法时回退 Doris 入库时间
+    server_time = if(temp_server_time = '' OR temp_server_time IS NULL, now(3),
+                     str_to_date(replace(replace(temp_server_time, 'T', ' '), 'Z', ''), '%Y-%m-%d %H:%i:%s')),
 
-    server_time = now(3),
     created_at = now(),
     updated_at = now()
 )
@@ -41,7 +45,7 @@ PROPERTIES
     "max_batch_interval" = "10",
     "max_batch_rows" = "200000",
     "format" = "json",
-    "jsonpaths" = "[\"$.eventId\", \"$.tenantId\", \"$.userId\", \"$.deviceId\", \"$.accountId\", \"$.globalUserId\", \"$.eventTime\", \"$.eventCategory\", \"$.eventName\", \"$.eventAction\", \"$.objectType\", \"$.objectId\", \"$.objectName\", \"$.sessionId\", \"$.sessionSeq\", \"$.platform\", \"$.ip\", \"$.ipCity\", \"$.country\", \"$.userAgent\", \"$.referer\", \"$.context\", \"$.durationMs\", \"$.amount\", \"$.quantity\", \"$.score\", \"$.metrics\", \"$.properties\", \"$.errorCode\", \"$.traceId\"]",
+    "jsonpaths" = "[\"$.eventId\", \"$.tenantId\", \"$.userId\", \"$.deviceId\", \"$.accountId\", \"$.globalUserId\", \"$.eventTime\", \"$.eventCategory\", \"$.eventName\", \"$.eventAction\", \"$.objectType\", \"$.objectId\", \"$.objectName\", \"$.sessionId\", \"$.sessionSeq\", \"$.platform\", \"$.ip\", \"$.ipCity\", \"$.country\", \"$.geo\", \"$.userAgent\", \"$.referer\", \"$.network\", \"$.context\", \"$.durationMs\", \"$.amount\", \"$.quantity\", \"$.score\", \"$.metrics\", \"$.properties\", \"$.errorCode\", \"$.opResult\", \"$.riskLevel\", \"$.traceId\", \"$.os\", \"$.appVersion\", \"$.channel\", \"$.serverTime\"]",
     "strip_outer_array" = "false",
     "num_as_string" = "true"
 )

@@ -306,6 +306,28 @@ func (m *ReportEvent) validate(all bool) error {
 		}
 	}
 
+	// no validation rules for EventAction
+
+	// no validation rules for ObjectType
+
+	// no validation rules for ObjectId
+
+	// no validation rules for ObjectName
+
+	// no validation rules for SessionSeq
+
+	// no validation rules for DurationMs
+
+	// no validation rules for Amount
+
+	// no validation rules for Quantity
+
+	// no validation rules for Score
+
+	// no validation rules for Metrics
+
+	// no validation rules for ErrorCode
+
 	switch v := m.Payload.(type) {
 	case *ReportEvent_Behavior:
 		if v == nil {
@@ -395,6 +417,26 @@ func (m *ReportEvent) validate(all bool) error {
 
 	if m.UserId != nil {
 		// no validation rules for UserId
+	}
+
+	if m.Os != nil {
+		// no validation rules for Os
+	}
+
+	if m.AppVersion != nil {
+		// no validation rules for AppVersion
+	}
+
+	if m.Channel != nil {
+		// no validation rules for Channel
+	}
+
+	if m.Network != nil {
+		// no validation rules for Network
+	}
+
+	if m.OpResult != nil {
+		// no validation rules for OpResult
 	}
 
 	if len(errors) > 0 {

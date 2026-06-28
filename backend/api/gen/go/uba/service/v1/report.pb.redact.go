@@ -100,6 +100,38 @@ func (x *ReportEvent) Redact() string {
 	// Safe field: TraceId
 
 	// Safe field: ServerTime
+
+	// Safe field: EventAction
+
+	// Safe field: ObjectType
+
+	// Safe field: ObjectId
+
+	// Safe field: ObjectName
+
+	// Safe field: SessionSeq
+
+	// Safe field: Os
+
+	// Safe field: AppVersion
+
+	// Safe field: Channel
+
+	// Safe field: Network
+
+	// Safe field: DurationMs
+
+	// Safe field: Amount
+
+	// Safe field: Quantity
+
+	// Safe field: Score
+
+	// Safe field: Metrics
+
+	// Safe field: OpResult
+
+	// Safe field: ErrorCode
 	return x.String()
 }
 

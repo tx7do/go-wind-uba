@@ -22,9 +22,7 @@ CREATE TABLE IF NOT EXISTS sessions_agg_daily (
     bounce_sum         BIGINT SUM DEFAULT '0' COMMENT '跳出次数',
     bounce_count       BIGINT SUM DEFAULT '0' COMMENT '跳出计数',
     total_amount       DECIMAL(38,2) SUM DEFAULT '0' COMMENT '总金额',
-    p50_duration       QUANTILE_STATE REPLACE COMMENT '50分位时长',
-    p90_duration       QUANTILE_STATE REPLACE COMMENT '90分位时长',
-    p99_duration       QUANTILE_STATE REPLACE COMMENT '99分位时长'
+    duration_quantile  QUANTILE_STATE REPLACE COMMENT '会话时长分位状态（读取时用 QUANTILE_PERCENT(col, p) 还原任意分位）'
 )
 AGGREGATE KEY (tenant_id, stat_date, platform)
 COMMENT '会话日聚合表（会话分析、跳出率、分平台）'

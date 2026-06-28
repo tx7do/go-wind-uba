@@ -111,6 +111,74 @@ message ReportEvent {
     (gnostic.openapi.v3.property) = {description: "服务端接收时间，服务端处理事件的时间，单位毫秒"}
   ];  // 服务端接收时间
 
+  // ─── 业务扩展字段（行为事件特有，便于客户端在顶层直接上报） ───
+  // 这些字段与 BehaviorEvent 一一对应；客户端若已通过 behavior oneof 上报完整对象，
+  // collector 会优先保留 oneof 内的值，否则回退到下列顶层字段。
+  string event_action = 40 [
+    json_name = "eventAction",
+    (gnostic.openapi.v3.property) = {description: "事件动作，事件的具体动作或结果，如 click/view/purchase"}
+  ];
+  string object_type = 41 [
+    json_name = "objectType",
+    (gnostic.openapi.v3.property) = {description: "对象类型，事件作用的对象类型，如 product/level/item"}
+  ];
+  string object_id = 42 [
+    json_name = "objectId",
+    (gnostic.openapi.v3.property) = {description: "对象ID，事件作用的对象标识"}
+  ];
+  string object_name = 43 [
+    json_name = "objectName",
+    (gnostic.openapi.v3.property) = {description: "对象名称，事件作用的对象名称"}
+  ];
+  uint32 session_seq = 44 [
+    json_name = "sessionSeq",
+    (gnostic.openapi.v3.property) = {description: "会话内序号，事件在会话中的顺序"}
+  ];
+  optional string os = 45 [
+    json_name = "os",
+    (gnostic.openapi.v3.property) = {description: "操作系统，事件发生的操作系统"}
+  ];
+  optional string app_version = 46 [
+    json_name = "appVersion",
+    (gnostic.openapi.v3.property) = {description: "应用版本"}
+  ];
+  optional string channel = 47 [
+    json_name = "channel",
+    (gnostic.openapi.v3.property) = {description: "渠道，投放/下载渠道"}
+  ];
+  optional string network = 48 [
+    json_name = "network",
+    (gnostic.openapi.v3.property) = {description: "网络类型，WiFi/4G/5G 等"}
+  ];
+  uint32 duration_ms = 49 [
+    json_name = "durationMs",
+    (gnostic.openapi.v3.property) = {description: "持续时间，单位毫秒，如页面停留/视频播放时长"}
+  ];
+  string amount = 50 [
+    json_name = "amount",
+    (gnostic.openapi.v3.property) = {description: "金额，事件相关的金额，字符串形式以便兼容不同货币格式"}
+  ];
+  uint32 quantity = 51 [
+    json_name = "quantity",
+    (gnostic.openapi.v3.property) = {description: "数量，事件相关的数量"}
+  ];
+  int32 score = 52 [
+    json_name = "score",
+    (gnostic.openapi.v3.property) = {description: "评分/分数，如游戏关卡得分"}
+  ];
+  map<string, double> metrics = 53 [
+    json_name = "metrics",
+    (gnostic.openapi.v3.property) = {description: "数值指标，键值对形式，值为数值类型，如 score/speed 等"}
+  ];
+  optional string op_result = 54 [
+    json_name = "opResult",
+    (gnostic.openapi.v3.property) = {description: "操作结果，如 success/fail"}
+  ];
+  string error_code = 55 [
+    json_name = "errorCode",
+    (gnostic.openapi.v3.property) = {description: "错误码，事件失败时的错误码"}
+  ];
+
   oneof payload {
     BehaviorEvent behavior = 20;    // 行为事件
     RiskEvent risk = 30;            // 风险事件

@@ -162,6 +162,25 @@ type ReportEvent struct {
 	TenantId   uint32                 `protobuf:"varint,12,opt,name=tenant_id,json=tenantId,proto3" json:"tenant_id,omitempty"`
 	TraceId    string                 `protobuf:"bytes,13,opt,name=trace_id,json=traceId,proto3" json:"trace_id,omitempty"`          // 链路追踪 ID
 	ServerTime *timestamppb.Timestamp `protobuf:"bytes,14,opt,name=server_time,json=serverTime,proto3" json:"server_time,omitempty"` // 服务端接收时间
+	// ─── 业务扩展字段（行为事件特有，便于客户端在顶层直接上报） ───
+	// 这些字段与 BehaviorEvent 一一对应；客户端若已通过 behavior oneof 上报完整对象，
+	// collector 会优先保留 oneof 内的值，否则回退到下列顶层字段。
+	EventAction string             `protobuf:"bytes,40,opt,name=event_action,json=eventAction,proto3" json:"event_action,omitempty"`
+	ObjectType  string             `protobuf:"bytes,41,opt,name=object_type,json=objectType,proto3" json:"object_type,omitempty"`
+	ObjectId    string             `protobuf:"bytes,42,opt,name=object_id,json=objectId,proto3" json:"object_id,omitempty"`
+	ObjectName  string             `protobuf:"bytes,43,opt,name=object_name,json=objectName,proto3" json:"object_name,omitempty"`
+	SessionSeq  uint32             `protobuf:"varint,44,opt,name=session_seq,json=sessionSeq,proto3" json:"session_seq,omitempty"`
+	Os          *string            `protobuf:"bytes,45,opt,name=os,proto3,oneof" json:"os,omitempty"`
+	AppVersion  *string            `protobuf:"bytes,46,opt,name=app_version,json=appVersion,proto3,oneof" json:"app_version,omitempty"`
+	Channel     *string            `protobuf:"bytes,47,opt,name=channel,proto3,oneof" json:"channel,omitempty"`
+	Network     *string            `protobuf:"bytes,48,opt,name=network,proto3,oneof" json:"network,omitempty"`
+	DurationMs  uint32             `protobuf:"varint,49,opt,name=duration_ms,json=durationMs,proto3" json:"duration_ms,omitempty"`
+	Amount      string             `protobuf:"bytes,50,opt,name=amount,proto3" json:"amount,omitempty"`
+	Quantity    uint32             `protobuf:"varint,51,opt,name=quantity,proto3" json:"quantity,omitempty"`
+	Score       int32              `protobuf:"varint,52,opt,name=score,proto3" json:"score,omitempty"`
+	Metrics     map[string]float64 `protobuf:"bytes,53,rep,name=metrics,proto3" json:"metrics,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"fixed64,2,opt,name=value"`
+	OpResult    *string            `protobuf:"bytes,54,opt,name=op_result,json=opResult,proto3,oneof" json:"op_result,omitempty"`
+	ErrorCode   string             `protobuf:"bytes,55,opt,name=error_code,json=errorCode,proto3" json:"error_code,omitempty"`
 	// Types that are valid to be assigned to Payload:
 	//
 	//	*ReportEvent_Behavior
@@ -297,6 +316,118 @@ func (x *ReportEvent) GetServerTime() *timestamppb.Timestamp {
 		return x.ServerTime
 	}
 	return nil
+}
+
+func (x *ReportEvent) GetEventAction() string {
+	if x != nil {
+		return x.EventAction
+	}
+	return ""
+}
+
+func (x *ReportEvent) GetObjectType() string {
+	if x != nil {
+		return x.ObjectType
+	}
+	return ""
+}
+
+func (x *ReportEvent) GetObjectId() string {
+	if x != nil {
+		return x.ObjectId
+	}
+	return ""
+}
+
+func (x *ReportEvent) GetObjectName() string {
+	if x != nil {
+		return x.ObjectName
+	}
+	return ""
+}
+
+func (x *ReportEvent) GetSessionSeq() uint32 {
+	if x != nil {
+		return x.SessionSeq
+	}
+	return 0
+}
+
+func (x *ReportEvent) GetOs() string {
+	if x != nil && x.Os != nil {
+		return *x.Os
+	}
+	return ""
+}
+
+func (x *ReportEvent) GetAppVersion() string {
+	if x != nil && x.AppVersion != nil {
+		return *x.AppVersion
+	}
+	return ""
+}
+
+func (x *ReportEvent) GetChannel() string {
+	if x != nil && x.Channel != nil {
+		return *x.Channel
+	}
+	return ""
+}
+
+func (x *ReportEvent) GetNetwork() string {
+	if x != nil && x.Network != nil {
+		return *x.Network
+	}
+	return ""
+}
+
+func (x *ReportEvent) GetDurationMs() uint32 {
+	if x != nil {
+		return x.DurationMs
+	}
+	return 0
+}
+
+func (x *ReportEvent) GetAmount() string {
+	if x != nil {
+		return x.Amount
+	}
+	return ""
+}
+
+func (x *ReportEvent) GetQuantity() uint32 {
+	if x != nil {
+		return x.Quantity
+	}
+	return 0
+}
+
+func (x *ReportEvent) GetScore() int32 {
+	if x != nil {
+		return x.Score
+	}
+	return 0
+}
+
+func (x *ReportEvent) GetMetrics() map[string]float64 {
+	if x != nil {
+		return x.Metrics
+	}
+	return nil
+}
+
+func (x *ReportEvent) GetOpResult() string {
+	if x != nil && x.OpResult != nil {
+		return *x.OpResult
+	}
+	return ""
+}
+
+func (x *ReportEvent) GetErrorCode() string {
+	if x != nil {
+		return x.ErrorCode
+	}
+	return ""
 }
 
 func (x *ReportEvent) GetPayload() isReportEvent_Payload {
@@ -644,7 +775,7 @@ const file_uba_service_v1_report_proto_rawDesc = "" +
 	"app_secret\x18\x02 \x01(\tB7\xbaG4\x92\x021密钥，鉴权使用，鉴权/路由关键字段R\tappSecret\x123\n" +
 	"\x06events\x18\x03 \x03(\v2\x1b.uba.service.v1.ReportEventR\x06events\x12\x8b\x01\n" +
 	"\vclient_info\x18\x04 \x01(\v2\x1a.uba.service.v1.ClientInfoBN\xbaGK\x92\x02H客户端信息，服务端可解析用于补全事件上下文和分析R\n" +
-	"clientInfo\"\xdc\x0f\n" +
+	"clientInfo\"\xb8\x1b\n" +
 	"\vReportEvent\x12\x97\x01\n" +
 	"\n" +
 	"event_type\x18\x01 \x01(\x0e2%.uba.service.v1.ReportEvent.EventTypeBQ\xbaGN\x92\x02K事件类型，区分不同事件结构和处理逻辑，路由关键字段R\teventType\x12u\n" +
@@ -667,12 +798,37 @@ const file_uba_service_v1_report_proto_rawDesc = "" +
 	"\ttenant_id\x18\f \x01(\rB2\xbaG/\x92\x02,租户 ID，SaaS 多租户隔离关键字段R\btenantId\x12K\n" +
 	"\btrace_id\x18\r \x01(\tB0\xbaG-\x92\x02*链路追踪 ID，关联微服务调用链R\atraceId\x12\x88\x01\n" +
 	"\vserver_time\x18\x0e \x01(\v2\x1a.google.protobuf.TimestampBK\xbaGH\x92\x02E服务端接收时间，服务端处理事件的时间，单位毫秒R\n" +
-	"serverTime\x12;\n" +
+	"serverTime\x12p\n" +
+	"\fevent_action\x18( \x01(\tBM\xbaGJ\x92\x02G事件动作，事件的具体动作或结果，如 click/view/purchaseR\veventAction\x12j\n" +
+	"\vobject_type\x18) \x01(\tBI\xbaGF\x92\x02C对象类型，事件作用的对象类型，如 product/level/itemR\n" +
+	"objectType\x12I\n" +
+	"\tobject_id\x18* \x01(\tB,\xbaG)\x92\x02&对象ID，事件作用的对象标识R\bobjectId\x12Q\n" +
+	"\vobject_name\x18+ \x01(\tB0\xbaG-\x92\x02*对象名称，事件作用的对象名称R\n" +
+	"objectName\x12T\n" +
+	"\vsession_seq\x18, \x01(\rB3\xbaG0\x92\x02-会话内序号，事件在会话中的顺序R\n" +
+	"sessionSeq\x12E\n" +
+	"\x02os\x18- \x01(\tB0\xbaG-\x92\x02*操作系统，事件发生的操作系统H\x02R\x02os\x88\x01\x01\x128\n" +
+	"\vapp_version\x18. \x01(\tB\x12\xbaG\x0f\x92\x02\f应用版本H\x03R\n" +
+	"appVersion\x88\x01\x01\x12A\n" +
+	"\achannel\x18/ \x01(\tB\"\xbaG\x1f\x92\x02\x1c渠道，投放/下载渠道H\x04R\achannel\x88\x01\x01\x12B\n" +
+	"\anetwork\x180 \x01(\tB#\xbaG \x92\x02\x1d网络类型，WiFi/4G/5G 等H\x05R\anetwork\x88\x01\x01\x12g\n" +
+	"\vduration_ms\x181 \x01(\rBF\xbaGC\x92\x02@持续时间，单位毫秒，如页面停留/视频播放时长R\n" +
+	"durationMs\x12l\n" +
+	"\x06amount\x182 \x01(\tBT\xbaGQ\x92\x02N金额，事件相关的金额，字符串形式以便兼容不同货币格式R\x06amount\x12@\n" +
+	"\bquantity\x183 \x01(\rB$\xbaG!\x92\x02\x1e数量，事件相关的数量R\bquantity\x12A\n" +
+	"\x05score\x184 \x01(\x05B+\xbaG(\x92\x02%评分/分数，如游戏关卡得分R\x05score\x12\x93\x01\n" +
+	"\ametrics\x185 \x03(\v2(.uba.service.v1.ReportEvent.MetricsEntryBO\xbaGL\x92\x02I数值指标，键值对形式，值为数值类型，如 score/speed 等R\ametrics\x12G\n" +
+	"\top_result\x186 \x01(\tB%\xbaG\"\x92\x02\x1f操作结果，如 success/failH\x06R\bopResult\x88\x01\x01\x12L\n" +
+	"\n" +
+	"error_code\x187 \x01(\tB-\xbaG*\x92\x02'错误码，事件失败时的错误码R\terrorCode\x12;\n" +
 	"\bbehavior\x18\x14 \x01(\v2\x1d.uba.service.v1.BehaviorEventH\x00R\bbehavior\x12/\n" +
 	"\x04risk\x18\x1e \x01(\v2\x19.uba.service.v1.RiskEventH\x00R\x04risk\x1a=\n" +
 	"\x0fPropertiesEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"Z\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1a:\n" +
+	"\fMetricsEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\x01R\x05value:\x028\x01\"Z\n" +
 	"\tEventType\x12\x1a\n" +
 	"\x16EVENT_TYPE_UNSPECIFIED\x10\x00\x12\f\n" +
 	"\bBEHAVIOR\x10\x01\x12\b\n" +
@@ -680,7 +836,15 @@ const file_uba_service_v1_report_proto_rawDesc = "" +
 	"\x10c*\x13EVENT_TYPE_RESERVEDB\t\n" +
 	"\apayloadB\n" +
 	"\n" +
-	"\b_user_id\"\xdb\x02\n" +
+	"\b_user_idB\x05\n" +
+	"\x03_osB\x0e\n" +
+	"\f_app_versionB\n" +
+	"\n" +
+	"\b_channelB\n" +
+	"\n" +
+	"\b_networkB\f\n" +
+	"\n" +
+	"_op_result\"\xdb\x02\n" +
 	"\n" +
 	"ClientInfo\x12\\\n" +
 	"\n" +
@@ -729,7 +893,7 @@ func file_uba_service_v1_report_proto_rawDescGZIP() []byte {
 }
 
 var file_uba_service_v1_report_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_uba_service_v1_report_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_uba_service_v1_report_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_uba_service_v1_report_proto_goTypes = []any{
 	(ReportEvent_EventType)(0),    // 0: uba.service.v1.ReportEvent.EventType
 	(*PostReportRequest)(nil),     // 1: uba.service.v1.PostReportRequest
@@ -739,30 +903,32 @@ var file_uba_service_v1_report_proto_goTypes = []any{
 	(*TypeErrorDetail)(nil),       // 5: uba.service.v1.TypeErrorDetail
 	(*ErrorDetail)(nil),           // 6: uba.service.v1.ErrorDetail
 	nil,                           // 7: uba.service.v1.ReportEvent.PropertiesEntry
-	(*timestamppb.Timestamp)(nil), // 8: google.protobuf.Timestamp
-	(*BehaviorEvent)(nil),         // 9: uba.service.v1.BehaviorEvent
-	(*RiskEvent)(nil),             // 10: uba.service.v1.RiskEvent
-	(*RiskAction)(nil),            // 11: uba.service.v1.RiskAction
+	nil,                           // 8: uba.service.v1.ReportEvent.MetricsEntry
+	(*timestamppb.Timestamp)(nil), // 9: google.protobuf.Timestamp
+	(*BehaviorEvent)(nil),         // 10: uba.service.v1.BehaviorEvent
+	(*RiskEvent)(nil),             // 11: uba.service.v1.RiskEvent
+	(*RiskAction)(nil),            // 12: uba.service.v1.RiskAction
 }
 var file_uba_service_v1_report_proto_depIdxs = []int32{
 	2,  // 0: uba.service.v1.PostReportRequest.events:type_name -> uba.service.v1.ReportEvent
 	3,  // 1: uba.service.v1.PostReportRequest.client_info:type_name -> uba.service.v1.ClientInfo
 	0,  // 2: uba.service.v1.ReportEvent.event_type:type_name -> uba.service.v1.ReportEvent.EventType
-	8,  // 3: uba.service.v1.ReportEvent.event_time:type_name -> google.protobuf.Timestamp
+	9,  // 3: uba.service.v1.ReportEvent.event_time:type_name -> google.protobuf.Timestamp
 	7,  // 4: uba.service.v1.ReportEvent.properties:type_name -> uba.service.v1.ReportEvent.PropertiesEntry
-	8,  // 5: uba.service.v1.ReportEvent.server_time:type_name -> google.protobuf.Timestamp
-	9,  // 6: uba.service.v1.ReportEvent.behavior:type_name -> uba.service.v1.BehaviorEvent
-	10, // 7: uba.service.v1.ReportEvent.risk:type_name -> uba.service.v1.RiskEvent
-	5,  // 8: uba.service.v1.PostReportResponse.errors_by_type:type_name -> uba.service.v1.TypeErrorDetail
-	11, // 9: uba.service.v1.PostReportResponse.risk_action:type_name -> uba.service.v1.RiskAction
-	6,  // 10: uba.service.v1.TypeErrorDetail.errors:type_name -> uba.service.v1.ErrorDetail
-	1,  // 11: uba.service.v1.ReportService.PostReport:input_type -> uba.service.v1.PostReportRequest
-	4,  // 12: uba.service.v1.ReportService.PostReport:output_type -> uba.service.v1.PostReportResponse
-	12, // [12:13] is the sub-list for method output_type
-	11, // [11:12] is the sub-list for method input_type
-	11, // [11:11] is the sub-list for extension type_name
-	11, // [11:11] is the sub-list for extension extendee
-	0,  // [0:11] is the sub-list for field type_name
+	9,  // 5: uba.service.v1.ReportEvent.server_time:type_name -> google.protobuf.Timestamp
+	8,  // 6: uba.service.v1.ReportEvent.metrics:type_name -> uba.service.v1.ReportEvent.MetricsEntry
+	10, // 7: uba.service.v1.ReportEvent.behavior:type_name -> uba.service.v1.BehaviorEvent
+	11, // 8: uba.service.v1.ReportEvent.risk:type_name -> uba.service.v1.RiskEvent
+	5,  // 9: uba.service.v1.PostReportResponse.errors_by_type:type_name -> uba.service.v1.TypeErrorDetail
+	12, // 10: uba.service.v1.PostReportResponse.risk_action:type_name -> uba.service.v1.RiskAction
+	6,  // 11: uba.service.v1.TypeErrorDetail.errors:type_name -> uba.service.v1.ErrorDetail
+	1,  // 12: uba.service.v1.ReportService.PostReport:input_type -> uba.service.v1.PostReportRequest
+	4,  // 13: uba.service.v1.ReportService.PostReport:output_type -> uba.service.v1.PostReportResponse
+	13, // [13:14] is the sub-list for method output_type
+	12, // [12:13] is the sub-list for method input_type
+	12, // [12:12] is the sub-list for extension type_name
+	12, // [12:12] is the sub-list for extension extendee
+	0,  // [0:12] is the sub-list for field type_name
 }
 
 func init() { file_uba_service_v1_report_proto_init() }
@@ -785,7 +951,7 @@ func file_uba_service_v1_report_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_uba_service_v1_report_proto_rawDesc), len(file_uba_service_v1_report_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   7,
+			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
