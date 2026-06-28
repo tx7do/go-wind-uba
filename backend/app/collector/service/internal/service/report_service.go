@@ -71,58 +71,79 @@ func (s *ReportService) PostReport(ctx context.Context, req *ubaV1.PostReportReq
 		event.TenantId = app.TenantID
 	}
 
-	for _, event := range validEvents {
-		if event == nil {
-			s.log.Warnf("invalid event data: %v", event)
-			continue
-		}
+	// 处理事件：跟踪真实发布结果，失败计入 errorsByType，避免向客户端虚报成功。
+	var successCount int32
+	// recordError 把处理失败归入 errorsByType（复用校验阶段的分组结构）。
+	recordError := func(eventType ubaV1.ReportEvent_EventType, eventID, code, msg string) {
+		key := eventType.String()
+		errorsByType[key] = append(errorsByType[key], &ubaV1.ErrorDetail{
+			Code:    code,
+			Message: msg,
+			EventId: eventID,
+		})
+	}
 
+	for _, event := range validEvents {
 		event.ServerTime = timeutil.TimeToTimestamppb(&now)
 
+		var handleErr error
 		switch event.GetEventType() {
 		case ubaV1.ReportEvent_BEHAVIOR:
-			// 处理行为事件
-			if err := s.handleBehavior(ctx, event, req.ClientInfo); err != nil {
-				s.log.Errorf("failed to handle behavior event: %v", err)
-				continue
-			}
-
+			handleErr = s.handleBehavior(ctx, event, req.ClientInfo)
 		case ubaV1.ReportEvent_RISK:
-			// 处理风险事件
-			if err := s.handleRisk(ctx, event, req.ClientInfo); err != nil {
-				s.log.Errorf("failed to handle risk event: %v", err)
-				continue
-			}
-
+			handleErr = s.handleRisk(ctx, event, req.ClientInfo)
 		default:
 			s.log.Warnf("unsupported event type: %v", event.GetEventType())
+			recordError(event.GetEventType(), event.EventId, "UNSUPPORTED_EVENT",
+				"unsupported event_type: "+event.GetEventType().String())
 			continue
 		}
+
+		if handleErr != nil {
+			s.log.Errorf("failed to handle %s event [%s]: %v",
+				event.GetEventType().String(), event.EventId, handleErr)
+			recordError(event.GetEventType(), event.EventId, "HANDLE_FAILED", handleErr.Error())
+			continue
+		}
+		successCount++
+	}
+
+	// 把 errorsByType（校验失败 + 处理失败）转为响应结构。
+	var resultErrors []*ubaV1.TypeErrorDetail
+	for eventType, errs := range errorsByType {
+		resultErrors = append(resultErrors, &ubaV1.TypeErrorDetail{
+			Type:   eventType,
+			Errors: errs,
+		})
 	}
 
 	return &ubaV1.PostReportResponse{
-		Success: true,
+		Success: successCount > 0,
 		Message: "accepted",
 
-		ErrorsByType: errorsByType,
+		ErrorsByType: resultErrors,
 		RequestId:    requestID,
 		ServerTime:   time.Now().UnixMilli(),
 
 		TotalCount:   int32(len(req.Events)),
-		SuccessCount: int32(len(validEvents)),
-		FailedCount:  int32(len(req.Events) - len(validEvents)),
+		SuccessCount: successCount,
+		FailedCount:  int32(len(req.Events)) - successCount,
 	}, nil
 }
 
-// validateEvents 校验事件列表
+// validateEvents 校验事件列表，返回按事件类型分组的错误 map 与通过校验的事件列表。
 func (s *ReportService) validateEvents(
 	events []*ubaV1.ReportEvent,
-) ([]*ubaV1.TypeErrorDetail, []*ubaV1.ReportEvent) {
+) (map[string][]*ubaV1.ErrorDetail, []*ubaV1.ReportEvent) {
 
 	errorsByType := make(map[string][]*ubaV1.ErrorDetail)
 	validEvents := make([]*ubaV1.ReportEvent, 0, len(events))
 
 	for _, event := range events {
+		// 防御 nil 元素：proto repeated 字段允许 nil，直接校验会解引用 panic。
+		if event == nil {
+			continue
+		}
 		if err := s.validateEvent(event); err != nil {
 			errDetail := &ubaV1.ErrorDetail{
 				Code:    "INVALID_EVENT",
@@ -136,16 +157,7 @@ func (s *ReportService) validateEvents(
 		validEvents = append(validEvents, event)
 	}
 
-	// 转换为响应格式
-	var result []*ubaV1.TypeErrorDetail
-	for eventType, errors := range errorsByType {
-		result = append(result, &ubaV1.TypeErrorDetail{
-			Type:   eventType,
-			Errors: errors,
-		})
-	}
-
-	return result, validEvents
+	return errorsByType, validEvents
 }
 
 // validateEvent 校验单个事件
@@ -159,9 +171,8 @@ func (s *ReportService) validateEvent(event *ubaV1.ReportEvent) error {
 	if event.EventTime == nil {
 		return ubaV1.ErrorBadRequest("event_time is required")
 	}
-	if event.TenantId == 0 {
-		return ubaV1.ErrorBadRequest("tenant_id is required")
-	}
+	// tenant_id 不在此校验：它由 PostReport 用应用所属的权威 tenant_id 统一覆盖，
+	// 客户端无需上报（上报也会被覆盖），故不强制要求。
 
 	// 校验 oneof payload
 	switch event.EventType {
@@ -257,6 +268,14 @@ func (s *ReportService) handleBehavior(ctx context.Context, evt *ubaV1.ReportEve
 
 	// 业务扩展字段透传：优先保留 behavior oneof 内已填的值，
 	// 否则回退到 ReportEvent 顶层字段（兼容两种 SDK 上报方式）。
+	//
+	// 注意：仅对「具备存在性语义」的字段做回退——
+	//   - string 类型：空串("") 视为未设置，可安全回退；
+	//   - optional (*string)：nil 视为未设置，可安全回退；
+	//   - map 类型：len==0 视为未设置，可安全回退。
+	// 数值标量（SessionSeq/DurationMs/Quantity/Score）在 proto3 下无法区分
+	// 「未设置」与「显式 0」，做零值回退会误杀合法的 0（如 Score=0 最低分），
+	// 因此这些字段只信任 oneof 内的值，不做顶层回退。
 	if behaviorEvent.EventAction == "" {
 		behaviorEvent.EventAction = evt.GetEventAction()
 	}
@@ -268,18 +287,6 @@ func (s *ReportService) handleBehavior(ctx context.Context, evt *ubaV1.ReportEve
 	}
 	if behaviorEvent.ObjectName == "" {
 		behaviorEvent.ObjectName = evt.GetObjectName()
-	}
-	if behaviorEvent.SessionSeq == 0 {
-		behaviorEvent.SessionSeq = evt.GetSessionSeq()
-	}
-	if behaviorEvent.DurationMs == 0 {
-		behaviorEvent.DurationMs = evt.GetDurationMs()
-	}
-	if behaviorEvent.Quantity == 0 {
-		behaviorEvent.Quantity = evt.GetQuantity()
-	}
-	if behaviorEvent.Score == 0 {
-		behaviorEvent.Score = evt.GetScore()
 	}
 	if behaviorEvent.Amount == "" {
 		behaviorEvent.Amount = evt.GetAmount()
@@ -352,10 +359,22 @@ func (s *ReportService) handleRisk(ctx context.Context, evt *ubaV1.ReportEvent, 
 		riskEvent.ReportTime = timeutil.TimeToTimestamppb(&now)
 	}
 
+	// 主体字段：优先保留 risk oneof 内的值，否则回退 ReportEvent 顶层字段，
+	// 与 handleBehavior 策略保持一致，避免无条件覆盖丢弃客户端自带的值。
+	//
+	// tenant_id 由 PostReport 用应用权威值覆盖（必为非 0），可直接采用；
+	// user_id 仅在客户端显式上报（evt.UserId != nil）时才赋值，避免把匿名用户
+	// 误写成「存在的用户 id 0」；device_id/session_id 为字符串，空串视为未设置。
 	riskEvent.TenantId = trans.Ptr(evt.GetTenantId())
-	riskEvent.UserId = trans.Ptr(evt.GetUserId())
-	riskEvent.DeviceId = trans.Ptr(evt.GetDeviceId())
-	riskEvent.SessionId = trans.Ptr(evt.GetSessionId())
+	if riskEvent.UserId == nil && evt.UserId != nil {
+		riskEvent.UserId = trans.Ptr(*evt.UserId)
+	}
+	if riskEvent.DeviceId == nil && evt.GetDeviceId() != "" {
+		riskEvent.DeviceId = trans.Ptr(evt.GetDeviceId())
+	}
+	if riskEvent.SessionId == nil && evt.GetSessionId() != "" {
+		riskEvent.SessionId = trans.Ptr(evt.GetSessionId())
+	}
 
 	if err := s.kafkaBroker.Publish(ctx, topic.UbaEventRisk, broker.NewMessage(riskEvent)); err != nil {
 		s.log.Errorf("failed to publish risk event to kafka: %v", err)
