@@ -344,6 +344,61 @@ components:
                     type: string
                     description: 服务端接收时间，服务端处理事件的时间，单位毫秒
                     format: date-time
+                eventAction:
+                    type: string
+                    description: 事件动作，事件的具体动作或结果，如 click/view/purchase
+                objectType:
+                    type: string
+                    description: 对象类型，事件作用的对象类型，如 product/level/item
+                objectId:
+                    type: string
+                    description: 对象ID，事件作用的对象标识
+                objectName:
+                    type: string
+                    description: 对象名称，事件作用的对象名称
+                sessionSeq:
+                    type: integer
+                    description: 会话内序号，事件在会话中的顺序
+                    format: uint32
+                os:
+                    type: string
+                    description: 操作系统，事件发生的操作系统
+                appVersion:
+                    type: string
+                    description: 应用版本
+                channel:
+                    type: string
+                    description: 渠道，投放/下载渠道
+                network:
+                    type: string
+                    description: 网络类型，WiFi/4G/5G 等
+                durationMs:
+                    type: integer
+                    description: 持续时间，单位毫秒，如页面停留/视频播放时长
+                    format: uint32
+                amount:
+                    type: string
+                    description: 金额，事件相关的金额，字符串形式以便兼容不同货币格式
+                quantity:
+                    type: integer
+                    description: 数量，事件相关的数量
+                    format: uint32
+                score:
+                    type: integer
+                    description: 评分/分数，如游戏关卡得分
+                    format: int32
+                metrics:
+                    type: object
+                    additionalProperties:
+                        type: number
+                        format: double
+                    description: 数值指标，键值对形式，值为数值类型，如 score/speed 等
+                opResult:
+                    type: string
+                    description: 操作结果，如 success/fail
+                errorCode:
+                    type: string
+                    description: 错误码，事件失败时的错误码
                 behavior:
                     $ref: '#/components/schemas/BehaviorEvent'
                 risk:
