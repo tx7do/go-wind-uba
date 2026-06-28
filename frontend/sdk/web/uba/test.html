@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UBA SDK 联调测试</title>
+  <style>
+    body { font-family: -apple-system, "Segoe UI", sans-serif; max-width: 720px; margin: 40px auto; padding: 0 20px; color: #333; }
+    h1 { font-size: 20px; }
+    .config { background: #f5f5f5; padding: 16px; border-radius: 8px; margin-bottom: 20px; }
+    .config label { display: block; margin: 8px 0 4px; font-size: 13px; color: #666; }
+    .config input { width: 100%; padding: 6px 8px; box-sizing: border-box; font-size: 13px; }
+    button { margin: 4px 8px 4px 0; padding: 8px 16px; font-size: 14px; cursor: pointer; border: 1px solid #ddd; border-radius: 4px; background: #fff; }
+    button:hover { background: #f0f7ff; border-color: #4a90d9; }
+    button.primary { background: #4a90d9; color: #fff; border-color: #4a90d9; }
+    button.primary:hover { background: #3a7dc0; }
+    #log { background: #1e1e1e; color: #d4d4d4; padding: 12px; border-radius: 6px; font-family: Consolas, monospace; font-size: 12px; height: 320px; overflow-y: auto; white-space: pre-wrap; margin-top: 16px; }
+    .row { margin-bottom: 16px; }
+    .row h3 { font-size: 14px; margin: 0 0 8px; color: #555; }
+  </style>
+</head>
+<body>
+  <h1>UBA SDK 联调测试</h1>
+  <p style="color:#999;font-size:13px;">先 <code>npm run build</code> 生成 dist/，再填写下方配置后初始化。</p>
+
+  <div class="config">
+    <div class="row">
+      <label>Endpoint（collector 地址）</label>
+      <input id="endpoint" value="http://localhost:5700" />
+    </div>
+    <div class="row">
+      <label>App ID</label>
+      <input id="appId" value="demo_app_001" />
+    </div>
+    <div class="row">
+      <label>App Secret</label>
+      <input id="appSecret" value="demo_secret_123456" />
+    </div>
+    <button class="primary" id="initBtn">初始化 SDK</button>
+    <label style="display:inline-block;margin-left:12px;font-size:13px;color:#666;">
+      <input type="checkbox" id="debugChk" checked /> 调试日志
+    </label>
+  </div>
+
+  <div class="row">
+    <h3>行为事件</h3>
+    <button data-evt="page_view" disabled>page_view</button>
+    <button data-evt="click" disabled>click</button>
+    <button data-evt="purchase" disabled>purchase</button>
+    <button data-evt="search" disabled>search</button>
+  </div>
+
+  <div class="row">
+    <h3>风险事件 & 操作</h3>
+    <button id="riskBtn" disabled>trackRisk</button>
+    <button id="identifyBtn" disabled>identify(1001)</button>
+    <button id="flushBtn" disabled>flush</button>
+    <button id="pendingBtn" disabled>查看队列</button>
+  </div>
+
+  <div id="log"></div>
+
+  <script type="module">
+    import { UbaClient, EventType } from './dist/index.js';
+
+    const logEl = document.getElementById('log');
+    function log(...args) {
+      const line = args.map(a => (typeof a === 'object' ? JSON.stringify(a) : String(a))).join(' ');
+      const ts = new Date().toLocaleTimeString();
+      logEl.textContent = `[${ts}] ${line}\n` + logEl.textContent;
+    }
+
+    let uba = null;
+
+    document.getElementById('initBtn').addEventListener('click', () => {
+      const endpoint = document.getElementById('endpoint').value.trim();
+      const appId = document.getElementById('appId').value.trim();
+      const appSecret = document.getElementById('appSecret').value.trim();
+      const debug = document.getElementById('debugChk').checked;
+      try {
+        uba = UbaClient.init({ appId, appSecret, endpoint, debug, batchSize: 5, flushInterval: 3000 });
+        log('✅ SDK 已初始化', { endpoint, appId });
+        document.querySelectorAll('button[disabled]').forEach(b => b.disabled = false);
+      } catch (e) {
+        log('❌ 初始化失败:', e.message);
+      }
+    });
+
+    // 行为事件按钮
+    const evtProps = {
+      page_view: { page: location.pathname },
+      click: { button: 'buy', position: 'header' },
+      purchase: { orderId: 'ORD-' + Date.now() },
+      search: { keyword: '手机' },
+    };
+    const evtOptions = {
+      page_view: { eventCategory: 'view' },
+      click: { eventCategory: 'action', objectType: 'button', objectId: 'btn_buy' },
+      purchase: { eventCategory: 'transaction', amount: '299.00', quantity: 1 },
+      search: { eventCategory: 'action' },
+    };
+    document.querySelectorAll('button[data-evt]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const evt = btn.dataset.evt;
+        uba.track(evt, evtProps[evt], evtOptions[evt]);
+        log(`📤 track(${evt})`, evtProps[evt]);
+      });
+    });
+
+    // 风险事件
+    document.getElementById('riskBtn').addEventListener('click', () => {
+      uba.trackRisk('abnormal_click', {
+        riskType: 'device_anomaly',
+        riskLevel: 'HIGH',
+        riskScore: 85,
+        description: '短时间内频繁点击，疑似机器操作',
+      });
+      log('⚠️ trackRisk(abnormal_click)');
+    });
+
+    // identify
+    document.getElementById('identifyBtn').addEventListener('click', () => {
+      uba.identify(1001);
+      uba.setSuperProperties({ appVersion: '1.0.0', channel: 'official' });
+      log('👤 identify(1001) + 设置公共属性');
+    });
+
+    // flush
+    document.getElementById('flushBtn').addEventListener('click', async () => {
+      log('⏳ flushing...');
+      const before = uba.pendingCount();
+      await uba.flush();
+      log(`✅ flush 完成 (上报前队列 ${before} → ${uba.pendingCount()})`);
+    });
+
+    // 队列
+    document.getElementById('pendingBtn').addEventListener('click', () => {
+      log(`队列待上报事件数: ${uba.pendingCount()}`);
+    });
+
+    log('提示：填写配置后点击「初始化 SDK」');
+  </script>
+</body>
+</html>

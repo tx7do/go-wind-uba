@@ -1,0 +1,28 @@
+{
+  "name": "@go-wind-uba/uba-sdk",
+  "version": "1.0.0",
+  "description": "UBA (User Behavior Analytics) 浏览器/Node 埋点 SDK，对接 go-wind-uba collector 服务",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "uba",
+    "analytics",
+    "tracking",
+    "behavior",
+    "sdk"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.4.0"
+  }
+}
