@@ -100,7 +100,6 @@ function handleMenuExpandAll(_data: any) {
   traverse(treeData.value as any[]);
   expandedKeys.value = keys;
   autoExpandParent.value = true;
-  console.log('expand all -> expandedKeys:', expandedKeys.value);
 }
 
 /**
@@ -109,7 +108,6 @@ function handleMenuExpandAll(_data: any) {
 function handleMenuCollapseAll(_data: any) {
   expandedKeys.value = [];
   autoExpandParent.value = false;
-  console.log('collapse all -> expandedKeys cleared');
 }
 
 /**
@@ -133,7 +131,6 @@ const handleExpandNode = (keys: string[]) => {
  * @param node
  */
 function handleSelectOrgUnit(node: any) {
-  console.log('selected node:', node);
   userViewStore.setCurrentOrgUnitId(node ? node.id || null : null);
 }
 
@@ -179,7 +176,6 @@ function handleSelectNode(keys: (number | string)[], e?: any) {
 }
 
 function handleTenantChanged(value: any) {
-  console.log('Selected tenant ID:', selectedValue.value);
   userViewStore.setCurrentTenantId(value);
   fetchOrgUnits();
 }

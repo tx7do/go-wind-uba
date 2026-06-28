@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-const { mutateAsync: createPosition } = useCreatePosition();
-const { mutateAsync: updatePosition } = useUpdatePosition();
 import { computed, ref } from 'vue';
 
 import { useVbenDrawer } from '@vben/common-ui';
@@ -9,7 +7,20 @@ import { $t } from '@vben/locales';
 import { notification } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import { PaginationQuery, fetchListOrgUnits, positionTypeList, statusList, useCreatePosition, useUpdatePosition } from '#/api';
+import {
+  fetchListOrgUnits,
+  PaginationQuery,
+  positionTypeList,
+  statusList,
+  useCreatePosition,
+  useUpdatePosition,
+} from '#/api';
+import { useUserViewStore } from '#/views/app/opm/user/user-view.state';
+
+const { mutateAsync: createPosition } = useCreatePosition();
+const { mutateAsync: updatePosition } = useUpdatePosition();
+
+const userViewStore = useUserViewStore();
 
 const data = ref();
 
@@ -81,10 +92,15 @@ const [BaseForm, baseFormApi] = useVbenForm({
         valueField: 'id',
         treeNodeFilterProp: 'label',
         api: async () => {
-          const result = await fetchListOrgUnits(new PaginationQuery({ formValues: {
-            // parent_id: 0,
-            status: 'ON',
-          } }));
+          const result = await fetchListOrgUnits(
+            new PaginationQuery({
+              formValues: {
+                // parent_id: 0,
+                status: 'ON',
+                tenant_id: userViewStore.currentTenantId ?? 0,
+              },
+            }),
+          );
           return result.items;
         },
       },
@@ -147,7 +163,6 @@ const [Drawer, drawerApi] = useVbenDrawer({
   },
 
   async onConfirm() {
-    console.log('onConfirm');
 
     // 校验输入的数据
     const validate = await baseFormApi.validate();
@@ -160,12 +175,11 @@ const [Drawer, drawerApi] = useVbenDrawer({
     // 获取表单数据
     const values = await baseFormApi.getValues();
 
-    console.log(getTitle.value, values);
 
     try {
       await (data.value?.create
         ? createPosition(values)
-        : updatePosition({ id: data.value.row.id, values: values }));
+        : updatePosition({ id: data.value.row.id, values }));
 
       notification.success({
         message: data.value?.create

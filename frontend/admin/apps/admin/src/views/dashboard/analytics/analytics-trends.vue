@@ -1,5 +1,7 @@
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue';
+import type { ubaservicev1_EventTrendResponse } from '#/generated/api/admin/service/v1';
+
+import { onMounted, ref, watch } from 'vue';
 
 import {
   EchartsUI,
@@ -7,92 +9,63 @@ import {
   useEcharts,
 } from '@vben/plugins/echarts';
 
+import dayjs from 'dayjs';
+
+interface Props {
+  data?: ubaservicev1_EventTrendResponse;
+}
+
+const props = defineProps<Props>();
+
 const chartRef = ref<EchartsUIType>();
 const { renderEcharts } = useEcharts(chartRef);
 
-onMounted(() => {
+function render() {
+  const points = props.data?.points ?? [];
+  const xData = points.map((p) =>
+    dayjs(p.timestamp ?? 0).format('MM-DD HH:mm'),
+  );
+  const yData = points.map((p) => Number(p.value ?? 0));
+
   renderEcharts({
-    grid: {
-      bottom: 0,
-      containLabel: true,
-      left: '1%',
-      right: '1%',
-      top: '2 %',
-    },
+    grid: { bottom: 0, containLabel: true, left: '1%', right: '1%', top: '2%' },
     series: [
       {
         areaStyle: {},
-        data: [
-          111, 2000, 6000, 16_000, 33_333, 55_555, 64_000, 33_333, 18_000,
-          36_000, 70_000, 42_444, 23_222, 13_000, 8000, 4000, 1200, 333, 222,
-          111,
-        ],
-        itemStyle: {
-          color: '#5ab1ef',
-        },
-        smooth: true,
-        type: 'line',
-      },
-      {
-        areaStyle: {},
-        data: [
-          33, 66, 88, 333, 3333, 6200, 20_000, 3000, 1200, 13_000, 22_000,
-          11_000, 2221, 1201, 390, 198, 60, 30, 22, 11,
-        ],
-        itemStyle: {
-          color: '#019680',
-        },
+        data: yData,
+        itemStyle: { color: '#5ab1ef' },
         smooth: true,
         type: 'line',
       },
     ],
     tooltip: {
-      axisPointer: {
-        lineStyle: {
-          color: '#019680',
-          width: 1,
-        },
-      },
+      axisPointer: { lineStyle: { color: '#019680', width: 1 } },
       trigger: 'axis',
     },
-    // xAxis: {
-    //   axisTick: {
-    //     show: false,
-    //   },
-    //   boundaryGap: false,
-    //   data: Array.from({ length: 18 }).map((_item, index) => `${index + 6}:00`),
-    //   type: 'category',
-    // },
     xAxis: {
-      axisTick: {
-        show: false,
-      },
+      axisTick: { show: false },
       boundaryGap: false,
-      data: Array.from({ length: 18 }).map((_item, index) => `${index + 6}:00`),
-      splitLine: {
-        lineStyle: {
-          type: 'solid',
-          width: 1,
-        },
-        show: true,
-      },
+      data: xData,
+      splitLine: { lineStyle: { type: 'solid', width: 1 }, show: true },
       type: 'category',
     },
     yAxis: [
       {
-        axisTick: {
-          show: false,
-        },
-        max: 80_000,
-        splitArea: {
-          show: true,
-        },
+        axisTick: { show: false },
+        splitArea: { show: true },
         splitNumber: 4,
         type: 'value',
       },
     ],
   });
-});
+}
+
+onMounted(render);
+watch(
+  () => props.data,
+  render,
+  { deep: true },
+);
 </script>
 
 <template>

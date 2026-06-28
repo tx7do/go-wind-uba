@@ -10,10 +10,19 @@ import { notification } from 'ant-design-vue';
 import { EditorType } from '#/adapter/component/Editor';
 import { useVbenForm } from '#/adapter/form';
 import {
+  fetchListInternalMessageCategories,
+  internalMessageStatusList,
+  internalMessageTypeList,
+  PaginationQuery,
+  uploadFile,
+  useSendMessage,
+  useUpdateInternalMessage,
+} from '#/api';
+import { apiClient } from '#/api/client';
+import {
   type internal_messageservicev1_InternalMessage as InternalMessage,
   type internal_messageservicev1_SendMessageRequest as SendMessageRequest,
 } from '#/generated/api/admin/service/v1';
-import { PaginationQuery, fetchListInternalMessageCategories, internalMessageStatusList, internalMessageTypeList, useSendMessage, useUpdateInternalMessage } from '#/api';
 
 const { mutateAsync: updateMessage } = useUpdateInternalMessage();
 
@@ -86,10 +95,9 @@ const [BaseForm, baseFormApi] = useVbenForm({
         valueField: 'id',
         treeNodeFilterProp: 'label',
         api: async () => {
-          const result =
-            await fetchListInternalMessageCategories(
-              new PaginationQuery({ formValues: { is_enabled: 'true' } }),
-            );
+          const result = await fetchListInternalMessageCategories(
+            new PaginationQuery({ formValues: { is_enabled: 'true' } }),
+          );
           return result.items;
         },
       },
@@ -127,7 +135,6 @@ const [Drawer, drawerApi] = useVbenDrawer({
   },
 
   async onConfirm() {
-    console.log('onConfirm');
 
     // 校验输入的数据
     const validate = await baseFormApi.validate();
@@ -140,7 +147,6 @@ const [Drawer, drawerApi] = useVbenDrawer({
     // 获取表单数据
     const values = await baseFormApi.getValues();
 
-    console.log(getTitle.value, values);
 
     try {
       const { mutateAsync: sendMessage } = useSendMessage();
@@ -149,7 +155,7 @@ const [Drawer, drawerApi] = useVbenDrawer({
             ...values,
             targetAll: true,
           } as SendMessageRequest)
-        : updateMessage({ id: data.value.row.id, values: values }));
+        : updateMessage({ id: data.value.row.id, values }));
 
       notification.success({
         message: data.value?.create
@@ -191,7 +197,6 @@ function onOpenDrawer() {
 
   setLoading(false);
 
-  console.log('onOpenDrawer', data.value);
 }
 
 async function onCloseDrawer() {
@@ -206,13 +211,26 @@ function setLoading(loading: boolean) {
   drawerApi.setState({ confirmLoading: loading });
 }
 
+// 富文本图片上传：实际上传到 images bucket，并取预签名访问 URL 回填编辑器。
+// uploadFile 当前不直接返回 URL，故上传后用 objectName(=directory/filename) 调 DownloadFile 取预签名 URL。
 async function handleUploadImage(file: File): Promise<string> {
-  console.log('Upload image:', file);
-
+  const bucketName = 'images';
+  const fileDirectory = 'message';
+  const objectName = `${fileDirectory}/${file.name}`;
   try {
-    return '';
+    await uploadFile(bucketName, fileDirectory, file, 'post');
+    const resp = await apiClient.fileTransferService.DownloadFile({
+      storageObject: { bucketName, objectName },
+      preferPresignedUrl: true,
+    });
+    const url = (resp as any)?.downloadUrl || '';
+    if (!url) {
+      notification.warning({ message: $t('ui.notification.upload_failed') });
+    }
+    return url;
   } catch (error) {
-    console.error('Image upload failed:', error);
+    console.error('[internal-message] Image upload failed:', error);
+    notification.error({ message: $t('ui.notification.upload_failed') });
     return '';
   }
 }

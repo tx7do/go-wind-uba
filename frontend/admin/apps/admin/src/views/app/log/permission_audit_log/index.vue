@@ -6,9 +6,16 @@ import { Page, type VbenFormProps } from '@vben/common-ui';
 import dayjs from 'dayjs';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { type auditservicev1_ApiAuditLog as ApiAuditLog } from '#/generated/api/admin/service/v1';
+import {
+  fetchListPermissionAuditLogs,
+  PaginationQuery,
+  permissionAuditLogActionList,
+  permissionAuditLogActionToColor,
+  permissionAuditLogActionToName,
+} from '#/api';
+import { type auditservicev1_PermissionAuditLog as PermissionAuditLog } from '#/generated/api/admin/service/v1';
 import { $t } from '#/locales';
-import { PaginationQuery, fetchListPermissionAuditLogs, permissionAuditLogActionList, permissionAuditLogActionToColor, permissionAuditLogActionToName, successToColor, successToNameWithStatusCode } from '#/api';
+
 const formOptions: VbenFormProps = {
   // 默认展开
   collapsed: false,
@@ -69,7 +76,7 @@ const formOptions: VbenFormProps = {
   ],
 };
 
-const gridOptions: VxeGridProps<ApiAuditLog> = {
+const gridOptions: VxeGridProps<PermissionAuditLog> = {
   toolbarConfig: {
     custom: true,
     export: true,
@@ -88,8 +95,6 @@ const gridOptions: VxeGridProps<ApiAuditLog> = {
   proxyConfig: {
     ajax: {
       query: async ({ page }, formValues) => {
-        console.log('query:', formValues);
-
         let startTime: any;
         let endTime: any;
         if (
@@ -102,17 +107,22 @@ const gridOptions: VxeGridProps<ApiAuditLog> = {
           endTime = dayjs(formValues.createdAt[1]).format(
             'YYYY-MM-DD HH:mm:ss',
           );
-          console.log(startTime, endTime);
         }
 
-        return await fetchListPermissionAuditLogs(new PaginationQuery({ paging: { page: page.currentPage, pageSize: page.pageSize }, formValues: {
-            username: formValues.username,
-            action: formValues.action,
-            path: formValues.path,
-            ipAddress: formValues.ipAddress,
-            created_at__gte: startTime,
-            created_at__lte: endTime,
-          }, orderBy: ['-created_at'] }));
+        return await fetchListPermissionAuditLogs(
+          new PaginationQuery({
+            paging: { page: page.currentPage, pageSize: page.pageSize },
+            formValues: {
+              targetType: formValues.targetType,
+              operatorName: formValues.operatorName,
+              action: formValues.action,
+              ipAddress: formValues.ipAddress,
+              created_at__gte: startTime,
+              created_at__lte: endTime,
+            },
+            orderBy: ['-created_at'],
+          }),
+        );
       },
     },
   },
@@ -135,12 +145,7 @@ const gridOptions: VxeGridProps<ApiAuditLog> = {
     { title: $t('page.permissionAuditLog.reason'), field: 'reason' },
     {
       title: $t('page.permissionAuditLog.operatorName'),
-      field: 'deviceInfo.operatorName',
-    },
-    {
-      title: $t('page.permissionAuditLog.geoLocation'),
-      field: 'geoLocation',
-      slots: { default: 'geoLocation' },
+      field: 'operatorName',
     },
     {
       title: $t('page.permissionAuditLog.ipAddress'),
@@ -156,14 +161,6 @@ const [Grid] = useVbenVxeGrid({ gridOptions, formOptions });
 <template>
   <Page auto-content-height>
     <Grid :table-title="$t('menu.log.permissionAuditLog')">
-      <template #success="{ row }">
-        <a-tag :color="successToColor(row.success)">
-          {{ successToNameWithStatusCode(row.success, row.statusCode) }}
-        </a-tag>
-      </template>
-      <template #geoLocation="{ row }">
-        {{ row.geoLocation.province }} {{ row.geoLocation.city }}
-      </template>
       <template #action="{ row }">
         <a-tag :color="permissionAuditLogActionToColor(row.action)">
           {{ permissionAuditLogActionToName(row.action) }}

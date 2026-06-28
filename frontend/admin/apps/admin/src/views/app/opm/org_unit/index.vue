@@ -84,7 +84,6 @@ const gridOptions: VxeGridProps<OrgUnit> = {
   proxyConfig: {
     ajax: {
       query: async ({ page }, formValues) => {
-        console.log('query:', formValues);
 
         return await fetchListOrgUnits(new PaginationQuery({ paging: { page: page.currentPage, pageSize: page.pageSize }, formValues: formValues }));
       },
@@ -152,20 +151,17 @@ function openDrawer(create: boolean, row?: any) {
 
 /* 创建 */
 function handleCreate() {
-  console.log('创建');
 
   openDrawer(true);
 }
 
 /* 编辑 */
 function handleEdit(row: any) {
-  console.log('编辑', row);
   openDrawer(false, row);
 }
 
 /* 删除 */
 async function handleDelete(row: any) {
-  console.log('删除', row);
 
   try {
     await deleteOrgUnit({ id: row.id });

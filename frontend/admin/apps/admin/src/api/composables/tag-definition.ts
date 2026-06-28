@@ -112,20 +112,63 @@ export function useDeleteTagDefinition(
 // 标签定义枚举与工具函数
 // ==============================
 
+// 标签分类枚举值 → 显示名（前端硬编码兜底，字典表无数据时使用）
+const TAG_CATEGORY_NAME_MAP: Record<string, string> = {
+  TAG_CATEGORY_UNSPECIFIED: '未指定',
+  TAG_CATEGORY_USER: '用户',
+  TAG_CATEGORY_BEHAVIOR: '行为',
+  TAG_CATEGORY_RISK: '风险',
+  TAG_CATEGORY_BUSINESS: '业务',
+};
+
+// 标签类型枚举值 → 显示名（前端硬编码兜底）
+const TAG_TYPE_NAME_MAP: Record<string, string> = {
+  TAG_TYPE_UNSPECIFIED: '未指定',
+  TAG_TYPE_BOOLEAN: '布尔',
+  TAG_TYPE_ENUM: '枚举',
+  TAG_TYPE_NUMERIC: '数值',
+  TAG_TYPE_STRING: '字符串',
+  TAG_TYPE_LIST: '列表',
+};
+
 export function tagCategoryDict() {
-  return getDictEntriesOptionsByTypeCode('TAG_CATEGORY');
+  const fromDict = getDictEntriesOptionsByTypeCode('TAG_CATEGORY');
+  // 字典表无数据时回退到前端硬编码选项
+  return fromDict.length > 0
+    ? fromDict
+    : Object.entries(TAG_CATEGORY_NAME_MAP).map(([value, label]) => ({
+        label,
+        value,
+      }));
 }
 
 export function tagCategoryToName(source?: string) {
-  return getDictEntryLabelByValue(source, getDictEntriesByTypeCode('TAG_CATEGORY'));
+  if (!source) return '';
+  // 优先用字典翻译，字典缺失时回退到前端硬编码映射
+  const dictEntries = getDictEntriesByTypeCode('TAG_CATEGORY');
+  const fromDict = getDictEntryLabelByValue(source, dictEntries);
+  return fromDict && fromDict !== source
+    ? fromDict
+    : (TAG_CATEGORY_NAME_MAP[source] ?? source);
 }
 
 export function tagTypeDict() {
-  return getDictEntriesOptionsByTypeCode('TAG_TYPE');
+  const fromDict = getDictEntriesOptionsByTypeCode('TAG_TYPE');
+  return fromDict.length > 0
+    ? fromDict
+    : Object.entries(TAG_TYPE_NAME_MAP).map(([value, label]) => ({
+        label,
+        value,
+      }));
 }
 
 export function tagTypeToName(source?: string) {
-  return getDictEntryLabelByValue(source, getDictEntriesByTypeCode('TAG_TYPE'));
+  if (!source) return '';
+  const dictEntries = getDictEntriesByTypeCode('TAG_TYPE');
+  const fromDict = getDictEntryLabelByValue(source, dictEntries);
+  return fromDict && fromDict !== source
+    ? fromDict
+    : (TAG_TYPE_NAME_MAP[source] ?? source);
 }
 
 const TAG_CATEGORY_COLOR_MAP = {

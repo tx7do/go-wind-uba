@@ -1,9 +1,9 @@
 import type {
+  ubaservicev1_RiskEvent_Status as RiskEvent_Status,
   ubaservicev1_CountRiskEventResponse,
   ubaservicev1_GetRiskEventRequest,
   ubaservicev1_ListRiskEventResponse,
   ubaservicev1_RiskEvent,
-  ubaservicev1_RiskEvent_Status as RiskEvent_Status,
 } from '#/generated/api/admin/service/v1';
 
 import {
@@ -82,28 +82,94 @@ export function useCreateRiskEvent(
 // 风险事件枚举与工具函数
 // ==============================
 
+// 风险等级枚举值 → 显示名（前端硬编码兜底，字典表无数据时使用）
+const RISK_LEVEL_NAME_MAP: Record<string, string> = {
+  low: '低',
+  medium: '中',
+  high: '高',
+  critical: '严重',
+};
+
+// 风险类型枚举值 → 显示名（前端硬编码兜底）
+const RISK_TYPE_NAME_MAP: Record<string, string> = {
+  login_anomaly: '登录异常',
+  brute_force: '暴力破解',
+  credential_stuffing: '撞库攻击',
+  frequent_operation: '频繁操作',
+  abnormal_flow: '异常流量',
+  data_exfiltration: '数据外泄',
+  device_change: '设备变更',
+  location_anomaly: '位置异常',
+  proxy_detected: '代理检测',
+  fraud_payment: '欺诈支付',
+  abuse_promotion: '滥用促销',
+};
+
+// 风险事件处置状态枚举值 → 显示名（前端硬编码兜底）
+const RISK_EVENT_STATUS_NAME_MAP: Record<string, string> = {
+  pending: '待处理',
+  investigating: '调查中',
+  confirmed: '已确认',
+  false_positive: '误报',
+  ignored: '已忽略',
+  auto_blocked: '自动拦截',
+};
+
 export function riskLevelDict() {
-  return getDictEntriesOptionsByTypeCode('RISK_LEVEL');
+  const fromDict = getDictEntriesOptionsByTypeCode('RISK_LEVEL');
+  return fromDict.length > 0
+    ? fromDict
+    : Object.entries(RISK_LEVEL_NAME_MAP).map(([value, label]) => ({
+        label,
+        value,
+      }));
 }
 
 export function riskLevelToName(source?: string) {
-  return getDictEntryLabelByValue(source, getDictEntriesByTypeCode('RISK_LEVEL'));
+  if (!source) return '';
+  const dictEntries = getDictEntriesByTypeCode('RISK_LEVEL');
+  const fromDict = getDictEntryLabelByValue(source, dictEntries);
+  return fromDict && fromDict !== source
+    ? fromDict
+    : (RISK_LEVEL_NAME_MAP[source] ?? source);
 }
 
 export function riskTypeDict() {
-  return getDictEntriesOptionsByTypeCode('RISK_TYPE');
+  const fromDict = getDictEntriesOptionsByTypeCode('RISK_TYPE');
+  return fromDict.length > 0
+    ? fromDict
+    : Object.entries(RISK_TYPE_NAME_MAP).map(([value, label]) => ({
+        label,
+        value,
+      }));
 }
 
 export function riskTypeToName(source?: string) {
-  return getDictEntryLabelByValue(source, getDictEntriesByTypeCode('RISK_TYPE'));
+  if (!source) return '';
+  const dictEntries = getDictEntriesByTypeCode('RISK_TYPE');
+  const fromDict = getDictEntryLabelByValue(source, dictEntries);
+  return fromDict && fromDict !== source
+    ? fromDict
+    : (RISK_TYPE_NAME_MAP[source] ?? source);
 }
 
 export function riskEventStatusDict() {
-  return getDictEntriesOptionsByTypeCode('RISK_EVENT_STATUS');
+  const fromDict = getDictEntriesOptionsByTypeCode('RISK_EVENT_STATUS');
+  return fromDict.length > 0
+    ? fromDict
+    : Object.entries(RISK_EVENT_STATUS_NAME_MAP).map(([value, label]) => ({
+        label,
+        value,
+      }));
 }
 
 export function riskEventStatusToName(source?: string) {
-  return getDictEntryLabelByValue(source, getDictEntriesByTypeCode('RISK_EVENT_STATUS'));
+  if (!source) return '';
+  const dictEntries = getDictEntriesByTypeCode('RISK_EVENT_STATUS');
+  const fromDict = getDictEntryLabelByValue(source, dictEntries);
+  return fromDict && fromDict !== source
+    ? fromDict
+    : (RISK_EVENT_STATUS_NAME_MAP[source] ?? source);
 }
 
 const RISK_TYPE_COLOR_MAP = {

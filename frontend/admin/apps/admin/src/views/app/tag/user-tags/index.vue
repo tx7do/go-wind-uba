@@ -1,4 +1,4 @@
-<script lang="ts" setup>const { mutateAsync: deleteUserTag } = useDeleteUserTag();
+<script lang="ts" setup>
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 import type { ubaservicev1_UserTag as UserTag } from '#/generated/api/admin/service/v1';
 
@@ -10,10 +10,20 @@ import { LucideFilePenLine, LucideTrash2 } from '@vben/icons';
 import { notification } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import {
+  fetchListUserTags,
+  PaginationQuery,
+  useDeleteUserTag,
+  userTagSourceDict,
+  userTagSourceToColor,
+  userTagSourceToName,
+} from '#/api';
 import { $t } from '#/locales';
-import { PaginationQuery, fetchListUserTags, useDeleteUserTag, userTagSourceDict, userTagSourceToColor, userTagSourceToName } from '#/api';
 
 import UserTagDrawer from './user-tag-drawer.vue';
+
+const { mutateAsync: deleteUserTag } = useDeleteUserTag();
+
 const formOptions = {
   collapsed: false,
   showCollapseButton: true,
@@ -85,7 +95,12 @@ const gridOptions: VxeGridProps<UserTag> = {
   proxyConfig: {
     ajax: {
       query: async ({ page }, formValues) => {
-        return await fetchListUserTags(new PaginationQuery({ paging: { page: page.currentPage, pageSize: page.pageSize }, formValues: formValues }));
+        return await fetchListUserTags(
+          new PaginationQuery({
+            paging: { page: page.currentPage, pageSize: page.pageSize },
+            formValues,
+          }),
+        );
       },
     },
   },
@@ -184,19 +199,17 @@ function openDrawer(create: boolean, row?: any) {
 
 /* 创建 */
 function handleCreate() {
-  console.log('创建');
   openDrawer(true);
 }
 
 /* 编辑 */
 function handleEdit(row: any) {
-  console.log('编辑', row);
   openDrawer(false, row);
 }
 
 async function handleDelete(row: any) {
   try {
-    await deleteUserTag(row.id );
+    await deleteUserTag(row.id);
     notification.success({
       message: $t('ui.notification.delete_success'),
     });
@@ -233,7 +246,7 @@ async function handleDelete(row: any) {
           :ok-text="$t('ui.button.ok')"
           :title="
             $t('ui.text.do_you_want_delete', {
-              moduleName: $t('page.loginPolicy.moduleName'),
+              moduleName: $t('menu.tag.userTags'),
             })
           "
           @confirm="handleDelete(row)"

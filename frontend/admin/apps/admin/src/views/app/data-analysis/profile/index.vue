@@ -5,8 +5,17 @@ import type { ubaservicev1_UserBehaviorProfile as UserBehaviorProfile } from '#/
 import { Page } from '@vben/common-ui';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import {
+  appPlatformDict,
+  appPlatformToName,
+  fetchListUserBehaviorProfiles,
+  PaginationQuery,
+  platformToColor,
+  riskLevelToColor,
+  riskLevelToName,
+} from '#/api';
 import { $t } from '#/locales';
-import { PaginationQuery, appPlatformDict, appPlatformToName, fetchListUserBehaviorProfiles, platformToColor, riskLevelToColor, riskLevelToName } from '#/api';
+
 const formOptions = {
   collapsed: false,
   showCollapseButton: true,
@@ -60,7 +69,12 @@ const gridOptions: VxeGridProps<UserBehaviorProfile> = {
   proxyConfig: {
     ajax: {
       query: async ({ page }, formValues) => {
-        return await fetchListUserBehaviorProfiles(new PaginationQuery({ paging: { page: page.currentPage, pageSize: page.pageSize }, formValues: formValues }));
+        return await fetchListUserBehaviorProfiles(
+          new PaginationQuery({
+            paging: { page: page.currentPage, pageSize: page.pageSize },
+            formValues,
+          }),
+        );
       },
     },
   },

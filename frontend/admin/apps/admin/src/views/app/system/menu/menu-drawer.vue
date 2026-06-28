@@ -292,7 +292,6 @@ const [Drawer, drawerApi] = useVbenDrawer({
   },
 
   async onConfirm() {
-    console.log('onConfirm');
 
     // 校验输入的数据
     const validate = await baseFormApi.validate();
@@ -308,7 +307,6 @@ const [Drawer, drawerApi] = useVbenDrawer({
     // 剔除纯 UI 字段（分割线），避免进入 updateMask 导致后端校验失败
     delete values.divider1;
 
-    console.log(getTitle.value, values);
 
     try {
       await (data.value?.create

@@ -9,11 +9,17 @@ export * from './admin-portal';
 export * from './api';
 export * from './api-audit-log';
 
+// 数据分析（BI 聚合）
+export * from './analytics';
+
 // 应用管理
 export * from './application';
 
 // 认证相关
 export * from './auth';
+
+// 行为事件明细（用户行为时间轴）
+export * from './behavior-event';
 
 export * from './data-access-audit-log';
 
@@ -22,6 +28,9 @@ export * from './dict';
 
 // 事件路径
 export * from './event-path';
+
+// 事件 Schema 管理
+export * from './event-schema';
 
 export * from './file';
 export * from './file-transfer';

@@ -100,20 +100,66 @@ export function useDeleteApplication(
 // 应用枚举与工具函数
 // ==============================
 
+// 应用平台枚举值 → 显示名（前端硬编码兜底，字典表无数据时使用）
+const APP_PLATFORM_NAME_MAP: Record<string, string> = {
+  web: 'Web',
+  ios: 'iOS',
+  android: 'Android',
+  windows: 'Windows',
+  macos: 'macOS',
+  linux: 'Linux',
+  mini_program: '小程序',
+  h5: 'H5',
+};
+
+// 应用类型枚举值 → 显示名（前端硬编码兜底）
+const APP_TYPE_NAME_MAP: Record<string, string> = {
+  game: '游戏',
+  ecommerce: '电商',
+  content: '内容',
+  tool: '工具',
+  finance: '金融',
+  social: '社交',
+  education: '教育',
+  other: '其他',
+};
+
 export function appPlatformDict() {
-  return getDictEntriesOptionsByTypeCode('APP_PLATFORM');
+  const fromDict = getDictEntriesOptionsByTypeCode('APP_PLATFORM');
+  return fromDict.length > 0
+    ? fromDict
+    : Object.entries(APP_PLATFORM_NAME_MAP).map(([value, label]) => ({
+        label,
+        value,
+      }));
 }
 
 export function appPlatformToName(source?: string) {
-  return getDictEntryLabelByValue(source, getDictEntriesByTypeCode('APP_PLATFORM'));
+  if (!source) return '';
+  const dictEntries = getDictEntriesByTypeCode('APP_PLATFORM');
+  const fromDict = getDictEntryLabelByValue(source, dictEntries);
+  return fromDict && fromDict !== source
+    ? fromDict
+    : (APP_PLATFORM_NAME_MAP[source] ?? source);
 }
 
 export function appTypeDict() {
-  return getDictEntriesOptionsByTypeCode('APP_TYPE');
+  const fromDict = getDictEntriesOptionsByTypeCode('APP_TYPE');
+  return fromDict.length > 0
+    ? fromDict
+    : Object.entries(APP_TYPE_NAME_MAP).map(([value, label]) => ({
+        label,
+        value,
+      }));
 }
 
 export function appTypeToName(source?: string) {
-  return getDictEntryLabelByValue(source, getDictEntriesByTypeCode('APP_TYPE'));
+  if (!source) return '';
+  const dictEntries = getDictEntriesByTypeCode('APP_TYPE');
+  const fromDict = getDictEntryLabelByValue(source, dictEntries);
+  return fromDict && fromDict !== source
+    ? fromDict
+    : (APP_TYPE_NAME_MAP[source] ?? source);
 }
 
 const PLATFORM_COLOR_MAP = {

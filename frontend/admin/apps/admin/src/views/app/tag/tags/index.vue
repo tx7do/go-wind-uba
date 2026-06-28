@@ -161,7 +161,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
 });
 
 async function handleDelete(row: any) {
-  console.log('Delete', row);
   try {
     await deleteTagDefinition(row.id );
     notification.success({
@@ -197,14 +196,12 @@ function openDrawer(create: boolean, row?: any) {
 
 /* 创建 */
 function handleCreate() {
-  console.log('创建');
 
   openDrawer(true);
 }
 
 /* 编辑 */
 function handleEdit(row: any) {
-  console.log('编辑', row);
   openDrawer(false, row);
 }
 </script>

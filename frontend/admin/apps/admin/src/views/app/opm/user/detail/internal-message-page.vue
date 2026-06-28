@@ -6,9 +6,15 @@ import { Page, type VbenFormProps } from '@vben/common-ui';
 import dayjs from 'dayjs';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import {
+  fetchListUserInbox,
+  internalMessageRecipientStatusColor,
+  internalMessageRecipientStatusLabel,
+  PaginationQuery,
+} from '#/api';
 import { type internal_messageservicev1_InternalMessageRecipient as InternalMessageRecipient } from '#/generated/api/admin/service/v1';
 import { $t } from '#/locales';
-import { PaginationQuery, fetchListUserInbox, internalMessageRecipientStatusColor, internalMessageRecipientStatusLabel } from '#/api';
+
 const props = defineProps({
   userId: { type: Number, default: undefined },
 });
@@ -45,8 +51,6 @@ const gridOptions: VxeGridProps<InternalMessageRecipient> = {
   proxyConfig: {
     ajax: {
       query: async ({ page }, formValues) => {
-        console.log('query:', formValues);
-
         let startTime: any;
         let endTime: any;
         if (
@@ -59,7 +63,6 @@ const gridOptions: VxeGridProps<InternalMessageRecipient> = {
           endTime = dayjs(formValues.createdAt[1]).format(
             'YYYY-MM-DD HH:mm:ss',
           );
-          console.log(startTime, endTime);
         }
 
         return await fetchListUserInbox(
@@ -109,9 +112,6 @@ const [Grid] = useVbenVxeGrid({ gridOptions, formOptions });
         <a-tag :color="internalMessageRecipientStatusColor(row.status)">
           {{ internalMessageRecipientStatusLabel(row.status) }}
         </a-tag>
-      </template>
-      <template #platform="{ row }">
-        <span> {{ row.osName }} {{ row.browserName }}</span>
       </template>
     </Grid>
   </Page>

@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-const { mutateAsync: createUserTag } = useCreateUserTag();
-const { mutateAsync: updateUserTag } = useUpdateUserTag();
 import { computed, ref } from 'vue';
 
 import { useVbenDrawer } from '@vben/common-ui';
@@ -9,7 +7,11 @@ import { $t } from '@vben/locales';
 import { notification } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import { useCreateUserTag, useUpdateUserTag, userTagSourceDict } from '#/api';
+import { useCreateUserTag, userTagSourceDict, useUpdateUserTag } from '#/api';
+
+const { mutateAsync: createUserTag } = useCreateUserTag();
+const { mutateAsync: updateUserTag } = useUpdateUserTag();
+
 const data = ref();
 
 const getTitle = computed(() =>
@@ -64,14 +66,16 @@ const [BaseForm, baseFormApi] = useVbenForm({
       },
     },
     {
-      component: 'Input',
+      component: 'InputNumber',
       fieldName: 'confidence',
       label: $t('page.userTag.confidence'),
       rules: 'required',
       componentProps: {
         class: 'w-full',
+        min: 0,
+        max: 1,
+        step: 0.01,
         placeholder: $t('ui.placeholder.input'),
-        allowClear: true,
       },
     },
     {
@@ -98,7 +102,6 @@ const [Drawer, drawerApi] = useVbenDrawer({
   },
 
   async onConfirm() {
-    console.log('onConfirm');
 
     // 校验输入的数据
     const validate = await baseFormApi.validate();
@@ -111,12 +114,11 @@ const [Drawer, drawerApi] = useVbenDrawer({
     // 获取表单数据
     const values = await baseFormApi.getValues();
 
-    console.log(getTitle.value, values);
 
     try {
       await (data.value?.create
         ? createUserTag(values)
-        : updateUserTag({ id: data.value.row.id, values: values }));
+        : updateUserTag({ id: data.value.row.id, values }));
 
       notification.success({
         message: data.value?.create

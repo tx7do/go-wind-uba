@@ -285,6 +285,264 @@ export function createAdminPortalServiceClient(
 // An empty JSON object
 type wellKnownEmpty = Record<never, never>;
 
+// 数据分析服务（admin HTTP 网关，转发至 core gRPC）
+export interface AnalyticsService {
+  // 事件量趋势
+  EventTrend(
+    request: ubaservicev1_EventTrendRequest,
+  ): Promise<ubaservicev1_EventTrendResponse>;
+  // 漏斗分析
+  Funnel(
+    request: ubaservicev1_FunnelRequest,
+  ): Promise<ubaservicev1_FunnelResponse>;
+  // 留存分析
+  Retention(
+    request: ubaservicev1_RetentionRequest,
+  ): Promise<ubaservicev1_RetentionResponse>;
+  // 维度分组聚合
+  GroupBy(
+    request: ubaservicev1_GroupByRequest,
+  ): Promise<ubaservicev1_GroupByResponse>;
+  // 活跃用户
+  ActiveUsers(
+    request: ubaservicev1_ActiveUsersRequest,
+  ): Promise<ubaservicev1_ActiveUsersResponse>;
+}
+
+export function createAnalyticsServiceClient(
+  transport: ClientTransport,
+): AnalyticsService {
+  return {
+    EventTrend(request) {
+      const path = `admin/v1/analytics/event-trend`;
+      const body = JSON.stringify(request);
+      return transport.unary(path, 'POST', body, {
+        service: 'AnalyticsService',
+        method: 'EventTrend',
+      }) as Promise<ubaservicev1_EventTrendResponse>;
+    },
+    Funnel(request) {
+      const path = `admin/v1/analytics/funnel`;
+      const body = JSON.stringify(request);
+      return transport.unary(path, 'POST', body, {
+        service: 'AnalyticsService',
+        method: 'Funnel',
+      }) as Promise<ubaservicev1_FunnelResponse>;
+    },
+    Retention(request) {
+      const path = `admin/v1/analytics/retention`;
+      const body = JSON.stringify(request);
+      return transport.unary(path, 'POST', body, {
+        service: 'AnalyticsService',
+        method: 'Retention',
+      }) as Promise<ubaservicev1_RetentionResponse>;
+    },
+    GroupBy(request) {
+      const path = `admin/v1/analytics/group-by`;
+      const body = JSON.stringify(request);
+      return transport.unary(path, 'POST', body, {
+        service: 'AnalyticsService',
+        method: 'GroupBy',
+      }) as Promise<ubaservicev1_GroupByResponse>;
+    },
+    ActiveUsers(request) {
+      const path = `admin/v1/analytics/active-users`;
+      const body = JSON.stringify(request);
+      return transport.unary(path, 'POST', body, {
+        service: 'AnalyticsService',
+        method: 'ActiveUsers',
+      }) as Promise<ubaservicev1_ActiveUsersResponse>;
+    },
+  };
+}
+// ============== 事件趋势 ==============
+export type ubaservicev1_EventTrendRequest = {
+  // 应用 ID 过滤（可选，0 表示全部）
+  appId?: number;
+  // 事件名过滤（可选，空表示全部事件）
+  eventName?: string;
+  // 时间粒度
+  granularity: ubaservicev1_AnalyticsGranularity | undefined;
+  // 平台过滤（可选）
+  platform?: string;
+  // 时间范围
+  timeRange: ubaservicev1_TimeRange | undefined;
+};
+
+// 时间范围（毫秒时间戳，start/end 均含端点）
+export type ubaservicev1_TimeRange = {
+  // 结束时间（含），Unix 毫秒
+  endMs: number | undefined;
+  // 起始时间（含），Unix 毫秒
+  startMs: number | undefined;
+};
+
+// 时间粒度
+export type ubaservicev1_AnalyticsGranularity =
+  // 未指定（服务端按时间跨度自动选择）
+  | 'ANALYTICS_GRANULARITY_UNSPECIFIED'
+  // 天
+  | 'DAY'
+  // 小时
+  | 'HOUR'
+  // 月
+  | 'MONTH'
+  // 周
+  | 'WEEK';
+export type ubaservicev1_EventTrendResponse = {
+  // 时间粒度（服务端实际使用的粒度，可能因 UNSPECIFIED 而自动选择）
+  granularity: ubaservicev1_AnalyticsGranularity | undefined;
+  // 趋势数据点
+  points: ubaservicev1_TimeSeriesPoint[] | undefined;
+  // 区间内事件总量
+  total: number | undefined;
+};
+
+// 时间序列中的一个数据点
+export type ubaservicev1_TimeSeriesPoint = {
+  // 时间桶起点（Unix 毫秒）
+  timestamp: number | undefined;
+  // 数值
+  value: number | undefined;
+};
+
+export type ubaservicev1_FunnelRequest = {
+  // 应用 ID 过滤（可选）
+  appId?: number;
+  // 漏斗步骤事件名（有序，至少 2 步）
+  steps: string[] | undefined;
+  // 时间范围
+  timeRange: ubaservicev1_TimeRange | undefined;
+  // 转化窗口（毫秒，用户必须在窗口内完成全部步骤，默认 30 分钟）
+  windowMs?: number;
+};
+
+export type ubaservicev1_FunnelResponse = {
+  // 完成全部步骤的用户数
+  completedUsers: number | undefined;
+  // 进入首步的用户数
+  enteredUsers: number | undefined;
+  // 整体转化率
+  overallConversion: number | undefined;
+  // 各步骤结果
+  steps: ubaservicev1_FunnelStep[] | undefined;
+};
+
+// ============== 漏斗分析 ==============
+export type ubaservicev1_FunnelStep = {
+  // 相对上一步的转化率（0-1，首步为 1）
+  conversionRate: number | undefined;
+  // 完成该步骤的事件数
+  count: number | undefined;
+  // 该步骤的事件名
+  eventName: string | undefined;
+  // 相对首步的整体转化率（0-1，首步为 1）
+  overallRate: number | undefined;
+  // 步骤序号（从 1 开始）
+  stepIndex: number | undefined;
+};
+
+export type ubaservicev1_RetentionRequest = {
+  // 应用 ID 过滤（可选）
+  appId?: number;
+  // 当 retention_type=EVENT 时指定事件名
+  eventName?: string;
+  // 最大偏移天数（默认 7）
+  maxOffsetDays?: number;
+  // 留存类型：ACTIVE=活跃留存（默认），EVENT=指定事件留存
+  retentionType?: string;
+  // 时间范围（按 cohort_date 过滤）
+  timeRange: ubaservicev1_TimeRange | undefined;
+};
+
+export type ubaservicev1_RetentionResponse = {
+  // 同期群列表
+  cohorts: ubaservicev1_RetentionCohort[] | undefined;
+  // 所有偏移天列表（横轴）
+  offsetDays: number[] | undefined;
+};
+
+export type ubaservicev1_RetentionCohort = {
+  // 各偏移天的留存
+  cells: ubaservicev1_RetentionCell[] | undefined;
+  // 同期群日期（Unix 毫秒，当天 0 点）
+  cohortDate: number | undefined;
+  // 该同期群规模（首日用户数）
+  size: number | undefined;
+};
+
+// ============== 留存分析 ==============
+export type ubaservicev1_RetentionCell = {
+  // 该偏移的活跃用户数
+  count: number | undefined;
+  // 相对注册/首次活跃的天数偏移（0 = 当天）
+  offsetDays: number | undefined;
+  // 留存率（0-1）
+  rate: number | undefined;
+};
+
+// ============== 维度分组聚合 ==============
+export type ubaservicev1_GroupByRequest = {
+  // 应用 ID 过滤（可选）
+  appId?: number;
+  // 分组维度字段名（如 platform/channel/country/app_version/event_name）
+  dimension: string | undefined;
+  // 事件名过滤（可选）
+  eventName?: string;
+  // 聚合指标：COUNT=事件数(默认)，UNIQUE_USER=去重用户数，SUM_AMOUNT=金额求和
+  metric?: string;
+  // 时间范围
+  timeRange: ubaservicev1_TimeRange | undefined;
+  // 返回前 N 个分组（默认 20）
+  topN?: number;
+};
+
+export type ubaservicev1_GroupByResponse = {
+  // 各分组结果
+  buckets: ubaservicev1_GroupByBucket[] | undefined;
+  // 维度字段名
+  dimension: string | undefined;
+  // 总量
+  total: number | undefined;
+};
+
+export type ubaservicev1_GroupByBucket = {
+  // 分组标签（维度值）
+  label: string | undefined;
+  // 占比（0-1）
+  percentage: number | undefined;
+  // 聚合数值
+  value: number | undefined;
+};
+
+// ============== 活跃用户 ==============
+export type ubaservicev1_ActiveUsersRequest = {
+  // 应用 ID 过滤（可选）
+  appId?: number;
+  // 时间粒度（DAU 按粒度分桶，同时给出 WAU/MAU 累计）
+  granularity: ubaservicev1_AnalyticsGranularity | undefined;
+  // 时间范围
+  timeRange: ubaservicev1_TimeRange | undefined;
+};
+
+export type ubaservicev1_ActiveUsersResponse = {
+  // 最新一天的 DAU
+  latestDau: number | undefined;
+  // 各时间桶的活跃用户数据
+  points: ubaservicev1_ActiveUsersPoint[] | undefined;
+};
+
+export type ubaservicev1_ActiveUsersPoint = {
+  // 日活
+  dau: number | undefined;
+  // 月活（滚动 30 天）
+  mau: number | undefined;
+  // 时间桶起点（Unix 毫秒）
+  timestamp: number | undefined;
+  // 周活（滚动 7 天）
+  wau: number | undefined;
+};
+
 // API资源管理服务
 export interface ApiService {
   // 查询API资源列表
@@ -1360,6 +1618,221 @@ export type authenticationservicev1_LoginResponse = {
 export type authenticationservicev1_TokenType =
   | 'bearer'
   | 'mac';
+// 行为事件服务（admin HTTP 网关，转发至 core gRPC）
+// 用于"用户行为时间轴"等场景，按 user_id / session_id 分页查询原始行为事件明细。
+export interface BehaviorEventService {
+  // 分页查询行为事件
+  List(
+    request: pagination_PagingRequest,
+  ): Promise<ubaservicev1_ListBehaviorEventResponse>;
+  // 查询单条行为事件详情
+  Get(
+    request: ubaservicev1_GetBehaviorEventRequest,
+  ): Promise<ubaservicev1_BehaviorEvent>;
+}
+
+export function createBehaviorEventServiceClient(
+  transport: ClientTransport,
+): BehaviorEventService {
+  return {
+    List(request) {
+      const path = `admin/v1/behavior-events`;
+      const body = null;
+      const queryParams: string[] = [];
+      if (request.page) {
+        queryParams.push(
+          `page=${encodeURIComponent(request.page.toString())}`,
+        );
+      }
+      if (request.pageSize) {
+        queryParams.push(
+          `pageSize=${encodeURIComponent(request.pageSize.toString())}`,
+        );
+      }
+      if (request.offset) {
+        queryParams.push(
+          `offset=${encodeURIComponent(request.offset.toString())}`,
+        );
+      }
+      if (request.limit) {
+        queryParams.push(
+          `limit=${encodeURIComponent(request.limit.toString())}`,
+        );
+      }
+      if (request.token) {
+        queryParams.push(
+          `token=${encodeURIComponent(request.token.toString())}`,
+        );
+      }
+      if (request.noPaging) {
+        queryParams.push(
+          `noPaging=${encodeURIComponent(request.noPaging.toString())}`,
+        );
+      }
+      if (request.query) {
+        queryParams.push(
+          `query=${encodeURIComponent(request.query.toString())}`,
+        );
+      }
+      if (request.filter) {
+        queryParams.push(
+          `filter=${encodeURIComponent(request.filter.toString())}`,
+        );
+      }
+      if (request.filterExpr?.type) {
+        queryParams.push(
+          `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
+        );
+      }
+      if (request.filterExpr?.conditions?.field) {
+        queryParams.push(
+          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
+        );
+      }
+      if (request.filterExpr?.conditions?.op) {
+        queryParams.push(
+          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
+        );
+      }
+      if (request.filterExpr?.conditions?.value) {
+        queryParams.push(
+          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
+        );
+      }
+      if (request.filterExpr?.conditions?.jsonValue) {
+        queryParams.push(
+          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
+        );
+      }
+      if (request.filterExpr?.conditions?.values) {
+        request.filterExpr.conditions.values.forEach((x) => {
+          queryParams.push(
+            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
+          );
+        });
+      }
+      if (request.filterExpr?.conditions?.datePart) {
+        queryParams.push(
+          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
+        );
+      }
+      if (request.filterExpr?.conditions?.jsonPath) {
+        queryParams.push(
+          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
+        );
+      }
+      if (request.orderBy) {
+        queryParams.push(
+          `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
+        );
+      }
+      if (request.sorting?.field) {
+        queryParams.push(
+          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
+        );
+      }
+      if (request.sorting?.direction) {
+        queryParams.push(
+          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
+        );
+      }
+      if (request.fieldMask) {
+        queryParams.push(
+          `fieldMask=${encodeURIComponent(request.fieldMask.toString())}`,
+        );
+      }
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join('&')}`;
+      }
+      return transport.unary(uri, 'GET', body, {
+        service: 'BehaviorEventService',
+        method: 'List',
+      }) as Promise<ubaservicev1_ListBehaviorEventResponse>;
+    },
+    Get(request) {
+      if (request.eventId === undefined || request.eventId === null) {
+        throw new Error('missing required field request.event_id');
+      }
+      const path = `admin/v1/behavior-events/${request.eventId}`;
+      const body = null;
+      return transport.unary(path, 'GET', body, {
+        service: 'BehaviorEventService',
+        method: 'Get',
+      }) as Promise<ubaservicev1_BehaviorEvent>;
+    },
+  };
+}
+export type ubaservicev1_ListBehaviorEventResponse = {
+  items: ubaservicev1_BehaviorEvent[] | undefined;
+  total: number | undefined;
+};
+
+// 行为事件（对应 events_fact 表）
+export type ubaservicev1_BehaviorEvent = {
+  accountId: string | undefined;
+  amount: string | undefined;
+  appVersion?: string;
+  channel?: string;
+  // 业务上下文
+  context: { [key: string]: string } | undefined;
+  country?: string;
+  createdAt?: wellKnownTimestamp;
+  deviceId: string | undefined;
+  // 指标：Metrics
+  durationMs: number | undefined;
+  errorCode: string | undefined;
+  eventAction: string | undefined;
+  // 行为：What
+  eventCategory?: string;
+  // 主键 & 路由
+  eventId: string | undefined;
+  eventName: string | undefined;
+  // 时间
+  eventTime: undefined | wellKnownTimestamp;
+  eventTs: number | undefined;
+  // 地理位置
+  geo?: string;
+  globalUserId: string | undefined;
+  // 网络 & 位置
+  ip?: string;
+  ipCity?: string;
+  metrics: { [key: string]: number } | undefined;
+  network?: string;
+  objectId: string | undefined;
+  objectName: string | undefined;
+  // 客体：Object
+  objectType: string | undefined;
+  // 企业级字段
+  opResult?: string;
+  os?: string;
+  // 环境
+  platform?: string;
+  // 扩展属性
+  properties: { [key: string]: string } | undefined;
+  quantity: number | undefined;
+  // 来源页面/地址
+  referer?: string;
+  riskLevel?: string;
+  score: number | undefined;
+  serverTime: undefined | wellKnownTimestamp;
+  // 上下文：Context
+  sessionId: string | undefined;
+  sessionSeq: number | undefined;
+  tenantId: number | undefined;
+  traceId: string | undefined;
+  updatedAt?: wellKnownTimestamp;
+  // 客户端 User-Agent
+  userAgent?: string;
+  // 主体：Who
+  userId: number | undefined;
+};
+
+// 查询行为事件详情请求
+export type ubaservicev1_GetBehaviorEventRequest = {
+  eventId: string | undefined;
+};
+
 // 数据访问审计日志管理服务
 export interface DataAccessAuditLogService {
   // 查询数据访问审计日志列表
@@ -2321,6 +2794,398 @@ export type ubaservicev1_PathNode = {
 export type ubaservicev1_GetEventPathRequest = {
   pathId?: string;
   viewMask?: wellKnownFieldMask;
+};
+
+// 事件 Schema 管理服务（admin HTTP 网关，转发至 core gRPC）
+export interface EventSchemaService {
+  List(
+    request: pagination_PagingRequest,
+  ): Promise<ubaservicev1_ListEventSchemaResponse>;
+  Count(
+    request: pagination_PagingRequest,
+  ): Promise<ubaservicev1_CountEventSchemaResponse>;
+  Get(
+    request: ubaservicev1_GetEventSchemaRequest,
+  ): Promise<ubaservicev1_EventSchema>;
+  Create(
+    request: ubaservicev1_CreateEventSchemaRequest,
+  ): Promise<ubaservicev1_EventSchema>;
+  Update(
+    request: ubaservicev1_UpdateEventSchemaRequest,
+  ): Promise<ubaservicev1_EventSchema>;
+  Delete(
+    request: ubaservicev1_DeleteEventSchemaRequest,
+  ): Promise<wellKnownEmpty>;
+}
+
+export function createEventSchemaServiceClient(
+  transport: ClientTransport,
+): EventSchemaService {
+  return {
+    List(request) {
+      const path = `admin/v1/event-schemas`;
+      const body = null;
+      const queryParams: string[] = [];
+      if (request.page) {
+        queryParams.push(
+          `page=${encodeURIComponent(request.page.toString())}`,
+        );
+      }
+      if (request.pageSize) {
+        queryParams.push(
+          `pageSize=${encodeURIComponent(request.pageSize.toString())}`,
+        );
+      }
+      if (request.offset) {
+        queryParams.push(
+          `offset=${encodeURIComponent(request.offset.toString())}`,
+        );
+      }
+      if (request.limit) {
+        queryParams.push(
+          `limit=${encodeURIComponent(request.limit.toString())}`,
+        );
+      }
+      if (request.token) {
+        queryParams.push(
+          `token=${encodeURIComponent(request.token.toString())}`,
+        );
+      }
+      if (request.noPaging) {
+        queryParams.push(
+          `noPaging=${encodeURIComponent(request.noPaging.toString())}`,
+        );
+      }
+      if (request.query) {
+        queryParams.push(
+          `query=${encodeURIComponent(request.query.toString())}`,
+        );
+      }
+      if (request.filter) {
+        queryParams.push(
+          `filter=${encodeURIComponent(request.filter.toString())}`,
+        );
+      }
+      if (request.filterExpr?.type) {
+        queryParams.push(
+          `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
+        );
+      }
+      if (request.filterExpr?.conditions?.field) {
+        queryParams.push(
+          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
+        );
+      }
+      if (request.filterExpr?.conditions?.op) {
+        queryParams.push(
+          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
+        );
+      }
+      if (request.filterExpr?.conditions?.value) {
+        queryParams.push(
+          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
+        );
+      }
+      if (request.filterExpr?.conditions?.jsonValue) {
+        queryParams.push(
+          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
+        );
+      }
+      if (request.filterExpr?.conditions?.values) {
+        request.filterExpr.conditions.values.forEach((x) => {
+          queryParams.push(
+            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
+          );
+        });
+      }
+      if (request.filterExpr?.conditions?.datePart) {
+        queryParams.push(
+          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
+        );
+      }
+      if (request.filterExpr?.conditions?.jsonPath) {
+        queryParams.push(
+          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
+        );
+      }
+      if (request.orderBy) {
+        queryParams.push(
+          `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
+        );
+      }
+      if (request.sorting?.field) {
+        queryParams.push(
+          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
+        );
+      }
+      if (request.sorting?.direction) {
+        queryParams.push(
+          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
+        );
+      }
+      if (request.fieldMask) {
+        queryParams.push(
+          `fieldMask=${encodeURIComponent(request.fieldMask.toString())}`,
+        );
+      }
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join('&')}`;
+      }
+      return transport.unary(uri, 'GET', body, {
+        service: 'EventSchemaService',
+        method: 'List',
+      }) as Promise<ubaservicev1_ListEventSchemaResponse>;
+    },
+    Count(request) {
+      const path = `admin/v1/event-schemas/count`;
+      const body = null;
+      const queryParams: string[] = [];
+      if (request.page) {
+        queryParams.push(
+          `page=${encodeURIComponent(request.page.toString())}`,
+        );
+      }
+      if (request.pageSize) {
+        queryParams.push(
+          `pageSize=${encodeURIComponent(request.pageSize.toString())}`,
+        );
+      }
+      if (request.offset) {
+        queryParams.push(
+          `offset=${encodeURIComponent(request.offset.toString())}`,
+        );
+      }
+      if (request.limit) {
+        queryParams.push(
+          `limit=${encodeURIComponent(request.limit.toString())}`,
+        );
+      }
+      if (request.token) {
+        queryParams.push(
+          `token=${encodeURIComponent(request.token.toString())}`,
+        );
+      }
+      if (request.noPaging) {
+        queryParams.push(
+          `noPaging=${encodeURIComponent(request.noPaging.toString())}`,
+        );
+      }
+      if (request.query) {
+        queryParams.push(
+          `query=${encodeURIComponent(request.query.toString())}`,
+        );
+      }
+      if (request.filter) {
+        queryParams.push(
+          `filter=${encodeURIComponent(request.filter.toString())}`,
+        );
+      }
+      if (request.filterExpr?.type) {
+        queryParams.push(
+          `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
+        );
+      }
+      if (request.filterExpr?.conditions?.field) {
+        queryParams.push(
+          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
+        );
+      }
+      if (request.filterExpr?.conditions?.op) {
+        queryParams.push(
+          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
+        );
+      }
+      if (request.filterExpr?.conditions?.value) {
+        queryParams.push(
+          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
+        );
+      }
+      if (request.filterExpr?.conditions?.jsonValue) {
+        queryParams.push(
+          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
+        );
+      }
+      if (request.filterExpr?.conditions?.values) {
+        request.filterExpr.conditions.values.forEach((x) => {
+          queryParams.push(
+            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
+          );
+        });
+      }
+      if (request.filterExpr?.conditions?.datePart) {
+        queryParams.push(
+          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
+        );
+      }
+      if (request.filterExpr?.conditions?.jsonPath) {
+        queryParams.push(
+          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
+        );
+      }
+      if (request.orderBy) {
+        queryParams.push(
+          `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
+        );
+      }
+      if (request.sorting?.field) {
+        queryParams.push(
+          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
+        );
+      }
+      if (request.sorting?.direction) {
+        queryParams.push(
+          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
+        );
+      }
+      if (request.fieldMask) {
+        queryParams.push(
+          `fieldMask=${encodeURIComponent(request.fieldMask.toString())}`,
+        );
+      }
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join('&')}`;
+      }
+      return transport.unary(uri, 'GET', body, {
+        service: 'EventSchemaService',
+        method: 'Count',
+      }) as Promise<ubaservicev1_CountEventSchemaResponse>;
+    },
+    Get(request) {
+      if (request.id === undefined || request.id === null) {
+        throw new Error('missing required field request.id');
+      }
+      const path = `admin/v1/event-schemas/${request.id}`;
+      const body = null;
+      const queryParams: string[] = [];
+      if (request.viewMask) {
+        queryParams.push(
+          `viewMask=${encodeURIComponent(request.viewMask.toString())}`,
+        );
+      }
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join('&')}`;
+      }
+      return transport.unary(uri, 'GET', body, {
+        service: 'EventSchemaService',
+        method: 'Get',
+      }) as Promise<ubaservicev1_EventSchema>;
+    },
+    Create(request) {
+      const path = `admin/v1/event-schemas`;
+      const body = JSON.stringify(request);
+      return transport.unary(path, 'POST', body, {
+        service: 'EventSchemaService',
+        method: 'Create',
+      }) as Promise<ubaservicev1_EventSchema>;
+    },
+    Update(request) {
+      if (request.id === undefined || request.id === null) {
+        throw new Error('missing required field request.id');
+      }
+      const path = `admin/v1/event-schemas/${request.id}`;
+      const body = JSON.stringify(request);
+      return transport.unary(path, 'PUT', body, {
+        service: 'EventSchemaService',
+        method: 'Update',
+      }) as Promise<ubaservicev1_EventSchema>;
+    },
+    Delete(request) {
+      if (request.id === undefined || request.id === null) {
+        throw new Error('missing required field request.id');
+      }
+      const path = `admin/v1/event-schemas/${request.id}`;
+      const body = null;
+      const queryParams: string[] = [];
+      if (request.deletedBy) {
+        queryParams.push(
+          `deletedBy=${encodeURIComponent(request.deletedBy.toString())}`,
+        );
+      }
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join('&')}`;
+      }
+      return transport.unary(uri, 'DELETE', body, {
+        service: 'EventSchemaService',
+        method: 'Delete',
+      }) as Promise<wellKnownEmpty>;
+    },
+  };
+}
+export type ubaservicev1_ListEventSchemaResponse = {
+  items: ubaservicev1_EventSchema[] | undefined;
+  total: number | undefined;
+};
+
+// 事件 Schema
+export type ubaservicev1_EventSchema = {
+  // 事件类别
+  category?: string;
+  createdAt?: wellKnownTimestamp;
+  createdBy?: number;
+  // 事件描述
+  description?: string;
+  // 显示名
+  displayName: string | undefined;
+  // 事件名（唯一业务标识，对应 events_fact.event_name）
+  eventName: string | undefined;
+  // 自增主键
+  id?: number;
+  // 属性 schema 列表
+  properties: ubaservicev1_EventPropertySchema[] | undefined;
+  // 启用状态
+  status?: ubaservicev1_EventSchema_Status;
+  // 租户ID
+  tenantId?: number;
+  updatedAt?: wellKnownTimestamp;
+  updatedBy?: number;
+};
+
+// 事件属性定义
+export type ubaservicev1_EventPropertySchema = {
+  // 描述
+  description?: string;
+  // 显示名
+  displayName?: string;
+  // 属性名
+  name: string | undefined;
+  // 是否必填
+  required: boolean | undefined;
+  // 属性类型：string/int/double/bool/array/object
+  type: string | undefined;
+};
+
+// 启用状态
+export type ubaservicev1_EventSchema_Status =
+  | 'DISABLED'
+  | 'ENABLED'
+  | 'EVENT_SCHEMA_STATUS_UNSPECIFIED';
+export type ubaservicev1_CountEventSchemaResponse = {
+  count: number | undefined;
+};
+
+export type ubaservicev1_GetEventSchemaRequest = {
+  id?: number;
+  viewMask?: wellKnownFieldMask;
+};
+
+export type ubaservicev1_CreateEventSchemaRequest = {
+  data: ubaservicev1_EventSchema | undefined;
+};
+
+export type ubaservicev1_UpdateEventSchemaRequest = {
+  allowMissing?: boolean;
+  data: ubaservicev1_EventSchema | undefined;
+  id: number | undefined;
+  updateMask: undefined | wellKnownFieldMask;
+};
+
+export type ubaservicev1_DeleteEventSchemaRequest = {
+  deletedBy?: number;
+  id?: number;
 };
 
 // 文件管理服务
@@ -10592,14 +11457,17 @@ export type ubaservicev1_DeleteWebhookRequest = {
 
 export class ApiClient {
   private _adminPortalService?: AdminPortalService;
+  private _analyticsService?: AnalyticsService;
   private _apiAuditLogService?: ApiAuditLogService;
   private _apiService?: ApiService;
   private _applicationService?: ApplicationService;
   private _authenticationService?: AuthenticationService;
+  private _behaviorEventService?: BehaviorEventService;
   private _dataAccessAuditLogService?: DataAccessAuditLogService;
   private _dictEntryService?: DictEntryService;
   private _dictTypeService?: DictTypeService;
   private _eventPathService?: EventPathService;
+  private _eventSchemaService?: EventSchemaService;
   private _fileService?: FileService;
   private _fileTransferService?: FileTransferService;
   private _iDMappingService?: IDMappingService;
@@ -10640,6 +11508,10 @@ export class ApiClient {
     return this._adminPortalService ??= createAdminPortalServiceClient(this._transport);
   }
 
+  get analyticsService(): AnalyticsService {
+    return this._analyticsService ??= createAnalyticsServiceClient(this._transport);
+  }
+
   get apiAuditLogService(): ApiAuditLogService {
     return this._apiAuditLogService ??= createApiAuditLogServiceClient(this._transport);
   }
@@ -10656,6 +11528,10 @@ export class ApiClient {
     return this._authenticationService ??= createAuthenticationServiceClient(this._transport);
   }
 
+  get behaviorEventService(): BehaviorEventService {
+    return this._behaviorEventService ??= createBehaviorEventServiceClient(this._transport);
+  }
+
   get dataAccessAuditLogService(): DataAccessAuditLogService {
     return this._dataAccessAuditLogService ??= createDataAccessAuditLogServiceClient(this._transport);
   }
@@ -10670,6 +11546,10 @@ export class ApiClient {
 
   get eventPathService(): EventPathService {
     return this._eventPathService ??= createEventPathServiceClient(this._transport);
+  }
+
+  get eventSchemaService(): EventSchemaService {
+    return this._eventSchemaService ??= createEventSchemaServiceClient(this._transport);
   }
 
   get fileService(): FileService {

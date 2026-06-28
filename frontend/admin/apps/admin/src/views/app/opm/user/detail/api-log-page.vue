@@ -6,9 +6,17 @@ import { Page, type VbenFormProps } from '@vben/common-ui';
 import dayjs from 'dayjs';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import {
+  fetchListApiAuditLogs,
+  methodList,
+  PaginationQuery,
+  successStatusList,
+  successToColor,
+  successToNameWithStatusCode,
+} from '#/api';
 import { type auditservicev1_ApiAuditLog as ApiAuditLog } from '#/generated/api/admin/service/v1';
 import { $t } from '#/locales';
-import { PaginationQuery, fetchListApiAuditLogs, methodList, successStatusList, successToColor, successToNameWithStatusCode } from '#/api';
+
 const props = defineProps({
   userId: { type: Number, default: undefined },
 });
@@ -88,8 +96,6 @@ const gridOptions: VxeGridProps<ApiAuditLog> = {
   proxyConfig: {
     ajax: {
       query: async ({ page }, formValues) => {
-        console.log('query:', formValues);
-
         let startTime: any;
         let endTime: any;
         if (
@@ -102,7 +108,6 @@ const gridOptions: VxeGridProps<ApiAuditLog> = {
           endTime = dayjs(formValues.createdAt[1]).format(
             'YYYY-MM-DD HH:mm:ss',
           );
-          console.log(startTime, endTime);
         }
 
         return await fetchListApiAuditLogs(
@@ -175,10 +180,10 @@ const [Grid] = useVbenVxeGrid({ gridOptions, formOptions });
         </a-tag>
       </template>
       <template #geoLocation="{ row }">
-        {{ row.geoLocation.province }} {{ row.geoLocation.city }}
+        {{ row.geoLocation?.province || '-' }} {{ row.geoLocation?.city }}
       </template>
       <template #platform="{ row }">
-        {{ row.deviceInfo.osName }} {{ row.deviceInfo.browserName }}
+        {{ row.deviceInfo?.osName || '-' }} {{ row.deviceInfo?.browserName }}
       </template>
     </Grid>
   </Page>

@@ -127,10 +127,30 @@ export function userTagSourceToColor(source?: string) {
   );
 }
 
+// 标签来源枚举值 → 显示名（前端硬编码兜底，字典表无数据时使用）
+const TAG_SOURCE_NAME_MAP: Record<string, string> = {
+  TAG_SOURCE_UNSPECIFIED: '未指定',
+  TAG_SOURCE_MANUAL: '人工打标',
+  TAG_SOURCE_RULE: '规则引擎',
+  TAG_SOURCE_MODEL: '算法模型',
+  TAG_SOURCE_IMPORT: '批量导入',
+};
+
 export function userTagSourceDict() {
-  return getDictEntriesOptionsByTypeCode('TAG_SOURCE');
+  const fromDict = getDictEntriesOptionsByTypeCode('TAG_SOURCE');
+  return fromDict.length > 0
+    ? fromDict
+    : Object.entries(TAG_SOURCE_NAME_MAP).map(([value, label]) => ({
+        label,
+        value,
+      }));
 }
 
 export function userTagSourceToName(source?: string) {
-  return getDictEntryLabelByValue(source, getDictEntriesByTypeCode('TAG_SOURCE'));
+  if (!source) return '';
+  const dictEntries = getDictEntriesByTypeCode('TAG_SOURCE');
+  const fromDict = getDictEntryLabelByValue(source, dictEntries);
+  return fromDict && fromDict !== source
+    ? fromDict
+    : (TAG_SOURCE_NAME_MAP[source] ?? source);
 }

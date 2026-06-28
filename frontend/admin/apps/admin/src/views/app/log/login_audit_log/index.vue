@@ -6,9 +6,22 @@ import { Page, type VbenFormProps } from '@vben/common-ui';
 import dayjs from 'dayjs';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import {
+  fetchListLoginAuditLogs,
+  getLoginAuditLogActionTypeColor,
+  getLoginAuditLogRiskLevelColor,
+  getLoginAuditLogStatusColor,
+  loginAuditLogActionTypeList,
+  loginAuditLogActionTypeToName,
+  loginAuditLogRiskLevelList,
+  loginAuditLogRiskLevelToName,
+  loginAuditLogStatusList,
+  loginAuditLogStatusToName,
+  PaginationQuery,
+} from '#/api';
 import { type auditservicev1_LoginAuditLog as LoginAuditLog } from '#/generated/api/admin/service/v1';
 import { $t } from '#/locales';
-import { PaginationQuery, fetchListLoginAuditLogs, getLoginAuditLogActionTypeColor, getLoginAuditLogRiskLevelColor, getLoginAuditLogStatusColor, loginAuditLogActionTypeList, loginAuditLogActionTypeToName, loginAuditLogRiskLevelList, loginAuditLogRiskLevelToName, loginAuditLogStatusList, loginAuditLogStatusToName } from '#/api';
+
 const formOptions: VbenFormProps = {
   // 默认展开
   collapsed: false,
@@ -105,32 +118,35 @@ const gridOptions: VxeGridProps<LoginAuditLog> = {
   proxyConfig: {
     ajax: {
       query: async ({ page }, formValues) => {
-        console.log('query:', formValues);
-
         let startTime: any;
         let endTime: any;
         if (
-          formValues.loginTime !== undefined &&
-          formValues.loginTime.length === 2
+          formValues.createdAt !== undefined &&
+          formValues.createdAt.length === 2
         ) {
-          startTime = dayjs(formValues.loginTime[0]).format(
+          startTime = dayjs(formValues.createdAt[0]).format(
             'YYYY-MM-DD HH:mm:ss',
           );
-          endTime = dayjs(formValues.loginTime[1]).format(
+          endTime = dayjs(formValues.createdAt[1]).format(
             'YYYY-MM-DD HH:mm:ss',
           );
-          console.log(startTime, endTime);
         }
 
-        return await fetchListLoginAuditLogs(new PaginationQuery({ paging: { page: page.currentPage, pageSize: page.pageSize }, formValues: {
-            username: formValues.username,
-            ipAddress: formValues.ipAddress,
-            status: formValues.status,
-            actionType: formValues.actionType,
-            riskType: formValues.riskType,
-            created_at__gte: startTime,
-            created_at__lte: endTime,
-          }, orderBy: ['-created_at'] }));
+        return await fetchListLoginAuditLogs(
+          new PaginationQuery({
+            paging: { page: page.currentPage, pageSize: page.pageSize },
+            formValues: {
+              username: formValues.username,
+              ipAddress: formValues.ipAddress,
+              status: formValues.status,
+              actionType: formValues.actionType,
+              riskLevel: formValues.riskLevel,
+              created_at__gte: startTime,
+              created_at__lte: endTime,
+            },
+            orderBy: ['-created_at'],
+          }),
+        );
       },
     },
   },
@@ -199,10 +215,10 @@ const [Grid] = useVbenVxeGrid({ gridOptions, formOptions });
         </a-tag>
       </template>
       <template #geoLocation="{ row }">
-        {{ row.geoLocation.province }} {{ row.geoLocation.city }}
+        {{ row.geoLocation?.province || '-' }} {{ row.geoLocation?.city }}
       </template>
       <template #platform="{ row }">
-        {{ row.deviceInfo.osName }} {{ row.deviceInfo.browserName }}
+        {{ row.deviceInfo?.osName || '-' }} {{ row.deviceInfo?.browserName }}
       </template>
     </Grid>
   </Page>

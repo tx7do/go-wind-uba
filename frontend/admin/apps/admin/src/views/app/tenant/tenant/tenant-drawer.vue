@@ -7,10 +7,19 @@ import { $t } from '@vben/locales';
 import { notification } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import { tenantAuditStatusList, tenantStatusList, tenantTypeList, useCreateTenantWithAdminUser, useTenantExists, useUpdateTenant, useUserExists } from '#/api';
+import {
+  tenantAuditStatusList,
+  tenantStatusList,
+  tenantTypeList,
+  useCreateTenantWithAdminUser,
+  useTenantExists,
+  useUpdateTenant,
+  useUserExists,
+} from '#/api';
 
 const { mutateAsync: updateTenantMut } = useUpdateTenant();
-const { mutateAsync: createTenantWithAdminUserMut } = useCreateTenantWithAdminUser();
+const { mutateAsync: createTenantWithAdminUserMut } =
+  useCreateTenantWithAdminUser();
 const { mutateAsync: tenantExists } = useTenantExists();
 const { mutateAsync: userExists } = useUserExists();
 
@@ -217,7 +226,6 @@ const [Drawer, drawerApi] = useVbenDrawer({
   },
 
   async onConfirm() {
-    console.log('onConfirm');
 
     // 校验输入的数据
     const validate = await baseFormApi.validate();
@@ -230,7 +238,6 @@ const [Drawer, drawerApi] = useVbenDrawer({
     // 获取表单数据
     const values = await baseFormApi.getValues();
 
-    console.log(getTitle.value, values);
 
     await (data.value?.create
       ? createTenantWithAdminUser(values)
@@ -247,7 +254,6 @@ const [Drawer, drawerApi] = useVbenDrawer({
 
       setLoading(false);
 
-      console.log('onOpenChange', data.value, data.value?.create);
     }
   },
 });
@@ -257,7 +263,6 @@ function setLoading(loading: boolean) {
 }
 
 // async function createTenant(values: any) {
-//   console.log('createTenant', values);
 //
 //   try {
 //     await createTenant(values);
@@ -277,7 +282,6 @@ function setLoading(loading: boolean) {
 // }
 
 async function createTenantWithAdminUser(values: any) {
-  console.log('createTenantWithAdminUser', values);
 
   // 检查密码和确认密码是否一致
   if (values.password !== values.passwordConfirm) {
@@ -290,7 +294,10 @@ async function createTenantWithAdminUser(values: any) {
 
   // 检查租户编码是否存在
   try {
-    const tenantExistResp: any = await tenantExists({ code: values.code, name: values.name });
+    const tenantExistResp: any = await tenantExists({
+      code: values.code,
+      name: values.name,
+    });
     if (tenantExistResp?.exist) {
       notification.error({
         message: $t('page.tenant.tenant_code_exists'),
@@ -298,17 +305,16 @@ async function createTenantWithAdminUser(values: any) {
       setLoading(false);
       return;
     }
-  } catch {
-    notification.error({
-      message: $t('page.tenant.tenant_code_exists'),
-    });
-    setLoading(false);
-    return;
+  } catch (error) {
+    // 检查接口异常时不应误报"已存在"，仅在真正返回 exist=true 时才提示冲突
+    console.error('[tenant] check tenant code failed:', error);
   }
 
   // 检查用户名是否存在
   try {
-    const userExistResp: any = await userExists({ username: values.user.username });
+    const userExistResp: any = await userExists({
+      username: values.user.username,
+    });
     if (userExistResp?.exist) {
       notification.error({
         message: $t('page.tenant.notification.user_username_exists'),
@@ -316,12 +322,9 @@ async function createTenantWithAdminUser(values: any) {
       setLoading(false);
       return;
     }
-  } catch {
-    notification.error({
-      message: $t('page.tenant.notification.user_username_exists'),
-    });
-    setLoading(false);
-    return;
+  } catch (error) {
+    // 同理，接口异常不等于用户名已存在
+    console.error('[tenant] check username failed:', error);
   }
 
   try {
@@ -353,10 +356,16 @@ async function createTenantWithAdminUser(values: any) {
 }
 
 async function updateTenant(values: any) {
-  console.log('updateTenant', values);
+  // 更新时剔除创建专用字段（管理员账号/密码），避免脏字段提交
+  const {
+    user: _user,
+    password: _password,
+    passwordConfirm: _passwordConfirm,
+    ...tenantValues
+  } = values ?? {};
 
   try {
-    await updateTenantMut({ id: data.value.row.id, values: values });
+    await updateTenantMut({ id: data.value.row.id, values: tenantValues });
 
     notification.success({
       message: $t('ui.notification.update_success'),

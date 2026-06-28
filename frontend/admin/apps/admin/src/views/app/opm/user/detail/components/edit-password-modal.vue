@@ -8,6 +8,7 @@ import { notification } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import { useEditUserPassword } from '#/api';
+
 const { mutateAsync: editUserPassword } = useEditUserPassword();
 
 const data = ref();
@@ -49,7 +50,6 @@ const [Modal, modalApi] = useVbenModal({
   },
 
   async onConfirm() {
-    console.log('onConfirm');
 
     // 校验输入的数据
     const validate = await baseFormApi.validate();
@@ -73,15 +73,16 @@ const [Modal, modalApi] = useVbenModal({
     }
 
     try {
-      await editUserPassword({ userId: 
-        data.value?.userId, newPassword: values.new_password,
-       } as any);
+      await editUserPassword({
+        userId: data.value?.userId,
+        newPassword: values.new_password,
+      } as any);
 
       setLoading(false);
       modalApi.close();
 
       notification.success({
-        message: $t('ui.notification.update_status_success'),
+        message: $t('ui.notification.update_success'),
       });
     } catch {
       setLoading(false);
@@ -99,7 +100,6 @@ const [Modal, modalApi] = useVbenModal({
 
       setLoading(false);
 
-      console.log('onOpenChange', data.value?.create, data.value?.userId);
     }
   },
 });

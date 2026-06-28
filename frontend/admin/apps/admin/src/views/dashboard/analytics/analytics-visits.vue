@@ -1,58 +1,48 @@
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue';
+import type { ubaservicev1_ActiveUsersResponse } from '#/generated/api/admin/service/v1';
 
-import { $t } from '@vben/locales';
+import { onMounted, ref, watch } from 'vue';
+
 import {
   EchartsUI,
   type EchartsUIType,
   useEcharts,
 } from '@vben/plugins/echarts';
 
+import dayjs from 'dayjs';
+
+interface Props {
+  data?: ubaservicev1_ActiveUsersResponse;
+}
+
+const props = defineProps<Props>();
+
 const chartRef = ref<EchartsUIType>();
 const { renderEcharts } = useEcharts(chartRef);
 
-onMounted(() => {
+function render() {
+  const points = props.data?.points ?? [];
+  const xData = points.map((p) => dayjs(p.timestamp ?? 0).format('MM-DD'));
+  const dau = points.map((p) => Number(p.dau ?? 0));
+
   renderEcharts({
-    grid: {
-      bottom: 0,
-      containLabel: true,
-      left: '1%',
-      right: '1%',
-      top: '2 %',
-    },
+    grid: { bottom: 0, containLabel: true, left: '1%', right: '1%', top: '2%' },
     series: [
       {
         barMaxWidth: 80,
-        // color: '#4f69fd',
-        data: [
-          3000, 2000, 3333, 5000, 3200, 4200, 3200, 2100, 3000, 5100, 6000,
-          3200, 4800,
-        ],
+        data: dau,
+        itemStyle: { color: '#5ab1ef' },
         type: 'bar',
       },
     ],
-    tooltip: {
-      axisPointer: {
-        lineStyle: {
-          // color: '#4f69fd',
-          width: 1,
-        },
-      },
-      trigger: 'axis',
-    },
-    xAxis: {
-      data: Array.from({ length: 12 }).map(
-        (_item, index) => `${index + 1}${$t('page.analytics.month')}`,
-      ),
-      type: 'category',
-    },
-    yAxis: {
-      max: 8000,
-      splitNumber: 4,
-      type: 'value',
-    },
+    tooltip: { axisPointer: { lineStyle: { width: 1 } }, trigger: 'axis' },
+    xAxis: { data: xData, type: 'category' },
+    yAxis: { splitNumber: 4, type: 'value' },
   });
-});
+}
+
+onMounted(render);
+watch(() => props.data, render, { deep: true });
 </script>
 
 <template>

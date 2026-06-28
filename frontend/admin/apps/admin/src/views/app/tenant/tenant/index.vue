@@ -92,9 +92,7 @@ const gridOptions: VxeGridProps<Tenant> = {
     zoom: true,
   },
   exportConfig: {},
-  pagerConfig: {
-    enabled: false,
-  },
+  pagerConfig: {},
   rowConfig: {
     isHover: true,
   },
@@ -102,7 +100,6 @@ const gridOptions: VxeGridProps<Tenant> = {
   proxyConfig: {
     ajax: {
       query: async ({ page }, formValues) => {
-        console.log('query:', formValues);
         return await fetchListTenants(new PaginationQuery({ paging: { page: page.currentPage, pageSize: page.pageSize }, formValues: formValues }));
       },
     },
@@ -174,20 +171,17 @@ function openModal(create: boolean, row?: any) {
 
 /* 创建 */
 function handleCreate() {
-  console.log('创建');
 
   openModal(true);
 }
 
 /* 编辑 */
 function handleEdit(row: any) {
-  console.log('编辑', row);
   openModal(false, row);
 }
 
 /* 删除 */
 async function handleDelete(row: any) {
-  console.log('删除', row);
 
   try {
     await deleteTenant({ id: row.id });

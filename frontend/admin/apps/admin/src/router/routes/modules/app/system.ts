@@ -3,6 +3,8 @@ import type { RouteRecordRaw } from 'vue-router';
 import { BasicLayout } from '#/layouts';
 import { $t } from '#/locales';
 
+// 系统管理（保留核心系统配置：菜单/文件/登录策略）
+// 开发者相关（API/字典/任务/语言/事件Schema）已拆分至 developer.ts
 const system: RouteRecordRaw[] = [
   {
     path: '/system',
@@ -10,7 +12,7 @@ const system: RouteRecordRaw[] = [
     component: BasicLayout,
     redirect: '/system/menus',
     meta: {
-      order: 1000,
+      order: 2000,
       icon: 'lucide:settings',
       title: $t('menu.system.moduleName'),
       keepAlive: true,
@@ -30,34 +32,10 @@ const system: RouteRecordRaw[] = [
       },
 
       {
-        path: 'apis',
-        name: 'APIManagement',
-        meta: {
-          order: 2,
-          icon: 'lucide:route',
-          title: $t('menu.system.api'),
-          authority: ['sys:platform_admin'],
-        },
-        component: () => import('#/views/app/system/api/index.vue'),
-      },
-
-      {
-        path: 'dict',
-        name: 'DictManagement',
-        meta: {
-          order: 3,
-          icon: 'lucide:library-big',
-          title: $t('menu.system.dict'),
-          authority: ['sys:platform_admin'],
-        },
-        component: () => import('#/views/app/system/dict/index.vue'),
-      },
-
-      {
         path: 'files',
         name: 'FileManagement',
         meta: {
-          order: 4,
+          order: 2,
           icon: 'lucide:file-search',
           title: $t('menu.system.file'),
           authority: ['sys:platform_admin', 'sys:tenant_manager'],
@@ -66,39 +44,15 @@ const system: RouteRecordRaw[] = [
       },
 
       {
-        path: 'tasks',
-        name: 'TaskManagement',
-        meta: {
-          order: 5,
-          icon: 'lucide:list-todo',
-          title: $t('menu.system.task'),
-          authority: ['sys:platform_admin', 'sys:tenant_manager'],
-        },
-        component: () => import('#/views/app/system/task/index.vue'),
-      },
-
-      {
         path: 'login-policies',
         name: 'LoginPolicyManagement',
         meta: {
-          order: 6,
+          order: 3,
           icon: 'lucide:shield-x',
           title: $t('menu.system.loginPolicy'),
           authority: ['sys:platform_admin'],
         },
         component: () => import('#/views/app/system/login_policy/index.vue'),
-      },
-
-      {
-        path: 'languages',
-        name: 'LanguageManagement',
-        meta: {
-          order: 7,
-          icon: 'lucide:globe',
-          title: $t('menu.system.language'),
-          authority: ['sys:platform_admin'],
-        },
-        component: () => import('#/views/app/system/language/index.vue'),
       },
     ],
   },

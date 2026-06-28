@@ -57,7 +57,6 @@ const gridOptions: VxeGridProps<DictType> = {
   proxyConfig: {
     ajax: {
       query: async ({ page }, formValues) => {
-        // console.log('query:', filters, form, formValues);
         return await dictViewStore.fetchTypeList(
           page.currentPage,
           page.pageSize,
@@ -99,11 +98,9 @@ const gridOptions: VxeGridProps<DictType> = {
 
 const gridEvents: VxeGridListeners<DictType> = {
   // cellDblclick: ({ row }) => {
-  //   // console.log(`cell-dbl-click: ${row.id}`);
   //   dictViewStore.setCurrentMain(typeof row.id === 'number' ? row.id : 0);
   // },
   cellClick: ({ row }) => {
-    // console.log(`cell-click: ${row.id}`);
     dictViewStore.setCurrentTypeId(typeof row.id === 'number' ? row.id : 0);
   },
 };
@@ -136,19 +133,16 @@ function openDrawer(create: boolean, row?: any) {
 
 /* 创建 */
 function handleCreate() {
-  console.log('创建');
   openDrawer(true);
 }
 
 /* 编辑 */
 function handleEdit(row: any) {
-  console.log('编辑', row);
   openDrawer(false, row);
 }
 
 /* 删除 */
 async function handleDelete(row: any) {
-  console.log('删除', row);
 
   try {
     await deleteDictType({ ids: [row.id] });

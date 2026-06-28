@@ -54,7 +54,6 @@ const gridOptions: VxeGridProps<File> = {
   proxyConfig: {
     ajax: {
       query: async ({ page }, formValues) => {
-        console.log('query:', formValues);
 
         return await fetchListFiles(
           new PaginationQuery({
@@ -116,7 +115,6 @@ const [Drawer] = useVbenDrawer({
 async function handleUploadFile(options: any) {
   const { file, onSuccess, onError } = options;
 
-  console.log('上传文件', options);
 
   try {
     const res = await uploadFile(
@@ -125,7 +123,6 @@ async function handleUploadFile(options: any) {
       file,
       'post',
       (progressEvent: any) => {
-        console.log(progressEvent);
         // ant-design-vue 要求的进度结构为 { percent: number }
         try {
           // onProgress?.({ percent });
@@ -156,14 +153,12 @@ async function handleUploadFile(options: any) {
 }
 
 function handleDownloadFile(row: any) {
-  console.log('下载文件', row);
   const objectName = row ? `${row.fileDirectory}/${row.saveFileName}` : '';
   downloadFile(row.bucketName, objectName, true);
 }
 
 /* 删除 */
 async function handleDelete(row: any) {
-  console.log('删除', row);
 
   try {
     await deleteFile({ id: row.id });

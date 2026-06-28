@@ -58,7 +58,27 @@
     "moduleName": "数据分析",
     "session": "会话分析",
     "eventPath": "路径分析",
-    "userBehaviorProfile": "用户画像"
+    "userBehaviorProfile": "用户画像",
+    "eventTrend": "事件趋势",
+    "funnel": "漏斗分析",
+    "retention": "留存分析",
+    "dimensionCompare": "维度对比",
+    "behaviorTimeline": "行为时间轴",
+    "realtimeScreen": "实时大屏"
+  },
+  "opsAnalysis": {
+    "moduleName": "运营分析",
+    "dataAnalysis": "数据分析",
+    "risk": "风控管理",
+    "log": "日志审计"
+  },
+  "developer": {
+    "moduleName": "开发者",
+    "api": "API管理",
+    "dict": "数据字典",
+    "task": "任务调度",
+    "language": "语言管理",
+    "eventSchema": "事件Schema"
   },
   "application": {
     "moduleName": "应用管理",

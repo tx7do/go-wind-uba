@@ -71,9 +71,7 @@ const gridOptions: VxeGridProps<Permission> = {
   },
 
   exportConfig: {},
-  pagerConfig: {
-    enabled: false,
-  },
+  pagerConfig: {},
   rowConfig: {
     isHover: true,
   },
@@ -84,12 +82,6 @@ const gridOptions: VxeGridProps<Permission> = {
   proxyConfig: {
     ajax: {
       query: async ({ page }, formValues) => {
-        console.log(
-          'permission list query:',
-          formValues,
-          permissionViewStore.currentGroupId,
-        );
-
         return await permissionViewStore.fetchPermissionList(
           permissionViewStore.currentGroupId,
           page.currentPage,
@@ -154,20 +146,17 @@ function openDrawer(create: boolean, row?: any) {
 
 /* 创建 */
 function handleCreate() {
-  console.log('创建');
 
   openDrawer(true);
 }
 
 /* 编辑 */
 function handleEdit(row: any) {
-  console.log('编辑', row);
   openDrawer(false, row);
 }
 
 /* 删除 */
 async function handleDelete(row: any) {
-  console.log('删除', row);
 
   try {
     await deletePermission({ id: row.id });
@@ -186,7 +175,6 @@ async function handleDelete(row: any) {
 
 /* 同步权限 */
 async function handleSyncPermissions() {
-  console.log('同步');
 
   try {
     await syncPermissions();

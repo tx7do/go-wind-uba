@@ -6,9 +6,19 @@ import { Page, type VbenFormProps } from '@vben/common-ui';
 import dayjs from 'dayjs';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import {
+  fetchListOperationAuditLogs,
+  operationAuditLogActionList,
+  operationAuditLogActionToColor,
+  operationAuditLogActionToName,
+  PaginationQuery,
+  successStatusList,
+  successToColor,
+  successToNameWithStatusCode,
+} from '#/api';
 import { type auditservicev1_ApiAuditLog as ApiAuditLog } from '#/generated/api/admin/service/v1';
 import { $t } from '#/locales';
-import { PaginationQuery, fetchListOperationAuditLogs, operationAuditLogActionList, operationAuditLogActionToColor, operationAuditLogActionToName, successStatusList, successToColor, successToNameWithStatusCode } from '#/api';
+
 const formOptions: VbenFormProps = {
   // 默认展开
   collapsed: false,
@@ -101,8 +111,6 @@ const gridOptions: VxeGridProps<ApiAuditLog> = {
   proxyConfig: {
     ajax: {
       query: async ({ page }, formValues) => {
-        console.log('query:', formValues);
-
         let startTime: any;
         let endTime: any;
         if (
@@ -115,18 +123,23 @@ const gridOptions: VxeGridProps<ApiAuditLog> = {
           endTime = dayjs(formValues.createdAt[1]).format(
             'YYYY-MM-DD HH:mm:ss',
           );
-          console.log(startTime, endTime);
         }
 
-        return await fetchListOperationAuditLogs(new PaginationQuery({ paging: { page: page.currentPage, pageSize: page.pageSize }, formValues: {
-            username: formValues.username,
-            resourceType: formValues.resourceType,
-            action: formValues.action,
-            ipAddress: formValues.ipAddress,
-            success: formValues.success,
-            created_at__gte: startTime,
-            created_at__lte: endTime,
-          }, orderBy: ['-created_at'] }));
+        return await fetchListOperationAuditLogs(
+          new PaginationQuery({
+            paging: { page: page.currentPage, pageSize: page.pageSize },
+            formValues: {
+              username: formValues.username,
+              resourceType: formValues.resourceType,
+              action: formValues.action,
+              ipAddress: formValues.ipAddress,
+              success: formValues.success,
+              created_at__gte: startTime,
+              created_at__lte: endTime,
+            },
+            orderBy: ['-created_at'],
+          }),
+        );
       },
     },
   },
@@ -182,7 +195,7 @@ const [Grid] = useVbenVxeGrid({ gridOptions, formOptions });
         </a-tag>
       </template>
       <template #geoLocation="{ row }">
-        {{ row.geoLocation.province }} {{ row.geoLocation.city }}
+        {{ row.geoLocation?.province || '-' }} {{ row.geoLocation?.city }}
       </template>
       <template #action="{ row }">
         <a-tag :color="operationAuditLogActionToColor(row.action)">

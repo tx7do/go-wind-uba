@@ -10,7 +10,7 @@ const log: RouteRecordRaw[] = [
     component: BasicLayout,
     redirect: '/log/login-audit-logs',
     meta: {
-      order: 900,
+      order: 1020,
       icon: 'lucide:logs',
       title: $t('menu.log.moduleName'),
       keepAlive: true,

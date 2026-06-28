@@ -10,7 +10,7 @@ const internalMessage: RouteRecordRaw[] = [
     redirect: '/internal-message/messages',
     component: BasicLayout,
     meta: {
-      order: 1100,
+      order: 2100,
       icon: 'lucide:mail',
       title: $t('menu.internalMessage.moduleName'),
       keepAlive: true,

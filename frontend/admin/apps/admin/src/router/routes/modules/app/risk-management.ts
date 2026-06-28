@@ -10,7 +10,7 @@ const tenant: RouteRecordRaw[] = [
     component: BasicLayout,
     redirect: '/risk/events',
     meta: {
-      order: 300,
+      order: 1010,
       icon: 'lucide:shield-alert',
       title: $t('menu.risk.moduleName'),
       authority: ['sys:platform_admin'],

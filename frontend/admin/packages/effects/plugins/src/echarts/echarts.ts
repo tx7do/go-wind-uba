@@ -1,7 +1,10 @@
 import type {
   // 系列类型的定义后缀都为 SeriesOption
   BarSeriesOption,
+  FunnelSeriesOption,
+  HeatmapSeriesOption,
   LineSeriesOption,
+  ScatterSeriesOption,
 } from 'echarts/charts';
 import type {
   DatasetComponentOption,
@@ -9,10 +12,19 @@ import type {
   // 组件类型的定义后缀都为 ComponentOption
   TitleComponentOption,
   TooltipComponentOption,
+  VisualMapComponentOption,
 } from 'echarts/components';
 import type { ComposeOption } from 'echarts/core';
 
-import { BarChart, LineChart, PieChart, RadarChart } from 'echarts/charts';
+import {
+  BarChart,
+  FunnelChart,
+  HeatmapChart,
+  LineChart,
+  PieChart,
+  RadarChart,
+  ScatterChart,
+} from 'echarts/charts';
 import {
   // 数据集组件
   DatasetComponent,
@@ -23,6 +35,7 @@ import {
   TooltipComponent,
   // 内置数据转换器组件 (filter, sort)
   TransformComponent,
+  VisualMapComponent,
 } from 'echarts/components';
 import * as echarts from 'echarts/core';
 import { LabelLayout, UniversalTransition } from 'echarts/features';
@@ -32,10 +45,14 @@ import { CanvasRenderer } from 'echarts/renderers';
 export type ECOption = ComposeOption<
   | BarSeriesOption
   | DatasetComponentOption
+  | FunnelSeriesOption
   | GridComponentOption
+  | HeatmapSeriesOption
   | LineSeriesOption
+  | ScatterSeriesOption
   | TitleComponentOption
   | TooltipComponentOption
+  | VisualMapComponentOption
 >;
 
 // 注册必须的组件
@@ -49,6 +66,10 @@ echarts.use([
   TransformComponent,
   BarChart,
   LineChart,
+  FunnelChart,
+  HeatmapChart,
+  ScatterChart,
+  VisualMapComponent,
   LabelLayout,
   UniversalTransition,
   CanvasRenderer,

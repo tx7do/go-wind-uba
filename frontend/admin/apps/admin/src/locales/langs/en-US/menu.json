@@ -58,7 +58,27 @@
     "behaviorEvent": "Behavior Event",
     "session": "Session Analysis",
     "eventPath": "Path Analysis",
-    "userBehaviorProfile": "User Profile"
+    "userBehaviorProfile": "User Profile",
+    "eventTrend": "Event Trend",
+    "funnel": "Funnel Analysis",
+    "retention": "Retention Analysis",
+    "dimensionCompare": "Dimension Compare",
+    "behaviorTimeline": "Behavior Timeline",
+    "realtimeScreen": "Realtime Screen"
+  },
+  "opsAnalysis": {
+    "moduleName": "Operations",
+    "dataAnalysis": "Data Analysis",
+    "risk": "Risk Management",
+    "log": "Audit Logs"
+  },
+  "developer": {
+    "moduleName": "Developer",
+    "api": "API Management",
+    "dict": "Data Dictionary",
+    "task": "Task Scheduler",
+    "language": "Language Management",
+    "eventSchema": "Event Schema"
   },
   "tagManagement": {
     "moduleName": "Tag Management",
@@ -78,12 +98,6 @@
   "object": {
     "moduleName": "Object Management",
     "objects": "Object List"
-  },
-  "risk": {
-    "moduleName": "Risk Management",
-    "event": "Risk Event",
-    "rule": "Risk Rule",
-    "webhook": "Webhook"
   },
   "risk": {
     "moduleName": "Risk Management",
