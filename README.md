@@ -94,9 +94,12 @@
 
 ### 数据采集 SDK
 
-| SDK                  | 说明                   |
-|----------------------|----------------------|
-| Web SDK (JavaScript) | 网页端事件采集，支持自动埋点与自定义事件 |
+| SDK                  | 适用平台                 | 说明                            |
+|----------------------|----------------------|-------------------------------|
+| Web SDK (TypeScript) | 浏览器 / Node           | 网页端事件采集，自动埋点 + 自定义事件，sendBeacon 卸载兜底 |
+| C# SDK (.NET)        | Unity（原生 + WebGL）/ Godot 4 / .NET | 游戏/客户端埋点，批量上报 + 重试降级，零依赖核心库 |
+
+> 接入指引见 [数据采集 SDK 接入指南](docs/sdk_integration.md)。
 
 ---
 
@@ -226,6 +229,20 @@ go-wind-uba/
 │   └── sdk/web/                        # Web 数据采集 SDK
 └── LICENSE                             # MIT 开源许可
 ```
+
+---
+
+## 📚 文档导航
+
+| 文档 | 说明 | 适用读者 |
+|------|------|---------|
+| [系统架构](docs/architecture.md) | 服务职责、数据流转、存储分层、关键设计模式 | 想理解整体设计的人 |
+| [二次开发导引](docs/development_guide.md) | 代码生成管线、新增服务/实体/分析聚合/前端页面 | 二次开发者 |
+| [SDK 接入指南](docs/sdk_integration.md) | 获取 appId/appSecret、SDK 选型、上报协议、字段全集 | 埋点接入方 |
+| [Web SDK 文档](frontend/sdk/web/uba/README.md) | Web SDK 完整 API | Web 端接入 |
+| [C# SDK 文档](sdk/csharp/README.md) | C# SDK（Unity/Godot）完整 API | 游戏/客户端接入 |
+| [部署文档](backend/docs/build_deploy.md) | 构建、Docker 部署 | 运维 |
+| [Superset 部署](backend/docs/deploy_superset.md) | BI 可视化平台对接 | 数据分析 |
 
 ---
 
@@ -377,9 +394,9 @@ make docker-up
 
 | 服务                    | 说明                                     | 端口                      |
 |-----------------------|----------------------------------------|-------------------------|
-| **Core Service**      | 核心业务服务，负责事件存储、分析建模、风险检测、标签管理、数据同步等核心逻辑 | -                       |
-| **Admin Service**     | 管理后台 BFF，提供用户管理、权限管理、配置管理、报表查询等接口      | HTTP: 9700 / gRPC: 9701 |
-| **Collector Service** | 埋点采集 BFF，接收客户端事件上报数据，校验并转发至消息队列        | HTTP: 9800 / gRPC: 9801 |
+| **Core Service**      | 核心业务服务，负责事件存储、分析建模、风险检测、标签管理、数据同步等核心逻辑 | gRPC: 动态端口（经 etcd 服务发现） |
+| **Admin Service**     | 管理后台 BFF，提供用户管理、权限管理、配置管理、报表查询等接口      | HTTP: 5600 / SSE: 5601 |
+| **Collector Service** | 埋点采集 BFF，接收客户端事件上报数据，校验并转发至消息队列        | HTTP: 5700 |
 
 ---
 
@@ -393,33 +410,52 @@ make docker-up
 
 ---
 
-## Web SDK 接入
+## SDK 接入
 
-```html
-<script type="text/javascript" src="report_sdk.js"></script>
-<script type="text/javascript">
-    // 初始化（单例模式）
-    // 参数：采集服务地址, AppID, AppKey, 调试模式
-    // 调试模式：0=正常入库, 1=测试入库, 2=测试不入库
-    const tracker = new EventReport(
-        "http://localhost:9800",
-        "your_app_id",
-        "your_app_key",
-        0
-    );
+> 完整的接入流程（创建应用获取 appId/appSecret、SDK 选型、上报协议）见
+> [数据采集 SDK 接入指南](docs/sdk_integration.md)。
 
-    // 设置全局属性
-    tracker.setSuperProperties({ platform: "web", version: "1.0.0" });
+### Web SDK 快速接入
 
-    // 上报自定义事件
-    tracker.track("page_view", { page: "/home", title: "首页" });
+```ts
+import { UbaClient } from '@go-wind-uba/uba-sdk';
 
-    // 上报用户属性
-    tracker.userSet({ name: "张三", vip_level: 3 }).trackUserData();
-</script>
+// 初始化（单例，appId/appSecret 在管理后台「应用管理」中创建应用后获得）
+const uba = UbaClient.init({
+  appId: 'your_app_id',
+  appSecret: 'your_app_secret',
+  endpoint: 'http://localhost:9800', // collector 服务地址
+});
+
+// 设置公共属性（后续每条事件自动携带）
+uba.setSuperProperties({ platform: 'web', version: '1.0.0' });
+
+// 上报自定义事件
+uba.track('page_view', { page: '/home', title: '首页' });
+
+// 登录后绑定用户
+uba.identify(1001);
+uba.track('purchase', { orderId: 'ORD-001' }, { amount: '99.90', quantity: 1 });
 ```
 
-> 详见 [Web SDK 文档](frontend/sdk/web/README.md)
+> 详见 [Web SDK 文档](frontend/sdk/web/uba/README.md)
+
+### C# SDK（Unity / Godot）
+
+```csharp
+using Uba;
+
+var client = new UbaClient(new UbaConfig {
+    AppId = "your_app_id",
+    AppSecret = "your_app_secret",
+    Endpoint = "http://localhost:9800",
+});
+
+client.Track("scene_load", new() { ["scene"] = "Main" });
+```
+
+> Unity WebGL 必须使用 `UnityWebRequestTransport`（HttpClient 在 WebGL 不可用）。
+> 详见 [C# SDK 文档](sdk/csharp/README.md)
 
 ---
 
