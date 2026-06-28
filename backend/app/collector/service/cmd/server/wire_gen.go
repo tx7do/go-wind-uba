@@ -27,9 +27,15 @@ func initApp(context *bootstrap.Context) (*kratos.App, func(), error) {
 	broker := data.NewKafkaBroker(context)
 	discovery := data.NewDiscovery(context)
 	applicationServiceClient := data.NewApplicationServiceClient(context, discovery)
-	reportService := service.NewReportService(context, broker, applicationServiceClient)
+	client, cleanup, err := data.NewRedisClient(context)
+	if err != nil {
+		return nil, nil, err
+	}
+	appAuthenticator := service.NewAppAuthenticator(context, applicationServiceClient, client)
+	reportService := service.NewReportService(context, broker, applicationServiceClient, appAuthenticator)
 	httpServer := server.NewRestServer(context, v, reportService)
 	app := newApp(context, httpServer)
 	return app, func() {
+		cleanup()
 	}, nil
 }

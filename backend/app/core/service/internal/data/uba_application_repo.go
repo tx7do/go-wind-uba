@@ -131,9 +131,11 @@ func (r *ApplicationRepo) Get(ctx context.Context, req *ubaV1.GetApplicationRequ
 
 	var whereCond []func(s *sql.Selector)
 	switch req.QueryBy.(type) {
-	default:
+	case *ubaV1.GetApplicationRequest_AppId:
+		whereCond = append(whereCond, application.AppIDEQ(req.GetAppId()))
 	case *ubaV1.GetApplicationRequest_Id:
 		whereCond = append(whereCond, application.IDEQ(req.GetId()))
+	default:
 	}
 
 	dto, err := r.repository.Get(ctx, builder, req.GetViewMask(), whereCond...)

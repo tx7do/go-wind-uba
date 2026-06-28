@@ -26,17 +26,20 @@ type ReportService struct {
 	log         *log.Helper
 
 	applicationServiceClient ubaV1.ApplicationServiceClient
+	appAuth                  *AppAuthenticator
 }
 
 func NewReportService(
 	ctx *bootstrap.Context,
 	kafkaBroker broker.Broker,
 	applicationServiceClient ubaV1.ApplicationServiceClient,
+	appAuth *AppAuthenticator,
 ) *ReportService {
 	return &ReportService{
 		log:                      ctx.NewLoggerHelper("report/service/collector-service"),
 		kafkaBroker:              kafkaBroker,
 		applicationServiceClient: applicationServiceClient,
+		appAuth:                  appAuth,
 	}
 }
 
@@ -55,9 +58,18 @@ func (s *ReportService) PostReport(ctx context.Context, req *ubaV1.PostReportReq
 	now := time.Now()
 	requestID := uuid.New().String()
 
-	// TODO 认证鉴权
+	// 应用级鉴权：校验请求体内的 app_id / app_secret，并取得应用所属的权威租户 ID。
+	app, err := s.appAuth.Authenticate(ctx, req.AppId, req.AppSecret)
+	if err != nil {
+		return nil, err
+	}
 
 	errorsByType, validEvents := s.validateEvents(req.Events)
+
+	// 用应用所属的权威 tenant_id 覆盖每个事件，杜绝客户端伪造跨租户上报。
+	for _, event := range validEvents {
+		event.TenantId = app.TenantID
+	}
 
 	for _, event := range validEvents {
 		if event == nil {
