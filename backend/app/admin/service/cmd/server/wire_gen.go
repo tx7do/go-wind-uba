@@ -107,7 +107,13 @@ func initApp(context *bootstrap.Context) (*kratos.App, func(), error) {
 	sessionService := service.NewSessionService(context, sessionServiceClient)
 	userBehaviorProfileServiceClient := data.NewUserBehaviorProfileServiceClient(context, discovery)
 	userBehaviorProfileService := service.NewUserBehaviorProfileService(context, userBehaviorProfileServiceClient)
-	httpServer := server.NewRestServer(context, v, userService, userProfileService, roleService, tenantService, orgUnitService, positionService, menuService, apiService, permissionGroupService, permissionService, adminPortalService, taskService, authenticationService, loginPolicyService, dictTypeService, dictEntryService, languageService, fileService, fileTransferService, internalMessageService, internalMessageCategoryService, internalMessageRecipientService, apiAuditLogService, dataAccessAuditLogService, loginAuditLogService, policyEvaluationLogService, operationAuditLogService, permissionAuditLogService, applicationService, idMappingService, riskRuleService, tagDefinitionService, userTagService, webhookService, eventPathService, objectService, riskEventService, sessionService, userBehaviorProfileService)
+	behaviorEventServiceClient := data.NewBehaviorEventServiceClient(context, discovery)
+	behaviorEventService := service.NewBehaviorEventService(context, behaviorEventServiceClient)
+	analyticsServiceClient := data.NewAnalyticsServiceClient(context, discovery)
+	analyticsService := service.NewAnalyticsService(context, analyticsServiceClient)
+	eventSchemaServiceClient := data.NewEventSchemaServiceClient(context, discovery)
+	eventSchemaService := service.NewEventSchemaService(context, eventSchemaServiceClient)
+	httpServer := server.NewRestServer(context, v, userService, userProfileService, roleService, tenantService, orgUnitService, positionService, menuService, apiService, permissionGroupService, permissionService, adminPortalService, taskService, authenticationService, loginPolicyService, dictTypeService, dictEntryService, languageService, fileService, fileTransferService, internalMessageService, internalMessageCategoryService, internalMessageRecipientService, apiAuditLogService, dataAccessAuditLogService, loginAuditLogService, policyEvaluationLogService, operationAuditLogService, permissionAuditLogService, applicationService, idMappingService, riskRuleService, tagDefinitionService, userTagService, webhookService, eventPathService, objectService, riskEventService, sessionService, userBehaviorProfileService, behaviorEventService, analyticsService, eventSchemaService)
 	app := newApp(context, httpServer, sseServer)
 	return app, func() {
 	}, nil

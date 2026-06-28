@@ -380,6 +380,24 @@ func NewBehaviorEventServiceClient(ctx *bootstrap.Context, r registry.Discovery)
 	return ubaV1.NewBehaviorEventServiceClient(cli)
 }
 
+func NewAnalyticsServiceClient(ctx *bootstrap.Context, r registry.Discovery) ubaV1.AnalyticsServiceClient {
+	cli, err := rpc.CreateGrpcClient(ctx.Context(), r, serviceid.NewDiscoveryName(serviceid.CoreService), ctx.GetConfig())
+	if err != nil {
+		return nil
+	}
+
+	return ubaV1.NewAnalyticsServiceClient(cli)
+}
+
+func NewEventSchemaServiceClient(ctx *bootstrap.Context, r registry.Discovery) ubaV1.EventSchemaServiceClient {
+	cli, err := rpc.CreateGrpcClient(ctx.Context(), r, serviceid.NewDiscoveryName(serviceid.CoreService), ctx.GetConfig())
+	if err != nil {
+		return nil
+	}
+
+	return ubaV1.NewEventSchemaServiceClient(cli)
+}
+
 func NewEventPathServiceClient(ctx *bootstrap.Context, r registry.Discovery) ubaV1.EventPathServiceClient {
 	cli, err := rpc.CreateGrpcClient(ctx.Context(), r, serviceid.NewDiscoveryName(serviceid.CoreService), ctx.GetConfig())
 	if err != nil {

@@ -1,0 +1,226 @@
+﻿syntax = "proto3";
+
+package uba.service.v1;
+
+import "gnostic/openapi/v3/annotations.proto";
+import "google/protobuf/timestamp.proto";
+
+// 数据分析服务（BI 聚合查询）
+service AnalyticsService {
+  // 事件量趋势（按时间粒度分桶）
+  rpc EventTrend(EventTrendRequest) returns (EventTrendResponse) {}
+
+  // 漏斗分析
+  rpc Funnel(FunnelRequest) returns (FunnelResponse) {}
+
+  // 留存分析（同期群矩阵）
+  rpc Retention(RetentionRequest) returns (RetentionResponse) {}
+
+  // 维度分组聚合（平台/渠道/地区/版本等）
+  rpc GroupBy(GroupByRequest) returns (GroupByResponse) {}
+
+  // 活跃用户（DAU/WAU/MAU）
+  rpc ActiveUsers(ActiveUsersRequest) returns (ActiveUsersResponse) {}
+}
+
+// 时间粒度
+enum AnalyticsGranularity {
+  // 未指定（服务端按时间跨度自动选择）
+  ANALYTICS_GRANULARITY_UNSPECIFIED = 0;
+  // 小时
+  HOUR = 1;
+  // 天
+  DAY = 2;
+  // 周
+  WEEK = 3;
+  // 月
+  MONTH = 4;
+}
+
+// 时间范围（毫秒时间戳，start/end 均含端点）
+message TimeRange {
+  // 起始时间（含），Unix 毫秒
+  int64 start_ms = 1 [
+    json_name = "startMs",
+    (gnostic.openapi.v3.property) = {description: "起始时间（含），Unix 毫秒"}
+  ];
+  // 结束时间（含），Unix 毫秒
+  int64 end_ms = 2 [
+    json_name = "endMs",
+    (gnostic.openapi.v3.property) = {description: "结束时间（含），Unix 毫秒"}
+  ];
+}
+
+// 时间序列中的一个数据点
+message TimeSeriesPoint {
+  // 时间桶起点（Unix 毫秒）
+  int64 timestamp = 1 [
+    json_name = "timestamp",
+    (gnostic.openapi.v3.property) = {description: "时间桶起点，Unix 毫秒"}
+  ];
+  // 数值
+  double value = 2 [
+    json_name = "value",
+    (gnostic.openapi.v3.property) = {description: "数值"}
+  ];
+}
+
+// ============== 事件趋势 ==============
+message EventTrendRequest {
+  // 时间范围
+  TimeRange time_range = 1 [json_name = "timeRange"];
+  // 时间粒度
+  AnalyticsGranularity granularity = 2 [json_name = "granularity"];
+  // 应用 ID 过滤（可选，0 表示全部）
+  optional uint32 app_id = 3 [json_name = "appId"];
+  // 事件名过滤（可选，空表示全部事件）
+  optional string event_name = 4 [json_name = "eventName"];
+  // 平台过滤（可选）
+  optional string platform = 5 [json_name = "platform"];
+}
+
+message EventTrendResponse {
+  // 趋势数据点
+  repeated TimeSeriesPoint points = 1 [json_name = "points"];
+  // 时间粒度（服务端实际使用的粒度，可能因 UNSPECIFIED 而自动选择）
+  AnalyticsGranularity granularity = 2 [json_name = "granularity"];
+  // 区间内事件总量
+  int64 total = 3 [json_name = "total"];
+}
+
+// ============== 漏斗分析 ==============
+message FunnelStep {
+  // 步骤序号（从 1 开始）
+  uint32 step_index = 1 [json_name = "stepIndex"];
+  // 该步骤的事件名
+  string event_name = 2 [json_name = "eventName"];
+  // 完成该步骤的事件数
+  int64 count = 3 [json_name = "count"];
+  // 相对上一步的转化率（0-1，首步为 1）
+  double conversion_rate = 4 [json_name = "conversionRate"];
+  // 相对首步的整体转化率（0-1，首步为 1）
+  double overall_rate = 5 [json_name = "overallRate"];
+}
+
+message FunnelRequest {
+  // 时间范围
+  TimeRange time_range = 1 [json_name = "timeRange"];
+  // 漏斗步骤事件名（有序，至少 2 步）
+  repeated string steps = 2 [json_name = "steps"];
+  // 应用 ID 过滤（可选）
+  optional uint32 app_id = 3 [json_name = "appId"];
+  // 转化窗口（毫秒，用户必须在窗口内完成全部步骤，默认 30 分钟）
+  optional int64 window_ms = 4 [json_name = "windowMs"];
+}
+
+message FunnelResponse {
+  // 各步骤结果
+  repeated FunnelStep steps = 1 [json_name = "steps"];
+  // 完成全部步骤的用户数
+  int64 completed_users = 2 [json_name = "completedUsers"];
+  // 进入首步的用户数
+  int64 entered_users = 3 [json_name = "enteredUsers"];
+  // 整体转化率
+  double overall_conversion = 4 [json_name = "overallConversion"];
+}
+
+// ============== 留存分析 ==============
+message RetentionCell {
+  // 相对注册/首次活跃的天数偏移（0 = 当天）
+  uint32 offset_days = 1 [json_name = "offsetDays"];
+  // 该偏移的活跃用户数
+  int64 count = 2 [json_name = "count"];
+  // 留存率（0-1）
+  double rate = 3 [json_name = "rate"];
+}
+
+message RetentionCohort {
+  // 同期群日期（Unix 毫秒，当天 0 点）
+  int64 cohort_date = 1 [json_name = "cohortDate"];
+  // 该同期群规模（首日用户数）
+  int64 size = 2 [json_name = "size"];
+  // 各偏移天的留存
+  repeated RetentionCell cells = 3 [json_name = "cells"];
+}
+
+message RetentionRequest {
+  // 时间范围（按 cohort_date 过滤）
+  TimeRange time_range = 1 [json_name = "timeRange"];
+  // 应用 ID 过滤（可选）
+  optional uint32 app_id = 2 [json_name = "appId"];
+  // 留存类型：ACTIVE=活跃留存（默认），EVENT=指定事件留存
+  optional string retention_type = 3 [json_name = "retentionType"];
+  // 当 retention_type=EVENT 时指定事件名
+  optional string event_name = 4 [json_name = "eventName"];
+  // 最大偏移天数（默认 7）
+  optional uint32 max_offset_days = 5 [json_name = "maxOffsetDays"];
+}
+
+message RetentionResponse {
+  // 同期群列表
+  repeated RetentionCohort cohorts = 1 [json_name = "cohorts"];
+  // 所有偏移天列表（横轴）
+  repeated uint32 offset_days = 2 [json_name = "offsetDays"];
+}
+
+// ============== 维度分组聚合 ==============
+message GroupByRequest {
+  // 时间范围
+  TimeRange time_range = 1 [json_name = "timeRange"];
+  // 分组维度字段名（如 platform/channel/country/app_version/event_name）
+  string dimension = 2 [json_name = "dimension"];
+  // 聚合指标：COUNT=事件数(默认)，UNIQUE_USER=去重用户数，SUM_AMOUNT=金额求和
+  optional string metric = 3 [json_name = "metric"];
+  // 应用 ID 过滤（可选）
+  optional uint32 app_id = 4 [json_name = "appId"];
+  // 事件名过滤（可选）
+  optional string event_name = 5 [json_name = "eventName"];
+  // 返回前 N 个分组（默认 20）
+  optional uint32 top_n = 6 [json_name = "topN"];
+}
+
+message GroupByBucket {
+  // 分组标签（维度值）
+  string label = 1 [json_name = "label"];
+  // 聚合数值
+  double value = 2 [json_name = "value"];
+  // 占比（0-1）
+  double percentage = 3 [json_name = "percentage"];
+}
+
+message GroupByResponse {
+  // 各分组结果
+  repeated GroupByBucket buckets = 1 [json_name = "buckets"];
+  // 维度字段名
+  string dimension = 2 [json_name = "dimension"];
+  // 总量
+  double total = 3 [json_name = "total"];
+}
+
+// ============== 活跃用户 ==============
+message ActiveUsersRequest {
+  // 时间范围
+  TimeRange time_range = 1 [json_name = "timeRange"];
+  // 时间粒度（DAU 按粒度分桶，同时给出 WAU/MAU 累计）
+  AnalyticsGranularity granularity = 2 [json_name = "granularity"];
+  // 应用 ID 过滤（可选）
+  optional uint32 app_id = 3 [json_name = "appId"];
+}
+
+message ActiveUsersPoint {
+  // 时间桶起点（Unix 毫秒）
+  int64 timestamp = 1 [json_name = "timestamp"];
+  // 日活
+  int64 dau = 2 [json_name = "dau"];
+  // 周活（滚动 7 天）
+  int64 wau = 3 [json_name = "wau"];
+  // 月活（滚动 30 天）
+  int64 mau = 4 [json_name = "mau"];
+}
+
+message ActiveUsersResponse {
+  // 各时间桶的活跃用户数据
+  repeated ActiveUsersPoint points = 1 [json_name = "points"];
+  // 最新一天的 DAU
+  int64 latest_dau = 2 [json_name = "latestDau"];
+}

@@ -124,6 +124,9 @@ func NewRestServer(
 	riskEventService *service.RiskEventService,
 	sessionService *service.SessionService,
 	userBehaviorProfileService *service.UserBehaviorProfileService,
+	behaviorEventService *service.BehaviorEventService,
+	analyticsService *service.AnalyticsService,
+	eventSchemaService *service.EventSchemaService,
 ) *http.Server {
 	cfg := ctx.GetConfig()
 
@@ -180,6 +183,9 @@ func NewRestServer(
 	adminV1.RegisterRiskEventServiceHTTPServer(srv, riskEventService)
 	adminV1.RegisterSessionServiceHTTPServer(srv, sessionService)
 	adminV1.RegisterUserBehaviorProfileServiceHTTPServer(srv, userBehaviorProfileService)
+	adminV1.RegisterBehaviorEventServiceHTTPServer(srv, behaviorEventService)
+	adminV1.RegisterAnalyticsServiceHTTPServer(srv, analyticsService)
+	adminV1.RegisterEventSchemaServiceHTTPServer(srv, eventSchemaService)
 
 	// 注册文件传输服务，用于处理文件上传下载等功能
 	// TODO 它不能够使用代码生成器生成的Handler，需要手动注册。代码生成器生成的Handler无法处理文件上传下载的请求。

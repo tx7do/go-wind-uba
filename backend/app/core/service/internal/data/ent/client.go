@@ -18,6 +18,7 @@ import (
 	"go-wind-uba/app/core/service/internal/data/ent/dictentry"
 	"go-wind-uba/app/core/service/internal/data/ent/dictentryi18n"
 	"go-wind-uba/app/core/service/internal/data/ent/dicttype"
+	"go-wind-uba/app/core/service/internal/data/ent/eventschema"
 	"go-wind-uba/app/core/service/internal/data/ent/file"
 	"go-wind-uba/app/core/service/internal/data/ent/idmapping"
 	"go-wind-uba/app/core/service/internal/data/ent/internalmessage"
@@ -80,6 +81,8 @@ type Client struct {
 	DictEntryI18n *DictEntryI18nClient
 	// DictType is the client for interacting with the DictType builders.
 	DictType *DictTypeClient
+	// EventSchema is the client for interacting with the EventSchema builders.
+	EventSchema *EventSchemaClient
 	// File is the client for interacting with the File builders.
 	File *FileClient
 	// IDMapping is the client for interacting with the IDMapping builders.
@@ -170,6 +173,7 @@ func (c *Client) init() {
 	c.DictEntry = NewDictEntryClient(c.config)
 	c.DictEntryI18n = NewDictEntryI18nClient(c.config)
 	c.DictType = NewDictTypeClient(c.config)
+	c.EventSchema = NewEventSchemaClient(c.config)
 	c.File = NewFileClient(c.config)
 	c.IDMapping = NewIDMappingClient(c.config)
 	c.InternalMessage = NewInternalMessageClient(c.config)
@@ -305,6 +309,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		DictEntry:                NewDictEntryClient(cfg),
 		DictEntryI18n:            NewDictEntryI18nClient(cfg),
 		DictType:                 NewDictTypeClient(cfg),
+		EventSchema:              NewEventSchemaClient(cfg),
 		File:                     NewFileClient(cfg),
 		IDMapping:                NewIDMappingClient(cfg),
 		InternalMessage:          NewInternalMessageClient(cfg),
@@ -367,6 +372,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		DictEntry:                NewDictEntryClient(cfg),
 		DictEntryI18n:            NewDictEntryI18nClient(cfg),
 		DictType:                 NewDictTypeClient(cfg),
+		EventSchema:              NewEventSchemaClient(cfg),
 		File:                     NewFileClient(cfg),
 		IDMapping:                NewIDMappingClient(cfg),
 		InternalMessage:          NewInternalMessageClient(cfg),
@@ -433,15 +439,15 @@ func (c *Client) Close() error {
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
 		c.Api, c.ApiAuditLog, c.Application, c.DataAccessAuditLog, c.DictEntry,
-		c.DictEntryI18n, c.DictType, c.File, c.IDMapping, c.InternalMessage,
-		c.InternalMessageCategory, c.InternalMessageRecipient, c.Language,
-		c.LoginAuditLog, c.LoginPolicy, c.Menu, c.OperationAuditLog, c.OrgUnit,
-		c.Permission, c.PermissionApi, c.PermissionAuditLog, c.PermissionGroup,
-		c.PermissionMenu, c.PermissionPolicy, c.PolicyEvaluationLog, c.Position,
-		c.RiskRule, c.RiskRuleCondition, c.RiskRuleVersion, c.Role, c.RoleMetadata,
-		c.RolePermission, c.TagDefinition, c.TagValue, c.Task, c.Tenant, c.User,
-		c.UserCredential, c.UserOrgUnit, c.UserPosition, c.UserRole, c.UserTag,
-		c.Webhook,
+		c.DictEntryI18n, c.DictType, c.EventSchema, c.File, c.IDMapping,
+		c.InternalMessage, c.InternalMessageCategory, c.InternalMessageRecipient,
+		c.Language, c.LoginAuditLog, c.LoginPolicy, c.Menu, c.OperationAuditLog,
+		c.OrgUnit, c.Permission, c.PermissionApi, c.PermissionAuditLog,
+		c.PermissionGroup, c.PermissionMenu, c.PermissionPolicy, c.PolicyEvaluationLog,
+		c.Position, c.RiskRule, c.RiskRuleCondition, c.RiskRuleVersion, c.Role,
+		c.RoleMetadata, c.RolePermission, c.TagDefinition, c.TagValue, c.Task,
+		c.Tenant, c.User, c.UserCredential, c.UserOrgUnit, c.UserPosition, c.UserRole,
+		c.UserTag, c.Webhook,
 	} {
 		n.Use(hooks...)
 	}
@@ -452,15 +458,15 @@ func (c *Client) Use(hooks ...Hook) {
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
 		c.Api, c.ApiAuditLog, c.Application, c.DataAccessAuditLog, c.DictEntry,
-		c.DictEntryI18n, c.DictType, c.File, c.IDMapping, c.InternalMessage,
-		c.InternalMessageCategory, c.InternalMessageRecipient, c.Language,
-		c.LoginAuditLog, c.LoginPolicy, c.Menu, c.OperationAuditLog, c.OrgUnit,
-		c.Permission, c.PermissionApi, c.PermissionAuditLog, c.PermissionGroup,
-		c.PermissionMenu, c.PermissionPolicy, c.PolicyEvaluationLog, c.Position,
-		c.RiskRule, c.RiskRuleCondition, c.RiskRuleVersion, c.Role, c.RoleMetadata,
-		c.RolePermission, c.TagDefinition, c.TagValue, c.Task, c.Tenant, c.User,
-		c.UserCredential, c.UserOrgUnit, c.UserPosition, c.UserRole, c.UserTag,
-		c.Webhook,
+		c.DictEntryI18n, c.DictType, c.EventSchema, c.File, c.IDMapping,
+		c.InternalMessage, c.InternalMessageCategory, c.InternalMessageRecipient,
+		c.Language, c.LoginAuditLog, c.LoginPolicy, c.Menu, c.OperationAuditLog,
+		c.OrgUnit, c.Permission, c.PermissionApi, c.PermissionAuditLog,
+		c.PermissionGroup, c.PermissionMenu, c.PermissionPolicy, c.PolicyEvaluationLog,
+		c.Position, c.RiskRule, c.RiskRuleCondition, c.RiskRuleVersion, c.Role,
+		c.RoleMetadata, c.RolePermission, c.TagDefinition, c.TagValue, c.Task,
+		c.Tenant, c.User, c.UserCredential, c.UserOrgUnit, c.UserPosition, c.UserRole,
+		c.UserTag, c.Webhook,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -483,6 +489,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.DictEntryI18n.mutate(ctx, m)
 	case *DictTypeMutation:
 		return c.DictType.mutate(ctx, m)
+	case *EventSchemaMutation:
+		return c.EventSchema.mutate(ctx, m)
 	case *FileMutation:
 		return c.File.mutate(ctx, m)
 	case *IDMappingMutation:
@@ -1558,6 +1566,140 @@ func (c *DictTypeClient) mutate(ctx context.Context, m *DictTypeMutation) (Value
 		return (&DictTypeDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown DictType mutation op: %q", m.Op())
+	}
+}
+
+// EventSchemaClient is a client for the EventSchema schema.
+type EventSchemaClient struct {
+	config
+}
+
+// NewEventSchemaClient returns a client for the EventSchema from the given config.
+func NewEventSchemaClient(c config) *EventSchemaClient {
+	return &EventSchemaClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `eventschema.Hooks(f(g(h())))`.
+func (c *EventSchemaClient) Use(hooks ...Hook) {
+	c.hooks.EventSchema = append(c.hooks.EventSchema, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `eventschema.Intercept(f(g(h())))`.
+func (c *EventSchemaClient) Intercept(interceptors ...Interceptor) {
+	c.inters.EventSchema = append(c.inters.EventSchema, interceptors...)
+}
+
+// Create returns a builder for creating a EventSchema entity.
+func (c *EventSchemaClient) Create() *EventSchemaCreate {
+	mutation := newEventSchemaMutation(c.config, OpCreate)
+	return &EventSchemaCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of EventSchema entities.
+func (c *EventSchemaClient) CreateBulk(builders ...*EventSchemaCreate) *EventSchemaCreateBulk {
+	return &EventSchemaCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *EventSchemaClient) MapCreateBulk(slice any, setFunc func(*EventSchemaCreate, int)) *EventSchemaCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &EventSchemaCreateBulk{err: fmt.Errorf("calling to EventSchemaClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*EventSchemaCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &EventSchemaCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for EventSchema.
+func (c *EventSchemaClient) Update() *EventSchemaUpdate {
+	mutation := newEventSchemaMutation(c.config, OpUpdate)
+	return &EventSchemaUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *EventSchemaClient) UpdateOne(_m *EventSchema) *EventSchemaUpdateOne {
+	mutation := newEventSchemaMutation(c.config, OpUpdateOne, withEventSchema(_m))
+	return &EventSchemaUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *EventSchemaClient) UpdateOneID(id uint32) *EventSchemaUpdateOne {
+	mutation := newEventSchemaMutation(c.config, OpUpdateOne, withEventSchemaID(id))
+	return &EventSchemaUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for EventSchema.
+func (c *EventSchemaClient) Delete() *EventSchemaDelete {
+	mutation := newEventSchemaMutation(c.config, OpDelete)
+	return &EventSchemaDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *EventSchemaClient) DeleteOne(_m *EventSchema) *EventSchemaDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *EventSchemaClient) DeleteOneID(id uint32) *EventSchemaDeleteOne {
+	builder := c.Delete().Where(eventschema.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &EventSchemaDeleteOne{builder}
+}
+
+// Query returns a query builder for EventSchema.
+func (c *EventSchemaClient) Query() *EventSchemaQuery {
+	return &EventSchemaQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeEventSchema},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a EventSchema entity by its id.
+func (c *EventSchemaClient) Get(ctx context.Context, id uint32) (*EventSchema, error) {
+	return c.Query().Where(eventschema.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *EventSchemaClient) GetX(ctx context.Context, id uint32) *EventSchema {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *EventSchemaClient) Hooks() []Hook {
+	hooks := c.hooks.EventSchema
+	return append(hooks[:len(hooks):len(hooks)], eventschema.Hooks[:]...)
+}
+
+// Interceptors returns the client interceptors.
+func (c *EventSchemaClient) Interceptors() []Interceptor {
+	return c.inters.EventSchema
+}
+
+func (c *EventSchemaClient) mutate(ctx context.Context, m *EventSchemaMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&EventSchemaCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&EventSchemaUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&EventSchemaUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&EventSchemaDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown EventSchema mutation op: %q", m.Op())
 	}
 }
 
@@ -6477,22 +6619,24 @@ func (c *WebhookClient) mutate(ctx context.Context, m *WebhookMutation) (Value, 
 type (
 	hooks struct {
 		Api, ApiAuditLog, Application, DataAccessAuditLog, DictEntry, DictEntryI18n,
-		DictType, File, IDMapping, InternalMessage, InternalMessageCategory,
-		InternalMessageRecipient, Language, LoginAuditLog, LoginPolicy, Menu,
-		OperationAuditLog, OrgUnit, Permission, PermissionApi, PermissionAuditLog,
-		PermissionGroup, PermissionMenu, PermissionPolicy, PolicyEvaluationLog,
-		Position, RiskRule, RiskRuleCondition, RiskRuleVersion, Role, RoleMetadata,
-		RolePermission, TagDefinition, TagValue, Task, Tenant, User, UserCredential,
-		UserOrgUnit, UserPosition, UserRole, UserTag, Webhook []ent.Hook
+		DictType, EventSchema, File, IDMapping, InternalMessage,
+		InternalMessageCategory, InternalMessageRecipient, Language, LoginAuditLog,
+		LoginPolicy, Menu, OperationAuditLog, OrgUnit, Permission, PermissionApi,
+		PermissionAuditLog, PermissionGroup, PermissionMenu, PermissionPolicy,
+		PolicyEvaluationLog, Position, RiskRule, RiskRuleCondition, RiskRuleVersion,
+		Role, RoleMetadata, RolePermission, TagDefinition, TagValue, Task, Tenant,
+		User, UserCredential, UserOrgUnit, UserPosition, UserRole, UserTag,
+		Webhook []ent.Hook
 	}
 	inters struct {
 		Api, ApiAuditLog, Application, DataAccessAuditLog, DictEntry, DictEntryI18n,
-		DictType, File, IDMapping, InternalMessage, InternalMessageCategory,
-		InternalMessageRecipient, Language, LoginAuditLog, LoginPolicy, Menu,
-		OperationAuditLog, OrgUnit, Permission, PermissionApi, PermissionAuditLog,
-		PermissionGroup, PermissionMenu, PermissionPolicy, PolicyEvaluationLog,
-		Position, RiskRule, RiskRuleCondition, RiskRuleVersion, Role, RoleMetadata,
-		RolePermission, TagDefinition, TagValue, Task, Tenant, User, UserCredential,
-		UserOrgUnit, UserPosition, UserRole, UserTag, Webhook []ent.Interceptor
+		DictType, EventSchema, File, IDMapping, InternalMessage,
+		InternalMessageCategory, InternalMessageRecipient, Language, LoginAuditLog,
+		LoginPolicy, Menu, OperationAuditLog, OrgUnit, Permission, PermissionApi,
+		PermissionAuditLog, PermissionGroup, PermissionMenu, PermissionPolicy,
+		PolicyEvaluationLog, Position, RiskRule, RiskRuleCondition, RiskRuleVersion,
+		Role, RoleMetadata, RolePermission, TagDefinition, TagValue, Task, Tenant,
+		User, UserCredential, UserOrgUnit, UserPosition, UserRole, UserTag,
+		Webhook []ent.Interceptor
 	}
 )

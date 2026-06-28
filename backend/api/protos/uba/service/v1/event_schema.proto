@@ -1,0 +1,116 @@
+﻿syntax = "proto3";
+
+package uba.service.v1;
+
+import "gnostic/openapi/v3/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/empty.proto";
+
+import "pagination/v1/pagination.proto";
+
+// 事件 Schema 服务（事件元数据管理：登记合法事件名、属性与类型，用于上报校验）
+service EventSchemaService {
+  // 查询事件 Schema 列表
+  rpc List(pagination.PagingRequest) returns (ListEventSchemaResponse) {}
+
+  // 查询事件 Schema 数量
+  rpc Count(pagination.PagingRequest) returns (CountEventSchemaResponse) {}
+
+  // 查询单条事件 Schema
+  rpc Get(GetEventSchemaRequest) returns (EventSchema) {}
+
+  // 创建事件 Schema
+  rpc Create(CreateEventSchemaRequest) returns (EventSchema) {}
+
+  // 更新事件 Schema
+  rpc Update(UpdateEventSchemaRequest) returns (EventSchema) {}
+
+  // 删除事件 Schema
+  rpc Delete(DeleteEventSchemaRequest) returns (google.protobuf.Empty) {}
+}
+
+// 事件属性定义
+message EventPropertySchema {
+  // 属性名
+  string name = 1 [json_name = "name", (gnostic.openapi.v3.property) = {description: "属性名"}];
+  // 属性类型：string/int/double/bool/array/object
+  string type = 2 [json_name = "type", (gnostic.openapi.v3.property) = {description: "属性类型：string/int/double/bool/array/object"}];
+  // 显示名
+  optional string display_name = 3 [json_name = "displayName", (gnostic.openapi.v3.property) = {description: "显示名"}];
+  // 是否必填
+  bool required = 4 [json_name = "required", (gnostic.openapi.v3.property) = {description: "是否必填"}];
+  // 描述
+  optional string description = 5 [json_name = "description", (gnostic.openapi.v3.property) = {description: "描述"}];
+}
+
+// 事件 Schema
+message EventSchema {
+  // 启用状态
+  enum Status {
+    EVENT_SCHEMA_STATUS_UNSPECIFIED = 0;
+    ENABLED = 1;
+    DISABLED = 2;
+  }
+
+  // 自增主键
+  optional uint32 id = 1 [json_name = "id", (gnostic.openapi.v3.property) = {description: "ID"}];
+
+  // 租户ID
+  optional uint32 tenant_id = 2 [json_name = "tenantId", (gnostic.openapi.v3.property) = {description: "租户ID"}];
+
+  // 事件名（唯一业务标识，对应 events_fact.event_name）
+  string event_name = 3 [json_name = "eventName", (gnostic.openapi.v3.property) = {description: "事件名，唯一业务标识"}];
+  // 显示名
+  string display_name = 4 [json_name = "displayName", (gnostic.openapi.v3.property) = {description: "显示名"}];
+  // 事件类别
+  optional string category = 5 [json_name = "category", (gnostic.openapi.v3.property) = {description: "事件类别"}];
+  // 事件描述
+  optional string description = 6 [json_name = "description", (gnostic.openapi.v3.property) = {description: "事件描述"}];
+
+  // 属性 schema 列表
+  repeated EventPropertySchema properties = 7 [json_name = "properties", (gnostic.openapi.v3.property) = {description: "属性 schema 列表"}];
+
+  // 启用状态
+  optional Status status = 8 [json_name = "status", (gnostic.openapi.v3.property) = {description: "启用状态"}];
+
+  optional uint32 created_by = 100 [json_name = "createdBy", (gnostic.openapi.v3.property) = {description: "创建者用户ID"}];
+  optional uint32 updated_by = 101 [json_name = "updatedBy", (gnostic.openapi.v3.property) = {description: "更新者用户ID"}];
+
+  optional google.protobuf.Timestamp created_at = 200 [json_name = "createdAt", (gnostic.openapi.v3.property) = {description: "创建时间"}];
+  optional google.protobuf.Timestamp updated_at = 201 [json_name = "updatedAt", (gnostic.openapi.v3.property) = {description: "更新时间"}];
+}
+
+message ListEventSchemaResponse {
+  repeated EventSchema items = 1;
+  uint64 total = 2;
+}
+
+message CountEventSchemaResponse {
+  uint64 count = 1;
+}
+
+message GetEventSchemaRequest {
+  oneof query_by {
+    uint64 id = 1 [json_name = "id"];
+  }
+  optional google.protobuf.FieldMask view_mask = 100 [json_name = "viewMask"];
+}
+
+message CreateEventSchemaRequest {
+  EventSchema data = 1;
+}
+
+message UpdateEventSchemaRequest {
+  uint64 id = 1;
+  EventSchema data = 2 [json_name = "data"];
+  google.protobuf.FieldMask update_mask = 3 [json_name = "updateMask"];
+  optional bool allow_missing = 4 [json_name = "allowMissing"];
+}
+
+message DeleteEventSchemaRequest {
+  oneof query_by {
+    uint64 id = 1 [json_name = "id"];
+  }
+  optional uint32 deleted_by = 100 [json_name = "deletedBy"];
+}

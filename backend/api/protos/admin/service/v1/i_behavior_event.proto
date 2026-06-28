@@ -1,0 +1,26 @@
+﻿syntax = "proto3";
+
+package admin.service.v1;
+
+import "google/api/annotations.proto";
+import "pagination/v1/pagination.proto";
+
+import "uba/service/v1/behavior_event.proto";
+
+// 行为事件服务（admin HTTP 网关，转发至 core gRPC）
+// 用于"用户行为时间轴"等场景，按 user_id / session_id 分页查询原始行为事件明细。
+service BehaviorEventService {
+  // 分页查询行为事件
+  rpc List(pagination.PagingRequest) returns (uba.service.v1.ListBehaviorEventResponse) {
+    option (google.api.http) = {
+      get: "/admin/v1/behavior-events"
+    };
+  }
+
+  // 查询单条行为事件详情
+  rpc Get(uba.service.v1.GetBehaviorEventRequest) returns (uba.service.v1.BehaviorEvent) {
+    option (google.api.http) = {
+      get: "/admin/v1/behavior-events/{event_id}"
+    };
+  }
+}

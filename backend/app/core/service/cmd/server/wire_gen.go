@@ -146,7 +146,12 @@ func initApp(context *bootstrap.Context) (*kratos.App, func(), error) {
 	usersDimRepo := doris.NewUsersDimRepo(context, dorisClient)
 	clickhouseUsersDimRepo := clickhouse.NewUsersDimRepo(context, clickhouseClient)
 	userBehaviorProfileService := service.NewUserBehaviorProfileService(context, usersDimRepo, clickhouseUsersDimRepo)
-	grpcServer, err := server.NewGrpcServer(context, v, authenticationService, loginPolicyService, taskService, fileService, dictTypeService, dictEntryService, languageService, tenantService, userService, roleService, positionService, orgUnitService, menuService, apiService, permissionService, permissionGroupService, permissionAuditLogService, policyEvaluationLogService, loginAuditLogService, apiAuditLogService, operationAuditLogService, dataAccessAuditLogService, internalMessageService, internalMessageCategoryService, internalMessageRecipientService, applicationService, idMappingService, riskRuleService, tagDefinitionService, userTagService, webhookService, behaviorEventService, eventPathService, objectService, riskEventService, sessionService, userBehaviorProfileService)
+	analyticsRepo := doris.NewAnalyticsRepo(context, dorisClient)
+	clickhouseAnalyticsRepo := clickhouse.NewAnalyticsRepo(context, clickhouseClient)
+	analyticsService := service.NewAnalyticsService(context, analyticsRepo, clickhouseAnalyticsRepo)
+	eventSchemaRepo := data.NewEventSchemaRepo(context, entClient)
+	eventSchemaService := service.NewEventSchemaService(context, eventSchemaRepo)
+	grpcServer, err := server.NewGrpcServer(context, v, authenticationService, loginPolicyService, taskService, fileService, dictTypeService, dictEntryService, languageService, tenantService, userService, roleService, positionService, orgUnitService, menuService, apiService, permissionService, permissionGroupService, permissionAuditLogService, policyEvaluationLogService, loginAuditLogService, apiAuditLogService, operationAuditLogService, dataAccessAuditLogService, internalMessageService, internalMessageCategoryService, internalMessageRecipientService, applicationService, idMappingService, riskRuleService, tagDefinitionService, userTagService, webhookService, behaviorEventService, eventPathService, objectService, riskEventService, sessionService, userBehaviorProfileService, analyticsService, eventSchemaService)
 	if err != nil {
 		cleanup4()
 		cleanup3()

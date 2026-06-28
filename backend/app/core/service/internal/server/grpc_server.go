@@ -81,6 +81,8 @@ func NewGrpcServer(
 	riskEventService *service.RiskEventService,
 	sessionService *service.SessionService,
 	userBehaviorProfileService *service.UserBehaviorProfileService,
+	analyticsService *service.AnalyticsService,
+	eventSchemaService *service.EventSchemaService,
 ) (*grpc.Server, error) {
 	cfg := ctx.GetConfig()
 
@@ -139,6 +141,8 @@ func NewGrpcServer(
 	ubaV1.RegisterRiskEventServiceServer(srv, riskEventService)
 	ubaV1.RegisterSessionServiceServer(srv, sessionService)
 	ubaV1.RegisterUserBehaviorProfileServiceServer(srv, userBehaviorProfileService)
+	ubaV1.RegisterAnalyticsServiceServer(srv, analyticsService)
+	ubaV1.RegisterEventSchemaServiceServer(srv, eventSchemaService)
 
 	return srv, nil
 }

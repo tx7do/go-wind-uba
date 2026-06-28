@@ -12,6 +12,7 @@ import (
 	"go-wind-uba/app/core/service/internal/data/ent/dictentry"
 	"go-wind-uba/app/core/service/internal/data/ent/dictentryi18n"
 	"go-wind-uba/app/core/service/internal/data/ent/dicttype"
+	"go-wind-uba/app/core/service/internal/data/ent/eventschema"
 	"go-wind-uba/app/core/service/internal/data/ent/file"
 	"go-wind-uba/app/core/service/internal/data/ent/idmapping"
 	"go-wind-uba/app/core/service/internal/data/ent/internalmessage"
@@ -271,6 +272,42 @@ func init() {
 	dicttypeDescID := dicttypeMixinFields0[0].Descriptor()
 	// dicttype.IDValidator is a validator for the "id" field. It is called by the builders before save.
 	dicttype.IDValidator = dicttypeDescID.Validators[0].(func(uint32) error)
+	eventschemaMixin := schema.EventSchema{}.Mixin()
+	eventschema.Policy = privacy.NewPolicies(eventschemaMixin[3], schema.EventSchema{})
+	eventschema.Hooks[0] = func(next ent.Mutator) ent.Mutator {
+		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+			if err := eventschema.Policy.EvalMutation(ctx, m); err != nil {
+				return nil, err
+			}
+			return next.Mutate(ctx, m)
+		})
+	}
+	eventschemaMixinFields0 := eventschemaMixin[0].Fields()
+	_ = eventschemaMixinFields0
+	eventschemaMixinFields3 := eventschemaMixin[3].Fields()
+	_ = eventschemaMixinFields3
+	eventschemaFields := schema.EventSchema{}.Fields()
+	_ = eventschemaFields
+	// eventschemaDescTenantID is the schema descriptor for tenant_id field.
+	eventschemaDescTenantID := eventschemaMixinFields3[0].Descriptor()
+	// eventschema.DefaultTenantID holds the default value on creation for the tenant_id field.
+	eventschema.DefaultTenantID = eventschemaDescTenantID.Default.(uint32)
+	// eventschemaDescEventName is the schema descriptor for event_name field.
+	eventschemaDescEventName := eventschemaFields[0].Descriptor()
+	// eventschema.EventNameValidator is a validator for the "event_name" field. It is called by the builders before save.
+	eventschema.EventNameValidator = eventschemaDescEventName.Validators[0].(func(string) error)
+	// eventschemaDescDisplayName is the schema descriptor for display_name field.
+	eventschemaDescDisplayName := eventschemaFields[1].Descriptor()
+	// eventschema.DisplayNameValidator is a validator for the "display_name" field. It is called by the builders before save.
+	eventschema.DisplayNameValidator = eventschemaDescDisplayName.Validators[0].(func(string) error)
+	// eventschemaDescStatus is the schema descriptor for status field.
+	eventschemaDescStatus := eventschemaFields[5].Descriptor()
+	// eventschema.DefaultStatus holds the default value on creation for the status field.
+	eventschema.DefaultStatus = eventschemaDescStatus.Default.(string)
+	// eventschemaDescID is the schema descriptor for id field.
+	eventschemaDescID := eventschemaMixinFields0[0].Descriptor()
+	// eventschema.IDValidator is a validator for the "id" field. It is called by the builders before save.
+	eventschema.IDValidator = eventschemaDescID.Validators[0].(func(uint32) error)
 	fileMixin := schema.File{}.Mixin()
 	file.Policy = privacy.NewPolicies(fileMixin[4], schema.File{})
 	file.Hooks[0] = func(next ent.Mutator) ent.Mutator {
@@ -1404,6 +1441,6 @@ func init() {
 }
 
 const (
-	Version = "v0.14.5"                                         // Version of ent codegen.
-	Sum     = "h1:Rj2WOYJtCkWyFo6a+5wB3EfBRP0rnx1fMk6gGA0UUe4=" // Sum of ent codegen.
+	Version = "v0.14.6"                                         // Version of ent codegen.
+	Sum     = "h1:/f2696BpwuWAEEG6PVGWflg6+Inrpq4pRWuNlWz/Skk=" // Sum of ent codegen.
 )

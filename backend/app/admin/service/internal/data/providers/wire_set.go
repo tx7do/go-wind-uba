@@ -71,6 +71,8 @@ var ProviderSet = wire.NewSet(
 	data.NewUserTagServiceClient,
 	data.NewWebhookServiceClient,
 	data.NewBehaviorEventServiceClient,
+	data.NewAnalyticsServiceClient,
+	data.NewEventSchemaServiceClient,
 	data.NewEventPathServiceClient,
 	data.NewObjectServiceClient,
 	data.NewRiskEventServiceClient,

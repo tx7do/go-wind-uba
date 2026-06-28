@@ -18,6 +18,7 @@ import (
 	"go-wind-uba/app/core/service/internal/data/ent/dictentry"
 	"go-wind-uba/app/core/service/internal/data/ent/dictentryi18n"
 	"go-wind-uba/app/core/service/internal/data/ent/dicttype"
+	"go-wind-uba/app/core/service/internal/data/ent/eventschema"
 	"go-wind-uba/app/core/service/internal/data/ent/file"
 	"go-wind-uba/app/core/service/internal/data/ent/idmapping"
 	"go-wind-uba/app/core/service/internal/data/ent/internalmessage"
@@ -78,6 +79,7 @@ const (
 	TypeDictEntry                = "DictEntry"
 	TypeDictEntryI18n            = "DictEntryI18n"
 	TypeDictType                 = "DictType"
+	TypeEventSchema              = "EventSchema"
 	TypeFile                     = "File"
 	TypeIDMapping                = "IDMapping"
 	TypeInternalMessage          = "InternalMessage"
@@ -12061,6 +12063,1392 @@ func (m *DictTypeMutation) ResetEdge(name string) error {
 		return nil
 	}
 	return fmt.Errorf("unknown DictType edge %s", name)
+}
+
+// EventSchemaMutation represents an operation that mutates the EventSchema nodes in the graph.
+type EventSchemaMutation struct {
+	config
+	op               Op
+	typ              string
+	id               *uint32
+	created_at       *time.Time
+	updated_at       *time.Time
+	deleted_at       *time.Time
+	created_by       *uint32
+	addcreated_by    *int32
+	updated_by       *uint32
+	addupdated_by    *int32
+	deleted_by       *uint32
+	adddeleted_by    *int32
+	tenant_id        *uint32
+	addtenant_id     *int32
+	event_name       *string
+	display_name     *string
+	category         *string
+	description      *string
+	properties       *[]*ubapb.EventPropertySchema
+	appendproperties []*ubapb.EventPropertySchema
+	status           *string
+	clearedFields    map[string]struct{}
+	done             bool
+	oldValue         func(context.Context) (*EventSchema, error)
+	predicates       []predicate.EventSchema
+}
+
+var _ ent.Mutation = (*EventSchemaMutation)(nil)
+
+// eventschemaOption allows management of the mutation configuration using functional options.
+type eventschemaOption func(*EventSchemaMutation)
+
+// newEventSchemaMutation creates new mutation for the EventSchema entity.
+func newEventSchemaMutation(c config, op Op, opts ...eventschemaOption) *EventSchemaMutation {
+	m := &EventSchemaMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeEventSchema,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withEventSchemaID sets the ID field of the mutation.
+func withEventSchemaID(id uint32) eventschemaOption {
+	return func(m *EventSchemaMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *EventSchema
+		)
+		m.oldValue = func(ctx context.Context) (*EventSchema, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().EventSchema.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withEventSchema sets the old EventSchema of the mutation.
+func withEventSchema(node *EventSchema) eventschemaOption {
+	return func(m *EventSchemaMutation) {
+		m.oldValue = func(context.Context) (*EventSchema, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m EventSchemaMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m EventSchemaMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of EventSchema entities.
+func (m *EventSchemaMutation) SetID(id uint32) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *EventSchemaMutation) ID() (id uint32, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *EventSchemaMutation) IDs(ctx context.Context) ([]uint32, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []uint32{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().EventSchema.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *EventSchemaMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *EventSchemaMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the EventSchema entity.
+// If the EventSchema object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *EventSchemaMutation) OldCreatedAt(ctx context.Context) (v *time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ClearCreatedAt clears the value of the "created_at" field.
+func (m *EventSchemaMutation) ClearCreatedAt() {
+	m.created_at = nil
+	m.clearedFields[eventschema.FieldCreatedAt] = struct{}{}
+}
+
+// CreatedAtCleared returns if the "created_at" field was cleared in this mutation.
+func (m *EventSchemaMutation) CreatedAtCleared() bool {
+	_, ok := m.clearedFields[eventschema.FieldCreatedAt]
+	return ok
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *EventSchemaMutation) ResetCreatedAt() {
+	m.created_at = nil
+	delete(m.clearedFields, eventschema.FieldCreatedAt)
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *EventSchemaMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *EventSchemaMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the EventSchema entity.
+// If the EventSchema object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *EventSchemaMutation) OldUpdatedAt(ctx context.Context) (v *time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ClearUpdatedAt clears the value of the "updated_at" field.
+func (m *EventSchemaMutation) ClearUpdatedAt() {
+	m.updated_at = nil
+	m.clearedFields[eventschema.FieldUpdatedAt] = struct{}{}
+}
+
+// UpdatedAtCleared returns if the "updated_at" field was cleared in this mutation.
+func (m *EventSchemaMutation) UpdatedAtCleared() bool {
+	_, ok := m.clearedFields[eventschema.FieldUpdatedAt]
+	return ok
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *EventSchemaMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+	delete(m.clearedFields, eventschema.FieldUpdatedAt)
+}
+
+// SetDeletedAt sets the "deleted_at" field.
+func (m *EventSchemaMutation) SetDeletedAt(t time.Time) {
+	m.deleted_at = &t
+}
+
+// DeletedAt returns the value of the "deleted_at" field in the mutation.
+func (m *EventSchemaMutation) DeletedAt() (r time.Time, exists bool) {
+	v := m.deleted_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDeletedAt returns the old "deleted_at" field's value of the EventSchema entity.
+// If the EventSchema object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *EventSchemaMutation) OldDeletedAt(ctx context.Context) (v *time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDeletedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDeletedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDeletedAt: %w", err)
+	}
+	return oldValue.DeletedAt, nil
+}
+
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (m *EventSchemaMutation) ClearDeletedAt() {
+	m.deleted_at = nil
+	m.clearedFields[eventschema.FieldDeletedAt] = struct{}{}
+}
+
+// DeletedAtCleared returns if the "deleted_at" field was cleared in this mutation.
+func (m *EventSchemaMutation) DeletedAtCleared() bool {
+	_, ok := m.clearedFields[eventschema.FieldDeletedAt]
+	return ok
+}
+
+// ResetDeletedAt resets all changes to the "deleted_at" field.
+func (m *EventSchemaMutation) ResetDeletedAt() {
+	m.deleted_at = nil
+	delete(m.clearedFields, eventschema.FieldDeletedAt)
+}
+
+// SetCreatedBy sets the "created_by" field.
+func (m *EventSchemaMutation) SetCreatedBy(u uint32) {
+	m.created_by = &u
+	m.addcreated_by = nil
+}
+
+// CreatedBy returns the value of the "created_by" field in the mutation.
+func (m *EventSchemaMutation) CreatedBy() (r uint32, exists bool) {
+	v := m.created_by
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedBy returns the old "created_by" field's value of the EventSchema entity.
+// If the EventSchema object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *EventSchemaMutation) OldCreatedBy(ctx context.Context) (v *uint32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedBy is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedBy requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedBy: %w", err)
+	}
+	return oldValue.CreatedBy, nil
+}
+
+// AddCreatedBy adds u to the "created_by" field.
+func (m *EventSchemaMutation) AddCreatedBy(u int32) {
+	if m.addcreated_by != nil {
+		*m.addcreated_by += u
+	} else {
+		m.addcreated_by = &u
+	}
+}
+
+// AddedCreatedBy returns the value that was added to the "created_by" field in this mutation.
+func (m *EventSchemaMutation) AddedCreatedBy() (r int32, exists bool) {
+	v := m.addcreated_by
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearCreatedBy clears the value of the "created_by" field.
+func (m *EventSchemaMutation) ClearCreatedBy() {
+	m.created_by = nil
+	m.addcreated_by = nil
+	m.clearedFields[eventschema.FieldCreatedBy] = struct{}{}
+}
+
+// CreatedByCleared returns if the "created_by" field was cleared in this mutation.
+func (m *EventSchemaMutation) CreatedByCleared() bool {
+	_, ok := m.clearedFields[eventschema.FieldCreatedBy]
+	return ok
+}
+
+// ResetCreatedBy resets all changes to the "created_by" field.
+func (m *EventSchemaMutation) ResetCreatedBy() {
+	m.created_by = nil
+	m.addcreated_by = nil
+	delete(m.clearedFields, eventschema.FieldCreatedBy)
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (m *EventSchemaMutation) SetUpdatedBy(u uint32) {
+	m.updated_by = &u
+	m.addupdated_by = nil
+}
+
+// UpdatedBy returns the value of the "updated_by" field in the mutation.
+func (m *EventSchemaMutation) UpdatedBy() (r uint32, exists bool) {
+	v := m.updated_by
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedBy returns the old "updated_by" field's value of the EventSchema entity.
+// If the EventSchema object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *EventSchemaMutation) OldUpdatedBy(ctx context.Context) (v *uint32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedBy is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedBy requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedBy: %w", err)
+	}
+	return oldValue.UpdatedBy, nil
+}
+
+// AddUpdatedBy adds u to the "updated_by" field.
+func (m *EventSchemaMutation) AddUpdatedBy(u int32) {
+	if m.addupdated_by != nil {
+		*m.addupdated_by += u
+	} else {
+		m.addupdated_by = &u
+	}
+}
+
+// AddedUpdatedBy returns the value that was added to the "updated_by" field in this mutation.
+func (m *EventSchemaMutation) AddedUpdatedBy() (r int32, exists bool) {
+	v := m.addupdated_by
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearUpdatedBy clears the value of the "updated_by" field.
+func (m *EventSchemaMutation) ClearUpdatedBy() {
+	m.updated_by = nil
+	m.addupdated_by = nil
+	m.clearedFields[eventschema.FieldUpdatedBy] = struct{}{}
+}
+
+// UpdatedByCleared returns if the "updated_by" field was cleared in this mutation.
+func (m *EventSchemaMutation) UpdatedByCleared() bool {
+	_, ok := m.clearedFields[eventschema.FieldUpdatedBy]
+	return ok
+}
+
+// ResetUpdatedBy resets all changes to the "updated_by" field.
+func (m *EventSchemaMutation) ResetUpdatedBy() {
+	m.updated_by = nil
+	m.addupdated_by = nil
+	delete(m.clearedFields, eventschema.FieldUpdatedBy)
+}
+
+// SetDeletedBy sets the "deleted_by" field.
+func (m *EventSchemaMutation) SetDeletedBy(u uint32) {
+	m.deleted_by = &u
+	m.adddeleted_by = nil
+}
+
+// DeletedBy returns the value of the "deleted_by" field in the mutation.
+func (m *EventSchemaMutation) DeletedBy() (r uint32, exists bool) {
+	v := m.deleted_by
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDeletedBy returns the old "deleted_by" field's value of the EventSchema entity.
+// If the EventSchema object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *EventSchemaMutation) OldDeletedBy(ctx context.Context) (v *uint32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDeletedBy is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDeletedBy requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDeletedBy: %w", err)
+	}
+	return oldValue.DeletedBy, nil
+}
+
+// AddDeletedBy adds u to the "deleted_by" field.
+func (m *EventSchemaMutation) AddDeletedBy(u int32) {
+	if m.adddeleted_by != nil {
+		*m.adddeleted_by += u
+	} else {
+		m.adddeleted_by = &u
+	}
+}
+
+// AddedDeletedBy returns the value that was added to the "deleted_by" field in this mutation.
+func (m *EventSchemaMutation) AddedDeletedBy() (r int32, exists bool) {
+	v := m.adddeleted_by
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearDeletedBy clears the value of the "deleted_by" field.
+func (m *EventSchemaMutation) ClearDeletedBy() {
+	m.deleted_by = nil
+	m.adddeleted_by = nil
+	m.clearedFields[eventschema.FieldDeletedBy] = struct{}{}
+}
+
+// DeletedByCleared returns if the "deleted_by" field was cleared in this mutation.
+func (m *EventSchemaMutation) DeletedByCleared() bool {
+	_, ok := m.clearedFields[eventschema.FieldDeletedBy]
+	return ok
+}
+
+// ResetDeletedBy resets all changes to the "deleted_by" field.
+func (m *EventSchemaMutation) ResetDeletedBy() {
+	m.deleted_by = nil
+	m.adddeleted_by = nil
+	delete(m.clearedFields, eventschema.FieldDeletedBy)
+}
+
+// SetTenantID sets the "tenant_id" field.
+func (m *EventSchemaMutation) SetTenantID(u uint32) {
+	m.tenant_id = &u
+	m.addtenant_id = nil
+}
+
+// TenantID returns the value of the "tenant_id" field in the mutation.
+func (m *EventSchemaMutation) TenantID() (r uint32, exists bool) {
+	v := m.tenant_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTenantID returns the old "tenant_id" field's value of the EventSchema entity.
+// If the EventSchema object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *EventSchemaMutation) OldTenantID(ctx context.Context) (v *uint32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTenantID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTenantID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTenantID: %w", err)
+	}
+	return oldValue.TenantID, nil
+}
+
+// AddTenantID adds u to the "tenant_id" field.
+func (m *EventSchemaMutation) AddTenantID(u int32) {
+	if m.addtenant_id != nil {
+		*m.addtenant_id += u
+	} else {
+		m.addtenant_id = &u
+	}
+}
+
+// AddedTenantID returns the value that was added to the "tenant_id" field in this mutation.
+func (m *EventSchemaMutation) AddedTenantID() (r int32, exists bool) {
+	v := m.addtenant_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearTenantID clears the value of the "tenant_id" field.
+func (m *EventSchemaMutation) ClearTenantID() {
+	m.tenant_id = nil
+	m.addtenant_id = nil
+	m.clearedFields[eventschema.FieldTenantID] = struct{}{}
+}
+
+// TenantIDCleared returns if the "tenant_id" field was cleared in this mutation.
+func (m *EventSchemaMutation) TenantIDCleared() bool {
+	_, ok := m.clearedFields[eventschema.FieldTenantID]
+	return ok
+}
+
+// ResetTenantID resets all changes to the "tenant_id" field.
+func (m *EventSchemaMutation) ResetTenantID() {
+	m.tenant_id = nil
+	m.addtenant_id = nil
+	delete(m.clearedFields, eventschema.FieldTenantID)
+}
+
+// SetEventName sets the "event_name" field.
+func (m *EventSchemaMutation) SetEventName(s string) {
+	m.event_name = &s
+}
+
+// EventName returns the value of the "event_name" field in the mutation.
+func (m *EventSchemaMutation) EventName() (r string, exists bool) {
+	v := m.event_name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldEventName returns the old "event_name" field's value of the EventSchema entity.
+// If the EventSchema object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *EventSchemaMutation) OldEventName(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldEventName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldEventName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldEventName: %w", err)
+	}
+	return oldValue.EventName, nil
+}
+
+// ClearEventName clears the value of the "event_name" field.
+func (m *EventSchemaMutation) ClearEventName() {
+	m.event_name = nil
+	m.clearedFields[eventschema.FieldEventName] = struct{}{}
+}
+
+// EventNameCleared returns if the "event_name" field was cleared in this mutation.
+func (m *EventSchemaMutation) EventNameCleared() bool {
+	_, ok := m.clearedFields[eventschema.FieldEventName]
+	return ok
+}
+
+// ResetEventName resets all changes to the "event_name" field.
+func (m *EventSchemaMutation) ResetEventName() {
+	m.event_name = nil
+	delete(m.clearedFields, eventschema.FieldEventName)
+}
+
+// SetDisplayName sets the "display_name" field.
+func (m *EventSchemaMutation) SetDisplayName(s string) {
+	m.display_name = &s
+}
+
+// DisplayName returns the value of the "display_name" field in the mutation.
+func (m *EventSchemaMutation) DisplayName() (r string, exists bool) {
+	v := m.display_name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDisplayName returns the old "display_name" field's value of the EventSchema entity.
+// If the EventSchema object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *EventSchemaMutation) OldDisplayName(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDisplayName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDisplayName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDisplayName: %w", err)
+	}
+	return oldValue.DisplayName, nil
+}
+
+// ClearDisplayName clears the value of the "display_name" field.
+func (m *EventSchemaMutation) ClearDisplayName() {
+	m.display_name = nil
+	m.clearedFields[eventschema.FieldDisplayName] = struct{}{}
+}
+
+// DisplayNameCleared returns if the "display_name" field was cleared in this mutation.
+func (m *EventSchemaMutation) DisplayNameCleared() bool {
+	_, ok := m.clearedFields[eventschema.FieldDisplayName]
+	return ok
+}
+
+// ResetDisplayName resets all changes to the "display_name" field.
+func (m *EventSchemaMutation) ResetDisplayName() {
+	m.display_name = nil
+	delete(m.clearedFields, eventschema.FieldDisplayName)
+}
+
+// SetCategory sets the "category" field.
+func (m *EventSchemaMutation) SetCategory(s string) {
+	m.category = &s
+}
+
+// Category returns the value of the "category" field in the mutation.
+func (m *EventSchemaMutation) Category() (r string, exists bool) {
+	v := m.category
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCategory returns the old "category" field's value of the EventSchema entity.
+// If the EventSchema object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *EventSchemaMutation) OldCategory(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCategory is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCategory requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCategory: %w", err)
+	}
+	return oldValue.Category, nil
+}
+
+// ClearCategory clears the value of the "category" field.
+func (m *EventSchemaMutation) ClearCategory() {
+	m.category = nil
+	m.clearedFields[eventschema.FieldCategory] = struct{}{}
+}
+
+// CategoryCleared returns if the "category" field was cleared in this mutation.
+func (m *EventSchemaMutation) CategoryCleared() bool {
+	_, ok := m.clearedFields[eventschema.FieldCategory]
+	return ok
+}
+
+// ResetCategory resets all changes to the "category" field.
+func (m *EventSchemaMutation) ResetCategory() {
+	m.category = nil
+	delete(m.clearedFields, eventschema.FieldCategory)
+}
+
+// SetDescription sets the "description" field.
+func (m *EventSchemaMutation) SetDescription(s string) {
+	m.description = &s
+}
+
+// Description returns the value of the "description" field in the mutation.
+func (m *EventSchemaMutation) Description() (r string, exists bool) {
+	v := m.description
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDescription returns the old "description" field's value of the EventSchema entity.
+// If the EventSchema object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *EventSchemaMutation) OldDescription(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDescription is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDescription requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDescription: %w", err)
+	}
+	return oldValue.Description, nil
+}
+
+// ClearDescription clears the value of the "description" field.
+func (m *EventSchemaMutation) ClearDescription() {
+	m.description = nil
+	m.clearedFields[eventschema.FieldDescription] = struct{}{}
+}
+
+// DescriptionCleared returns if the "description" field was cleared in this mutation.
+func (m *EventSchemaMutation) DescriptionCleared() bool {
+	_, ok := m.clearedFields[eventschema.FieldDescription]
+	return ok
+}
+
+// ResetDescription resets all changes to the "description" field.
+func (m *EventSchemaMutation) ResetDescription() {
+	m.description = nil
+	delete(m.clearedFields, eventschema.FieldDescription)
+}
+
+// SetProperties sets the "properties" field.
+func (m *EventSchemaMutation) SetProperties(ups []*ubapb.EventPropertySchema) {
+	m.properties = &ups
+	m.appendproperties = nil
+}
+
+// Properties returns the value of the "properties" field in the mutation.
+func (m *EventSchemaMutation) Properties() (r []*ubapb.EventPropertySchema, exists bool) {
+	v := m.properties
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldProperties returns the old "properties" field's value of the EventSchema entity.
+// If the EventSchema object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *EventSchemaMutation) OldProperties(ctx context.Context) (v []*ubapb.EventPropertySchema, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldProperties is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldProperties requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldProperties: %w", err)
+	}
+	return oldValue.Properties, nil
+}
+
+// AppendProperties adds ups to the "properties" field.
+func (m *EventSchemaMutation) AppendProperties(ups []*ubapb.EventPropertySchema) {
+	m.appendproperties = append(m.appendproperties, ups...)
+}
+
+// AppendedProperties returns the list of values that were appended to the "properties" field in this mutation.
+func (m *EventSchemaMutation) AppendedProperties() ([]*ubapb.EventPropertySchema, bool) {
+	if len(m.appendproperties) == 0 {
+		return nil, false
+	}
+	return m.appendproperties, true
+}
+
+// ClearProperties clears the value of the "properties" field.
+func (m *EventSchemaMutation) ClearProperties() {
+	m.properties = nil
+	m.appendproperties = nil
+	m.clearedFields[eventschema.FieldProperties] = struct{}{}
+}
+
+// PropertiesCleared returns if the "properties" field was cleared in this mutation.
+func (m *EventSchemaMutation) PropertiesCleared() bool {
+	_, ok := m.clearedFields[eventschema.FieldProperties]
+	return ok
+}
+
+// ResetProperties resets all changes to the "properties" field.
+func (m *EventSchemaMutation) ResetProperties() {
+	m.properties = nil
+	m.appendproperties = nil
+	delete(m.clearedFields, eventschema.FieldProperties)
+}
+
+// SetStatus sets the "status" field.
+func (m *EventSchemaMutation) SetStatus(s string) {
+	m.status = &s
+}
+
+// Status returns the value of the "status" field in the mutation.
+func (m *EventSchemaMutation) Status() (r string, exists bool) {
+	v := m.status
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldStatus returns the old "status" field's value of the EventSchema entity.
+// If the EventSchema object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *EventSchemaMutation) OldStatus(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldStatus is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldStatus requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldStatus: %w", err)
+	}
+	return oldValue.Status, nil
+}
+
+// ClearStatus clears the value of the "status" field.
+func (m *EventSchemaMutation) ClearStatus() {
+	m.status = nil
+	m.clearedFields[eventschema.FieldStatus] = struct{}{}
+}
+
+// StatusCleared returns if the "status" field was cleared in this mutation.
+func (m *EventSchemaMutation) StatusCleared() bool {
+	_, ok := m.clearedFields[eventschema.FieldStatus]
+	return ok
+}
+
+// ResetStatus resets all changes to the "status" field.
+func (m *EventSchemaMutation) ResetStatus() {
+	m.status = nil
+	delete(m.clearedFields, eventschema.FieldStatus)
+}
+
+// Where appends a list predicates to the EventSchemaMutation builder.
+func (m *EventSchemaMutation) Where(ps ...predicate.EventSchema) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the EventSchemaMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *EventSchemaMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.EventSchema, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *EventSchemaMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *EventSchemaMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (EventSchema).
+func (m *EventSchemaMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *EventSchemaMutation) Fields() []string {
+	fields := make([]string, 0, 13)
+	if m.created_at != nil {
+		fields = append(fields, eventschema.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, eventschema.FieldUpdatedAt)
+	}
+	if m.deleted_at != nil {
+		fields = append(fields, eventschema.FieldDeletedAt)
+	}
+	if m.created_by != nil {
+		fields = append(fields, eventschema.FieldCreatedBy)
+	}
+	if m.updated_by != nil {
+		fields = append(fields, eventschema.FieldUpdatedBy)
+	}
+	if m.deleted_by != nil {
+		fields = append(fields, eventschema.FieldDeletedBy)
+	}
+	if m.tenant_id != nil {
+		fields = append(fields, eventschema.FieldTenantID)
+	}
+	if m.event_name != nil {
+		fields = append(fields, eventschema.FieldEventName)
+	}
+	if m.display_name != nil {
+		fields = append(fields, eventschema.FieldDisplayName)
+	}
+	if m.category != nil {
+		fields = append(fields, eventschema.FieldCategory)
+	}
+	if m.description != nil {
+		fields = append(fields, eventschema.FieldDescription)
+	}
+	if m.properties != nil {
+		fields = append(fields, eventschema.FieldProperties)
+	}
+	if m.status != nil {
+		fields = append(fields, eventschema.FieldStatus)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *EventSchemaMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case eventschema.FieldCreatedAt:
+		return m.CreatedAt()
+	case eventschema.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case eventschema.FieldDeletedAt:
+		return m.DeletedAt()
+	case eventschema.FieldCreatedBy:
+		return m.CreatedBy()
+	case eventschema.FieldUpdatedBy:
+		return m.UpdatedBy()
+	case eventschema.FieldDeletedBy:
+		return m.DeletedBy()
+	case eventschema.FieldTenantID:
+		return m.TenantID()
+	case eventschema.FieldEventName:
+		return m.EventName()
+	case eventschema.FieldDisplayName:
+		return m.DisplayName()
+	case eventschema.FieldCategory:
+		return m.Category()
+	case eventschema.FieldDescription:
+		return m.Description()
+	case eventschema.FieldProperties:
+		return m.Properties()
+	case eventschema.FieldStatus:
+		return m.Status()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *EventSchemaMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case eventschema.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case eventschema.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case eventschema.FieldDeletedAt:
+		return m.OldDeletedAt(ctx)
+	case eventschema.FieldCreatedBy:
+		return m.OldCreatedBy(ctx)
+	case eventschema.FieldUpdatedBy:
+		return m.OldUpdatedBy(ctx)
+	case eventschema.FieldDeletedBy:
+		return m.OldDeletedBy(ctx)
+	case eventschema.FieldTenantID:
+		return m.OldTenantID(ctx)
+	case eventschema.FieldEventName:
+		return m.OldEventName(ctx)
+	case eventschema.FieldDisplayName:
+		return m.OldDisplayName(ctx)
+	case eventschema.FieldCategory:
+		return m.OldCategory(ctx)
+	case eventschema.FieldDescription:
+		return m.OldDescription(ctx)
+	case eventschema.FieldProperties:
+		return m.OldProperties(ctx)
+	case eventschema.FieldStatus:
+		return m.OldStatus(ctx)
+	}
+	return nil, fmt.Errorf("unknown EventSchema field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *EventSchemaMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case eventschema.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case eventschema.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case eventschema.FieldDeletedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDeletedAt(v)
+		return nil
+	case eventschema.FieldCreatedBy:
+		v, ok := value.(uint32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedBy(v)
+		return nil
+	case eventschema.FieldUpdatedBy:
+		v, ok := value.(uint32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedBy(v)
+		return nil
+	case eventschema.FieldDeletedBy:
+		v, ok := value.(uint32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDeletedBy(v)
+		return nil
+	case eventschema.FieldTenantID:
+		v, ok := value.(uint32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTenantID(v)
+		return nil
+	case eventschema.FieldEventName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetEventName(v)
+		return nil
+	case eventschema.FieldDisplayName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDisplayName(v)
+		return nil
+	case eventschema.FieldCategory:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCategory(v)
+		return nil
+	case eventschema.FieldDescription:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDescription(v)
+		return nil
+	case eventschema.FieldProperties:
+		v, ok := value.([]*ubapb.EventPropertySchema)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetProperties(v)
+		return nil
+	case eventschema.FieldStatus:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetStatus(v)
+		return nil
+	}
+	return fmt.Errorf("unknown EventSchema field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *EventSchemaMutation) AddedFields() []string {
+	var fields []string
+	if m.addcreated_by != nil {
+		fields = append(fields, eventschema.FieldCreatedBy)
+	}
+	if m.addupdated_by != nil {
+		fields = append(fields, eventschema.FieldUpdatedBy)
+	}
+	if m.adddeleted_by != nil {
+		fields = append(fields, eventschema.FieldDeletedBy)
+	}
+	if m.addtenant_id != nil {
+		fields = append(fields, eventschema.FieldTenantID)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *EventSchemaMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case eventschema.FieldCreatedBy:
+		return m.AddedCreatedBy()
+	case eventschema.FieldUpdatedBy:
+		return m.AddedUpdatedBy()
+	case eventschema.FieldDeletedBy:
+		return m.AddedDeletedBy()
+	case eventschema.FieldTenantID:
+		return m.AddedTenantID()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *EventSchemaMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case eventschema.FieldCreatedBy:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddCreatedBy(v)
+		return nil
+	case eventschema.FieldUpdatedBy:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddUpdatedBy(v)
+		return nil
+	case eventschema.FieldDeletedBy:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddDeletedBy(v)
+		return nil
+	case eventschema.FieldTenantID:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddTenantID(v)
+		return nil
+	}
+	return fmt.Errorf("unknown EventSchema numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *EventSchemaMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(eventschema.FieldCreatedAt) {
+		fields = append(fields, eventschema.FieldCreatedAt)
+	}
+	if m.FieldCleared(eventschema.FieldUpdatedAt) {
+		fields = append(fields, eventschema.FieldUpdatedAt)
+	}
+	if m.FieldCleared(eventschema.FieldDeletedAt) {
+		fields = append(fields, eventschema.FieldDeletedAt)
+	}
+	if m.FieldCleared(eventschema.FieldCreatedBy) {
+		fields = append(fields, eventschema.FieldCreatedBy)
+	}
+	if m.FieldCleared(eventschema.FieldUpdatedBy) {
+		fields = append(fields, eventschema.FieldUpdatedBy)
+	}
+	if m.FieldCleared(eventschema.FieldDeletedBy) {
+		fields = append(fields, eventschema.FieldDeletedBy)
+	}
+	if m.FieldCleared(eventschema.FieldTenantID) {
+		fields = append(fields, eventschema.FieldTenantID)
+	}
+	if m.FieldCleared(eventschema.FieldEventName) {
+		fields = append(fields, eventschema.FieldEventName)
+	}
+	if m.FieldCleared(eventschema.FieldDisplayName) {
+		fields = append(fields, eventschema.FieldDisplayName)
+	}
+	if m.FieldCleared(eventschema.FieldCategory) {
+		fields = append(fields, eventschema.FieldCategory)
+	}
+	if m.FieldCleared(eventschema.FieldDescription) {
+		fields = append(fields, eventschema.FieldDescription)
+	}
+	if m.FieldCleared(eventschema.FieldProperties) {
+		fields = append(fields, eventschema.FieldProperties)
+	}
+	if m.FieldCleared(eventschema.FieldStatus) {
+		fields = append(fields, eventschema.FieldStatus)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *EventSchemaMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *EventSchemaMutation) ClearField(name string) error {
+	switch name {
+	case eventschema.FieldCreatedAt:
+		m.ClearCreatedAt()
+		return nil
+	case eventschema.FieldUpdatedAt:
+		m.ClearUpdatedAt()
+		return nil
+	case eventschema.FieldDeletedAt:
+		m.ClearDeletedAt()
+		return nil
+	case eventschema.FieldCreatedBy:
+		m.ClearCreatedBy()
+		return nil
+	case eventschema.FieldUpdatedBy:
+		m.ClearUpdatedBy()
+		return nil
+	case eventschema.FieldDeletedBy:
+		m.ClearDeletedBy()
+		return nil
+	case eventschema.FieldTenantID:
+		m.ClearTenantID()
+		return nil
+	case eventschema.FieldEventName:
+		m.ClearEventName()
+		return nil
+	case eventschema.FieldDisplayName:
+		m.ClearDisplayName()
+		return nil
+	case eventschema.FieldCategory:
+		m.ClearCategory()
+		return nil
+	case eventschema.FieldDescription:
+		m.ClearDescription()
+		return nil
+	case eventschema.FieldProperties:
+		m.ClearProperties()
+		return nil
+	case eventschema.FieldStatus:
+		m.ClearStatus()
+		return nil
+	}
+	return fmt.Errorf("unknown EventSchema nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *EventSchemaMutation) ResetField(name string) error {
+	switch name {
+	case eventschema.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case eventschema.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case eventschema.FieldDeletedAt:
+		m.ResetDeletedAt()
+		return nil
+	case eventschema.FieldCreatedBy:
+		m.ResetCreatedBy()
+		return nil
+	case eventschema.FieldUpdatedBy:
+		m.ResetUpdatedBy()
+		return nil
+	case eventschema.FieldDeletedBy:
+		m.ResetDeletedBy()
+		return nil
+	case eventschema.FieldTenantID:
+		m.ResetTenantID()
+		return nil
+	case eventschema.FieldEventName:
+		m.ResetEventName()
+		return nil
+	case eventschema.FieldDisplayName:
+		m.ResetDisplayName()
+		return nil
+	case eventschema.FieldCategory:
+		m.ResetCategory()
+		return nil
+	case eventschema.FieldDescription:
+		m.ResetDescription()
+		return nil
+	case eventschema.FieldProperties:
+		m.ResetProperties()
+		return nil
+	case eventschema.FieldStatus:
+		m.ResetStatus()
+		return nil
+	}
+	return fmt.Errorf("unknown EventSchema field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *EventSchemaMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *EventSchemaMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *EventSchemaMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *EventSchemaMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *EventSchemaMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *EventSchemaMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *EventSchemaMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown EventSchema unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *EventSchemaMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown EventSchema edge %s", name)
 }
 
 // FileMutation represents an operation that mutates the File nodes in the graph.

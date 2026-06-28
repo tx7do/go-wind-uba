@@ -7,6 +7,101 @@ info:
     description: UBA 管理后台 API
     version: "1.0"
 paths:
+    /admin/v1/analytics/active-users:
+        post:
+            tags:
+                - AnalyticsService
+            description: 活跃用户
+            operationId: AnalyticsService_ActiveUsers
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/ActiveUsersRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ActiveUsersResponse'
+    /admin/v1/analytics/event-trend:
+        post:
+            tags:
+                - AnalyticsService
+            description: 事件量趋势
+            operationId: AnalyticsService_EventTrend
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/EventTrendRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/EventTrendResponse'
+    /admin/v1/analytics/funnel:
+        post:
+            tags:
+                - AnalyticsService
+            description: 漏斗分析
+            operationId: AnalyticsService_Funnel
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/FunnelRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/FunnelResponse'
+    /admin/v1/analytics/group-by:
+        post:
+            tags:
+                - AnalyticsService
+            description: 维度分组聚合
+            operationId: AnalyticsService_GroupBy
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/GroupByRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GroupByResponse'
+    /admin/v1/analytics/retention:
+        post:
+            tags:
+                - AnalyticsService
+            description: 留存分析
+            operationId: AnalyticsService_Retention
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/RetentionRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/RetentionResponse'
     /admin/v1/api-audit-logs:
         get:
             tags:
@@ -473,6 +568,103 @@ paths:
                 "200":
                     description: OK
                     content: {}
+    /admin/v1/behavior-events:
+        get:
+            tags:
+                - BehaviorEventService
+            description: 分页查询行为事件
+            operationId: BehaviorEventService_List
+            parameters:
+                - name: page
+                  in: query
+                  description: 当前页码（从1开始，默认1）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: pageSize
+                  in: query
+                  description: 每页条数（默认10，建议设置上限如100）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: offset
+                  in: query
+                  description: 跳过的记录数（从0开始，默认0）
+                  schema:
+                    type: string
+                - name: limit
+                  in: query
+                  description: 最多返回的记录数（默认10，建议设置上限如100）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: token
+                  in: query
+                  description: 上一页最后一条记录的游标（如ID/时间戳+ID，首次请求为空）
+                  schema:
+                    type: string
+                - name: noPaging
+                  in: query
+                  description: 是否不分页，如果为true，则page和pageSize参数无效。
+                  schema:
+                    type: boolean
+                - name: query
+                  in: query
+                  description: JSON字符串过滤条件，基础语法：{"field1":"val1", "field2___icontains":"val2"}，具体请参见：https://github.com/tx7do/go-crud/tree/main/pagination/filter/README.md
+                  schema:
+                    type: string
+                - name: filter
+                  in: query
+                  description: Google AIP规范字符串过滤条件
+                  schema:
+                    type: string
+                - name: filterExpr.type
+                  in: query
+                  description: 过滤表达式类型
+                  schema:
+                    enum:
+                        - EXPR_TYPE_UNSPECIFIED
+                        - AND
+                        - OR
+                    type: string
+                    format: enum
+                - name: orderBy
+                  in: query
+                  description: 排序条件
+                  schema:
+                    type: string
+                - name: fieldMask
+                  in: query
+                  description: 字段掩码，其作用为SELECT中的字段，其语法为使用逗号分隔字段名，例如：id,realName,userName。如果为空则选中所有字段，即SELECT *。
+                  schema:
+                    type: string
+                    format: field-mask
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListBehaviorEventResponse'
+    /admin/v1/behavior-events/{eventId}:
+        get:
+            tags:
+                - BehaviorEventService
+            description: 查询单条行为事件详情
+            operationId: BehaviorEventService_Get
+            parameters:
+                - name: eventId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BehaviorEvent'
     /admin/v1/data-access-audit-logs:
         get:
             tags:
@@ -1198,6 +1390,242 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/EventPath'
+    /admin/v1/event-schemas:
+        get:
+            tags:
+                - EventSchemaService
+            operationId: EventSchemaService_List
+            parameters:
+                - name: page
+                  in: query
+                  description: 当前页码（从1开始，默认1）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: pageSize
+                  in: query
+                  description: 每页条数（默认10，建议设置上限如100）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: offset
+                  in: query
+                  description: 跳过的记录数（从0开始，默认0）
+                  schema:
+                    type: string
+                - name: limit
+                  in: query
+                  description: 最多返回的记录数（默认10，建议设置上限如100）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: token
+                  in: query
+                  description: 上一页最后一条记录的游标（如ID/时间戳+ID，首次请求为空）
+                  schema:
+                    type: string
+                - name: noPaging
+                  in: query
+                  description: 是否不分页，如果为true，则page和pageSize参数无效。
+                  schema:
+                    type: boolean
+                - name: query
+                  in: query
+                  description: JSON字符串过滤条件，基础语法：{"field1":"val1", "field2___icontains":"val2"}，具体请参见：https://github.com/tx7do/go-crud/tree/main/pagination/filter/README.md
+                  schema:
+                    type: string
+                - name: filter
+                  in: query
+                  description: Google AIP规范字符串过滤条件
+                  schema:
+                    type: string
+                - name: filterExpr.type
+                  in: query
+                  description: 过滤表达式类型
+                  schema:
+                    enum:
+                        - EXPR_TYPE_UNSPECIFIED
+                        - AND
+                        - OR
+                    type: string
+                    format: enum
+                - name: orderBy
+                  in: query
+                  description: 排序条件
+                  schema:
+                    type: string
+                - name: fieldMask
+                  in: query
+                  description: 字段掩码，其作用为SELECT中的字段，其语法为使用逗号分隔字段名，例如：id,realName,userName。如果为空则选中所有字段，即SELECT *。
+                  schema:
+                    type: string
+                    format: field-mask
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListEventSchemaResponse'
+        post:
+            tags:
+                - EventSchemaService
+            operationId: EventSchemaService_Create
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreateEventSchemaRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/EventSchema'
+    /admin/v1/event-schemas/count:
+        get:
+            tags:
+                - EventSchemaService
+            operationId: EventSchemaService_Count
+            parameters:
+                - name: page
+                  in: query
+                  description: 当前页码（从1开始，默认1）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: pageSize
+                  in: query
+                  description: 每页条数（默认10，建议设置上限如100）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: offset
+                  in: query
+                  description: 跳过的记录数（从0开始，默认0）
+                  schema:
+                    type: string
+                - name: limit
+                  in: query
+                  description: 最多返回的记录数（默认10，建议设置上限如100）
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: token
+                  in: query
+                  description: 上一页最后一条记录的游标（如ID/时间戳+ID，首次请求为空）
+                  schema:
+                    type: string
+                - name: noPaging
+                  in: query
+                  description: 是否不分页，如果为true，则page和pageSize参数无效。
+                  schema:
+                    type: boolean
+                - name: query
+                  in: query
+                  description: JSON字符串过滤条件，基础语法：{"field1":"val1", "field2___icontains":"val2"}，具体请参见：https://github.com/tx7do/go-crud/tree/main/pagination/filter/README.md
+                  schema:
+                    type: string
+                - name: filter
+                  in: query
+                  description: Google AIP规范字符串过滤条件
+                  schema:
+                    type: string
+                - name: filterExpr.type
+                  in: query
+                  description: 过滤表达式类型
+                  schema:
+                    enum:
+                        - EXPR_TYPE_UNSPECIFIED
+                        - AND
+                        - OR
+                    type: string
+                    format: enum
+                - name: orderBy
+                  in: query
+                  description: 排序条件
+                  schema:
+                    type: string
+                - name: fieldMask
+                  in: query
+                  description: 字段掩码，其作用为SELECT中的字段，其语法为使用逗号分隔字段名，例如：id,realName,userName。如果为空则选中所有字段，即SELECT *。
+                  schema:
+                    type: string
+                    format: field-mask
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CountEventSchemaResponse'
+    /admin/v1/event-schemas/{id}:
+        get:
+            tags:
+                - EventSchemaService
+            operationId: EventSchemaService_Get
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+                - name: viewMask
+                  in: query
+                  schema:
+                    type: string
+                    format: field-mask
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/EventSchema'
+        put:
+            tags:
+                - EventSchemaService
+            operationId: EventSchemaService_Update
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UpdateEventSchemaRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/EventSchema'
+        delete:
+            tags:
+                - EventSchemaService
+            operationId: EventSchemaService_Delete
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+                - name: deletedBy
+                  in: query
+                  schema:
+                    type: integer
+                    format: uint32
+            responses:
+                "200":
+                    description: OK
+                    content: {}
     /admin/v1/file/download:
         get:
             tags:
@@ -5992,6 +6420,54 @@ paths:
                     content: {}
 components:
     schemas:
+        ActiveUsersPoint:
+            type: object
+            properties:
+                timestamp:
+                    type: string
+                    description: 时间桶起点（Unix 毫秒）
+                dau:
+                    type: string
+                    description: 日活
+                wau:
+                    type: string
+                    description: 周活（滚动 7 天）
+                mau:
+                    type: string
+                    description: 月活（滚动 30 天）
+        ActiveUsersRequest:
+            type: object
+            properties:
+                timeRange:
+                    allOf:
+                        - $ref: '#/components/schemas/TimeRange'
+                    description: 时间范围
+                granularity:
+                    enum:
+                        - ANALYTICS_GRANULARITY_UNSPECIFIED
+                        - HOUR
+                        - DAY
+                        - WEEK
+                        - MONTH
+                    type: string
+                    description: 时间粒度（DAU 按粒度分桶，同时给出 WAU/MAU 累计）
+                    format: enum
+                appId:
+                    type: integer
+                    description: 应用 ID 过滤（可选）
+                    format: uint32
+            description: ============== 活跃用户 ==============
+        ActiveUsersResponse:
+            type: object
+            properties:
+                points:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ActiveUsersPoint'
+                    description: 各时间桶的活跃用户数据
+                latestDau:
+                    type: string
+                    description: 最新一天的 DAU
         Api:
             type: object
             properties:
@@ -6240,6 +6716,149 @@ components:
                     type: array
                     items:
                         $ref: '#/components/schemas/Language'
+        BehaviorEvent:
+            type: object
+            properties:
+                eventId:
+                    type: string
+                    description: 事件ID，建议使用 UUID，作为事件的唯一标识，同时也可用于路由和去重
+                tenantId:
+                    type: integer
+                    description: 租户ID，事件所属的租户，用于多租户隔离
+                    format: uint32
+                userId:
+                    type: integer
+                    description: 用户ID，事件的主体，可以是用户、设备、账号等，具体含义由业务定义
+                    format: uint32
+                deviceId:
+                    type: string
+                accountId:
+                    type: string
+                    description: 账号ID，事件发生时使用的账号标识，可以用于分析账号相关的行为特征
+                globalUserId:
+                    type: string
+                    description: 全局用户ID，结合 user_id、device_id、account_id 等多维度标识，通过算法生成的全局唯一用户标识，可以用于跨设备、跨账号的用户行为分析
+                eventTime:
+                    type: string
+                    description: 事件发生时间，记录事件实际发生的时间点，通常由客户端上报，可能存在时钟偏差
+                    format: date-time
+                eventTs:
+                    type: string
+                    description: 事件时间戳，事件发生时间的 Unix 时间戳表示，单位毫秒，可以用于快速的时间范围查询和排序
+                serverTime:
+                    type: string
+                    description: 服务器接收时间，记录事件被服务器接收的时间点，可以用于分析事件的传输延迟和时序关系
+                    format: date-time
+                eventCategory:
+                    type: string
+                    description: 事件类别，事件的类型或分类，用于对事件进行分组和分析，具体类别由业务定义
+                eventName:
+                    type: string
+                    description: 事件名称，事件的具体名称或动作，用于描述事件的具体行为，通常与事件类别结合使用以提供更细粒度的行为描述
+                eventAction:
+                    type: string
+                    description: 事件动作，事件的具体动作或结果，用于描述事件发生后的结果或状态变化，可以用于分析事件的效果和用户的反应
+                objectType:
+                    type: string
+                    description: 对象类型，事件作用的对象类型，可以是商品、页面、功能等，具体含义由业务定义
+                objectId:
+                    type: string
+                    description: 对象ID，事件作用的对象标识，可以用于分析特定对象的行为特征和受欢迎程度
+                objectName:
+                    type: string
+                    description: 对象名称，事件作用的对象名称，可以提供更友好的对象描述，便于分析和展示
+                sessionId:
+                    type: string
+                    description: 会话ID，事件所属的会话标识，可以用于分析用户的会话行为和路径，通常由客户端上报，可能存在时钟偏差
+                sessionSeq:
+                    type: integer
+                    description: 会话内序列号，事件在所属会话中的序列号，用于分析事件的顺序和路径，可以由客户端上报，也可以由服务器根据 session_id 进行计算生成
+                    format: uint32
+                platform:
+                    type: string
+                    description: 平台，事件发生的环境平台，可以是 Web、iOS、Android、PC 等，具体类别由业务定义
+                os:
+                    type: string
+                    description: 操作系统，事件发生的操作系统信息，可以提供更细粒度的环境描述，便于分析不同操作系统上的行为差异
+                appVersion:
+                    type: string
+                    description: 应用版本，事件发生的应用版本信息，可以用于分析不同版本上的行为差异和版本升级的影响
+                channel:
+                    type: string
+                    description: 渠道，事件发生的渠道信息，可以用于分析不同渠道上的行为差异和渠道推广的效果
+                ip:
+                    type: string
+                    description: IP地址，事件发生时的客户端IP地址，可以用于分析用户的地理位置和网络特征
+                ipCity:
+                    type: string
+                    description: IP城市，事件发生时的IP地址解析出的城市信息，可以用于分析用户的地理位置特征
+                country:
+                    type: string
+                    description: 国家，事件发生时的IP地址解析出的国家信息，可以用于分析用户的地理位置特征
+                network:
+                    type: string
+                    description: 网络类型，事件发生时的网络类型，可以是 WiFi、4G、5G 等，具体类别由业务定义
+                geo:
+                    type: string
+                    description: 地理位置，经纬度信息，格式如 'lat,lng' 或 GeoJSON，用于更精细的地理分析
+                userAgent:
+                    type: string
+                    description: 客户端 User-Agent 信息，记录客户端类型、版本、操作系统等特征，便于分析设备和环境
+                referer:
+                    type: string
+                    description: 来源页面或来源地址，记录事件发生时的来源信息，便于分析流量来源和用户路径
+                context:
+                    type: object
+                    additionalProperties:
+                        type: string
+                    description: 业务上下文，事件的业务相关上下文信息，可以包含任意的键值对，由业务定义和使用，便于分析事件发生时的具体业务场景和条件
+                durationMs:
+                    type: integer
+                    description: 持续时间，事件持续的时间长度，单位毫秒，可以用于分析事件的持续时间分布和用户的停留时间特征
+                    format: uint32
+                amount:
+                    type: string
+                    description: 金额，事件相关的金额信息，可以用于分析用户的支付行为和消费特征，具体格式由业务定义，可以包含货币单位等信息
+                quantity:
+                    type: integer
+                    description: 数量，事件相关的数量信息，可以用于分析用户的购买行为和消费特征，具体含义由业务定义
+                    format: uint32
+                score:
+                    type: integer
+                    description: 评分，事件相关的评分信息，可以用于分析用户的评价行为和满意度特征，具体含义由业务定义
+                    format: int32
+                metrics:
+                    type: object
+                    additionalProperties:
+                        type: number
+                        format: double
+                    description: 其他指标，事件的其他相关指标信息，可以包含任意的键值对，值为数值类型，由业务定义和使用，便于分析事件的其他量化特征
+                properties:
+                    type: object
+                    additionalProperties:
+                        type: string
+                    description: 扩展属性，事件的其他相关属性信息，可以包含任意的键值对，由业务定义和使用，便于分析事件的其他特征和细节
+                opResult:
+                    type: string
+                    description: 操作结果，事件相关的操作结果信息，可以用于分析事件的成功率和失败原因，具体含义由业务定义
+                errorCode:
+                    type: string
+                    description: 错误码，事件相关的错误码信息，可以用于分析事件的失败原因和问题排查，具体含义由业务定义
+                riskLevel:
+                    type: string
+                    description: 风险等级，事件相关的风险等级信息，可以用于分析事件的风险特征和安全问题，具体含义由业务定义
+                traceId:
+                    type: string
+                    description: Trace ID，事件相关的分布式追踪标识，可以用于分析事件的调用链和系统性能，通常由服务器生成并传递给客户端进行上报
+                createdAt:
+                    type: string
+                    description: 创建时间
+                    format: date-time
+                updatedAt:
+                    type: string
+                    description: 更新时间
+                    format: date-time
+            description: 行为事件（对应 events_fact 表）
         BindContactRequest:
             type: object
             properties:
@@ -6290,6 +6909,11 @@ components:
                     type: string
                     description: 任务执行类型名，例如 "send_email"、"generate_report" 等，用于区分不同类型的任务
             description: 控制调度任务 - 请求
+        CountEventSchemaResponse:
+            type: object
+            properties:
+                count:
+                    type: string
         CountRiskEventResponse:
             type: object
             properties:
@@ -6338,6 +6962,11 @@ components:
                 data:
                     $ref: '#/components/schemas/DictType'
             description: 创建字典类型 - 请求
+        CreateEventSchemaRequest:
+            type: object
+            properties:
+                data:
+                    $ref: '#/components/schemas/EventSchema'
         CreateFileRequest:
             type: object
             properties:
@@ -6939,6 +7568,127 @@ components:
                         type: string
                     description: 后3个事件名称，路径中后3个节点的事件名称列表
             description: 事件路径（用户行为路径，包含有序事件序列和路径指标）
+        EventPropertySchema:
+            type: object
+            properties:
+                name:
+                    type: string
+                    description: 属性名
+                type:
+                    type: string
+                    description: 属性类型：string/int/double/bool/array/object
+                displayName:
+                    type: string
+                    description: 显示名
+                required:
+                    type: boolean
+                    description: 是否必填
+                description:
+                    type: string
+                    description: 描述
+            description: 事件属性定义
+        EventSchema:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: ID
+                    format: uint32
+                tenantId:
+                    type: integer
+                    description: 租户ID
+                    format: uint32
+                eventName:
+                    type: string
+                    description: 事件名，唯一业务标识
+                displayName:
+                    type: string
+                    description: 显示名
+                category:
+                    type: string
+                    description: 事件类别
+                description:
+                    type: string
+                    description: 事件描述
+                properties:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/EventPropertySchema'
+                    description: 属性 schema 列表
+                status:
+                    enum:
+                        - EVENT_SCHEMA_STATUS_UNSPECIFIED
+                        - ENABLED
+                        - DISABLED
+                    type: string
+                    description: 启用状态
+                    format: enum
+                createdBy:
+                    type: integer
+                    description: 创建者用户ID
+                    format: uint32
+                updatedBy:
+                    type: integer
+                    description: 更新者用户ID
+                    format: uint32
+                createdAt:
+                    type: string
+                    description: 创建时间
+                    format: date-time
+                updatedAt:
+                    type: string
+                    description: 更新时间
+                    format: date-time
+            description: 事件 Schema
+        EventTrendRequest:
+            type: object
+            properties:
+                timeRange:
+                    allOf:
+                        - $ref: '#/components/schemas/TimeRange'
+                    description: 时间范围
+                granularity:
+                    enum:
+                        - ANALYTICS_GRANULARITY_UNSPECIFIED
+                        - HOUR
+                        - DAY
+                        - WEEK
+                        - MONTH
+                    type: string
+                    description: 时间粒度
+                    format: enum
+                appId:
+                    type: integer
+                    description: 应用 ID 过滤（可选，0 表示全部）
+                    format: uint32
+                eventName:
+                    type: string
+                    description: 事件名过滤（可选，空表示全部事件）
+                platform:
+                    type: string
+                    description: 平台过滤（可选）
+            description: ============== 事件趋势 ==============
+        EventTrendResponse:
+            type: object
+            properties:
+                points:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/TimeSeriesPoint'
+                    description: 趋势数据点
+                granularity:
+                    enum:
+                        - ANALYTICS_GRANULARITY_UNSPECIFIED
+                        - HOUR
+                        - DAY
+                        - WEEK
+                        - MONTH
+                    type: string
+                    description: 时间粒度（服务端实际使用的粒度，可能因 UNSPECIFIED 而自动选择）
+                    format: enum
+                total:
+                    type: string
+                    description: 区间内事件总量
         File:
             type: object
             properties:
@@ -7028,6 +7778,65 @@ components:
                     description: 删除时间
                     format: date-time
             description: 文件
+        FunnelRequest:
+            type: object
+            properties:
+                timeRange:
+                    allOf:
+                        - $ref: '#/components/schemas/TimeRange'
+                    description: 时间范围
+                steps:
+                    type: array
+                    items:
+                        type: string
+                    description: 漏斗步骤事件名（有序，至少 2 步）
+                appId:
+                    type: integer
+                    description: 应用 ID 过滤（可选）
+                    format: uint32
+                windowMs:
+                    type: string
+                    description: 转化窗口（毫秒，用户必须在窗口内完成全部步骤，默认 30 分钟）
+        FunnelResponse:
+            type: object
+            properties:
+                steps:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/FunnelStep'
+                    description: 各步骤结果
+                completedUsers:
+                    type: string
+                    description: 完成全部步骤的用户数
+                enteredUsers:
+                    type: string
+                    description: 进入首步的用户数
+                overallConversion:
+                    type: number
+                    description: 整体转化率
+                    format: double
+        FunnelStep:
+            type: object
+            properties:
+                stepIndex:
+                    type: integer
+                    description: 步骤序号（从 1 开始）
+                    format: uint32
+                eventName:
+                    type: string
+                    description: 该步骤的事件名
+                count:
+                    type: string
+                    description: 完成该步骤的事件数
+                conversionRate:
+                    type: number
+                    description: 相对上一步的转化率（0-1，首步为 1）
+                    format: double
+                overallRate:
+                    type: number
+                    description: 相对首步的整体转化率（0-1，首步为 1）
+                    format: double
+            description: ============== 漏斗分析 ==============
         GeoLocation:
             type: object
             properties:
@@ -7053,6 +7862,60 @@ components:
                     type: string
                     description: 经度（微度）
             description: 地理位置
+        GroupByBucket:
+            type: object
+            properties:
+                label:
+                    type: string
+                    description: 分组标签（维度值）
+                value:
+                    type: number
+                    description: 聚合数值
+                    format: double
+                percentage:
+                    type: number
+                    description: 占比（0-1）
+                    format: double
+        GroupByRequest:
+            type: object
+            properties:
+                timeRange:
+                    allOf:
+                        - $ref: '#/components/schemas/TimeRange'
+                    description: 时间范围
+                dimension:
+                    type: string
+                    description: 分组维度字段名（如 platform/channel/country/app_version/event_name）
+                metric:
+                    type: string
+                    description: 聚合指标：COUNT=事件数(默认)，UNIQUE_USER=去重用户数，SUM_AMOUNT=金额求和
+                appId:
+                    type: integer
+                    description: 应用 ID 过滤（可选）
+                    format: uint32
+                eventName:
+                    type: string
+                    description: 事件名过滤（可选）
+                topN:
+                    type: integer
+                    description: 返回前 N 个分组（默认 20）
+                    format: uint32
+            description: ============== 维度分组聚合 ==============
+        GroupByResponse:
+            type: object
+            properties:
+                buckets:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/GroupByBucket'
+                    description: 各分组结果
+                dimension:
+                    type: string
+                    description: 维度字段名
+                total:
+                    type: number
+                    description: 总量
+                    format: double
         IDMapping:
             type: object
             properties:
@@ -7434,6 +8297,15 @@ components:
                 total:
                     type: string
             description: 获取UBA应用列表 - 答复
+        ListBehaviorEventResponse:
+            type: object
+            properties:
+                items:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/BehaviorEvent'
+                total:
+                    type: string
         ListDataAccessAuditLogResponse:
             type: object
             properties:
@@ -7478,6 +8350,15 @@ components:
                     type: array
                     items:
                         $ref: '#/components/schemas/EventPath'
+                total:
+                    type: string
+        ListEventSchemaResponse:
+            type: object
+            properties:
+                items:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/EventSchema'
                 total:
                     type: string
         ListFileResponse:
@@ -9004,6 +9885,70 @@ components:
                     type: integer
                     format: int32
             description: 重启调度任务 - 回应
+        RetentionCell:
+            type: object
+            properties:
+                offsetDays:
+                    type: integer
+                    description: 相对注册/首次活跃的天数偏移（0 = 当天）
+                    format: uint32
+                count:
+                    type: string
+                    description: 该偏移的活跃用户数
+                rate:
+                    type: number
+                    description: 留存率（0-1）
+                    format: double
+            description: ============== 留存分析 ==============
+        RetentionCohort:
+            type: object
+            properties:
+                cohortDate:
+                    type: string
+                    description: 同期群日期（Unix 毫秒，当天 0 点）
+                size:
+                    type: string
+                    description: 该同期群规模（首日用户数）
+                cells:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/RetentionCell'
+                    description: 各偏移天的留存
+        RetentionRequest:
+            type: object
+            properties:
+                timeRange:
+                    allOf:
+                        - $ref: '#/components/schemas/TimeRange'
+                    description: 时间范围（按 cohort_date 过滤）
+                appId:
+                    type: integer
+                    description: 应用 ID 过滤（可选）
+                    format: uint32
+                retentionType:
+                    type: string
+                    description: 留存类型：ACTIVE=活跃留存（默认），EVENT=指定事件留存
+                eventName:
+                    type: string
+                    description: 当 retention_type=EVENT 时指定事件名
+                maxOffsetDays:
+                    type: integer
+                    description: 最大偏移天数（默认 7）
+                    format: uint32
+        RetentionResponse:
+            type: object
+            properties:
+                cohorts:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/RetentionCohort'
+                    description: 同期群列表
+                offsetDays:
+                    type: array
+                    items:
+                        type: integer
+                        format: uint32
+                    description: 所有偏移天列表（横轴）
         RevokeMessageRequest:
             type: object
             properties:
@@ -9786,6 +10731,27 @@ components:
                 exist:
                     type: boolean
             description: 租户是否存在 - 答复
+        TimeRange:
+            type: object
+            properties:
+                startMs:
+                    type: string
+                    description: 起始时间（含），Unix 毫秒
+                endMs:
+                    type: string
+                    description: 结束时间（含），Unix 毫秒
+            description: 时间范围（毫秒时间戳，start/end 均含端点）
+        TimeSeriesPoint:
+            type: object
+            properties:
+                timestamp:
+                    type: string
+                    description: 时间桶起点，Unix 毫秒
+                value:
+                    type: number
+                    description: 数值
+                    format: double
+            description: 时间序列中的一个数据点
         UpdateApiRequest:
             type: object
             properties:
@@ -9837,6 +10803,18 @@ components:
                     type: boolean
                     description: 如果设置为true的时候，资源不存在则会新增(插入)，并且在这种情况下`updateMask`字段将会被忽略。
             description: 更新字典类型 - 请求
+        UpdateEventSchemaRequest:
+            type: object
+            properties:
+                id:
+                    type: string
+                data:
+                    $ref: '#/components/schemas/EventSchema'
+                updateMask:
+                    type: string
+                    format: field-mask
+                allowMissing:
+                    type: boolean
         UpdateFileRequest:
             type: object
             properties:
@@ -10662,6 +11640,8 @@ security:
 tags:
     - name: AdminPortalService
       description: 后台前端初始化数据与配置服务
+    - name: AnalyticsService
+      description: 数据分析服务（admin HTTP 网关，转发至 core gRPC）
     - name: ApiAuditLogService
       description: API审计日志管理服务
     - name: ApiService
@@ -10670,6 +11650,10 @@ tags:
       description: 应用服务
     - name: AuthenticationService
       description: 用户后台登录认证服务
+    - name: BehaviorEventService
+      description: |-
+        行为事件服务（admin HTTP 网关，转发至 core gRPC）
+         用于"用户行为时间轴"等场景，按 user_id / session_id 分页查询原始行为事件明细。
     - name: DataAccessAuditLogService
       description: 数据访问审计日志管理服务
     - name: DictEntryService
@@ -10678,6 +11662,8 @@ tags:
       description: 数据字典分类管理服务
     - name: EventPathService
       description: 事件路径服务
+    - name: EventSchemaService
+      description: 事件 Schema 管理服务（admin HTTP 网关，转发至 core gRPC）
     - name: FileService
       description: 文件管理服务
     - name: FileTransferService

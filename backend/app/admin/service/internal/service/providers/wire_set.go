@@ -66,4 +66,7 @@ var ProviderSet = wire.NewSet(
 	service.NewRiskEventService,
 	service.NewSessionService,
 	service.NewUserBehaviorProfileService,
+	service.NewBehaviorEventService,
+	service.NewAnalyticsService,
+	service.NewEventSchemaService,
 )

@@ -1,0 +1,35 @@
+﻿syntax = "proto3";
+
+package admin.service.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "pagination/v1/pagination.proto";
+import "uba/service/v1/event_schema.proto";
+
+// 事件 Schema 管理服务（admin HTTP 网关，转发至 core gRPC）
+service EventSchemaService {
+  rpc List(pagination.PagingRequest) returns (uba.service.v1.ListEventSchemaResponse) {
+    option (google.api.http) = { get: "/admin/v1/event-schemas" };
+  }
+
+  rpc Count(pagination.PagingRequest) returns (uba.service.v1.CountEventSchemaResponse) {
+    option (google.api.http) = { get: "/admin/v1/event-schemas/count" };
+  }
+
+  rpc Get(uba.service.v1.GetEventSchemaRequest) returns (uba.service.v1.EventSchema) {
+    option (google.api.http) = { get: "/admin/v1/event-schemas/{id}" };
+  }
+
+  rpc Create(uba.service.v1.CreateEventSchemaRequest) returns (uba.service.v1.EventSchema) {
+    option (google.api.http) = { post: "/admin/v1/event-schemas" body: "*" };
+  }
+
+  rpc Update(uba.service.v1.UpdateEventSchemaRequest) returns (uba.service.v1.EventSchema) {
+    option (google.api.http) = { put: "/admin/v1/event-schemas/{id}" body: "*" };
+  }
+
+  rpc Delete(uba.service.v1.DeleteEventSchemaRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = { delete: "/admin/v1/event-schemas/{id}" };
+  }
+}

@@ -92,6 +92,18 @@ func (f DictTypeFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, er
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.DictTypeMutation", m)
 }
 
+// The EventSchemaFunc type is an adapter to allow the use of ordinary
+// function as EventSchema mutator.
+type EventSchemaFunc func(context.Context, *ent.EventSchemaMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f EventSchemaFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.EventSchemaMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.EventSchemaMutation", m)
+}
+
 // The FileFunc type is an adapter to allow the use of ordinary
 // function as File mutator.
 type FileFunc func(context.Context, *ent.FileMutation) (ent.Value, error)

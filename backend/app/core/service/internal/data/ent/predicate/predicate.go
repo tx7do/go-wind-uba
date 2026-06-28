@@ -27,6 +27,9 @@ type DictEntryI18n func(*sql.Selector)
 // DictType is the predicate function for dicttype builders.
 type DictType func(*sql.Selector)
 
+// EventSchema is the predicate function for eventschema builders.
+type EventSchema func(*sql.Selector)
+
 // File is the predicate function for file builders.
 type File func(*sql.Selector)
 

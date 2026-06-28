@@ -90,6 +90,7 @@ var ProviderSet = wire.NewSet(
 	data.NewIDMappingRepo,
 	data.NewRiskRuleRepo,
 	data.NewTagValueRepo,
+	data.NewEventSchemaRepo,
 
 	clickhouse.NewEventsFactRepo,
 	clickhouse.NewIDMappingRepo,
@@ -99,6 +100,7 @@ var ProviderSet = wire.NewSet(
 	clickhouse.NewSessionsFactRepo,
 	clickhouse.NewUserTagsRepo,
 	clickhouse.NewUsersDimRepo,
+	clickhouse.NewAnalyticsRepo,
 
 	doris.NewEventsFactRepo,
 	doris.NewIDMappingRepo,
@@ -108,4 +110,5 @@ var ProviderSet = wire.NewSet(
 	doris.NewSessionsFactRepo,
 	doris.NewUserTagsRepo,
 	doris.NewUsersDimRepo,
+	doris.NewAnalyticsRepo,
 )

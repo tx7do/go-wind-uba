@@ -1,0 +1,50 @@
+﻿syntax = "proto3";
+
+package admin.service.v1;
+
+import "google/api/annotations.proto";
+
+import "uba/service/v1/analytics.proto";
+
+// 数据分析服务（admin HTTP 网关，转发至 core gRPC）
+service AnalyticsService {
+  // 事件量趋势
+  rpc EventTrend(uba.service.v1.EventTrendRequest) returns (uba.service.v1.EventTrendResponse) {
+    option (google.api.http) = {
+      post: "/admin/v1/analytics/event-trend"
+      body: "*"
+    };
+  }
+
+  // 漏斗分析
+  rpc Funnel(uba.service.v1.FunnelRequest) returns (uba.service.v1.FunnelResponse) {
+    option (google.api.http) = {
+      post: "/admin/v1/analytics/funnel"
+      body: "*"
+    };
+  }
+
+  // 留存分析
+  rpc Retention(uba.service.v1.RetentionRequest) returns (uba.service.v1.RetentionResponse) {
+    option (google.api.http) = {
+      post: "/admin/v1/analytics/retention"
+      body: "*"
+    };
+  }
+
+  // 维度分组聚合
+  rpc GroupBy(uba.service.v1.GroupByRequest) returns (uba.service.v1.GroupByResponse) {
+    option (google.api.http) = {
+      post: "/admin/v1/analytics/group-by"
+      body: "*"
+    };
+  }
+
+  // 活跃用户
+  rpc ActiveUsers(uba.service.v1.ActiveUsersRequest) returns (uba.service.v1.ActiveUsersResponse) {
+    option (google.api.http) = {
+      post: "/admin/v1/analytics/active-users"
+      body: "*"
+    };
+  }
+}

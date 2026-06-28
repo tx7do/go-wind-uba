@@ -26,6 +26,8 @@ type Tx struct {
 	DictEntryI18n *DictEntryI18nClient
 	// DictType is the client for interacting with the DictType builders.
 	DictType *DictTypeClient
+	// EventSchema is the client for interacting with the EventSchema builders.
+	EventSchema *EventSchemaClient
 	// File is the client for interacting with the File builders.
 	File *FileClient
 	// IDMapping is the client for interacting with the IDMapping builders.
@@ -236,6 +238,7 @@ func (tx *Tx) init() {
 	tx.DictEntry = NewDictEntryClient(tx.config)
 	tx.DictEntryI18n = NewDictEntryI18nClient(tx.config)
 	tx.DictType = NewDictTypeClient(tx.config)
+	tx.EventSchema = NewEventSchemaClient(tx.config)
 	tx.File = NewFileClient(tx.config)
 	tx.IDMapping = NewIDMappingClient(tx.config)
 	tx.InternalMessage = NewInternalMessageClient(tx.config)
