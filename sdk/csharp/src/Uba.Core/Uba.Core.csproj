@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>9.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Uba</RootNamespace>
+    <AssemblyName>Uba.Core</AssemblyName>
+    <Version>1.0.0</Version>
+    <Description>UBA (User Behavior Analytics) 核心库 —— 对接 go-wind-uba collector 服务</Description>
+    <PackageId>Uba.Core</PackageId>
+    <Authors>go-wind-uba</Authors>
+    <License>MIT</License>
+    <!-- Unity / Godot 都支持 netstandard2.0 -->
+  </PropertyGroup>
+
+</Project>
