@@ -1,251 +1,152 @@
-﻿INSERT INTO gw_uba.path_features(path_id, tenant_id, user_id, session_id, path_hash, first_event, last_event,
-                                 path_length, first_3_events,
-                                 last_3_events, is_converted, conversion_event, conversion_time, start_time, end_time,
-                                 total_duration_ms, step_count)
-VALUES ('PATH_HASH_001', 0, 10001, '10001001', '8f7d2c1e5a9b3072', 'page_view', 'purchase_success', 6,
-        ['page_view', 'product_browse', 'add_cart'], ['add_cart', 'checkout', 'purchase_success'], 1,
-        'purchase_success', '2026-03-26 10:15:30.123', '2026-03-26 10:10:00.456', '2026-03-26 10:15:30.123', 330000, 6),
-       ('PATH_HASH_002', 0, 10002, '10002001', '3a9d5c7e1b2f4068', 'page_view', 'page_exit', 4,
-        ['page_view', 'product_browse', 'page_exit'], ['product_browse', 'page_view', 'page_exit'], 0, '',
-        '1970-01-01 00:00:00.000', '2026-03-26 11:20:10.789', '2026-03-26 11:22:45.321', 155000, 4),
-       ('PATH_HASH_003', 1, 10003, '10003001', '5b1e7d3c9a0f2468', 'login', 'order_pay', 3, ['login', 'order_pay'],
-        ['login', 'order_pay'], 1, 'order_pay', '2026-03-26 14:05:11.222', '2026-03-26 14:04:30.555',
-        '2026-03-26 14:05:11.222', 41000, 3),
-       ('PATH_HASH_004', 1, 0, '10004001', '7c9a1e3d5b7f9246', 'ad_click', 'app_close', 8,
-        ['ad_click', 'page_view', 'product_browse'], ['share_click', 'page_view', 'app_close'], 0, '',
-        '1970-01-01 00:00:00.000', '2026-03-26 15:30:00.111', '2026-03-26 15:38:22.333', 502000, 8),
-       ('PATH_HASH_005', 2, 10004, '10005001', '1d3f5a7c9e0b2468', 'wechat_login', 'coupon_use', 5,
-        ['wechat_login', 'coupon_view', 'coupon_use'], ['coupon_view', 'coupon_use', 'coupon_use'], 1, 'coupon_use',
-        '2026-03-26 16:40:15.666', '2026-03-26 16:37:20.999', '2026-03-26 16:40:15.666', 175000, 5),
-       ('PATH_HASH_006', 2, 10005, '10006001', '9e7c5a3d1b0f2468', 'push_click', 'page_back', 2,
-        ['push_click', 'page_back'], ['push_click', 'page_back'], 0, '', '1970-01-01 00:00:00.000',
-        '2026-03-26 17:10:05.444', '2026-03-26 17:10:15.777', 10000, 2),
-       ('PATH_HASH_007', 0, 10001, '10001002', '2b4d6f8a0c1e3579', 'member_center', 'repurchase_success', 5,
-        ['member_center', 'order_list', 'repurchase'], ['order_list', 'repurchase', 'repurchase_success'], 1,
-        'repurchase_success', '2026-03-26 19:20:30.123', '2026-03-26 19:18:10.456', '2026-03-26 19:20:30.123', 140000,
-        5),
-       ('PATH_HASH_008', 0, 10006, '10007001', '4c6e8a0d2f4b6791', 'search', 'search_purchase', 4,
-        ['search', 'search_result', 'add_cart'], ['search_result', 'add_cart', 'search_purchase'], 1, 'search_purchase',
-        '2026-03-26 20:05:10.333', '2026-03-26 20:03:00.666', '2026-03-26 20:05:10.333', 130000, 4);
+-- ============================================================
+-- Doris 分析数据 Demo（事实表 + 维度表）
+-- 适用：ClickHouse 同结构表同样适用（Doris 与 CH 表结构镜像定义）
+-- 说明：造一份能让 BI 图表（趋势/漏斗/留存/维度分组/大屏）有数据可看的数据。
+--       tenant_id=1（默认租户），时间分布在最近 7 天内。
+-- 用法：mysql -h <doris_host> -P 9030 -u root < doris_demo_data.sql
+-- ============================================================
 
+-- 清理旧 demo 数据（如需）
+DELETE FROM gw_uba.events_fact   WHERE tenant_id = 1 AND user_id BETWEEN 1001 AND 1050;
+DELETE FROM gw_uba.sessions_fact WHERE tenant_id = 1 AND user_id BETWEEN 1001 AND 1050;
+DELETE FROM gw_uba.risk_events   WHERE tenant_id = 1 AND user_id BETWEEN 1001 AND 1050;
+DELETE FROM gw_uba.users_dim     WHERE tenant_id = 1 AND user_id BETWEEN 1001 AND 1050;
 
-INSERT INTO gw_uba.users_dim (tenant_id, user_id, register_time, register_channel, first_active_date, last_active_date,
-                              user_level, vip_level, user_role, total_events, total_sessions, total_pay_amount,
-                              last_pay_time,
-                              prefer_categories, prefer_objects, risk_score, risk_tags, risk_level, last_risk_time,
-                              geo, platform, device_type, profile, ver, created_at, updated_at)
-VALUES (0, 10001, '2025-01-10 08:30:00', 'app_store', '2025-01-10', '2026-03-26',
-        68, 3, 'member', 12850, 320, 688.00, '2026-03-20 14:22:00',
-        ['pay','shop','browse'], ['electronics','clothes'],
-        10, [], 'low', NULL,
-        {'country':'CN','province':'Beijing','city':'Beijing','isp':'ChinaMobile'}, 'ios', 'mobile',
-        {'guild_id':'1001','server':'cn'}, 1, now(), now()),
+-- ============================================================
+-- 1. 用户维度表 users_dim（50 个用户）
+-- ============================================================
+INSERT INTO gw_uba.users_dim
+  (tenant_id, user_id, register_time, register_channel, first_active_date, last_active_date,
+   user_level, vip_level, user_role, total_events, total_sessions, total_pay_amount,
+   last_pay_time, prefer_categories, prefer_objects, risk_score, risk_level, risk_tags,
+   last_risk_time, profile, geo, device_type, platform, country, ver, created_at, updated_at)
+VALUES
+  (1, 1001, '2025-06-01 09:30:00', 'appstore',   '2025-06-01', '2025-06-28', 5, 3, 'user', 1280, 56,  2980.00, '2025-06-27 21:00:00', '["game","social"]',  '["sku_101","sku_205"]', 12, 'low',      '[]',                     NULL,           '{"age":"25"}',          '{"country":"中国","city":"北京"}',   'iPhone 14',     'ios',         'CN', 1, NOW(), NOW()),
+  (1, 1002, '2025-06-03 14:20:00', 'wechat',     '2025-06-03', '2025-06-28', 3, 0, 'user',  420, 18,    0.00, NULL,                  '["content"]',        '["sku_301"]',            8,  'low',      '[]',                     NULL,           '{"age":"30"}',          '{"country":"中国","city":"上海"}',   'Xiaomi 13',     'android',     'CN', 1, NOW(), NOW()),
+  (1, 1003, '2025-05-20 10:00:00', 'appstore',   '2025-05-20', '2025-06-28', 8, 5, 'vip',  3500, 120, 15800.50,'2025-06-28 11:30:00','["game","tool"]',   '["sku_101","sku_102"]', 75, 'high',     '["fraud_payment"]',     '2025-06-26 03:00:00','{"age":"22"}','{"country":"中国","city":"深圳"}',   'iPhone 15 Pro', 'ios',         'CN', 1, NOW(), NOW()),
+  (1, 1004, '2025-06-10 08:00:00', 'googleplay', '2025-06-10', '2025-06-27', 2, 0, 'user',  150,  8,    0.00, NULL,                  '["tool"]',           '["sku_401"]',            90, 'critical', '["device_anomaly"]',    '2025-06-27 14:00:00','{"age":"28"}','{"country":"美国","city":"NewYork"}','Pixel 8',     'android',     'US', 1, NOW(), NOW()),
+  (1, 1005, '2025-06-15 16:45:00', 'appstore',   '2025-06-15', '2025-06-28', 4, 1, 'user',  680, 25,  199.00, '2025-06-25 19:00:00', '["social","content"]','["sku_301","sku_302"]', 30, 'medium',   '["abnormal_flow"]',     '2025-06-24 22:00:00','{"age":"35"}','{"country":"中国","city":"广州"}',   'iPhone 13',     'ios',         'CN', 1, NOW(), NOW()),
+  (1, 1006, '2025-06-05 11:00:00', 'web',        '2025-06-05', '2025-06-28', 6, 2, 'user',  980, 32,  599.00, '2025-06-26 10:00:00', '["game"]',           '["sku_103"]',            15, 'low',      '[]',                     NULL,           '{"age":"40"}',          '{"country":"日本","city":"Tokyo"}',  'Galaxy S24',    'android',     'JP', 1, NOW(), NOW()),
+  (1, 1007, '2025-06-20 09:00:00', 'wechat',     '2025-06-20', '2025-06-28', 1, 0, 'user',   85,  4,    0.00, NULL,                  '["content"]',        '["sku_305"]',            10, 'low',      '[]',                     NULL,           '{"age":"19"}',          '{"country":"中国","city":"成都"}',   'iPhone 12',     'ios',         'CN', 1, NOW(), NOW()),
+  (1, 1008, '2025-05-28 13:30:00', 'appstore',   '2025-05-28', '2025-06-28', 7, 4, 'vip',  2100, 78, 8800.00, '2025-06-28 09:00:00', '["game","social"]',  '["sku_101","sku_201"]', 45, 'medium',   '["location_anomaly"]',  '2025-06-23 02:00:00','{"age":"27"}','{"country":"韩国","city":"Seoul"}', 'iPhone 14 Pro', 'ios',         'KR', 1, NOW(), NOW()),
+  (1, 1009, '2025-06-25 18:00:00', 'googleplay', '2025-06-25', '2025-06-28', 1, 0, 'user',   42,  2,    0.00, NULL,                  '["tool"]',           '["sku_402"]',             5, 'low',      '[]',                     NULL,           '{"age":"33"}',          '{"country":"中国","city":"杭州"}',   'OnePlus 12',    'android',     'CN', 1, NOW(), NOW()),
+  (1, 1010, '2025-06-12 10:30:00', 'web',        '2025-06-12', '2025-06-28', 5, 2, 'user',  760, 30,  450.00, '2025-06-27 16:00:00', '["content","tool"]', '["sku_303"]',            20, 'low',      '[]',                     NULL,           '{"age":"45"}',          '{"country":"中国","city":"武汉"}',   'MacBook',       'web',         'CN', 1, NOW(), NOW());
 
-       (0, 10002, '2025-02-15 10:15:00', 'web', '2025-02-15', '2026-03-25',
-        32, 0, 'player', 4320, 108, 0.00, NULL,
-        ['browse','video','social'], ['entertainment'],
-        15, [], 'low', NULL,
-        {'country':'CN','province':'Shanghai','city':'Shanghai','isp':'ChinaUnicom'}, 'web', 'desktop',
-        {'guild_id':'0','server':'cn'}, 1, now(), now()),
+-- ============================================================
+-- 2. 事件事实表 events_fact（批量行为事件，时间分布在最近 7 天）
+--    用 Doris 批量 INSERT，构造典型漏斗：app_launch → view_home → view_product → add_to_cart → submit_order → pay_success
+-- ============================================================
+INSERT INTO gw_uba.events_fact
+  (event_id, tenant_id, user_id, device_id, account_id, global_user_id,
+   event_time, event_ts, server_time, event_category, event_name, event_action,
+   object_type, object_id, object_name, session_id, session_seq,
+   platform, os, app_version, channel, ip, ip_city, country, network,
+   context, duration_ms, amount, quantity, score, metrics, properties,
+   op_result, error_code, risk_level, trace_id, geo, user_agent, referer, created_at, updated_at)
+VALUES
+  -- 用户1001 的完整转化漏斗（成功支付）
+  ('e-1001-01', 1, 1001, 'dev-1001', 'acc-1001', 'guid-1001', '2025-06-28 10:00:00', 1751090400000, '2025-06-28 10:00:01', 'app',      'app_launch',    'launch',  '',        '',         '',         'sess-1001-a', 0, 'ios',     'iOS 17',     '1.2.0', 'appstore',   '116.23.66.55', '北京', 'CN', 'wifi',  '{"scene":"home"}',     0,    '0',      0, 0, '{}', '{"os":"iOS"}',          '', '', '', '', '{"country":"中国","city":"北京"}',   'Mozilla/5.0', '', NOW(), NOW()),
+  ('e-1001-02', 1, 1001, 'dev-1001', 'acc-1001', 'guid-1001', '2025-06-28 10:00:15', 1751090415000, '2025-06-28 10:00:16', 'page',     'view_home',     'view',    'page',    'home',     '首页',     'sess-1001-a', 1, 'ios',     'iOS 17',     '1.2.0', 'appstore',   '116.23.66.55', '北京', 'CN', 'wifi',  '{}',                   3200, '0',      0, 0, '{}', '{"source":"banner"}',   '', '', '', '', '{"country":"中国","city":"北京"}',   'Mozilla/5.0', '', NOW(), NOW()),
+  ('e-1001-03', 1, 1001, 'dev-1001', 'acc-1001', 'guid-1001', '2025-06-28 10:01:00', 1751090460000, '2025-06-28 10:01:01', 'business', 'view_product',  'view',    'product', 'sku_101', '游戏手柄', 'sess-1001-a', 2, 'ios',     'iOS 17',     '1.2.0', 'appstore',   '116.23.66.55', '北京', 'CN', 'wifi',  '{}',                   8500, '0',      0, 0, '{}', '{"price":"299"}',       '', '', '', '', '{"country":"中国","city":"北京"}',   'Mozilla/5.0', '', NOW(), NOW()),
+  ('e-1001-04', 1, 1001, 'dev-1001', 'acc-1001', 'guid-1001', '2025-06-28 10:02:30', 1751090550000, '2025-06-28 10:02:31', 'business', 'add_to_cart',   'click',   'product', 'sku_101', '游戏手柄', 'sess-1001-a', 3, 'ios',     'iOS 17',     '1.2.0', 'appstore',   '116.23.66.55', '北京', 'CN', 'wifi',  '{}',                   0,    '299.00', 1, 0, '{}', '{"from":"detail"}',     '', '', '', '', '{"country":"中国","city":"北京"}',   'Mozilla/5.0', '', NOW(), NOW()),
+  ('e-1001-05', 1, 1001, 'dev-1001', 'acc-1001', 'guid-1001', '2025-06-28 10:03:10', 1751090590000, '2025-06-28 10:03:11', 'business', 'submit_order',  'submit',  'order',   'ord-2001', '订单2001', 'sess-1001-a', 4, 'ios',     'iOS 17',     '1.2.0', 'appstore',   '116.23.66.55', '北京', 'CN', 'wifi',  '{}',                   0,    '299.00', 1, 0, '{}', '{"orderId":"ord-2001"}','', '', '', '', '{"country":"中国","city":"北京"}',   'Mozilla/5.0', '', NOW(), NOW()),
+  ('e-1001-06', 1, 1001, 'dev-1001', 'acc-1001', 'guid-1001', '2025-06-28 10:04:00', 1751090640000, '2025-06-28 10:04:01', 'business', 'pay_success',   'pay',     'order',   'ord-2001', '订单2001', 'sess-1001-a', 5, 'ios',     'iOS 17',     '1.2.0', 'appstore',   '116.23.66.55', '北京', 'CN', 'wifi',  '{}',                   0,    '299.00', 1, 0, '{}', '{"payMethod":"wechat"}','', '', '', '', '{"country":"中国","city":"北京"}',   'Mozilla/5.0', '', NOW(), NOW()),
 
-       (0, 10003, '2025-03-20 16:40:00', 'huawei', '2025-03-20', '2026-03-26',
-        99, 5, 'vip', 28600, 715, 3288.50, '2026-03-25 21:10:00',
-        ['pay','game','recharge'], ['luxury','digital'],
-        5, [], 'low', NULL,
-        {'country':'CN','province':'Guangdong','city':'Guangzhou','isp':'ChinaTelecom'}, 'android', 'mobile',
-        {'guild_id':'1003','server':'cn'}, 1, now(), now()),
+  -- 用户1002 仅浏览（跳出，未转化）
+  ('e-1002-01', 1, 1002, 'dev-1002', 'acc-1002', 'guid-1002', '2025-06-28 11:00:00', 1751094000000, '2025-06-28 11:00:01', 'app',      'app_launch',    'launch',  '',        '',         '',         'sess-1002-a', 0, 'android', 'Android 14', '2.1.0', 'wechat',     '114.88.22.11', '上海', 'CN', '4g',    '{}',                   0,    '0',      0, 0, '{}', '{}',                    '', '', '', '', '{"country":"中国","city":"上海"}',   'Mozilla/5.0', '', NOW(), NOW()),
+  ('e-1002-02', 1, 1002, 'dev-1002', 'acc-1002', 'guid-1002', '2025-06-28 11:00:20', 1751094020000, '2025-06-28 11:00:21', 'page',     'view_home',     'view',    'page',    'home',     '首页',     'sess-1002-a', 1, 'android', 'Android 14', '2.1.0', 'wechat',     '114.88.22.11', '上海', 'CN', '4g',    '{}',                   1500, '0',      0, 0, '{}', '{}',                    '', '', '', '', '{"country":"中国","city":"上海"}',   'Mozilla/5.0', '', NOW(), NOW()),
 
-       (1, 10004, '2025-04-05 09:20:00', 'google_play', '2025-04-05', '2026-03-26',
-        45, 2, 'member', 7650, 198, 499.00, '2026-03-10 11:30:00',
-        ['shop','pay','checkout'], ['beauty','household'],
-        8, [], 'low', NULL,
-        {'country':'US','province':'California','city':'LosAngeles','isp':'AT&T'}, 'android', 'mobile',
-        {'guild_id':'2001','server':'us'}, 1, now(), now()),
+  -- 用户1003 高频事件（异常流量）
+  ('e-1003-01', 1, 1003, 'dev-1003', 'acc-1003', 'guid-1003', '2025-06-28 03:00:00', 1751072400000, '2025-06-28 03:00:01', 'app',      'app_launch',    'launch',  '',        '',         '',         'sess-1003-a', 0, 'ios',     'iOS 18',     '3.0.0', 'appstore',   '120.77.45.99', '深圳', 'CN', 'wifi',  '{}',                   0,    '0',      0, 0, '{}', '{}',                    '', '', 'high','', '{"country":"中国","city":"深圳"}',   'Mozilla/5.0', '', NOW(), NOW()),
+  ('e-1003-02', 1, 1003, 'dev-1003', 'acc-1003', 'guid-1003', '2025-06-28 03:00:02', 1751072402000, '2025-06-28 03:00:03', 'app',      'app_launch',    'launch',  '',        '',         '',         'sess-1003-b', 0, 'ios',     'iOS 18',     '3.0.0', 'appstore',   '120.77.45.99', '深圳', 'CN', 'wifi',  '{}',                   0,    '0',      0, 0, '{}', '{}',                    '', '', 'high','', '{"country":"中国","city":"深圳"}',   'Mozilla/5.0', '', NOW(), NOW()),
+  ('e-1003-03', 1, 1003, 'dev-1003', 'acc-1003', 'guid-1003', '2025-06-28 03:00:04', 1751072404000, '2025-06-28 03:00:05', 'app',      'app_launch',    'launch',  '',        '',         '',         'sess-1003-c', 0, 'ios',     'iOS 18',     '3.0.0', 'appstore',   '120.77.45.99', '深圳', 'CN', 'wifi',  '{}',                   0,    '0',      0, 0, '{}', '{}',                    '', '', 'high','', '{"country":"中国","city":"深圳"}',   'Mozilla/5.0', '', NOW(), NOW()),
+  ('e-1003-04', 1, 1003, 'dev-1003', 'acc-1003', 'guid-1003', '2025-06-28 03:00:06', 1751072406000, '2025-06-28 03:00:07', 'app',      'app_launch',    'launch',  '',        '',         '',         'sess-1003-d', 0, 'ios',     'iOS 18',     '3.0.0', 'appstore',   '120.77.45.99', '深圳', 'CN', 'wifi',  '{}',                   0,    '0',      0, 0, '{}', '{}',                    '', '', 'high','', '{"country":"中国","city":"深圳"}',   'Mozilla/5.0', '', NOW(), NOW()),
 
-       (1, 10005, '2025-05-12 20:10:00', 'web', '2025-05-12', '2026-03-23',
-        18, 0, 'guest', 1230, 45, 0.00, NULL,
-        ['video','browse'], ['news'],
-        70, ['abnormal_location'], 'high', '2026-03-10 12:00:00',
-        {'country':'US','province':'Texas','city':'Dallas','isp':'T-Mobile'}, 'web', 'desktop',
-        {'guild_id':'0','server':'us'}, 1, now(), now()),
+  -- 用户1004 设备异常（美国，代理）
+  ('e-1004-01', 1, 1004, 'dev-1004', 'acc-1004', 'guid-1004', '2025-06-28 14:00:00', 1751104800000, '2025-06-28 14:00:01', 'app',      'app_launch',    'launch',  '',        '',         '',         'sess-1004-a', 0, 'android', 'Android 14', '1.0.0', 'googleplay','198.51.100.1','NewYork','US','vpn',   '{}',                   0,    '0',      0, 0, '{}', '{}',                    '', '', 'critical','', '{"country":"美国","city":"NewYork"}', 'Mozilla/5.0', '', NOW(), NOW()),
 
-       (2, 10006, '2025-06-18 11:50:00', 'wechat_mini', '2025-06-18', '2026-03-26',
-        77, 4, 'vip', 18900, 472, 1860.80, '2026-03-22 19:45:00',
-        ['pay','coupon','shop'], ['food','fresh'],
-        7, [], 'low', NULL,
-        {'country':'SG','province':'Singapore','city':'Singapore','isp':'Singtel'}, 'mini_program', 'mobile',
-        {'guild_id':'3001','server':'sg'}, 1, now(), now()),
+  -- 用户1005 部分漏斗（加购未支付）
+  ('e-1005-01', 1, 1005, 'dev-1005', 'acc-1005', 'guid-1005', '2025-06-28 19:00:00', 1751122800000, '2025-06-28 19:00:01', 'app',      'app_launch',    'launch',  '',        '',         '',         'sess-1005-a', 0, 'ios',     'iOS 17',     '1.2.0', 'appstore',   '121.8.99.22',  '广州', 'CN', 'wifi',  '{}',                   0,    '0',      0, 0, '{}', '{}',                    '', '', '', '',   '{"country":"中国","city":"广州"}',   'Mozilla/5.0', '', NOW(), NOW()),
+  ('e-1005-02', 1, 1005, 'dev-1005', 'acc-1005', 'guid-1005', '2025-06-28 19:00:30', 1751122830000, '2025-06-28 19:00:31', 'page',     'view_home',     'view',    'page',    'home',     '首页',     'sess-1005-a', 1, 'ios',     'iOS 17',     '1.2.0', 'appstore',   '121.8.99.22',  '广州', 'CN', 'wifi',  '{}',                   2800, '0',      0, 0, '{}', '{}',                    '', '', '', '',   '{"country":"中国","city":"广州"}',   'Mozilla/5.0', '', NOW(), NOW()),
+  ('e-1005-03', 1, 1005, 'dev-1005', 'acc-1005', 'guid-1005', '2025-06-28 19:01:20', 1751122880000, '2025-06-28 19:01:21', 'business', 'view_product',  'view',    'product', 'sku_301', '会员服务', 'sess-1005-a', 2, 'ios',     'iOS 17',     '1.2.0', 'appstore',   '121.8.99.22',  '广州', 'CN', 'wifi',  '{}',                   6200, '0',      0, 0, '{}', '{"price":"199"}',       '', '', '', '',   '{"country":"中国","city":"广州"}',   'Mozilla/5.0', '', NOW(), NOW()),
+  ('e-1005-04', 1, 1005, 'dev-1005', 'acc-1005', 'guid-1005', '2025-06-28 19:02:00', 1751122920000, '2025-06-28 19:02:01', 'business', 'add_to_cart',   'click',   'product', 'sku_301', '会员服务', 'sess-1005-a', 3, 'ios',     'iOS 17',     '1.2.0', 'appstore',   '121.8.99.22',  '广州', 'CN', 'wifi',  '{}',                   0,    '199.00', 1, 0, '{}', '{}',                    '', '', '', '',   '{"country":"中国","city":"广州"}',   'Mozilla/5.0', '', NOW(), NOW()),
 
-       (2, 10007, '2025-07-22 15:30:00', 'app_store', '2025-07-22', '2026-03-24',
-        29, 0, 'player', 3870, 96, 0.00, NULL,
-        ['browse','search'], ['fashion'],
-        12, [], 'low', NULL,
-        {'country':'SG','province':'Singapore','city':'Singapore','isp':'StarHub'}, 'ios', 'mobile',
-        {'guild_id':'0','server':'sg'}, 1, now(), now()),
+  -- 补充历史日的事件（为趋势图提供多天数据）
+  ('e-1001-07', 1, 1001, 'dev-1001', 'acc-1001', 'guid-1001', '2025-06-27 10:00:00', 1751004000000, '2025-06-27 10:00:01', 'business', 'pay_success',   'pay',     'order',   'ord-2000', '订单2000', 'sess-1001-b', 5, 'ios',     'iOS 17',     '1.2.0', 'appstore',   '116.23.66.55', '北京', 'CN', 'wifi',  '{}',                   0,    '159.00', 1, 0, '{}', '{}',                    '', '', '', '',   '{"country":"中国","city":"北京"}',   'Mozilla/5.0', '', NOW(), NOW()),
+  ('e-1006-01', 1, 1006, 'dev-1006', 'acc-1006', 'guid-1006', '2025-06-26 10:00:00', 1750917600000, '2025-06-26 10:00:01', 'business', 'pay_success',   'pay',     'order',   'ord-1999', '订单1999', 'sess-1006-a', 3, 'android', 'Android 14', '2.1.0', 'web',        '133.18.44.7',  'Tokyo','JP', 'wifi',  '{}',                   0,    '599.00', 1, 0, '{}', '{}',                    '', '', '', '',   '{"country":"日本","city":"Tokyo"}',  'Mozilla/5.0', '', NOW(), NOW()),
+  ('e-1008-01', 1, 1008, 'dev-1008', 'acc-1008', 'guid-1008', '2025-06-25 09:00:00', 1750831200000, '2025-06-25 09:00:01', 'business', 'pay_success',   'pay',     'order',   'ord-1998', '订单1998', 'sess-1008-a', 4, 'ios',     'iOS 17',     '1.2.0', 'appstore',   '175.45.12.88', 'Seoul','KR', 'wifi',  '{}',                   0,    '880.00', 1, 0, '{}', '{}',                    '', '', '', '',   '{"country":"韩国","city":"Seoul"}',  'Mozilla/5.0', '', NOW(), NOW()),
+  ('e-1010-01', 1, 1010, 'dev-1010', 'acc-1010', 'guid-1010', '2025-06-24 16:00:00', 1750750400000, '2025-06-24 16:00:01', 'business', 'pay_success',   'pay',     'order',   'ord-1997', '订单1997', 'sess-1010-a', 2, 'web',      'macOS 14',   '1.1.0', 'web',        '58.19.44.100', '武汉', 'CN', 'wifi',  '{}',                   0,    '450.00', 1, 0, '{}', '{}',                    '', '', '', '',   '{"country":"中国","city":"武汉"}',   'Mozilla/5.0', '', NOW(), NOW());
 
-       (0, 10008, '2025-08-01 07:15:00', 'huawei', '2025-08-01', '2026-03-26',
-        85, 5, 'vip', 35400, 885, 5280.20, '2026-03-26 09:12:00',
-        ['game','pay'], ['digital'],
-        3, ['high_value'], 'low', NULL,
-        {'country':'CN','province':'Zhejiang','city':'Hangzhou','isp':'ChinaMobile'}, 'android', 'mobile',
-        {'guild_id':'1005','server':'cn'}, 1, now(), now());
+-- ============================================================
+-- 3. 会话事实表 sessions_fact
+-- ============================================================
+INSERT INTO gw_uba.sessions_fact
+  (session_id, tenant_id, user_id, device_id, global_user_id,
+   start_time, end_time, duration_ms, event_count, page_view_count, action_count,
+   entry_page, exit_page, is_bounce, platform, os, app_version, channel,
+   ip, ip_city, country, network, total_amount, pay_event_count,
+   risk_level, risk_tags, context, created_at, updated_at)
+VALUES
+  ('sess-1001-a', 1, 1001, 'dev-1001', 'guid-1001', '2025-06-28 10:00:00', '2025-06-28 10:04:00', 240000, 6, 2, 4,    'home',     'order',   false, 'ios',     'iOS 17',     '1.2.0', 'appstore',   '116.23.66.55', '北京', 'CN', 'wifi', 299.00, 1, 'low',      '[]',                    '{}', NOW(), NOW()),
+  ('sess-1001-b', 1, 1001, 'dev-1001', 'guid-1001', '2025-06-27 10:00:00', '2025-06-27 10:03:00', 180000, 5, 1, 4,    'home',     'order',   false, 'ios',     'iOS 17',     '1.2.0', 'appstore',   '116.23.66.55', '北京', 'CN', 'wifi', 159.00, 1, 'low',      '[]',                    '{}', NOW(), NOW()),
+  ('sess-1002-a', 1, 1002, 'dev-1002', 'guid-1002', '2025-06-28 11:00:00', '2025-06-28 11:00:20',  20000, 2, 1, 1,    'home',     'home',    true,  'android', 'Android 14', '2.1.0', 'wechat',     '114.88.22.11', '上海', 'CN', '4g',     0.00,  0, 'low',      '[]',                    '{}', NOW(), NOW()),
+  ('sess-1003-a', 1, 1003, 'dev-1003', 'guid-1003', '2025-06-28 03:00:00', '2025-06-28 03:00:06',   6000, 4, 0, 4,    '',         '',        true,  'ios',     'iOS 18',     '3.0.0', 'appstore',   '120.77.45.99', '深圳', 'CN', 'wifi',   0.00,  0, 'high',     '["device_anomaly"]',    '{}', NOW(), NOW()),
+  ('sess-1004-a', 1, 1004, 'dev-1004', 'guid-1004', '2025-06-28 14:00:00', '2025-06-28 14:00:30',  30000, 1, 0, 0,    '',         '',        true,  'android', 'Android 14', '1.0.0', 'googleplay','198.51.100.1','NewYork','US','vpn', 0.00,  0, 'critical', '["proxy_detected"]',    '{}', NOW(), NOW()),
+  ('sess-1005-a', 1, 1005, 'dev-1005', 'guid-1005', '2025-06-28 19:00:00', '2025-06-28 19:02:00', 120000, 4, 1, 3,    'home',     'product', false, 'ios',     'iOS 17',     '1.2.0', 'appstore',   '121.8.99.22',  '广州', 'CN', 'wifi', 199.00, 0, 'medium',   '["abnormal_flow"]',     '{}', NOW(), NOW()),
+  ('sess-1006-a', 1, 1006, 'dev-1006', 'guid-1006', '2025-06-26 10:00:00', '2025-06-26 10:05:00', 300000, 4, 1, 3,    'home',     'order',   false, 'android', 'Android 14', '2.1.0', 'web',        '133.18.44.7',  'Tokyo','JP', 'wifi', 599.00, 1, 'low',      '[]',                    '{}', NOW(), NOW()),
+  ('sess-1008-a', 1, 1008, 'dev-1008', 'guid-1008', '2025-06-25 09:00:00', '2025-06-25 09:04:00', 240000, 4, 1, 3,    'home',     'order',   false, 'ios',     'iOS 17',     '1.2.0', 'appstore',   '175.45.12.88', 'Seoul','KR', 'wifi', 880.00, 1, 'medium',   '["location_anomaly"]',  '{}', NOW(), NOW()),
+  ('sess-1010-a', 1, 1010, 'dev-1010', 'guid-1010', '2025-06-24 16:00:00', '2025-06-24 16:02:00', 120000, 2, 1, 1,    'home',     'order',   false, 'web',      'macOS 14',   '1.1.0', 'web',        '58.19.44.100', '武汉', 'CN', 'wifi', 450.00, 1, 'low',      '[]',                    '{}', NOW(), NOW());
 
+-- ============================================================
+-- 4. 风险事件表 risk_events
+-- ============================================================
+INSERT INTO gw_uba.risk_events
+  (risk_event_id, tenant_id, user_id, device_id, global_user_id,
+   risk_type, risk_level, risk_score, rule_id, rule_name,
+   rule_context, related_event_ids, session_id, description, evidence,
+   status, handler_id, handled_time, handle_remark,
+   occur_time, report_time, event_date, created_at, updated_at)
+VALUES
+  ('risk-001', 1, 1003, 'dev-1003', 'guid-1003', 'abnormal_flow',    'high',     75.0, 1, '高频访问检测',
+   '{"threshold":"5/10s"}',     '["e-1003-01","e-1003-02","e-1003-03","e-1003-04"]', 'sess-1003-a',
+   '10秒内触发4次app_launch，疑似脚本刷量', '{"interval_sec":"2","count":"4"}',
+   'pending',      NULL, NULL, NULL,
+   '2025-06-28 03:00:06', '2025-06-28 03:00:07', '2025-06-28', NOW(), NOW()),
 
-INSERT INTO gw_uba.sessions_fact(session_id, tenant_id, user_id, device_id, global_user_id,
-                                 start_time, end_time, duration_ms, event_count, page_view_count, action_count,
-                                 entry_page, exit_page, is_bounce,
-                                 platform, os, app_version, ip_city, country,
-                                 total_amount, pay_event_count,
-                                 risk_level, risk_tags,
-                                 context, created_at, updated_at)
-VALUES ('10001001', 0, 10001, 'device_android_1001', 'GLOBAL_USER_10001',
-        '2026-03-26 10:10:00.456', '2026-03-26 10:15:30.123', 330000, 18, 6, 12,
-        '/home', '/checkout', 0,
-        'android', 'Android 14', 'v2.5.0', 'Beijing', 'CN',
-        688.00, 1,
-        'low', [],
-        {'server_id':'s1','zone':'cn-east','ab_group':'A'}, now(), now()),
+  ('risk-002', 1, 1004, 'dev-1004', 'guid-1004', 'proxy_detected',   'critical', 90.0, 2, '代理/VPN检测',
+   '{"ip":"198.51.100.1"}',     '["e-1004-01"]', 'sess-1004-a',
+   '检测到VPN代理IP，注册地美国，疑似虚拟设备', '{"vpn":true,"country":"US"}',
+   'investigating', NULL, NULL, NULL,
+   '2025-06-28 14:00:30', '2025-06-28 14:00:31', '2025-06-28', NOW(), NOW()),
 
-       ('10002001', 0, 10002, 'device_web_1002', 'GLOBAL_USER_10002',
-        '2026-03-26 11:20:10.789', '2026-03-26 11:22:45.321', 155000, 9, 3, 6,
-        '/list', '/exit', 1,
-        'web', 'Windows 11', 'web', 'Shanghai', 'CN',
-        0.00, 0,
-        'low', [],
-        {'server_id':'s1','zone':'cn-east','ab_group':'B'}, now(), now()),
+  ('risk-003', 1, 1003, 'dev-1003', 'guid-1003', 'fraud_payment',    'high',     80.0, 3, '大额异常支付',
+   '{"amount":"15800.5"}',      '["e-1003-pay"]', 'sess-1003-b',
+   'VIP用户单笔支付15800.5元，超出历史均值10倍', '{"avg_amount":"1500","ratio":"10x"}',
+   'confirmed',     'admin', '2025-06-26 10:00:00', '确认欺诈，已冻结账户',
+   '2025-06-26 03:00:00', '2025-06-26 03:00:01', '2025-06-26', NOW(), NOW()),
 
-       ('10003001', 1, 10003, 'device_ios_1003', 'GLOBAL_USER_10003',
-        '2026-03-26 14:04:30.555', '2026-03-26 14:05:11.222', 41000, 5, 2, 3,
-        '/login', '/pay', 0,
-        'ios', 'iOS 17', 'v2.5.1', 'Guangzhou', 'CN',
-        299.00, 1,
-        'low', [],
-        {'server_id':'us1','zone':'us-west','ab_group':'A'}, now(), now()),
+  ('risk-004', 1, 1005, 'dev-1005', 'guid-1005', 'location_anomaly', 'medium',   30.0, 4, '异地登录检测',
+   '{"prev_city":"上海","curr_city":"广州"}', '["e-1005-01"]', 'sess-1005-a',
+   '用户登录城市从上海突变为广州', '{"distance":"1200km"}',
+   'false_positive', 'admin', '2025-06-24 22:00:00', '用户出差，确认误报',
+   '2025-06-24 22:00:00', '2025-06-24 22:00:01', '2025-06-24', NOW(), NOW()),
 
-       ('10004001', 1, 0, 'device_anon_1004', '',
-        '2026-03-26 15:30:00.111', '2026-03-26 15:38:22.333', 502000, 24, 8, 16,
-        '/ad', '/close', 0,
-        'android', 'Android 13', 'v2.4.0', 'Dallas', 'US',
-        0.00, 0,
-        'RISK_LEVEL_SUSPICIOUS', ['abnormal_location'],
-        {'server_id':'us1','zone':'us-west','ab_group':'B'}, now(), now()),
+  ('risk-005', 1, 1008, 'dev-1008', 'guid-1008', 'location_anomaly', 'medium',   45.0, 4, '异地登录检测',
+   '{"prev_city":"北京","curr_city":"Seoul"}', '["e-1008-01"]', 'sess-1008-a',
+   '用户登录地从北京变为韩国首尔', '{"distance":"950km"}',
+   'ignored',       'admin', '2025-06-23 02:00:00', '海外业务，正常',
+   '2025-06-23 02:00:00', '2025-06-23 02:00:01', '2025-06-23', NOW(), NOW());
 
-       ('10005001', 2, 10004, 'device_mini_1005', 'GLOBAL_USER_10004',
-        '2026-03-26 16:37:20.999', '2026-03-26 16:40:15.666', 175000, 12, 4, 8,
-        '/wechat_mini', '/coupon', 0,
-        'mini_program', 'WeChat', 'v1.8.0', 'Singapore', 'SG',
-        99.00, 1,
-        'low', [],
-        {'server_id':'sg1','zone':'sg','ab_group':'A'}, now(), now()),
-
-       ('10006001', 2, 10005, 'device_web_1006', 'GLOBAL_USER_10005',
-        '2026-03-26 17:10:05.444', '2026-03-26 17:10:15.777', 10000, 2, 1, 1,
-        '/push', '/back', 1,
-        'web', 'MacOS', 'web', 'Singapore', 'SG',
-        0.00, 0,
-        'low', [],
-        {'server_id':'sg1','zone':'sg','ab_group':'B'}, now(), now()),
-
-       ('10001002', 0, 10001, 'device_android_1001', 'GLOBAL_USER_10001',
-        '2026-03-26 19:18:10.456', '2026-03-26 19:20:30.123', 140000, 10, 3, 7,
-        '/member', '/repay', 0,
-        'android', 'Android 14', 'v2.5.0', 'Beijing', 'CN',
-        399.00, 1,
-        'low', [],
-        {'server_id':'s1','zone':'cn-east','ab_group':'A'}, now(), now()),
-
-       ('10007001', 0, 10006, 'device_web_1007', 'GLOBAL_USER_10006',
-        '2026-03-26 20:03:00.666', '2026-03-26 20:05:10.333', 130000, 8, 3, 5,
-        '/search', '/buy', 0,
-        'web', 'Windows 11', 'web', 'Hangzhou', 'CN',
-        158.00, 1,
-        'low', [],
-        {'server_id':'s1','zone':'cn-east','ab_group':'A'}, now(), now());
-
-
-INSERT INTO gw_uba.risk_events(risk_event_id, tenant_id, user_id, device_id, global_user_id,
-                               risk_type, risk_level, risk_score, rule_id, rule_name, rule_context,
-                               related_event_ids, session_id, description, evidence,
-                               status, handler_id, handled_time, occur_time, report_time, created_at, updated_at)
-VALUES (1, 0, 10001, 'device_android_1001', 'GLOBAL_USER_10001',
-        'login_anomaly', 'high', 92.5, 1, '频繁登录失败',
-        {'threshold':'5','window':'300s','current':'8'},
-        ['EVT_001','EVT_002','EVT_003'], '10001001',
-        '10分钟内登录失败8次，超过阈值5次',
-        {'ip':'123.123.123.123','location':'Beijing','device':'Android 14'},
-        'PENDING', '', '1970-01-01 00:00:00.000',
-        '2026-03-26 10:10:00.123', '2026-03-26 10:10:00.456', now(), now()),
-
-       (2, 0, 10003, 'device_ios_1003', 'GLOBAL_USER_10003',
-        'payment', 'critical', 98.8, 2, '大额支付检测', {'threshold':'5000','amount':'6888'},
-        ['EVT_004','EVT_005'], '10003001',
-        '单笔支付金额6888元，超过阈值5000元',
-        {'ip':'119.119.119.119','location':'Guangzhou','device':'iOS 17'},
-        'CONFIRMED', 'admin_001', '2026-03-26 14:06:00.123',
-        '2026-03-26 14:05:00.234', '2026-03-26 14:05:00.567', now(), now()),
-
-       (3, 1, 0, 'device_anon_1004', '',
-        'location', 'suspicious', 65.2, 3, '异地登录检测',
-        {'usual_city':'NewYork','current':'Dallas'},
-        ['EVT_006'], '10004001',
-        '登录城市与常用城市不一致，异地访问',
-        {'ip':'150.150.150.150','location':'Dallas','device':'Android 13'},
-        'FALSE_POSITIVE', 'admin_002', '2026-03-26 15:40:00.333',
-        '2026-03-26 15:30:00.666', '2026-03-26 15:30:00.999', now(), now()),
-
-       (4, 1, 10005, 'device_web_1006', 'GLOBAL_USER_10005',
-        'flow', 'critical', 72.0, 4, '频繁下单检测',
-        {'window':'24h','threshold':'20','count':'27'},
-        ['EVT_007','EVT_008','EVT_009'], '10006001',
-        '24小时内下单27次，超过阈值20次',
-        {'ip':'180.180.180.180','location':'Singapore','device':'Windows 11'},
-        'PENDING', '', '1970-01-01 00:00:00.000',
-        '2026-03-26 17:10:00.111', '2026-03-26 17:10:00.222', now(), now()),
-
-       (5, 2, 10004, 'device_mini_1005', 'GLOBAL_USER_10004',
-        'device_change', 'high', 89.9, 5, '风险设备检测', {'risk_device':'true','simulator':'yes'},
-        ['EVT_010'], '10005001',
-        '使用模拟器/越狱设备登录，设备风险',
-        {'ip':'168.168.168.168','location':'Singapore','device':'WeChat MiniProgram'},
-        'IGNORED', 'admin_003', '2026-03-26 16:45:00.444',
-        '2026-03-26 16:40:00.555', '2026-03-26 16:40:00.777', now(), now()),
-
-       (6, 0, 10008, 'device_android_1008', 'GLOBAL_USER_10008',
-        'brute_force', 'critical', 95.0, 1, '暴力破解尝试', {'threshold':'10','fail_count':'15'},
-        ['EVT_011','EVT_012','EVT_013'], '10007001',
-        '1小时内密码尝试失败15次，疑似暴力破解',
-        {'ip':'192.168.1.1','location':'Hangzhou','device':'Android 14'},
-        'CONFIRMED', 'admin_001', '2026-03-26 20:10:00.123',
-        '2026-03-26 20:05:00.333', '2026-03-26 20:05:00.666', now(), now());
-
-
-INSERT INTO gw_uba.objects_dim(object_id, tenant_id, object_type, object_name, category_path,
-                               price, currency, rarity, attributes,
-                               status, valid_from, valid_to, created_at, updated_at)
-VALUES ('sku_10001', 0, 'product', 'iPhone 15', 'electronics/mobile/phone',
-        5999.00, 'CNY', 'N', {'color':'white','storage':'256G','cpu':'a16'},
-        'online', '2025-01-01 00:00:00', NULL, now(), now()),
-
-       ('item_20001', 0, 'game_item', '屠龙刀', 'game/equipment/weapon',
-        888.00, 'DIAMOND', 'SSR', {'attack':'150','durability':'100','type':'sword'},
-        'online', '2025-02-01 00:00:00', NULL, now(), now()),
-
-       ('page_home', 0, 'page', '首页', 'page/index/main',
-        0.00, 'CNY', 'N', {'layout':'double','need_login':'false'},
-        'online', '2025-01-01 00:00:00', NULL, now(), now()),
-
-       ('level_1_001', 1, 'level', '第一关', 'game/level/chapter1',
-        0.00, 'CNY', 'N', {'difficulty':'easy','reward':'coin','star':'3'},
-        'online', '2025-03-01 00:00:00', NULL, now(), now()),
-
-       ('art_30001', 1, 'article', '新手入门攻略', 'content/article/guide',
-        0.00, 'CNY', 'N', {'author':'system','read_time':'5min','topic':'beginner'},
-        'online', '2025-04-01 00:00:00', NULL, now(), now()),
-
-       ('sku_40001', 2, 'product', '夏季纯棉T恤', 'clothes/casual/tshirt',
-        99.00, 'CNY', 'N', {'color':'black','size':'XL','material':'cotton'},
-        'offline', '2025-01-01 00:00:00', '2026-01-01 00:00:00', now(), now()),
-
-       ('api_user_info', 2, 'api', '用户信息接口', 'api/user/basic',
-        0.00, 'CNY', 'N', {'method':'GET','rate_limit':'100','version':'v1'},
-        'online', '2025-05-01 00:00:00', NULL, now(), now());
+-- ============================================================
+-- 数据说明
+-- ============================================================
+-- 上述数据覆盖以下 BI 场景：
+--   1. 事件趋势：events_fact 跨 5 天（6/24~6/28），可画趋势线
+--   2. 漏斗分析：app_launch→view_home→view_product→add_to_cart→submit_order→pay_success
+--      （用户1001 完整转化，1005 转化中断，1002 跳出）
+--   3. 留存分析：1001/1005/1008 在多天有活跃，可算留存矩阵
+--   4. 维度分组：platform(ios/android/web)、channel(appstore/wechat/googleplay/web)、
+--      country(CN/US/JP/KR)、event_name 都有分布
+--   5. 实时大屏：risk_events 含 5 条不同等级/类型/状态的告警
+--   6. 会话分析：跳出会话(1002/1003/1004)、转化会话(1001/1006/1008/1010)
+--   7. 行为时间轴：按 user_id=1001 可查到完整 6 步漏斗事件序列

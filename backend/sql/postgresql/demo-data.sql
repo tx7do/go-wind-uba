@@ -1,531 +1,194 @@
-﻿-- 插入 uba_tag_definitions 测试数据
-INSERT INTO public.uba_tag_definitions (
-    created_at,
-    updated_at,
-    deleted_at,
-    created_by,
-    updated_by,
-    deleted_by,
-    tenant_id,
-    name,
-    description,
-    category,
-    tag_type,
-    rule,
-    allowed_values,
-    is_system,
-    is_dynamic,
-    refresh_interval_seconds,
-    code
-)
+-- ============================================================
+-- PostgreSQL 业务数据 Demo（ent 实体表）
+-- 说明：UBA 平台业务/配置数据。这些表由 ent ORM 管理（PostgreSQL）。
+--       配合 doris_demo_data.sql（分析事实表）使用，构成完整的可演示数据集。
+--       tenant_id=1（默认租户）。
+-- 用法：psql -h <pg_host> -U <user> -d <db> -f postgres_demo_data.sql
+-- ============================================================
+
+-- ============================================================
+-- 1. UBA 应用表 uba_applications（SDK 接入用的应用）
+--    appId/appSecret 是 SDK 上报鉴权凭据
+-- ============================================================
+DELETE FROM uba_applications WHERE tenant_id = 1 AND app_id IN ('demo_game_001', 'demo_shop_002', 'demo_content_003');
+
+INSERT INTO uba_applications
+  (created_at, updated_at, created_by, updated_by, tenant_id,
+   name, app_id, app_key, app_secret, type, status, platforms, remark, desensitize, webhook_url, webhook_secret)
 VALUES
-    -- 1. 系统基础标签 - 性别（静态标签）
-    (NOW(), NOW(), NULL, 1001, 1001, NULL, 0,
-     '用户性别', '标识用户的性别信息', 'user', 'string',
-     '{}',
-     '[]',
-     TRUE, FALSE, 0, 'USER_GENDER'),
+  (NOW(), NOW(), 1, 1, 1,
+   '示例游戏App', 'demo_game_001', 'key_game_001', 'secret_game_001_aB3xK9', 'game', 'ON',
+   '["ios","android"]',
+   'Unity 游戏接入示例', false, '', ''),
+  (NOW(), NOW(), 1, 1, 1,
+   '示例电商小程序', 'demo_shop_002', 'key_shop_002', 'secret_shop_002_mN7pQ2', 'ecommerce', 'ON',
+   '["web","mini_program"]',
+   '微信小程序商城接入示例', true, 'https://example.com/webhook', 'wh_secret_002'),
+  (NOW(), NOW(), 1, 1, 1,
+   '示例内容平台', 'demo_content_003', 'key_content_003', 'secret_content_003_rT5wL8', 'content', 'ON',
+   '["ios","android","web"]',
+   '内容资讯平台接入示例', false, '', '');
 
-    -- 2. 动态计算标签 - 近30天活跃用户（自动刷新）
-    (NOW(), NOW(), NULL, 1001, 1002, NULL, 0,
-     '近30天活跃用户', '最近30天有行为记录的用户', 'behavior', 'list',
-     '{"event":"user_active","days":"30","operator":"gte","count":"1"}',
-     '[]',
-     FALSE, TRUE, 3600, 'ACTIVE_USER_30D'),
+-- ============================================================
+-- 2. 事件 Schema 定义表 uba_event_schemas（事件元数据管理）
+--    登记合法事件名 + 属性 schema，用于上报校验
+-- ============================================================
+DELETE FROM uba_event_schemas WHERE tenant_id = 1 AND event_name IN
+  ('app_launch', 'view_home', 'view_product', 'add_to_cart', 'submit_order', 'pay_success', 'click');
 
-    -- 3. 枚举标签 - 会员等级
-    (NOW(), NOW(), NULL, 1002, 1002, NULL, 1,
-     '会员等级', '用户付费会员等级', 'behavior', 'enum',
-     '{}',
-     '[]',
-     FALSE, FALSE, 0, 'MEMBER_LEVEL'),
-
-    -- 4. 系统标签 - 用户注册渠道
-    (NOW(), NOW(), NULL, 1001, 1001, NULL, 0,
-     '注册渠道', '用户注册来源渠道', 'risk', 'string',
-     '{}',
-     '[]',
-     TRUE, FALSE, 0, 'REGISTER_CHANNEL'),
-
-    -- 5. 动态标签 - 高消费用户（月消费>1000元）
-    (NOW(), NOW(), NULL, 1003, 1003, NULL, 1,
-     '高价值消费用户', '近30天累计消费金额大于1000元', 'risk', 'list',
-     '{"metric":"order_amount","days":"30","operator":"gt","value":"1000"}',
-     '[]',
-     FALSE, TRUE, 1800, 'HIGH_VALUE_USER'),
-
-    -- 6. 业务标签 - 商品偏好类型
-    (NOW(), NOW(), NULL, 1002, 1004, NULL, 2,
-     '商品偏好类型', '用户常购买的商品类型', 'business', 'string',
-     '{}',
-     '[]',
-     FALSE, FALSE, 0, 'GOODS_PREFERENCE'),
-
-    -- 7. 已删除标签（测试软删除）
-    (NOW(), NOW(), NOW() - INTERVAL '7 days', 1001, 1005, 1005, 0,
-     '旧版测试标签', '已废弃的测试标签', 'business', 'string',
-     '{}',
-     '[]',
-     FALSE, FALSE, 0, 'OLD_TEST_TAG'),
-
-    -- 8. 无刷新间隔静态标签
-    (NOW(), NOW(), NULL, 1004, 1004, NULL, 2,
-     '用户年龄段', '按年龄划分的用户群体', 'risk', 'string',
-     '{}',
-     '[]',
-     FALSE, FALSE, 0, 'USER_AGE_GROUP');
-
-
--- 插入 uba_user_tags 用户标签测试数据
-INSERT INTO public.uba_user_tags (
-    tenant_id,
-    created_at,
-    updated_at,
-    deleted_at,
-    created_by,
-    updated_by,
-    deleted_by,
-    user_id,
-    tag_id,
-    value,
-    value_label,
-    confidence,
-    source,
-    source_rule_id,
-    effective_time,
-    expire_time,
-    is_active
-)
+INSERT INTO uba_event_schemas
+  (created_at, updated_at, created_by, updated_by, tenant_id,
+   event_name, display_name, category, description, properties, status)
 VALUES
-    -- 1. 用户10001：性别-男（静态标签，tag_id=1）
-    (0, NOW(), NOW(), NULL, 1001, 1001, NULL,
-     10001, 1, 'male', '男', 1.0,
-     'manual', NULL, NOW() - INTERVAL '365 days', NULL, TRUE),
+  (NOW(), NOW(), 1, 1, 1,
+   'app_launch', '应用启动', 'app', '用户打开应用时触发',
+   '[{"name":"scene","type":"string","displayName":"启动场景","required":false},{"name":"duration_ms","type":"int","displayName":"冷启动耗时","required":false}]'::jsonb,
+   'ENABLED'),
+  (NOW(), NOW(), 1, 1, 1,
+   'view_home', '浏览首页', 'page', '用户进入首页',
+   '[{"name":"source","type":"string","displayName":"来源","required":false},{"name":"duration_ms","type":"int","displayName":"停留时长","required":false}]'::jsonb,
+   'ENABLED'),
+  (NOW(), NOW(), 1, 1, 1,
+   'view_product', '浏览商品', 'business', '用户查看商品详情',
+   '[{"name":"product_id","type":"string","displayName":"商品ID","required":true},{"name":"price","type":"double","displayName":"价格","required":false}]'::jsonb,
+   'ENABLED'),
+  (NOW(), NOW(), 1, 1, 1,
+   'add_to_cart', '加入购物车', 'business', '用户将商品加入购物车',
+   '[{"name":"product_id","type":"string","displayName":"商品ID","required":true},{"name":"quantity","type":"int","displayName":"数量","required":false}]'::jsonb,
+   'ENABLED'),
+  (NOW(), NOW(), 1, 1, 1,
+   'submit_order', '提交订单', 'business', '用户提交订单',
+   '[{"name":"order_id","type":"string","displayName":"订单ID","required":true},{"name":"amount","type":"double","displayName":"金额","required":true}]'::jsonb,
+   'ENABLED'),
+  (NOW(), NOW(), 1, 1, 1,
+   'pay_success', '支付成功', 'business', '用户支付成功（核心转化事件）',
+   '[{"name":"order_id","type":"string","displayName":"订单ID","required":true},{"name":"amount","type":"double","displayName":"支付金额","required":true},{"name":"pay_method","type":"string","displayName":"支付方式","required":false}]'::jsonb,
+   'ENABLED'),
+  (NOW(), NOW(), 1, 1, 1,
+   'click', '点击事件', 'interaction', '通用点击事件',
+   '[{"name":"element","type":"string","displayName":"元素","required":true},{"name":"page","type":"string","displayName":"页面","required":false}]'::jsonb,
+   'ENABLED');
 
-    -- 2. 用户10001：会员等级-金卡（tag_id=3）
-    (1, NOW(), NOW(), NULL, 1002, 1002, NULL,
-     10001, 3, 'gold', '金卡会员', 1.0,
-     'rule', 1001, NOW() - INTERVAL '180 days', NOW() + INTERVAL '180 days', TRUE),
+-- ============================================================
+-- 3. 风险规则表 uba_risk_rules（风控引擎规则）
+--    rule_expression 用 CEL 表达式，rule_config 是 JSON 配置
+-- ============================================================
+DELETE FROM uba_risk_rules WHERE tenant_id = 1 AND code IN
+  ('high_freq_access', 'proxy_vpn_detect', 'large_amount_payment', 'geo_anomaly_login', 'device_fingerprint_change');
 
-    -- 3. 用户10001：近30天活跃用户（动态标签，tag_id=2）
-    (0, NOW(), NOW(), NULL, 1001, 1001, NULL,
-     10001, 2, 'true', '活跃用户', 0.98,
-     'rule', 2001, NOW() - INTERVAL '7 days', NOW() + INTERVAL '30 days', TRUE),
-
-    -- 4. 用户10002：性别-女（tag_id=1）
-    (0, NOW(), NOW(), NULL, 1001, 1001, NULL,
-     10002, 1, 'female', '女', 1.0,
-     'manual', NULL, NOW() - INTERVAL '200 days', NULL, TRUE),
-
-    -- 5. 用户10002：注册渠道-微信小程序（tag_id=4）
-    (0, NOW(), NOW(), NULL, 1001, 1001, NULL,
-     10002, 4, 'wechat_mini', '微信小程序', 1.0,
-     'rule', NULL, NOW() - INTERVAL '200 days', NULL, TRUE),
-
-    -- 6. 用户10003：高价值消费用户（动态标签，tag_id=5）
-    (1, NOW(), NOW(), NULL, 1003, 1003, NULL,
-     10003, 5, 'true', '高价值用户', 0.95,
-     'rule', 2002, NOW() - INTERVAL '15 days', NOW() + INTERVAL '15 days', TRUE),
-
-    -- 7. 用户10003：商品偏好-电子产品（tag_id=6）
-    (2, NOW(), NOW(), NULL, 1002, 1004, NULL,
-     10003, 6, 'electronics', '电子产品', 0.92,
-     'model', 3001, NOW() - INTERVAL '60 days', NULL, TRUE),
-
-    -- 8. 用户10004：年龄段-19-30岁（tag_id=8）
-    (2, NOW(), NOW(), NULL, 1004, 1004, NULL,
-     10004, 8, '19-30', '19-30岁', 1.0,
-     'manual', NULL, NOW() - INTERVAL '90 days', NULL, TRUE),
-
-    -- 9. 已过期标签（测试过期逻辑）
-    (0, NOW(), NOW(), NULL, 1001, 1001, NULL,
-     10004, 3, 'normal', '普通会员', 1.0,
-     'model', 1002, NOW() - INTERVAL '365 days', NOW() - INTERVAL '10 days', FALSE),
-
-    -- 10. 软删除标签（测试软删除）
-    (0, NOW(), NOW(), NOW() - INTERVAL '5 days', 1001, 1005, 1005,
-     10005, 7, 'test', '测试标签', 1.0,
-     'import', NULL, NOW() - INTERVAL '30 days', NOW() - INTERVAL '10 days', FALSE);
-
-
--- 插入 uba_id_mappings 用户ID映射测试数据
-INSERT INTO public.uba_id_mappings (
-    tenant_id,
-    created_by,
-    updated_by,
-    deleted_by,
-    created_at,
-    updated_at,
-    deleted_at,
-    global_user_id,
-    id_type,
-    id_value,
-    confidence,
-    link_source,
-    first_seen,
-    last_seen,
-    is_active,
-    properties
-)
+INSERT INTO uba_risk_rules
+  (created_at, updated_at, created_by, updated_by, tenant_id,
+   name, description, risk_type, default_level, "condition", actions,
+   enabled, priority, code, rule_expression, rule_config, exec_mode, trigger_count, last_triggered_at)
 VALUES
-    -- 1. 用户 10001 - 手机号ID映射（主映射）
-    (0, 1001, 1001, NULL,
-     NOW(), NOW(), NULL,
-     'GLOBAL_USER_10001',
-     'phone',
-     '13800138000',
-     1.0,
-     'login',
-     NOW() - INTERVAL '365 days',
-     NOW(),
-     TRUE,
-     '{"operator":"中国移动","city":"北京","register_channel":"APP"}'),
+  (NOW(), NOW(), 1, 1, 1,
+   '高频访问检测', '同一用户10秒内触发同一事件超过5次',
+   'abnormal_flow', 'high',
+   '{"window":"10s","threshold":5}'::jsonb,
+   '[{"type":"alert","level":"high"}]'::jsonb,
+   true, 10, 'high_freq_access',
+   'count(events where user_id == ctx.user_id and event_name == ctx.event_name within "10s") > 5',
+   '{"metric":"event_count","window":"10s","threshold":5}'::jsonb,
+   'REALTIME', 142, '2025-06-28 03:00:06'),
 
-    -- 2. 用户 10001 - 微信OPENID映射
-    (0, 1001, 1001, NULL,
-     NOW(), NOW(), NULL,
-     'GLOBAL_USER_10001',
-     'openid',
-     'oVwx1s5XKZLH7aQ8bZ9xY0c1D2e',
-     0.99,
-     'wechat_auth',
-     NOW() - INTERVAL '300 days',
-     NOW(),
-     TRUE,
-     '{"nickname":"追风少年","gender":"male","subscribe_time":"2025-05-20"}'),
+  (NOW(), NOW(), 1, 1, 1,
+   '代理/VPN检测', '检测到用户使用VPN或代理IP',
+   'proxy_detected', 'critical',
+   '{"check_vpn":true}'::jsonb,
+   '[{"type":"alert","level":"critical"},{"type":"block"}]'::jsonb,
+   true, 5, 'proxy_vpn_detect',
+   'request.ip in KNOWN_VPN_RANGE or geo.country != user.register_country',
+   '{"check_vpn":true,"ip_db":"maxmind"}'::jsonb,
+   'REALTIME', 38, '2025-06-28 14:00:30'),
 
-    -- 3. 用户 10002 - 手机号ID映射
-    (0, 1001, 1001, NULL,
-     NOW(), NOW(), NULL,
-     'GLOBAL_USER_10002',
-     'phone',
-     '13900139000',
-     1.0,
-     'login',
-     NOW() - INTERVAL '200 days',
-     NOW() - INTERVAL '1 days',
-     TRUE,
-     '{"operator":"中国联通","city":"上海","register_channel":"H5"}'),
+  (NOW(), NOW(), 1, 1, 1,
+   '大额异常支付', '单笔支付金额超过用户历史均值10倍',
+   'fraud_payment', 'high',
+   '{"ratio_threshold":10}'::jsonb,
+   '[{"type":"alert","level":"high"},{"type":"freeze_account"}]'::jsonb,
+   true, 20, 'large_amount_payment',
+   'event.amount > user.avg_pay_amount * 10 and event.amount > 5000',
+   '{"ratio_threshold":10,"min_amount":5000}'::jsonb,
+   'REALTIME', 12, '2025-06-26 03:00:00'),
 
-    -- 4. 用户 10002 - 设备ID映射
-    (0, 1001, 1001, NULL,
-     NOW(), NOW(), NULL,
-     'GLOBAL_USER_10002',
-     'device_id',
-     '867530912345678',
-     0.95,
-     'device_bind',
-     NOW() - INTERVAL '200 days',
-     NOW() - INTERVAL '2 days',
-     TRUE,
-     '{"device_type":"mobile","os_version":"Android 14","brand":"Xiaomi"}'),
+  (NOW(), NOW(), 1, 1, 1,
+   '异地登录检测', '用户登录城市与上次登录城市距离超过阈值',
+   'location_anomaly', 'medium',
+   '{"distance_km":500}'::jsonb,
+   '[{"type":"alert","level":"medium"},{"type":"verify"}]'::jsonb,
+   true, 50, 'geo_anomaly_login',
+   'distance(geo.city, user.last_login_city) > 500',
+   '{"distance_km":500}'::jsonb,
+   'REALTIME', 256, '2025-06-24 22:00:00'),
 
-    -- 5. 用户 10003 - 手机号ID映射（租户1）
-    (1, 1003, 1003, NULL,
-     NOW(), NOW(), NULL,
-     'GLOBAL_USER_10003',
-     'phone',
-     '13700137000',
-     1.0,
-     'login',
-     NOW() - INTERVAL '180 days',
-     NOW(),
-     TRUE,
-     '{"operator":"中国电信","city":"广州","register_channel":"微信小程序"}'),
+  (NOW(), NOW(), 1, 1, 1,
+   '设备指纹变更', '同一用户短时间内设备指纹变更',
+   'device_change', 'medium',
+   '{"window":"1h"}'::jsonb,
+   '[{"type":"alert","level":"medium"}]'::jsonb,
+   false, 60, 'device_fingerprint_change',
+   'event.device_id != user.last_device_id within "1h"',
+   '{"window":"1h"}'::jsonb,
+   'BATCH', 5, NULL);
 
-    -- 6. 用户 10004 - 手机号ID映射（租户2）
-    (2, 1004, 1004, NULL,
-     NOW(), NOW(), NULL,
-     'GLOBAL_USER_10004',
-     'phone',
-     '13600136000',
-     1.0,
-     'login',
-     NOW() - INTERVAL '90 days',
-     NOW() - INTERVAL '5 days',
-     TRUE,
-     '{"operator":"中国移动","city":"深圳","register_channel":"抖音"}'),
+-- ============================================================
+-- 4. 标签定义表 uba_tag_definitions（用户标签体系）
+-- ============================================================
+DELETE FROM uba_tag_definitions WHERE tenant_id = 1 AND code IN
+  ('vip_level', 'pay_user', 'high_risk_user', 'churn_risk', 'new_user');
 
-    -- 7. 用户 10004 - 邮箱ID映射
-    (2, 1004, 1004, NULL,
-     NOW(), NOW(), NULL,
-     'GLOBAL_USER_10004',
-     'email',
-     'user10004@test.com',
-     0.98,
-     'email_bind',
-     NOW() - INTERVAL '60 days',
-     NOW() - INTERVAL '5 days',
-     TRUE,
-     '{"email_verified":"true","receive_marketing":"true"}'),
-
-    -- 8. 已软删除的废弃ID映射
-    (0, 1001, 1005, 1005,
-     NOW(), NOW(), NOW() - INTERVAL '7 days',
-     'GLOBAL_USER_10005',
-     'device_id',
-     '00000000123456789',
-     0.8,
-     'deprecated',
-     NOW() - INTERVAL '365 days',
-     NOW() - INTERVAL '30 days',
-     FALSE,
-     '{"reason":"设备更换","status":"invalid"}'),
-
-    -- 9. 用户 10001 - 支付宝ID映射
-    (0, 1001, 1001, NULL,
-     NOW(), NOW(), NULL,
-     'GLOBAL_USER_10001',
-     'openid',
-     '2088123456789012',
-     0.99,
-     'alipay_auth',
-     NOW() - INTERVAL '100 days',
-     NOW(),
-     TRUE,
-     '{"auth_status":"authorized","last_use_time":"2026-03-20"}');
-
-
--- 插入 uba_webhooks 测试数据
-INSERT INTO public.uba_webhooks (
-    created_at,
-    updated_at,
-    deleted_at,
-    created_by,
-    updated_by,
-    deleted_by,
-    tenant_id,
-    name,
-    url,
-    secret,
-    event_types,
-    enabled,
-    last_triggered_at,
-    failure_count,
-    app_id
-)
+INSERT INTO uba_tag_definitions
+  (created_at, updated_at, created_by, updated_by, tenant_id,
+   name, code, description, category, tag_type,
+   is_system, is_dynamic, refresh_interval_seconds, condition_expr, default_value, status)
 VALUES
-    -- 1. 租户0：用户标签变更回调（启用）
-    (NOW(), NOW(), NULL, 1001, 1001, NULL, 0,
-     '用户标签更新通知',
-     'https://api.xxx.com/webhook/tag_change',
-     'whsec_1234567890abcdef',
-     '["tag.created","tag.updated","tag.deleted"]',
-     true,
-     NOW() - INTERVAL '1 hour',
-     0,
-     '1001'),
+  (NOW(), NOW(), 1, 1, 1,
+   'VIP等级', 'vip_level', '用户VIP等级标签（0-5）',
+   'TAG_CATEGORY_USER', 'TAG_TYPE_ENUM',
+   true, true, 3600,
+   'user.vip_level',
+   '0', 'ON'),
 
-    -- 2. 租户0：用户支付成功回调（启用）
-    (NOW(), NOW(), NULL, 1001, 1001, NULL, 0,
-     '支付成功通知',
-     'https://api.xxx.com/webhook/pay_success',
-     'whsec_abcdef1234567890',
-     '["order.paid","order.refund"]',
-     true,
-     NOW() - INTERVAL '30 minutes',
-     1,
-     '1001'),
+  (NOW(), NOW(), 1, 1, 1,
+   '付费用户', 'pay_user', '是否有付费记录',
+   'TAG_CATEGORY_BUSINESS', 'TAG_TYPE_BOOLEAN',
+   true, true, 1800,
+   'count(events where event_name == "pay_success" and user_id == ctx.user_id) > 0',
+   'false', 'ON'),
 
-    -- 3. 租户1：用户登录事件回调（禁用）
-    (NOW(), NOW(), NULL, 1002, 1002, NULL, 1,
-     '用户登录通知',
-     'https://api.yyy.com/webhook/user_login',
-     'whsec_0987654321fedcba',
-     '["user.login","user.logout"]',
-     false,
-     NULL,
-     5,
-     '1002'),
+  (NOW(), NOW(), 1, 1, 1,
+   '高风险用户', 'high_risk_user', '风险等级为 high 或 critical 的用户',
+   'TAG_CATEGORY_RISK', 'TAG_TYPE_BOOLEAN',
+   true, true, 600,
+   'user.risk_level in ["high","critical"]',
+   'false', 'ON'),
 
-    -- 4. 租户1：会话结束回调（启用）
-    (NOW(), NOW(), NULL, 1002, 1003, NULL, 1,
-     '会话结束通知',
-     'https://api.yyy.com/webhook/session_end',
-     'whsec_fedcba0987654321',
-     '["session.start","session.end"]',
-     true,
-     NOW() - INTERVAL '2 hours',
-     0,
-     '1002'),
+  (NOW(), NOW(), 1, 1, 1,
+   '流失风险用户', 'churn_risk', '7天内未活跃的用户',
+   'TAG_CATEGORY_BEHAVIOR', 'TAG_TYPE_BOOLEAN',
+   false, true, 86400,
+   'now() - user.last_active_date > 7d',
+   'false', 'ON'),
 
-    -- 5. 租户2：风险事件回调（启用）
-    (NOW(), NOW(), NULL, 1004, 1004, NULL, 2,
-     '用户风险预警通知',
-     'https://api.zzz.com/webhook/risk_alert',
-     'whsec_risk1234567890abc',
-     '["user.risk.high","user.risk.medium"]',
-     true,
-     NOW() - INTERVAL '15 minutes',
-     2,
-     '1003'),
+  (NOW(), NOW(), 1, 1, 1,
+   '新用户', 'new_user', '注册7天内的用户',
+   'TAG_CATEGORY_USER', 'TAG_TYPE_BOOLEAN',
+   true, true, 3600,
+   'now() - user.register_time <= 7d',
+   'false', 'ON');
 
-    -- 6. 已软删除的废弃回调
-    (NOW(), NOW(), NOW() - INTERVAL '7 days', 1001, 1005, 1005, 0,
-     '旧版测试回调',
-     'https://api.old.com/webhook/test',
-     'whsec_old1234567890',
-     '["test.event"]',
-     false,
-     NOW() - INTERVAL '10 days',
-     99,
-     '1001');
-
-
--- ==============================================
--- UBA_APPLICATIONS 测试数据（8条，覆盖所有场景）
--- ==============================================
-INSERT INTO public.uba_applications (
-    tenant_id,
-    name,
-    app_id,
-    app_key,
-    app_secret,
-    type,
-    status,
-    platforms,
-    remark,
-    desensitize,
-    webhook_url,
-    webhook_secret,
-    created_at,
-    updated_at,
-    created_by
-)
-VALUES
-    -- 1. 租户0：官方游戏应用
-    (0,
-     '全民游戏',
-     'game_global_001',
-     'app_key_game_0001',
-     'app_secret_abc123456789',
-     'game',
-     'ON',
-     '["ios","android","web"]',
-     '官方游戏大盘，全端数据采集',
-     true,
-     'https://open.example.com/webhook/game',
-     'wh_sec_2025_game',
-     now() - interval '90 day',
-     now() - interval '10 day',
-     1001
-    ),
-    -- 2. 租户0：电商平台
-    (0,
-     '优选电商',
-     'ecommerce_global_001',
-     'app_key_ec_0002',
-     'app_secret_def987654321',
-     'ecommerce',
-     'ON',
-     '["ios","android","h5","mini_program"]',
-     '电商行为分析：浏览、加购、支付',
-     true,
-     'https://open.example.com/webhook/ecommerce',
-     'wh_sec_2025_ec',
-     now() - interval '80 day',
-     now() - interval '5 day',
-     1001
-    ),
-    -- 3. 租户1：工具类应用
-    (1,
-     '清理大师',
-     'tool_tenant1_001',
-     'app_key_tool_0003',
-     'app_secret_xyz1122334455',
-     'tool',
-     'ON',
-     '["android"]',
-     '工具类APP，用户行为分析',
-     false,
-     '',
-     '',
-     now() - interval '60 day',
-     now() - interval '2 day',
-     1002
-    ),
-    -- 4. 租户1：内容资讯
-    (1,
-     '头条资讯',
-     'content_tenant1_001',
-     'app_key_ct_0004',
-     'app_secret_klm5566778899',
-     'content',
-     'ON',
-     '["ios","android","web"]',
-     '内容阅读、停留、点击分析',
-     true,
-     'https://tenant1.example.com/callback',
-     'wh_sec_t1_2025',
-     now() - interval '45 day',
-     now(),
-     1002
-    ),
-    -- 5. 租户2：社交应用
-    (2,
-     '附近聊天',
-     'social_tenant2_001',
-     'app_key_social_0005',
-     'app_secret_qwe0099887766',
-     'social',
-     'ON',
-     '["ios","android"]',
-     '社交关系、互动、消息行为',
-     true,
-     'https://social.example.com/webhook',
-     'wh_sec_t2_soc',
-     now() - interval '30 day',
-     now(),
-     1003
-    ),
-    -- 6. 租户2：教育应用
-    (2,
-     '天天学习',
-     'education_tenant2_001',
-     'app_key_edu_0006',
-     'app_secret_rty123321123',
-     'education',
-     'ON',
-     '["web","mini_program"]',
-     '学习时长、课程、完课率分析',
-     false,
-     '',
-     '',
-     now() - interval '25 day',
-     now(),
-     1003
-    ),
-    -- 7. 已禁用应用（测试状态）
-    (0,
-     '旧版测试应用',
-     'test_old_001',
-     'app_key_test_0007',
-     'app_secret_test_xxxxxxx',
-     'other',
-     'OFF',
-     '["web"]',
-     '已废弃，仅做历史数据保留',
-     false,
-     '',
-     '',
-     now() - interval '180 day',
-     now() - interval '90 day',
-     1001
-    ),
-    -- 8. 带软删除标记的应用（测试软删）
-    (1,
-     '已删除演示应用',
-     'demo_deleted_001',
-     'app_key_del_0008',
-     'app_secret_del_123123123',
-     'tool',
-     'OFF',
-     '["android"]',
-     '演示软删除功能',
-     false,
-     '',
-     '',
-     now() - interval '20 day',
-     now() - interval '1 day',
-     1002
-    );
+-- ============================================================
+-- 数据说明
+-- ============================================================
+-- 配套 doris_demo_data.sql 使用：
+--   - uba_applications 提供 SDK 接入凭据（demo_game_001 等），与 events_fact 的 tenant_id 对应
+--   - uba_event_schemas 登记 7 个核心事件（漏斗步骤 + click），可在"事件 Schema"页管理
+--   - uba_risk_rules 定义 5 条风控规则（高频/代理/大额/异地/设备），与 risk_events 的 rule_id 对应
+--   - uba_tag_definitions 定义 5 个用户标签（VIP/付费/高风险/流失/新用户），可在"标签定义"页管理
+--
+-- 注意：
+--   1. tag_definitions 的 category/tag_type 用全大写枚举值（TAG_CATEGORY_USER / TAG_TYPE_ENUM），
+--      与前端 ToName 映射对齐
+--   2. risk_rules 的 risk_type 用小写蛇形（abnormal_flow），与 risk-event 的 RISK_TYPE 映射对齐
+--   3. event_schemas 的 properties 是 jsonb 数组，结构为 [{name,type,displayName,required}]
+--   4. 应用表 desensitize 字段：demo_shop_002 开启脱敏，其余关闭（覆盖两种状态）
