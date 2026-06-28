@@ -270,8 +270,8 @@ services:
     networks:
       - app-tier
     ports:
-      - "9700:9700"
-      - "9701:9701"
+      - "5600:5600"
+      - "5601:5601"
     depends_on:
       - postgres
       - redis
@@ -294,8 +294,7 @@ services:
     networks:
       - app-tier
     ports:
-      - "9800:9800"
-      - "9801:9801"
+      - "5700:5700"
     depends_on:
       - postgres
       - redis
