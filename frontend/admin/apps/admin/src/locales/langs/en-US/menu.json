@@ -73,7 +73,12 @@
     "lifecycle": "Lifecycle",
     "churn": "Churn & Reactivation",
     "interval": "Time Interval",
-    "matrix": "Matrix Analysis"
+    "matrix": "Matrix Analysis",
+    "revenue": "Revenue",
+    "sessionAnalysis": "Session Analysis",
+    "anomaly": "Anomaly Detection",
+    "newVsOld": "New vs Old",
+    "pathSankey": "Conversion Paths"
   },
   "opsAnalysis": {
     "moduleName": "Operations",

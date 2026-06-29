@@ -73,7 +73,12 @@
     "lifecycle": "生命周期",
     "churn": "流失与回流",
     "interval": "间隔时间",
-    "matrix": "矩阵分析"
+    "matrix": "矩阵分析",
+    "revenue": "付费分析",
+    "sessionAnalysis": "会话分析",
+    "anomaly": "异常检测",
+    "newVsOld": "新老用户对比",
+    "pathSankey": "转化路径"
   },
   "opsAnalysis": {
     "moduleName": "运营分析",

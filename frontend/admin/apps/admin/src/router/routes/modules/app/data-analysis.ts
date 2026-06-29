@@ -225,6 +225,64 @@ const dataAnalysis: RouteRecordRaw[] = [
         },
         component: () => import('#/views/app/data-analysis/matrix/index.vue'),
       },
+      {
+        path: 'revenue',
+        name: 'Revenue',
+        meta: {
+          order: 19,
+          icon: 'lucide:dollar-sign',
+          title: $t('menu.dataAnalysis.revenue'),
+          authority: ['sys:platform_admin'],
+        },
+        component: () => import('#/views/app/data-analysis/revenue/index.vue'),
+      },
+      {
+        path: 'session-analysis',
+        name: 'SessionAnalysis',
+        meta: {
+          order: 20,
+          icon: 'lucide:waypoints',
+          title: $t('menu.dataAnalysis.sessionAnalysis'),
+          authority: ['sys:platform_admin'],
+        },
+        component: () =>
+          import('#/views/app/data-analysis/session-analysis/index.vue'),
+      },
+      {
+        path: 'anomaly',
+        name: 'Anomaly',
+        meta: {
+          order: 21,
+          icon: 'lucide:activity',
+          title: $t('menu.dataAnalysis.anomaly'),
+          authority: ['sys:platform_admin'],
+        },
+        component: () => import('#/views/app/data-analysis/anomaly/index.vue'),
+      },
+      {
+        path: 'new-vs-old',
+        name: 'NewVsOld',
+        meta: {
+          order: 22,
+          icon: 'lucide:users-round',
+          title: $t('menu.dataAnalysis.newVsOld'),
+          authority: ['sys:platform_admin'],
+        },
+        component: () =>
+          import('#/views/app/data-analysis/new-vs-old/index.vue'),
+      },
+      {
+        path: 'path-sankey',
+        name: 'PathSankey',
+        meta: {
+          order: 23,
+          icon: 'lucide:share-2',
+          title: $t('menu.dataAnalysis.pathSankey'),
+          authority: ['sys:platform_admin'],
+        },
+        component: () =>
+          import('#/views/app/data-analysis/path-sankey/index.vue'),
+      },
     ],
   },
 ];

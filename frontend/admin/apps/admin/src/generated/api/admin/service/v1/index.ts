@@ -343,6 +343,26 @@ export interface AnalyticsService {
   Matrix(
     request: ubaservicev1_MatrixRequest,
   ): Promise<ubaservicev1_MatrixResponse>;
+  // 付费/营收分析
+  Revenue(
+    request: ubaservicev1_RevenueRequest,
+  ): Promise<ubaservicev1_RevenueResponse>;
+  // 会话分析
+  SessionAnalysis(
+    request: ubaservicev1_SessionAnalysisRequest,
+  ): Promise<ubaservicev1_SessionAnalysisResponse>;
+  // 同比环比/异常检测
+  Anomaly(
+    request: ubaservicev1_AnomalyRequest,
+  ): Promise<ubaservicev1_AnomalyResponse>;
+  // 新老用户对比
+  NewVsOld(
+    request: ubaservicev1_NewVsOldRequest,
+  ): Promise<ubaservicev1_NewVsOldResponse>;
+  // 热门转化路径
+  PathSankey(
+    request: ubaservicev1_PathSankeyRequest,
+  ): Promise<ubaservicev1_PathSankeyResponse>;
 }
 
 export function createAnalyticsServiceClient(
@@ -460,6 +480,46 @@ export function createAnalyticsServiceClient(
         service: 'AnalyticsService',
         method: 'Matrix',
       }) as Promise<ubaservicev1_MatrixResponse>;
+    },
+    Revenue(request) {
+      const path = `admin/v1/analytics/revenue`;
+      const body = JSON.stringify(request);
+      return transport.unary(path, 'POST', body, {
+        service: 'AnalyticsService',
+        method: 'Revenue',
+      }) as Promise<ubaservicev1_RevenueResponse>;
+    },
+    SessionAnalysis(request) {
+      const path = `admin/v1/analytics/session-analysis`;
+      const body = JSON.stringify(request);
+      return transport.unary(path, 'POST', body, {
+        service: 'AnalyticsService',
+        method: 'SessionAnalysis',
+      }) as Promise<ubaservicev1_SessionAnalysisResponse>;
+    },
+    Anomaly(request) {
+      const path = `admin/v1/analytics/anomaly`;
+      const body = JSON.stringify(request);
+      return transport.unary(path, 'POST', body, {
+        service: 'AnalyticsService',
+        method: 'Anomaly',
+      }) as Promise<ubaservicev1_AnomalyResponse>;
+    },
+    NewVsOld(request) {
+      const path = `admin/v1/analytics/new-vs-old`;
+      const body = JSON.stringify(request);
+      return transport.unary(path, 'POST', body, {
+        service: 'AnalyticsService',
+        method: 'NewVsOld',
+      }) as Promise<ubaservicev1_NewVsOldResponse>;
+    },
+    PathSankey(request) {
+      const path = `admin/v1/analytics/path-sankey`;
+      const body = JSON.stringify(request);
+      return transport.unary(path, 'POST', body, {
+        service: 'AnalyticsService',
+        method: 'PathSankey',
+      }) as Promise<ubaservicev1_PathSankeyResponse>;
     },
   };
 }
@@ -979,6 +1039,163 @@ export type ubaservicev1_MatrixPoint = {
   x: number | undefined;
   // Y 轴值（使用频次，总次数）
   y: number | undefined;
+};
+
+// ============== 付费/营收分析 ==============
+export type ubaservicev1_RevenueRequest = {
+  // 应用 ID 过滤（可选）
+  appId?: number;
+  // 时间粒度（默认 DAY）
+  granularity: ubaservicev1_AnalyticsGranularity | undefined;
+  // 时间范围
+  timeRange: ubaservicev1_TimeRange | undefined;
+};
+
+export type ubaservicev1_RevenueResponse = {
+  // 客单价（GMV / 订单数）
+  avgOrderValue: number | undefined;
+  // 按日/粒度的营收趋势
+  points: ubaservicev1_RevenuePoint[] | undefined;
+  // 区间 GMV 汇总
+  totalGmv: number | undefined;
+  // 区间订单数
+  totalPayOrders: number | undefined;
+  // 区间付费用户数（去重）
+  totalPayUsers: number | undefined;
+};
+
+// 单日营收数据点
+export type ubaservicev1_RevenuePoint = {
+  // ARPPU（GMV / 付费用户数）
+  arppu: number | undefined;
+  // ARPU（GMV / 活跃用户数，活跃用户另查）
+  arpu: number | undefined;
+  // GMV（总成交额）
+  gmv: number | undefined;
+  // 付费订单数
+  payOrders: number | undefined;
+  // 付费率（0-1，pay_users / active_users）
+  payRate: number | undefined;
+  // 付费用户数
+  payUsers: number | undefined;
+  // 时间桶（Unix 毫秒）
+  timestamp: number | undefined;
+};
+
+// ============== 会话分析 ==============
+export type ubaservicev1_SessionAnalysisRequest = {
+  // 应用 ID 过滤（可选）
+  appId?: number;
+  // 平台过滤（可选，空表示全部）
+  platform?: string;
+  // 时间范围
+  timeRange: ubaservicev1_TimeRange | undefined;
+};
+
+export type ubaservicev1_SessionAnalysisResponse = {
+  // 会话深度（人均事件数 = 总事件 / 会话数）
+  avgDepth: number | undefined;
+  // 平均会话时长（秒）
+  avgDurationSec: number | undefined;
+  // 跳出率（0-1）
+  bounceRate: number | undefined;
+  // P50 会话时长（秒）
+  p50DurationSec: number | undefined;
+  // P90 会话时长（秒）
+  p90DurationSec: number | undefined;
+  // 会话总数
+  sessionCount: number | undefined;
+  // 会话用户数（去重）
+  uniqueUsers: number | undefined;
+};
+
+// ============== 同比环比/异常检测 ==============
+export type ubaservicev1_AnomalyRequest = {
+  // 应用 ID 过滤（可选）
+  appId?: number;
+  // 事件名过滤（可选，空表示全部事件聚合）
+  eventName?: string;
+  // 时间范围（通常取近 8+ 天以算 7 日基线）
+  timeRange: ubaservicev1_TimeRange | undefined;
+};
+
+export type ubaservicev1_AnomalyResponse = {
+  // 异常事件数（去重）
+  anomalyCount: number | undefined;
+  // 各事件/日的趋势 + 异常标记
+  points: ubaservicev1_AnomalyPoint[] | undefined;
+};
+
+// 单事件/日的同比环比数据
+export type ubaservicev1_AnomalyPoint = {
+  // 7 日均值（基线）
+  baseline: number | undefined;
+  // 事件名
+  eventName: string | undefined;
+  // 是否异常（当日 PV < 7日均值 * 阈值，默认 0.5）
+  isAnomaly: boolean | undefined;
+  // 当日 PV
+  pv: number | undefined;
+  // 统计日期（Unix 毫秒）
+  statDate: number | undefined;
+  // 当日 UV
+  uv: number | undefined;
+  // 环比昨日涨跌（0-1，正为涨）
+  wowChange: number | undefined;
+};
+
+// ============== 新老用户对比 ==============
+export type ubaservicev1_NewVsOldRequest = {
+  // 应用 ID 过滤（可选）
+  appId?: number;
+  // 新用户判定天数（注册距今 N 天内算新用户，默认 7）
+  newUserDays?: number;
+  // 时间范围
+  timeRange: ubaservicev1_TimeRange | undefined;
+};
+
+export type ubaservicev1_NewVsOldResponse = {
+  // 新/老用户各维度对比
+  segments: ubaservicev1_NewVsOldSegment[] | undefined;
+};
+
+export type ubaservicev1_NewVsOldSegment = {
+  // 事件量
+  eventCount: number | undefined;
+  // 付费率（0-1）
+  payRate: number | undefined;
+  // 付费用户数
+  payUsers: number | undefined;
+  // 用户数
+  userCount: number | undefined;
+  // 用户类型：new 新用户 / old 老用户
+  userType: string | undefined;
+};
+
+// ============== 热门转化路径 ==============
+export type ubaservicev1_PathSankeyRequest = {
+  // 应用 ID 过滤（可选）
+  appId?: number;
+  // 时间范围
+  timeRange: ubaservicev1_TimeRange | undefined;
+  // 返回前 N 条热门路径（默认 20）
+  topN?: number;
+};
+
+export type ubaservicev1_PathSankeyResponse = {
+  // 热门路径列表（按 support_count 降序）
+  paths: ubaservicev1_PathBucket[] | undefined;
+};
+
+export type ubaservicev1_PathBucket = {
+  // 转化率（0-1）
+  conversionRate: number | undefined;
+  // 事件序列（如 "view_home,add_to_cart,pay_success"）
+  eventSequence: string | undefined;
+  // 路径出现次数
+  supportCount: number | undefined;
+  // 走过该路径的去重用户数
+  uniqueUsers: number | undefined;
 };
 
 // API资源管理服务

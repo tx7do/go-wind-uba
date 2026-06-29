@@ -15,6 +15,16 @@ import type {
   ubaservicev1_LifecycleResponse,
   ubaservicev1_MatrixRequest,
   ubaservicev1_MatrixResponse,
+  ubaservicev1_AnomalyRequest,
+  ubaservicev1_AnomalyResponse,
+  ubaservicev1_NewVsOldRequest,
+  ubaservicev1_NewVsOldResponse,
+  ubaservicev1_PathSankeyRequest,
+  ubaservicev1_PathSankeyResponse,
+  ubaservicev1_RevenueRequest,
+  ubaservicev1_RevenueResponse,
+  ubaservicev1_SessionAnalysisRequest,
+  ubaservicev1_SessionAnalysisResponse,
   ubaservicev1_DistributionRequest,
   ubaservicev1_DistributionResponse,
   ubaservicev1_EventTrendRequest,
@@ -354,6 +364,118 @@ export async function fetchMatrix(req: ubaservicev1_MatrixRequest) {
   return queryClient.fetchQuery({
     queryKey: ['analytics', 'matrix', req],
     queryFn: () => apiClient.analyticsService.Matrix(req),
+    staleTime: 60_000,
+  });
+}
+
+// ==============================
+// 付费/营收分析
+// ==============================
+export function useRevenue(
+  req: ubaservicev1_RevenueRequest,
+  options?: UseQueryOptions<ubaservicev1_RevenueResponse, Error>,
+) {
+  return useQuery({
+    queryKey: ['analytics', 'revenue', req],
+    queryFn: () => apiClient.analyticsService.Revenue(req),
+    ...options,
+  });
+}
+
+export async function fetchRevenue(req: ubaservicev1_RevenueRequest) {
+  return queryClient.fetchQuery({
+    queryKey: ['analytics', 'revenue', req],
+    queryFn: () => apiClient.analyticsService.Revenue(req),
+    staleTime: 60_000,
+  });
+}
+
+// ==============================
+// 会话分析
+// ==============================
+export function useSessionAnalysis(
+  req: ubaservicev1_SessionAnalysisRequest,
+  options?: UseQueryOptions<ubaservicev1_SessionAnalysisResponse, Error>,
+) {
+  return useQuery({
+    queryKey: ['analytics', 'sessionAnalysis', req],
+    queryFn: () => apiClient.analyticsService.SessionAnalysis(req),
+    ...options,
+  });
+}
+
+export async function fetchSessionAnalysis(
+  req: ubaservicev1_SessionAnalysisRequest,
+) {
+  return queryClient.fetchQuery({
+    queryKey: ['analytics', 'sessionAnalysis', req],
+    queryFn: () => apiClient.analyticsService.SessionAnalysis(req),
+    staleTime: 60_000,
+  });
+}
+
+// ==============================
+// 同比环比/异常检测
+// ==============================
+export function useAnomaly(
+  req: ubaservicev1_AnomalyRequest,
+  options?: UseQueryOptions<ubaservicev1_AnomalyResponse, Error>,
+) {
+  return useQuery({
+    queryKey: ['analytics', 'anomaly', req],
+    queryFn: () => apiClient.analyticsService.Anomaly(req),
+    ...options,
+  });
+}
+
+export async function fetchAnomaly(req: ubaservicev1_AnomalyRequest) {
+  return queryClient.fetchQuery({
+    queryKey: ['analytics', 'anomaly', req],
+    queryFn: () => apiClient.analyticsService.Anomaly(req),
+    staleTime: 60_000,
+  });
+}
+
+// ==============================
+// 新老用户对比
+// ==============================
+export function useNewVsOld(
+  req: ubaservicev1_NewVsOldRequest,
+  options?: UseQueryOptions<ubaservicev1_NewVsOldResponse, Error>,
+) {
+  return useQuery({
+    queryKey: ['analytics', 'newVsOld', req],
+    queryFn: () => apiClient.analyticsService.NewVsOld(req),
+    ...options,
+  });
+}
+
+export async function fetchNewVsOld(req: ubaservicev1_NewVsOldRequest) {
+  return queryClient.fetchQuery({
+    queryKey: ['analytics', 'newVsOld', req],
+    queryFn: () => apiClient.analyticsService.NewVsOld(req),
+    staleTime: 60_000,
+  });
+}
+
+// ==============================
+// 热门转化路径
+// ==============================
+export function usePathSankey(
+  req: ubaservicev1_PathSankeyRequest,
+  options?: UseQueryOptions<ubaservicev1_PathSankeyResponse, Error>,
+) {
+  return useQuery({
+    queryKey: ['analytics', 'pathSankey', req],
+    queryFn: () => apiClient.analyticsService.PathSankey(req),
+    ...options,
+  });
+}
+
+export async function fetchPathSankey(req: ubaservicev1_PathSankeyRequest) {
+  return queryClient.fetchQuery({
+    queryKey: ['analytics', 'pathSankey', req],
+    queryFn: () => apiClient.analyticsService.PathSankey(req),
     staleTime: 60_000,
   });
 }
