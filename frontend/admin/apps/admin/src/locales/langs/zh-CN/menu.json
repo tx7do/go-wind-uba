@@ -64,7 +64,11 @@
     "retention": "留存分析",
     "dimensionCompare": "维度对比",
     "behaviorTimeline": "行为时间轴",
-    "realtimeScreen": "实时大屏"
+    "realtimeScreen": "实时大屏",
+    "attribution": "归因分析",
+    "distribution": "分布分析",
+    "behaviorSequence": "行为序列",
+    "segmentation": "用户分群"
   },
   "opsAnalysis": {
     "moduleName": "运营分析",

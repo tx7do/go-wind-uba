@@ -307,6 +307,22 @@ export interface AnalyticsService {
   ActiveUsers(
     request: ubaservicev1_ActiveUsersRequest,
   ): Promise<ubaservicev1_ActiveUsersResponse>;
+  // 归因分析
+  Attribution(
+    request: ubaservicev1_AttributionRequest,
+  ): Promise<ubaservicev1_AttributionResponse>;
+  // 分布分析
+  Distribution(
+    request: ubaservicev1_DistributionRequest,
+  ): Promise<ubaservicev1_DistributionResponse>;
+  // 行为序列
+  BehaviorSequence(
+    request: ubaservicev1_BehaviorSequenceRequest,
+  ): Promise<ubaservicev1_BehaviorSequenceResponse>;
+  // 用户分群/圈选
+  Segmentation(
+    request: ubaservicev1_SegmentationRequest,
+  ): Promise<ubaservicev1_SegmentationResponse>;
 }
 
 export function createAnalyticsServiceClient(
@@ -352,6 +368,38 @@ export function createAnalyticsServiceClient(
         service: 'AnalyticsService',
         method: 'ActiveUsers',
       }) as Promise<ubaservicev1_ActiveUsersResponse>;
+    },
+    Attribution(request) {
+      const path = `admin/v1/analytics/attribution`;
+      const body = JSON.stringify(request);
+      return transport.unary(path, 'POST', body, {
+        service: 'AnalyticsService',
+        method: 'Attribution',
+      }) as Promise<ubaservicev1_AttributionResponse>;
+    },
+    Distribution(request) {
+      const path = `admin/v1/analytics/distribution`;
+      const body = JSON.stringify(request);
+      return transport.unary(path, 'POST', body, {
+        service: 'AnalyticsService',
+        method: 'Distribution',
+      }) as Promise<ubaservicev1_DistributionResponse>;
+    },
+    BehaviorSequence(request) {
+      const path = `admin/v1/analytics/behavior-sequence`;
+      const body = JSON.stringify(request);
+      return transport.unary(path, 'POST', body, {
+        service: 'AnalyticsService',
+        method: 'BehaviorSequence',
+      }) as Promise<ubaservicev1_BehaviorSequenceResponse>;
+    },
+    Segmentation(request) {
+      const path = `admin/v1/analytics/segmentation`;
+      const body = JSON.stringify(request);
+      return transport.unary(path, 'POST', body, {
+        service: 'AnalyticsService',
+        method: 'Segmentation',
+      }) as Promise<ubaservicev1_SegmentationResponse>;
     },
   };
 }
@@ -541,6 +589,149 @@ export type ubaservicev1_ActiveUsersPoint = {
   timestamp: number | undefined;
   // 周活（滚动 7 天）
   wau: number | undefined;
+};
+
+// ============== 归因分析 ==============
+export type ubaservicev1_AttributionRequest = {
+  // 应用 ID 过滤（可选）
+  appId?: number;
+  // 转化事件名（如 pay_success）
+  conversionEvent: string | undefined;
+  // 归因维度：channel 渠道（默认）/ referer 来源页
+  dimension?: string;
+  // 归因模型：last_touch 末次触达（默认）/ first_touch 首次触达
+  model?: string;
+  // 时间范围
+  timeRange: ubaservicev1_TimeRange | undefined;
+};
+
+export type ubaservicev1_AttributionResponse = {
+  // 各触点的归因贡献
+  buckets: ubaservicev1_AttributionBucket[] | undefined;
+  // 使用的归因维度
+  dimension: string | undefined;
+  // 使用的归因模型
+  model: string | undefined;
+  // 转化用户总数
+  totalConverters: number | undefined;
+};
+
+export type ubaservicev1_AttributionBucket = {
+  // 该触点的转化用户数（去重）
+  converterUv: number | undefined;
+  // 归因维度值（渠道/来源页）
+  label: string | undefined;
+  // 占比（0-1）
+  percentage: number | undefined;
+};
+
+// ============== 分布分析 ==============
+export type ubaservicev1_DistributionRequest = {
+  // 应用 ID 过滤（可选）
+  appId?: number;
+  // 目标事件名（如 page_view）
+  eventName: string | undefined;
+  // 时间范围
+  timeRange: ubaservicev1_TimeRange | undefined;
+};
+
+export type ubaservicev1_DistributionResponse = {
+  // 各分桶分布
+  buckets: ubaservicev1_DistributionBucket[] | undefined;
+  // 分位数摘要
+  summary: ubaservicev1_DistributionSummary | undefined;
+};
+
+// 分布分析分桶
+export type ubaservicev1_DistributionBucket = {
+  // 分桶标签（如 0_10s / 10_60s / 1_5min / 5min_plus）
+  bucket: string | undefined;
+  // 该桶事件数
+  count: number | undefined;
+  // 占比（0-1）
+  percentage: number | undefined;
+};
+
+// 分布分析分位数摘要
+export type ubaservicev1_DistributionSummary = {
+  // 平均时长（秒）
+  avgSec: number | undefined;
+  // 总事件数
+  count: number | undefined;
+  // 最大值（秒）
+  maxSec: number | undefined;
+  // P50（中位数，秒）
+  p50Sec: number | undefined;
+  // P90（秒）
+  p90Sec: number | undefined;
+};
+
+// ============== 行为序列 ==============
+export type ubaservicev1_BehaviorSequenceRequest = {
+  // 应用 ID 过滤（可选）
+  appId?: number;
+  // 事件名过滤（可选，空表示全部事件）
+  eventName?: string;
+  // 最多返回事件数（默认 100）
+  limit?: number;
+  // 时间范围
+  timeRange: ubaservicev1_TimeRange | undefined;
+  // 用户 ID
+  userId: number | undefined;
+};
+
+export type ubaservicev1_BehaviorSequenceResponse = {
+  // 按时间升序排列的行为事件
+  events: ubaservicev1_SequenceEvent[] | undefined;
+  // 用户 ID
+  userId: number | undefined;
+};
+
+// 序列中的一个行为事件
+export type ubaservicev1_SequenceEvent = {
+  // 渠道
+  channel?: string;
+  // 事件名
+  eventName: string | undefined;
+  // 平台
+  platform?: string;
+  // 来源页
+  referer?: string;
+  // 会话 ID
+  sessionId?: string;
+  // 会话内序号
+  sessionSeq?: number;
+  // 事件时间（Unix 毫秒）
+  timestamp: number | undefined;
+};
+
+export type ubaservicev1_SegmentationRequest = {
+  // 应用 ID 过滤（可选）
+  appId?: number;
+  // 必须未做过的事件（做过任一即排除）
+  exclude: ubaservicev1_SegmentCondition[] | undefined;
+  // 必须做过的事件（满足任一即纳入人群的"做过"集合）
+  include: ubaservicev1_SegmentCondition[] | undefined;
+  // 最多返回用户数（默认 5000）
+  limit?: number;
+  // 时间范围
+  timeRange: ubaservicev1_TimeRange | undefined;
+};
+
+// ============== 用户分群/圈选 ==============
+// 单个圈选条件
+export type ubaservicev1_SegmentCondition = {
+  // 事件名
+  eventName: string | undefined;
+  // 至少触发次数（默认 1，即"做过"）
+  minTimes?: number;
+};
+
+export type ubaservicev1_SegmentationResponse = {
+  // 命中用户总数
+  total: number | undefined;
+  // 命中的用户 ID 列表
+  userIds: number[] | undefined;
 };
 
 // API资源管理服务

@@ -1,6 +1,12 @@
 import type {
   ubaservicev1_ActiveUsersRequest,
   ubaservicev1_ActiveUsersResponse,
+  ubaservicev1_AttributionRequest,
+  ubaservicev1_AttributionResponse,
+  ubaservicev1_BehaviorSequenceRequest,
+  ubaservicev1_BehaviorSequenceResponse,
+  ubaservicev1_DistributionRequest,
+  ubaservicev1_DistributionResponse,
   ubaservicev1_EventTrendRequest,
   ubaservicev1_EventTrendResponse,
   ubaservicev1_FunnelRequest,
@@ -9,6 +15,8 @@ import type {
   ubaservicev1_GroupByResponse,
   ubaservicev1_RetentionRequest,
   ubaservicev1_RetentionResponse,
+  ubaservicev1_SegmentationRequest,
+  ubaservicev1_SegmentationResponse,
   ubaservicev1_TimeRange,
 } from '#/generated/api/admin/service/v1';
 
@@ -136,6 +144,96 @@ export async function fetchActiveUsers(req: ubaservicev1_ActiveUsersRequest) {
   return queryClient.fetchQuery({
     queryKey: ['analytics', 'activeUsers', req],
     queryFn: () => apiClient.analyticsService.ActiveUsers(req),
+    staleTime: 60_000,
+  });
+}
+
+// ==============================
+// 归因分析（首触/末触渠道归因）
+// ==============================
+export function useAttribution(
+  req: ubaservicev1_AttributionRequest,
+  options?: UseQueryOptions<ubaservicev1_AttributionResponse, Error>,
+) {
+  return useQuery({
+    queryKey: ['analytics', 'attribution', req],
+    queryFn: () => apiClient.analyticsService.Attribution(req),
+    ...options,
+  });
+}
+
+export async function fetchAttribution(req: ubaservicev1_AttributionRequest) {
+  return queryClient.fetchQuery({
+    queryKey: ['analytics', 'attribution', req],
+    queryFn: () => apiClient.analyticsService.Attribution(req),
+    staleTime: 60_000,
+  });
+}
+
+// ==============================
+// 分布分析（事件时长分桶 + 分位数）
+// ==============================
+export function useDistribution(
+  req: ubaservicev1_DistributionRequest,
+  options?: UseQueryOptions<ubaservicev1_DistributionResponse, Error>,
+) {
+  return useQuery({
+    queryKey: ['analytics', 'distribution', req],
+    queryFn: () => apiClient.analyticsService.Distribution(req),
+    ...options,
+  });
+}
+
+export async function fetchDistribution(req: ubaservicev1_DistributionRequest) {
+  return queryClient.fetchQuery({
+    queryKey: ['analytics', 'distribution', req],
+    queryFn: () => apiClient.analyticsService.Distribution(req),
+    staleTime: 60_000,
+  });
+}
+
+// ==============================
+// 行为序列（指定用户的行为时间线）
+// ==============================
+export function useBehaviorSequence(
+  req: ubaservicev1_BehaviorSequenceRequest,
+  options?: UseQueryOptions<ubaservicev1_BehaviorSequenceResponse, Error>,
+) {
+  return useQuery({
+    queryKey: ['analytics', 'behaviorSequence', req],
+    queryFn: () => apiClient.analyticsService.BehaviorSequence(req),
+    ...options,
+  });
+}
+
+export async function fetchBehaviorSequence(
+  req: ubaservicev1_BehaviorSequenceRequest,
+) {
+  return queryClient.fetchQuery({
+    queryKey: ['analytics', 'behaviorSequence', req],
+    queryFn: () => apiClient.analyticsService.BehaviorSequence(req),
+    staleTime: 60_000,
+  });
+}
+
+// ==============================
+// 用户分群/圈选
+// ==============================
+export function useSegmentation(
+  req: ubaservicev1_SegmentationRequest,
+  options?: UseQueryOptions<ubaservicev1_SegmentationResponse, Error>,
+) {
+  return useQuery({
+    queryKey: ['analytics', 'segmentation', req],
+    queryFn: () => apiClient.analyticsService.Segmentation(req),
+    ...options,
+  });
+}
+
+export async function fetchSegmentation(req: ubaservicev1_SegmentationRequest) {
+  return queryClient.fetchQuery({
+    queryKey: ['analytics', 'segmentation', req],
+    queryFn: () => apiClient.analyticsService.Segmentation(req),
     staleTime: 60_000,
   });
 }

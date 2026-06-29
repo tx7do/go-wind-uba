@@ -121,6 +121,54 @@ const dataAnalysis: RouteRecordRaw[] = [
         },
         component: () => import('#/views/app/data-analysis/profile/index.vue'),
       },
+      {
+        path: 'attribution',
+        name: 'AttributionAnalysis',
+        meta: {
+          order: 10,
+          icon: 'lucide:target',
+          title: $t('menu.dataAnalysis.attribution'),
+          authority: ['sys:platform_admin'],
+        },
+        component: () =>
+          import('#/views/app/data-analysis/attribution/index.vue'),
+      },
+      {
+        path: 'distribution',
+        name: 'DistributionAnalysis',
+        meta: {
+          order: 11,
+          icon: 'lucide:bar-chart-big',
+          title: $t('menu.dataAnalysis.distribution'),
+          authority: ['sys:platform_admin'],
+        },
+        component: () =>
+          import('#/views/app/data-analysis/distribution/index.vue'),
+      },
+      {
+        path: 'behavior-sequence',
+        name: 'BehaviorSequence',
+        meta: {
+          order: 12,
+          icon: 'lucide:git-commit-horizontal',
+          title: $t('menu.dataAnalysis.behaviorSequence'),
+          authority: ['sys:platform_admin'],
+        },
+        component: () =>
+          import('#/views/app/data-analysis/behavior-sequence/index.vue'),
+      },
+      {
+        path: 'segmentation',
+        name: 'Segmentation',
+        meta: {
+          order: 13,
+          icon: 'lucide:users',
+          title: $t('menu.dataAnalysis.segmentation'),
+          authority: ['sys:platform_admin'],
+        },
+        component: () =>
+          import('#/views/app/data-analysis/segmentation/index.vue'),
+      },
     ],
   },
 ];

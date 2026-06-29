@@ -64,7 +64,11 @@
     "retention": "Retention Analysis",
     "dimensionCompare": "Dimension Compare",
     "behaviorTimeline": "Behavior Timeline",
-    "realtimeScreen": "Realtime Screen"
+    "realtimeScreen": "Realtime Screen",
+    "attribution": "Attribution",
+    "distribution": "Distribution",
+    "behaviorSequence": "Behavior Sequence",
+    "segmentation": "Segmentation"
   },
   "opsAnalysis": {
     "moduleName": "Operations",
