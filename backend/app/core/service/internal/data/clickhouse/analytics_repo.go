@@ -262,8 +262,75 @@ func (r *AnalyticsRepo) GroupBy(ctx context.Context, req *ubaV1.GroupByRequest) 
 
 func (r *AnalyticsRepo) ActiveUsers(ctx context.Context, req *ubaV1.ActiveUsersRequest) (*ubaV1.ActiveUsersResponse, error) {
 	startMs, endMs := normTimeRange(req.GetTimeRange())
-	bucket := chGranularityExpr(req.GetGranularity())
+	gran := req.GetGranularity()
 
+	// 预聚合表 user_activity_daily 为日粒度：仅 DAY/WEEK/MONTH（含 UNSPECIFIED 默认按天）
+	// 能输出真值 WAU/MAU；HOUR 粒度无小时级状态，回退为等于 DAU。
+	if gran == ubaV1.AnalyticsGranularity_HOUR {
+		return r.activeUsersFromEventsFact(ctx, req, startMs, endMs)
+	}
+
+	// 数据源：基础表 user_activity_daily（不是 view——view 已把 active_users 状态 merge 成
+	// UInt64，丢失跨天可合并性）。active_users 为 AggregateFunction(uniqCombined, UInt32) 状态，
+	// uniqCombinedMerge 可在滚动窗口内合并各天状态，得到准确去重（近似，误差 <1%）。
+	tenantCond := ""
+	args := []any{time.UnixMilli(startMs), time.UnixMilli(endMs)}
+	if v := req.GetAppId(); v != 0 {
+		tenantCond = "tenant_id = ? AND "
+		args = append([]any{v}, args...)
+	}
+
+	q := fmt.Sprintf(`
+SELECT d.stat_date AS bucket,
+       uniqCombinedMerge(d.active_users) AS dau,
+       (
+           SELECT uniqCombinedMerge(active_users)
+           FROM user_activity_daily
+           WHERE %sstat_date BETWEEN d.stat_date - INTERVAL 6 DAY AND d.stat_date
+       ) AS wau,
+       (
+           SELECT uniqCombinedMerge(active_users)
+           FROM user_activity_daily
+           WHERE %sstat_date BETWEEN d.stat_date - INTERVAL 29 DAY AND d.stat_date
+       ) AS mau
+FROM user_activity_daily d
+WHERE %sstat_date >= toDate(?) AND stat_date < toDate(?)
+GROUP BY d.stat_date
+ORDER BY d.stat_date`,
+		tenantCond, tenantCond, tenantCond)
+
+	type row struct {
+		Bucket time.Time `db:"bucket" ch:"bucket"`
+		Dau    int64     `db:"dau" ch:"dau"`
+		Wau    int64     `db:"wau" ch:"wau"`
+		Mau    int64     `db:"mau" ch:"mau"`
+	}
+	var rows []row
+	if err := r.db.Select(ctx, &rows, q, args...); err != nil {
+		r.log.Errorf("ActiveUsers query failed: %v", err)
+		return nil, ubaV1.ErrorInternalServerError("active users query failed")
+	}
+
+	points := make([]*ubaV1.ActiveUsersPoint, 0, len(rows))
+	for _, rw := range rows {
+		points = append(points, &ubaV1.ActiveUsersPoint{
+			Timestamp: rw.Bucket.UnixMilli(),
+			Dau:       rw.Dau,
+			Wau:       rw.Wau,
+			Mau:       rw.Mau,
+		})
+	}
+	resp := &ubaV1.ActiveUsersResponse{Points: points}
+	if len(points) > 0 {
+		resp.LatestDau = points[len(points)-1].Dau
+	}
+	return resp, nil
+}
+
+// activeUsersFromEventsFact 在 HOUR 粒度下回退到扫描 events_fact：
+// 预聚合表仅日级，无法支持小时级滚动窗口，故 WAU/MAU 退化为等于 DAU（仅给出下界）。
+func (r *AnalyticsRepo) activeUsersFromEventsFact(ctx context.Context, req *ubaV1.ActiveUsersRequest, startMs, endMs int64) (*ubaV1.ActiveUsersResponse, error) {
+	bucket := chGranularityExpr(ubaV1.AnalyticsGranularity_HOUR)
 	q := fmt.Sprintf(
 		"SELECT %s AS bucket, count(DISTINCT user_id) AS dau FROM events_fact WHERE event_time >= ? AND event_time < ? GROUP BY bucket ORDER BY bucket",
 		bucket,
@@ -286,6 +353,7 @@ func (r *AnalyticsRepo) ActiveUsers(ctx context.Context, req *ubaV1.ActiveUsersR
 
 	points := make([]*ubaV1.ActiveUsersPoint, 0, len(rows))
 	for _, rw := range rows {
+		// 小时级无滚动窗口状态，WAU/MAU 退化为等于 DAU。
 		points = append(points, &ubaV1.ActiveUsersPoint{
 			Timestamp: rw.Bucket.UnixMilli(),
 			Dau:       rw.Dau,

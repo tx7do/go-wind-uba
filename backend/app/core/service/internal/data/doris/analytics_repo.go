@@ -285,9 +285,75 @@ func (r *AnalyticsRepo) GroupBy(ctx context.Context, req *ubaV1.GroupByRequest) 
 func (r *AnalyticsRepo) ActiveUsers(ctx context.Context, req *ubaV1.ActiveUsersRequest) (*ubaV1.ActiveUsersResponse, error) {
 	startMs, endMs := normTimeRange(req.GetTimeRange())
 	gran := req.GetGranularity()
-	bucketExpr, interval := granularityExpr(gran)
 
-	// DAU：按粒度分桶统计去重 user_id
+	// 预聚合表 mv_events_daily 为日粒度：仅 DAY/WEEK/MONTH（含 UNSPECIFIED 默认按天）
+	// 能输出真值 WAU/MAU；HOUR 粒度无小时级状态，回退为等于 DAU。
+	if gran == ubaV1.AnalyticsGranularity_HOUR {
+		return r.activeUsersFromEventsFact(ctx, req, startMs, endMs)
+	}
+
+	// 数据源：mv_events_daily 已按 (tenant_id, stat_date, event_category, event_name, ...) 维度
+	// 存好 HLL_UNION(HLL_HASH(user_id)) 的状态 uv。WAU/MAU 通过对滚动窗口内各天 uv 状态做
+	// HLL_UNION 再取 HLL_CARDINALITY，得到准确的跨天去重（HLL 近似，误差 <1%）。
+	tenantCond := ""
+	args := []any{time.UnixMilli(startMs), time.UnixMilli(endMs)}
+	if v := req.GetAppId(); v != 0 {
+		tenantCond = "tenant_id = ? AND "
+		args = append([]any{v}, args...)
+	}
+
+	q := fmt.Sprintf(`
+SELECT d.stat_date,
+       HLL_CARDINALITY(HLL_UNION(d.uv)) AS dau,
+       (
+           SELECT HLL_CARDINALITY(HLL_UNION(uv))
+           FROM mv_events_daily
+           WHERE %sstat_date BETWEEN DATE_SUB(d.stat_date, INTERVAL 6 DAY) AND d.stat_date
+       ) AS wau,
+       (
+           SELECT HLL_CARDINALITY(HLL_UNION(uv))
+           FROM mv_events_daily
+           WHERE %sstat_date BETWEEN DATE_SUB(d.stat_date, INTERVAL 29 DAY) AND d.stat_date
+       ) AS mau
+FROM mv_events_daily d
+WHERE %sstat_date >= DATE(?) AND stat_date < DATE(?)
+GROUP BY d.stat_date
+ORDER BY d.stat_date`,
+		tenantCond, tenantCond, tenantCond)
+
+	type row struct {
+		StatDate time.Time `db:"stat_date"`
+		Dau      int64     `db:"dau"`
+		Wau      int64     `db:"wau"`
+		Mau      int64     `db:"mau"`
+	}
+	var rows []row
+	if err := r.db.SelectContext(ctx, &rows, q, args...); err != nil {
+		r.log.Errorf("ActiveUsers query failed: %v", err)
+		return nil, ubaV1.ErrorInternalServerError("active users query failed")
+	}
+
+	points := make([]*ubaV1.ActiveUsersPoint, 0, len(rows))
+	for _, rw := range rows {
+		points = append(points, &ubaV1.ActiveUsersPoint{
+			Timestamp: rw.StatDate.UnixMilli(),
+			Dau:       rw.Dau,
+			Wau:       rw.Wau,
+			Mau:       rw.Mau,
+		})
+	}
+
+	resp := &ubaV1.ActiveUsersResponse{Points: points}
+	if len(points) > 0 {
+		resp.LatestDau = points[len(points)-1].Dau
+	}
+	return resp, nil
+}
+
+// activeUsersFromEventsFact 在 HOUR 粒度下回退到扫描 events_fact：
+// 预聚合表仅日级，无法支持小时级滚动窗口，故 WAU/MAU 退化为等于 DAU（仅给出下界）。
+func (r *AnalyticsRepo) activeUsersFromEventsFact(ctx context.Context, req *ubaV1.ActiveUsersRequest, startMs, endMs int64) (*ubaV1.ActiveUsersResponse, error) {
+	bucketExpr, _ := granularityExpr(ubaV1.AnalyticsGranularity_HOUR)
 	q := fmt.Sprintf(
 		"SELECT %s AS bucket, COUNT(DISTINCT user_id) AS dau FROM events_fact WHERE event_time >= ? AND event_time < ? GROUP BY bucket ORDER BY bucket",
 		bucketExpr,
@@ -310,11 +376,9 @@ func (r *AnalyticsRepo) ActiveUsers(ctx context.Context, req *ubaV1.ActiveUsersR
 
 	points := make([]*ubaV1.ActiveUsersPoint, 0, len(rows))
 	for _, rw := range rows {
-		ts := rw.Bucket.UnixMilli()
-		// WAU / MAU 用滚动窗口近似（基于当前桶的 DAU 做粗略估计，避免昂贵子查询）。
-		// 准确的滚动去重需要单独的事件表扫描，这里给出与 DAU 一致的下界，前端可隐藏。
+		// 小时级无滚动窗口状态，WAU/MAU 退化为等于 DAU。
 		points = append(points, &ubaV1.ActiveUsersPoint{
-			Timestamp: ts,
+			Timestamp: rw.Bucket.UnixMilli(),
 			Dau:       rw.Dau,
 			Wau:       rw.Dau,
 			Mau:       rw.Dau,
@@ -325,7 +389,6 @@ func (r *AnalyticsRepo) ActiveUsers(ctx context.Context, req *ubaV1.ActiveUsersR
 	if len(points) > 0 {
 		resp.LatestDau = points[len(points)-1].Dau
 	}
-	_ = interval // interval 用于补全空桶（DAU 场景前端通常可接受稀疏数据）
 	return resp, nil
 }
 
