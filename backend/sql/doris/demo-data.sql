@@ -14,13 +14,22 @@ DELETE FROM users_dim     WHERE tenant_id = 1 AND user_id BETWEEN 1001 AND 1050;
 
 -- 确保 demo 数据的日期（2025-05 ~ 2025-06）有对应分区。
 -- 动态分区仅预创建近 180 天（sessions 90 天）的分区，demo 数据时间较早会
--- 报 "no partition for this tuple"。此处显式建分区兜底（已存在则忽略）。
+-- 报 "no partition for this tuple"。此处显式建分区兜底。
+-- 注意：动态分区表不能直接 ADD PARTITION，需先临时关闭动态分区，建完再恢复。
+ALTER TABLE events_fact   SET ("dynamic_partition.enable" = "false");
+ALTER TABLE sessions_fact SET ("dynamic_partition.enable" = "false");
+ALTER TABLE risk_events   SET ("dynamic_partition.enable" = "false");
+
 ALTER TABLE events_fact   ADD PARTITION IF NOT EXISTS p202505 VALUES [('2025-05-01'),('2025-06-01'));
 ALTER TABLE events_fact   ADD PARTITION IF NOT EXISTS p202506 VALUES [('2025-06-01'),('2025-07-01'));
 ALTER TABLE sessions_fact ADD PARTITION IF NOT EXISTS p202505 VALUES [('2025-05-01'),('2025-06-01'));
 ALTER TABLE sessions_fact ADD PARTITION IF NOT EXISTS p202506 VALUES [('2025-06-01'),('2025-07-01'));
 ALTER TABLE risk_events   ADD PARTITION IF NOT EXISTS p202505 VALUES [('2025-05-01'),('2025-06-01'));
 ALTER TABLE risk_events   ADD PARTITION IF NOT EXISTS p202506 VALUES [('2025-06-01'),('2025-07-01'));
+
+ALTER TABLE events_fact   SET ("dynamic_partition.enable" = "true");
+ALTER TABLE sessions_fact SET ("dynamic_partition.enable" = "true");
+ALTER TABLE risk_events   SET ("dynamic_partition.enable" = "true");
 
 -- ============================================================
 -- 1. 用户维度表 users_dim（50 个用户）
