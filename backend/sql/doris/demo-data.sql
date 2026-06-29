@@ -12,6 +12,16 @@ DELETE FROM sessions_fact WHERE tenant_id = 1 AND user_id BETWEEN 1001 AND 1050;
 DELETE FROM risk_events   WHERE tenant_id = 1 AND user_id BETWEEN 1001 AND 1050;
 DELETE FROM users_dim     WHERE tenant_id = 1 AND user_id BETWEEN 1001 AND 1050;
 
+-- 确保 demo 数据的日期（2025-05 ~ 2025-06）有对应分区。
+-- 动态分区仅预创建近 180 天（sessions 90 天）的分区，demo 数据时间较早会
+-- 报 "no partition for this tuple"。此处显式建分区兜底（已存在则忽略）。
+ALTER TABLE events_fact   ADD PARTITION IF NOT EXISTS p202505 VALUES [('2025-05-01'),('2025-06-01'));
+ALTER TABLE events_fact   ADD PARTITION IF NOT EXISTS p202506 VALUES [('2025-06-01'),('2025-07-01'));
+ALTER TABLE sessions_fact ADD PARTITION IF NOT EXISTS p202505 VALUES [('2025-05-01'),('2025-06-01'));
+ALTER TABLE sessions_fact ADD PARTITION IF NOT EXISTS p202506 VALUES [('2025-06-01'),('2025-07-01'));
+ALTER TABLE risk_events   ADD PARTITION IF NOT EXISTS p202505 VALUES [('2025-05-01'),('2025-06-01'));
+ALTER TABLE risk_events   ADD PARTITION IF NOT EXISTS p202506 VALUES [('2025-06-01'),('2025-07-01'));
+
 -- ============================================================
 -- 1. 用户维度表 users_dim（50 个用户）
 -- ============================================================
