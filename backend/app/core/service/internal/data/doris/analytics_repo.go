@@ -987,8 +987,10 @@ SELECT
 FROM users_dim
 WHERE %slast_active_date < DATE_SUB(?, INTERVAL ? DAY) AND user_id IS NOT NULL
 GROUP BY bucket ORDER BY bucket`, tenantCond)
+	// SQL ? 顺序：CASE(4个: now,churnDays,now,now) + WHERE(2个: now,churnDays) = 6
+	// args 已有 [now, churnDays, now]（CASE 前3个），追加 [now, now, churnDays]（CASE第4个 + WHERE 2个）
 	churnArgs := append([]any{}, args...)
-	churnArgs = append(churnArgs, now, now, now, churnDays)
+	churnArgs = append(churnArgs, now, now, churnDays)
 
 	type bucketRow struct {
 		Bucket  string `db:"bucket"`
