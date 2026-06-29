@@ -81,29 +81,21 @@ VALUES
 -- 3. 会话事实表 sessions_fact
 -- ============================================================
 INSERT INTO gw_uba.sessions_fact
- (session_id, tenant_id, user_id, device_id, global_user_id,
- start_time, end_time, duration_ms, event_count, page_view_count, action_count,
- entry_page, exit_page, is_bounce, platform, os, app_version, 
- ip_city, country, total_amount, pay_event_count,
- risk_level, risk_tags, context, created_at, updated_at)
+  (session_id, tenant_id, user_id, device_id, global_user_id,
+   start_time, end_time, duration_ms, event_count, page_view_count, action_count,
+   entry_page, exit_page, is_bounce, platform, os, app_version,
+   ip_city, country, total_amount, pay_event_count,
+   risk_level, risk_tags, context, created_at, updated_at)
 VALUES
-  ('sess-1001-a', 1, 1001, 'dev-1001', 'guid-1001', '2025-06-28 10:00:00', '2025-06-28 10:04:00', 240000, 6, 2, 4, 'home', 'order', false, 'ios', 'iOS 17', '1.2.0', '北京', 'CN', 299.00, 1, 'low', '[]', '{}', NOW(), NOW(),
-
-  ('sess-1001-b', 1, 1001, 'dev-1001', 'guid-1001', '2025-06-27 10:00:00', '2025-06-27 10:03:00', 180000, 5, 1, 4, 'home', 'order', false, 'ios', 'iOS 17', '1.2.0', '北京', 'CN', 159.00, 1, 'low', '[]', '{}', NOW(), NOW(),
-
-  ('sess-1002-a', 1, 1002, 'dev-1002', 'guid-1002', '2025-06-28 11:00:00', '2025-06-28 11:00:20', 20000, 2, 1, 1, 'home', 'home', true, 'android', 'Android 14', '2.1.0', '上海', 'CN', 0.00, 0, 'low', '[]', '{}', NOW(), NOW(),
-
-  ('sess-1003-a', 1, 1003, 'dev-1003', 'guid-1003', '2025-06-28 03:00:00', '2025-06-28 03:00:06', 6000, 4, 0, 4, '', '', true, 'ios', 'iOS 18', '3.0.0', '深圳', 'CN', 0.00, 0, 'high', '["device_anomaly"]', '{}', NOW(), NOW(),
-
-  ('sess-1004-a', 1, 1004, 'dev-1004', 'guid-1004', '2025-06-28 14:00:00', '2025-06-28 14:00:30', 30000, 1, 0, 0, '', '', true, 'android', 'Android 14', '1.0.0', 'NewYork', 'US', 0.00, 0, 'critical', '["proxy_detected"]', '{}', NOW(), NOW(),
-
-  ('sess-1005-a', 1, 1005, 'dev-1005', 'guid-1005', '2025-06-28 19:00:00', '2025-06-28 19:02:00', 120000, 4, 1, 3, 'home', 'product', false, 'ios', 'iOS 17', '1.2.0', '广州', 'CN', 199.00, 0, 'medium', '["abnormal_flow"]', '{}', NOW(), NOW(),
-
-  ('sess-1006-a', 1, 1006, 'dev-1006', 'guid-1006', '2025-06-26 10:00:00', '2025-06-26 10:05:00', 300000, 4, 1, 3, 'home', 'order', false, 'android', 'Android 14', '2.1.0', 'Tokyo', 'JP', 599.00, 1, 'low', '[]', '{}', NOW(), NOW(),
-
-  ('sess-1008-a', 1, 1008, 'dev-1008', 'guid-1008', '2025-06-25 09:00:00', '2025-06-25 09:04:00', 240000, 4, 1, 3, 'home', 'order', false, 'ios', 'iOS 17', '1.2.0', 'Seoul', 'KR', 880.00, 1, 'medium', '["location_anomaly"]', '{}', NOW(), NOW(),
-
-  ('sess-1010-a', 1, 1010, 'dev-1010', 'guid-1010', '2025-06-24 16:00:00', '2025-06-24 16:02:00', 120000, 2, 1, 1, 'home', 'order', false, 'web', 'macOS 14', '1.1.0', '武汉', 'CN', 450.00, 1, 'low', '[]', '{}', NOW(), NOW();
+  ('sess-1001-a', 1, 1001, 'dev-1001', 'guid-1001', '2025-06-28 10:00:00', '2025-06-28 10:04:00', 240000, 6, 2, 4, 'home', 'order', false, 'ios', 'iOS 17', '1.2.0', '北京', 'CN', 299.00, 1, 'low', '[]', '{}', NOW(), NOW()),
+  ('sess-1001-b', 1, 1001, 'dev-1001', 'guid-1001', '2025-06-27 10:00:00', '2025-06-27 10:03:00', 180000, 5, 1, 4, 'home', 'order', false, 'ios', 'iOS 17', '1.2.0', '北京', 'CN', 159.00, 1, 'low', '[]', '{}', NOW(), NOW()),
+  ('sess-1002-a', 1, 1002, 'dev-1002', 'guid-1002', '2025-06-28 11:00:00', '2025-06-28 11:00:20', 20000, 2, 1, 1, 'home', 'home', true, 'android', 'Android 14', '2.1.0', '上海', 'CN', 0.00, 0, 'low', '[]', '{}', NOW(), NOW()),
+  ('sess-1003-a', 1, 1003, 'dev-1003', 'guid-1003', '2025-06-28 03:00:00', '2025-06-28 03:00:06', 6000, 4, 0, 4, '', '', true, 'ios', 'iOS 18', '3.0.0', '深圳', 'CN', 0.00, 0, 'high', '["device_anomaly"]', '{}', NOW(), NOW()),
+  ('sess-1004-a', 1, 1004, 'dev-1004', 'guid-1004', '2025-06-28 14:00:00', '2025-06-28 14:00:30', 30000, 1, 0, 0, '', '', true, 'android', 'Android 14', '1.0.0', 'NewYork', 'US', 0.00, 0, 'critical', '["proxy_detected"]', '{}', NOW(), NOW()),
+  ('sess-1005-a', 1, 1005, 'dev-1005', 'guid-1005', '2025-06-28 19:00:00', '2025-06-28 19:02:00', 120000, 4, 1, 3, 'home', 'product', false, 'ios', 'iOS 17', '1.2.0', '广州', 'CN', 199.00, 0, 'medium', '["abnormal_flow"]', '{}', NOW(), NOW()),
+  ('sess-1006-a', 1, 1006, 'dev-1006', 'guid-1006', '2025-06-26 10:00:00', '2025-06-26 10:05:00', 300000, 4, 1, 3, 'home', 'order', false, 'android', 'Android 14', '2.1.0', 'Tokyo', 'JP', 599.00, 1, 'low', '[]', '{}', NOW(), NOW()),
+  ('sess-1008-a', 1, 1008, 'dev-1008', 'guid-1008', '2025-06-25 09:00:00', '2025-06-25 09:04:00', 240000, 4, 1, 3, 'home', 'order', false, 'ios', 'iOS 17', '1.2.0', 'Seoul', 'KR', 880.00, 1, 'medium', '["location_anomaly"]', '{}', NOW(), NOW()),
+  ('sess-1010-a', 1, 1010, 'dev-1010', 'guid-1010', '2025-06-24 16:00:00', '2025-06-24 16:02:00', 120000, 2, 1, 1, 'home', 'order', false, 'web', 'macOS 14', '1.1.0', '武汉', 'CN', 450.00, 1, 'low', '[]', '{}', NOW(), NOW());
 
 
 -- ============================================================
