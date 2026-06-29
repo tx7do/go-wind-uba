@@ -64,8 +64,8 @@ func (r *AnalyticsRepo) EventTrend(ctx context.Context, req *ubaV1.EventTrendReq
 	)
 
 	type row struct {
-		Bucket time.Time `db:"bucket"`
-		Cnt    int64     `db:"cnt"`
+		Bucket string `db:"bucket"`
+		Cnt    int64  `db:"cnt"`
 	}
 	var rows []row
 	if err := r.db.SelectContext(ctx, &rows, q, args...); err != nil {
@@ -76,7 +76,7 @@ func (r *AnalyticsRepo) EventTrend(ctx context.Context, req *ubaV1.EventTrendReq
 	points := make([]*ubaV1.TimeSeriesPoint, 0, len(rows))
 	var total int64
 	for _, rw := range rows {
-		ts := rw.Bucket.UnixMilli()
+		ts := parseBucketMs(rw.Bucket)
 		points = append(points, &ubaV1.TimeSeriesPoint{Timestamp: ts, Value: float64(rw.Cnt)})
 		total += rw.Cnt
 	}
@@ -380,8 +380,8 @@ func (r *AnalyticsRepo) activeUsersFromEventsFact(ctx context.Context, req *ubaV
 	}
 
 	type row struct {
-		Bucket time.Time `db:"bucket"`
-		Dau    int64     `db:"dau"`
+		Bucket string `db:"bucket"`
+		Dau    int64  `db:"dau"`
 	}
 	var rows []row
 	if err := r.db.SelectContext(ctx, &rows, q, args...); err != nil {
@@ -393,7 +393,7 @@ func (r *AnalyticsRepo) activeUsersFromEventsFact(ctx context.Context, req *ubaV
 	for _, rw := range rows {
 		// 小时级无滚动窗口状态，WAU/MAU 退化为等于 DAU。
 		points = append(points, &ubaV1.ActiveUsersPoint{
-			Timestamp: rw.Bucket.UnixMilli(),
+			Timestamp: parseBucketMs(rw.Bucket),
 			Dau:       rw.Dau,
 			Wau:       rw.Dau,
 			Mau:       rw.Dau,
@@ -2158,6 +2158,21 @@ func derefStr(p *string) string {
 		return ""
 	}
 	return *p
+}
+
+// parseBucketMs 把 DATE_FORMAT 返回的桶字符串解析为 Unix 毫秒。
+// 支持格式：%Y-%m-%d, %Y-%m-%d %H:00:00, %x-W%v（周）, %Y-%m-01（月）
+func parseBucketMs(s string) int64 {
+	if s == "" {
+		return 0
+	}
+	// 尝试解析为日期或日期时间
+	for _, layout := range []string{"2006-01-02 15:04:05", "2006-01-02"} {
+		if t, err := time.Parse(layout, s); err == nil {
+			return t.UnixMilli()
+		}
+	}
+	return 0
 }
 
 func normTimeRange(tr *ubaV1.TimeRange) (int64, int64) {
