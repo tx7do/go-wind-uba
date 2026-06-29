@@ -193,6 +193,13 @@ components:
                     type: integer
                     description: 视口宽度（像素），用于响应式热力图归一化
                     format: uint32
+                serverId:
+                    type: string
+                    description: 游戏区服 ID（如 s1、cn-east-1），滚服留存/区服维度分析用
+                level:
+                    type: integer
+                    description: 玩家等级（事件发生时的等级快照），游戏维度分析用
+                    format: uint32
                 createdAt:
                     type: string
                     description: 创建时间
