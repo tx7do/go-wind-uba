@@ -318,6 +318,41 @@ const dataAnalysis: RouteRecordRaw[] = [
         },
         component: () => import('#/views/app/data-analysis/ltv/index.vue'),
       },
+      {
+        path: 'server-retention',
+        name: 'ServerRetention',
+        meta: {
+          order: 27,
+          icon: 'lucide:server',
+          title: $t('menu.dataAnalysis.serverRetention'),
+          authority: ['sys:platform_admin'],
+        },
+        component: () =>
+          import('#/views/app/data-analysis/server-retention/index.vue'),
+      },
+      {
+        path: 'online-stats',
+        name: 'OnlineStats',
+        meta: {
+          order: 28,
+          icon: 'lucide:radio',
+          title: $t('menu.dataAnalysis.onlineStats'),
+          authority: ['sys:platform_admin'],
+        },
+        component: () =>
+          import('#/views/app/data-analysis/online-stats/index.vue'),
+      },
+      {
+        path: 'economy',
+        name: 'Economy',
+        meta: {
+          order: 29,
+          icon: 'lucide:coins',
+          title: $t('menu.dataAnalysis.economy'),
+          authority: ['sys:platform_admin'],
+        },
+        component: () => import('#/views/app/data-analysis/economy/index.vue'),
+      },
     ],
   },
 ];

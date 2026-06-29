@@ -375,6 +375,18 @@ export interface AnalyticsService {
   LTV(
     request: ubaservicev1_LTVRequest,
   ): Promise<ubaservicev1_LTVResponse>;
+  // 滚服留存
+  ServerRetention(
+    request: ubaservicev1_ServerRetentionRequest,
+  ): Promise<ubaservicev1_ServerRetentionResponse>;
+  // 同时在线 PCU/ACU
+  OnlineStats(
+    request: ubaservicev1_OnlineStatsRequest,
+  ): Promise<ubaservicev1_OnlineStatsResponse>;
+  // 经济系统/代币流向
+  Economy(
+    request: ubaservicev1_EconomyRequest,
+  ): Promise<ubaservicev1_EconomyResponse>;
 }
 
 export function createAnalyticsServiceClient(
@@ -556,6 +568,30 @@ export function createAnalyticsServiceClient(
         service: 'AnalyticsService',
         method: 'LTV',
       }) as Promise<ubaservicev1_LTVResponse>;
+    },
+    ServerRetention(request) {
+      const path = `admin/v1/analytics/server-retention`;
+      const body = JSON.stringify(request);
+      return transport.unary(path, 'POST', body, {
+        service: 'AnalyticsService',
+        method: 'ServerRetention',
+      }) as Promise<ubaservicev1_ServerRetentionResponse>;
+    },
+    OnlineStats(request) {
+      const path = `admin/v1/analytics/online-stats`;
+      const body = JSON.stringify(request);
+      return transport.unary(path, 'POST', body, {
+        service: 'AnalyticsService',
+        method: 'OnlineStats',
+      }) as Promise<ubaservicev1_OnlineStatsResponse>;
+    },
+    Economy(request) {
+      const path = `admin/v1/analytics/economy`;
+      const body = JSON.stringify(request);
+      return transport.unary(path, 'POST', body, {
+        service: 'AnalyticsService',
+        method: 'Economy',
+      }) as Promise<ubaservicev1_EconomyResponse>;
     },
   };
 }
@@ -1335,6 +1371,83 @@ export type ubaservicev1_LTVPoint = {
   ltv: number | undefined;
   // 累计付费总额
   totalAmount: number | undefined;
+};
+
+// ============== 滚服留存（按区服分组） ==============
+export type ubaservicev1_ServerRetentionRequest = {
+  // 应用 ID 过滤（可选）
+  appId?: number;
+  // 最大偏移天数（默认 7）
+  maxOffsetDays?: number;
+  // 区服 ID 过滤（可选，空表示全部区服对比）
+  serverId?: string;
+  // 时间范围（按首次活跃日过滤）
+  timeRange: ubaservicev1_TimeRange | undefined;
+};
+
+export type ubaservicev1_ServerRetentionResponse = {
+  // 偏移天列表（横轴）
+  offsetDays: number[] | undefined;
+  // 各区服留存
+  rows: ubaservicev1_ServerRetentionRow[] | undefined;
+};
+
+// 单区服留存
+export type ubaservicev1_ServerRetentionRow = {
+  // 首日新增用户数（同期群规模）
+  cohortSize: number | undefined;
+  // 各偏移天的留存率（key=天数，如 "1"/"3"/"7"）
+  retentionRates: { [key: string]: number } | undefined;
+  // 区服 ID
+  serverId: string | undefined;
+};
+
+// ============== 同时在线 PCU/ACU ==============
+export type ubaservicev1_OnlineStatsRequest = {
+  // 应用 ID 过滤（可选）
+  appId?: number;
+  // 区服过滤（可选）
+  serverId?: string;
+  // 时间范围
+  timeRange: ubaservicev1_TimeRange | undefined;
+};
+
+export type ubaservicev1_OnlineStatsResponse = {
+  // ACU 平均同时在线
+  acu: number | undefined;
+  // 统计时长（分钟）
+  durationMinutes: number | undefined;
+  // PCU 峰值同时在线（时间段内最大同时在线数）
+  pcu: number | undefined;
+  // 总会话数
+  totalSessions: number | undefined;
+};
+
+// ============== 经济系统/代币流向 ==============
+export type ubaservicev1_EconomyRequest = {
+  // 应用 ID 过滤（可选）
+  appId?: number;
+  // 代币类型过滤（可选，如 GOLD/DIAMOND，空表示全部）
+  currency?: string;
+  // 时间范围
+  timeRange: ubaservicev1_TimeRange | undefined;
+};
+
+export type ubaservicev1_EconomyResponse = {
+  // 各代币的产出消耗平衡
+  currencies: ubaservicev1_CurrencyBalance[] | undefined;
+};
+
+// 单代币的产出消耗平衡
+export type ubaservicev1_CurrencyBalance = {
+  // 代币类型（GOLD/DIAMOND 等）
+  currency: string | undefined;
+  // 净流入（产出 - 消耗，正值=通胀倾向，负值=通缩）
+  net: number | undefined;
+  // 消耗总量（Sink：购买/升级等支出）
+  sink: number | undefined;
+  // 产出总量（Source：充值/奖励/掉落等获取）
+  source: number | undefined;
 };
 
 // API资源管理服务
@@ -2595,6 +2708,7 @@ export type ubaservicev1_BehaviorEvent = {
   // 网络 & 位置
   ip?: string;
   ipCity?: string;
+  level?: number;
   metrics: { [key: string]: number } | undefined;
   network?: string;
   objectId: string | undefined;
@@ -2614,6 +2728,8 @@ export type ubaservicev1_BehaviorEvent = {
   referer?: string;
   riskLevel?: string;
   score: number | undefined;
+  // 游戏专属维度（游戏方在 track 时传入，事件发生时的快照）
+  serverId?: string;
   serverTime: undefined | wellKnownTimestamp;
   // 上下文：Context
   sessionId: string | undefined;

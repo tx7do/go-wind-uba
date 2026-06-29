@@ -81,7 +81,10 @@
     "pathSankey": "Conversion Paths",
     "levelAnalysis": "Level Analysis",
     "whaleTier": "Whale / Pay Tier",
-    "ltv": "LTV"
+    "ltv": "LTV",
+    "serverRetention": "Server Retention",
+    "onlineStats": "Online Stats",
+    "economy": "Economy"
   },
   "opsAnalysis": {
     "moduleName": "Operations",

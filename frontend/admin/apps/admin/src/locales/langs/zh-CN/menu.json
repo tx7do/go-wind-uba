@@ -81,7 +81,10 @@
     "pathSankey": "转化路径",
     "levelAnalysis": "关卡分析",
     "whaleTier": "付费分层",
-    "ltv": "LTV 生命周期价值"
+    "ltv": "LTV 生命周期价值",
+    "serverRetention": "滚服留存",
+    "onlineStats": "在线统计",
+    "economy": "经济系统"
   },
   "opsAnalysis": {
     "moduleName": "运营分析",

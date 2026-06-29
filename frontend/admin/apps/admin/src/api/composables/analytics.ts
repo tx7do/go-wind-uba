@@ -25,6 +25,12 @@ import type {
   ubaservicev1_LevelAnalysisResponse,
   ubaservicev1_LTVRequest,
   ubaservicev1_LTVResponse,
+  ubaservicev1_EconomyRequest,
+  ubaservicev1_EconomyResponse,
+  ubaservicev1_OnlineStatsRequest,
+  ubaservicev1_OnlineStatsResponse,
+  ubaservicev1_ServerRetentionRequest,
+  ubaservicev1_ServerRetentionResponse,
   ubaservicev1_WhaleTierRequest,
   ubaservicev1_WhaleTierResponse,
   ubaservicev1_RevenueRequest,
@@ -550,6 +556,74 @@ export async function fetchLTV(req: ubaservicev1_LTVRequest) {
   return queryClient.fetchQuery({
     queryKey: ['analytics', 'ltv', req],
     queryFn: () => apiClient.analyticsService.LTV(req),
+    staleTime: 60_000,
+  });
+}
+
+// ==============================
+// 滚服留存
+// ==============================
+export function useServerRetention(
+  req: ubaservicev1_ServerRetentionRequest,
+  options?: UseQueryOptions<ubaservicev1_ServerRetentionResponse, Error>,
+) {
+  return useQuery({
+    queryKey: ['analytics', 'serverRetention', req],
+    queryFn: () => apiClient.analyticsService.ServerRetention(req),
+    ...options,
+  });
+}
+
+export async function fetchServerRetention(
+  req: ubaservicev1_ServerRetentionRequest,
+) {
+  return queryClient.fetchQuery({
+    queryKey: ['analytics', 'serverRetention', req],
+    queryFn: () => apiClient.analyticsService.ServerRetention(req),
+    staleTime: 60_000,
+  });
+}
+
+// ==============================
+// 同时在线 PCU/ACU
+// ==============================
+export function useOnlineStats(
+  req: ubaservicev1_OnlineStatsRequest,
+  options?: UseQueryOptions<ubaservicev1_OnlineStatsResponse, Error>,
+) {
+  return useQuery({
+    queryKey: ['analytics', 'onlineStats', req],
+    queryFn: () => apiClient.analyticsService.OnlineStats(req),
+    ...options,
+  });
+}
+
+export async function fetchOnlineStats(req: ubaservicev1_OnlineStatsRequest) {
+  return queryClient.fetchQuery({
+    queryKey: ['analytics', 'onlineStats', req],
+    queryFn: () => apiClient.analyticsService.OnlineStats(req),
+    staleTime: 60_000,
+  });
+}
+
+// ==============================
+// 经济系统/代币流向
+// ==============================
+export function useEconomy(
+  req: ubaservicev1_EconomyRequest,
+  options?: UseQueryOptions<ubaservicev1_EconomyResponse, Error>,
+) {
+  return useQuery({
+    queryKey: ['analytics', 'economy', req],
+    queryFn: () => apiClient.analyticsService.Economy(req),
+    ...options,
+  });
+}
+
+export async function fetchEconomy(req: ubaservicev1_EconomyRequest) {
+  return queryClient.fetchQuery({
+    queryKey: ['analytics', 'economy', req],
+    queryFn: () => apiClient.analyticsService.Economy(req),
     staleTime: 60_000,
   });
 }
