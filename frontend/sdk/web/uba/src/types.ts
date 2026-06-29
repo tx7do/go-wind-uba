@@ -37,6 +37,16 @@ export interface BehaviorEvent {
   metrics?: Record<string, number>;
   opResult?: string;
   errorCode?: string;
+  /** 点击坐标 X（相对文档，像素；autotrack 自动填充） */
+  clickX?: number;
+  /** 点击坐标 Y（相对文档，像素） */
+  clickY?: number;
+  /** 被点击元素的 XPath（如 /div[2]/section[1]/a[3]） */
+  elementXpath?: string;
+  /** 页面 URL（热力图按页面分组） */
+  pageUrl?: string;
+  /** 视口宽度（像素） */
+  viewportWidth?: number;
 }
 
 /** 风险事件 payload（对应 RiskEvent，放在 ReportEvent.risk oneof 内） */
@@ -134,6 +144,16 @@ export interface ReportEvent {
   opResult?: string;
   /** 错误码 */
   errorCode?: string;
+  /** 点击坐标 X（相对文档，像素；autotrack 自动填充） */
+  clickX?: number;
+  /** 点击坐标 Y（相对文档，像素） */
+  clickY?: number;
+  /** 被点击元素的 XPath */
+  elementXpath?: string;
+  /** 页面 URL */
+  pageUrl?: string;
+  /** 视口宽度（像素） */
+  viewportWidth?: number;
 
   /** oneof payload：BEHAVIOR 事件填此项 */
   behavior?: BehaviorEvent;
@@ -206,6 +226,8 @@ export interface UbaConfig {
   debug?: boolean;
   /** 是否在页面卸载时用 sendBeacon 兜底，默认 true */
   enableBeacon?: boolean;
+  /** 是否开启自动埋点（监听 click 自动上报点击事件），默认 true */
+  autoTrack?: boolean;
 }
 
 /** track() 的可选参数 */
@@ -226,4 +248,14 @@ export interface TrackOptions {
   metrics?: Record<string, number>;
   /** 自定义属性，并入 properties */
   properties?: Record<string, string>;
+  /** 点击坐标 X（相对文档，像素） */
+  clickX?: number;
+  /** 点击坐标 Y（相对文档，像素） */
+  clickY?: number;
+  /** 被点击元素的 XPath */
+  elementXpath?: string;
+  /** 页面 URL */
+  pageUrl?: string;
+  /** 视口宽度（像素） */
+  viewportWidth?: number;
 }

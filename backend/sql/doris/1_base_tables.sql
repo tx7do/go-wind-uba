@@ -54,6 +54,12 @@ CREATE TABLE IF NOT EXISTS events_fact (
     error_code VARCHAR(128) COMMENT '错误码',
     risk_level VARCHAR(64) COMMENT '风险等级',
     trace_id VARCHAR(128) COMMENT '链路ID',
+    -- 点击热力图字段（SDK autotrack 自动填充，仅 click 事件有意义）
+    click_x SMALLINT COMMENT '点击坐标 X（相对文档，像素）',
+    click_y SMALLINT COMMENT '点击坐标 Y（相对文档，像素）',
+    element_xpath VARCHAR(512) COMMENT '被点击元素的 XPath',
+    page_url VARCHAR(512) COMMENT '页面 URL',
+    viewport_width SMALLINT COMMENT '视口宽度（像素）',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
 

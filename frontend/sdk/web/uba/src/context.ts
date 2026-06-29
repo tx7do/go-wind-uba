@@ -107,3 +107,63 @@ export function getPageUrl(): string {
   }
   return window.location ? window.location.href : '';
 }
+
+/** 视口宽度（像素），Node/无值返回 0 */
+export function getViewportWidth(): number {
+  if (!isBrowser()) {
+    return 0;
+  }
+  return (
+    window.innerWidth ||
+    document.documentElement?.clientWidth ||
+    document.body?.clientWidth ||
+    0
+  );
+}
+
+/**
+ * 计算元素的 XPath（如 /html/body/div[2]/section[1]/a[3]）。
+ * 用于点击热力图按元素维度聚合。非浏览器或无目标返回空串。
+ */
+export function buildElementXPath(target: unknown): string {
+  if (!isBrowser() || !target || !(target instanceof Element)) {
+    return '';
+  }
+  const parts: string[] = [];
+  let node: Element | null = target;
+  while (node && node.nodeType === 1 && node !== document.documentElement) {
+    let idx = 1;
+    let sib = node.previousElementSibling;
+    while (sib) {
+      if (sib.tagName === node.tagName) {
+        idx++;
+      }
+      sib = sib.previousElementSibling;
+    }
+    const tag = node.tagName.toLowerCase();
+    parts.unshift(`${tag}[${idx}]`);
+    node = node.parentElement;
+  }
+  if (node === document.documentElement) {
+    parts.unshift('html');
+  }
+  return parts.length > 0 ? '/' + parts.join('/') : '';
+}
+
+/**
+ * 计算点击相对文档（非视口）的坐标，含滚动偏移。
+ * 返回 { x, y }，单位像素；非浏览器或事件无值返回 0。
+ */
+export function getClickCoords(
+  event: MouseEvent | PointerEvent,
+): { x: number; y: number } {
+  if (!isBrowser()) {
+    return { x: 0, y: 0 };
+  }
+  const scrollX = window.pageXOffset || document.documentElement?.scrollLeft || 0;
+  const scrollY = window.pageYOffset || document.documentElement?.scrollTop || 0;
+  return {
+    x: Math.round((event.clientX || 0) + scrollX),
+    y: Math.round((event.clientY || 0) + scrollY),
+  };
+}

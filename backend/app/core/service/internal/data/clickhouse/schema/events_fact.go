@@ -49,4 +49,10 @@ type EventsFact struct {
 	Quantity      *uint32            `ch:"quantity"`
 	Amount        *decimal.Decimal   `ch:"amount"`
 	DurationMs    *uint32            `ch:"duration_ms"`
+	// 点击热力图字段
+	ClickX        *uint32            `ch:"click_x"`
+	ClickY        *uint32            `ch:"click_y"`
+	ElementXpath  *string            `ch:"element_xpath"`
+	PageUrl       *string            `ch:"page_url"`
+	ViewportWidth *uint32            `ch:"viewport_width"`
 }

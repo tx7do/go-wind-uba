@@ -15,6 +15,9 @@ import {
   detectPlatform,
   getClientInfo,
   getPageUrl,
+  getViewportWidth,
+  buildElementXPath,
+  getClickCoords,
   isBrowser,
 } from './context';
 import { uuid, toRFC3339, merge } from './utils';
@@ -36,7 +39,7 @@ const DEFAULT_TIMEOUT = 8000;
 const DEFAULT_BASE_DELAY = 1000;
 
 export class UbaClient {
-  private config: Required<Pick<UbaConfig, 'appId' | 'appSecret' | 'endpoint' | 'path' | 'batchSize' | 'flushInterval' | 'maxRetries' | 'timeout' | 'retryBaseDelay' | 'debug' | 'enableBeacon'>>;
+  private config: Required<Pick<UbaConfig, 'appId' | 'appSecret' | 'endpoint' | 'path' | 'batchSize' | 'flushInterval' | 'maxRetries' | 'timeout' | 'retryBaseDelay' | 'debug' | 'enableBeacon' | 'autoTrack'>>;
   private batcher: Batcher;
 
   /** 当前登录用户 ID（identify 设置后注入每条事件） */
@@ -45,6 +48,8 @@ export class UbaClient {
   private superProperties: Record<string, string> = {};
   /** 平台缓存 */
   private platform: string;
+  /** autotrack click 监听器引用（destroy 时解绑） */
+  private clickHandler?: (e: MouseEvent) => void;
 
   private constructor(config: UbaConfig) {
     this.config = {
@@ -59,6 +64,7 @@ export class UbaClient {
       retryBaseDelay: config.retryBaseDelay ?? DEFAULT_BASE_DELAY,
       debug: config.debug ?? false,
       enableBeacon: config.enableBeacon ?? true,
+      autoTrack: config.autoTrack ?? true,
     };
 
     this.platform = detectPlatform();
@@ -81,6 +87,10 @@ export class UbaClient {
     // 绑定页面卸载兜底
     if (isBrowser() && this.config.enableBeacon) {
       this.bindUnload();
+    }
+    // 自动埋点：监听 click 上报点击事件
+    if (isBrowser() && this.config.autoTrack) {
+      this.enableAutoTrack();
     }
   }
 
@@ -134,6 +144,11 @@ export class UbaClient {
       quantity: options?.quantity,
       score: options?.score,
       metrics: options?.metrics,
+      clickX: options?.clickX,
+      clickY: options?.clickY,
+      elementXpath: options?.elementXpath,
+      pageUrl: event.pageUrl,
+      viewportWidth: event.viewportWidth,
     };
     this.enqueue(event);
   }
@@ -176,10 +191,45 @@ export class UbaClient {
   /** 销毁 SDK：停止定时器。通常无需手动调用。 */
   destroy(): void {
     this.batcher.destroy();
+    // 解绑 autotrack click 监听
+    if (this.clickHandler && isBrowser()) {
+      document.removeEventListener('click', this.clickHandler, true);
+      this.clickHandler = undefined;
+    }
     const g = globalThis as any;
     if (g.__uba_client__ === this) {
       g.__uba_client__ = undefined;
     }
+  }
+
+  /**
+   * 自动埋点：监听 document click，捕获时计算坐标+元素 xpath，
+   * 自动上报 'click' 事件。初始化时按 config.autoTrack 默认开启。
+   */
+  enableAutoTrack(): void {
+    if (!isBrowser() || this.clickHandler) {
+      return;
+    }
+    this.clickHandler = (e: MouseEvent) => {
+      try {
+        const target = e.target;
+        const coords = getClickCoords(e);
+        const xpath = buildElementXPath(target);
+        const pageUrl = getPageUrl();
+        const viewportWidth = getViewportWidth();
+        this.track('click', undefined, {
+          clickX: coords.x,
+          clickY: coords.y,
+          elementXpath: xpath,
+          pageUrl,
+          viewportWidth,
+        });
+      } catch (err) {
+        this.log('warn', `autotrack click failed: ${err}`);
+      }
+    };
+    // 捕获阶段绑定，确保先于业务 click 逻辑采集
+    document.addEventListener('click', this.clickHandler, true);
   }
 
   /** 当前队列中待上报的事件数 */
@@ -224,6 +274,12 @@ export class UbaClient {
       quantity: options?.quantity,
       score: options?.score,
       metrics: options?.metrics,
+      // 页面级公共字段（点击热力图/路径分析用）
+      clickX: options?.clickX,
+      clickY: options?.clickY,
+      elementXpath: options?.elementXpath,
+      pageUrl: options?.pageUrl ?? pageUrl,
+      viewportWidth: options?.viewportWidth ?? (isBrowser() ? getViewportWidth() : undefined),
       properties: Object.keys(mergedProps).length > 0 ? mergedProps : undefined,
     };
   }

@@ -172,6 +172,16 @@ func (x *BehaviorEvent) Redact() string {
 
 	// Safe field: TraceId
 
+	// Safe field: ClickX
+
+	// Safe field: ClickY
+
+	// Safe field: ElementXpath
+
+	// Safe field: PageUrl
+
+	// Safe field: ViewportWidth
+
 	// Safe field: CreatedAt
 
 	// Safe field: UpdatedAt

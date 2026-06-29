@@ -33,6 +33,9 @@ service AnalyticsService {
 
   // 用户分群/圈选（做过/未做过某事件的人群筛选）
   rpc Segmentation(SegmentationRequest) returns (SegmentationResponse) {}
+
+  // 点击热力图（按页面网格分桶聚合点击坐标）
+  rpc Click(ClickRequest) returns (ClickResponse) {}
 }
 
 // 时间粒度
@@ -378,4 +381,49 @@ message SegmentationResponse {
   repeated uint32 user_ids = 1 [json_name = "userIds"];
   // 命中用户总数
   int64 total = 2 [json_name = "total"];
+}
+
+// ============== 点击热力图 ==============
+message ClickRequest {
+  // 时间范围
+  TimeRange time_range = 1 [json_name = "timeRange"];
+  // 页面 URL（必填，按页面分组热力图）
+  string page_url = 2 [json_name = "pageUrl"];
+  // 网格大小（像素，默认 20）
+  optional uint32 grid_size = 3 [json_name = "gridSize"];
+  // 应用 ID 过滤（可选）
+  optional uint32 app_id = 4 [json_name = "appId"];
+}
+
+// 热力图网格点
+message ClickHeatPoint {
+  // 网格左上角 X（像素）
+  uint32 x = 1 [json_name = "x"];
+  // 网格左上角 Y（像素）
+  uint32 y = 2 [json_name = "y"];
+  // 该网格的点击次数
+  int64 count = 3 [json_name = "count"];
+  // 热度（0-1，相对最大点击数的归一化值）
+  double intensity = 4 [json_name = "intensity"];
+}
+
+// 元素点击 TOP（按 element_xpath 聚合）
+message ClickElementBucket {
+  // 元素 XPath
+  string element_xpath = 1 [json_name = "elementXpath"];
+  // 点击次数
+  int64 count = 2 [json_name = "count"];
+  // 占比（0-1）
+  double percentage = 3 [json_name = "percentage"];
+}
+
+message ClickResponse {
+  // 热力图网格点列表
+  repeated ClickHeatPoint points = 1 [json_name = "points"];
+  // 元素点击 TOP
+  repeated ClickElementBucket top_elements = 2 [json_name = "topElements"];
+  // 总点击次数
+  int64 total_clicks = 3 [json_name = "totalClicks"];
+  // 使用的网格大小
+  uint32 grid_size = 4 [json_name = "gridSize"];
 }

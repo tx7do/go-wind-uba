@@ -46,6 +46,12 @@ type EventsFact struct {
 	Quantity      *uint32          `db:"quantity"`
 	Amount        *decimal.Decimal `db:"amount"`
 	DurationMs    *uint32          `db:"duration_ms"`
+	// 点击热力图字段
+	ClickX        *uint32          `db:"click_x"`
+	ClickY        *uint32          `db:"click_y"`
+	ElementXpath  *string          `db:"element_xpath"`
+	PageUrl       *string          `db:"page_url"`
+	ViewportWidth *uint32          `db:"viewport_width"`
 	CreatedAt     *time.Time       `db:"created_at"`
 	UpdatedAt     *time.Time       `db:"updated_at"`
 }

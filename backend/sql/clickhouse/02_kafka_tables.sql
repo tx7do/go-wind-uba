@@ -95,6 +95,13 @@ SELECT JSONExtractString(raw, 'eventId')                                  AS eve
        JSONExtractString(raw, 'riskLevel')                                AS risk_level,
        JSONExtractString(raw, 'traceId')                                  AS trace_id,
 
+       -- 点击热力图字段（缺失/非法时落默认值，不影响其他事件入库）
+       toUInt16OrDefault(JSONExtractString(raw, 'clickX'), 0)             AS click_x,
+       toUInt16OrDefault(JSONExtractString(raw, 'clickY'), 0)             AS click_y,
+       JSONExtractString(raw, 'elementXpath')                            AS element_xpath,
+       JSONExtractString(raw, 'pageUrl')                                 AS page_url,
+       toUInt16OrDefault(JSONExtractString(raw, 'viewportWidth'), 0)      AS viewport_width,
+
        now()                                                              AS created_at,
        now()                                                              AS updated_at
 FROM gw_uba.kafka_events_raw;

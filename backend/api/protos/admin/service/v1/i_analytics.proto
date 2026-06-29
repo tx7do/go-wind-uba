@@ -79,4 +79,12 @@ service AnalyticsService {
       body: "*"
     };
   }
+
+  // 点击热力图
+  rpc Click(uba.service.v1.ClickRequest) returns (uba.service.v1.ClickResponse) {
+    option (google.api.http) = {
+      post: "/admin/v1/analytics/click"
+      body: "*"
+    };
+  }
 }

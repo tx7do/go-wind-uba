@@ -212,6 +212,28 @@ message BehaviorEvent {
     (gnostic.openapi.v3.property) = {description: "Trace ID，事件相关的分布式追踪标识，可以用于分析事件的调用链和系统性能，通常由服务器生成并传递给客户端进行上报"}
   ]; // Trace ID，事件相关的分布式追踪标识，可以用于分析事件的调用链和系统性能，通常由服务器生成并传递给客户端进行上报
 
+  // 点击热力图字段（SDK autotrack 自动填充，仅 click 事件有意义）
+  optional uint32 click_x = 45 [
+    json_name = "clickX",
+    (gnostic.openapi.v3.property) = {description: "点击坐标 X（相对文档，像素），点击热力图用"}
+  ]; // 点击坐标 X
+  optional uint32 click_y = 46 [
+    json_name = "clickY",
+    (gnostic.openapi.v3.property) = {description: "点击坐标 Y（相对文档，像素），点击热力图用"}
+  ]; // 点击坐标 Y
+  optional string element_xpath = 47 [
+    json_name = "elementXpath",
+    (gnostic.openapi.v3.property) = {description: "被点击元素的 XPath，如 /html/body/div[2]/a[1]"}
+  ]; // 被点击元素 XPath
+  optional string page_url = 48 [
+    json_name = "pageUrl",
+    (gnostic.openapi.v3.property) = {description: "页面 URL，热力图按页面分组的前提"}
+  ]; // 页面 URL
+  optional uint32 viewport_width = 49 [
+    json_name = "viewportWidth",
+    (gnostic.openapi.v3.property) = {description: "视口宽度（像素），用于响应式热力图归一化"}
+  ]; // 视口宽度
+
   optional google.protobuf.Timestamp created_at = 200 [
     json_name = "createdAt",
     (gnostic.openapi.v3.property) = {description: "创建时间"}

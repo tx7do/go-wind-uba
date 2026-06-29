@@ -78,12 +78,18 @@ type BehaviorEvent struct {
 	// 扩展属性
 	Properties map[string]string `protobuf:"bytes,32,rep,name=properties,proto3" json:"properties,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"` // 扩展属性，事件的其他相关属性信息，可以包含任意的键值对，由业务定义和使用，便于分析事件的其他特征和细节
 	// 企业级字段
-	OpResult      *string                `protobuf:"bytes,33,opt,name=op_result,json=opResult,proto3,oneof" json:"op_result,omitempty"`     // 操作结果，事件相关的操作结果信息，可以用于分析事件的成功率和失败原因，具体含义由业务定义
-	ErrorCode     string                 `protobuf:"bytes,34,opt,name=error_code,json=errorCode,proto3" json:"error_code,omitempty"`        // 错误码，事件相关的错误码信息，可以用于分析事件的失败原因和问题排查，具体含义由业务定义
-	RiskLevel     *string                `protobuf:"bytes,35,opt,name=risk_level,json=riskLevel,proto3,oneof" json:"risk_level,omitempty"`  // 风险等级，事件相关的风险等级信息，可以用于分析事件的风险特征和安全问题，具体含义由业务定义
-	TraceId       string                 `protobuf:"bytes,36,opt,name=trace_id,json=traceId,proto3" json:"trace_id,omitempty"`              // Trace ID，事件相关的分布式追踪标识，可以用于分析事件的调用链和系统性能，通常由服务器生成并传递给客户端进行上报
-	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,200,opt,name=created_at,json=createdAt,proto3,oneof" json:"created_at,omitempty"` // 创建时间
-	UpdatedAt     *timestamppb.Timestamp `protobuf:"bytes,201,opt,name=updated_at,json=updatedAt,proto3,oneof" json:"updated_at,omitempty"` // 更新时间
+	OpResult  *string `protobuf:"bytes,33,opt,name=op_result,json=opResult,proto3,oneof" json:"op_result,omitempty"`    // 操作结果，事件相关的操作结果信息，可以用于分析事件的成功率和失败原因，具体含义由业务定义
+	ErrorCode string  `protobuf:"bytes,34,opt,name=error_code,json=errorCode,proto3" json:"error_code,omitempty"`       // 错误码，事件相关的错误码信息，可以用于分析事件的失败原因和问题排查，具体含义由业务定义
+	RiskLevel *string `protobuf:"bytes,35,opt,name=risk_level,json=riskLevel,proto3,oneof" json:"risk_level,omitempty"` // 风险等级，事件相关的风险等级信息，可以用于分析事件的风险特征和安全问题，具体含义由业务定义
+	TraceId   string  `protobuf:"bytes,36,opt,name=trace_id,json=traceId,proto3" json:"trace_id,omitempty"`             // Trace ID，事件相关的分布式追踪标识，可以用于分析事件的调用链和系统性能，通常由服务器生成并传递给客户端进行上报
+	// 点击热力图字段（SDK autotrack 自动填充，仅 click 事件有意义）
+	ClickX        *uint32                `protobuf:"varint,45,opt,name=click_x,json=clickX,proto3,oneof" json:"click_x,omitempty"`                      // 点击坐标 X
+	ClickY        *uint32                `protobuf:"varint,46,opt,name=click_y,json=clickY,proto3,oneof" json:"click_y,omitempty"`                      // 点击坐标 Y
+	ElementXpath  *string                `protobuf:"bytes,47,opt,name=element_xpath,json=elementXpath,proto3,oneof" json:"element_xpath,omitempty"`     // 被点击元素 XPath
+	PageUrl       *string                `protobuf:"bytes,48,opt,name=page_url,json=pageUrl,proto3,oneof" json:"page_url,omitempty"`                    // 页面 URL
+	ViewportWidth *uint32                `protobuf:"varint,49,opt,name=viewport_width,json=viewportWidth,proto3,oneof" json:"viewport_width,omitempty"` // 视口宽度
+	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,200,opt,name=created_at,json=createdAt,proto3,oneof" json:"created_at,omitempty"`             // 创建时间
+	UpdatedAt     *timestamppb.Timestamp `protobuf:"bytes,201,opt,name=updated_at,json=updatedAt,proto3,oneof" json:"updated_at,omitempty"`             // 更新时间
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -391,6 +397,41 @@ func (x *BehaviorEvent) GetTraceId() string {
 	return ""
 }
 
+func (x *BehaviorEvent) GetClickX() uint32 {
+	if x != nil && x.ClickX != nil {
+		return *x.ClickX
+	}
+	return 0
+}
+
+func (x *BehaviorEvent) GetClickY() uint32 {
+	if x != nil && x.ClickY != nil {
+		return *x.ClickY
+	}
+	return 0
+}
+
+func (x *BehaviorEvent) GetElementXpath() string {
+	if x != nil && x.ElementXpath != nil {
+		return *x.ElementXpath
+	}
+	return ""
+}
+
+func (x *BehaviorEvent) GetPageUrl() string {
+	if x != nil && x.PageUrl != nil {
+		return *x.PageUrl
+	}
+	return ""
+}
+
+func (x *BehaviorEvent) GetViewportWidth() uint32 {
+	if x != nil && x.ViewportWidth != nil {
+		return *x.ViewportWidth
+	}
+	return 0
+}
+
 func (x *BehaviorEvent) GetCreatedAt() *timestamppb.Timestamp {
 	if x != nil {
 		return x.CreatedAt
@@ -595,7 +636,7 @@ var File_uba_service_v1_behavior_event_proto protoreflect.FileDescriptor
 
 const file_uba_service_v1_behavior_event_proto_rawDesc = "" +
 	"\n" +
-	"#uba/service/v1/behavior_event.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1epagination/v1/pagination.proto\x1a\x1buba/service/v1/common.proto\"\xc27\n" +
+	"#uba/service/v1/behavior_event.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1epagination/v1/pagination.proto\x1a\x1buba/service/v1/common.proto\"\x81<\n" +
 	"\rBehaviorEvent\x12\x7f\n" +
 	"\bevent_id\x18\x01 \x01(\tBd\xbaGa\x92\x02^事件ID，建议使用 UUID，作为事件的唯一标识，同时也可用于路由和去重R\aeventId\x12[\n" +
 	"\ttenant_id\x18\x02 \x01(\rB>\xbaG;\x92\x028租户ID，事件所属的租户，用于多租户隔离R\btenantId\x12~\n" +
@@ -652,11 +693,16 @@ const file_uba_service_v1_behavior_event_proto_rawDesc = "" +
 	"error_code\x18\" \x01(\tB\x89\x01\xbaG\x85\x01\x92\x02\x81\x01错误码，事件相关的错误码信息，可以用于分析事件的失败原因和问题排查，具体含义由业务定义R\terrorCode\x12\xb4\x01\n" +
 	"\n" +
 	"risk_level\x18# \x01(\tB\x8f\x01\xbaG\x8b\x01\x92\x02\x87\x01风险等级，事件相关的风险等级信息，可以用于分析事件的风险特征和安全问题，具体含义由业务定义H\rR\triskLevel\x88\x01\x01\x12\xc5\x01\n" +
-	"\btrace_id\x18$ \x01(\tB\xa9\x01\xbaG\xa5\x01\x92\x02\xa1\x01Trace ID，事件相关的分布式追踪标识，可以用于分析事件的调用链和系统性能，通常由服务器生成并传递给客户端进行上报R\atraceId\x12S\n" +
+	"\btrace_id\x18$ \x01(\tB\xa9\x01\xbaG\xa5\x01\x92\x02\xa1\x01Trace ID，事件相关的分布式追踪标识，可以用于分析事件的调用链和系统性能，通常由服务器生成并传递给客户端进行上报R\atraceId\x12b\n" +
+	"\aclick_x\x18- \x01(\rBD\xbaGA\x92\x02>点击坐标 X（相对文档，像素），点击热力图用H\x0eR\x06clickX\x88\x01\x01\x12b\n" +
+	"\aclick_y\x18. \x01(\rBD\xbaGA\x92\x02>点击坐标 Y（相对文档，像素），点击热力图用H\x0fR\x06clickY\x88\x01\x01\x12e\n" +
+	"\relement_xpath\x18/ \x01(\tB;\xbaG8\x92\x025被点击元素的 XPath，如 /html/body/div[2]/a[1]H\x10R\felementXpath\x88\x01\x01\x12T\n" +
+	"\bpage_url\x180 \x01(\tB4\xbaG1\x92\x02.页面 URL，热力图按页面分组的前提H\x11R\apageUrl\x88\x01\x01\x12n\n" +
+	"\x0eviewport_width\x181 \x01(\rBB\xbaG?\x92\x02<视口宽度（像素），用于响应式热力图归一化H\x12R\rviewportWidth\x88\x01\x01\x12S\n" +
 	"\n" +
-	"created_at\x18\xc8\x01 \x01(\v2\x1a.google.protobuf.TimestampB\x12\xbaG\x0f\x92\x02\f创建时间H\x0eR\tcreatedAt\x88\x01\x01\x12S\n" +
+	"created_at\x18\xc8\x01 \x01(\v2\x1a.google.protobuf.TimestampB\x12\xbaG\x0f\x92\x02\f创建时间H\x13R\tcreatedAt\x88\x01\x01\x12S\n" +
 	"\n" +
-	"updated_at\x18\xc9\x01 \x01(\v2\x1a.google.protobuf.TimestampB\x12\xbaG\x0f\x92\x02\f更新时间H\x0fR\tupdatedAt\x88\x01\x01\x1a:\n" +
+	"updated_at\x18\xc9\x01 \x01(\v2\x1a.google.protobuf.TimestampB\x12\xbaG\x0f\x92\x02\f更新时间H\x14R\tupdatedAt\x88\x01\x01\x1a:\n" +
 	"\fContextEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1a:\n" +
@@ -685,7 +731,14 @@ const file_uba_service_v1_behavior_event_proto_rawDesc = "" +
 	"\b_refererB\f\n" +
 	"\n" +
 	"_op_resultB\r\n" +
-	"\v_risk_levelB\r\n" +
+	"\v_risk_levelB\n" +
+	"\n" +
+	"\b_click_xB\n" +
+	"\n" +
+	"\b_click_yB\x10\n" +
+	"\x0e_element_xpathB\v\n" +
+	"\t_page_urlB\x11\n" +
+	"\x0f_viewport_widthB\r\n" +
 	"\v_created_atB\r\n" +
 	"\v_updated_at\"f\n" +
 	"\x19ListBehaviorEventResponse\x123\n" +

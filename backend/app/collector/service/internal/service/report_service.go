@@ -313,6 +313,9 @@ func (s *ReportService) handleBehavior(ctx context.Context, evt *ubaV1.ReportEve
 		behaviorEvent.Metrics = evt.GetMetrics()
 	}
 
+	// 点击热力图字段透传：BehaviorEvent oneof 内已由 SDK 填充，
+	// collector 无需回退（ReportEvent 顶层未定义这些字段），直接随 Kafka 发布即可。
+
 	if err := s.kafkaBroker.Publish(ctx, topic.UbaEventRaw, broker.NewMessage(behaviorEvent)); err != nil {
 		s.log.Errorf("failed to publish behavior event to kafka: %v", err)
 		return ubaV1.ErrorInternalServerError("failed to process behavior event")

@@ -77,6 +77,13 @@ CREATE TABLE IF NOT EXISTS gw_uba.events_fact
     risk_level     LowCardinality(String) COMMENT '风险等级（normal 正常/suspicious 可疑/high 高风险，实时风控标记）',
     trace_id       String COMMENT '链路追踪 ID（关联微服务调用链，用于问题排查）',
 
+    -- ========== 点击热力图字段（SDK autotrack 自动填充，仅 click 事件有意义）==========
+    click_x        UInt16 DEFAULT 0 COMMENT '点击坐标 X（相对文档，像素），点击热力图聚合用',
+    click_y        UInt16 DEFAULT 0 COMMENT '点击坐标 Y（相对文档，像素），点击热力图聚合用',
+    element_xpath  String DEFAULT '' COMMENT '被点击元素的 XPath（如 /html/body/div[2]/a[1]）',
+    page_url       String DEFAULT '' COMMENT '页面 URL，热力图按页面分组的前提',
+    viewport_width UInt16 DEFAULT 0 COMMENT '视口宽度（像素），用于响应式热力图归一化',
+
     -- ========== 审计字段（系统管理）==========
     created_at     DateTime      DEFAULT now() COMMENT '记录创建时间（数据写入 ClickHouse 的时间）',
     updated_at     DateTime      DEFAULT now() COMMENT '记录更新时间（用于审计追踪，MergeTree 无需版本控制）',
@@ -86,7 +93,9 @@ CREATE TABLE IF NOT EXISTS gw_uba.events_fact
     INDEX idx_context_keys mapKeys(context) TYPE bloom_filter(0.01) GRANULARITY 2, -- 加速上下文键名查询
     INDEX idx_risk risk_level TYPE set(4) GRANULARITY 1,                           -- 加速风险等级筛选
     INDEX idx_geo geo TYPE bloom_filter(0.01) GRANULARITY 4,                       -- 加速地理位置/GeoHash 前缀查询
-    INDEX idx_referer referer TYPE bloom_filter(0.01) GRANULARITY 4                -- 加速来源域名/URL 过滤查询
+    INDEX idx_referer referer TYPE bloom_filter(0.01) GRANULARITY 4,               -- 加速来源域名/URL 过滤查询
+    INDEX idx_element_xpath element_xpath TYPE ngrambf_v1(3, 5, 2, 0) GRANULARITY 4, -- 加速元素 XPath 前缀/包含查询（点击热力图元素聚合）
+    INDEX idx_page_url page_url TYPE bloom_filter(0.01) GRANULARITY 4              -- 加速页面 URL 过滤（热力图按页面分组）
 ) ENGINE = MergeTree -- 使用 MergeTree（事件只追加写入，不可变，无需去重）
       PARTITION BY toYYYYMM(event_date) -- 按月分区，平衡管理粒度和查询性能
       ORDER BY (tenant_id, event_category, event_date, event_name, event_ts) -- 按租户 + 分类 + 日期 + 事件名 + 时间戳排序，优化常见查询

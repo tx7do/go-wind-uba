@@ -217,6 +217,26 @@ func (m *BehaviorEvent) validate(all bool) error {
 		// no validation rules for RiskLevel
 	}
 
+	if m.ClickX != nil {
+		// no validation rules for ClickX
+	}
+
+	if m.ClickY != nil {
+		// no validation rules for ClickY
+	}
+
+	if m.ElementXpath != nil {
+		// no validation rules for ElementXpath
+	}
+
+	if m.PageUrl != nil {
+		// no validation rules for PageUrl
+	}
+
+	if m.ViewportWidth != nil {
+		// no validation rules for ViewportWidth
+	}
+
 	if m.CreatedAt != nil {
 
 		if all {
