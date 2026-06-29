@@ -1296,7 +1296,7 @@ func (r *AnalyticsRepo) Revenue(ctx context.Context, req *ubaV1.RevenueRequest) 
 SELECT to_date(event_time) AS d,
        ROUND(SUM(amount), 2) AS gmv,
        COUNT(DISTINCT IF(amount > 0, user_id, NULL)) AS pay_users,
-       COUNT_IF(amount > 0) AS pay_orders,
+       SUM(IF(amount > 0, 1, 0)) AS pay_orders,
        COUNT(DISTINCT user_id) AS active_users
 FROM events_fact
 WHERE %sevent_time >= ? AND event_time < ?
