@@ -1383,12 +1383,12 @@ func (r *AnalyticsRepo) SessionAnalysis(ctx context.Context, req *ubaV1.SessionA
 	// 会话聚合：SUM(session_count)，HLL 去重用户，时长分位用 QUANTILE_PERCENT。
 	q := fmt.Sprintf(`
 SELECT
-  SUM(session_count) AS session_count,
+  IFNULL(SUM(session_count), 0) AS session_count,
   HLL_CARDINALITY(HLL_UNION(unique_users)) AS unique_users,
-  ROUND(SUM(duration_sum) / NULLIF(SUM(duration_count), 0) / 1000.0, 2) AS avg_duration_sec,
-  ROUND(QUANTILE_PERCENT(QUANTILE_UNION(duration_quantile), 0.5) / 1000.0, 2) AS p50_sec,
-  ROUND(QUANTILE_PERCENT(QUANTILE_UNION(duration_quantile), 0.9) / 1000.0, 2) AS p90_sec,
-  ROUND(SUM(bounce_sum) / NULLIF(SUM(bounce_count), 0), 4) AS bounce_rate
+  IFNULL(ROUND(SUM(duration_sum) / NULLIF(SUM(duration_count), 0) / 1000.0, 2), 0) AS avg_duration_sec,
+  IFNULL(ROUND(QUANTILE_PERCENT(QUANTILE_UNION(duration_quantile), 0.5) / 1000.0, 2), 0) AS p50_sec,
+  IFNULL(ROUND(QUANTILE_PERCENT(QUANTILE_UNION(duration_quantile), 0.9) / 1000.0, 2), 0) AS p90_sec,
+  IFNULL(ROUND(SUM(bounce_sum) / NULLIF(SUM(bounce_count), 0), 4), 0) AS bounce_rate
 FROM sessions_agg_daily
 WHERE %sstat_date >= DATE(?) AND stat_date < DATE(?)`, whereCond)
 
