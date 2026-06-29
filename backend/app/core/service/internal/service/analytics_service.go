@@ -47,6 +47,10 @@ func (s *AnalyticsService) repo() interface {
 	BehaviorSequence(context.Context, *ubaV1.BehaviorSequenceRequest) (*ubaV1.BehaviorSequenceResponse, error)
 	Segmentation(context.Context, *ubaV1.SegmentationRequest) (*ubaV1.SegmentationResponse, error)
 	Click(context.Context, *ubaV1.ClickRequest) (*ubaV1.ClickResponse, error)
+	Lifecycle(context.Context, *ubaV1.LifecycleRequest) (*ubaV1.LifecycleResponse, error)
+	Churn(context.Context, *ubaV1.ChurnRequest) (*ubaV1.ChurnResponse, error)
+	Interval(context.Context, *ubaV1.IntervalRequest) (*ubaV1.IntervalResponse, error)
+	Matrix(context.Context, *ubaV1.MatrixRequest) (*ubaV1.MatrixResponse, error)
 } {
 	if data.UseClickHouse {
 		return s.ckRepo
@@ -92,4 +96,20 @@ func (s *AnalyticsService) Segmentation(ctx context.Context, req *ubaV1.Segmenta
 
 func (s *AnalyticsService) Click(ctx context.Context, req *ubaV1.ClickRequest) (*ubaV1.ClickResponse, error) {
 	return s.repo().Click(ctx, req)
+}
+
+func (s *AnalyticsService) Lifecycle(ctx context.Context, req *ubaV1.LifecycleRequest) (*ubaV1.LifecycleResponse, error) {
+	return s.repo().Lifecycle(ctx, req)
+}
+
+func (s *AnalyticsService) Churn(ctx context.Context, req *ubaV1.ChurnRequest) (*ubaV1.ChurnResponse, error) {
+	return s.repo().Churn(ctx, req)
+}
+
+func (s *AnalyticsService) Interval(ctx context.Context, req *ubaV1.IntervalRequest) (*ubaV1.IntervalResponse, error) {
+	return s.repo().Interval(ctx, req)
+}
+
+func (s *AnalyticsService) Matrix(ctx context.Context, req *ubaV1.MatrixRequest) (*ubaV1.MatrixResponse, error) {
+	return s.repo().Matrix(ctx, req)
 }

@@ -30,6 +30,10 @@ const (
 	AnalyticsService_BehaviorSequence_FullMethodName = "/admin.service.v1.AnalyticsService/BehaviorSequence"
 	AnalyticsService_Segmentation_FullMethodName     = "/admin.service.v1.AnalyticsService/Segmentation"
 	AnalyticsService_Click_FullMethodName            = "/admin.service.v1.AnalyticsService/Click"
+	AnalyticsService_Lifecycle_FullMethodName        = "/admin.service.v1.AnalyticsService/Lifecycle"
+	AnalyticsService_Churn_FullMethodName            = "/admin.service.v1.AnalyticsService/Churn"
+	AnalyticsService_Interval_FullMethodName         = "/admin.service.v1.AnalyticsService/Interval"
+	AnalyticsService_Matrix_FullMethodName           = "/admin.service.v1.AnalyticsService/Matrix"
 )
 
 // AnalyticsServiceClient is the client API for AnalyticsService service.
@@ -58,6 +62,14 @@ type AnalyticsServiceClient interface {
 	Segmentation(ctx context.Context, in *v1.SegmentationRequest, opts ...grpc.CallOption) (*v1.SegmentationResponse, error)
 	// 点击热力图
 	Click(ctx context.Context, in *v1.ClickRequest, opts ...grpc.CallOption) (*v1.ClickResponse, error)
+	// 用户生命周期
+	Lifecycle(ctx context.Context, in *v1.LifecycleRequest, opts ...grpc.CallOption) (*v1.LifecycleResponse, error)
+	// 流失与回流
+	Churn(ctx context.Context, in *v1.ChurnRequest, opts ...grpc.CallOption) (*v1.ChurnResponse, error)
+	// 间隔时间分析
+	Interval(ctx context.Context, in *v1.IntervalRequest, opts ...grpc.CallOption) (*v1.IntervalResponse, error)
+	// 矩阵/象限分析
+	Matrix(ctx context.Context, in *v1.MatrixRequest, opts ...grpc.CallOption) (*v1.MatrixResponse, error)
 }
 
 type analyticsServiceClient struct {
@@ -168,6 +180,46 @@ func (c *analyticsServiceClient) Click(ctx context.Context, in *v1.ClickRequest,
 	return out, nil
 }
 
+func (c *analyticsServiceClient) Lifecycle(ctx context.Context, in *v1.LifecycleRequest, opts ...grpc.CallOption) (*v1.LifecycleResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(v1.LifecycleResponse)
+	err := c.cc.Invoke(ctx, AnalyticsService_Lifecycle_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *analyticsServiceClient) Churn(ctx context.Context, in *v1.ChurnRequest, opts ...grpc.CallOption) (*v1.ChurnResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(v1.ChurnResponse)
+	err := c.cc.Invoke(ctx, AnalyticsService_Churn_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *analyticsServiceClient) Interval(ctx context.Context, in *v1.IntervalRequest, opts ...grpc.CallOption) (*v1.IntervalResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(v1.IntervalResponse)
+	err := c.cc.Invoke(ctx, AnalyticsService_Interval_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *analyticsServiceClient) Matrix(ctx context.Context, in *v1.MatrixRequest, opts ...grpc.CallOption) (*v1.MatrixResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(v1.MatrixResponse)
+	err := c.cc.Invoke(ctx, AnalyticsService_Matrix_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AnalyticsServiceServer is the server API for AnalyticsService service.
 // All implementations must embed UnimplementedAnalyticsServiceServer
 // for forward compatibility.
@@ -194,6 +246,14 @@ type AnalyticsServiceServer interface {
 	Segmentation(context.Context, *v1.SegmentationRequest) (*v1.SegmentationResponse, error)
 	// 点击热力图
 	Click(context.Context, *v1.ClickRequest) (*v1.ClickResponse, error)
+	// 用户生命周期
+	Lifecycle(context.Context, *v1.LifecycleRequest) (*v1.LifecycleResponse, error)
+	// 流失与回流
+	Churn(context.Context, *v1.ChurnRequest) (*v1.ChurnResponse, error)
+	// 间隔时间分析
+	Interval(context.Context, *v1.IntervalRequest) (*v1.IntervalResponse, error)
+	// 矩阵/象限分析
+	Matrix(context.Context, *v1.MatrixRequest) (*v1.MatrixResponse, error)
 	mustEmbedUnimplementedAnalyticsServiceServer()
 }
 
@@ -233,6 +293,18 @@ func (UnimplementedAnalyticsServiceServer) Segmentation(context.Context, *v1.Seg
 }
 func (UnimplementedAnalyticsServiceServer) Click(context.Context, *v1.ClickRequest) (*v1.ClickResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method Click not implemented")
+}
+func (UnimplementedAnalyticsServiceServer) Lifecycle(context.Context, *v1.LifecycleRequest) (*v1.LifecycleResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method Lifecycle not implemented")
+}
+func (UnimplementedAnalyticsServiceServer) Churn(context.Context, *v1.ChurnRequest) (*v1.ChurnResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method Churn not implemented")
+}
+func (UnimplementedAnalyticsServiceServer) Interval(context.Context, *v1.IntervalRequest) (*v1.IntervalResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method Interval not implemented")
+}
+func (UnimplementedAnalyticsServiceServer) Matrix(context.Context, *v1.MatrixRequest) (*v1.MatrixResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method Matrix not implemented")
 }
 func (UnimplementedAnalyticsServiceServer) mustEmbedUnimplementedAnalyticsServiceServer() {}
 func (UnimplementedAnalyticsServiceServer) testEmbeddedByValue()                          {}
@@ -435,6 +507,78 @@ func _AnalyticsService_Click_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AnalyticsService_Lifecycle_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(v1.LifecycleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AnalyticsServiceServer).Lifecycle(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AnalyticsService_Lifecycle_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AnalyticsServiceServer).Lifecycle(ctx, req.(*v1.LifecycleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AnalyticsService_Churn_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(v1.ChurnRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AnalyticsServiceServer).Churn(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AnalyticsService_Churn_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AnalyticsServiceServer).Churn(ctx, req.(*v1.ChurnRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AnalyticsService_Interval_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(v1.IntervalRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AnalyticsServiceServer).Interval(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AnalyticsService_Interval_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AnalyticsServiceServer).Interval(ctx, req.(*v1.IntervalRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AnalyticsService_Matrix_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(v1.MatrixRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AnalyticsServiceServer).Matrix(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AnalyticsService_Matrix_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AnalyticsServiceServer).Matrix(ctx, req.(*v1.MatrixRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AnalyticsService_ServiceDesc is the grpc.ServiceDesc for AnalyticsService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -481,6 +625,22 @@ var AnalyticsService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Click",
 			Handler:    _AnalyticsService_Click_Handler,
+		},
+		{
+			MethodName: "Lifecycle",
+			Handler:    _AnalyticsService_Lifecycle_Handler,
+		},
+		{
+			MethodName: "Churn",
+			Handler:    _AnalyticsService_Churn_Handler,
+		},
+		{
+			MethodName: "Interval",
+			Handler:    _AnalyticsService_Interval_Handler,
+		},
+		{
+			MethodName: "Matrix",
+			Handler:    _AnalyticsService_Matrix_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

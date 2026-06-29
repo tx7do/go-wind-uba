@@ -149,3 +149,47 @@ func (s *redactedAnalyticsServiceServer) Click(ctx context.Context, in *ubapb.Cl
 	}
 	return res, err
 }
+
+// Lifecycle is the redacted wrapper for the actual AnalyticsServiceServer.Lifecycle method
+// Unary RPC
+func (s *redactedAnalyticsServiceServer) Lifecycle(ctx context.Context, in *ubapb.LifecycleRequest) (*ubapb.LifecycleResponse, error) {
+	res, err := s.srv.Lifecycle(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
+// Churn is the redacted wrapper for the actual AnalyticsServiceServer.Churn method
+// Unary RPC
+func (s *redactedAnalyticsServiceServer) Churn(ctx context.Context, in *ubapb.ChurnRequest) (*ubapb.ChurnResponse, error) {
+	res, err := s.srv.Churn(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
+// Interval is the redacted wrapper for the actual AnalyticsServiceServer.Interval method
+// Unary RPC
+func (s *redactedAnalyticsServiceServer) Interval(ctx context.Context, in *ubapb.IntervalRequest) (*ubapb.IntervalResponse, error) {
+	res, err := s.srv.Interval(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
+// Matrix is the redacted wrapper for the actual AnalyticsServiceServer.Matrix method
+// Unary RPC
+func (s *redactedAnalyticsServiceServer) Matrix(ctx context.Context, in *ubapb.MatrixRequest) (*ubapb.MatrixResponse, error) {
+	res, err := s.srv.Matrix(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}

@@ -23,11 +23,15 @@ const _ = http.SupportPackageIsVersion1
 const OperationAnalyticsServiceActiveUsers = "/admin.service.v1.AnalyticsService/ActiveUsers"
 const OperationAnalyticsServiceAttribution = "/admin.service.v1.AnalyticsService/Attribution"
 const OperationAnalyticsServiceBehaviorSequence = "/admin.service.v1.AnalyticsService/BehaviorSequence"
+const OperationAnalyticsServiceChurn = "/admin.service.v1.AnalyticsService/Churn"
 const OperationAnalyticsServiceClick = "/admin.service.v1.AnalyticsService/Click"
 const OperationAnalyticsServiceDistribution = "/admin.service.v1.AnalyticsService/Distribution"
 const OperationAnalyticsServiceEventTrend = "/admin.service.v1.AnalyticsService/EventTrend"
 const OperationAnalyticsServiceFunnel = "/admin.service.v1.AnalyticsService/Funnel"
 const OperationAnalyticsServiceGroupBy = "/admin.service.v1.AnalyticsService/GroupBy"
+const OperationAnalyticsServiceInterval = "/admin.service.v1.AnalyticsService/Interval"
+const OperationAnalyticsServiceLifecycle = "/admin.service.v1.AnalyticsService/Lifecycle"
+const OperationAnalyticsServiceMatrix = "/admin.service.v1.AnalyticsService/Matrix"
 const OperationAnalyticsServiceRetention = "/admin.service.v1.AnalyticsService/Retention"
 const OperationAnalyticsServiceSegmentation = "/admin.service.v1.AnalyticsService/Segmentation"
 
@@ -38,6 +42,8 @@ type AnalyticsServiceHTTPServer interface {
 	Attribution(context.Context, *v1.AttributionRequest) (*v1.AttributionResponse, error)
 	// BehaviorSequence 行为序列
 	BehaviorSequence(context.Context, *v1.BehaviorSequenceRequest) (*v1.BehaviorSequenceResponse, error)
+	// Churn 流失与回流
+	Churn(context.Context, *v1.ChurnRequest) (*v1.ChurnResponse, error)
 	// Click 点击热力图
 	Click(context.Context, *v1.ClickRequest) (*v1.ClickResponse, error)
 	// Distribution 分布分析
@@ -48,6 +54,12 @@ type AnalyticsServiceHTTPServer interface {
 	Funnel(context.Context, *v1.FunnelRequest) (*v1.FunnelResponse, error)
 	// GroupBy 维度分组聚合
 	GroupBy(context.Context, *v1.GroupByRequest) (*v1.GroupByResponse, error)
+	// Interval 间隔时间分析
+	Interval(context.Context, *v1.IntervalRequest) (*v1.IntervalResponse, error)
+	// Lifecycle 用户生命周期
+	Lifecycle(context.Context, *v1.LifecycleRequest) (*v1.LifecycleResponse, error)
+	// Matrix 矩阵/象限分析
+	Matrix(context.Context, *v1.MatrixRequest) (*v1.MatrixResponse, error)
 	// Retention 留存分析
 	Retention(context.Context, *v1.RetentionRequest) (*v1.RetentionResponse, error)
 	// Segmentation 用户分群/圈选
@@ -66,6 +78,10 @@ func RegisterAnalyticsServiceHTTPServer(s *http.Server, srv AnalyticsServiceHTTP
 	r.POST("/admin/v1/analytics/behavior-sequence", _AnalyticsService_BehaviorSequence0_HTTP_Handler(srv))
 	r.POST("/admin/v1/analytics/segmentation", _AnalyticsService_Segmentation0_HTTP_Handler(srv))
 	r.POST("/admin/v1/analytics/click", _AnalyticsService_Click0_HTTP_Handler(srv))
+	r.POST("/admin/v1/analytics/lifecycle", _AnalyticsService_Lifecycle0_HTTP_Handler(srv))
+	r.POST("/admin/v1/analytics/churn", _AnalyticsService_Churn0_HTTP_Handler(srv))
+	r.POST("/admin/v1/analytics/interval", _AnalyticsService_Interval0_HTTP_Handler(srv))
+	r.POST("/admin/v1/analytics/matrix", _AnalyticsService_Matrix0_HTTP_Handler(srv))
 }
 
 func _AnalyticsService_EventTrend0_HTTP_Handler(srv AnalyticsServiceHTTPServer) func(ctx http.Context) error {
@@ -288,6 +304,94 @@ func _AnalyticsService_Click0_HTTP_Handler(srv AnalyticsServiceHTTPServer) func(
 	}
 }
 
+func _AnalyticsService_Lifecycle0_HTTP_Handler(srv AnalyticsServiceHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in v1.LifecycleRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationAnalyticsServiceLifecycle)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.Lifecycle(ctx, req.(*v1.LifecycleRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*v1.LifecycleResponse)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _AnalyticsService_Churn0_HTTP_Handler(srv AnalyticsServiceHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in v1.ChurnRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationAnalyticsServiceChurn)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.Churn(ctx, req.(*v1.ChurnRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*v1.ChurnResponse)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _AnalyticsService_Interval0_HTTP_Handler(srv AnalyticsServiceHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in v1.IntervalRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationAnalyticsServiceInterval)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.Interval(ctx, req.(*v1.IntervalRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*v1.IntervalResponse)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _AnalyticsService_Matrix0_HTTP_Handler(srv AnalyticsServiceHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in v1.MatrixRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationAnalyticsServiceMatrix)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.Matrix(ctx, req.(*v1.MatrixRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*v1.MatrixResponse)
+		return ctx.Result(200, reply)
+	}
+}
+
 type AnalyticsServiceHTTPClient interface {
 	// ActiveUsers 活跃用户
 	ActiveUsers(ctx context.Context, req *v1.ActiveUsersRequest, opts ...http.CallOption) (rsp *v1.ActiveUsersResponse, err error)
@@ -295,6 +399,8 @@ type AnalyticsServiceHTTPClient interface {
 	Attribution(ctx context.Context, req *v1.AttributionRequest, opts ...http.CallOption) (rsp *v1.AttributionResponse, err error)
 	// BehaviorSequence 行为序列
 	BehaviorSequence(ctx context.Context, req *v1.BehaviorSequenceRequest, opts ...http.CallOption) (rsp *v1.BehaviorSequenceResponse, err error)
+	// Churn 流失与回流
+	Churn(ctx context.Context, req *v1.ChurnRequest, opts ...http.CallOption) (rsp *v1.ChurnResponse, err error)
 	// Click 点击热力图
 	Click(ctx context.Context, req *v1.ClickRequest, opts ...http.CallOption) (rsp *v1.ClickResponse, err error)
 	// Distribution 分布分析
@@ -305,6 +411,12 @@ type AnalyticsServiceHTTPClient interface {
 	Funnel(ctx context.Context, req *v1.FunnelRequest, opts ...http.CallOption) (rsp *v1.FunnelResponse, err error)
 	// GroupBy 维度分组聚合
 	GroupBy(ctx context.Context, req *v1.GroupByRequest, opts ...http.CallOption) (rsp *v1.GroupByResponse, err error)
+	// Interval 间隔时间分析
+	Interval(ctx context.Context, req *v1.IntervalRequest, opts ...http.CallOption) (rsp *v1.IntervalResponse, err error)
+	// Lifecycle 用户生命周期
+	Lifecycle(ctx context.Context, req *v1.LifecycleRequest, opts ...http.CallOption) (rsp *v1.LifecycleResponse, err error)
+	// Matrix 矩阵/象限分析
+	Matrix(ctx context.Context, req *v1.MatrixRequest, opts ...http.CallOption) (rsp *v1.MatrixResponse, err error)
 	// Retention 留存分析
 	Retention(ctx context.Context, req *v1.RetentionRequest, opts ...http.CallOption) (rsp *v1.RetentionResponse, err error)
 	// Segmentation 用户分群/圈选
@@ -353,6 +465,20 @@ func (c *AnalyticsServiceHTTPClientImpl) BehaviorSequence(ctx context.Context, i
 	pattern := "/admin/v1/analytics/behavior-sequence"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationAnalyticsServiceBehaviorSequence))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+// Churn 流失与回流
+func (c *AnalyticsServiceHTTPClientImpl) Churn(ctx context.Context, in *v1.ChurnRequest, opts ...http.CallOption) (*v1.ChurnResponse, error) {
+	var out v1.ChurnResponse
+	pattern := "/admin/v1/analytics/churn"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationAnalyticsServiceChurn))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {
@@ -423,6 +549,48 @@ func (c *AnalyticsServiceHTTPClientImpl) GroupBy(ctx context.Context, in *v1.Gro
 	pattern := "/admin/v1/analytics/group-by"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationAnalyticsServiceGroupBy))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+// Interval 间隔时间分析
+func (c *AnalyticsServiceHTTPClientImpl) Interval(ctx context.Context, in *v1.IntervalRequest, opts ...http.CallOption) (*v1.IntervalResponse, error) {
+	var out v1.IntervalResponse
+	pattern := "/admin/v1/analytics/interval"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationAnalyticsServiceInterval))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+// Lifecycle 用户生命周期
+func (c *AnalyticsServiceHTTPClientImpl) Lifecycle(ctx context.Context, in *v1.LifecycleRequest, opts ...http.CallOption) (*v1.LifecycleResponse, error) {
+	var out v1.LifecycleResponse
+	pattern := "/admin/v1/analytics/lifecycle"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationAnalyticsServiceLifecycle))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+// Matrix 矩阵/象限分析
+func (c *AnalyticsServiceHTTPClientImpl) Matrix(ctx context.Context, in *v1.MatrixRequest, opts ...http.CallOption) (*v1.MatrixResponse, error) {
+	var out v1.MatrixResponse
+	pattern := "/admin/v1/analytics/matrix"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationAnalyticsServiceMatrix))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {

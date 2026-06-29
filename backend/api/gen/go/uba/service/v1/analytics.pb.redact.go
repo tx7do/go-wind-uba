@@ -150,6 +150,50 @@ func (s *redactedAnalyticsServiceServer) Click(ctx context.Context, in *ClickReq
 	return res, err
 }
 
+// Lifecycle is the redacted wrapper for the actual AnalyticsServiceServer.Lifecycle method
+// Unary RPC
+func (s *redactedAnalyticsServiceServer) Lifecycle(ctx context.Context, in *LifecycleRequest) (*LifecycleResponse, error) {
+	res, err := s.srv.Lifecycle(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
+// Churn is the redacted wrapper for the actual AnalyticsServiceServer.Churn method
+// Unary RPC
+func (s *redactedAnalyticsServiceServer) Churn(ctx context.Context, in *ChurnRequest) (*ChurnResponse, error) {
+	res, err := s.srv.Churn(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
+// Interval is the redacted wrapper for the actual AnalyticsServiceServer.Interval method
+// Unary RPC
+func (s *redactedAnalyticsServiceServer) Interval(ctx context.Context, in *IntervalRequest) (*IntervalResponse, error) {
+	res, err := s.srv.Interval(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
+// Matrix is the redacted wrapper for the actual AnalyticsServiceServer.Matrix method
+// Unary RPC
+func (s *redactedAnalyticsServiceServer) Matrix(ctx context.Context, in *MatrixRequest) (*MatrixResponse, error) {
+	res, err := s.srv.Matrix(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
 // Redact method implementation for TimeRange
 func (x *TimeRange) Redact() string {
 	if x == nil {
@@ -663,5 +707,205 @@ func (x *ClickResponse) Redact() string {
 	// Safe field: TotalClicks
 
 	// Safe field: GridSize
+	return x.String()
+}
+
+// Redact method implementation for LifecycleRequest
+func (x *LifecycleRequest) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: TimeRange
+
+	// Safe field: AppId
+
+	// Safe field: NewUserDays
+
+	// Safe field: ChurnDays
+	return x.String()
+}
+
+// Redact method implementation for LifecycleStage
+func (x *LifecycleStage) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Stage
+
+	// Safe field: StageLabel
+
+	// Safe field: UserCount
+
+	// Safe field: Percentage
+	return x.String()
+}
+
+// Redact method implementation for LifecycleResponse
+func (x *LifecycleResponse) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Stages
+
+	// Safe field: TotalUsers
+	return x.String()
+}
+
+// Redact method implementation for ChurnRequest
+func (x *ChurnRequest) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: TimeRange
+
+	// Safe field: AppId
+
+	// Safe field: ChurnDays
+
+	// Safe field: ReactivationDays
+	return x.String()
+}
+
+// Redact method implementation for ChurnBucket
+func (x *ChurnBucket) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Bucket
+
+	// Safe field: UserCount
+	return x.String()
+}
+
+// Redact method implementation for ReactivationTrigger
+func (x *ReactivationTrigger) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: EventName
+
+	// Safe field: Count
+
+	// Safe field: Percentage
+	return x.String()
+}
+
+// Redact method implementation for ChurnResponse
+func (x *ChurnResponse) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: ChurnBuckets
+
+	// Safe field: ChurnedUsers
+
+	// Safe field: ReactivatedUsers
+
+	// Safe field: ReactivationRate
+
+	// Safe field: Triggers
+	return x.String()
+}
+
+// Redact method implementation for IntervalRequest
+func (x *IntervalRequest) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: TimeRange
+
+	// Safe field: EventFrom
+
+	// Safe field: EventTo
+
+	// Safe field: AppId
+	return x.String()
+}
+
+// Redact method implementation for IntervalBucket
+func (x *IntervalBucket) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Bucket
+
+	// Safe field: Count
+
+	// Safe field: Percentage
+	return x.String()
+}
+
+// Redact method implementation for IntervalResponse
+func (x *IntervalResponse) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Buckets
+
+	// Safe field: P50Hours
+
+	// Safe field: P90Hours
+
+	// Safe field: AvgHours
+
+	// Safe field: Count
+	return x.String()
+}
+
+// Redact method implementation for MatrixRequest
+func (x *MatrixRequest) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: TimeRange
+
+	// Safe field: Dimension
+
+	// Safe field: AppId
+
+	// Safe field: Split
+	return x.String()
+}
+
+// Redact method implementation for MatrixPoint
+func (x *MatrixPoint) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Label
+
+	// Safe field: X
+
+	// Safe field: Y
+
+	// Safe field: Quadrant
+	return x.String()
+}
+
+// Redact method implementation for MatrixResponse
+func (x *MatrixResponse) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Points
+
+	// Safe field: XThreshold
+
+	// Safe field: YThreshold
+
+	// Safe field: Dimension
 	return x.String()
 }

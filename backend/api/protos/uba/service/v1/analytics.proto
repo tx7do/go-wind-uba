@@ -36,6 +36,18 @@ service AnalyticsService {
 
   // 点击热力图（按页面网格分桶聚合点击坐标）
   rpc Click(ClickRequest) returns (ClickResponse) {}
+
+  // 用户生命周期（新/活跃/留存/流失/回流 阶段分布）
+  rpc Lifecycle(LifecycleRequest) returns (LifecycleResponse) {}
+
+  // 流失与回流分析（静默天数判定流失，回流触发事件）
+  rpc Churn(ChurnRequest) returns (ChurnResponse) {}
+
+  // 间隔时间分析（两事件之间的时间间隔分布）
+  rpc Interval(IntervalRequest) returns (IntervalResponse) {}
+
+  // 矩阵/象限分析（双轴分四象限，识别核心/边缘功能）
+  rpc Matrix(MatrixRequest) returns (MatrixResponse) {}
 }
 
 // 时间粒度
@@ -426,4 +438,146 @@ message ClickResponse {
   int64 total_clicks = 3 [json_name = "totalClicks"];
   // 使用的网格大小
   uint32 grid_size = 4 [json_name = "gridSize"];
+}
+
+// ============== 用户生命周期 ==============
+message LifecycleRequest {
+  // 时间范围（基准日，end_ms 视为"今天"）
+  TimeRange time_range = 1 [json_name = "timeRange"];
+  // 应用 ID 过滤（可选）
+  optional uint32 app_id = 2 [json_name = "appId"];
+  // 新用户判定天数（注册距今 N 天内算新用户，默认 7）
+  optional uint32 new_user_days = 3 [json_name = "newUserDays"];
+  // 流失判定天数（最后活跃距今 > N 天算流失，默认 30）
+  optional uint32 churn_days = 4 [json_name = "churnDays"];
+}
+
+// 生命周期阶段
+message LifecycleStage {
+  // 阶段标识：new_user / active / retained / churned / reactivated
+  string stage = 1 [json_name = "stage"];
+  // 阶段中文名
+  string stage_label = 2 [json_name = "stageLabel"];
+  // 该阶段用户数
+  int64 user_count = 3 [json_name = "userCount"];
+  // 占比（0-1）
+  double percentage = 4 [json_name = "percentage"];
+}
+
+message LifecycleResponse {
+  // 各阶段分布
+  repeated LifecycleStage stages = 1 [json_name = "stages"];
+  // 总用户数
+  int64 total_users = 2 [json_name = "totalUsers"];
+}
+
+// ============== 流失与回流 ==============
+message ChurnRequest {
+  // 时间范围（回流窗口，end_ms 视为"今天"）
+  TimeRange time_range = 1 [json_name = "timeRange"];
+  // 应用 ID 过滤（可选）
+  optional uint32 app_id = 2 [json_name = "appId"];
+  // 流失判定天数（最后活跃距今 > N 天算流失，默认 30）
+  optional uint32 churn_days = 3 [json_name = "churnDays"];
+  // 回流窗口（近 N 天内重新活跃算回流，默认 7）
+  optional uint32 reactivation_days = 4 [json_name = "reactivationDays"];
+}
+
+// 流失时长分桶
+message ChurnBucket {
+  // 分桶标签：30_60d / 60_90d / 90_plus
+  string bucket = 1 [json_name = "bucket"];
+  // 该桶流失用户数
+  int64 user_count = 2 [json_name = "userCount"];
+}
+
+// 回流触发事件 TOP
+message ReactivationTrigger {
+  // 事件名
+  string event_name = 1 [json_name = "eventName"];
+  // 触发次数
+  int64 count = 2 [json_name = "count"];
+  // 占比（0-1）
+  double percentage = 3 [json_name = "percentage"];
+}
+
+message ChurnResponse {
+  // 流失时长分布
+  repeated ChurnBucket churn_buckets = 1 [json_name = "churnBuckets"];
+  // 流失用户总数
+  int64 churned_users = 2 [json_name = "churnedUsers"];
+  // 回流用户数（曾是流失、近期又活跃）
+  int64 reactivated_users = 3 [json_name = "reactivatedUsers"];
+  // 回流率（reactivated / churned，0-1）
+  double reactivation_rate = 4 [json_name = "reactivationRate"];
+  // 回流触发事件 TOP
+  repeated ReactivationTrigger triggers = 5 [json_name = "triggers"];
+}
+
+// ============== 间隔时间分析 ==============
+message IntervalRequest {
+  // 时间范围
+  TimeRange time_range = 1 [json_name = "timeRange"];
+  // 起始事件名（如 register）
+  string event_from = 2 [json_name = "eventFrom"];
+  // 结束事件名（如 pay_success）
+  string event_to = 3 [json_name = "eventTo"];
+  // 应用 ID 过滤（可选）
+  optional uint32 app_id = 4 [json_name = "appId"];
+}
+
+// 间隔分桶
+message IntervalBucket {
+  // 分桶标签：instant / lt_1h / 1_24h / 1_7d / 7d_plus
+  string bucket = 1 [json_name = "bucket"];
+  // 该桶样本数
+  int64 count = 2 [json_name = "count"];
+  // 占比（0-1）
+  double percentage = 3 [json_name = "percentage"];
+}
+
+message IntervalResponse {
+  // 各分桶分布
+  repeated IntervalBucket buckets = 1 [json_name = "buckets"];
+  // 分位数摘要（单位：小时）
+  double p50_hours = 2 [json_name = "p50Hours"];
+  double p90_hours = 3 [json_name = "p90Hours"];
+  double avg_hours = 4 [json_name = "avgHours"];
+  // 总样本数
+  int64 count = 5 [json_name = "count"];
+}
+
+// ============== 矩阵/象限分析 ==============
+message MatrixRequest {
+  // 时间范围
+  TimeRange time_range = 1 [json_name = "timeRange"];
+  // 分析维度（默认 event_name）
+  optional string dimension = 2 [json_name = "dimension"];
+  // 应用 ID 过滤（可选）
+  optional uint32 app_id = 3 [json_name = "appId"];
+  // X/Y 的象限划分阈值类型：median 中位数（默认）/ avg 均值
+  optional string split = 4 [json_name = "split"];
+}
+
+// 矩阵散点
+message MatrixPoint {
+  // 维度值（如事件名）
+  string label = 1 [json_name = "label"];
+  // X 轴值（使用人数，去重 UV）
+  double x = 2 [json_name = "x"];
+  // Y 轴值（使用频次，总次数）
+  double y = 3 [json_name = "y"];
+  // 象限：core 核心 / star 明星 / niche 小众 / edge 边缘
+  string quadrant = 4 [json_name = "quadrant"];
+}
+
+message MatrixResponse {
+  // 各散点（维度值 + 双轴值 + 象限）
+  repeated MatrixPoint points = 1 [json_name = "points"];
+  // X 轴阈值（中位数/均值）
+  double x_threshold = 2 [json_name = "xThreshold"];
+  // Y 轴阈值
+  double y_threshold = 3 [json_name = "yThreshold"];
+  // 使用的维度
+  string dimension = 4 [json_name = "dimension"];
 }

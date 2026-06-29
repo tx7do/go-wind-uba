@@ -87,4 +87,36 @@ service AnalyticsService {
       body: "*"
     };
   }
+
+  // 用户生命周期
+  rpc Lifecycle(uba.service.v1.LifecycleRequest) returns (uba.service.v1.LifecycleResponse) {
+    option (google.api.http) = {
+      post: "/admin/v1/analytics/lifecycle"
+      body: "*"
+    };
+  }
+
+  // 流失与回流
+  rpc Churn(uba.service.v1.ChurnRequest) returns (uba.service.v1.ChurnResponse) {
+    option (google.api.http) = {
+      post: "/admin/v1/analytics/churn"
+      body: "*"
+    };
+  }
+
+  // 间隔时间分析
+  rpc Interval(uba.service.v1.IntervalRequest) returns (uba.service.v1.IntervalResponse) {
+    option (google.api.http) = {
+      post: "/admin/v1/analytics/interval"
+      body: "*"
+    };
+  }
+
+  // 矩阵/象限分析
+  rpc Matrix(uba.service.v1.MatrixRequest) returns (uba.service.v1.MatrixResponse) {
+    option (google.api.http) = {
+      post: "/admin/v1/analytics/matrix"
+      body: "*"
+    };
+  }
 }

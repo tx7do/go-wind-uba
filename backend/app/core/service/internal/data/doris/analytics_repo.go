@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"sort"
 	"strings"
 	"time"
 
@@ -836,6 +837,422 @@ LIMIT 20`, tenantCond)
 		TopElements: topElements,
 		TotalClicks: totalClicks,
 		GridSize:    uint32(gridSize),
+	}, nil
+}
+
+// ============================================================================
+// 用户生命周期（新/活跃/留存/流失/回流 阶段分布）
+// 参考模板：backend/sql/doris/query.sql §4.1
+// ============================================================================
+
+func (r *AnalyticsRepo) Lifecycle(ctx context.Context, req *ubaV1.LifecycleRequest) (*ubaV1.LifecycleResponse, error) {
+	_, endMs := normTimeRange(req.GetTimeRange())
+	now := time.UnixMilli(endMs)
+	newUserDays := int64(req.GetNewUserDays())
+	if newUserDays <= 0 {
+		newUserDays = 7
+	}
+	churnDays := int64(req.GetChurnDays())
+	if churnDays <= 0 {
+		churnDays = 30
+	}
+
+	tenantCond := ""
+	args := []any{now}
+	if v := req.GetAppId(); v != 0 {
+		tenantCond = "tenant_id = ? AND "
+		args = append([]any{v}, args...)
+	}
+
+	// 阶段分桶（以 endMs 视为"今天"）：
+	//  - new_user: register_time 在 newUserDays 天内
+	//  - active:   last_active 距今 ≤1 天
+	//  - retained: 距今 1~churnDays 天
+	//  - churned:  距今 > churnDays 天
+	//  - reactivated: 曾流失（last_active 曾超 churnDays）但近期又活跃——MVP 近似：
+	//    last_active 在 churnDays 之后但距今 ≤ churnDays 的窗口内（即"刚回来"）。
+	// 优先级：new_user > active > churned > reactivated > retained。
+	q := fmt.Sprintf(`
+SELECT stage, COUNT(*) AS user_cnt FROM (
+  SELECT
+    CASE
+      WHEN register_time >= DATE_SUB(?, INTERVAL ? DAY) THEN 'new_user'
+      WHEN last_active_date >= DATE_SUB(?, INTERVAL 1 DAY) THEN 'active'
+      WHEN last_active_date < DATE_SUB(?, INTERVAL ? DAY) THEN
+        CASE WHEN last_active_date >= DATE_SUB(?, INTERVAL ? DAY) THEN 'reactivated' ELSE 'churned' END
+      ELSE 'retained'
+    END AS stage
+  FROM users_dim
+  WHERE %suser_id IS NOT NULL
+) t GROUP BY stage`, tenantCond)
+	args = append(args,
+		newUserDays,
+		now,          // active DATE_SUB(now, 1 day)
+		now, churnDays, // churned DATE_SUB(now, churnDays)
+		now, churnDays, // reactivated DATE_SUB(now, churnDays) —— 近 churnDays 内回流
+	)
+
+	type stageRow struct {
+		Stage   string `db:"stage"`
+		UserCnt int64  `db:"user_cnt"`
+	}
+	var rows []stageRow
+	if err := r.db.SelectContext(ctx, &rows, q, args...); err != nil {
+		r.log.Errorf("Lifecycle query failed: %v", err)
+		return nil, ubaV1.ErrorInternalServerError("lifecycle query failed")
+	}
+
+	labels := map[string]string{
+		"new_user":    "新用户",
+		"active":      "活跃用户",
+		"retained":    "留存用户",
+		"churned":     "流失用户",
+		"reactivated": "回流用户",
+	}
+	var total int64
+	stageMap := map[string]int64{}
+	for _, rw := range rows {
+		stageMap[rw.Stage] = rw.UserCnt
+		total += rw.UserCnt
+	}
+	order := []string{"new_user", "active", "retained", "reactivated", "churned"}
+	stages := make([]*ubaV1.LifecycleStage, 0, len(order))
+	for _, s := range order {
+		cnt := stageMap[s]
+		var pct float64
+		if total > 0 {
+			pct = float64(cnt) / float64(total)
+		}
+		stages = append(stages, &ubaV1.LifecycleStage{
+			Stage:      s,
+			StageLabel: labels[s],
+			UserCount:  cnt,
+			Percentage: pct,
+		})
+	}
+
+	return &ubaV1.LifecycleResponse{Stages: stages, TotalUsers: total}, nil
+}
+
+// ============================================================================
+// 流失与回流（静默天数判定流失 + 回流触发事件）
+// ============================================================================
+
+func (r *AnalyticsRepo) Churn(ctx context.Context, req *ubaV1.ChurnRequest) (*ubaV1.ChurnResponse, error) {
+	_, endMs := normTimeRange(req.GetTimeRange())
+	now := time.UnixMilli(endMs)
+	churnDays := int64(req.GetChurnDays())
+	if churnDays <= 0 {
+		churnDays = 30
+	}
+	reactivationDays := int64(req.GetReactivationDays())
+	if reactivationDays <= 0 {
+		reactivationDays = 7
+	}
+
+	tenantCond := ""
+	args := []any{now, churnDays, now}
+	if v := req.GetAppId(); v != 0 {
+		tenantCond = "tenant_id = ? AND "
+		args = append([]any{v}, args...)
+	}
+
+	// 流失分桶：last_active_date < now - churnDays 的用户，按流失时长再细分。
+	churnQ := fmt.Sprintf(`
+SELECT
+  CASE
+    WHEN last_active_date < DATE_SUB(?, INTERVAL ? DAY) AND last_active_date >= DATE_SUB(?, INTERVAL 60 DAY) THEN '30_60d'
+    WHEN last_active_date >= DATE_SUB(?, INTERVAL 90 DAY) THEN '60_90d'
+    ELSE '90_plus'
+  END AS bucket,
+  COUNT(*) AS user_cnt
+FROM users_dim
+WHERE %slast_active_date < DATE_SUB(?, INTERVAL ? DAY) AND user_id IS NOT NULL
+GROUP BY bucket ORDER BY bucket`, tenantCond)
+	churnArgs := append([]any{}, args...)
+	churnArgs = append(churnArgs, now, now, now, churnDays)
+
+	type bucketRow struct {
+		Bucket  string `db:"bucket"`
+		UserCnt int64  `db:"user_cnt"`
+	}
+	var bRows []bucketRow
+	if err := r.db.SelectContext(ctx, &bRows, churnQ, churnArgs...); err != nil {
+		r.log.Errorf("Churn bucket query failed: %v", err)
+		return nil, ubaV1.ErrorInternalServerError("churn query failed")
+	}
+	var churnedUsers int64
+	buckets := make([]*ubaV1.ChurnBucket, 0, len(bRows))
+	for _, br := range bRows {
+		churnedUsers += br.UserCnt
+		buckets = append(buckets, &ubaV1.ChurnBucket{Bucket: br.Bucket, UserCount: br.UserCnt})
+	}
+
+	// 回流：流失用户（last_active 曾 < now - churnDays）中，last_active 在近 reactivationDays 内重新活跃。
+	// 近似：last_active_date 在 [now - reactivationDays, now] 内，且 first_active_date < now - churnDays
+	// （注册较早，排除本来就是新用户）。
+	reactQ := fmt.Sprintf(`
+SELECT COUNT(*) AS cnt FROM users_dim
+WHERE %slast_active_date >= DATE_SUB(?, INTERVAL ? DAY)
+  AND last_active_date < DATE_SUB(?, INTERVAL ? DAY)
+  AND first_active_date < DATE_SUB(?, INTERVAL ? DAY)
+  AND user_id IS NOT NULL`, tenantCond)
+	reactArgs := []any{}
+	if v := req.GetAppId(); v != 0 {
+		reactArgs = append(reactArgs, v)
+	}
+	reactArgs = append(reactArgs, now, reactivationDays, now, churnDays, now, churnDays)
+	var reactivated int64
+	if err := r.db.GetContext(ctx, &reactivated, fmt.Sprintf(`
+SELECT COUNT(*) FROM users_dim
+WHERE %slast_active_date >= DATE_SUB(?, INTERVAL ? DAY)
+  AND first_active_date < DATE_SUB(?, INTERVAL ? DAY)
+  AND user_id IS NOT NULL`, tenantCond), reactArgs...); err != nil && err != sql.ErrNoRows {
+		r.log.Errorf("Churn reactivation query failed: %v", err)
+		reactivated = 0
+	}
+	_ = reactQ
+
+	var reactivationRate float64
+	if churnedUsers > 0 {
+		reactivationRate = float64(reactivated) / float64(churnedUsers)
+	}
+
+	// 回流触发事件 TOP：近 reactivationDays 内、回流用户触发最多的 event_name。
+	// MVP：用回流判定窗口的活跃用户（last_active 在该窗口）在 events_fact 的事件分布。
+	triggerArgs := []any{}
+	if v := req.GetAppId(); v != 0 {
+		triggerArgs = append(triggerArgs, v)
+	}
+	triggerArgs = append(triggerArgs, now, reactivationDays, now, churnDays)
+	triggerQ := fmt.Sprintf(`
+SELECT e.event_name, COUNT(*) AS cnt
+FROM events_fact e
+INNER JOIN users_dim u ON u.tenant_id = e.tenant_id AND u.user_id = e.user_id
+WHERE e.%sevent_time >= DATE_SUB(?, INTERVAL ? DAY)
+  AND u.first_active_date < DATE_SUB(?, INTERVAL ? DAY)
+  AND e.user_id > 0
+GROUP BY e.event_name ORDER BY cnt DESC LIMIT 20`, strings.Replace(tenantCond, "tenant_id", "e.tenant_id", 1))
+	type triggerRow struct {
+		EventName string `db:"event_name"`
+		Cnt       int64  `db:"cnt"`
+	}
+	var tRows []triggerRow
+	if err := r.db.SelectContext(ctx, &tRows, triggerQ, triggerArgs...); err != nil {
+		r.log.Errorf("Churn trigger query failed: %v", err)
+		tRows = nil
+	}
+	var triggerTotal int64
+	for _, tr := range tRows {
+		triggerTotal += tr.Cnt
+	}
+	triggers := make([]*ubaV1.ReactivationTrigger, 0, len(tRows))
+	for _, tr := range tRows {
+		var pct float64
+		if triggerTotal > 0 {
+			pct = float64(tr.Cnt) / float64(triggerTotal)
+		}
+		triggers = append(triggers, &ubaV1.ReactivationTrigger{
+			EventName:  tr.EventName,
+			Count:      tr.Cnt,
+			Percentage: pct,
+		})
+	}
+
+	return &ubaV1.ChurnResponse{
+		ChurnBuckets:     buckets,
+		ChurnedUsers:     churnedUsers,
+		ReactivatedUsers: reactivated,
+		ReactivationRate: reactivationRate,
+		Triggers:         triggers,
+	}, nil
+}
+
+// ============================================================================
+// 间隔时间分析（两事件之间的时间间隔分布）
+// 窗口函数 LEAD 配对同用户的 from→to 事件。
+// ============================================================================
+
+func (r *AnalyticsRepo) Interval(ctx context.Context, req *ubaV1.IntervalRequest) (*ubaV1.IntervalResponse, error) {
+	if req.GetEventFrom() == "" || req.GetEventTo() == "" {
+		return nil, ubaV1.ErrorBadRequest("event_from and event_to are required")
+	}
+	startMs, endMs := normTimeRange(req.GetTimeRange())
+
+	tenantCond := ""
+	args := []any{req.GetEventFrom(), req.GetEventTo(), time.UnixMilli(startMs), time.UnixMilli(endMs)}
+	if v := req.GetAppId(); v != 0 {
+		tenantCond = "tenant_id = ? AND "
+		args = append([]any{v}, args...)
+	}
+
+	// 把同用户的 from/to 事件按时间排列，用 LEAD 找到每个 from 之后紧邻的事件，
+	// 若该紧邻事件是 to，则算间隔（小时）。这是 MVP 的"最近一次配对"语义。
+	q := fmt.Sprintf(`
+SELECT
+  CASE
+    WHEN diff_hours < 1.0/60 THEN 'instant'
+    WHEN diff_hours < 1      THEN 'lt_1h'
+    WHEN diff_hours < 24     THEN '1_24h'
+    WHEN diff_hours < 168    THEN '1_7d'
+    ELSE '7d_plus'
+  END AS bucket,
+  COUNT(*) AS cnt
+FROM (
+  SELECT
+    user_id,
+    event_time AS from_time,
+    LEAD(event_name) OVER (PARTITION BY user_id ORDER BY event_time) AS next_name,
+    LEAD(event_time) OVER (PARTITION BY user_id ORDER BY event_time) AS next_time,
+    TIMESTAMPDIFF(MINUTE, event_time, LEAD(event_time) OVER (PARTITION BY user_id ORDER BY event_time)) / 60.0 AS diff_hours
+  FROM events_fact
+  WHERE %s(event_name = ? OR event_name = ?) AND event_time >= ? AND event_time < ? AND user_id > 0
+) paired
+WHERE next_name = ? AND diff_hours >= 0
+GROUP BY bucket ORDER BY bucket`, tenantCond)
+	args = append(args, req.GetEventTo())
+
+	type bucketRow struct {
+		Bucket string `db:"bucket"`
+		Cnt    int64  `db:"cnt"`
+	}
+	var rows []bucketRow
+	if err := r.db.SelectContext(ctx, &rows, q, args...); err != nil {
+		r.log.Errorf("Interval query failed: %v", err)
+		return nil, ubaV1.ErrorInternalServerError("interval query failed")
+	}
+
+	var total int64
+	buckets := make([]*ubaV1.IntervalBucket, 0, len(rows))
+	for _, br := range rows {
+		total += br.Cnt
+		buckets = append(buckets, &ubaV1.IntervalBucket{Bucket: br.Bucket, Count: br.Cnt})
+	}
+	for _, b := range buckets {
+		if total > 0 {
+			b.Percentage = float64(b.Count) / float64(total)
+		}
+	}
+
+	// 分位数摘要
+	summaryArgs := append([]any{}, args...) // 复用主查询参数
+	summaryQ := fmt.Sprintf(`
+SELECT
+  COUNT(*) AS cnt,
+  ROUND(AVG(diff_hours), 2) AS avg_hours,
+  ROUND(APPROX_PERCENTILE(diff_hours, 0.5), 2) AS p50_hours,
+  ROUND(APPROX_PERCENTILE(diff_hours, 0.9), 2) AS p90_hours
+FROM (
+  SELECT
+    TIMESTAMPDIFF(MINUTE, event_time, LEAD(event_time) OVER (PARTITION BY user_id ORDER BY event_time)) / 60.0 AS diff_hours,
+    LEAD(event_name) OVER (PARTITION BY user_id ORDER BY event_time) AS next_name
+  FROM events_fact
+  WHERE %s(event_name = ? OR event_name = ?) AND event_time >= ? AND event_time < ? AND user_id > 0
+) p2 WHERE next_name = ? AND diff_hours >= 0`, tenantCond)
+	var s struct {
+		Cnt      int64   `db:"cnt"`
+		AvgHours float64 `db:"avg_hours"`
+		P50Hours float64 `db:"p50_hours"`
+		P90Hours float64 `db:"p90_hours"`
+	}
+	if err := r.db.GetContext(ctx, &s, summaryQ, summaryArgs...); err != nil && err != sql.ErrNoRows {
+		r.log.Errorf("Interval summary query failed: %v", err)
+	}
+
+	return &ubaV1.IntervalResponse{
+		Buckets:  buckets,
+		P50Hours: s.P50Hours,
+		P90Hours: s.P90Hours,
+		AvgHours: s.AvgHours,
+		Count:    s.Cnt,
+	}, nil
+}
+
+// ============================================================================
+// 矩阵/象限分析（双轴：使用人数 UV × 使用频次，按中位数分四象限）
+// ============================================================================
+
+func (r *AnalyticsRepo) Matrix(ctx context.Context, req *ubaV1.MatrixRequest) (*ubaV1.MatrixResponse, error) {
+	startMs, endMs := normTimeRange(req.GetTimeRange())
+	dim := "event_name"
+	if d := req.GetDimension(); d == "event_category" || d == "object_type" || d == "platform" {
+		dim = d
+	}
+
+	tenantCond := ""
+	args := []any{time.UnixMilli(startMs), time.UnixMilli(endMs)}
+	if v := req.GetAppId(); v != 0 {
+		tenantCond = "tenant_id = ? AND "
+		args = append([]any{v}, args...)
+	}
+
+	// X=使用人数(COUNT DISTINCT user_id)，Y=使用频次(COUNT *)
+	q := fmt.Sprintf(`
+SELECT %s AS label,
+       COUNT(DISTINCT user_id) AS uv,
+       COUNT(*) AS freq
+FROM events_fact
+WHERE %sevent_time >= ? AND event_time < ? AND user_id > 0
+GROUP BY %s
+ORDER BY uv DESC
+LIMIT 100`, dim, tenantCond, dim)
+
+	type ptRow struct {
+		Label string  `db:"label"`
+		UV    int64   `db:"uv"`
+		Freq  int64   `db:"freq"`
+	}
+	var rows []ptRow
+	if err := r.db.SelectContext(ctx, &rows, q, args...); err != nil {
+		r.log.Errorf("Matrix query failed: %v", err)
+		return nil, ubaV1.ErrorInternalServerError("matrix query failed")
+	}
+	if len(rows) == 0 {
+		return &ubaV1.MatrixResponse{Points: []*ubaV1.MatrixPoint{}, Dimension: dim}, nil
+	}
+
+	// 计算中位数阈值（X=uv, Y=freq）
+	sortedUV := make([]int64, len(rows))
+	sortedFreq := make([]int64, len(rows))
+	for i, rw := range rows {
+		sortedUV[i] = rw.UV
+		sortedFreq[i] = rw.Freq
+	}
+	sort.Slice(sortedUV, func(i, j int) bool { return sortedUV[i] < sortedUV[j] })
+	sort.Slice(sortedFreq, func(i, j int) bool { return sortedFreq[i] < sortedFreq[j] })
+	xThreshold := float64(sortedUV[len(sortedUV)/2])
+	yThreshold := float64(sortedFreq[len(sortedFreq)/2])
+
+	points := make([]*ubaV1.MatrixPoint, 0, len(rows))
+	for _, rw := range rows {
+		x := float64(rw.UV)
+		y := float64(rw.Freq)
+		var quadrant string
+		highX := x >= xThreshold
+		highY := y >= yThreshold
+		switch {
+		case highX && highY:
+			quadrant = "core" // 核心：高人高频
+		case highX && !highY:
+			quadrant = "star" // 明星：高人低频
+		case !highX && highY:
+			quadrant = "niche" // 小众：低人高频
+		default:
+			quadrant = "edge" // 边缘：低人低频
+		}
+		points = append(points, &ubaV1.MatrixPoint{
+			Label:     rw.Label,
+			X:         x,
+			Y:         y,
+			Quadrant:  quadrant,
+		})
+	}
+
+	return &ubaV1.MatrixResponse{
+		Points:      points,
+		XThreshold:  xThreshold,
+		YThreshold:  yThreshold,
+		Dimension:   dim,
 	}, nil
 }
 

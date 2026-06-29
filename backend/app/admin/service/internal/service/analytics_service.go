@@ -65,3 +65,19 @@ func (s *AnalyticsService) Segmentation(ctx context.Context, req *ubaV1.Segmenta
 func (s *AnalyticsService) Click(ctx context.Context, req *ubaV1.ClickRequest) (*ubaV1.ClickResponse, error) {
 	return s.client.Click(ctx, req)
 }
+
+func (s *AnalyticsService) Lifecycle(ctx context.Context, req *ubaV1.LifecycleRequest) (*ubaV1.LifecycleResponse, error) {
+	return s.client.Lifecycle(ctx, req)
+}
+
+func (s *AnalyticsService) Churn(ctx context.Context, req *ubaV1.ChurnRequest) (*ubaV1.ChurnResponse, error) {
+	return s.client.Churn(ctx, req)
+}
+
+func (s *AnalyticsService) Interval(ctx context.Context, req *ubaV1.IntervalRequest) (*ubaV1.IntervalResponse, error) {
+	return s.client.Interval(ctx, req)
+}
+
+func (s *AnalyticsService) Matrix(ctx context.Context, req *ubaV1.MatrixRequest) (*ubaV1.MatrixResponse, error) {
+	return s.client.Matrix(ctx, req)
+}
