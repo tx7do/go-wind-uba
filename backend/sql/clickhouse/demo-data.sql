@@ -138,15 +138,89 @@ VALUES
    '2025-06-23 02:00:00', '2025-06-23 02:00:01', '2025-06-23', NOW(), NOW());
 
 -- ============================================================
+-- 4b. 游戏 demo 数据（覆盖游戏专项模型 + 深度洞察）
+--     新增用户 1011-1015（游戏玩家），带 server_id/level，构造：
+--       - 关卡分析：level_start/level_finish/level_fail + score + stars
+--       - 滚服留存：按 server_id(s1/s2/s3) 分组的 D1/D3/D7 活跃
+--       - 经济系统：object_type='item' + amount 正负（代币产出/消耗）
+--       - 生命周期：1011 活跃/1012 留存/1013 流失/1014 回流/1015 新用户
+-- ============================================================
+
+-- 4b-1. 游戏 users_dim（5 个游戏玩家，生命周期分布）
+INSERT INTO gw_uba.users_dim
+  (tenant_id, user_id, register_time, register_channel, first_active_date, last_active_date,
+   user_level, vip_level, user_role, total_events, total_sessions, total_pay_amount,
+   last_pay_time, prefer_categories, prefer_objects, risk_score, risk_level, risk_tags,
+   last_risk_time, profile, geo, device_type, platform, country, ver, created_at, updated_at)
+VALUES
+  (1, 1011, '2025-06-20 09:00:00', 'appstore', '2025-06-20', '2025-06-28', 25, 3, 'vip',  1800, 65, 6800.00, '2025-06-27 22:00:00', '["game"]', '["hero_001"]', 10, 'low', '[]', NULL, '{"server":"s1","level":25}', '{"country":"中国","city":"深圳"}', 'iPhone 15', 'ios', 'CN', 1, NOW(), NOW()),
+  (1, 1012, '2025-06-10 10:00:00', 'googleplay', '2025-06-10', '2025-06-25', 18, 1, 'user', 920,  30, 199.00,  '2025-06-24 18:00:00', '["game"]', '["hero_002"]', 5,  'low', '[]', NULL, '{"server":"s2","level":18}', '{"country":"中国","city":"广州"}', 'Xiaomi 14', 'android', 'CN', 1, NOW(), NOW()),
+  (1, 1013, '2025-05-15 08:00:00', 'appstore', '2025-05-15', '2025-05-25', 12, 0, 'user', 450,  15, 0.00,    NULL,                  '["game"]', '["hero_003"]', 8,  'low', '[]', NULL, '{"server":"s1","level":12}', '{"country":"中国","city":"成都"}', 'iPhone 13', 'ios', 'CN', 1, NOW(), NOW()),
+  (1, 1014, '2025-05-01 12:00:00', 'wechat', '2025-05-01', '2025-06-26', 30, 5, 'vip',  2600, 88, 12800.00, '2025-06-26 20:00:00', '["game"]', '["hero_004"]', 20, 'medium', '[]', NULL, '{"server":"s3","level":30}', '{"country":"日本","city":"Osaka"}', 'iPhone 14 Pro', 'ios', 'JP', 1, NOW(), NOW()),
+  (1, 1015, '2025-06-26 16:00:00', 'appstore', '2025-06-26', '2025-06-28', 5,  0, 'user', 120,  6,  0.00,    NULL,                  '["game"]', '["hero_005"]', 3,  'low', '[]', NULL, '{"server":"s2","level":5}',  '{"country":"中国","city":"杭州"}', 'Pixel 8', 'android', 'CN', 1, NOW(), NOW());
+
+-- 4b-2. 游戏事件（关卡 + 代币 + 滚服留存）
+INSERT INTO gw_uba.events_fact
+  (event_id, tenant_id, user_id, event_time, event_ts, server_time, event_category, event_name,
+   object_type, object_id, object_name, session_id, session_seq,
+   platform, os, app_version, channel, country, context, duration_ms, amount, score, metrics,
+   server_id, level, created_at, updated_at)
+VALUES
+  -- 用户1011(s1) 关卡进度 + 代币
+  ('g-1011-01', 1, 1011, '2025-06-28 14:00:00', 1751104800000, '2025-06-28 14:00:01', 'game', 'level_start',  'level', 'lv_10', '第10关', 'g-sess-1011', 0, 'ios', 'iOS 17', '1.0', 'appstore', 'CN', '{"stars":"0"}', 0,    '0',      0, '{}', 's1', 25, NOW(), NOW()),
+  ('g-1011-02', 1, 1011, '2025-06-28 14:03:00', 1751104980000, '2025-06-28 14:03:01', 'game', 'level_finish', 'level', 'lv_10', '第10关', 'g-sess-1011', 1, 'ios', 'iOS 17', '1.0', 'appstore', 'CN', '{"stars":"3"}', 180000,'0',      8500, '{"combo":12}', 's1', 25, NOW(), NOW()),
+  ('g-1011-03', 1, 1011, '2025-06-28 14:04:00', 1751105040000, '2025-06-28 14:04:01', 'game', 'item_buy',     'item',  'gold_pack',  '金币包', 'g-sess-1011', 2, 'ios', 'iOS 17', '1.0', 'appstore', 'CN', '{}', 0,    '-500.00', 0, '{}', 's1', 25, NOW(), NOW()),
+  ('g-1011-04', 1, 1011, '2025-06-28 14:05:00', 1751105100000, '2025-06-28 14:05:01', 'game', 'coin_reward',  'item',  'gold_pack',  '金币包', 'g-sess-1011', 3, 'ios', 'iOS 17', '1.0', 'appstore', 'CN', '{}', 0,    '200.00',  0, '{}', 's1', 25, NOW(), NOW()),
+  -- 用户1012(s2) 卡关（失败多次）
+  ('g-1012-01', 1, 1012, '2025-06-27 10:00:00', 1751004000000, '2025-06-27 10:00:01', 'game', 'level_start',  'level', 'lv_15', '第15关', 'g-sess-1012', 0, 'android', 'Android 14', '1.0', 'googleplay', 'CN', '{"stars":"0"}', 0, '0', 0, '{}', 's2', 18, NOW(), NOW()),
+  ('g-1012-02', 1, 1012, '2025-06-27 10:02:00', 1751004120000, '2025-06-27 10:02:01', 'game', 'level_fail',   'level', 'lv_15', '第15关', 'g-sess-1012', 1, 'android', 'Android 14', '1.0', 'googleplay', 'CN', '{}', 120000,'0', 3200, '{}', 's2', 18, NOW(), NOW()),
+  ('g-1012-03', 1, 1012, '2025-06-27 10:04:00', 1751004240000, '2025-06-27 10:04:01', 'game', 'level_fail',   'level', 'lv_15', '第15关', 'g-sess-1012', 2, 'android', 'Android 14', '1.0', 'googleplay', 'CN', '{}', 90000, '0', 2800, '{}', 's2', 18, NOW(), NOW()),
+  ('g-1012-04', 1, 1012, '2025-06-27 10:06:00', 1751004360000, '2025-06-27 10:06:01', 'game', 'level_finish', 'level', 'lv_15', '第15关', 'g-sess-1012', 3, 'android', 'Android 14', '1.0', 'googleplay', 'CN', '{"stars":"2"}', 200000,'0', 4100, '{}', 's2', 18, NOW(), NOW()),
+  ('g-1012-05', 1, 1012, '2025-06-27 10:07:00', 1751004420000, '2025-06-27 10:07:01', 'game', 'item_buy',     'item',  'diamond_pack','钻石包', 'g-sess-1012', 4, 'android', 'Android 14', '1.0', 'googleplay', 'CN', '{}', 0, '-50.00', 0, '{}', 's2', 18, NOW(), NOW()),
+  -- 用户1013(s1) 流失（仅5月活跃，6月无事件）
+  ('g-1013-01', 1, 1013, '2025-05-25 09:00:00', 1748140800000, '2025-05-25 09:00:01', 'game', 'level_start',  'level', 'lv_8',  '第8关',  'g-sess-1013', 0, 'ios', 'iOS 16', '1.0', 'appstore', 'CN', '{}', 0, '0', 0, '{}', 's1', 12, NOW(), NOW()),
+  ('g-1013-02', 1, 1013, '2025-05-25 09:02:00', 1748140920000, '2025-05-25 09:02:01', 'game', 'level_finish', 'level', 'lv_8',  '第8关',  'g-sess-1013', 1, 'ios', 'iOS 16', '1.0', 'appstore', 'CN', '{"stars":"2"}', 150000,'0', 2200, '{}', 's1', 12, NOW(), NOW()),
+  -- 用户1014(s3) 回流（5月流失后6/26又回来，大课长）
+  ('g-1014-01', 1, 1014, '2025-06-26 20:00:00', 1750948800000, '2025-06-26 20:00:01', 'game', 'level_start',  'level', 'lv_30', '第30关', 'g-sess-1014', 0, 'ios', 'iOS 17', '1.0', 'wechat', 'JP', '{}', 0, '0', 0, '{}', 's3', 30, NOW(), NOW()),
+  ('g-1014-02', 1, 1014, '2025-06-26 20:05:00', 1750949100000, '2025-06-26 20:05:01', 'game', 'level_finish', 'level', 'lv_30', '第30关', 'g-sess-1014', 1, 'ios', 'iOS 17', '1.0', 'wechat', 'JP', '{"stars":"3"}', 300000,'0', 9800, '{}', 's3', 30, NOW(), NOW()),
+  ('g-1014-03', 1, 1014, '2025-06-26 20:06:00', 1750949160000, '2025-06-26 20:06:01', 'game', 'item_buy',     'item',  'diamond_pack','钻石包', 'g-sess-1014', 2, 'ios', 'iOS 17', '1.0', 'wechat', 'JP', '{}', 0, '-300.00',0, '{}', 's3', 30, NOW(), NOW()),
+  ('g-1014-04', 1, 1014, '2025-06-26 20:07:00', 1750949220000, '2025-06-26 20:07:01', 'pay',  'pay_success',  'order', 'ord-g-1014','充值订单','g-sess-1014', 3, 'ios', 'iOS 17', '1.0', 'wechat', 'JP', '{}', 0, '12800.00',0, '{}', 's3', 30, NOW(), NOW()),
+  -- 用户1015(s2) 新用户（6/26注册，首日活跃）
+  ('g-1015-01', 1, 1015, '2025-06-26 16:00:00', 1750934400000, '2025-06-26 16:00:01', 'game', 'level_start',  'level', 'lv_1',  '第1关',  'g-sess-1015', 0, 'android', 'Android 14', '1.0', 'appstore', 'CN', '{}', 0, '0', 0, '{}', 's2', 5, NOW(), NOW()),
+  ('g-1015-02', 1, 1015, '2025-06-26 16:01:00', 1750934460000, '2025-06-26 16:01:01', 'game', 'level_finish', 'level', 'lv_1',  '第1关',  'g-sess-1015', 1, 'android', 'Android 14', '1.0', 'appstore', 'CN', '{"stars":"3"}', 60000, '0', 5000, '{}', 's2', 5, NOW(), NOW()),
+  ('g-1015-03', 1, 1015, '2025-06-27 16:00:00', 1751020800000, '2025-06-27 16:00:01', 'game', 'level_start',  'level', 'lv_2',  '第2关',  'g-sess-1015b',0, 'android', 'Android 14', '1.0', 'appstore', 'CN', '{}', 0, '0', 0, '{}', 's2', 6, NOW(), NOW()),
+  ('g-1015-04', 1, 1015, '2025-06-27 16:02:00', 1751020920000, '2025-06-27 16:02:01', 'game', 'level_finish', 'level', 'lv_2',  '第2关',  'g-sess-1015b',1, 'android', 'Android 14', '1.0', 'appstore', 'CN', '{"stars":"2"}', 80000, '0', 4200, '{}', 's2', 6, NOW(), NOW());
+
+-- 4b-3. 点击热力图事件（Web 端 home 页点击，带坐标）
+INSERT INTO gw_uba.events_fact
+  (event_id, tenant_id, user_id, event_time, event_ts, server_time, event_category, event_name,
+   event_action, object_type, object_id, object_name, session_id, session_seq,
+   platform, channel, country, context, click_x, click_y, element_xpath, page_url, viewport_width,
+   created_at, updated_at)
+VALUES
+  ('c-1001-01', 1, 1001, '2025-06-28 10:00:16', 1751090416000, '2025-06-28 10:00:17', 'behavior', 'click', 'click', 'button', 'btn_login',    '登录按钮', 'sess-1001-a', 1, 'ios', 'appstore', 'CN', '{}', 320, 480, '/html/body/div[1]/div/button[1]', 'https://shop.example.com/home', 375, NOW(), NOW()),
+  ('c-1001-02', 1, 1001, '2025-06-28 10:01:05', 1751090465000, '2025-06-28 10:01:06', 'behavior', 'click', 'click', 'a',      'link_product', '商品链接', 'sess-1001-a', 2, 'ios', 'appstore', 'CN', '{}', 150, 620, '/html/body/div[2]/div/a[3]',     'https://shop.example.com/home', 375, NOW(), NOW()),
+  ('c-1001-03', 1, 1001, '2025-06-28 10:02:35', 1751090555000, '2025-06-28 10:02:36', 'behavior', 'click', 'click', 'button', 'btn_cart',     '加购按钮', 'sess-1001-a', 3, 'ios', 'appstore', 'CN', '{}', 280, 800, '/html/body/div[3]/section/button[1]','https://shop.example.com/home', 375, NOW(), NOW()),
+  ('c-1002-01', 1, 1002, '2025-06-28 11:00:21', 1751094021000, '2025-06-28 11:00:22', 'behavior', 'click', 'click', 'a',      'link_banner',  '横幅链接', 'sess-1002-a', 2, 'android', 'wechat', 'CN', '{}', 200, 300, '/html/body/div[1]/header/a[1]', 'https://shop.example.com/home', 414, NOW(), NOW()),
+  ('c-1005-01', 1, 1005, '2025-06-28 19:00:31', 1751122831000, '2025-06-28 19:00:32', 'behavior', 'click', 'click', 'button', 'btn_search',   '搜索按钮', 'sess-1005-a', 2, 'ios', 'appstore', 'CN', '{}', 360, 250, '/html/body/nav/button[2]',       'https://shop.example.com/home', 375, NOW(), NOW()),
+  ('c-1005-02', 1, 1005, '2025-06-28 19:01:25', 1751122885000, '2025-06-28 19:01:26', 'behavior', 'click', 'click', 'a',      'link_detail',  '详情链接', 'sess-1005-a', 3, 'ios', 'appstore', 'CN', '{}', 120, 680, '/html/body/div[2]/ul/li[1]/a',  'https://shop.example.com/home', 375, NOW(), NOW());
+
+-- ============================================================
 -- 数据说明
 -- ============================================================
--- 上述数据覆盖以下 BI 场景：
+-- 上述数据覆盖以下分析场景（25 个模型）：
 --   1. 事件趋势：events_fact 跨 5 天（6/24~6/28），可画趋势线
 --   2. 漏斗分析：app_launch→view_home→view_product→add_to_cart→submit_order→pay_success
---      （用户1001 完整转化，1005 转化中断，1002 跳出）
 --   3. 留存分析：1001/1005/1008 在多天有活跃，可算留存矩阵
---   4. 维度分组：platform(ios/android/web)、channel(appstore/wechat/googleplay/web)、
---      country(CN/US/JP/KR)、event_name 都有分布
---   5. 实时大屏：risk_events 含 5 条不同等级/类型/状态的告警
+--   4. 维度分组：platform/channel/country/event_name 都有分布
+--   5. 风险大屏：risk_events 含 5 条不同等级/类型/状态的告警
 --   6. 会话分析：跳出会话(1002/1003/1004)、转化会话(1001/1006/1008/1010)
---   7. 行为时间轴：按 user_id=1001 可查到完整 6 步漏斗事件序列
+--   7. 行为序列：按 user_id=1001 可查到完整 6 步漏斗事件序列
+--   --- 游戏专项 ---
+--   8. 关卡分析：level_start/finish/fail + score + stars（用户1011/1012/1015）
+--   9. 滚服留存：server_id=s1/s2/s3 分组，1011/1012/1015 跨多天活跃
+--  10. 经济系统：item_buy(amount负)/coin_reward(amount正)/pay_success 代币流水
+--  11. 付费分层/LTV：1013(免费)/1012(小)/1011(中)/1014(大课长12800) 梯度
+--  12. 生命周期：1015(新)/1011(活跃)/1012(留存)/1013(流失)/1014(回流)
+--  13. PCU/在线：sessions_fact start/end_time 区间
+--  14. 点击热力图：click 事件带 click_x/click_y/page_url（home 页，用户1001/1002/1005）
