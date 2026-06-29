@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	ProjectPrefix = "gwubd:"
+	ProjectPrefix = "gw:uba:"
 
 	// AccessTokenKeyFormat 访问令牌键前缀格式 at:{ct}:{uid}
 	AccessTokenKeyFormat = ProjectPrefix + "at:%d:%d"

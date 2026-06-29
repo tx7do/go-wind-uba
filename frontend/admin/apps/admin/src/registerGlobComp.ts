@@ -8,6 +8,7 @@ import {
   Dropdown,
   Empty,
   Input,
+  InputNumber,
   Layout,
   Menu,
   Popconfirm,
@@ -49,6 +50,7 @@ export function registerGlobComp(app: App) {
     .use(Tree)
     .use(Table)
     .use(Statistic)
+    .use(InputNumber)
     .use(Timeline)
     .use(Empty)
     .use(Badge)

@@ -148,7 +148,7 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=*Abcd123456
-      - POSTGRES_DB=gwubd
+      - POSTGRES_DB=gw_uba
 
 #  mysql:
 #    image: docker.io/bitnami/mariadb:latest
@@ -163,7 +163,7 @@ services:
 #      - MARIADB_ROOT_PASSWORD=*Abcd123456
 #      - MARIADB_USER=admin
 #      - MARIADB_PASSWORD=*Abcd123456
-#      - MARIADB_DATABASE=gwubd
+#      - MARIADB_DATABASE=gw_uba
 #      - ALLOW_EMPTY_PASSWORD=yes
 #      - TZ=Asia/Shanghai
 
@@ -181,7 +181,7 @@ services:
 #    environment:
 #      - CLICKHOUSE_USER=default
 #      - CLICKHOUSE_PASSWORD=*Abcd123456
-#      - CLICKHOUSE_DB=gwubd
+#      - CLICKHOUSE_DB=gw_uba
 #      - CLICKHOUSE_ENABLE_HTTP=true
 #      - CLICKHOUSE_ENABLE_NATIVE=true
 #      - CLICKHOUSE_ENABLE_TCP=true
