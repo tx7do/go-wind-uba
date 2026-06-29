@@ -562,13 +562,13 @@ ORDER BY duration_bucket`, tenantCond)
 	}
 
 	// 分位数摘要：均值 / P50 / P90 / 最大值
-	// CAST(duration_ms AS DOUBLE) 确保 APPROX_PERCENTILE 兼容 BIGINT 列。
+	// CAST(duration_ms AS DOUBLE) 确保 PERCENTILE_APPROX 兼容 BIGINT 列。
 	summaryQ := fmt.Sprintf(`
 SELECT
     COUNT(*) AS cnt,
     ROUND(AVG(CAST(duration_ms AS DOUBLE)) / 1000, 2)                      AS avg_sec,
-    ROUND(APPROX_PERCENTILE(CAST(duration_ms AS DOUBLE), 0.5) / 1000, 2)   AS p50_sec,
-    ROUND(APPROX_PERCENTILE(CAST(duration_ms AS DOUBLE), 0.9) / 1000, 2)   AS p90_sec,
+    ROUND(PERCENTILE_APPROX(CAST(duration_ms AS DOUBLE), 0.5) / 1000, 2)   AS p50_sec,
+    ROUND(PERCENTILE_APPROX(CAST(duration_ms AS DOUBLE), 0.9) / 1000, 2)   AS p90_sec,
     ROUND(MAX(duration_ms) / 1000, 2)                                       AS max_sec
 FROM events_fact
 WHERE %sevent_name = ? AND duration_ms > 0 AND event_time >= ? AND event_time < ?`, tenantCond)
@@ -1159,8 +1159,8 @@ GROUP BY bucket ORDER BY bucket`, tenantCond)
 SELECT
   COUNT(*) AS cnt,
   ROUND(AVG(diff_hours), 2) AS avg_hours,
-  ROUND(APPROX_PERCENTILE(diff_hours, 0.5), 2) AS p50_hours,
-  ROUND(APPROX_PERCENTILE(diff_hours, 0.9), 2) AS p90_hours
+  ROUND(PERCENTILE_APPROX(diff_hours, 0.5), 2) AS p50_hours,
+  ROUND(PERCENTILE_APPROX(diff_hours, 0.9), 2) AS p90_hours
 FROM (
   SELECT
     TIMESTAMPDIFF(MINUTE, event_time, LEAD(event_time) OVER (PARTITION BY user_id ORDER BY event_time)) / 60.0 AS diff_hours,

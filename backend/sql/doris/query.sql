@@ -558,8 +558,8 @@ SELECT
     ROUND(AVG(metrics['score']), 2)                                    AS avg_score,
     ROUND(MIN(metrics['score']), 2)                                    AS min_score,
     ROUND(MAX(metrics['score']), 2)                                    AS max_score,
-    ROUND(APPROX_PERCENTILE(metrics['score'], 0.5), 2)                 AS p50,
-    ROUND(APPROX_PERCENTILE(metrics['score'], 0.9), 2)                 AS p90
+    ROUND(PERCENTILE_APPROX(metrics['score'], 0.5), 2)                 AS p50,
+    ROUND(PERCENTILE_APPROX(metrics['score'], 0.9), 2)                 AS p90
 FROM events_fact
 WHERE tenant_id = ${TENANT_ID}
   AND event_name = 'level_finish'
@@ -798,8 +798,8 @@ SELECT
     object_id AS level_id,
     COUNT(*) AS finish_cnt,
     ROUND(AVG(metrics['score']), 1)                          AS avg_score,
-    ROUND(APPROX_PERCENTILE(metrics['score'], 0.5), 1)       AS p50,
-    ROUND(APPROX_PERCENTILE(metrics['score'], 0.9), 1)       AS p90,
+    ROUND(PERCENTILE_APPROX(metrics['score'], 0.5), 1)       AS p50,
+    ROUND(PERCENTILE_APPROX(metrics['score'], 0.9), 1)       AS p90,
     ROUND(MAX(metrics['score']), 1)                          AS max_score,
     SUM(IF(context['stars'] = '3', 1, 0))                 AS star3_cnt
 FROM events_fact
@@ -846,8 +846,8 @@ SELECT
     platform,
     COUNT(*) AS session_cnt,
     ROUND(AVG(duration_ms) / 1000 / 60, 2)                 AS avg_session_min,
-    ROUND(APPROX_PERCENTILE(duration_ms, 0.5) / 1000 / 60, 2) AS p50_min,
-    ROUND(APPROX_PERCENTILE(duration_ms, 0.9) / 1000 / 60, 2) AS p90_min
+    ROUND(PERCENTILE_APPROX(duration_ms, 0.5) / 1000 / 60, 2) AS p50_min,
+    ROUND(PERCENTILE_APPROX(duration_ms, 0.9) / 1000 / 60, 2) AS p90_min
 FROM sessions_fact
 WHERE tenant_id = ${TENANT_ID}
   AND session_date BETWEEN ${START} AND ${END}
@@ -1136,8 +1136,8 @@ SELECT
     event_name,
     COUNT(*) AS cnt,
     ROUND(AVG(duration_ms) / 1000, 2)                                 AS avg_sec,
-    ROUND(APPROX_PERCENTILE(duration_ms, 0.5) / 1000, 2)              AS p50_sec,
-    ROUND(APPROX_PERCENTILE(duration_ms, 0.9) / 1000, 2)              AS p90_sec,
+    ROUND(PERCENTILE_APPROX(duration_ms, 0.5) / 1000, 2)              AS p50_sec,
+    ROUND(PERCENTILE_APPROX(duration_ms, 0.9) / 1000, 2)              AS p90_sec,
     ROUND(MAX(duration_ms) / 1000, 2)                                 AS max_sec
 FROM events_fact
 WHERE tenant_id = ${TENANT_ID}
@@ -1345,7 +1345,7 @@ LIMIT 5000;
 -- ============================================================
 -- HLL 去重：       HLL_HASH(col) -> HLL_UNION(hll) -> HLL_CARDINALITY(hll)
 -- 分位（聚合表）：  QUANTILE_STATE 列需用 QUANTILE_PERCENT(col, p) 还原
--- 分位（明细表）：  APPROX_PERCENTILE(col, p) 近似分位，p∈[0,1]
+-- 分位（明细表）：  PERCENTILE_APPROX(col, p) 近似分位，p∈[0,1]
 -- 窗口函数：        LAG(col, n) / LEAD(col, n) / ROW_NUMBER() OVER(PARTITION BY.. ORDER BY..)
 --                    AVG() OVER(ROWS BETWEEN n PRECEDING AND ...) 移动均值
 -- 时间分区裁剪：    事实表按 event_time/event_date 分区，WHERE 必带该列
