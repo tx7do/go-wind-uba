@@ -186,6 +186,7 @@
     "p50DurationSec": "P50 时长(秒)",
     "p90DurationSec": "P90 时长(秒)",
     "bounceRate": "跳出率",
+    "uniqueUsers": "会话用户数",
     "avgDepth": "会话深度(人均事件)",
     "anomaly": "异常检测",
     "anomalyCount": "异常事件数",

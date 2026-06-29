@@ -186,6 +186,7 @@
     "p50DurationSec": "P50 Duration (s)",
     "p90DurationSec": "P90 Duration (s)",
     "bounceRate": "Bounce Rate",
+    "uniqueUsers": "Unique Users",
     "avgDepth": "Avg Depth (events/session)",
     "anomaly": "Anomaly Detection",
     "anomalyCount": "Anomaly Events",
