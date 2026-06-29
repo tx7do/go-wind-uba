@@ -12,8 +12,21 @@ DELETE FROM sessions_fact WHERE tenant_id = 1 AND user_id BETWEEN 1001 AND 1050;
 DELETE FROM risk_events   WHERE tenant_id = 1 AND user_id BETWEEN 1001 AND 1050;
 DELETE FROM users_dim     WHERE tenant_id = 1 AND user_id BETWEEN 1001 AND 1050;
 
--- demo 数据使用动态时间（基于 CURDATE()），落在最近 60 天内，
--- 动态分区（events 180 天 / sessions 90 天）已覆盖，无需手动建分区。
+-- 确保 demo 数据有对应分区。动态分区线程可能未及时创建分区，
+-- 此处手动创建一个覆盖最近 90 天的分区兜底。
+-- Doris RANGE 分区用固定范围，不能在 ADD PARTITION 里用函数表达式，
+-- 故改用 VALUES [("","")] 方式建一个超大范围分区兜底（反正 demo 数据量小）。
+ALTER TABLE events_fact   SET ("dynamic_partition.enable" = "false");
+ALTER TABLE sessions_fact SET ("dynamic_partition.enable" = "false");
+ALTER TABLE risk_events   SET ("dynamic_partition.enable" = "false");
+
+ALTER TABLE events_fact   ADD PARTITION IF NOT EXISTS p_demo VALUES [("2000-01-01 00:00:00"),("2099-12-31 23:59:59"));
+ALTER TABLE sessions_fact ADD PARTITION IF NOT EXISTS p_demo VALUES [("2000-01-01 00:00:00"),("2099-12-31 23:59:59"));
+ALTER TABLE risk_events   ADD PARTITION IF NOT EXISTS p_demo VALUES [("2000-01-01"),("2099-12-31"));
+
+ALTER TABLE events_fact   SET ("dynamic_partition.enable" = "true");
+ALTER TABLE sessions_fact SET ("dynamic_partition.enable" = "true");
+ALTER TABLE risk_events   SET ("dynamic_partition.enable" = "true");
 
 
 -- ============================================================
