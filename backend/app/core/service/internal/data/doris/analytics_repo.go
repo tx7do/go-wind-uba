@@ -1387,8 +1387,8 @@ SELECT
   SUM(session_count) AS session_count,
   HLL_CARDINALITY(HLL_UNION(unique_users)) AS unique_users,
   ROUND(SUM(duration_sum) / NULLIF(SUM(duration_count), 0) / 1000.0, 2) AS avg_duration_sec,
-  ROUND(QUANTILE_PERCENT(duration_quantile, 0.5) / 1000.0, 2) AS p50_sec,
-  ROUND(QUANTILE_PERCENT(duration_quantile, 0.9) / 1000.0, 2) AS p90_sec,
+  ROUND(QUANTILE_PERCENT(QUANTILE_UNION(duration_quantile), 0.5) / 1000.0, 2) AS p50_sec,
+  ROUND(QUANTILE_PERCENT(QUANTILE_UNION(duration_quantile), 0.9) / 1000.0, 2) AS p90_sec,
   ROUND(SUM(bounce_sum) / NULLIF(SUM(bounce_count), 0), 4) AS bounce_rate
 FROM sessions_agg_daily
 WHERE %sstat_date >= DATE(?) AND stat_date < DATE(?)`, whereCond)
@@ -1460,7 +1460,7 @@ func (r *AnalyticsRepo) Anomaly(ctx context.Context, req *ubaV1.AnomalyRequest) 
 	}
 	args = append(args, time.UnixMilli(startMs), time.UnixMilli(endMs))
 
-	// 按事件名×日聚合，用 LAG 算环比昨日；7日均值用窗口 AVG(ROWS BETWEEN 7 PRECEDING)。
+	// 直接查 events_fact（不依赖 mv_events_daily），窗口函数算环比/基线。
 	q := fmt.Sprintf(`
 SELECT event_name, d, pv, uv, baseline, wow_change FROM (
   SELECT
@@ -1474,9 +1474,9 @@ SELECT event_name, d, pv, uv, baseline, wow_change FROM (
        0) AS wow_change
   FROM (
     SELECT event_name, to_date(event_time) AS d,
-           SUM(pv) AS pv, HLL_CARDINALITY(HLL_UNION(uv)) AS uv
-    FROM mv_events_daily
-    WHERE %sstat_date >= DATE(?) AND stat_date < DATE(?)
+           COUNT(*) AS pv, COUNT(DISTINCT user_id) AS uv
+    FROM events_fact
+    WHERE %sevent_time >= ? AND event_time < ?
     GROUP BY event_name, d
   ) daily
 ) ranked
@@ -1678,7 +1678,7 @@ SELECT
   SUM(IF(event_name = 'level_fail',   1, 0)) AS fail_count,
   ROUND(AVG(IF(event_name = 'level_finish', metrics['score'], NULL)), 1) AS avg_score,
   SUM(IF(event_name = 'level_finish' AND context['stars'] = '3', 1, 0)) AS star3_count,
-  HLL_CARDINALITY(HLL_HASH(user_id)) AS player_count
+  HLL_CARDINALITY(HLL_UNION(HLL_HASH(user_id))) AS player_count
 FROM events_fact
 WHERE %sevent_time >= ? AND event_time < ?
 GROUP BY object_id
@@ -1841,7 +1841,7 @@ func (r *AnalyticsRepo) LTV(ctx context.Context, req *ubaV1.LTVRequest) (*ubaV1.
 
 	// 先取同期群规模（按维度分组的人数）
 	cohortQ := fmt.Sprintf(`
-SELECT %s AS label, COUNT(*) AS cohort_size
+SELECT %s, COUNT(*) AS cohort_size
 FROM users_dim u
 WHERE u.%sregister_time >= ? AND register_time < ?
 GROUP BY label`, dimSelect, tenantCond)
@@ -1863,7 +1863,7 @@ GROUP BY label`, dimSelect, tenantCond)
 	// 注：DATEDIFF(event_time, register_time) 为事件距注册天数。
 	payArgs := append([]any{}, args...)
 	payQ := fmt.Sprintf(`
-SELECT %s AS label,
+SELECT %s,
   CASE
     WHEN DATEDIFF(e.event_time, u.register_time) <= 0  THEN 0
     WHEN DATEDIFF(e.event_time, u.register_time) <= 1  THEN 1
@@ -2025,15 +2025,12 @@ WHERE e.server_id = ? AND DATEDIFF(to_date(e.event_time), f.first_day) = ?`
 func (r *AnalyticsRepo) OnlineStats(ctx context.Context, req *ubaV1.OnlineStatsRequest) (*ubaV1.OnlineStatsResponse, error) {
 	startMs, endMs := normTimeRange(req.GetTimeRange())
 
+	// sessions_fact 无 server_id 列，不支持区服过滤（仅 tenant + 时间）。
 	var whereParts []string
 	var args []any
 	if v := req.GetAppId(); v != 0 {
 		whereParts = append(whereParts, "tenant_id = ?")
 		args = append(args, v)
-	}
-	if sid := req.GetServerId(); sid != "" {
-		whereParts = append(whereParts, "server_id = ?")
-		args = append(args, sid)
 	}
 	args = append(args, time.UnixMilli(startMs), time.UnixMilli(endMs))
 	whereCond := ""
@@ -2041,8 +2038,6 @@ func (r *AnalyticsRepo) OnlineStats(ctx context.Context, req *ubaV1.OnlineStatsR
 		whereCond = strings.Join(whereParts, " AND ") + " AND "
 	}
 
-	// ACU：总会话在线分钟 / 统计时长分钟。
-	// 总在线分钟 = Σ(duration_ms) / 60000；统计时长 = (end-start)/60000。
 	q := fmt.Sprintf(`
 SELECT
   COUNT(*) AS total_sessions,
