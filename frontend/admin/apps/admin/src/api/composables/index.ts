@@ -87,7 +87,6 @@ export * from './tenant';
 
 // 用户相关
 export * from './user';
-export * from './user-behavior-profile';
 
 // 用户个人资料
 export * from './user-profile';

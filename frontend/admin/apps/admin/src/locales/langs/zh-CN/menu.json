@@ -57,12 +57,10 @@
   "dataAnalysis": {
     "moduleName": "数据分析",
     "session": "会话分析",
-    "userBehaviorProfile": "用户画像",
     "eventTrend": "事件趋势",
     "funnel": "漏斗分析",
     "retention": "留存分析",
     "dimensionCompare": "维度对比",
-    "behaviorTimeline": "行为时间轴",
     "realtimeScreen": "实时大屏",
     "attribution": "归因分析",
     "distribution": "分布分析",

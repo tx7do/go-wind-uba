@@ -64,18 +64,6 @@ const dataAnalysis: RouteRecordRaw[] = [
           import('#/views/app/data-analysis/dimension-compare/index.vue'),
       },
       {
-        path: 'behavior-timeline',
-        name: 'BehaviorTimeline',
-        meta: {
-          order: 5,
-          icon: 'lucide:list-todo',
-          title: $t('menu.dataAnalysis.behaviorTimeline'),
-          authority: ['sys:platform_admin', 'sys:tenant_manager'],
-        },
-        component: () =>
-          import('#/views/app/data-analysis/behavior-timeline/index.vue'),
-      },
-      {
         path: 'realtime-screen',
         name: 'RealtimeScreen',
         meta: {
@@ -97,17 +85,6 @@ const dataAnalysis: RouteRecordRaw[] = [
           authority: ['sys:platform_admin', 'sys:tenant_manager'],
         },
         component: () => import('#/views/app/data-analysis/session/index.vue'),
-      },
-      {
-        path: 'profile',
-        name: 'UserBehaviorProfile',
-        meta: {
-          order: 9,
-          icon: 'lucide:user-check',
-          title: $t('menu.dataAnalysis.userBehaviorProfile'),
-          authority: ['sys:platform_admin', 'sys:tenant_manager'],
-        },
-        component: () => import('#/views/app/data-analysis/profile/index.vue'),
       },
       {
         path: 'attribution',
