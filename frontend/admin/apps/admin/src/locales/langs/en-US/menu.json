@@ -57,7 +57,6 @@
     "moduleName": "Data Analysis",
     "behaviorEvent": "Behavior Event",
     "session": "Session Analysis",
-    "eventPath": "Path Analysis",
     "userBehaviorProfile": "User Profile",
     "eventTrend": "Event Trend",
     "funnel": "Funnel Analysis",
@@ -133,7 +132,6 @@
   },
   "page": {
     "session": "Session Analysis",
-    "eventPath": "Event Path",
     "userBehaviorProfile": "User Behavior Profile",
     "riskEvent": "Risk Event",
     "riskRule": "Risk Rule",

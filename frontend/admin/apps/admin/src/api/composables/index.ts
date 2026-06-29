@@ -27,7 +27,6 @@ export * from './data-access-audit-log';
 export * from './dict';
 
 // 事件路径
-export * from './event-path';
 
 // 事件 Schema 管理
 export * from './event-schema';

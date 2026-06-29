@@ -99,18 +99,6 @@ const dataAnalysis: RouteRecordRaw[] = [
         component: () => import('#/views/app/data-analysis/session/index.vue'),
       },
       {
-        path: 'event-paths',
-        name: 'EventPathManagement',
-        meta: {
-          order: 8,
-          icon: 'lucide:route',
-          title: $t('menu.dataAnalysis.eventPath'),
-          authority: ['sys:platform_admin', 'sys:tenant_manager'],
-        },
-        component: () =>
-          import('#/views/app/data-analysis/event-path/index.vue'),
-      },
-      {
         path: 'profile',
         name: 'UserBehaviorProfile',
         meta: {
