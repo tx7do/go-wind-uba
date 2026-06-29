@@ -13,7 +13,7 @@ const ubaApplication: RouteRecordRaw[] = [
       order: 100,
       icon: 'lucide:square-stack',
       title: $t('menu.application.moduleName'),
-      authority: ['sys:platform_admin'],
+      authority: ['sys:platform_admin', 'sys:tenant_manager'],
     },
     children: [
       {
@@ -23,7 +23,7 @@ const ubaApplication: RouteRecordRaw[] = [
           order: 1,
           icon: 'lucide:box',
           title: $t('menu.application.applications'),
-          authority: ['sys:platform_admin'],
+          authority: ['sys:platform_admin', 'sys:tenant_manager'],
         },
         component: () =>
           import('#/views/app/application/application/index.vue'),

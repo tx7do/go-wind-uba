@@ -13,7 +13,7 @@ const object: RouteRecordRaw[] = [
       order: 200,
       icon: 'lucide:layers',
       title: $t('menu.object.moduleName'),
-      authority: ['sys:platform_admin'],
+      authority: ['sys:platform_admin', 'sys:tenant_manager'],
     },
     children: [
       {
@@ -23,7 +23,7 @@ const object: RouteRecordRaw[] = [
           order: 1,
           icon: 'lucide:box',
           title: $t('menu.object.objects'),
-          authority: ['sys:platform_admin'],
+          authority: ['sys:platform_admin', 'sys:tenant_manager'],
         },
         component: () => import('#/views/app/object/object/index.vue'),
       },
