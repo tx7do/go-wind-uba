@@ -526,7 +526,12 @@ SELECT
     COUNT(*) AS cnt
 FROM events_fact
 WHERE %sevent_name = ? AND duration_ms > 0 AND event_time >= ? AND event_time < ?
-GROUP BY duration_bucket
+GROUP BY CASE
+        WHEN duration_ms < 10000  THEN '0_10s'
+        WHEN duration_ms < 60000  THEN '10_60s'
+        WHEN duration_ms < 300000 THEN '1_5min'
+        ELSE '5min_plus'
+    END
 ORDER BY duration_bucket`, tenantCond)
 
 	type bucketRow struct {
@@ -557,13 +562,14 @@ ORDER BY duration_bucket`, tenantCond)
 	}
 
 	// 分位数摘要：均值 / P50 / P90 / 最大值
+	// CAST(duration_ms AS DOUBLE) 确保 APPROX_PERCENTILE 兼容 BIGINT 列。
 	summaryQ := fmt.Sprintf(`
 SELECT
     COUNT(*) AS cnt,
-    ROUND(AVG(duration_ms) / 1000, 2)                      AS avg_sec,
-    ROUND(APPROX_PERCENTILE(duration_ms, 0.5) / 1000, 2)   AS p50_sec,
-    ROUND(APPROX_PERCENTILE(duration_ms, 0.9) / 1000, 2)   AS p90_sec,
-    ROUND(MAX(duration_ms) / 1000, 2)                      AS max_sec
+    ROUND(AVG(CAST(duration_ms AS DOUBLE)) / 1000, 2)                      AS avg_sec,
+    ROUND(APPROX_PERCENTILE(CAST(duration_ms AS DOUBLE), 0.5) / 1000, 2)   AS p50_sec,
+    ROUND(APPROX_PERCENTILE(CAST(duration_ms AS DOUBLE), 0.9) / 1000, 2)   AS p90_sec,
+    ROUND(MAX(duration_ms) / 1000, 2)                                       AS max_sec
 FROM events_fact
 WHERE %sevent_name = ? AND duration_ms > 0 AND event_time >= ? AND event_time < ?`, tenantCond)
 
