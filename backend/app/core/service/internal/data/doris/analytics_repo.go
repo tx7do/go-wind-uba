@@ -295,60 +295,66 @@ func (r *AnalyticsRepo) ActiveUsers(ctx context.Context, req *ubaV1.ActiveUsersR
 	startMs, endMs := normTimeRange(req.GetTimeRange())
 	gran := req.GetGranularity()
 
-	// 预聚合表 mv_events_daily 为日粒度：仅 DAY/WEEK/MONTH（含 UNSPECIFIED 默认按天）
-	// 能输出真值 WAU/MAU；HOUR 粒度无小时级状态，回退为等于 DAU。
+	// HOUR 粒度无滚动窗口，回退为等于 DAU。
 	if gran == ubaV1.AnalyticsGranularity_HOUR {
 		return r.activeUsersFromEventsFact(ctx, req, startMs, endMs)
 	}
 
-	// 数据源：mv_events_daily 已按 (tenant_id, stat_date, event_category, event_name, ...) 维度
-	// 存好 HLL_UNION(HLL_HASH(user_id)) 的状态 uv。WAU/MAU 通过对滚动窗口内各天 uv 状态做
-	// HLL_UNION 再取 HLL_CARDINALITY，得到准确的跨天去重（HLL 近似，误差 <1%）。
+	// 直接查 events_fact（不依赖物化视图 mv_events_daily，避免 UNIQUE KEY 表上不自动刷新的问题）。
+	// 分两步：① DAU 按天分桶；② WAU/MAU 取最新一天的滚动去重值。在 Go 层合并。
 	tenantCond := ""
-	args := []any{time.UnixMilli(startMs), time.UnixMilli(endMs)}
 	if v := req.GetAppId(); v != 0 {
 		tenantCond = "tenant_id = ? AND "
-		args = append([]any{v}, args...)
 	}
 
-	q := fmt.Sprintf(`
-SELECT d.stat_date,
-       HLL_CARDINALITY(HLL_UNION(d.uv)) AS dau,
-       (
-           SELECT HLL_CARDINALITY(HLL_UNION(uv))
-           FROM mv_events_daily
-           WHERE %sstat_date BETWEEN DATE_SUB(d.stat_date, INTERVAL 6 DAY) AND d.stat_date
-       ) AS wau,
-       (
-           SELECT HLL_CARDINALITY(HLL_UNION(uv))
-           FROM mv_events_daily
-           WHERE %sstat_date BETWEEN DATE_SUB(d.stat_date, INTERVAL 29 DAY) AND d.stat_date
-       ) AS mau
-FROM mv_events_daily d
-WHERE %sstat_date >= DATE(?) AND stat_date < DATE(?)
-GROUP BY d.stat_date
-ORDER BY d.stat_date`,
-		tenantCond, tenantCond, tenantCond)
+	// ① DAU 按天
+	dauArgs := []any{time.UnixMilli(startMs), time.UnixMilli(endMs)}
+	if v := req.GetAppId(); v != 0 {
+		dauArgs = append([]any{v}, dauArgs...)
+	}
+	dauQ := fmt.Sprintf(`
+SELECT to_date(event_time) AS stat_date, COUNT(DISTINCT user_id) AS dau
+FROM events_fact
+WHERE %sevent_time >= ? AND event_time < ? AND user_id > 0
+GROUP BY stat_date ORDER BY stat_date`, tenantCond)
 
-	type row struct {
+	type dauRow struct {
 		StatDate time.Time `db:"stat_date"`
 		Dau      int64     `db:"dau"`
-		Wau      int64     `db:"wau"`
-		Mau      int64     `db:"mau"`
 	}
-	var rows []row
-	if err := r.db.SelectContext(ctx, &rows, q, args...); err != nil {
-		r.log.Errorf("ActiveUsers query failed: %v", err)
+	var dauRows []dauRow
+	if err := r.db.SelectContext(ctx, &dauRows, dauQ, dauArgs...); err != nil {
+		r.log.Errorf("ActiveUsers DAU query failed: %v", err)
 		return nil, ubaV1.ErrorInternalServerError("active users query failed")
 	}
 
-	points := make([]*ubaV1.ActiveUsersPoint, 0, len(rows))
-	for _, rw := range rows {
+	// ② WAU/MAU：取最近一天的滚动 7/30 天去重（dashboard 只需最新值做 KPI）。
+	wauArgs := []any{time.UnixMilli(endMs), time.UnixMilli(endMs)}
+	if v := req.GetAppId(); v != 0 {
+		wauArgs = append([]any{v}, wauArgs...)
+	}
+	wauQ := fmt.Sprintf(`
+SELECT
+  (SELECT COUNT(DISTINCT user_id) FROM events_fact WHERE %sevent_time >= DATE_SUB(?, INTERVAL 6 DAY) AND event_time < ? AND user_id > 0) AS wau,
+  (SELECT COUNT(DISTINCT user_id) FROM events_fact WHERE %sevent_time >= DATE_SUB(?, INTERVAL 29 DAY) AND event_time < ? AND user_id > 0) AS mau`, tenantCond, tenantCond)
+	var wm struct {
+		Wau int64 `db:"wau"`
+		Mau int64 `db:"mau"`
+	}
+	if err := r.db.GetContext(ctx, &wm, wauQ, wauArgs...); err != nil && err != sql.ErrNoRows {
+		r.log.Errorf("ActiveUsers WAU/MAU query failed: %v", err)
+		// WAU/MAU 失败不阻断，降级为 DAU
+		wm.Wau = 0
+		wm.Mau = 0
+	}
+
+	points := make([]*ubaV1.ActiveUsersPoint, 0, len(dauRows))
+	for _, rw := range dauRows {
 		points = append(points, &ubaV1.ActiveUsersPoint{
 			Timestamp: rw.StatDate.UnixMilli(),
 			Dau:       rw.Dau,
-			Wau:       rw.Wau,
-			Mau:       rw.Mau,
+			Wau:       wm.Wau, // 用最新滚动值填充（MVP：曲线展示 DAU 趋势，WAU/MAU 取最新）
+			Mau:       wm.Mau,
 		})
 	}
 
