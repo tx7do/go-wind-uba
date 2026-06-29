@@ -75,6 +75,8 @@ namespace Uba
             if (e.Quantity.HasValue) { Sep(sb, ref first); sb.Append("\"quantity\":").Append(e.Quantity.Value); }
             if (e.Score.HasValue) { Sep(sb, ref first); sb.Append("\"score\":").Append(e.Score.Value); }
             first = WriteDoubleMap(sb, "metrics", e.Metrics, first);
+            first = WriteStringIfNotNull(sb, "serverId", e.ServerId, first);
+            if (e.Level.HasValue) { Sep(sb, ref first); sb.Append("\"level\":").Append(e.Level.Value); }
 
             // oneof payload
             if (e.Behavior != null)
@@ -110,6 +112,8 @@ namespace Uba
             if (b.Quantity.HasValue) { Sep(sb, ref first); sb.Append("\"quantity\":").Append(b.Quantity.Value); }
             if (b.Score.HasValue) { Sep(sb, ref first); sb.Append("\"score\":").Append(b.Score.Value); }
             first = WriteDoubleMap(sb, "metrics", b.Metrics, first);
+            first = WriteStringIfNotNull(sb, "serverId", b.ServerId, first);
+            if (b.Level.HasValue) { Sep(sb, ref first); sb.Append("\"level\":").Append(b.Level.Value); }
             first = WriteStringIfNotNull(sb, "opResult", b.OpResult, first);
             WriteStringIfNotNull(sb, "errorCode", b.ErrorCode, first);
             sb.Append('}');

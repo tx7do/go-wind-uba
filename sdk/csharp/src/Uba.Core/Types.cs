@@ -48,6 +48,10 @@ namespace Uba
         public Dictionary<string, double>? Metrics { get; set; }
         public string? OpResult { get; set; }
         public string? ErrorCode { get; set; }
+        /// <summary>游戏区服 ID（游戏专属维度，事件发生时的快照）</summary>
+        public string? ServerId { get; set; }
+        /// <summary>玩家等级（游戏专属维度，事件发生时快照）</summary>
+        public uint? Level { get; set; }
     }
 
     /// <summary>风险事件 payload（对应 RiskEvent，放入 risk oneof）</summary>
@@ -99,6 +103,10 @@ namespace Uba
         public uint? Quantity { get; set; }
         public int? Score { get; set; }
         public Dictionary<string, double>? Metrics { get; set; }
+
+        // 游戏专属维度（游戏方在 track 时传入）
+        public string? ServerId { get; set; }
+        public uint? Level { get; set; }
 
         // oneof payload
         public BehaviorEvent? Behavior { get; set; }

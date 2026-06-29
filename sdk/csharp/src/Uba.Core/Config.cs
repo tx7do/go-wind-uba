@@ -54,5 +54,9 @@ namespace Uba
         public Dictionary<string, double>? Metrics { get; set; }
         /// <summary>自定义属性，并入 properties</summary>
         public Dictionary<string, string>? Properties { get; set; }
+        /// <summary>游戏区服 ID</summary>
+        public string? ServerId { get; set; }
+        /// <summary>玩家等级</summary>
+        public uint? Level { get; set; }
     }
 }

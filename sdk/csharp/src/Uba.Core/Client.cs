@@ -81,6 +81,9 @@ namespace Uba
                 Quantity = options?.Quantity,
                 Score = options?.Score,
                 Metrics = options?.Metrics,
+                // 游戏专属维度
+                ServerId = options?.ServerId,
+                Level = options?.Level,
             };
             _batcher.Enqueue(evt);
             if (_config.Debug) Log(LogLevel.Info, $"enqueued: {eventName} (queue={_batcher.Size})");
@@ -146,6 +149,9 @@ namespace Uba
                 Quantity = options?.Quantity,
                 Score = options?.Score,
                 Metrics = options?.Metrics,
+                // 游戏专属维度
+                ServerId = options?.ServerId,
+                Level = options?.Level,
                 Properties = merged.Count > 0 ? merged : null,
             };
         }
