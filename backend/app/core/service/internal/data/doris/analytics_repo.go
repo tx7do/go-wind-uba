@@ -1291,16 +1291,15 @@ func (r *AnalyticsRepo) Revenue(ctx context.Context, req *ubaV1.RevenueRequest) 
 		args = append([]any{v}, args...)
 	}
 
-	// 按日聚合：GMV=sum(amount)，付费用户=HLL_CARDINALITY(pay_user_count)，
-	// 活跃用户=HLL_CARDINALITY(uv)；ARPU=GMV/活跃，ARPPU=GMV/付费，付费率=付费/活跃。
+	// 直接查 events_fact（不依赖 mv_events_daily，避免物化视图无数据/列名不匹配）。
 	q := fmt.Sprintf(`
 SELECT to_date(event_time) AS d,
        ROUND(SUM(amount), 2) AS gmv,
-       HLL_CARDINALITY(HLL_UNION(pay_user_count)) AS pay_users,
+       COUNT(DISTINCT IF(amount > 0, user_id, NULL)) AS pay_users,
        COUNT_IF(amount > 0) AS pay_orders,
-       HLL_CARDINALITY(HLL_UNION(uv)) AS active_users
-FROM mv_events_daily
-WHERE %sstat_date >= DATE(?) AND stat_date < DATE(?)
+       COUNT(DISTINCT user_id) AS active_users
+FROM events_fact
+WHERE %sevent_time >= ? AND event_time < ?
 GROUP BY d ORDER BY d`, tenantCond)
 
 	type row struct {
