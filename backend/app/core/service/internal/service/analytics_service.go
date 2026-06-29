@@ -46,6 +46,7 @@ func (s *AnalyticsService) repo() interface {
 	Distribution(context.Context, *ubaV1.DistributionRequest) (*ubaV1.DistributionResponse, error)
 	BehaviorSequence(context.Context, *ubaV1.BehaviorSequenceRequest) (*ubaV1.BehaviorSequenceResponse, error)
 	Segmentation(context.Context, *ubaV1.SegmentationRequest) (*ubaV1.SegmentationResponse, error)
+	Click(context.Context, *ubaV1.ClickRequest) (*ubaV1.ClickResponse, error)
 } {
 	if data.UseClickHouse {
 		return s.ckRepo
@@ -87,4 +88,8 @@ func (s *AnalyticsService) BehaviorSequence(ctx context.Context, req *ubaV1.Beha
 
 func (s *AnalyticsService) Segmentation(ctx context.Context, req *ubaV1.SegmentationRequest) (*ubaV1.SegmentationResponse, error) {
 	return s.repo().Segmentation(ctx, req)
+}
+
+func (s *AnalyticsService) Click(ctx context.Context, req *ubaV1.ClickRequest) (*ubaV1.ClickResponse, error) {
+	return s.repo().Click(ctx, req)
 }

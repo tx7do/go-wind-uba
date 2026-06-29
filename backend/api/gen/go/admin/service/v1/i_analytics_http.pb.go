@@ -23,6 +23,7 @@ const _ = http.SupportPackageIsVersion1
 const OperationAnalyticsServiceActiveUsers = "/admin.service.v1.AnalyticsService/ActiveUsers"
 const OperationAnalyticsServiceAttribution = "/admin.service.v1.AnalyticsService/Attribution"
 const OperationAnalyticsServiceBehaviorSequence = "/admin.service.v1.AnalyticsService/BehaviorSequence"
+const OperationAnalyticsServiceClick = "/admin.service.v1.AnalyticsService/Click"
 const OperationAnalyticsServiceDistribution = "/admin.service.v1.AnalyticsService/Distribution"
 const OperationAnalyticsServiceEventTrend = "/admin.service.v1.AnalyticsService/EventTrend"
 const OperationAnalyticsServiceFunnel = "/admin.service.v1.AnalyticsService/Funnel"
@@ -37,6 +38,8 @@ type AnalyticsServiceHTTPServer interface {
 	Attribution(context.Context, *v1.AttributionRequest) (*v1.AttributionResponse, error)
 	// BehaviorSequence 行为序列
 	BehaviorSequence(context.Context, *v1.BehaviorSequenceRequest) (*v1.BehaviorSequenceResponse, error)
+	// Click 点击热力图
+	Click(context.Context, *v1.ClickRequest) (*v1.ClickResponse, error)
 	// Distribution 分布分析
 	Distribution(context.Context, *v1.DistributionRequest) (*v1.DistributionResponse, error)
 	// EventTrend 事件量趋势
@@ -62,6 +65,7 @@ func RegisterAnalyticsServiceHTTPServer(s *http.Server, srv AnalyticsServiceHTTP
 	r.POST("/admin/v1/analytics/distribution", _AnalyticsService_Distribution0_HTTP_Handler(srv))
 	r.POST("/admin/v1/analytics/behavior-sequence", _AnalyticsService_BehaviorSequence0_HTTP_Handler(srv))
 	r.POST("/admin/v1/analytics/segmentation", _AnalyticsService_Segmentation0_HTTP_Handler(srv))
+	r.POST("/admin/v1/analytics/click", _AnalyticsService_Click0_HTTP_Handler(srv))
 }
 
 func _AnalyticsService_EventTrend0_HTTP_Handler(srv AnalyticsServiceHTTPServer) func(ctx http.Context) error {
@@ -262,6 +266,28 @@ func _AnalyticsService_Segmentation0_HTTP_Handler(srv AnalyticsServiceHTTPServer
 	}
 }
 
+func _AnalyticsService_Click0_HTTP_Handler(srv AnalyticsServiceHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in v1.ClickRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationAnalyticsServiceClick)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.Click(ctx, req.(*v1.ClickRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*v1.ClickResponse)
+		return ctx.Result(200, reply)
+	}
+}
+
 type AnalyticsServiceHTTPClient interface {
 	// ActiveUsers 活跃用户
 	ActiveUsers(ctx context.Context, req *v1.ActiveUsersRequest, opts ...http.CallOption) (rsp *v1.ActiveUsersResponse, err error)
@@ -269,6 +295,8 @@ type AnalyticsServiceHTTPClient interface {
 	Attribution(ctx context.Context, req *v1.AttributionRequest, opts ...http.CallOption) (rsp *v1.AttributionResponse, err error)
 	// BehaviorSequence 行为序列
 	BehaviorSequence(ctx context.Context, req *v1.BehaviorSequenceRequest, opts ...http.CallOption) (rsp *v1.BehaviorSequenceResponse, err error)
+	// Click 点击热力图
+	Click(ctx context.Context, req *v1.ClickRequest, opts ...http.CallOption) (rsp *v1.ClickResponse, err error)
 	// Distribution 分布分析
 	Distribution(ctx context.Context, req *v1.DistributionRequest, opts ...http.CallOption) (rsp *v1.DistributionResponse, err error)
 	// EventTrend 事件量趋势
@@ -325,6 +353,20 @@ func (c *AnalyticsServiceHTTPClientImpl) BehaviorSequence(ctx context.Context, i
 	pattern := "/admin/v1/analytics/behavior-sequence"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationAnalyticsServiceBehaviorSequence))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+// Click 点击热力图
+func (c *AnalyticsServiceHTTPClientImpl) Click(ctx context.Context, in *v1.ClickRequest, opts ...http.CallOption) (*v1.ClickResponse, error) {
+	var out v1.ClickResponse
+	pattern := "/admin/v1/analytics/click"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationAnalyticsServiceClick))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {

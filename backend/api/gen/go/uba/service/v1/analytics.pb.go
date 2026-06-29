@@ -2142,6 +2142,288 @@ func (x *SegmentationResponse) GetTotal() int64 {
 	return 0
 }
 
+// ============== 点击热力图 ==============
+type ClickRequest struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 时间范围
+	TimeRange *TimeRange `protobuf:"bytes,1,opt,name=time_range,json=timeRange,proto3" json:"time_range,omitempty"`
+	// 页面 URL（必填，按页面分组热力图）
+	PageUrl string `protobuf:"bytes,2,opt,name=page_url,json=pageUrl,proto3" json:"page_url,omitempty"`
+	// 网格大小（像素，默认 20）
+	GridSize *uint32 `protobuf:"varint,3,opt,name=grid_size,json=gridSize,proto3,oneof" json:"grid_size,omitempty"`
+	// 应用 ID 过滤（可选）
+	AppId         *uint32 `protobuf:"varint,4,opt,name=app_id,json=appId,proto3,oneof" json:"app_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ClickRequest) Reset() {
+	*x = ClickRequest{}
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[30]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ClickRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ClickRequest) ProtoMessage() {}
+
+func (x *ClickRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[30]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ClickRequest.ProtoReflect.Descriptor instead.
+func (*ClickRequest) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{30}
+}
+
+func (x *ClickRequest) GetTimeRange() *TimeRange {
+	if x != nil {
+		return x.TimeRange
+	}
+	return nil
+}
+
+func (x *ClickRequest) GetPageUrl() string {
+	if x != nil {
+		return x.PageUrl
+	}
+	return ""
+}
+
+func (x *ClickRequest) GetGridSize() uint32 {
+	if x != nil && x.GridSize != nil {
+		return *x.GridSize
+	}
+	return 0
+}
+
+func (x *ClickRequest) GetAppId() uint32 {
+	if x != nil && x.AppId != nil {
+		return *x.AppId
+	}
+	return 0
+}
+
+// 热力图网格点
+type ClickHeatPoint struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 网格左上角 X（像素）
+	X uint32 `protobuf:"varint,1,opt,name=x,proto3" json:"x,omitempty"`
+	// 网格左上角 Y（像素）
+	Y uint32 `protobuf:"varint,2,opt,name=y,proto3" json:"y,omitempty"`
+	// 该网格的点击次数
+	Count int64 `protobuf:"varint,3,opt,name=count,proto3" json:"count,omitempty"`
+	// 热度（0-1，相对最大点击数的归一化值）
+	Intensity     float64 `protobuf:"fixed64,4,opt,name=intensity,proto3" json:"intensity,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ClickHeatPoint) Reset() {
+	*x = ClickHeatPoint{}
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[31]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ClickHeatPoint) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ClickHeatPoint) ProtoMessage() {}
+
+func (x *ClickHeatPoint) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[31]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ClickHeatPoint.ProtoReflect.Descriptor instead.
+func (*ClickHeatPoint) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{31}
+}
+
+func (x *ClickHeatPoint) GetX() uint32 {
+	if x != nil {
+		return x.X
+	}
+	return 0
+}
+
+func (x *ClickHeatPoint) GetY() uint32 {
+	if x != nil {
+		return x.Y
+	}
+	return 0
+}
+
+func (x *ClickHeatPoint) GetCount() int64 {
+	if x != nil {
+		return x.Count
+	}
+	return 0
+}
+
+func (x *ClickHeatPoint) GetIntensity() float64 {
+	if x != nil {
+		return x.Intensity
+	}
+	return 0
+}
+
+// 元素点击 TOP（按 element_xpath 聚合）
+type ClickElementBucket struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 元素 XPath
+	ElementXpath string `protobuf:"bytes,1,opt,name=element_xpath,json=elementXpath,proto3" json:"element_xpath,omitempty"`
+	// 点击次数
+	Count int64 `protobuf:"varint,2,opt,name=count,proto3" json:"count,omitempty"`
+	// 占比（0-1）
+	Percentage    float64 `protobuf:"fixed64,3,opt,name=percentage,proto3" json:"percentage,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ClickElementBucket) Reset() {
+	*x = ClickElementBucket{}
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[32]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ClickElementBucket) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ClickElementBucket) ProtoMessage() {}
+
+func (x *ClickElementBucket) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[32]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ClickElementBucket.ProtoReflect.Descriptor instead.
+func (*ClickElementBucket) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{32}
+}
+
+func (x *ClickElementBucket) GetElementXpath() string {
+	if x != nil {
+		return x.ElementXpath
+	}
+	return ""
+}
+
+func (x *ClickElementBucket) GetCount() int64 {
+	if x != nil {
+		return x.Count
+	}
+	return 0
+}
+
+func (x *ClickElementBucket) GetPercentage() float64 {
+	if x != nil {
+		return x.Percentage
+	}
+	return 0
+}
+
+type ClickResponse struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 热力图网格点列表
+	Points []*ClickHeatPoint `protobuf:"bytes,1,rep,name=points,proto3" json:"points,omitempty"`
+	// 元素点击 TOP
+	TopElements []*ClickElementBucket `protobuf:"bytes,2,rep,name=top_elements,json=topElements,proto3" json:"top_elements,omitempty"`
+	// 总点击次数
+	TotalClicks int64 `protobuf:"varint,3,opt,name=total_clicks,json=totalClicks,proto3" json:"total_clicks,omitempty"`
+	// 使用的网格大小
+	GridSize      uint32 `protobuf:"varint,4,opt,name=grid_size,json=gridSize,proto3" json:"grid_size,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ClickResponse) Reset() {
+	*x = ClickResponse{}
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[33]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ClickResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ClickResponse) ProtoMessage() {}
+
+func (x *ClickResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[33]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ClickResponse.ProtoReflect.Descriptor instead.
+func (*ClickResponse) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{33}
+}
+
+func (x *ClickResponse) GetPoints() []*ClickHeatPoint {
+	if x != nil {
+		return x.Points
+	}
+	return nil
+}
+
+func (x *ClickResponse) GetTopElements() []*ClickElementBucket {
+	if x != nil {
+		return x.TopElements
+	}
+	return nil
+}
+
+func (x *ClickResponse) GetTotalClicks() int64 {
+	if x != nil {
+		return x.TotalClicks
+	}
+	return 0
+}
+
+func (x *ClickResponse) GetGridSize() uint32 {
+	if x != nil {
+		return x.GridSize
+	}
+	return 0
+}
+
 var File_uba_service_v1_analytics_proto protoreflect.FileDescriptor
 
 const file_uba_service_v1_analytics_proto_rawDesc = "" +
@@ -2348,13 +2630,38 @@ const file_uba_service_v1_analytics_proto_rawDesc = "" +
 	"\x06_limit\"G\n" +
 	"\x14SegmentationResponse\x12\x19\n" +
 	"\buser_ids\x18\x01 \x03(\rR\auserIds\x12\x14\n" +
-	"\x05total\x18\x02 \x01(\x03R\x05total*e\n" +
+	"\x05total\x18\x02 \x01(\x03R\x05total\"\xba\x01\n" +
+	"\fClickRequest\x128\n" +
+	"\n" +
+	"time_range\x18\x01 \x01(\v2\x19.uba.service.v1.TimeRangeR\ttimeRange\x12\x19\n" +
+	"\bpage_url\x18\x02 \x01(\tR\apageUrl\x12 \n" +
+	"\tgrid_size\x18\x03 \x01(\rH\x00R\bgridSize\x88\x01\x01\x12\x1a\n" +
+	"\x06app_id\x18\x04 \x01(\rH\x01R\x05appId\x88\x01\x01B\f\n" +
+	"\n" +
+	"_grid_sizeB\t\n" +
+	"\a_app_id\"`\n" +
+	"\x0eClickHeatPoint\x12\f\n" +
+	"\x01x\x18\x01 \x01(\rR\x01x\x12\f\n" +
+	"\x01y\x18\x02 \x01(\rR\x01y\x12\x14\n" +
+	"\x05count\x18\x03 \x01(\x03R\x05count\x12\x1c\n" +
+	"\tintensity\x18\x04 \x01(\x01R\tintensity\"o\n" +
+	"\x12ClickElementBucket\x12#\n" +
+	"\relement_xpath\x18\x01 \x01(\tR\felementXpath\x12\x14\n" +
+	"\x05count\x18\x02 \x01(\x03R\x05count\x12\x1e\n" +
+	"\n" +
+	"percentage\x18\x03 \x01(\x01R\n" +
+	"percentage\"\xce\x01\n" +
+	"\rClickResponse\x126\n" +
+	"\x06points\x18\x01 \x03(\v2\x1e.uba.service.v1.ClickHeatPointR\x06points\x12E\n" +
+	"\ftop_elements\x18\x02 \x03(\v2\".uba.service.v1.ClickElementBucketR\vtopElements\x12!\n" +
+	"\ftotal_clicks\x18\x03 \x01(\x03R\vtotalClicks\x12\x1b\n" +
+	"\tgrid_size\x18\x04 \x01(\rR\bgridSize*e\n" +
 	"\x14AnalyticsGranularity\x12%\n" +
 	"!ANALYTICS_GRANULARITY_UNSPECIFIED\x10\x00\x12\b\n" +
 	"\x04HOUR\x10\x01\x12\a\n" +
 	"\x03DAY\x10\x02\x12\b\n" +
 	"\x04WEEK\x10\x03\x12\t\n" +
-	"\x05MONTH\x10\x042\xad\x06\n" +
+	"\x05MONTH\x10\x042\xf5\x06\n" +
 	"\x10AnalyticsService\x12U\n" +
 	"\n" +
 	"EventTrend\x12!.uba.service.v1.EventTrendRequest\x1a\".uba.service.v1.EventTrendResponse\"\x00\x12I\n" +
@@ -2365,7 +2672,8 @@ const file_uba_service_v1_analytics_proto_rawDesc = "" +
 	"\vAttribution\x12\".uba.service.v1.AttributionRequest\x1a#.uba.service.v1.AttributionResponse\"\x00\x12[\n" +
 	"\fDistribution\x12#.uba.service.v1.DistributionRequest\x1a$.uba.service.v1.DistributionResponse\"\x00\x12g\n" +
 	"\x10BehaviorSequence\x12'.uba.service.v1.BehaviorSequenceRequest\x1a(.uba.service.v1.BehaviorSequenceResponse\"\x00\x12[\n" +
-	"\fSegmentation\x12#.uba.service.v1.SegmentationRequest\x1a$.uba.service.v1.SegmentationResponse\"\x00B\xab\x01\n" +
+	"\fSegmentation\x12#.uba.service.v1.SegmentationRequest\x1a$.uba.service.v1.SegmentationResponse\"\x00\x12F\n" +
+	"\x05Click\x12\x1c.uba.service.v1.ClickRequest\x1a\x1d.uba.service.v1.ClickResponse\"\x00B\xab\x01\n" +
 	"\x12com.uba.service.v1B\x0eAnalyticsProtoP\x01Z+go-wind-uba/api/gen/go/uba/service/v1;ubapb\xa2\x02\x03USX\xaa\x02\x0eUba.Service.V1\xca\x02\x0eUba\\Service\\V1\xe2\x02\x1aUba\\Service\\V1\\GPBMetadata\xea\x02\x10Uba::Service::V1b\x06proto3"
 
 var (
@@ -2381,7 +2689,7 @@ func file_uba_service_v1_analytics_proto_rawDescGZIP() []byte {
 }
 
 var file_uba_service_v1_analytics_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_uba_service_v1_analytics_proto_msgTypes = make([]protoimpl.MessageInfo, 30)
+var file_uba_service_v1_analytics_proto_msgTypes = make([]protoimpl.MessageInfo, 34)
 var file_uba_service_v1_analytics_proto_goTypes = []any{
 	(AnalyticsGranularity)(0),        // 0: uba.service.v1.AnalyticsGranularity
 	(*TimeRange)(nil),                // 1: uba.service.v1.TimeRange
@@ -2414,6 +2722,10 @@ var file_uba_service_v1_analytics_proto_goTypes = []any{
 	(*SegmentCondition)(nil),         // 28: uba.service.v1.SegmentCondition
 	(*SegmentationRequest)(nil),      // 29: uba.service.v1.SegmentationRequest
 	(*SegmentationResponse)(nil),     // 30: uba.service.v1.SegmentationResponse
+	(*ClickRequest)(nil),             // 31: uba.service.v1.ClickRequest
+	(*ClickHeatPoint)(nil),           // 32: uba.service.v1.ClickHeatPoint
+	(*ClickElementBucket)(nil),       // 33: uba.service.v1.ClickElementBucket
+	(*ClickResponse)(nil),            // 34: uba.service.v1.ClickResponse
 }
 var file_uba_service_v1_analytics_proto_depIdxs = []int32{
 	1,  // 0: uba.service.v1.EventTrendRequest.time_range:type_name -> uba.service.v1.TimeRange
@@ -2440,29 +2752,34 @@ var file_uba_service_v1_analytics_proto_depIdxs = []int32{
 	1,  // 21: uba.service.v1.SegmentationRequest.time_range:type_name -> uba.service.v1.TimeRange
 	28, // 22: uba.service.v1.SegmentationRequest.include:type_name -> uba.service.v1.SegmentCondition
 	28, // 23: uba.service.v1.SegmentationRequest.exclude:type_name -> uba.service.v1.SegmentCondition
-	3,  // 24: uba.service.v1.AnalyticsService.EventTrend:input_type -> uba.service.v1.EventTrendRequest
-	6,  // 25: uba.service.v1.AnalyticsService.Funnel:input_type -> uba.service.v1.FunnelRequest
-	10, // 26: uba.service.v1.AnalyticsService.Retention:input_type -> uba.service.v1.RetentionRequest
-	12, // 27: uba.service.v1.AnalyticsService.GroupBy:input_type -> uba.service.v1.GroupByRequest
-	15, // 28: uba.service.v1.AnalyticsService.ActiveUsers:input_type -> uba.service.v1.ActiveUsersRequest
-	18, // 29: uba.service.v1.AnalyticsService.Attribution:input_type -> uba.service.v1.AttributionRequest
-	21, // 30: uba.service.v1.AnalyticsService.Distribution:input_type -> uba.service.v1.DistributionRequest
-	25, // 31: uba.service.v1.AnalyticsService.BehaviorSequence:input_type -> uba.service.v1.BehaviorSequenceRequest
-	29, // 32: uba.service.v1.AnalyticsService.Segmentation:input_type -> uba.service.v1.SegmentationRequest
-	4,  // 33: uba.service.v1.AnalyticsService.EventTrend:output_type -> uba.service.v1.EventTrendResponse
-	7,  // 34: uba.service.v1.AnalyticsService.Funnel:output_type -> uba.service.v1.FunnelResponse
-	11, // 35: uba.service.v1.AnalyticsService.Retention:output_type -> uba.service.v1.RetentionResponse
-	14, // 36: uba.service.v1.AnalyticsService.GroupBy:output_type -> uba.service.v1.GroupByResponse
-	17, // 37: uba.service.v1.AnalyticsService.ActiveUsers:output_type -> uba.service.v1.ActiveUsersResponse
-	20, // 38: uba.service.v1.AnalyticsService.Attribution:output_type -> uba.service.v1.AttributionResponse
-	24, // 39: uba.service.v1.AnalyticsService.Distribution:output_type -> uba.service.v1.DistributionResponse
-	27, // 40: uba.service.v1.AnalyticsService.BehaviorSequence:output_type -> uba.service.v1.BehaviorSequenceResponse
-	30, // 41: uba.service.v1.AnalyticsService.Segmentation:output_type -> uba.service.v1.SegmentationResponse
-	33, // [33:42] is the sub-list for method output_type
-	24, // [24:33] is the sub-list for method input_type
-	24, // [24:24] is the sub-list for extension type_name
-	24, // [24:24] is the sub-list for extension extendee
-	0,  // [0:24] is the sub-list for field type_name
+	1,  // 24: uba.service.v1.ClickRequest.time_range:type_name -> uba.service.v1.TimeRange
+	32, // 25: uba.service.v1.ClickResponse.points:type_name -> uba.service.v1.ClickHeatPoint
+	33, // 26: uba.service.v1.ClickResponse.top_elements:type_name -> uba.service.v1.ClickElementBucket
+	3,  // 27: uba.service.v1.AnalyticsService.EventTrend:input_type -> uba.service.v1.EventTrendRequest
+	6,  // 28: uba.service.v1.AnalyticsService.Funnel:input_type -> uba.service.v1.FunnelRequest
+	10, // 29: uba.service.v1.AnalyticsService.Retention:input_type -> uba.service.v1.RetentionRequest
+	12, // 30: uba.service.v1.AnalyticsService.GroupBy:input_type -> uba.service.v1.GroupByRequest
+	15, // 31: uba.service.v1.AnalyticsService.ActiveUsers:input_type -> uba.service.v1.ActiveUsersRequest
+	18, // 32: uba.service.v1.AnalyticsService.Attribution:input_type -> uba.service.v1.AttributionRequest
+	21, // 33: uba.service.v1.AnalyticsService.Distribution:input_type -> uba.service.v1.DistributionRequest
+	25, // 34: uba.service.v1.AnalyticsService.BehaviorSequence:input_type -> uba.service.v1.BehaviorSequenceRequest
+	29, // 35: uba.service.v1.AnalyticsService.Segmentation:input_type -> uba.service.v1.SegmentationRequest
+	31, // 36: uba.service.v1.AnalyticsService.Click:input_type -> uba.service.v1.ClickRequest
+	4,  // 37: uba.service.v1.AnalyticsService.EventTrend:output_type -> uba.service.v1.EventTrendResponse
+	7,  // 38: uba.service.v1.AnalyticsService.Funnel:output_type -> uba.service.v1.FunnelResponse
+	11, // 39: uba.service.v1.AnalyticsService.Retention:output_type -> uba.service.v1.RetentionResponse
+	14, // 40: uba.service.v1.AnalyticsService.GroupBy:output_type -> uba.service.v1.GroupByResponse
+	17, // 41: uba.service.v1.AnalyticsService.ActiveUsers:output_type -> uba.service.v1.ActiveUsersResponse
+	20, // 42: uba.service.v1.AnalyticsService.Attribution:output_type -> uba.service.v1.AttributionResponse
+	24, // 43: uba.service.v1.AnalyticsService.Distribution:output_type -> uba.service.v1.DistributionResponse
+	27, // 44: uba.service.v1.AnalyticsService.BehaviorSequence:output_type -> uba.service.v1.BehaviorSequenceResponse
+	30, // 45: uba.service.v1.AnalyticsService.Segmentation:output_type -> uba.service.v1.SegmentationResponse
+	34, // 46: uba.service.v1.AnalyticsService.Click:output_type -> uba.service.v1.ClickResponse
+	37, // [37:47] is the sub-list for method output_type
+	27, // [27:37] is the sub-list for method input_type
+	27, // [27:27] is the sub-list for extension type_name
+	27, // [27:27] is the sub-list for extension extendee
+	0,  // [0:27] is the sub-list for field type_name
 }
 
 func init() { file_uba_service_v1_analytics_proto_init() }
@@ -2481,13 +2798,14 @@ func file_uba_service_v1_analytics_proto_init() {
 	file_uba_service_v1_analytics_proto_msgTypes[25].OneofWrappers = []any{}
 	file_uba_service_v1_analytics_proto_msgTypes[27].OneofWrappers = []any{}
 	file_uba_service_v1_analytics_proto_msgTypes[28].OneofWrappers = []any{}
+	file_uba_service_v1_analytics_proto_msgTypes[30].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_uba_service_v1_analytics_proto_rawDesc), len(file_uba_service_v1_analytics_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   30,
+			NumMessages:   34,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

@@ -138,3 +138,14 @@ func (s *redactedAnalyticsServiceServer) Segmentation(ctx context.Context, in *u
 	}
 	return res, err
 }
+
+// Click is the redacted wrapper for the actual AnalyticsServiceServer.Click method
+// Unary RPC
+func (s *redactedAnalyticsServiceServer) Click(ctx context.Context, in *ubapb.ClickRequest) (*ubapb.ClickResponse, error) {
+	res, err := s.srv.Click(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}

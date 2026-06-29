@@ -61,3 +61,7 @@ func (s *AnalyticsService) BehaviorSequence(ctx context.Context, req *ubaV1.Beha
 func (s *AnalyticsService) Segmentation(ctx context.Context, req *ubaV1.SegmentationRequest) (*ubaV1.SegmentationResponse, error) {
 	return s.client.Segmentation(ctx, req)
 }
+
+func (s *AnalyticsService) Click(ctx context.Context, req *ubaV1.ClickRequest) (*ubaV1.ClickResponse, error) {
+	return s.client.Click(ctx, req)
+}

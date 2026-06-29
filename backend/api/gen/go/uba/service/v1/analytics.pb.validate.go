@@ -3952,3 +3952,529 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = SegmentationResponseValidationError{}
+
+// Validate checks the field values on ClickRequest with the rules defined in
+// the proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *ClickRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on ClickRequest with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in ClickRequestMultiError, or
+// nil if none found.
+func (m *ClickRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *ClickRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if all {
+		switch v := interface{}(m.GetTimeRange()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, ClickRequestValidationError{
+					field:  "TimeRange",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, ClickRequestValidationError{
+					field:  "TimeRange",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetTimeRange()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return ClickRequestValidationError{
+				field:  "TimeRange",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	// no validation rules for PageUrl
+
+	if m.GridSize != nil {
+		// no validation rules for GridSize
+	}
+
+	if m.AppId != nil {
+		// no validation rules for AppId
+	}
+
+	if len(errors) > 0 {
+		return ClickRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// ClickRequestMultiError is an error wrapping multiple validation errors
+// returned by ClickRequest.ValidateAll() if the designated constraints aren't met.
+type ClickRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m ClickRequestMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m ClickRequestMultiError) AllErrors() []error { return m }
+
+// ClickRequestValidationError is the validation error returned by
+// ClickRequest.Validate if the designated constraints aren't met.
+type ClickRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e ClickRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e ClickRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e ClickRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e ClickRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e ClickRequestValidationError) ErrorName() string { return "ClickRequestValidationError" }
+
+// Error satisfies the builtin error interface
+func (e ClickRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sClickRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = ClickRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = ClickRequestValidationError{}
+
+// Validate checks the field values on ClickHeatPoint with the rules defined in
+// the proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *ClickHeatPoint) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on ClickHeatPoint with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in ClickHeatPointMultiError,
+// or nil if none found.
+func (m *ClickHeatPoint) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *ClickHeatPoint) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for X
+
+	// no validation rules for Y
+
+	// no validation rules for Count
+
+	// no validation rules for Intensity
+
+	if len(errors) > 0 {
+		return ClickHeatPointMultiError(errors)
+	}
+
+	return nil
+}
+
+// ClickHeatPointMultiError is an error wrapping multiple validation errors
+// returned by ClickHeatPoint.ValidateAll() if the designated constraints
+// aren't met.
+type ClickHeatPointMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m ClickHeatPointMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m ClickHeatPointMultiError) AllErrors() []error { return m }
+
+// ClickHeatPointValidationError is the validation error returned by
+// ClickHeatPoint.Validate if the designated constraints aren't met.
+type ClickHeatPointValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e ClickHeatPointValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e ClickHeatPointValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e ClickHeatPointValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e ClickHeatPointValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e ClickHeatPointValidationError) ErrorName() string { return "ClickHeatPointValidationError" }
+
+// Error satisfies the builtin error interface
+func (e ClickHeatPointValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sClickHeatPoint.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = ClickHeatPointValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = ClickHeatPointValidationError{}
+
+// Validate checks the field values on ClickElementBucket with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *ClickElementBucket) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on ClickElementBucket with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// ClickElementBucketMultiError, or nil if none found.
+func (m *ClickElementBucket) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *ClickElementBucket) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for ElementXpath
+
+	// no validation rules for Count
+
+	// no validation rules for Percentage
+
+	if len(errors) > 0 {
+		return ClickElementBucketMultiError(errors)
+	}
+
+	return nil
+}
+
+// ClickElementBucketMultiError is an error wrapping multiple validation errors
+// returned by ClickElementBucket.ValidateAll() if the designated constraints
+// aren't met.
+type ClickElementBucketMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m ClickElementBucketMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m ClickElementBucketMultiError) AllErrors() []error { return m }
+
+// ClickElementBucketValidationError is the validation error returned by
+// ClickElementBucket.Validate if the designated constraints aren't met.
+type ClickElementBucketValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e ClickElementBucketValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e ClickElementBucketValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e ClickElementBucketValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e ClickElementBucketValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e ClickElementBucketValidationError) ErrorName() string {
+	return "ClickElementBucketValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e ClickElementBucketValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sClickElementBucket.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = ClickElementBucketValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = ClickElementBucketValidationError{}
+
+// Validate checks the field values on ClickResponse with the rules defined in
+// the proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *ClickResponse) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on ClickResponse with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in ClickResponseMultiError, or
+// nil if none found.
+func (m *ClickResponse) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *ClickResponse) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	for idx, item := range m.GetPoints() {
+		_, _ = idx, item
+
+		if all {
+			switch v := interface{}(item).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, ClickResponseValidationError{
+						field:  fmt.Sprintf("Points[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, ClickResponseValidationError{
+						field:  fmt.Sprintf("Points[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(item).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return ClickResponseValidationError{
+					field:  fmt.Sprintf("Points[%v]", idx),
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
+	for idx, item := range m.GetTopElements() {
+		_, _ = idx, item
+
+		if all {
+			switch v := interface{}(item).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, ClickResponseValidationError{
+						field:  fmt.Sprintf("TopElements[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, ClickResponseValidationError{
+						field:  fmt.Sprintf("TopElements[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(item).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return ClickResponseValidationError{
+					field:  fmt.Sprintf("TopElements[%v]", idx),
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
+	// no validation rules for TotalClicks
+
+	// no validation rules for GridSize
+
+	if len(errors) > 0 {
+		return ClickResponseMultiError(errors)
+	}
+
+	return nil
+}
+
+// ClickResponseMultiError is an error wrapping multiple validation errors
+// returned by ClickResponse.ValidateAll() if the designated constraints
+// aren't met.
+type ClickResponseMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m ClickResponseMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m ClickResponseMultiError) AllErrors() []error { return m }
+
+// ClickResponseValidationError is the validation error returned by
+// ClickResponse.Validate if the designated constraints aren't met.
+type ClickResponseValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e ClickResponseValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e ClickResponseValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e ClickResponseValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e ClickResponseValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e ClickResponseValidationError) ErrorName() string { return "ClickResponseValidationError" }
+
+// Error satisfies the builtin error interface
+func (e ClickResponseValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sClickResponse.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = ClickResponseValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = ClickResponseValidationError{}

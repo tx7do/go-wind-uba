@@ -692,3 +692,120 @@ LIMIT ?`, innerQ, tenantCond)
 		Total:   int64(len(userIDs)),
 	}, nil
 }
+
+// ============================================================================
+// 点击热力图（按页面网格分桶聚合点击坐标 + 元素点击 TOP）
+// 与 doris.AnalyticsRepo.Click 对应；ClickHouse 用 intDiv 对齐网格。
+// ============================================================================
+
+func (r *AnalyticsRepo) Click(ctx context.Context, req *ubaV1.ClickRequest) (*ubaV1.ClickResponse, error) {
+	if req.GetPageUrl() == "" {
+		return nil, ubaV1.ErrorBadRequest("page_url is required")
+	}
+	startMs, endMs := normTimeRange(req.GetTimeRange())
+	gridSize := int64(req.GetGridSize())
+	if gridSize <= 0 {
+		gridSize = 20
+	}
+
+	tenantCond := ""
+	if v := req.GetAppId(); v != 0 {
+		tenantCond = "tenant_id = ? AND "
+	}
+
+	// 网格分桶：intDiv(click_x, gridSize) * gridSize 对齐到网格左上角。
+	gridArgs := []any{}
+	if v := req.GetAppId(); v != 0 {
+		gridArgs = append(gridArgs, v)
+	}
+	gridArgs = append(gridArgs, req.GetPageUrl(), time.UnixMilli(startMs), time.UnixMilli(endMs), gridSize, gridSize, gridSize, gridSize)
+
+	gridSQL := fmt.Sprintf(`
+SELECT (intDiv(click_x, ?) * ?) AS grid_x,
+       (intDiv(click_y, ?) * ?) AS grid_y,
+       count() AS cnt
+FROM events_fact
+WHERE %sevent_name = 'click' AND page_url = ? AND click_x > 0 AND click_y > 0
+  AND event_time >= ? AND event_time < ?
+GROUP BY grid_x, grid_y
+ORDER BY cnt DESC
+LIMIT 2000`, tenantCond)
+
+	type gridRow struct {
+		GridX int64 `db:"grid_x" ch:"grid_x"`
+		GridY int64 `db:"grid_y" ch:"grid_y"`
+		Cnt   int64 `db:"cnt" ch:"cnt"`
+	}
+	var gRows []gridRow
+	if err := r.db.Select(ctx, &gRows, gridSQL, gridArgs...); err != nil {
+		r.log.Errorf("Click grid query failed: %v", err)
+		return nil, ubaV1.ErrorInternalServerError("click query failed")
+	}
+
+	var maxCnt int64
+	for _, gr := range gRows {
+		if gr.Cnt > maxCnt {
+			maxCnt = gr.Cnt
+		}
+	}
+	points := make([]*ubaV1.ClickHeatPoint, 0, len(gRows))
+	var totalClicks int64
+	for _, gr := range gRows {
+		totalClicks += gr.Cnt
+		var intensity float64
+		if maxCnt > 0 {
+			intensity = float64(gr.Cnt) / float64(maxCnt)
+		}
+		points = append(points, &ubaV1.ClickHeatPoint{
+			X:         uint32(gr.GridX),
+			Y:         uint32(gr.GridY),
+			Count:     gr.Cnt,
+			Intensity: intensity,
+		})
+	}
+
+	// 元素点击 TOP（按 element_xpath 聚合）
+	topArgs := []any{}
+	if v := req.GetAppId(); v != 0 {
+		topArgs = append(topArgs, v)
+	}
+	topArgs = append(topArgs, req.GetPageUrl(), time.UnixMilli(startMs), time.UnixMilli(endMs))
+	topSQL := fmt.Sprintf(`
+SELECT element_xpath, count() AS cnt
+FROM events_fact
+WHERE %sevent_name = 'click' AND page_url = ? AND element_xpath != ''
+  AND event_time >= ? AND event_time < ?
+GROUP BY element_xpath
+ORDER BY cnt DESC
+LIMIT 20`, tenantCond)
+
+	type elemRow struct {
+		ElementXpath string `db:"element_xpath" ch:"element_xpath"`
+		Cnt          int64  `db:"cnt" ch:"cnt"`
+	}
+	var eRows []elemRow
+	if err := r.db.Select(ctx, &eRows, topSQL, topArgs...); err != nil {
+		r.log.Errorf("Click element query failed: %v", err)
+		eRows = nil
+	}
+
+	topElements := make([]*ubaV1.ClickElementBucket, 0, len(eRows))
+	for _, er := range eRows {
+		var pct float64
+		if totalClicks > 0 {
+			pct = float64(er.Cnt) / float64(totalClicks)
+		}
+		topElements = append(topElements, &ubaV1.ClickElementBucket{
+			ElementXpath: er.ElementXpath,
+			Count:        er.Cnt,
+			Percentage:   pct,
+		})
+	}
+
+	return &ubaV1.ClickResponse{
+		Points:      points,
+		TopElements: topElements,
+		TotalClicks: totalClicks,
+		GridSize:    uint32(gridSize),
+	}, nil
+}

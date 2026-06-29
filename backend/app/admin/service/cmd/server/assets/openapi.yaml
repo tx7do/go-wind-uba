@@ -64,6 +64,25 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/BehaviorSequenceResponse'
+    /admin/v1/analytics/click:
+        post:
+            tags:
+                - AnalyticsService
+            description: 点击热力图
+            operationId: AnalyticsService_Click
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/ClickRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ClickResponse'
     /admin/v1/analytics/distribution:
         post:
             tags:
@@ -6977,6 +6996,24 @@ components:
                 traceId:
                     type: string
                     description: Trace ID，事件相关的分布式追踪标识，可以用于分析事件的调用链和系统性能，通常由服务器生成并传递给客户端进行上报
+                clickX:
+                    type: integer
+                    description: 点击坐标 X（相对文档，像素），点击热力图用
+                    format: uint32
+                clickY:
+                    type: integer
+                    description: 点击坐标 Y（相对文档，像素），点击热力图用
+                    format: uint32
+                elementXpath:
+                    type: string
+                    description: 被点击元素的 XPath，如 /html/body/div[2]/a[1]
+                pageUrl:
+                    type: string
+                    description: 页面 URL，热力图按页面分组的前提
+                viewportWidth:
+                    type: integer
+                    description: 视口宽度（像素），用于响应式热力图归一化
+                    format: uint32
                 createdAt:
                     type: string
                     description: 创建时间
@@ -7056,6 +7093,78 @@ components:
                     type: string
                     description: 新密码
             description: 修改用户密码（需要验证旧密码） - 请求
+        ClickElementBucket:
+            type: object
+            properties:
+                elementXpath:
+                    type: string
+                    description: 元素 XPath
+                count:
+                    type: string
+                    description: 点击次数
+                percentage:
+                    type: number
+                    description: 占比（0-1）
+                    format: double
+            description: 元素点击 TOP（按 element_xpath 聚合）
+        ClickHeatPoint:
+            type: object
+            properties:
+                x:
+                    type: integer
+                    description: 网格左上角 X（像素）
+                    format: uint32
+                y:
+                    type: integer
+                    description: 网格左上角 Y（像素）
+                    format: uint32
+                count:
+                    type: string
+                    description: 该网格的点击次数
+                intensity:
+                    type: number
+                    description: 热度（0-1，相对最大点击数的归一化值）
+                    format: double
+            description: 热力图网格点
+        ClickRequest:
+            type: object
+            properties:
+                timeRange:
+                    allOf:
+                        - $ref: '#/components/schemas/TimeRange'
+                    description: 时间范围
+                pageUrl:
+                    type: string
+                    description: 页面 URL（必填，按页面分组热力图）
+                gridSize:
+                    type: integer
+                    description: 网格大小（像素，默认 20）
+                    format: uint32
+                appId:
+                    type: integer
+                    description: 应用 ID 过滤（可选）
+                    format: uint32
+            description: ============== 点击热力图 ==============
+        ClickResponse:
+            type: object
+            properties:
+                points:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ClickHeatPoint'
+                    description: 热力图网格点列表
+                topElements:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ClickElementBucket'
+                    description: 元素点击 TOP
+                totalClicks:
+                    type: string
+                    description: 总点击次数
+                gridSize:
+                    type: integer
+                    description: 使用的网格大小
+                    format: uint32
         ControlTaskRequest:
             type: object
             properties:

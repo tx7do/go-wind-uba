@@ -139,6 +139,17 @@ func (s *redactedAnalyticsServiceServer) Segmentation(ctx context.Context, in *S
 	return res, err
 }
 
+// Click is the redacted wrapper for the actual AnalyticsServiceServer.Click method
+// Unary RPC
+func (s *redactedAnalyticsServiceServer) Click(ctx context.Context, in *ClickRequest) (*ClickResponse, error) {
+	res, err := s.srv.Click(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
 // Redact method implementation for TimeRange
 func (x *TimeRange) Redact() string {
 	if x == nil {
@@ -590,5 +601,67 @@ func (x *SegmentationResponse) Redact() string {
 	// Safe field: UserIds
 
 	// Safe field: Total
+	return x.String()
+}
+
+// Redact method implementation for ClickRequest
+func (x *ClickRequest) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: TimeRange
+
+	// Safe field: PageUrl
+
+	// Safe field: GridSize
+
+	// Safe field: AppId
+	return x.String()
+}
+
+// Redact method implementation for ClickHeatPoint
+func (x *ClickHeatPoint) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: X
+
+	// Safe field: Y
+
+	// Safe field: Count
+
+	// Safe field: Intensity
+	return x.String()
+}
+
+// Redact method implementation for ClickElementBucket
+func (x *ClickElementBucket) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: ElementXpath
+
+	// Safe field: Count
+
+	// Safe field: Percentage
+	return x.String()
+}
+
+// Redact method implementation for ClickResponse
+func (x *ClickResponse) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Points
+
+	// Safe field: TopElements
+
+	// Safe field: TotalClicks
+
+	// Safe field: GridSize
 	return x.String()
 }

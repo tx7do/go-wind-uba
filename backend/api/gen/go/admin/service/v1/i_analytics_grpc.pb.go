@@ -29,6 +29,7 @@ const (
 	AnalyticsService_Distribution_FullMethodName     = "/admin.service.v1.AnalyticsService/Distribution"
 	AnalyticsService_BehaviorSequence_FullMethodName = "/admin.service.v1.AnalyticsService/BehaviorSequence"
 	AnalyticsService_Segmentation_FullMethodName     = "/admin.service.v1.AnalyticsService/Segmentation"
+	AnalyticsService_Click_FullMethodName            = "/admin.service.v1.AnalyticsService/Click"
 )
 
 // AnalyticsServiceClient is the client API for AnalyticsService service.
@@ -55,6 +56,8 @@ type AnalyticsServiceClient interface {
 	BehaviorSequence(ctx context.Context, in *v1.BehaviorSequenceRequest, opts ...grpc.CallOption) (*v1.BehaviorSequenceResponse, error)
 	// 用户分群/圈选
 	Segmentation(ctx context.Context, in *v1.SegmentationRequest, opts ...grpc.CallOption) (*v1.SegmentationResponse, error)
+	// 点击热力图
+	Click(ctx context.Context, in *v1.ClickRequest, opts ...grpc.CallOption) (*v1.ClickResponse, error)
 }
 
 type analyticsServiceClient struct {
@@ -155,6 +158,16 @@ func (c *analyticsServiceClient) Segmentation(ctx context.Context, in *v1.Segmen
 	return out, nil
 }
 
+func (c *analyticsServiceClient) Click(ctx context.Context, in *v1.ClickRequest, opts ...grpc.CallOption) (*v1.ClickResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(v1.ClickResponse)
+	err := c.cc.Invoke(ctx, AnalyticsService_Click_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AnalyticsServiceServer is the server API for AnalyticsService service.
 // All implementations must embed UnimplementedAnalyticsServiceServer
 // for forward compatibility.
@@ -179,6 +192,8 @@ type AnalyticsServiceServer interface {
 	BehaviorSequence(context.Context, *v1.BehaviorSequenceRequest) (*v1.BehaviorSequenceResponse, error)
 	// 用户分群/圈选
 	Segmentation(context.Context, *v1.SegmentationRequest) (*v1.SegmentationResponse, error)
+	// 点击热力图
+	Click(context.Context, *v1.ClickRequest) (*v1.ClickResponse, error)
 	mustEmbedUnimplementedAnalyticsServiceServer()
 }
 
@@ -215,6 +230,9 @@ func (UnimplementedAnalyticsServiceServer) BehaviorSequence(context.Context, *v1
 }
 func (UnimplementedAnalyticsServiceServer) Segmentation(context.Context, *v1.SegmentationRequest) (*v1.SegmentationResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method Segmentation not implemented")
+}
+func (UnimplementedAnalyticsServiceServer) Click(context.Context, *v1.ClickRequest) (*v1.ClickResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method Click not implemented")
 }
 func (UnimplementedAnalyticsServiceServer) mustEmbedUnimplementedAnalyticsServiceServer() {}
 func (UnimplementedAnalyticsServiceServer) testEmbeddedByValue()                          {}
@@ -399,6 +417,24 @@ func _AnalyticsService_Segmentation_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AnalyticsService_Click_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(v1.ClickRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AnalyticsServiceServer).Click(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AnalyticsService_Click_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AnalyticsServiceServer).Click(ctx, req.(*v1.ClickRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AnalyticsService_ServiceDesc is the grpc.ServiceDesc for AnalyticsService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -441,6 +477,10 @@ var AnalyticsService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Segmentation",
 			Handler:    _AnalyticsService_Segmentation_Handler,
+		},
+		{
+			MethodName: "Click",
+			Handler:    _AnalyticsService_Click_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

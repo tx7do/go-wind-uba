@@ -28,6 +28,7 @@ const (
 	AnalyticsService_Distribution_FullMethodName     = "/uba.service.v1.AnalyticsService/Distribution"
 	AnalyticsService_BehaviorSequence_FullMethodName = "/uba.service.v1.AnalyticsService/BehaviorSequence"
 	AnalyticsService_Segmentation_FullMethodName     = "/uba.service.v1.AnalyticsService/Segmentation"
+	AnalyticsService_Click_FullMethodName            = "/uba.service.v1.AnalyticsService/Click"
 )
 
 // AnalyticsServiceClient is the client API for AnalyticsService service.
@@ -54,6 +55,8 @@ type AnalyticsServiceClient interface {
 	BehaviorSequence(ctx context.Context, in *BehaviorSequenceRequest, opts ...grpc.CallOption) (*BehaviorSequenceResponse, error)
 	// 用户分群/圈选（做过/未做过某事件的人群筛选）
 	Segmentation(ctx context.Context, in *SegmentationRequest, opts ...grpc.CallOption) (*SegmentationResponse, error)
+	// 点击热力图（按页面网格分桶聚合点击坐标）
+	Click(ctx context.Context, in *ClickRequest, opts ...grpc.CallOption) (*ClickResponse, error)
 }
 
 type analyticsServiceClient struct {
@@ -154,6 +157,16 @@ func (c *analyticsServiceClient) Segmentation(ctx context.Context, in *Segmentat
 	return out, nil
 }
 
+func (c *analyticsServiceClient) Click(ctx context.Context, in *ClickRequest, opts ...grpc.CallOption) (*ClickResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ClickResponse)
+	err := c.cc.Invoke(ctx, AnalyticsService_Click_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AnalyticsServiceServer is the server API for AnalyticsService service.
 // All implementations must embed UnimplementedAnalyticsServiceServer
 // for forward compatibility.
@@ -178,6 +191,8 @@ type AnalyticsServiceServer interface {
 	BehaviorSequence(context.Context, *BehaviorSequenceRequest) (*BehaviorSequenceResponse, error)
 	// 用户分群/圈选（做过/未做过某事件的人群筛选）
 	Segmentation(context.Context, *SegmentationRequest) (*SegmentationResponse, error)
+	// 点击热力图（按页面网格分桶聚合点击坐标）
+	Click(context.Context, *ClickRequest) (*ClickResponse, error)
 	mustEmbedUnimplementedAnalyticsServiceServer()
 }
 
@@ -214,6 +229,9 @@ func (UnimplementedAnalyticsServiceServer) BehaviorSequence(context.Context, *Be
 }
 func (UnimplementedAnalyticsServiceServer) Segmentation(context.Context, *SegmentationRequest) (*SegmentationResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method Segmentation not implemented")
+}
+func (UnimplementedAnalyticsServiceServer) Click(context.Context, *ClickRequest) (*ClickResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method Click not implemented")
 }
 func (UnimplementedAnalyticsServiceServer) mustEmbedUnimplementedAnalyticsServiceServer() {}
 func (UnimplementedAnalyticsServiceServer) testEmbeddedByValue()                          {}
@@ -398,6 +416,24 @@ func _AnalyticsService_Segmentation_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AnalyticsService_Click_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ClickRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AnalyticsServiceServer).Click(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AnalyticsService_Click_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AnalyticsServiceServer).Click(ctx, req.(*ClickRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AnalyticsService_ServiceDesc is the grpc.ServiceDesc for AnalyticsService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -440,6 +476,10 @@ var AnalyticsService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Segmentation",
 			Handler:    _AnalyticsService_Segmentation_Handler,
+		},
+		{
+			MethodName: "Click",
+			Handler:    _AnalyticsService_Click_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
