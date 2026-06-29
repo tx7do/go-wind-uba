@@ -77,6 +77,7 @@
     "update_failed": "更新失败",
     "delete_success": "删除成功",
     "delete_failed": "删除失败",
+    "delete_confirm": "确定删除吗？",
     "save_success": "保存成功",
     "save_failed": "保存失败",
     "update_status_success": "更新状态成功",
