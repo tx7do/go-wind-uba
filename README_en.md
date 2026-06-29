@@ -24,7 +24,7 @@
 
 ## Highlights
 
-- **10 Analysis Models**: Event Analysis, Funnel Analysis, Retention Analysis, Attribution Analysis, Distribution Analysis, User Path Analysis, User Segmentation, Click Analysis, User Attribute Analysis, and Behavior Sequence Analysis — covering the full spectrum of user behavior analytics
+- **25+ Analysis Models**: Covering general behavior analytics (Event/Funnel/Retention/Attribution/Distribution/Path/Segmentation/Click/Attribute/Behavior Sequence), deep user insights (Lifecycle/Churn/Interval/Matrix/Revenue/Session/Anomaly/New-vs-Old/Conversion Paths), and game-specific analytics (Level/Whale Tier/LTV/Server Retention/PCU/Economy) — from basic metrics to deep attribution to game balance analysis in one platform
 - **Switchable Dual OLAP Engines**: Native support for both ClickHouse and Apache Doris — deploy either one as needed, with extreme query performance
 - **Full-Link Event Collection**: Custom Web SDK with zero-code auto-tracking and custom events, real-time data ingestion via Kafka into data warehouse
 - **Multi-Tenancy**: Tenant data isolation with automatic initialization of departments, roles, and administrators — ready out of the box
@@ -46,6 +46,10 @@ In 2015, UBA evolved into **UEBA** (User and Entity Behavior Analytics), extendi
 
 ## Analysis Models
 
+The platform provides 25 analysis models across three categories: general behavior analytics, deep user insights, and game-specific analytics.
+
+### General Behavior Analytics (10)
+
 | Model | Typical Question |
 | --- | --- |
 | **Event Analysis** | Which channel has the highest user registrations in recent months? What's the trend? |
@@ -55,9 +59,34 @@ In 2015, UBA evolved into **UEBA** (User and Entity Behavior Analytics), extendi
 | **Distribution Analysis** | How dependent are individual users on the product? What's the repurchase rate? |
 | **User Path Analysis** | How do users navigate your product? Where does the actual path deviate from ideal? |
 | **User Segmentation** | Who are the users who purchased in the past 30 days? How to create targeted marketing? |
-| **Click Analysis** | Which UI elements do users click on? Which elements have the highest click frequency? |
+| **Click Analysis** | Which UI elements do users click on? Which have the highest frequency? Heatmap distribution? |
 | **User Attribute Analysis** | What's the registration trend over time? How are users distributed by region? |
 | **Behavior Sequence** | A user abandoned without paying. Review their behavior history to identify the cause |
+
+### Deep User Insights (9)
+
+| Model | Typical Question |
+| --- | --- |
+| **Lifecycle** | DAU is flat, but are new users actually retaining? See the structural health of the user base |
+| **Churn & Reactivation** | At what point do users churn for good? What behaviors trigger reactivation? |
+| **Interval Analysis** | How long from registration to first payment? Days between two purchases? |
+| **Matrix / Quadrant** | Which are core features, which are edge? Identify what to optimize or sunset |
+| **Revenue Analysis** | ARPU/ARPPU/pay rate/GMV trends? Channel ROI comparison |
+| **Session Analysis** | Avg session duration, bounce rate, P50/P90 duration, session depth |
+| **Anomaly Detection** | Which events spiked or dropped yesterday? Suspected tracking loss/failure? |
+| **New vs Old** | New user pay rate vs old user pay rate? Behavioral differences? |
+| **Conversion Paths** | Most common conversion paths? Which path has the highest conversion rate? |
+
+### Game-Specific (6)
+
+| Model | Typical Question |
+| --- | --- |
+| **Level Analysis** | Which level has the highest stuck rate? Players churning or content consumed too fast? |
+| **Whale Tier** | How much revenue do the top 2% of whales contribute? Does the 80/20 rule hold? |
+| **LTV** | Cumulative pay value at Day 7/30/90? Which ad channel brings the highest-LTV players? |
+| **Server Retention** | D1/D3/D7 retention by server? Differences between new and old servers? |
+| **PCU / ACU** | Peak concurrent users (PCU) and average concurrent users (ACU)? |
+| **Economy** | Is the gold/diamond source-sink balanced? Inflation tendency or coin-farming signs? |
 
 ---
 
@@ -144,6 +173,21 @@ graph TB
 | Click Analysis | UI element click heatmap analysis |
 | Attribute Analysis | Multi-dimensional user attribute statistics and trend analysis |
 | Behavior Sequence | User behavior timeline for quick issue identification |
+| Lifecycle | New/active/retained/churned/reactivated stage distribution |
+| Churn & Reactivation | Churn by silent days, reactivation trigger analysis |
+| Interval Analysis | Time gap distribution between two events |
+| Matrix / Quadrant | Dual-axis four-quadrant for core/edge feature identification |
+| Revenue Analysis | ARPU/ARPPU/pay rate/GMV trends |
+| Session Analysis | Bounce rate / duration percentile / session depth |
+| Anomaly Detection | Event WoW change + 7-day baseline anomaly alerting |
+| New vs Old | New/old user composition and behavioral/payment differences |
+| Conversion Paths | Top group paths + conversion rates |
+| Level Analysis | Pass rate / stuck rate / star rate (game) |
+| Whale Tier | Whale/dolphin/minnow tiering + revenue share (game) |
+| LTV | Lifetime value, supports channel grouping (game) |
+| Server Retention | Retention grouped by server (game) |
+| PCU / ACU | Peak and average concurrent users (game) |
+| Economy | Currency source-sink balance, inflation monitoring (game) |
 
 ### Risk & Security
 
