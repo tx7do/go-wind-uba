@@ -12,11 +12,9 @@ DELETE FROM sessions_fact WHERE tenant_id = 1 AND user_id BETWEEN 1001 AND 1050;
 DELETE FROM risk_events   WHERE tenant_id = 1 AND user_id BETWEEN 1001 AND 1050;
 DELETE FROM users_dim     WHERE tenant_id = 1 AND user_id BETWEEN 1001 AND 1050;
 
--- demo 数据时间偏移压缩到最近 5 天（基于 CURDATE()），
--- 落在动态分区自动创建的范围内（start=-180, end=3），无需手动建分区。
--- 前提：Doris FE 的动态分区功能已开启（默认开启）。
--- 如遇 no partition 报错，请检查：SHOW PARTITIONS FROM events_fact;
--- 或手动执行：ALTER TABLE events_fact ADD PARTITION p_today VALUES LESS THAN ('2099-12-31');
+-- demo 数据时间基于 CURDATE()（最近 5 天）。
+-- 关闭 strict 模式，Doris 会自动为缺失分区创建分区（而非报错过滤）。
+SET enable_insert_strict = false;
 
 
 -- ============================================================
