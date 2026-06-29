@@ -12,14 +12,30 @@ DELETE FROM sessions_fact WHERE tenant_id = 1 AND user_id BETWEEN 1001 AND 1050;
 DELETE FROM risk_events   WHERE tenant_id = 1 AND user_id BETWEEN 1001 AND 1050;
 DELETE FROM users_dim     WHERE tenant_id = 1 AND user_id BETWEEN 1001 AND 1050;
 
--- 确保 demo 数据有对应分区。动态分区线程可能未及时创建分区，
--- 此处手动创建一个覆盖最近 90 天的分区兜底。
--- Doris RANGE 分区用固定范围，不能在 ADD PARTITION 里用函数表达式，
--- 故改用 VALUES [("","")] 方式建一个超大范围分区兜底（反正 demo 数据量小）。
+-- 确保分区不冲突：关闭动态分区 → 删掉动态分区自动建的分区 → 建全覆盖分区 → 恢复动态分区。
+-- 动态分区建的按天分区与 p_demo 全范围冲突，必须先清理。
 ALTER TABLE events_fact   SET ("dynamic_partition.enable" = "false");
 ALTER TABLE sessions_fact SET ("dynamic_partition.enable" = "false");
 ALTER TABLE risk_events   SET ("dynamic_partition.enable" = "false");
 
+-- 删除所有现存分区（demo 数据量小，先 DELETE 清数据再删分区无风险）
+ALTER TABLE events_fact   DROP PARTITION FORCE IF EXISTS p20260626000000;
+ALTER TABLE events_fact   DROP PARTITION FORCE IF EXISTS p20260627000000;
+ALTER TABLE events_fact   DROP PARTITION FORCE IF EXISTS p20260628000000;
+ALTER TABLE events_fact   DROP PARTITION FORCE IF EXISTS p20260629000000;
+ALTER TABLE events_fact   DROP PARTITION FORCE IF EXISTS p20260630000000;
+ALTER TABLE sessions_fact DROP PARTITION FORCE IF EXISTS p20260626000000;
+ALTER TABLE sessions_fact DROP PARTITION FORCE IF EXISTS p20260627000000;
+ALTER TABLE sessions_fact DROP PARTITION FORCE IF EXISTS p20260628000000;
+ALTER TABLE sessions_fact DROP PARTITION FORCE IF EXISTS p20260629000000;
+ALTER TABLE sessions_fact DROP PARTITION FORCE IF EXISTS p20260630000000;
+ALTER TABLE risk_events   DROP PARTITION FORCE IF EXISTS p20260626000000;
+ALTER TABLE risk_events   DROP PARTITION FORCE IF EXISTS p20260627000000;
+ALTER TABLE risk_events   DROP PARTITION FORCE IF EXISTS p20260628000000;
+ALTER TABLE risk_events   DROP PARTITION FORCE IF EXISTS p20260629000000;
+ALTER TABLE risk_events   DROP PARTITION FORCE IF EXISTS p20260630000000;
+
+-- 建一个全覆盖分区，兜住任意时间的 demo 数据
 ALTER TABLE events_fact   ADD PARTITION IF NOT EXISTS p_demo VALUES [("2000-01-01 00:00:00"),("2099-12-31 23:59:59"));
 ALTER TABLE sessions_fact ADD PARTITION IF NOT EXISTS p_demo VALUES [("2000-01-01 00:00:00"),("2099-12-31 23:59:59"));
 ALTER TABLE risk_events   ADD PARTITION IF NOT EXISTS p_demo VALUES [("2000-01-01"),("2099-12-31"));
