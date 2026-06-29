@@ -760,24 +760,23 @@ func (r *AnalyticsRepo) Click(ctx context.Context, req *ubaV1.ClickRequest) (*ub
 	}
 
 	// 网格分桶：FLOOR(click_x / gridSize) * gridSize 对齐到网格左上角。
-	// 只统计 click 事件且坐标有效（>0）的记录。
-	// 参数顺序：[tenant?] page_url, start, end, gridSize×4（grid_x 除数/乘数 + grid_y 除数/乘数）
+	// gridSize 直接拼接（经校验的整数，无注入风险），避免 time.Time 与 int64 混参导致驱动类型推断错误。
 	gridArgs := []any{}
 	if v := req.GetAppId(); v != 0 {
 		gridArgs = append(gridArgs, v)
 	}
-	gridArgs = append(gridArgs, req.GetPageUrl(), time.UnixMilli(startMs), time.UnixMilli(endMs), gridSize, gridSize, gridSize, gridSize)
+	gridArgs = append(gridArgs, req.GetPageUrl(), time.UnixMilli(startMs), time.UnixMilli(endMs))
 
 	gridSQL := fmt.Sprintf(`
-SELECT FLOOR(click_x / ?) * ? AS grid_x,
-       FLOOR(click_y / ?) * ? AS grid_y,
+SELECT FLOOR(click_x / %d) * %d AS grid_x,
+       FLOOR(click_y / %d) * %d AS grid_y,
        COUNT(*) AS cnt
 FROM events_fact
 WHERE %sevent_name = 'click' AND page_url = ? AND click_x > 0 AND click_y > 0
   AND event_time >= ? AND event_time < ?
 GROUP BY grid_x, grid_y
 ORDER BY cnt DESC
-LIMIT 2000`, tenantCond)
+LIMIT 2000`, gridSize, gridSize, gridSize, gridSize, tenantCond)
 
 	type gridRow struct {
 		GridX int64 `db:"grid_x"`

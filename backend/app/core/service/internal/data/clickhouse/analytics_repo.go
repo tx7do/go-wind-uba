@@ -723,15 +723,16 @@ func (r *AnalyticsRepo) Click(ctx context.Context, req *ubaV1.ClickRequest) (*ub
 	}
 
 	// 网格分桶：intDiv(click_x, gridSize) * gridSize 对齐到网格左上角。
+	// gridSize 直接拼接（经校验的整数，无注入风险）。
 	gridArgs := []any{}
 	if v := req.GetAppId(); v != 0 {
 		gridArgs = append(gridArgs, v)
 	}
-	gridArgs = append(gridArgs, req.GetPageUrl(), time.UnixMilli(startMs), time.UnixMilli(endMs), gridSize, gridSize, gridSize, gridSize)
+	gridArgs = append(gridArgs, req.GetPageUrl(), time.UnixMilli(startMs), time.UnixMilli(endMs))
 
 	gridSQL := fmt.Sprintf(`
-SELECT (intDiv(click_x, ?) * ?) AS grid_x,
-       (intDiv(click_y, ?) * ?) AS grid_y,
+SELECT (intDiv(click_x, %d) * %d) AS grid_x,
+       (intDiv(click_y, %d) * %d) AS grid_y,
        count() AS cnt
 FROM events_fact
 WHERE %sevent_name = 'click' AND page_url = ? AND click_x > 0 AND click_y > 0
