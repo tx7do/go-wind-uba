@@ -42,6 +42,10 @@ func (s *AnalyticsService) repo() interface {
 	Retention(context.Context, *ubaV1.RetentionRequest) (*ubaV1.RetentionResponse, error)
 	GroupBy(context.Context, *ubaV1.GroupByRequest) (*ubaV1.GroupByResponse, error)
 	ActiveUsers(context.Context, *ubaV1.ActiveUsersRequest) (*ubaV1.ActiveUsersResponse, error)
+	Attribution(context.Context, *ubaV1.AttributionRequest) (*ubaV1.AttributionResponse, error)
+	Distribution(context.Context, *ubaV1.DistributionRequest) (*ubaV1.DistributionResponse, error)
+	BehaviorSequence(context.Context, *ubaV1.BehaviorSequenceRequest) (*ubaV1.BehaviorSequenceResponse, error)
+	Segmentation(context.Context, *ubaV1.SegmentationRequest) (*ubaV1.SegmentationResponse, error)
 } {
 	if data.UseClickHouse {
 		return s.ckRepo
@@ -67,4 +71,20 @@ func (s *AnalyticsService) GroupBy(ctx context.Context, req *ubaV1.GroupByReques
 
 func (s *AnalyticsService) ActiveUsers(ctx context.Context, req *ubaV1.ActiveUsersRequest) (*ubaV1.ActiveUsersResponse, error) {
 	return s.repo().ActiveUsers(ctx, req)
+}
+
+func (s *AnalyticsService) Attribution(ctx context.Context, req *ubaV1.AttributionRequest) (*ubaV1.AttributionResponse, error) {
+	return s.repo().Attribution(ctx, req)
+}
+
+func (s *AnalyticsService) Distribution(ctx context.Context, req *ubaV1.DistributionRequest) (*ubaV1.DistributionResponse, error) {
+	return s.repo().Distribution(ctx, req)
+}
+
+func (s *AnalyticsService) BehaviorSequence(ctx context.Context, req *ubaV1.BehaviorSequenceRequest) (*ubaV1.BehaviorSequenceResponse, error) {
+	return s.repo().BehaviorSequence(ctx, req)
+}
+
+func (s *AnalyticsService) Segmentation(ctx context.Context, req *ubaV1.SegmentationRequest) (*ubaV1.SegmentationResponse, error) {
+	return s.repo().Segmentation(ctx, req)
 }

@@ -19,11 +19,15 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	AnalyticsService_EventTrend_FullMethodName  = "/uba.service.v1.AnalyticsService/EventTrend"
-	AnalyticsService_Funnel_FullMethodName      = "/uba.service.v1.AnalyticsService/Funnel"
-	AnalyticsService_Retention_FullMethodName   = "/uba.service.v1.AnalyticsService/Retention"
-	AnalyticsService_GroupBy_FullMethodName     = "/uba.service.v1.AnalyticsService/GroupBy"
-	AnalyticsService_ActiveUsers_FullMethodName = "/uba.service.v1.AnalyticsService/ActiveUsers"
+	AnalyticsService_EventTrend_FullMethodName       = "/uba.service.v1.AnalyticsService/EventTrend"
+	AnalyticsService_Funnel_FullMethodName           = "/uba.service.v1.AnalyticsService/Funnel"
+	AnalyticsService_Retention_FullMethodName        = "/uba.service.v1.AnalyticsService/Retention"
+	AnalyticsService_GroupBy_FullMethodName          = "/uba.service.v1.AnalyticsService/GroupBy"
+	AnalyticsService_ActiveUsers_FullMethodName      = "/uba.service.v1.AnalyticsService/ActiveUsers"
+	AnalyticsService_Attribution_FullMethodName      = "/uba.service.v1.AnalyticsService/Attribution"
+	AnalyticsService_Distribution_FullMethodName     = "/uba.service.v1.AnalyticsService/Distribution"
+	AnalyticsService_BehaviorSequence_FullMethodName = "/uba.service.v1.AnalyticsService/BehaviorSequence"
+	AnalyticsService_Segmentation_FullMethodName     = "/uba.service.v1.AnalyticsService/Segmentation"
 )
 
 // AnalyticsServiceClient is the client API for AnalyticsService service.
@@ -42,6 +46,14 @@ type AnalyticsServiceClient interface {
 	GroupBy(ctx context.Context, in *GroupByRequest, opts ...grpc.CallOption) (*GroupByResponse, error)
 	// 活跃用户（DAU/WAU/MAU）
 	ActiveUsers(ctx context.Context, in *ActiveUsersRequest, opts ...grpc.CallOption) (*ActiveUsersResponse, error)
+	// 归因分析（首触/末触渠道归因）
+	Attribution(ctx context.Context, in *AttributionRequest, opts ...grpc.CallOption) (*AttributionResponse, error)
+	// 分布分析（事件时长分桶 + 分位数）
+	Distribution(ctx context.Context, in *DistributionRequest, opts ...grpc.CallOption) (*DistributionResponse, error)
+	// 行为序列（指定用户的行为时间线）
+	BehaviorSequence(ctx context.Context, in *BehaviorSequenceRequest, opts ...grpc.CallOption) (*BehaviorSequenceResponse, error)
+	// 用户分群/圈选（做过/未做过某事件的人群筛选）
+	Segmentation(ctx context.Context, in *SegmentationRequest, opts ...grpc.CallOption) (*SegmentationResponse, error)
 }
 
 type analyticsServiceClient struct {
@@ -102,6 +114,46 @@ func (c *analyticsServiceClient) ActiveUsers(ctx context.Context, in *ActiveUser
 	return out, nil
 }
 
+func (c *analyticsServiceClient) Attribution(ctx context.Context, in *AttributionRequest, opts ...grpc.CallOption) (*AttributionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AttributionResponse)
+	err := c.cc.Invoke(ctx, AnalyticsService_Attribution_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *analyticsServiceClient) Distribution(ctx context.Context, in *DistributionRequest, opts ...grpc.CallOption) (*DistributionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DistributionResponse)
+	err := c.cc.Invoke(ctx, AnalyticsService_Distribution_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *analyticsServiceClient) BehaviorSequence(ctx context.Context, in *BehaviorSequenceRequest, opts ...grpc.CallOption) (*BehaviorSequenceResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(BehaviorSequenceResponse)
+	err := c.cc.Invoke(ctx, AnalyticsService_BehaviorSequence_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *analyticsServiceClient) Segmentation(ctx context.Context, in *SegmentationRequest, opts ...grpc.CallOption) (*SegmentationResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SegmentationResponse)
+	err := c.cc.Invoke(ctx, AnalyticsService_Segmentation_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AnalyticsServiceServer is the server API for AnalyticsService service.
 // All implementations must embed UnimplementedAnalyticsServiceServer
 // for forward compatibility.
@@ -118,6 +170,14 @@ type AnalyticsServiceServer interface {
 	GroupBy(context.Context, *GroupByRequest) (*GroupByResponse, error)
 	// 活跃用户（DAU/WAU/MAU）
 	ActiveUsers(context.Context, *ActiveUsersRequest) (*ActiveUsersResponse, error)
+	// 归因分析（首触/末触渠道归因）
+	Attribution(context.Context, *AttributionRequest) (*AttributionResponse, error)
+	// 分布分析（事件时长分桶 + 分位数）
+	Distribution(context.Context, *DistributionRequest) (*DistributionResponse, error)
+	// 行为序列（指定用户的行为时间线）
+	BehaviorSequence(context.Context, *BehaviorSequenceRequest) (*BehaviorSequenceResponse, error)
+	// 用户分群/圈选（做过/未做过某事件的人群筛选）
+	Segmentation(context.Context, *SegmentationRequest) (*SegmentationResponse, error)
 	mustEmbedUnimplementedAnalyticsServiceServer()
 }
 
@@ -142,6 +202,18 @@ func (UnimplementedAnalyticsServiceServer) GroupBy(context.Context, *GroupByRequ
 }
 func (UnimplementedAnalyticsServiceServer) ActiveUsers(context.Context, *ActiveUsersRequest) (*ActiveUsersResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method ActiveUsers not implemented")
+}
+func (UnimplementedAnalyticsServiceServer) Attribution(context.Context, *AttributionRequest) (*AttributionResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method Attribution not implemented")
+}
+func (UnimplementedAnalyticsServiceServer) Distribution(context.Context, *DistributionRequest) (*DistributionResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method Distribution not implemented")
+}
+func (UnimplementedAnalyticsServiceServer) BehaviorSequence(context.Context, *BehaviorSequenceRequest) (*BehaviorSequenceResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method BehaviorSequence not implemented")
+}
+func (UnimplementedAnalyticsServiceServer) Segmentation(context.Context, *SegmentationRequest) (*SegmentationResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method Segmentation not implemented")
 }
 func (UnimplementedAnalyticsServiceServer) mustEmbedUnimplementedAnalyticsServiceServer() {}
 func (UnimplementedAnalyticsServiceServer) testEmbeddedByValue()                          {}
@@ -254,6 +326,78 @@ func _AnalyticsService_ActiveUsers_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AnalyticsService_Attribution_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AttributionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AnalyticsServiceServer).Attribution(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AnalyticsService_Attribution_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AnalyticsServiceServer).Attribution(ctx, req.(*AttributionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AnalyticsService_Distribution_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DistributionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AnalyticsServiceServer).Distribution(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AnalyticsService_Distribution_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AnalyticsServiceServer).Distribution(ctx, req.(*DistributionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AnalyticsService_BehaviorSequence_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BehaviorSequenceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AnalyticsServiceServer).BehaviorSequence(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AnalyticsService_BehaviorSequence_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AnalyticsServiceServer).BehaviorSequence(ctx, req.(*BehaviorSequenceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AnalyticsService_Segmentation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SegmentationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AnalyticsServiceServer).Segmentation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AnalyticsService_Segmentation_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AnalyticsServiceServer).Segmentation(ctx, req.(*SegmentationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AnalyticsService_ServiceDesc is the grpc.ServiceDesc for AnalyticsService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -280,6 +424,22 @@ var AnalyticsService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ActiveUsers",
 			Handler:    _AnalyticsService_ActiveUsers_Handler,
+		},
+		{
+			MethodName: "Attribution",
+			Handler:    _AnalyticsService_Attribution_Handler,
+		},
+		{
+			MethodName: "Distribution",
+			Handler:    _AnalyticsService_Distribution_Handler,
+		},
+		{
+			MethodName: "BehaviorSequence",
+			Handler:    _AnalyticsService_BehaviorSequence_Handler,
+		},
+		{
+			MethodName: "Segmentation",
+			Handler:    _AnalyticsService_Segmentation_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

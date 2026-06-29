@@ -26,6 +26,63 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ActiveUsersResponse'
+    /admin/v1/analytics/attribution:
+        post:
+            tags:
+                - AnalyticsService
+            description: 归因分析
+            operationId: AnalyticsService_Attribution
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/AttributionRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/AttributionResponse'
+    /admin/v1/analytics/behavior-sequence:
+        post:
+            tags:
+                - AnalyticsService
+            description: 行为序列
+            operationId: AnalyticsService_BehaviorSequence
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/BehaviorSequenceRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BehaviorSequenceResponse'
+    /admin/v1/analytics/distribution:
+        post:
+            tags:
+                - AnalyticsService
+            description: 分布分析
+            operationId: AnalyticsService_Distribution
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/DistributionRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DistributionResponse'
     /admin/v1/analytics/event-trend:
         post:
             tags:
@@ -102,6 +159,25 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/RetentionResponse'
+    /admin/v1/analytics/segmentation:
+        post:
+            tags:
+                - AnalyticsService
+            description: 用户分群/圈选
+            operationId: AnalyticsService_Segmentation
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/SegmentationRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/SegmentationResponse'
     /admin/v1/api-audit-logs:
         get:
             tags:
@@ -6709,6 +6785,57 @@ components:
                     description: 删除时间
                     format: date-time
             description: UBA应用
+        AttributionBucket:
+            type: object
+            properties:
+                label:
+                    type: string
+                    description: 归因维度值（渠道/来源页）
+                converterUv:
+                    type: string
+                    description: 该触点的转化用户数（去重）
+                percentage:
+                    type: number
+                    description: 占比（0-1）
+                    format: double
+        AttributionRequest:
+            type: object
+            properties:
+                timeRange:
+                    allOf:
+                        - $ref: '#/components/schemas/TimeRange'
+                    description: 时间范围
+                conversionEvent:
+                    type: string
+                    description: 转化事件名（如 pay_success）
+                dimension:
+                    type: string
+                    description: 归因维度：channel 渠道（默认）/ referer 来源页
+                model:
+                    type: string
+                    description: 归因模型：last_touch 末次触达（默认）/ first_touch 首次触达
+                appId:
+                    type: integer
+                    description: 应用 ID 过滤（可选）
+                    format: uint32
+            description: ============== 归因分析 ==============
+        AttributionResponse:
+            type: object
+            properties:
+                buckets:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/AttributionBucket'
+                    description: 各触点的归因贡献
+                model:
+                    type: string
+                    description: 使用的归因模型
+                dimension:
+                    type: string
+                    description: 使用的归因维度
+                totalConverters:
+                    type: string
+                    description: 转化用户总数
         BatchCreateLanguagesRequest:
             type: object
             properties:
@@ -6859,6 +6986,41 @@ components:
                     description: 更新时间
                     format: date-time
             description: 行为事件（对应 events_fact 表）
+        BehaviorSequenceRequest:
+            type: object
+            properties:
+                timeRange:
+                    allOf:
+                        - $ref: '#/components/schemas/TimeRange'
+                    description: 时间范围
+                userId:
+                    type: integer
+                    description: 用户 ID
+                    format: uint32
+                appId:
+                    type: integer
+                    description: 应用 ID 过滤（可选）
+                    format: uint32
+                eventName:
+                    type: string
+                    description: 事件名过滤（可选，空表示全部事件）
+                limit:
+                    type: integer
+                    description: 最多返回事件数（默认 100）
+                    format: uint32
+            description: ============== 行为序列 ==============
+        BehaviorSequenceResponse:
+            type: object
+            properties:
+                userId:
+                    type: integer
+                    description: 用户 ID
+                    format: uint32
+                events:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/SequenceEvent'
+                    description: 按时间升序排列的行为事件
         BindContactRequest:
             type: object
             properties:
@@ -7444,6 +7606,70 @@ components:
                     description: 删除时间
                     format: date-time
             description: 字典类型
+        DistributionBucket:
+            type: object
+            properties:
+                bucket:
+                    type: string
+                    description: 分桶标签（如 0_10s / 10_60s / 1_5min / 5min_plus）
+                count:
+                    type: string
+                    description: 该桶事件数
+                percentage:
+                    type: number
+                    description: 占比（0-1）
+                    format: double
+            description: 分布分析分桶
+        DistributionRequest:
+            type: object
+            properties:
+                timeRange:
+                    allOf:
+                        - $ref: '#/components/schemas/TimeRange'
+                    description: 时间范围
+                eventName:
+                    type: string
+                    description: 目标事件名（如 page_view）
+                appId:
+                    type: integer
+                    description: 应用 ID 过滤（可选）
+                    format: uint32
+            description: ============== 分布分析 ==============
+        DistributionResponse:
+            type: object
+            properties:
+                buckets:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/DistributionBucket'
+                    description: 各分桶分布
+                summary:
+                    allOf:
+                        - $ref: '#/components/schemas/DistributionSummary'
+                    description: 分位数摘要
+        DistributionSummary:
+            type: object
+            properties:
+                avgSec:
+                    type: number
+                    description: 平均时长（秒）
+                    format: double
+                p50Sec:
+                    type: number
+                    description: P50（中位数，秒）
+                    format: double
+                p90Sec:
+                    type: number
+                    description: P90（秒）
+                    format: double
+                maxSec:
+                    type: number
+                    description: 最大值（秒）
+                    format: double
+                count:
+                    type: string
+                    description: 总事件数
+            description: 分布分析分位数摘要
         DownloadFileResponse:
             type: object
             properties:
@@ -10237,6 +10463,56 @@ components:
                     description: 删除时间
                     format: date-time
             description: 角色
+        SegmentCondition:
+            type: object
+            properties:
+                eventName:
+                    type: string
+                    description: 事件名
+                minTimes:
+                    type: integer
+                    description: 至少触发次数（默认 1，即"做过"）
+                    format: uint32
+            description: |-
+                ============== 用户分群/圈选 ==============
+                 单个圈选条件
+        SegmentationRequest:
+            type: object
+            properties:
+                timeRange:
+                    allOf:
+                        - $ref: '#/components/schemas/TimeRange'
+                    description: 时间范围
+                include:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/SegmentCondition'
+                    description: 必须做过的事件（满足任一即纳入人群的"做过"集合）
+                exclude:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/SegmentCondition'
+                    description: 必须未做过的事件（做过任一即排除）
+                appId:
+                    type: integer
+                    description: 应用 ID 过滤（可选）
+                    format: uint32
+                limit:
+                    type: integer
+                    description: 最多返回用户数（默认 5000）
+                    format: uint32
+        SegmentationResponse:
+            type: object
+            properties:
+                userIds:
+                    type: array
+                    items:
+                        type: integer
+                        format: uint32
+                    description: 命中的用户 ID 列表
+                total:
+                    type: string
+                    description: 命中用户总数
         SendMessageRequest:
             type: object
             properties:
@@ -10286,6 +10562,32 @@ components:
                     type: integer
                     description: 消息ID
                     format: uint32
+        SequenceEvent:
+            type: object
+            properties:
+                timestamp:
+                    type: string
+                    description: 事件时间（Unix 毫秒）
+                eventName:
+                    type: string
+                    description: 事件名
+                sessionId:
+                    type: string
+                    description: 会话 ID
+                sessionSeq:
+                    type: integer
+                    description: 会话内序号
+                    format: uint32
+                referer:
+                    type: string
+                    description: 来源页
+                platform:
+                    type: string
+                    description: 平台
+                channel:
+                    type: string
+                    description: 渠道
+            description: 序列中的一个行为事件
         Session:
             type: object
             properties:

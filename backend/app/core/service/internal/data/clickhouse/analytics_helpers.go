@@ -56,3 +56,11 @@ func metricExpr(metric string) (string, error) {
 		return "", fmt.Errorf("unsupported metric: %s", metric)
 	}
 }
+
+// chDerefStr 安全解引用字符串指针，nil 返回空串。
+func chDerefStr(p *string) string {
+	if p == nil {
+		return ""
+	}
+	return *p
+}

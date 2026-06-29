@@ -47,4 +47,36 @@ service AnalyticsService {
       body: "*"
     };
   }
+
+  // 归因分析
+  rpc Attribution(uba.service.v1.AttributionRequest) returns (uba.service.v1.AttributionResponse) {
+    option (google.api.http) = {
+      post: "/admin/v1/analytics/attribution"
+      body: "*"
+    };
+  }
+
+  // 分布分析
+  rpc Distribution(uba.service.v1.DistributionRequest) returns (uba.service.v1.DistributionResponse) {
+    option (google.api.http) = {
+      post: "/admin/v1/analytics/distribution"
+      body: "*"
+    };
+  }
+
+  // 行为序列
+  rpc BehaviorSequence(uba.service.v1.BehaviorSequenceRequest) returns (uba.service.v1.BehaviorSequenceResponse) {
+    option (google.api.http) = {
+      post: "/admin/v1/analytics/behavior-sequence"
+      body: "*"
+    };
+  }
+
+  // 用户分群/圈选
+  rpc Segmentation(uba.service.v1.SegmentationRequest) returns (uba.service.v1.SegmentationResponse) {
+    option (google.api.http) = {
+      post: "/admin/v1/analytics/segmentation"
+      body: "*"
+    };
+  }
 }

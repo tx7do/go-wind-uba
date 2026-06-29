@@ -393,8 +393,344 @@ func (r *AnalyticsRepo) activeUsersFromEventsFact(ctx context.Context, req *ubaV
 }
 
 // ============================================================================
+// 归因分析（首触/末触渠道归因）
+// 参考模板：backend/sql/doris/query.sql §16
+// ============================================================================
+
+func (r *AnalyticsRepo) Attribution(ctx context.Context, req *ubaV1.AttributionRequest) (*ubaV1.AttributionResponse, error) {
+	if req.GetConversionEvent() == "" {
+		return nil, ubaV1.ErrorBadRequest("conversion_event is required")
+	}
+	startMs, endMs := normTimeRange(req.GetTimeRange())
+
+	// 归因维度：channel（默认）/ referer
+	dim := "channel"
+	if d := req.GetDimension(); d == "referer" {
+		dim = "referer"
+	}
+	// 归因模型：last_touch（默认，末次触达）/ first_touch（首次触达）
+	orderDir := "DESC" // 末次触达：取转化前最后一次
+	if req.GetModel() == "first_touch" {
+		orderDir = "ASC" // 首次触达：取最早一次
+	}
+
+	tenantCond := ""
+	args := []any{req.GetConversionEvent(), time.UnixMilli(startMs), time.UnixMilli(endMs)}
+	if v := req.GetAppId(); v != 0 {
+		tenantCond = "tenant_id = ? AND "
+		args = append([]any{v}, args...)
+	}
+
+	// 转化用户集合（做过转化事件）→ 每个转化用户的指定触点（首/末）→ 按维度聚合去重用户数。
+	// rn=1 取每用户在窗口内的第一条（ASC=首触 / DESC=末触）。
+	q := fmt.Sprintf(`
+WITH converters AS (
+    SELECT DISTINCT user_id FROM events_fact
+    WHERE %sevent_name = ? AND event_time >= ? AND event_time < ?
+),
+touchpoint AS (
+    SELECT e.user_id, e.%s AS dim_val,
+           ROW_NUMBER() OVER (PARTITION BY e.user_id ORDER BY e.event_time %s) AS rn
+    FROM events_fact e
+    JOIN converters c ON c.user_id = e.user_id
+    WHERE e.%sevent_time >= ? AND e.event_time < ?
+)
+SELECT dim_val, COUNT(DISTINCT user_id) AS converter_uv
+FROM touchpoint
+WHERE rn = 1 AND dim_val IS NOT NULL AND dim_val <> ''
+GROUP BY dim_val
+ORDER BY converter_uv DESC
+LIMIT 20`,
+		tenantCond, dim, orderDir, tenantCond)
+	args = append(args, time.UnixMilli(startMs), time.UnixMilli(endMs))
+
+	type row struct {
+		DimVal     string `db:"dim_val"`
+		ConverterUv int64  `db:"converter_uv"`
+	}
+	var rows []row
+	if err := r.db.SelectContext(ctx, &rows, q, args...); err != nil {
+		r.log.Errorf("Attribution query failed: %v", err)
+		return nil, ubaV1.ErrorInternalServerError("attribution query failed")
+	}
+
+	var total int64
+	buckets := make([]*ubaV1.AttributionBucket, 0, len(rows))
+	for _, rw := range rows {
+		total += rw.ConverterUv
+		buckets = append(buckets, &ubaV1.AttributionBucket{
+			Label:       rw.DimVal,
+			ConverterUv: rw.ConverterUv,
+		})
+	}
+	for _, b := range buckets {
+		if total > 0 {
+			b.Percentage = float64(b.ConverterUv) / float64(total)
+		}
+	}
+
+	model := req.GetModel()
+	if model == "" {
+		model = "last_touch"
+	}
+	return &ubaV1.AttributionResponse{
+		Buckets:         buckets,
+		Model:           model,
+		Dimension:       dim,
+		TotalConverters: total,
+	}, nil
+}
+
+// ============================================================================
+// 分布分析（事件时长分桶 + 分位数）
+// 参考模板：backend/sql/doris/query.sql §14
+// ============================================================================
+
+func (r *AnalyticsRepo) Distribution(ctx context.Context, req *ubaV1.DistributionRequest) (*ubaV1.DistributionResponse, error) {
+	if req.GetEventName() == "" {
+		return nil, ubaV1.ErrorBadRequest("event_name is required")
+	}
+	startMs, endMs := normTimeRange(req.GetTimeRange())
+
+	tenantCond := ""
+	args := []any{req.GetEventName(), time.UnixMilli(startMs), time.UnixMilli(endMs)}
+	if v := req.GetAppId(); v != 0 {
+		tenantCond = "tenant_id = ? AND "
+		args = append([]any{v}, args...)
+	}
+
+	// 分桶分布：0-10s / 10-60s / 1-5min / 5min+
+	bucketQ := fmt.Sprintf(`
+SELECT
+    CASE
+        WHEN duration_ms < 10000  THEN '0_10s'
+        WHEN duration_ms < 60000  THEN '10_60s'
+        WHEN duration_ms < 300000 THEN '1_5min'
+        ELSE '5min_plus'
+    END AS duration_bucket,
+    COUNT(*) AS cnt
+FROM events_fact
+WHERE %sevent_name = ? AND duration_ms > 0 AND event_time >= ? AND event_time < ?
+GROUP BY duration_bucket
+ORDER BY duration_bucket`, tenantCond)
+
+	type bucketRow struct {
+		Bucket string `db:"duration_bucket"`
+		Cnt    int64  `db:"cnt"`
+	}
+	var bRows []bucketRow
+	if err := r.db.SelectContext(ctx, &bRows, bucketQ, args...); err != nil {
+		r.log.Errorf("Distribution bucket query failed: %v", err)
+		return nil, ubaV1.ErrorInternalServerError("distribution query failed")
+	}
+
+	var bucketTotal int64
+	for _, br := range bRows {
+		bucketTotal += br.Cnt
+	}
+	buckets := make([]*ubaV1.DistributionBucket, 0, len(bRows))
+	for _, br := range bRows {
+		var pct float64
+		if bucketTotal > 0 {
+			pct = float64(br.Cnt) / float64(bucketTotal)
+		}
+		buckets = append(buckets, &ubaV1.DistributionBucket{
+			Bucket:     br.Bucket,
+			Count:      br.Cnt,
+			Percentage: pct,
+		})
+	}
+
+	// 分位数摘要：均值 / P50 / P90 / 最大值
+	summaryQ := fmt.Sprintf(`
+SELECT
+    COUNT(*) AS cnt,
+    ROUND(AVG(duration_ms) / 1000, 2)                      AS avg_sec,
+    ROUND(APPROX_PERCENTILE(duration_ms, 0.5) / 1000, 2)   AS p50_sec,
+    ROUND(APPROX_PERCENTILE(duration_ms, 0.9) / 1000, 2)   AS p90_sec,
+    ROUND(MAX(duration_ms) / 1000, 2)                      AS max_sec
+FROM events_fact
+WHERE %sevent_name = ? AND duration_ms > 0 AND event_time >= ? AND event_time < ?`, tenantCond)
+
+	var s struct {
+		Cnt    int64   `db:"cnt"`
+		AvgSec float64 `db:"avg_sec"`
+		P50Sec float64 `db:"p50_sec"`
+		P90Sec float64 `db:"p90_sec"`
+		MaxSec float64 `db:"max_sec"`
+	}
+	if err := r.db.GetContext(ctx, &s, summaryQ, args...); err != nil && err != sql.ErrNoRows {
+		r.log.Errorf("Distribution summary query failed: %v", err)
+		return nil, ubaV1.ErrorInternalServerError("distribution summary query failed")
+	}
+
+	return &ubaV1.DistributionResponse{
+		Buckets: buckets,
+		Summary: &ubaV1.DistributionSummary{
+			AvgSec: s.AvgSec,
+			P50Sec: s.P50Sec,
+			P90Sec: s.P90Sec,
+			MaxSec: s.MaxSec,
+			Count:  s.Cnt,
+		},
+	}, nil
+}
+
+// ============================================================================
+// 行为序列（指定用户的行为时间线）
+// 参考模板：backend/sql/doris/query.sql §9.3
+// ============================================================================
+
+func (r *AnalyticsRepo) BehaviorSequence(ctx context.Context, req *ubaV1.BehaviorSequenceRequest) (*ubaV1.BehaviorSequenceResponse, error) {
+	if req.GetUserId() == 0 {
+		return nil, ubaV1.ErrorBadRequest("user_id is required")
+	}
+	startMs, endMs := normTimeRange(req.GetTimeRange())
+	limit := int64(req.GetLimit())
+	if limit <= 0 || limit > 1000 {
+		limit = 100
+	}
+
+	where := []string{"user_id = ?", "event_time >= ?", "event_time < ?"}
+	args := []any{req.GetUserId(), time.UnixMilli(startMs), time.UnixMilli(endMs)}
+	if v := req.GetAppId(); v != 0 {
+		where = append([]string{"tenant_id = ?"}, where...)
+		args = append([]any{v}, args...)
+	}
+	if en := req.GetEventName(); en != "" {
+		where = append(where, "event_name = ?")
+		args = append(args, en)
+	}
+	args = append(args, limit)
+
+	q := fmt.Sprintf(`
+SELECT event_time, event_name, session_id, session_seq, referer, platform, channel
+FROM events_fact
+WHERE %s
+ORDER BY event_time ASC
+LIMIT ?`, strings.Join(where, " AND "))
+
+	type evRow struct {
+		EventTime  *time.Time `db:"event_time"`
+		EventName  *string    `db:"event_name"`
+		SessionID  *string    `db:"session_id"`
+		SessionSeq *uint32    `db:"session_seq"`
+		Referer    *string    `db:"referer"`
+		Platform   *string    `db:"platform"`
+		Channel    *string    `db:"channel"`
+	}
+	var rows []evRow
+	if err := r.db.SelectContext(ctx, &rows, q, args...); err != nil {
+		r.log.Errorf("BehaviorSequence query failed: %v", err)
+		return nil, ubaV1.ErrorInternalServerError("behavior sequence query failed")
+	}
+
+	events := make([]*ubaV1.SequenceEvent, 0, len(rows))
+	for _, rw := range rows {
+		ev := &ubaV1.SequenceEvent{EventName: derefStr(rw.EventName)}
+		if rw.EventTime != nil {
+			ev.Timestamp = rw.EventTime.UnixMilli()
+		}
+		if rw.SessionID != nil {
+			ev.SessionId = rw.SessionID
+		}
+		if rw.SessionSeq != nil {
+			ev.SessionSeq = rw.SessionSeq
+		}
+		if rw.Referer != nil {
+			ev.Referer = rw.Referer
+		}
+		if rw.Platform != nil {
+			ev.Platform = rw.Platform
+		}
+		if rw.Channel != nil {
+			ev.Channel = rw.Channel
+		}
+		events = append(events, ev)
+	}
+
+	return &ubaV1.BehaviorSequenceResponse{
+		UserId: req.GetUserId(),
+		Events: events,
+	}, nil
+}
+
+// ============================================================================
+// 用户分群/圈选（做过/未做过某事件的人群筛选）
+// 参考模板：backend/sql/doris/query.sql §17
+// MVP 实现：取 include[0]（做过）+ 可选 exclude[0]（未做过）+ min_times 次数阈值。
+// ============================================================================
+
+func (r *AnalyticsRepo) Segmentation(ctx context.Context, req *ubaV1.SegmentationRequest) (*ubaV1.SegmentationResponse, error) {
+	if len(req.GetInclude()) == 0 {
+		return nil, ubaV1.ErrorBadRequest("at least one include condition is required")
+	}
+	startMs, endMs := normTimeRange(req.GetTimeRange())
+	limit := int64(req.GetLimit())
+	if limit <= 0 || limit > 50000 {
+		limit = 5000
+	}
+
+	inc := req.GetInclude()[0]
+	incTimes := int64(inc.GetMinTimes())
+	if incTimes <= 0 {
+		incTimes = 1
+	}
+
+	tenantCond := ""
+	args := []any{inc.GetEventName(), time.UnixMilli(startMs), time.UnixMilli(endMs)}
+	if v := req.GetAppId(); v != 0 {
+		tenantCond = "tenant_id = ? AND "
+		args = append([]any{v}, args...)
+	}
+
+	// 基础：做过 include 事件且达到 min_times 次的用户。
+	q := fmt.Sprintf(`
+SELECT user_id
+FROM events_fact
+WHERE %sevent_name = ? AND event_time >= ? AND event_time < ?
+GROUP BY user_id
+HAVING COUNT(*) >= ?`, tenantCond)
+	args = append(args, incTimes)
+
+	// 可选排除：排除做过 exclude[0] 事件的用户。
+	if excList := req.GetExclude(); len(excList) > 0 && excList[0].GetEventName() != "" {
+		exc := excList[0]
+		q = fmt.Sprintf(`
+SELECT a.user_id FROM (%s) a
+WHERE NOT EXISTS (
+    SELECT 1 FROM events_fact b
+    WHERE b.%suser_id = a.user_id AND b.event_name = ? AND b.event_time >= ? AND b.event_time < ?
+)`, q, tenantCond)
+		args = append(args, exc.GetEventName(), time.UnixMilli(startMs), time.UnixMilli(endMs))
+	}
+
+	q = q + " LIMIT ?"
+	args = append(args, limit)
+
+	var userIDs []uint32
+	if err := r.db.SelectContext(ctx, &userIDs, q, args...); err != nil {
+		r.log.Errorf("Segmentation query failed: %v", err)
+		return nil, ubaV1.ErrorInternalServerError("segmentation query failed")
+	}
+
+	return &ubaV1.SegmentationResponse{
+		UserIds: userIDs,
+		Total:   int64(len(userIDs)),
+	}, nil
+}
+
+// ============================================================================
 // 工具函数
 // ============================================================================
+
+// derefStr 安全解引用字符串指针，nil 返回空串。
+func derefStr(p *string) string {
+	if p == nil {
+		return ""
+	}
+	return *p
+}
 
 func normTimeRange(tr *ubaV1.TimeRange) (int64, int64) {
 	start := tr.GetStartMs()

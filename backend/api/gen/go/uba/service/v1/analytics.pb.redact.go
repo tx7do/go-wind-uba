@@ -95,6 +95,50 @@ func (s *redactedAnalyticsServiceServer) ActiveUsers(ctx context.Context, in *Ac
 	return res, err
 }
 
+// Attribution is the redacted wrapper for the actual AnalyticsServiceServer.Attribution method
+// Unary RPC
+func (s *redactedAnalyticsServiceServer) Attribution(ctx context.Context, in *AttributionRequest) (*AttributionResponse, error) {
+	res, err := s.srv.Attribution(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
+// Distribution is the redacted wrapper for the actual AnalyticsServiceServer.Distribution method
+// Unary RPC
+func (s *redactedAnalyticsServiceServer) Distribution(ctx context.Context, in *DistributionRequest) (*DistributionResponse, error) {
+	res, err := s.srv.Distribution(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
+// BehaviorSequence is the redacted wrapper for the actual AnalyticsServiceServer.BehaviorSequence method
+// Unary RPC
+func (s *redactedAnalyticsServiceServer) BehaviorSequence(ctx context.Context, in *BehaviorSequenceRequest) (*BehaviorSequenceResponse, error) {
+	res, err := s.srv.BehaviorSequence(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
+// Segmentation is the redacted wrapper for the actual AnalyticsServiceServer.Segmentation method
+// Unary RPC
+func (s *redactedAnalyticsServiceServer) Segmentation(ctx context.Context, in *SegmentationRequest) (*SegmentationResponse, error) {
+	res, err := s.srv.Segmentation(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
 // Redact method implementation for TimeRange
 func (x *TimeRange) Redact() string {
 	if x == nil {
@@ -346,5 +390,205 @@ func (x *ActiveUsersResponse) Redact() string {
 	// Safe field: Points
 
 	// Safe field: LatestDau
+	return x.String()
+}
+
+// Redact method implementation for AttributionRequest
+func (x *AttributionRequest) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: TimeRange
+
+	// Safe field: ConversionEvent
+
+	// Safe field: Dimension
+
+	// Safe field: Model
+
+	// Safe field: AppId
+	return x.String()
+}
+
+// Redact method implementation for AttributionBucket
+func (x *AttributionBucket) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Label
+
+	// Safe field: ConverterUv
+
+	// Safe field: Percentage
+	return x.String()
+}
+
+// Redact method implementation for AttributionResponse
+func (x *AttributionResponse) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Buckets
+
+	// Safe field: Model
+
+	// Safe field: Dimension
+
+	// Safe field: TotalConverters
+	return x.String()
+}
+
+// Redact method implementation for DistributionRequest
+func (x *DistributionRequest) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: TimeRange
+
+	// Safe field: EventName
+
+	// Safe field: AppId
+	return x.String()
+}
+
+// Redact method implementation for DistributionBucket
+func (x *DistributionBucket) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Bucket
+
+	// Safe field: Count
+
+	// Safe field: Percentage
+	return x.String()
+}
+
+// Redact method implementation for DistributionSummary
+func (x *DistributionSummary) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: AvgSec
+
+	// Safe field: P50Sec
+
+	// Safe field: P90Sec
+
+	// Safe field: MaxSec
+
+	// Safe field: Count
+	return x.String()
+}
+
+// Redact method implementation for DistributionResponse
+func (x *DistributionResponse) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Buckets
+
+	// Safe field: Summary
+	return x.String()
+}
+
+// Redact method implementation for BehaviorSequenceRequest
+func (x *BehaviorSequenceRequest) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: TimeRange
+
+	// Safe field: UserId
+
+	// Safe field: AppId
+
+	// Safe field: EventName
+
+	// Safe field: Limit
+	return x.String()
+}
+
+// Redact method implementation for SequenceEvent
+func (x *SequenceEvent) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Timestamp
+
+	// Safe field: EventName
+
+	// Safe field: SessionId
+
+	// Safe field: SessionSeq
+
+	// Safe field: Referer
+
+	// Safe field: Platform
+
+	// Safe field: Channel
+	return x.String()
+}
+
+// Redact method implementation for BehaviorSequenceResponse
+func (x *BehaviorSequenceResponse) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: UserId
+
+	// Safe field: Events
+	return x.String()
+}
+
+// Redact method implementation for SegmentCondition
+func (x *SegmentCondition) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: EventName
+
+	// Safe field: MinTimes
+	return x.String()
+}
+
+// Redact method implementation for SegmentationRequest
+func (x *SegmentationRequest) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: TimeRange
+
+	// Safe field: Include
+
+	// Safe field: Exclude
+
+	// Safe field: AppId
+
+	// Safe field: Limit
+	return x.String()
+}
+
+// Redact method implementation for SegmentationResponse
+func (x *SegmentationResponse) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: UserIds
+
+	// Safe field: Total
 	return x.String()
 }

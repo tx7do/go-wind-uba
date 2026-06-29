@@ -21,6 +21,18 @@ service AnalyticsService {
 
   // 活跃用户（DAU/WAU/MAU）
   rpc ActiveUsers(ActiveUsersRequest) returns (ActiveUsersResponse) {}
+
+  // 归因分析（首触/末触渠道归因）
+  rpc Attribution(AttributionRequest) returns (AttributionResponse) {}
+
+  // 分布分析（事件时长分桶 + 分位数）
+  rpc Distribution(DistributionRequest) returns (DistributionResponse) {}
+
+  // 行为序列（指定用户的行为时间线）
+  rpc BehaviorSequence(BehaviorSequenceRequest) returns (BehaviorSequenceResponse) {}
+
+  // 用户分群/圈选（做过/未做过某事件的人群筛选）
+  rpc Segmentation(SegmentationRequest) returns (SegmentationResponse) {}
 }
 
 // 时间粒度
@@ -223,4 +235,147 @@ message ActiveUsersResponse {
   repeated ActiveUsersPoint points = 1 [json_name = "points"];
   // 最新一天的 DAU
   int64 latest_dau = 2 [json_name = "latestDau"];
+}
+
+// ============== 归因分析 ==============
+message AttributionRequest {
+  // 时间范围
+  TimeRange time_range = 1 [json_name = "timeRange"];
+  // 转化事件名（如 pay_success）
+  string conversion_event = 2 [json_name = "conversionEvent"];
+  // 归因维度：channel 渠道（默认）/ referer 来源页
+  optional string dimension = 3 [json_name = "dimension"];
+  // 归因模型：last_touch 末次触达（默认）/ first_touch 首次触达
+  optional string model = 4 [json_name = "model"];
+  // 应用 ID 过滤（可选）
+  optional uint32 app_id = 5 [json_name = "appId"];
+}
+
+message AttributionBucket {
+  // 归因维度值（渠道/来源页）
+  string label = 1 [json_name = "label"];
+  // 该触点的转化用户数（去重）
+  int64 converter_uv = 2 [json_name = "converterUv"];
+  // 占比（0-1）
+  double percentage = 3 [json_name = "percentage"];
+}
+
+message AttributionResponse {
+  // 各触点的归因贡献
+  repeated AttributionBucket buckets = 1 [json_name = "buckets"];
+  // 使用的归因模型
+  string model = 2 [json_name = "model"];
+  // 使用的归因维度
+  string dimension = 3 [json_name = "dimension"];
+  // 转化用户总数
+  int64 total_converters = 4 [json_name = "totalConverters"];
+}
+
+// ============== 分布分析 ==============
+message DistributionRequest {
+  // 时间范围
+  TimeRange time_range = 1 [json_name = "timeRange"];
+  // 目标事件名（如 page_view）
+  string event_name = 2 [json_name = "eventName"];
+  // 应用 ID 过滤（可选）
+  optional uint32 app_id = 3 [json_name = "appId"];
+}
+
+// 分布分析分桶
+message DistributionBucket {
+  // 分桶标签（如 0_10s / 10_60s / 1_5min / 5min_plus）
+  string bucket = 1 [json_name = "bucket"];
+  // 该桶事件数
+  int64 count = 2 [json_name = "count"];
+  // 占比（0-1）
+  double percentage = 3 [json_name = "percentage"];
+}
+
+// 分布分析分位数摘要
+message DistributionSummary {
+  // 平均时长（秒）
+  double avg_sec = 1 [json_name = "avgSec"];
+  // P50（中位数，秒）
+  double p50_sec = 2 [json_name = "p50Sec"];
+  // P90（秒）
+  double p90_sec = 3 [json_name = "p90Sec"];
+  // 最大值（秒）
+  double max_sec = 4 [json_name = "maxSec"];
+  // 总事件数
+  int64 count = 5 [json_name = "count"];
+}
+
+message DistributionResponse {
+  // 各分桶分布
+  repeated DistributionBucket buckets = 1 [json_name = "buckets"];
+  // 分位数摘要
+  DistributionSummary summary = 2 [json_name = "summary"];
+}
+
+// ============== 行为序列 ==============
+message BehaviorSequenceRequest {
+  // 时间范围
+  TimeRange time_range = 1 [json_name = "timeRange"];
+  // 用户 ID
+  uint32 user_id = 2 [json_name = "userId"];
+  // 应用 ID 过滤（可选）
+  optional uint32 app_id = 3 [json_name = "appId"];
+  // 事件名过滤（可选，空表示全部事件）
+  optional string event_name = 4 [json_name = "eventName"];
+  // 最多返回事件数（默认 100）
+  optional uint32 limit = 5 [json_name = "limit"];
+}
+
+// 序列中的一个行为事件
+message SequenceEvent {
+  // 事件时间（Unix 毫秒）
+  int64 timestamp = 1 [json_name = "timestamp"];
+  // 事件名
+  string event_name = 2 [json_name = "eventName"];
+  // 会话 ID
+  optional string session_id = 3 [json_name = "sessionId"];
+  // 会话内序号
+  optional uint32 session_seq = 4 [json_name = "sessionSeq"];
+  // 来源页
+  optional string referer = 5 [json_name = "referer"];
+  // 平台
+  optional string platform = 6 [json_name = "platform"];
+  // 渠道
+  optional string channel = 7 [json_name = "channel"];
+}
+
+message BehaviorSequenceResponse {
+  // 用户 ID
+  uint32 user_id = 1 [json_name = "userId"];
+  // 按时间升序排列的行为事件
+  repeated SequenceEvent events = 2 [json_name = "events"];
+}
+
+// ============== 用户分群/圈选 ==============
+// 单个圈选条件
+message SegmentCondition {
+  // 事件名
+  string event_name = 1 [json_name = "eventName"];
+  // 至少触发次数（默认 1，即"做过"）
+  optional uint32 min_times = 2 [json_name = "minTimes"];
+}
+
+message SegmentationRequest {
+  // 时间范围
+  TimeRange time_range = 1 [json_name = "timeRange"];
+  // 必须做过的事件（满足任一即纳入人群的"做过"集合）
+  repeated SegmentCondition include = 2 [json_name = "include"];
+  // 必须未做过的事件（做过任一即排除）
+  repeated SegmentCondition exclude = 3 [json_name = "exclude"];
+  // 应用 ID 过滤（可选）
+  optional uint32 app_id = 4 [json_name = "appId"];
+  // 最多返回用户数（默认 5000）
+  optional uint32 limit = 5 [json_name = "limit"];
+}
+
+message SegmentationResponse {
+  // 命中的用户 ID 列表
+  repeated uint32 user_ids = 1 [json_name = "userIds"];
+  // 命中用户总数
+  int64 total = 2 [json_name = "total"];
 }

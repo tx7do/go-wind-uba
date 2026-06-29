@@ -1234,6 +1234,914 @@ func (x *ActiveUsersResponse) GetLatestDau() int64 {
 	return 0
 }
 
+// ============== 归因分析 ==============
+type AttributionRequest struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 时间范围
+	TimeRange *TimeRange `protobuf:"bytes,1,opt,name=time_range,json=timeRange,proto3" json:"time_range,omitempty"`
+	// 转化事件名（如 pay_success）
+	ConversionEvent string `protobuf:"bytes,2,opt,name=conversion_event,json=conversionEvent,proto3" json:"conversion_event,omitempty"`
+	// 归因维度：channel 渠道（默认）/ referer 来源页
+	Dimension *string `protobuf:"bytes,3,opt,name=dimension,proto3,oneof" json:"dimension,omitempty"`
+	// 归因模型：last_touch 末次触达（默认）/ first_touch 首次触达
+	Model *string `protobuf:"bytes,4,opt,name=model,proto3,oneof" json:"model,omitempty"`
+	// 应用 ID 过滤（可选）
+	AppId         *uint32 `protobuf:"varint,5,opt,name=app_id,json=appId,proto3,oneof" json:"app_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AttributionRequest) Reset() {
+	*x = AttributionRequest{}
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[17]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AttributionRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AttributionRequest) ProtoMessage() {}
+
+func (x *AttributionRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[17]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AttributionRequest.ProtoReflect.Descriptor instead.
+func (*AttributionRequest) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{17}
+}
+
+func (x *AttributionRequest) GetTimeRange() *TimeRange {
+	if x != nil {
+		return x.TimeRange
+	}
+	return nil
+}
+
+func (x *AttributionRequest) GetConversionEvent() string {
+	if x != nil {
+		return x.ConversionEvent
+	}
+	return ""
+}
+
+func (x *AttributionRequest) GetDimension() string {
+	if x != nil && x.Dimension != nil {
+		return *x.Dimension
+	}
+	return ""
+}
+
+func (x *AttributionRequest) GetModel() string {
+	if x != nil && x.Model != nil {
+		return *x.Model
+	}
+	return ""
+}
+
+func (x *AttributionRequest) GetAppId() uint32 {
+	if x != nil && x.AppId != nil {
+		return *x.AppId
+	}
+	return 0
+}
+
+type AttributionBucket struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 归因维度值（渠道/来源页）
+	Label string `protobuf:"bytes,1,opt,name=label,proto3" json:"label,omitempty"`
+	// 该触点的转化用户数（去重）
+	ConverterUv int64 `protobuf:"varint,2,opt,name=converter_uv,json=converterUv,proto3" json:"converter_uv,omitempty"`
+	// 占比（0-1）
+	Percentage    float64 `protobuf:"fixed64,3,opt,name=percentage,proto3" json:"percentage,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AttributionBucket) Reset() {
+	*x = AttributionBucket{}
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[18]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AttributionBucket) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AttributionBucket) ProtoMessage() {}
+
+func (x *AttributionBucket) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[18]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AttributionBucket.ProtoReflect.Descriptor instead.
+func (*AttributionBucket) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{18}
+}
+
+func (x *AttributionBucket) GetLabel() string {
+	if x != nil {
+		return x.Label
+	}
+	return ""
+}
+
+func (x *AttributionBucket) GetConverterUv() int64 {
+	if x != nil {
+		return x.ConverterUv
+	}
+	return 0
+}
+
+func (x *AttributionBucket) GetPercentage() float64 {
+	if x != nil {
+		return x.Percentage
+	}
+	return 0
+}
+
+type AttributionResponse struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 各触点的归因贡献
+	Buckets []*AttributionBucket `protobuf:"bytes,1,rep,name=buckets,proto3" json:"buckets,omitempty"`
+	// 使用的归因模型
+	Model string `protobuf:"bytes,2,opt,name=model,proto3" json:"model,omitempty"`
+	// 使用的归因维度
+	Dimension string `protobuf:"bytes,3,opt,name=dimension,proto3" json:"dimension,omitempty"`
+	// 转化用户总数
+	TotalConverters int64 `protobuf:"varint,4,opt,name=total_converters,json=totalConverters,proto3" json:"total_converters,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *AttributionResponse) Reset() {
+	*x = AttributionResponse{}
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[19]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AttributionResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AttributionResponse) ProtoMessage() {}
+
+func (x *AttributionResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[19]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AttributionResponse.ProtoReflect.Descriptor instead.
+func (*AttributionResponse) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{19}
+}
+
+func (x *AttributionResponse) GetBuckets() []*AttributionBucket {
+	if x != nil {
+		return x.Buckets
+	}
+	return nil
+}
+
+func (x *AttributionResponse) GetModel() string {
+	if x != nil {
+		return x.Model
+	}
+	return ""
+}
+
+func (x *AttributionResponse) GetDimension() string {
+	if x != nil {
+		return x.Dimension
+	}
+	return ""
+}
+
+func (x *AttributionResponse) GetTotalConverters() int64 {
+	if x != nil {
+		return x.TotalConverters
+	}
+	return 0
+}
+
+// ============== 分布分析 ==============
+type DistributionRequest struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 时间范围
+	TimeRange *TimeRange `protobuf:"bytes,1,opt,name=time_range,json=timeRange,proto3" json:"time_range,omitempty"`
+	// 目标事件名（如 page_view）
+	EventName string `protobuf:"bytes,2,opt,name=event_name,json=eventName,proto3" json:"event_name,omitempty"`
+	// 应用 ID 过滤（可选）
+	AppId         *uint32 `protobuf:"varint,3,opt,name=app_id,json=appId,proto3,oneof" json:"app_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DistributionRequest) Reset() {
+	*x = DistributionRequest{}
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[20]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DistributionRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DistributionRequest) ProtoMessage() {}
+
+func (x *DistributionRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[20]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DistributionRequest.ProtoReflect.Descriptor instead.
+func (*DistributionRequest) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{20}
+}
+
+func (x *DistributionRequest) GetTimeRange() *TimeRange {
+	if x != nil {
+		return x.TimeRange
+	}
+	return nil
+}
+
+func (x *DistributionRequest) GetEventName() string {
+	if x != nil {
+		return x.EventName
+	}
+	return ""
+}
+
+func (x *DistributionRequest) GetAppId() uint32 {
+	if x != nil && x.AppId != nil {
+		return *x.AppId
+	}
+	return 0
+}
+
+// 分布分析分桶
+type DistributionBucket struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 分桶标签（如 0_10s / 10_60s / 1_5min / 5min_plus）
+	Bucket string `protobuf:"bytes,1,opt,name=bucket,proto3" json:"bucket,omitempty"`
+	// 该桶事件数
+	Count int64 `protobuf:"varint,2,opt,name=count,proto3" json:"count,omitempty"`
+	// 占比（0-1）
+	Percentage    float64 `protobuf:"fixed64,3,opt,name=percentage,proto3" json:"percentage,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DistributionBucket) Reset() {
+	*x = DistributionBucket{}
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[21]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DistributionBucket) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DistributionBucket) ProtoMessage() {}
+
+func (x *DistributionBucket) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[21]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DistributionBucket.ProtoReflect.Descriptor instead.
+func (*DistributionBucket) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{21}
+}
+
+func (x *DistributionBucket) GetBucket() string {
+	if x != nil {
+		return x.Bucket
+	}
+	return ""
+}
+
+func (x *DistributionBucket) GetCount() int64 {
+	if x != nil {
+		return x.Count
+	}
+	return 0
+}
+
+func (x *DistributionBucket) GetPercentage() float64 {
+	if x != nil {
+		return x.Percentage
+	}
+	return 0
+}
+
+// 分布分析分位数摘要
+type DistributionSummary struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 平均时长（秒）
+	AvgSec float64 `protobuf:"fixed64,1,opt,name=avg_sec,json=avgSec,proto3" json:"avg_sec,omitempty"`
+	// P50（中位数，秒）
+	P50Sec float64 `protobuf:"fixed64,2,opt,name=p50_sec,json=p50Sec,proto3" json:"p50_sec,omitempty"`
+	// P90（秒）
+	P90Sec float64 `protobuf:"fixed64,3,opt,name=p90_sec,json=p90Sec,proto3" json:"p90_sec,omitempty"`
+	// 最大值（秒）
+	MaxSec float64 `protobuf:"fixed64,4,opt,name=max_sec,json=maxSec,proto3" json:"max_sec,omitempty"`
+	// 总事件数
+	Count         int64 `protobuf:"varint,5,opt,name=count,proto3" json:"count,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DistributionSummary) Reset() {
+	*x = DistributionSummary{}
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[22]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DistributionSummary) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DistributionSummary) ProtoMessage() {}
+
+func (x *DistributionSummary) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[22]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DistributionSummary.ProtoReflect.Descriptor instead.
+func (*DistributionSummary) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{22}
+}
+
+func (x *DistributionSummary) GetAvgSec() float64 {
+	if x != nil {
+		return x.AvgSec
+	}
+	return 0
+}
+
+func (x *DistributionSummary) GetP50Sec() float64 {
+	if x != nil {
+		return x.P50Sec
+	}
+	return 0
+}
+
+func (x *DistributionSummary) GetP90Sec() float64 {
+	if x != nil {
+		return x.P90Sec
+	}
+	return 0
+}
+
+func (x *DistributionSummary) GetMaxSec() float64 {
+	if x != nil {
+		return x.MaxSec
+	}
+	return 0
+}
+
+func (x *DistributionSummary) GetCount() int64 {
+	if x != nil {
+		return x.Count
+	}
+	return 0
+}
+
+type DistributionResponse struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 各分桶分布
+	Buckets []*DistributionBucket `protobuf:"bytes,1,rep,name=buckets,proto3" json:"buckets,omitempty"`
+	// 分位数摘要
+	Summary       *DistributionSummary `protobuf:"bytes,2,opt,name=summary,proto3" json:"summary,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DistributionResponse) Reset() {
+	*x = DistributionResponse{}
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[23]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DistributionResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DistributionResponse) ProtoMessage() {}
+
+func (x *DistributionResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[23]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DistributionResponse.ProtoReflect.Descriptor instead.
+func (*DistributionResponse) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{23}
+}
+
+func (x *DistributionResponse) GetBuckets() []*DistributionBucket {
+	if x != nil {
+		return x.Buckets
+	}
+	return nil
+}
+
+func (x *DistributionResponse) GetSummary() *DistributionSummary {
+	if x != nil {
+		return x.Summary
+	}
+	return nil
+}
+
+// ============== 行为序列 ==============
+type BehaviorSequenceRequest struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 时间范围
+	TimeRange *TimeRange `protobuf:"bytes,1,opt,name=time_range,json=timeRange,proto3" json:"time_range,omitempty"`
+	// 用户 ID
+	UserId uint32 `protobuf:"varint,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	// 应用 ID 过滤（可选）
+	AppId *uint32 `protobuf:"varint,3,opt,name=app_id,json=appId,proto3,oneof" json:"app_id,omitempty"`
+	// 事件名过滤（可选，空表示全部事件）
+	EventName *string `protobuf:"bytes,4,opt,name=event_name,json=eventName,proto3,oneof" json:"event_name,omitempty"`
+	// 最多返回事件数（默认 100）
+	Limit         *uint32 `protobuf:"varint,5,opt,name=limit,proto3,oneof" json:"limit,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *BehaviorSequenceRequest) Reset() {
+	*x = BehaviorSequenceRequest{}
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[24]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *BehaviorSequenceRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*BehaviorSequenceRequest) ProtoMessage() {}
+
+func (x *BehaviorSequenceRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[24]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use BehaviorSequenceRequest.ProtoReflect.Descriptor instead.
+func (*BehaviorSequenceRequest) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{24}
+}
+
+func (x *BehaviorSequenceRequest) GetTimeRange() *TimeRange {
+	if x != nil {
+		return x.TimeRange
+	}
+	return nil
+}
+
+func (x *BehaviorSequenceRequest) GetUserId() uint32 {
+	if x != nil {
+		return x.UserId
+	}
+	return 0
+}
+
+func (x *BehaviorSequenceRequest) GetAppId() uint32 {
+	if x != nil && x.AppId != nil {
+		return *x.AppId
+	}
+	return 0
+}
+
+func (x *BehaviorSequenceRequest) GetEventName() string {
+	if x != nil && x.EventName != nil {
+		return *x.EventName
+	}
+	return ""
+}
+
+func (x *BehaviorSequenceRequest) GetLimit() uint32 {
+	if x != nil && x.Limit != nil {
+		return *x.Limit
+	}
+	return 0
+}
+
+// 序列中的一个行为事件
+type SequenceEvent struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 事件时间（Unix 毫秒）
+	Timestamp int64 `protobuf:"varint,1,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
+	// 事件名
+	EventName string `protobuf:"bytes,2,opt,name=event_name,json=eventName,proto3" json:"event_name,omitempty"`
+	// 会话 ID
+	SessionId *string `protobuf:"bytes,3,opt,name=session_id,json=sessionId,proto3,oneof" json:"session_id,omitempty"`
+	// 会话内序号
+	SessionSeq *uint32 `protobuf:"varint,4,opt,name=session_seq,json=sessionSeq,proto3,oneof" json:"session_seq,omitempty"`
+	// 来源页
+	Referer *string `protobuf:"bytes,5,opt,name=referer,proto3,oneof" json:"referer,omitempty"`
+	// 平台
+	Platform *string `protobuf:"bytes,6,opt,name=platform,proto3,oneof" json:"platform,omitempty"`
+	// 渠道
+	Channel       *string `protobuf:"bytes,7,opt,name=channel,proto3,oneof" json:"channel,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SequenceEvent) Reset() {
+	*x = SequenceEvent{}
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[25]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SequenceEvent) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SequenceEvent) ProtoMessage() {}
+
+func (x *SequenceEvent) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[25]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SequenceEvent.ProtoReflect.Descriptor instead.
+func (*SequenceEvent) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{25}
+}
+
+func (x *SequenceEvent) GetTimestamp() int64 {
+	if x != nil {
+		return x.Timestamp
+	}
+	return 0
+}
+
+func (x *SequenceEvent) GetEventName() string {
+	if x != nil {
+		return x.EventName
+	}
+	return ""
+}
+
+func (x *SequenceEvent) GetSessionId() string {
+	if x != nil && x.SessionId != nil {
+		return *x.SessionId
+	}
+	return ""
+}
+
+func (x *SequenceEvent) GetSessionSeq() uint32 {
+	if x != nil && x.SessionSeq != nil {
+		return *x.SessionSeq
+	}
+	return 0
+}
+
+func (x *SequenceEvent) GetReferer() string {
+	if x != nil && x.Referer != nil {
+		return *x.Referer
+	}
+	return ""
+}
+
+func (x *SequenceEvent) GetPlatform() string {
+	if x != nil && x.Platform != nil {
+		return *x.Platform
+	}
+	return ""
+}
+
+func (x *SequenceEvent) GetChannel() string {
+	if x != nil && x.Channel != nil {
+		return *x.Channel
+	}
+	return ""
+}
+
+type BehaviorSequenceResponse struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 用户 ID
+	UserId uint32 `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	// 按时间升序排列的行为事件
+	Events        []*SequenceEvent `protobuf:"bytes,2,rep,name=events,proto3" json:"events,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *BehaviorSequenceResponse) Reset() {
+	*x = BehaviorSequenceResponse{}
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[26]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *BehaviorSequenceResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*BehaviorSequenceResponse) ProtoMessage() {}
+
+func (x *BehaviorSequenceResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[26]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use BehaviorSequenceResponse.ProtoReflect.Descriptor instead.
+func (*BehaviorSequenceResponse) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{26}
+}
+
+func (x *BehaviorSequenceResponse) GetUserId() uint32 {
+	if x != nil {
+		return x.UserId
+	}
+	return 0
+}
+
+func (x *BehaviorSequenceResponse) GetEvents() []*SequenceEvent {
+	if x != nil {
+		return x.Events
+	}
+	return nil
+}
+
+// ============== 用户分群/圈选 ==============
+// 单个圈选条件
+type SegmentCondition struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 事件名
+	EventName string `protobuf:"bytes,1,opt,name=event_name,json=eventName,proto3" json:"event_name,omitempty"`
+	// 至少触发次数（默认 1，即"做过"）
+	MinTimes      *uint32 `protobuf:"varint,2,opt,name=min_times,json=minTimes,proto3,oneof" json:"min_times,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SegmentCondition) Reset() {
+	*x = SegmentCondition{}
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[27]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SegmentCondition) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SegmentCondition) ProtoMessage() {}
+
+func (x *SegmentCondition) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[27]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SegmentCondition.ProtoReflect.Descriptor instead.
+func (*SegmentCondition) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{27}
+}
+
+func (x *SegmentCondition) GetEventName() string {
+	if x != nil {
+		return x.EventName
+	}
+	return ""
+}
+
+func (x *SegmentCondition) GetMinTimes() uint32 {
+	if x != nil && x.MinTimes != nil {
+		return *x.MinTimes
+	}
+	return 0
+}
+
+type SegmentationRequest struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 时间范围
+	TimeRange *TimeRange `protobuf:"bytes,1,opt,name=time_range,json=timeRange,proto3" json:"time_range,omitempty"`
+	// 必须做过的事件（满足任一即纳入人群的"做过"集合）
+	Include []*SegmentCondition `protobuf:"bytes,2,rep,name=include,proto3" json:"include,omitempty"`
+	// 必须未做过的事件（做过任一即排除）
+	Exclude []*SegmentCondition `protobuf:"bytes,3,rep,name=exclude,proto3" json:"exclude,omitempty"`
+	// 应用 ID 过滤（可选）
+	AppId *uint32 `protobuf:"varint,4,opt,name=app_id,json=appId,proto3,oneof" json:"app_id,omitempty"`
+	// 最多返回用户数（默认 5000）
+	Limit         *uint32 `protobuf:"varint,5,opt,name=limit,proto3,oneof" json:"limit,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SegmentationRequest) Reset() {
+	*x = SegmentationRequest{}
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[28]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SegmentationRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SegmentationRequest) ProtoMessage() {}
+
+func (x *SegmentationRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[28]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SegmentationRequest.ProtoReflect.Descriptor instead.
+func (*SegmentationRequest) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{28}
+}
+
+func (x *SegmentationRequest) GetTimeRange() *TimeRange {
+	if x != nil {
+		return x.TimeRange
+	}
+	return nil
+}
+
+func (x *SegmentationRequest) GetInclude() []*SegmentCondition {
+	if x != nil {
+		return x.Include
+	}
+	return nil
+}
+
+func (x *SegmentationRequest) GetExclude() []*SegmentCondition {
+	if x != nil {
+		return x.Exclude
+	}
+	return nil
+}
+
+func (x *SegmentationRequest) GetAppId() uint32 {
+	if x != nil && x.AppId != nil {
+		return *x.AppId
+	}
+	return 0
+}
+
+func (x *SegmentationRequest) GetLimit() uint32 {
+	if x != nil && x.Limit != nil {
+		return *x.Limit
+	}
+	return 0
+}
+
+type SegmentationResponse struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 命中的用户 ID 列表
+	UserIds []uint32 `protobuf:"varint,1,rep,packed,name=user_ids,json=userIds,proto3" json:"user_ids,omitempty"`
+	// 命中用户总数
+	Total         int64 `protobuf:"varint,2,opt,name=total,proto3" json:"total,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SegmentationResponse) Reset() {
+	*x = SegmentationResponse{}
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[29]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SegmentationResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SegmentationResponse) ProtoMessage() {}
+
+func (x *SegmentationResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[29]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SegmentationResponse.ProtoReflect.Descriptor instead.
+func (*SegmentationResponse) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{29}
+}
+
+func (x *SegmentationResponse) GetUserIds() []uint32 {
+	if x != nil {
+		return x.UserIds
+	}
+	return nil
+}
+
+func (x *SegmentationResponse) GetTotal() int64 {
+	if x != nil {
+		return x.Total
+	}
+	return 0
+}
+
 var File_uba_service_v1_analytics_proto protoreflect.FileDescriptor
 
 const file_uba_service_v1_analytics_proto_rawDesc = "" +
@@ -1346,20 +2254,118 @@ const file_uba_service_v1_analytics_proto_rawDesc = "" +
 	"\x13ActiveUsersResponse\x128\n" +
 	"\x06points\x18\x01 \x03(\v2 .uba.service.v1.ActiveUsersPointR\x06points\x12\x1d\n" +
 	"\n" +
-	"latest_dau\x18\x02 \x01(\x03R\tlatestDau*e\n" +
+	"latest_dau\x18\x02 \x01(\x03R\tlatestDau\"\xf6\x01\n" +
+	"\x12AttributionRequest\x128\n" +
+	"\n" +
+	"time_range\x18\x01 \x01(\v2\x19.uba.service.v1.TimeRangeR\ttimeRange\x12)\n" +
+	"\x10conversion_event\x18\x02 \x01(\tR\x0fconversionEvent\x12!\n" +
+	"\tdimension\x18\x03 \x01(\tH\x00R\tdimension\x88\x01\x01\x12\x19\n" +
+	"\x05model\x18\x04 \x01(\tH\x01R\x05model\x88\x01\x01\x12\x1a\n" +
+	"\x06app_id\x18\x05 \x01(\rH\x02R\x05appId\x88\x01\x01B\f\n" +
+	"\n" +
+	"_dimensionB\b\n" +
+	"\x06_modelB\t\n" +
+	"\a_app_id\"l\n" +
+	"\x11AttributionBucket\x12\x14\n" +
+	"\x05label\x18\x01 \x01(\tR\x05label\x12!\n" +
+	"\fconverter_uv\x18\x02 \x01(\x03R\vconverterUv\x12\x1e\n" +
+	"\n" +
+	"percentage\x18\x03 \x01(\x01R\n" +
+	"percentage\"\xb1\x01\n" +
+	"\x13AttributionResponse\x12;\n" +
+	"\abuckets\x18\x01 \x03(\v2!.uba.service.v1.AttributionBucketR\abuckets\x12\x14\n" +
+	"\x05model\x18\x02 \x01(\tR\x05model\x12\x1c\n" +
+	"\tdimension\x18\x03 \x01(\tR\tdimension\x12)\n" +
+	"\x10total_converters\x18\x04 \x01(\x03R\x0ftotalConverters\"\x95\x01\n" +
+	"\x13DistributionRequest\x128\n" +
+	"\n" +
+	"time_range\x18\x01 \x01(\v2\x19.uba.service.v1.TimeRangeR\ttimeRange\x12\x1d\n" +
+	"\n" +
+	"event_name\x18\x02 \x01(\tR\teventName\x12\x1a\n" +
+	"\x06app_id\x18\x03 \x01(\rH\x00R\x05appId\x88\x01\x01B\t\n" +
+	"\a_app_id\"b\n" +
+	"\x12DistributionBucket\x12\x16\n" +
+	"\x06bucket\x18\x01 \x01(\tR\x06bucket\x12\x14\n" +
+	"\x05count\x18\x02 \x01(\x03R\x05count\x12\x1e\n" +
+	"\n" +
+	"percentage\x18\x03 \x01(\x01R\n" +
+	"percentage\"\x8f\x01\n" +
+	"\x13DistributionSummary\x12\x17\n" +
+	"\aavg_sec\x18\x01 \x01(\x01R\x06avgSec\x12\x17\n" +
+	"\ap50_sec\x18\x02 \x01(\x01R\x06p50Sec\x12\x17\n" +
+	"\ap90_sec\x18\x03 \x01(\x01R\x06p90Sec\x12\x17\n" +
+	"\amax_sec\x18\x04 \x01(\x01R\x06maxSec\x12\x14\n" +
+	"\x05count\x18\x05 \x01(\x03R\x05count\"\x93\x01\n" +
+	"\x14DistributionResponse\x12<\n" +
+	"\abuckets\x18\x01 \x03(\v2\".uba.service.v1.DistributionBucketR\abuckets\x12=\n" +
+	"\asummary\x18\x02 \x01(\v2#.uba.service.v1.DistributionSummaryR\asummary\"\xeb\x01\n" +
+	"\x17BehaviorSequenceRequest\x128\n" +
+	"\n" +
+	"time_range\x18\x01 \x01(\v2\x19.uba.service.v1.TimeRangeR\ttimeRange\x12\x17\n" +
+	"\auser_id\x18\x02 \x01(\rR\x06userId\x12\x1a\n" +
+	"\x06app_id\x18\x03 \x01(\rH\x00R\x05appId\x88\x01\x01\x12\"\n" +
+	"\n" +
+	"event_name\x18\x04 \x01(\tH\x01R\teventName\x88\x01\x01\x12\x19\n" +
+	"\x05limit\x18\x05 \x01(\rH\x02R\x05limit\x88\x01\x01B\t\n" +
+	"\a_app_idB\r\n" +
+	"\v_event_nameB\b\n" +
+	"\x06_limit\"\xb9\x02\n" +
+	"\rSequenceEvent\x12\x1c\n" +
+	"\ttimestamp\x18\x01 \x01(\x03R\ttimestamp\x12\x1d\n" +
+	"\n" +
+	"event_name\x18\x02 \x01(\tR\teventName\x12\"\n" +
+	"\n" +
+	"session_id\x18\x03 \x01(\tH\x00R\tsessionId\x88\x01\x01\x12$\n" +
+	"\vsession_seq\x18\x04 \x01(\rH\x01R\n" +
+	"sessionSeq\x88\x01\x01\x12\x1d\n" +
+	"\areferer\x18\x05 \x01(\tH\x02R\areferer\x88\x01\x01\x12\x1f\n" +
+	"\bplatform\x18\x06 \x01(\tH\x03R\bplatform\x88\x01\x01\x12\x1d\n" +
+	"\achannel\x18\a \x01(\tH\x04R\achannel\x88\x01\x01B\r\n" +
+	"\v_session_idB\x0e\n" +
+	"\f_session_seqB\n" +
+	"\n" +
+	"\b_refererB\v\n" +
+	"\t_platformB\n" +
+	"\n" +
+	"\b_channel\"j\n" +
+	"\x18BehaviorSequenceResponse\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\rR\x06userId\x125\n" +
+	"\x06events\x18\x02 \x03(\v2\x1d.uba.service.v1.SequenceEventR\x06events\"a\n" +
+	"\x10SegmentCondition\x12\x1d\n" +
+	"\n" +
+	"event_name\x18\x01 \x01(\tR\teventName\x12 \n" +
+	"\tmin_times\x18\x02 \x01(\rH\x00R\bminTimes\x88\x01\x01B\f\n" +
+	"\n" +
+	"_min_times\"\x93\x02\n" +
+	"\x13SegmentationRequest\x128\n" +
+	"\n" +
+	"time_range\x18\x01 \x01(\v2\x19.uba.service.v1.TimeRangeR\ttimeRange\x12:\n" +
+	"\ainclude\x18\x02 \x03(\v2 .uba.service.v1.SegmentConditionR\ainclude\x12:\n" +
+	"\aexclude\x18\x03 \x03(\v2 .uba.service.v1.SegmentConditionR\aexclude\x12\x1a\n" +
+	"\x06app_id\x18\x04 \x01(\rH\x00R\x05appId\x88\x01\x01\x12\x19\n" +
+	"\x05limit\x18\x05 \x01(\rH\x01R\x05limit\x88\x01\x01B\t\n" +
+	"\a_app_idB\b\n" +
+	"\x06_limit\"G\n" +
+	"\x14SegmentationResponse\x12\x19\n" +
+	"\buser_ids\x18\x01 \x03(\rR\auserIds\x12\x14\n" +
+	"\x05total\x18\x02 \x01(\x03R\x05total*e\n" +
 	"\x14AnalyticsGranularity\x12%\n" +
 	"!ANALYTICS_GRANULARITY_UNSPECIFIED\x10\x00\x12\b\n" +
 	"\x04HOUR\x10\x01\x12\a\n" +
 	"\x03DAY\x10\x02\x12\b\n" +
 	"\x04WEEK\x10\x03\x12\t\n" +
-	"\x05MONTH\x10\x042\xb0\x03\n" +
+	"\x05MONTH\x10\x042\xad\x06\n" +
 	"\x10AnalyticsService\x12U\n" +
 	"\n" +
 	"EventTrend\x12!.uba.service.v1.EventTrendRequest\x1a\".uba.service.v1.EventTrendResponse\"\x00\x12I\n" +
 	"\x06Funnel\x12\x1d.uba.service.v1.FunnelRequest\x1a\x1e.uba.service.v1.FunnelResponse\"\x00\x12R\n" +
 	"\tRetention\x12 .uba.service.v1.RetentionRequest\x1a!.uba.service.v1.RetentionResponse\"\x00\x12L\n" +
 	"\aGroupBy\x12\x1e.uba.service.v1.GroupByRequest\x1a\x1f.uba.service.v1.GroupByResponse\"\x00\x12X\n" +
-	"\vActiveUsers\x12\".uba.service.v1.ActiveUsersRequest\x1a#.uba.service.v1.ActiveUsersResponse\"\x00B\xab\x01\n" +
+	"\vActiveUsers\x12\".uba.service.v1.ActiveUsersRequest\x1a#.uba.service.v1.ActiveUsersResponse\"\x00\x12X\n" +
+	"\vAttribution\x12\".uba.service.v1.AttributionRequest\x1a#.uba.service.v1.AttributionResponse\"\x00\x12[\n" +
+	"\fDistribution\x12#.uba.service.v1.DistributionRequest\x1a$.uba.service.v1.DistributionResponse\"\x00\x12g\n" +
+	"\x10BehaviorSequence\x12'.uba.service.v1.BehaviorSequenceRequest\x1a(.uba.service.v1.BehaviorSequenceResponse\"\x00\x12[\n" +
+	"\fSegmentation\x12#.uba.service.v1.SegmentationRequest\x1a$.uba.service.v1.SegmentationResponse\"\x00B\xab\x01\n" +
 	"\x12com.uba.service.v1B\x0eAnalyticsProtoP\x01Z+go-wind-uba/api/gen/go/uba/service/v1;ubapb\xa2\x02\x03USX\xaa\x02\x0eUba.Service.V1\xca\x02\x0eUba\\Service\\V1\xe2\x02\x1aUba\\Service\\V1\\GPBMetadata\xea\x02\x10Uba::Service::V1b\x06proto3"
 
 var (
@@ -1375,26 +2381,39 @@ func file_uba_service_v1_analytics_proto_rawDescGZIP() []byte {
 }
 
 var file_uba_service_v1_analytics_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_uba_service_v1_analytics_proto_msgTypes = make([]protoimpl.MessageInfo, 17)
+var file_uba_service_v1_analytics_proto_msgTypes = make([]protoimpl.MessageInfo, 30)
 var file_uba_service_v1_analytics_proto_goTypes = []any{
-	(AnalyticsGranularity)(0),   // 0: uba.service.v1.AnalyticsGranularity
-	(*TimeRange)(nil),           // 1: uba.service.v1.TimeRange
-	(*TimeSeriesPoint)(nil),     // 2: uba.service.v1.TimeSeriesPoint
-	(*EventTrendRequest)(nil),   // 3: uba.service.v1.EventTrendRequest
-	(*EventTrendResponse)(nil),  // 4: uba.service.v1.EventTrendResponse
-	(*FunnelStep)(nil),          // 5: uba.service.v1.FunnelStep
-	(*FunnelRequest)(nil),       // 6: uba.service.v1.FunnelRequest
-	(*FunnelResponse)(nil),      // 7: uba.service.v1.FunnelResponse
-	(*RetentionCell)(nil),       // 8: uba.service.v1.RetentionCell
-	(*RetentionCohort)(nil),     // 9: uba.service.v1.RetentionCohort
-	(*RetentionRequest)(nil),    // 10: uba.service.v1.RetentionRequest
-	(*RetentionResponse)(nil),   // 11: uba.service.v1.RetentionResponse
-	(*GroupByRequest)(nil),      // 12: uba.service.v1.GroupByRequest
-	(*GroupByBucket)(nil),       // 13: uba.service.v1.GroupByBucket
-	(*GroupByResponse)(nil),     // 14: uba.service.v1.GroupByResponse
-	(*ActiveUsersRequest)(nil),  // 15: uba.service.v1.ActiveUsersRequest
-	(*ActiveUsersPoint)(nil),    // 16: uba.service.v1.ActiveUsersPoint
-	(*ActiveUsersResponse)(nil), // 17: uba.service.v1.ActiveUsersResponse
+	(AnalyticsGranularity)(0),        // 0: uba.service.v1.AnalyticsGranularity
+	(*TimeRange)(nil),                // 1: uba.service.v1.TimeRange
+	(*TimeSeriesPoint)(nil),          // 2: uba.service.v1.TimeSeriesPoint
+	(*EventTrendRequest)(nil),        // 3: uba.service.v1.EventTrendRequest
+	(*EventTrendResponse)(nil),       // 4: uba.service.v1.EventTrendResponse
+	(*FunnelStep)(nil),               // 5: uba.service.v1.FunnelStep
+	(*FunnelRequest)(nil),            // 6: uba.service.v1.FunnelRequest
+	(*FunnelResponse)(nil),           // 7: uba.service.v1.FunnelResponse
+	(*RetentionCell)(nil),            // 8: uba.service.v1.RetentionCell
+	(*RetentionCohort)(nil),          // 9: uba.service.v1.RetentionCohort
+	(*RetentionRequest)(nil),         // 10: uba.service.v1.RetentionRequest
+	(*RetentionResponse)(nil),        // 11: uba.service.v1.RetentionResponse
+	(*GroupByRequest)(nil),           // 12: uba.service.v1.GroupByRequest
+	(*GroupByBucket)(nil),            // 13: uba.service.v1.GroupByBucket
+	(*GroupByResponse)(nil),          // 14: uba.service.v1.GroupByResponse
+	(*ActiveUsersRequest)(nil),       // 15: uba.service.v1.ActiveUsersRequest
+	(*ActiveUsersPoint)(nil),         // 16: uba.service.v1.ActiveUsersPoint
+	(*ActiveUsersResponse)(nil),      // 17: uba.service.v1.ActiveUsersResponse
+	(*AttributionRequest)(nil),       // 18: uba.service.v1.AttributionRequest
+	(*AttributionBucket)(nil),        // 19: uba.service.v1.AttributionBucket
+	(*AttributionResponse)(nil),      // 20: uba.service.v1.AttributionResponse
+	(*DistributionRequest)(nil),      // 21: uba.service.v1.DistributionRequest
+	(*DistributionBucket)(nil),       // 22: uba.service.v1.DistributionBucket
+	(*DistributionSummary)(nil),      // 23: uba.service.v1.DistributionSummary
+	(*DistributionResponse)(nil),     // 24: uba.service.v1.DistributionResponse
+	(*BehaviorSequenceRequest)(nil),  // 25: uba.service.v1.BehaviorSequenceRequest
+	(*SequenceEvent)(nil),            // 26: uba.service.v1.SequenceEvent
+	(*BehaviorSequenceResponse)(nil), // 27: uba.service.v1.BehaviorSequenceResponse
+	(*SegmentCondition)(nil),         // 28: uba.service.v1.SegmentCondition
+	(*SegmentationRequest)(nil),      // 29: uba.service.v1.SegmentationRequest
+	(*SegmentationResponse)(nil),     // 30: uba.service.v1.SegmentationResponse
 }
 var file_uba_service_v1_analytics_proto_depIdxs = []int32{
 	1,  // 0: uba.service.v1.EventTrendRequest.time_range:type_name -> uba.service.v1.TimeRange
@@ -1411,21 +2430,39 @@ var file_uba_service_v1_analytics_proto_depIdxs = []int32{
 	1,  // 11: uba.service.v1.ActiveUsersRequest.time_range:type_name -> uba.service.v1.TimeRange
 	0,  // 12: uba.service.v1.ActiveUsersRequest.granularity:type_name -> uba.service.v1.AnalyticsGranularity
 	16, // 13: uba.service.v1.ActiveUsersResponse.points:type_name -> uba.service.v1.ActiveUsersPoint
-	3,  // 14: uba.service.v1.AnalyticsService.EventTrend:input_type -> uba.service.v1.EventTrendRequest
-	6,  // 15: uba.service.v1.AnalyticsService.Funnel:input_type -> uba.service.v1.FunnelRequest
-	10, // 16: uba.service.v1.AnalyticsService.Retention:input_type -> uba.service.v1.RetentionRequest
-	12, // 17: uba.service.v1.AnalyticsService.GroupBy:input_type -> uba.service.v1.GroupByRequest
-	15, // 18: uba.service.v1.AnalyticsService.ActiveUsers:input_type -> uba.service.v1.ActiveUsersRequest
-	4,  // 19: uba.service.v1.AnalyticsService.EventTrend:output_type -> uba.service.v1.EventTrendResponse
-	7,  // 20: uba.service.v1.AnalyticsService.Funnel:output_type -> uba.service.v1.FunnelResponse
-	11, // 21: uba.service.v1.AnalyticsService.Retention:output_type -> uba.service.v1.RetentionResponse
-	14, // 22: uba.service.v1.AnalyticsService.GroupBy:output_type -> uba.service.v1.GroupByResponse
-	17, // 23: uba.service.v1.AnalyticsService.ActiveUsers:output_type -> uba.service.v1.ActiveUsersResponse
-	19, // [19:24] is the sub-list for method output_type
-	14, // [14:19] is the sub-list for method input_type
-	14, // [14:14] is the sub-list for extension type_name
-	14, // [14:14] is the sub-list for extension extendee
-	0,  // [0:14] is the sub-list for field type_name
+	1,  // 14: uba.service.v1.AttributionRequest.time_range:type_name -> uba.service.v1.TimeRange
+	19, // 15: uba.service.v1.AttributionResponse.buckets:type_name -> uba.service.v1.AttributionBucket
+	1,  // 16: uba.service.v1.DistributionRequest.time_range:type_name -> uba.service.v1.TimeRange
+	22, // 17: uba.service.v1.DistributionResponse.buckets:type_name -> uba.service.v1.DistributionBucket
+	23, // 18: uba.service.v1.DistributionResponse.summary:type_name -> uba.service.v1.DistributionSummary
+	1,  // 19: uba.service.v1.BehaviorSequenceRequest.time_range:type_name -> uba.service.v1.TimeRange
+	26, // 20: uba.service.v1.BehaviorSequenceResponse.events:type_name -> uba.service.v1.SequenceEvent
+	1,  // 21: uba.service.v1.SegmentationRequest.time_range:type_name -> uba.service.v1.TimeRange
+	28, // 22: uba.service.v1.SegmentationRequest.include:type_name -> uba.service.v1.SegmentCondition
+	28, // 23: uba.service.v1.SegmentationRequest.exclude:type_name -> uba.service.v1.SegmentCondition
+	3,  // 24: uba.service.v1.AnalyticsService.EventTrend:input_type -> uba.service.v1.EventTrendRequest
+	6,  // 25: uba.service.v1.AnalyticsService.Funnel:input_type -> uba.service.v1.FunnelRequest
+	10, // 26: uba.service.v1.AnalyticsService.Retention:input_type -> uba.service.v1.RetentionRequest
+	12, // 27: uba.service.v1.AnalyticsService.GroupBy:input_type -> uba.service.v1.GroupByRequest
+	15, // 28: uba.service.v1.AnalyticsService.ActiveUsers:input_type -> uba.service.v1.ActiveUsersRequest
+	18, // 29: uba.service.v1.AnalyticsService.Attribution:input_type -> uba.service.v1.AttributionRequest
+	21, // 30: uba.service.v1.AnalyticsService.Distribution:input_type -> uba.service.v1.DistributionRequest
+	25, // 31: uba.service.v1.AnalyticsService.BehaviorSequence:input_type -> uba.service.v1.BehaviorSequenceRequest
+	29, // 32: uba.service.v1.AnalyticsService.Segmentation:input_type -> uba.service.v1.SegmentationRequest
+	4,  // 33: uba.service.v1.AnalyticsService.EventTrend:output_type -> uba.service.v1.EventTrendResponse
+	7,  // 34: uba.service.v1.AnalyticsService.Funnel:output_type -> uba.service.v1.FunnelResponse
+	11, // 35: uba.service.v1.AnalyticsService.Retention:output_type -> uba.service.v1.RetentionResponse
+	14, // 36: uba.service.v1.AnalyticsService.GroupBy:output_type -> uba.service.v1.GroupByResponse
+	17, // 37: uba.service.v1.AnalyticsService.ActiveUsers:output_type -> uba.service.v1.ActiveUsersResponse
+	20, // 38: uba.service.v1.AnalyticsService.Attribution:output_type -> uba.service.v1.AttributionResponse
+	24, // 39: uba.service.v1.AnalyticsService.Distribution:output_type -> uba.service.v1.DistributionResponse
+	27, // 40: uba.service.v1.AnalyticsService.BehaviorSequence:output_type -> uba.service.v1.BehaviorSequenceResponse
+	30, // 41: uba.service.v1.AnalyticsService.Segmentation:output_type -> uba.service.v1.SegmentationResponse
+	33, // [33:42] is the sub-list for method output_type
+	24, // [24:33] is the sub-list for method input_type
+	24, // [24:24] is the sub-list for extension type_name
+	24, // [24:24] is the sub-list for extension extendee
+	0,  // [0:24] is the sub-list for field type_name
 }
 
 func init() { file_uba_service_v1_analytics_proto_init() }
@@ -1438,13 +2475,19 @@ func file_uba_service_v1_analytics_proto_init() {
 	file_uba_service_v1_analytics_proto_msgTypes[9].OneofWrappers = []any{}
 	file_uba_service_v1_analytics_proto_msgTypes[11].OneofWrappers = []any{}
 	file_uba_service_v1_analytics_proto_msgTypes[14].OneofWrappers = []any{}
+	file_uba_service_v1_analytics_proto_msgTypes[17].OneofWrappers = []any{}
+	file_uba_service_v1_analytics_proto_msgTypes[20].OneofWrappers = []any{}
+	file_uba_service_v1_analytics_proto_msgTypes[24].OneofWrappers = []any{}
+	file_uba_service_v1_analytics_proto_msgTypes[25].OneofWrappers = []any{}
+	file_uba_service_v1_analytics_proto_msgTypes[27].OneofWrappers = []any{}
+	file_uba_service_v1_analytics_proto_msgTypes[28].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_uba_service_v1_analytics_proto_rawDesc), len(file_uba_service_v1_analytics_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   17,
+			NumMessages:   30,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

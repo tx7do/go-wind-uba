@@ -367,3 +367,328 @@ func (r *AnalyticsRepo) activeUsersFromEventsFact(ctx context.Context, req *ubaV
 	}
 	return resp, nil
 }
+
+// ============================================================================
+// 归因分析（首触/末触渠道归因）
+// 与 doris.AnalyticsRepo.Attribution 对应，使用 ClickHouse 原生函数。
+// ============================================================================
+
+func (r *AnalyticsRepo) Attribution(ctx context.Context, req *ubaV1.AttributionRequest) (*ubaV1.AttributionResponse, error) {
+	if req.GetConversionEvent() == "" {
+		return nil, ubaV1.ErrorBadRequest("conversion_event is required")
+	}
+	startMs, endMs := normTimeRange(req.GetTimeRange())
+
+	dim := "channel"
+	if d := req.GetDimension(); d == "referer" {
+		dim = "referer"
+	}
+	orderDir := "DESC"
+	if req.GetModel() == "first_touch" {
+		orderDir = "ASC"
+	}
+
+	tenantCond := ""
+	args := []any{req.GetConversionEvent(), time.UnixMilli(startMs), time.UnixMilli(endMs)}
+	if v := req.GetAppId(); v != 0 {
+		tenantCond = "tenant_id = ? AND "
+		args = append([]any{v}, args...)
+	}
+
+	q := fmt.Sprintf(`
+WITH converters AS (
+    SELECT DISTINCT user_id FROM events_fact
+    WHERE %sevent_name = ? AND event_time >= ? AND event_time < ?
+),
+touchpoint AS (
+    SELECT e.user_id AS user_id, e.%s AS dim_val,
+           row_number() OVER (PARTITION BY e.user_id ORDER BY e.event_time %s) AS rn
+    FROM events_fact e
+    INNER JOIN converters c ON c.user_id = e.user_id
+    WHERE e.%sevent_time >= ? AND e.event_time < ?
+)
+SELECT dim_val, count(DISTINCT user_id) AS converter_uv
+FROM touchpoint
+WHERE rn = 1 AND dim_val != ''
+GROUP BY dim_val
+ORDER BY converter_uv DESC
+LIMIT 20`,
+		tenantCond, dim, orderDir, tenantCond)
+	args = append(args, time.UnixMilli(startMs), time.UnixMilli(endMs))
+
+	type row struct {
+		DimVal      string `db:"dim_val" ch:"dim_val"`
+		ConverterUv int64  `db:"converter_uv" ch:"converter_uv"`
+	}
+	var rows []row
+	if err := r.db.Select(ctx, &rows, q, args...); err != nil {
+		r.log.Errorf("Attribution query failed: %v", err)
+		return nil, ubaV1.ErrorInternalServerError("attribution query failed")
+	}
+
+	var total int64
+	buckets := make([]*ubaV1.AttributionBucket, 0, len(rows))
+	for _, rw := range rows {
+		total += rw.ConverterUv
+		buckets = append(buckets, &ubaV1.AttributionBucket{
+			Label:       rw.DimVal,
+			ConverterUv: rw.ConverterUv,
+		})
+	}
+	for _, b := range buckets {
+		if total > 0 {
+			b.Percentage = float64(b.ConverterUv) / float64(total)
+		}
+	}
+
+	model := req.GetModel()
+	if model == "" {
+		model = "last_touch"
+	}
+	return &ubaV1.AttributionResponse{
+		Buckets:         buckets,
+		Model:           model,
+		Dimension:       dim,
+		TotalConverters: total,
+	}, nil
+}
+
+// ============================================================================
+// 分布分析（事件时长分桶 + 分位数）
+// 与 doris.AnalyticsRepo.Distribution 对应；ClickHouse 用 quantile()。
+// ============================================================================
+
+func (r *AnalyticsRepo) Distribution(ctx context.Context, req *ubaV1.DistributionRequest) (*ubaV1.DistributionResponse, error) {
+	if req.GetEventName() == "" {
+		return nil, ubaV1.ErrorBadRequest("event_name is required")
+	}
+	startMs, endMs := normTimeRange(req.GetTimeRange())
+
+	tenantCond := ""
+	args := []any{req.GetEventName(), time.UnixMilli(startMs), time.UnixMilli(endMs)}
+	if v := req.GetAppId(); v != 0 {
+		tenantCond = "tenant_id = ? AND "
+		args = append([]any{v}, args...)
+	}
+
+	bucketQ := fmt.Sprintf(`
+SELECT
+    CASE
+        WHEN duration_ms < 10000  THEN '0_10s'
+        WHEN duration_ms < 60000  THEN '10_60s'
+        WHEN duration_ms < 300000 THEN '1_5min'
+        ELSE '5min_plus'
+    END AS duration_bucket,
+    count() AS cnt
+FROM events_fact
+WHERE %sevent_name = ? AND duration_ms > 0 AND event_time >= ? AND event_time < ?
+GROUP BY duration_bucket
+ORDER BY duration_bucket`, tenantCond)
+
+	type bucketRow struct {
+		Bucket string `db:"duration_bucket" ch:"duration_bucket"`
+		Cnt    int64  `db:"cnt" ch:"cnt"`
+	}
+	var bRows []bucketRow
+	if err := r.db.Select(ctx, &bRows, bucketQ, args...); err != nil {
+		r.log.Errorf("Distribution bucket query failed: %v", err)
+		return nil, ubaV1.ErrorInternalServerError("distribution query failed")
+	}
+
+	var bucketTotal int64
+	for _, br := range bRows {
+		bucketTotal += br.Cnt
+	}
+	buckets := make([]*ubaV1.DistributionBucket, 0, len(bRows))
+	for _, br := range bRows {
+		var pct float64
+		if bucketTotal > 0 {
+			pct = float64(br.Cnt) / float64(bucketTotal)
+		}
+		buckets = append(buckets, &ubaV1.DistributionBucket{
+			Bucket:     br.Bucket,
+			Count:      br.Cnt,
+			Percentage: pct,
+		})
+	}
+
+	// ClickHouse 分位数：quantile(0.5)(col) / quantile(0.9)(col)
+	summaryQ := fmt.Sprintf(`
+SELECT
+    count()                                          AS cnt,
+    round(avg(duration_ms) / 1000, 2)                AS avg_sec,
+    round(quantile(0.5)(duration_ms) / 1000, 2)      AS p50_sec,
+    round(quantile(0.9)(duration_ms) / 1000, 2)      AS p90_sec,
+    round(max(duration_ms) / 1000, 2)                AS max_sec
+FROM events_fact
+WHERE %sevent_name = ? AND duration_ms > 0 AND event_time >= ? AND event_time < ?`, tenantCond)
+
+	var s struct {
+		Cnt    int64   `db:"cnt" ch:"cnt"`
+		AvgSec float64 `db:"avg_sec" ch:"avg_sec"`
+		P50Sec float64 `db:"p50_sec" ch:"p50_sec"`
+		P90Sec float64 `db:"p90_sec" ch:"p90_sec"`
+		MaxSec float64 `db:"max_sec" ch:"max_sec"`
+	}
+	if err := r.db.QueryRow(ctx, &s, summaryQ, args...); err != nil {
+		r.log.Errorf("Distribution summary query failed: %v", err)
+		return nil, ubaV1.ErrorInternalServerError("distribution summary query failed")
+	}
+
+	return &ubaV1.DistributionResponse{
+		Buckets: buckets,
+		Summary: &ubaV1.DistributionSummary{
+			AvgSec: s.AvgSec,
+			P50Sec: s.P50Sec,
+			P90Sec: s.P90Sec,
+			MaxSec: s.MaxSec,
+			Count:  s.Cnt,
+		},
+	}, nil
+}
+
+// ============================================================================
+// 行为序列（指定用户的行为时间线）
+// 与 doris.AnalyticsRepo.BehaviorSequence 对应。
+// ============================================================================
+
+func (r *AnalyticsRepo) BehaviorSequence(ctx context.Context, req *ubaV1.BehaviorSequenceRequest) (*ubaV1.BehaviorSequenceResponse, error) {
+	if req.GetUserId() == 0 {
+		return nil, ubaV1.ErrorBadRequest("user_id is required")
+	}
+	startMs, endMs := normTimeRange(req.GetTimeRange())
+	limit := int64(req.GetLimit())
+	if limit <= 0 || limit > 1000 {
+		limit = 100
+	}
+
+	where := []string{"user_id = ?", "event_time >= ?", "event_time < ?"}
+	args := []any{req.GetUserId(), time.UnixMilli(startMs), time.UnixMilli(endMs)}
+	if v := req.GetAppId(); v != 0 {
+		where = append([]string{"tenant_id = ?"}, where...)
+		args = append([]any{v}, args...)
+	}
+	if en := req.GetEventName(); en != "" {
+		where = append(where, "event_name = ?")
+		args = append(args, en)
+	}
+	args = append(args, limit)
+
+	q := fmt.Sprintf(`
+SELECT event_time, event_name, session_id, session_seq, referer, platform, channel
+FROM events_fact
+WHERE %s
+ORDER BY event_time ASC
+LIMIT ?`, strings.Join(where, " AND "))
+
+	type evRow struct {
+		EventTime  *time.Time `db:"event_time" ch:"event_time"`
+		EventName  *string    `db:"event_name" ch:"event_name"`
+		SessionID  *string    `db:"session_id" ch:"session_id"`
+		SessionSeq *uint32    `db:"session_seq" ch:"session_seq"`
+		Referer    *string    `db:"referer" ch:"referer"`
+		Platform   *string    `db:"platform" ch:"platform"`
+		Channel    *string    `db:"channel" ch:"channel"`
+	}
+	var rows []evRow
+	if err := r.db.Select(ctx, &rows, q, args...); err != nil {
+		r.log.Errorf("BehaviorSequence query failed: %v", err)
+		return nil, ubaV1.ErrorInternalServerError("behavior sequence query failed")
+	}
+
+	events := make([]*ubaV1.SequenceEvent, 0, len(rows))
+	for _, rw := range rows {
+		ev := &ubaV1.SequenceEvent{EventName: chDerefStr(rw.EventName)}
+		if rw.EventTime != nil {
+			ev.Timestamp = rw.EventTime.UnixMilli()
+		}
+		if rw.SessionID != nil {
+			ev.SessionId = rw.SessionID
+		}
+		if rw.SessionSeq != nil {
+			ev.SessionSeq = rw.SessionSeq
+		}
+		if rw.Referer != nil {
+			ev.Referer = rw.Referer
+		}
+		if rw.Platform != nil {
+			ev.Platform = rw.Platform
+		}
+		if rw.Channel != nil {
+			ev.Channel = rw.Channel
+		}
+		events = append(events, ev)
+	}
+
+	return &ubaV1.BehaviorSequenceResponse{
+		UserId: req.GetUserId(),
+		Events: events,
+	}, nil
+}
+
+// ============================================================================
+// 用户分群/圈选（做过/未做过某事件的人群筛选）
+// 与 doris.AnalyticsRepo.Segmentation 对应；ClickHouse 用 NOT IN 表达"未做过"。
+// ============================================================================
+
+func (r *AnalyticsRepo) Segmentation(ctx context.Context, req *ubaV1.SegmentationRequest) (*ubaV1.SegmentationResponse, error) {
+	if len(req.GetInclude()) == 0 {
+		return nil, ubaV1.ErrorBadRequest("at least one include condition is required")
+	}
+	startMs, endMs := normTimeRange(req.GetTimeRange())
+	limit := int64(req.GetLimit())
+	if limit <= 0 || limit > 50000 {
+		limit = 5000
+	}
+
+	inc := req.GetInclude()[0]
+	incTimes := int64(inc.GetMinTimes())
+	if incTimes <= 0 {
+		incTimes = 1
+	}
+
+	tenantCond := ""
+	args := []any{inc.GetEventName(), time.UnixMilli(startMs), time.UnixMilli(endMs)}
+	if v := req.GetAppId(); v != 0 {
+		tenantCond = "tenant_id = ? AND "
+		args = append([]any{v}, args...)
+	}
+
+	// 基础：做过 include 事件且达到 min_times 次的用户。
+	innerQ := fmt.Sprintf(`
+SELECT user_id
+FROM events_fact
+WHERE %sevent_name = ? AND event_time >= ? AND event_time < ?
+GROUP BY user_id
+HAVING count() >= ?`, tenantCond)
+	args = append(args, incTimes)
+
+	// 可选排除：排除做过 exclude[0] 事件的用户（用 NOT IN 子查询）。
+	var q string
+	if excList := req.GetExclude(); len(excList) > 0 && excList[0].GetEventName() != "" {
+		exc := excList[0]
+		q = fmt.Sprintf(`
+SELECT a.user_id
+FROM (%s) AS a
+WHERE a.user_id NOT IN (
+    SELECT user_id FROM events_fact
+    WHERE %sevent_name = ? AND event_time >= ? AND event_time < ?
+)
+LIMIT ?`, innerQ, tenantCond)
+		args = append(args, exc.GetEventName(), time.UnixMilli(startMs), time.UnixMilli(endMs), limit)
+	} else {
+		q = innerQ + " LIMIT ?"
+		args = append(args, limit)
+	}
+
+	var userIDs []uint32
+	if err := r.db.Select(ctx, &userIDs, q, args...); err != nil {
+		r.log.Errorf("Segmentation query failed: %v", err)
+		return nil, ubaV1.ErrorInternalServerError("segmentation query failed")
+	}
+
+	return &ubaV1.SegmentationResponse{
+		UserIds: userIDs,
+		Total:   int64(len(userIDs)),
+	}, nil
+}

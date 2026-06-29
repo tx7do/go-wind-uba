@@ -21,14 +21,24 @@ var _ = binding.EncodeURL
 const _ = http.SupportPackageIsVersion1
 
 const OperationAnalyticsServiceActiveUsers = "/admin.service.v1.AnalyticsService/ActiveUsers"
+const OperationAnalyticsServiceAttribution = "/admin.service.v1.AnalyticsService/Attribution"
+const OperationAnalyticsServiceBehaviorSequence = "/admin.service.v1.AnalyticsService/BehaviorSequence"
+const OperationAnalyticsServiceDistribution = "/admin.service.v1.AnalyticsService/Distribution"
 const OperationAnalyticsServiceEventTrend = "/admin.service.v1.AnalyticsService/EventTrend"
 const OperationAnalyticsServiceFunnel = "/admin.service.v1.AnalyticsService/Funnel"
 const OperationAnalyticsServiceGroupBy = "/admin.service.v1.AnalyticsService/GroupBy"
 const OperationAnalyticsServiceRetention = "/admin.service.v1.AnalyticsService/Retention"
+const OperationAnalyticsServiceSegmentation = "/admin.service.v1.AnalyticsService/Segmentation"
 
 type AnalyticsServiceHTTPServer interface {
 	// ActiveUsers 活跃用户
 	ActiveUsers(context.Context, *v1.ActiveUsersRequest) (*v1.ActiveUsersResponse, error)
+	// Attribution 归因分析
+	Attribution(context.Context, *v1.AttributionRequest) (*v1.AttributionResponse, error)
+	// BehaviorSequence 行为序列
+	BehaviorSequence(context.Context, *v1.BehaviorSequenceRequest) (*v1.BehaviorSequenceResponse, error)
+	// Distribution 分布分析
+	Distribution(context.Context, *v1.DistributionRequest) (*v1.DistributionResponse, error)
 	// EventTrend 事件量趋势
 	EventTrend(context.Context, *v1.EventTrendRequest) (*v1.EventTrendResponse, error)
 	// Funnel 漏斗分析
@@ -37,6 +47,8 @@ type AnalyticsServiceHTTPServer interface {
 	GroupBy(context.Context, *v1.GroupByRequest) (*v1.GroupByResponse, error)
 	// Retention 留存分析
 	Retention(context.Context, *v1.RetentionRequest) (*v1.RetentionResponse, error)
+	// Segmentation 用户分群/圈选
+	Segmentation(context.Context, *v1.SegmentationRequest) (*v1.SegmentationResponse, error)
 }
 
 func RegisterAnalyticsServiceHTTPServer(s *http.Server, srv AnalyticsServiceHTTPServer) {
@@ -46,6 +58,10 @@ func RegisterAnalyticsServiceHTTPServer(s *http.Server, srv AnalyticsServiceHTTP
 	r.POST("/admin/v1/analytics/retention", _AnalyticsService_Retention0_HTTP_Handler(srv))
 	r.POST("/admin/v1/analytics/group-by", _AnalyticsService_GroupBy0_HTTP_Handler(srv))
 	r.POST("/admin/v1/analytics/active-users", _AnalyticsService_ActiveUsers0_HTTP_Handler(srv))
+	r.POST("/admin/v1/analytics/attribution", _AnalyticsService_Attribution0_HTTP_Handler(srv))
+	r.POST("/admin/v1/analytics/distribution", _AnalyticsService_Distribution0_HTTP_Handler(srv))
+	r.POST("/admin/v1/analytics/behavior-sequence", _AnalyticsService_BehaviorSequence0_HTTP_Handler(srv))
+	r.POST("/admin/v1/analytics/segmentation", _AnalyticsService_Segmentation0_HTTP_Handler(srv))
 }
 
 func _AnalyticsService_EventTrend0_HTTP_Handler(srv AnalyticsServiceHTTPServer) func(ctx http.Context) error {
@@ -158,9 +174,103 @@ func _AnalyticsService_ActiveUsers0_HTTP_Handler(srv AnalyticsServiceHTTPServer)
 	}
 }
 
+func _AnalyticsService_Attribution0_HTTP_Handler(srv AnalyticsServiceHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in v1.AttributionRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationAnalyticsServiceAttribution)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.Attribution(ctx, req.(*v1.AttributionRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*v1.AttributionResponse)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _AnalyticsService_Distribution0_HTTP_Handler(srv AnalyticsServiceHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in v1.DistributionRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationAnalyticsServiceDistribution)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.Distribution(ctx, req.(*v1.DistributionRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*v1.DistributionResponse)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _AnalyticsService_BehaviorSequence0_HTTP_Handler(srv AnalyticsServiceHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in v1.BehaviorSequenceRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationAnalyticsServiceBehaviorSequence)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.BehaviorSequence(ctx, req.(*v1.BehaviorSequenceRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*v1.BehaviorSequenceResponse)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _AnalyticsService_Segmentation0_HTTP_Handler(srv AnalyticsServiceHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in v1.SegmentationRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationAnalyticsServiceSegmentation)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.Segmentation(ctx, req.(*v1.SegmentationRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*v1.SegmentationResponse)
+		return ctx.Result(200, reply)
+	}
+}
+
 type AnalyticsServiceHTTPClient interface {
 	// ActiveUsers 活跃用户
 	ActiveUsers(ctx context.Context, req *v1.ActiveUsersRequest, opts ...http.CallOption) (rsp *v1.ActiveUsersResponse, err error)
+	// Attribution 归因分析
+	Attribution(ctx context.Context, req *v1.AttributionRequest, opts ...http.CallOption) (rsp *v1.AttributionResponse, err error)
+	// BehaviorSequence 行为序列
+	BehaviorSequence(ctx context.Context, req *v1.BehaviorSequenceRequest, opts ...http.CallOption) (rsp *v1.BehaviorSequenceResponse, err error)
+	// Distribution 分布分析
+	Distribution(ctx context.Context, req *v1.DistributionRequest, opts ...http.CallOption) (rsp *v1.DistributionResponse, err error)
 	// EventTrend 事件量趋势
 	EventTrend(ctx context.Context, req *v1.EventTrendRequest, opts ...http.CallOption) (rsp *v1.EventTrendResponse, err error)
 	// Funnel 漏斗分析
@@ -169,6 +279,8 @@ type AnalyticsServiceHTTPClient interface {
 	GroupBy(ctx context.Context, req *v1.GroupByRequest, opts ...http.CallOption) (rsp *v1.GroupByResponse, err error)
 	// Retention 留存分析
 	Retention(ctx context.Context, req *v1.RetentionRequest, opts ...http.CallOption) (rsp *v1.RetentionResponse, err error)
+	// Segmentation 用户分群/圈选
+	Segmentation(ctx context.Context, req *v1.SegmentationRequest, opts ...http.CallOption) (rsp *v1.SegmentationResponse, err error)
 }
 
 type AnalyticsServiceHTTPClientImpl struct {
@@ -185,6 +297,48 @@ func (c *AnalyticsServiceHTTPClientImpl) ActiveUsers(ctx context.Context, in *v1
 	pattern := "/admin/v1/analytics/active-users"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationAnalyticsServiceActiveUsers))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+// Attribution 归因分析
+func (c *AnalyticsServiceHTTPClientImpl) Attribution(ctx context.Context, in *v1.AttributionRequest, opts ...http.CallOption) (*v1.AttributionResponse, error) {
+	var out v1.AttributionResponse
+	pattern := "/admin/v1/analytics/attribution"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationAnalyticsServiceAttribution))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+// BehaviorSequence 行为序列
+func (c *AnalyticsServiceHTTPClientImpl) BehaviorSequence(ctx context.Context, in *v1.BehaviorSequenceRequest, opts ...http.CallOption) (*v1.BehaviorSequenceResponse, error) {
+	var out v1.BehaviorSequenceResponse
+	pattern := "/admin/v1/analytics/behavior-sequence"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationAnalyticsServiceBehaviorSequence))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+// Distribution 分布分析
+func (c *AnalyticsServiceHTTPClientImpl) Distribution(ctx context.Context, in *v1.DistributionRequest, opts ...http.CallOption) (*v1.DistributionResponse, error) {
+	var out v1.DistributionResponse
+	pattern := "/admin/v1/analytics/distribution"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationAnalyticsServiceDistribution))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {
@@ -241,6 +395,20 @@ func (c *AnalyticsServiceHTTPClientImpl) Retention(ctx context.Context, in *v1.R
 	pattern := "/admin/v1/analytics/retention"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationAnalyticsServiceRetention))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+// Segmentation 用户分群/圈选
+func (c *AnalyticsServiceHTTPClientImpl) Segmentation(ctx context.Context, in *v1.SegmentationRequest, opts ...http.CallOption) (*v1.SegmentationResponse, error) {
+	var out v1.SegmentationResponse
+	pattern := "/admin/v1/analytics/segmentation"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationAnalyticsServiceSegmentation))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {

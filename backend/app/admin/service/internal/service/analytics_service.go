@@ -45,3 +45,19 @@ func (s *AnalyticsService) GroupBy(ctx context.Context, req *ubaV1.GroupByReques
 func (s *AnalyticsService) ActiveUsers(ctx context.Context, req *ubaV1.ActiveUsersRequest) (*ubaV1.ActiveUsersResponse, error) {
 	return s.client.ActiveUsers(ctx, req)
 }
+
+func (s *AnalyticsService) Attribution(ctx context.Context, req *ubaV1.AttributionRequest) (*ubaV1.AttributionResponse, error) {
+	return s.client.Attribution(ctx, req)
+}
+
+func (s *AnalyticsService) Distribution(ctx context.Context, req *ubaV1.DistributionRequest) (*ubaV1.DistributionResponse, error) {
+	return s.client.Distribution(ctx, req)
+}
+
+func (s *AnalyticsService) BehaviorSequence(ctx context.Context, req *ubaV1.BehaviorSequenceRequest) (*ubaV1.BehaviorSequenceResponse, error) {
+	return s.client.BehaviorSequence(ctx, req)
+}
+
+func (s *AnalyticsService) Segmentation(ctx context.Context, req *ubaV1.SegmentationRequest) (*ubaV1.SegmentationResponse, error) {
+	return s.client.Segmentation(ctx, req)
+}

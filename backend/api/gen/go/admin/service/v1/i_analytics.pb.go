@@ -26,44 +26,64 @@ var File_admin_service_v1_i_analytics_proto protoreflect.FileDescriptor
 
 const file_admin_service_v1_i_analytics_proto_rawDesc = "" +
 	"\n" +
-	"\"admin/service/v1/i_analytics.proto\x12\x10admin.service.v1\x1a\x1cgoogle/api/annotations.proto\x1a\x1euba/service/v1/analytics.proto2\xfa\x04\n" +
+	"\"admin/service/v1/i_analytics.proto\x12\x10admin.service.v1\x1a\x1cgoogle/api/annotations.proto\x1a\x1euba/service/v1/analytics.proto2\xab\t\n" +
 	"\x10AnalyticsService\x12\x7f\n" +
 	"\n" +
 	"EventTrend\x12!.uba.service.v1.EventTrendRequest\x1a\".uba.service.v1.EventTrendResponse\"*\x82\xd3\xe4\x93\x02$:\x01*\"\x1f/admin/v1/analytics/event-trend\x12n\n" +
 	"\x06Funnel\x12\x1d.uba.service.v1.FunnelRequest\x1a\x1e.uba.service.v1.FunnelResponse\"%\x82\xd3\xe4\x93\x02\x1f:\x01*\"\x1a/admin/v1/analytics/funnel\x12z\n" +
 	"\tRetention\x12 .uba.service.v1.RetentionRequest\x1a!.uba.service.v1.RetentionResponse\"(\x82\xd3\xe4\x93\x02\":\x01*\"\x1d/admin/v1/analytics/retention\x12s\n" +
 	"\aGroupBy\x12\x1e.uba.service.v1.GroupByRequest\x1a\x1f.uba.service.v1.GroupByResponse\"'\x82\xd3\xe4\x93\x02!:\x01*\"\x1c/admin/v1/analytics/group-by\x12\x83\x01\n" +
-	"\vActiveUsers\x12\".uba.service.v1.ActiveUsersRequest\x1a#.uba.service.v1.ActiveUsersResponse\"+\x82\xd3\xe4\x93\x02%:\x01*\" /admin/v1/analytics/active-usersB\xba\x01\n" +
+	"\vActiveUsers\x12\".uba.service.v1.ActiveUsersRequest\x1a#.uba.service.v1.ActiveUsersResponse\"+\x82\xd3\xe4\x93\x02%:\x01*\" /admin/v1/analytics/active-users\x12\x82\x01\n" +
+	"\vAttribution\x12\".uba.service.v1.AttributionRequest\x1a#.uba.service.v1.AttributionResponse\"*\x82\xd3\xe4\x93\x02$:\x01*\"\x1f/admin/v1/analytics/attribution\x12\x86\x01\n" +
+	"\fDistribution\x12#.uba.service.v1.DistributionRequest\x1a$.uba.service.v1.DistributionResponse\"+\x82\xd3\xe4\x93\x02%:\x01*\" /admin/v1/analytics/distribution\x12\x97\x01\n" +
+	"\x10BehaviorSequence\x12'.uba.service.v1.BehaviorSequenceRequest\x1a(.uba.service.v1.BehaviorSequenceResponse\"0\x82\xd3\xe4\x93\x02*:\x01*\"%/admin/v1/analytics/behavior-sequence\x12\x86\x01\n" +
+	"\fSegmentation\x12#.uba.service.v1.SegmentationRequest\x1a$.uba.service.v1.SegmentationResponse\"+\x82\xd3\xe4\x93\x02%:\x01*\" /admin/v1/analytics/segmentationB\xba\x01\n" +
 	"\x14com.admin.service.v1B\x0fIAnalyticsProtoP\x01Z/go-wind-uba/api/gen/go/admin/service/v1;adminpb\xa2\x02\x03ASX\xaa\x02\x10Admin.Service.V1\xca\x02\x10Admin\\Service\\V1\xe2\x02\x1cAdmin\\Service\\V1\\GPBMetadata\xea\x02\x12Admin::Service::V1b\x06proto3"
 
 var file_admin_service_v1_i_analytics_proto_goTypes = []any{
-	(*v1.EventTrendRequest)(nil),   // 0: uba.service.v1.EventTrendRequest
-	(*v1.FunnelRequest)(nil),       // 1: uba.service.v1.FunnelRequest
-	(*v1.RetentionRequest)(nil),    // 2: uba.service.v1.RetentionRequest
-	(*v1.GroupByRequest)(nil),      // 3: uba.service.v1.GroupByRequest
-	(*v1.ActiveUsersRequest)(nil),  // 4: uba.service.v1.ActiveUsersRequest
-	(*v1.EventTrendResponse)(nil),  // 5: uba.service.v1.EventTrendResponse
-	(*v1.FunnelResponse)(nil),      // 6: uba.service.v1.FunnelResponse
-	(*v1.RetentionResponse)(nil),   // 7: uba.service.v1.RetentionResponse
-	(*v1.GroupByResponse)(nil),     // 8: uba.service.v1.GroupByResponse
-	(*v1.ActiveUsersResponse)(nil), // 9: uba.service.v1.ActiveUsersResponse
+	(*v1.EventTrendRequest)(nil),        // 0: uba.service.v1.EventTrendRequest
+	(*v1.FunnelRequest)(nil),            // 1: uba.service.v1.FunnelRequest
+	(*v1.RetentionRequest)(nil),         // 2: uba.service.v1.RetentionRequest
+	(*v1.GroupByRequest)(nil),           // 3: uba.service.v1.GroupByRequest
+	(*v1.ActiveUsersRequest)(nil),       // 4: uba.service.v1.ActiveUsersRequest
+	(*v1.AttributionRequest)(nil),       // 5: uba.service.v1.AttributionRequest
+	(*v1.DistributionRequest)(nil),      // 6: uba.service.v1.DistributionRequest
+	(*v1.BehaviorSequenceRequest)(nil),  // 7: uba.service.v1.BehaviorSequenceRequest
+	(*v1.SegmentationRequest)(nil),      // 8: uba.service.v1.SegmentationRequest
+	(*v1.EventTrendResponse)(nil),       // 9: uba.service.v1.EventTrendResponse
+	(*v1.FunnelResponse)(nil),           // 10: uba.service.v1.FunnelResponse
+	(*v1.RetentionResponse)(nil),        // 11: uba.service.v1.RetentionResponse
+	(*v1.GroupByResponse)(nil),          // 12: uba.service.v1.GroupByResponse
+	(*v1.ActiveUsersResponse)(nil),      // 13: uba.service.v1.ActiveUsersResponse
+	(*v1.AttributionResponse)(nil),      // 14: uba.service.v1.AttributionResponse
+	(*v1.DistributionResponse)(nil),     // 15: uba.service.v1.DistributionResponse
+	(*v1.BehaviorSequenceResponse)(nil), // 16: uba.service.v1.BehaviorSequenceResponse
+	(*v1.SegmentationResponse)(nil),     // 17: uba.service.v1.SegmentationResponse
 }
 var file_admin_service_v1_i_analytics_proto_depIdxs = []int32{
-	0, // 0: admin.service.v1.AnalyticsService.EventTrend:input_type -> uba.service.v1.EventTrendRequest
-	1, // 1: admin.service.v1.AnalyticsService.Funnel:input_type -> uba.service.v1.FunnelRequest
-	2, // 2: admin.service.v1.AnalyticsService.Retention:input_type -> uba.service.v1.RetentionRequest
-	3, // 3: admin.service.v1.AnalyticsService.GroupBy:input_type -> uba.service.v1.GroupByRequest
-	4, // 4: admin.service.v1.AnalyticsService.ActiveUsers:input_type -> uba.service.v1.ActiveUsersRequest
-	5, // 5: admin.service.v1.AnalyticsService.EventTrend:output_type -> uba.service.v1.EventTrendResponse
-	6, // 6: admin.service.v1.AnalyticsService.Funnel:output_type -> uba.service.v1.FunnelResponse
-	7, // 7: admin.service.v1.AnalyticsService.Retention:output_type -> uba.service.v1.RetentionResponse
-	8, // 8: admin.service.v1.AnalyticsService.GroupBy:output_type -> uba.service.v1.GroupByResponse
-	9, // 9: admin.service.v1.AnalyticsService.ActiveUsers:output_type -> uba.service.v1.ActiveUsersResponse
-	5, // [5:10] is the sub-list for method output_type
-	0, // [0:5] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	0,  // 0: admin.service.v1.AnalyticsService.EventTrend:input_type -> uba.service.v1.EventTrendRequest
+	1,  // 1: admin.service.v1.AnalyticsService.Funnel:input_type -> uba.service.v1.FunnelRequest
+	2,  // 2: admin.service.v1.AnalyticsService.Retention:input_type -> uba.service.v1.RetentionRequest
+	3,  // 3: admin.service.v1.AnalyticsService.GroupBy:input_type -> uba.service.v1.GroupByRequest
+	4,  // 4: admin.service.v1.AnalyticsService.ActiveUsers:input_type -> uba.service.v1.ActiveUsersRequest
+	5,  // 5: admin.service.v1.AnalyticsService.Attribution:input_type -> uba.service.v1.AttributionRequest
+	6,  // 6: admin.service.v1.AnalyticsService.Distribution:input_type -> uba.service.v1.DistributionRequest
+	7,  // 7: admin.service.v1.AnalyticsService.BehaviorSequence:input_type -> uba.service.v1.BehaviorSequenceRequest
+	8,  // 8: admin.service.v1.AnalyticsService.Segmentation:input_type -> uba.service.v1.SegmentationRequest
+	9,  // 9: admin.service.v1.AnalyticsService.EventTrend:output_type -> uba.service.v1.EventTrendResponse
+	10, // 10: admin.service.v1.AnalyticsService.Funnel:output_type -> uba.service.v1.FunnelResponse
+	11, // 11: admin.service.v1.AnalyticsService.Retention:output_type -> uba.service.v1.RetentionResponse
+	12, // 12: admin.service.v1.AnalyticsService.GroupBy:output_type -> uba.service.v1.GroupByResponse
+	13, // 13: admin.service.v1.AnalyticsService.ActiveUsers:output_type -> uba.service.v1.ActiveUsersResponse
+	14, // 14: admin.service.v1.AnalyticsService.Attribution:output_type -> uba.service.v1.AttributionResponse
+	15, // 15: admin.service.v1.AnalyticsService.Distribution:output_type -> uba.service.v1.DistributionResponse
+	16, // 16: admin.service.v1.AnalyticsService.BehaviorSequence:output_type -> uba.service.v1.BehaviorSequenceResponse
+	17, // 17: admin.service.v1.AnalyticsService.Segmentation:output_type -> uba.service.v1.SegmentationResponse
+	9,  // [9:18] is the sub-list for method output_type
+	0,  // [0:9] is the sub-list for method input_type
+	0,  // [0:0] is the sub-list for extension type_name
+	0,  // [0:0] is the sub-list for extension extendee
+	0,  // [0:0] is the sub-list for field type_name
 }
 
 func init() { file_admin_service_v1_i_analytics_proto_init() }

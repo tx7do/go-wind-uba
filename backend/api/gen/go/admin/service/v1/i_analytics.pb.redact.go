@@ -94,3 +94,47 @@ func (s *redactedAnalyticsServiceServer) ActiveUsers(ctx context.Context, in *ub
 	}
 	return res, err
 }
+
+// Attribution is the redacted wrapper for the actual AnalyticsServiceServer.Attribution method
+// Unary RPC
+func (s *redactedAnalyticsServiceServer) Attribution(ctx context.Context, in *ubapb.AttributionRequest) (*ubapb.AttributionResponse, error) {
+	res, err := s.srv.Attribution(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
+// Distribution is the redacted wrapper for the actual AnalyticsServiceServer.Distribution method
+// Unary RPC
+func (s *redactedAnalyticsServiceServer) Distribution(ctx context.Context, in *ubapb.DistributionRequest) (*ubapb.DistributionResponse, error) {
+	res, err := s.srv.Distribution(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
+// BehaviorSequence is the redacted wrapper for the actual AnalyticsServiceServer.BehaviorSequence method
+// Unary RPC
+func (s *redactedAnalyticsServiceServer) BehaviorSequence(ctx context.Context, in *ubapb.BehaviorSequenceRequest) (*ubapb.BehaviorSequenceResponse, error) {
+	res, err := s.srv.BehaviorSequence(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
+// Segmentation is the redacted wrapper for the actual AnalyticsServiceServer.Segmentation method
+// Unary RPC
+func (s *redactedAnalyticsServiceServer) Segmentation(ctx context.Context, in *ubapb.SegmentationRequest) (*ubapb.SegmentationResponse, error) {
+	res, err := s.srv.Segmentation(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
