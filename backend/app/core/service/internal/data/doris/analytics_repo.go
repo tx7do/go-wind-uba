@@ -566,10 +566,10 @@ ORDER BY duration_bucket`, tenantCond)
 	summaryQ := fmt.Sprintf(`
 SELECT
     COUNT(*) AS cnt,
-    ROUND(AVG(CAST(duration_ms AS DOUBLE)) / 1000, 2)                      AS avg_sec,
-    ROUND(PERCENTILE_APPROX(CAST(duration_ms AS DOUBLE), 0.5) / 1000, 2)   AS p50_sec,
-    ROUND(PERCENTILE_APPROX(CAST(duration_ms AS DOUBLE), 0.9) / 1000, 2)   AS p90_sec,
-    ROUND(MAX(duration_ms) / 1000, 2)                                       AS max_sec
+    IFNULL(ROUND(AVG(CAST(duration_ms AS DOUBLE)) / 1000, 2), 0)                      AS avg_sec,
+    IFNULL(ROUND(PERCENTILE_APPROX(CAST(duration_ms AS DOUBLE), 0.5) / 1000, 2), 0)   AS p50_sec,
+    IFNULL(ROUND(PERCENTILE_APPROX(CAST(duration_ms AS DOUBLE), 0.9) / 1000, 2), 0)   AS p90_sec,
+    IFNULL(ROUND(MAX(duration_ms) / 1000, 2), 0)                                       AS max_sec
 FROM events_fact
 WHERE %sevent_name = ? AND duration_ms > 0 AND event_time >= ? AND event_time < ?`, tenantCond)
 
