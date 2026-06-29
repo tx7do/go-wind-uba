@@ -75,7 +75,3 @@ watch(() => props.data, render, { deep: true });
 <template>
   <EchartsUI ref="chartRef" />
 </template>
-
-<template>
-  <EchartsUI ref="chartRef" />
-</template>
