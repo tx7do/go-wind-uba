@@ -27,6 +27,7 @@ const OperationAnalyticsServiceBehaviorSequence = "/admin.service.v1.AnalyticsSe
 const OperationAnalyticsServiceChurn = "/admin.service.v1.AnalyticsService/Churn"
 const OperationAnalyticsServiceClick = "/admin.service.v1.AnalyticsService/Click"
 const OperationAnalyticsServiceDistribution = "/admin.service.v1.AnalyticsService/Distribution"
+const OperationAnalyticsServiceEconomy = "/admin.service.v1.AnalyticsService/Economy"
 const OperationAnalyticsServiceEventTrend = "/admin.service.v1.AnalyticsService/EventTrend"
 const OperationAnalyticsServiceFunnel = "/admin.service.v1.AnalyticsService/Funnel"
 const OperationAnalyticsServiceGroupBy = "/admin.service.v1.AnalyticsService/GroupBy"
@@ -36,10 +37,12 @@ const OperationAnalyticsServiceLevelAnalysis = "/admin.service.v1.AnalyticsServi
 const OperationAnalyticsServiceLifecycle = "/admin.service.v1.AnalyticsService/Lifecycle"
 const OperationAnalyticsServiceMatrix = "/admin.service.v1.AnalyticsService/Matrix"
 const OperationAnalyticsServiceNewVsOld = "/admin.service.v1.AnalyticsService/NewVsOld"
+const OperationAnalyticsServiceOnlineStats = "/admin.service.v1.AnalyticsService/OnlineStats"
 const OperationAnalyticsServicePathSankey = "/admin.service.v1.AnalyticsService/PathSankey"
 const OperationAnalyticsServiceRetention = "/admin.service.v1.AnalyticsService/Retention"
 const OperationAnalyticsServiceRevenue = "/admin.service.v1.AnalyticsService/Revenue"
 const OperationAnalyticsServiceSegmentation = "/admin.service.v1.AnalyticsService/Segmentation"
+const OperationAnalyticsServiceServerRetention = "/admin.service.v1.AnalyticsService/ServerRetention"
 const OperationAnalyticsServiceSessionAnalysis = "/admin.service.v1.AnalyticsService/SessionAnalysis"
 const OperationAnalyticsServiceWhaleTier = "/admin.service.v1.AnalyticsService/WhaleTier"
 
@@ -58,6 +61,8 @@ type AnalyticsServiceHTTPServer interface {
 	Click(context.Context, *v1.ClickRequest) (*v1.ClickResponse, error)
 	// Distribution 分布分析
 	Distribution(context.Context, *v1.DistributionRequest) (*v1.DistributionResponse, error)
+	// Economy 经济系统/代币流向
+	Economy(context.Context, *v1.EconomyRequest) (*v1.EconomyResponse, error)
 	// EventTrend 事件量趋势
 	EventTrend(context.Context, *v1.EventTrendRequest) (*v1.EventTrendResponse, error)
 	// Funnel 漏斗分析
@@ -76,6 +81,8 @@ type AnalyticsServiceHTTPServer interface {
 	Matrix(context.Context, *v1.MatrixRequest) (*v1.MatrixResponse, error)
 	// NewVsOld 新老用户对比
 	NewVsOld(context.Context, *v1.NewVsOldRequest) (*v1.NewVsOldResponse, error)
+	// OnlineStats 同时在线 PCU/ACU
+	OnlineStats(context.Context, *v1.OnlineStatsRequest) (*v1.OnlineStatsResponse, error)
 	// PathSankey 热门转化路径
 	PathSankey(context.Context, *v1.PathSankeyRequest) (*v1.PathSankeyResponse, error)
 	// Retention 留存分析
@@ -84,6 +91,8 @@ type AnalyticsServiceHTTPServer interface {
 	Revenue(context.Context, *v1.RevenueRequest) (*v1.RevenueResponse, error)
 	// Segmentation 用户分群/圈选
 	Segmentation(context.Context, *v1.SegmentationRequest) (*v1.SegmentationResponse, error)
+	// ServerRetention 滚服留存
+	ServerRetention(context.Context, *v1.ServerRetentionRequest) (*v1.ServerRetentionResponse, error)
 	// SessionAnalysis 会话分析
 	SessionAnalysis(context.Context, *v1.SessionAnalysisRequest) (*v1.SessionAnalysisResponse, error)
 	// WhaleTier 鲸鱼用户/付费分层
@@ -114,6 +123,9 @@ func RegisterAnalyticsServiceHTTPServer(s *http.Server, srv AnalyticsServiceHTTP
 	r.POST("/admin/v1/analytics/level-analysis", _AnalyticsService_LevelAnalysis0_HTTP_Handler(srv))
 	r.POST("/admin/v1/analytics/whale-tier", _AnalyticsService_WhaleTier0_HTTP_Handler(srv))
 	r.POST("/admin/v1/analytics/ltv", _AnalyticsService_LTV0_HTTP_Handler(srv))
+	r.POST("/admin/v1/analytics/server-retention", _AnalyticsService_ServerRetention0_HTTP_Handler(srv))
+	r.POST("/admin/v1/analytics/online-stats", _AnalyticsService_OnlineStats0_HTTP_Handler(srv))
+	r.POST("/admin/v1/analytics/economy", _AnalyticsService_Economy0_HTTP_Handler(srv))
 }
 
 func _AnalyticsService_EventTrend0_HTTP_Handler(srv AnalyticsServiceHTTPServer) func(ctx http.Context) error {
@@ -600,6 +612,72 @@ func _AnalyticsService_LTV0_HTTP_Handler(srv AnalyticsServiceHTTPServer) func(ct
 	}
 }
 
+func _AnalyticsService_ServerRetention0_HTTP_Handler(srv AnalyticsServiceHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in v1.ServerRetentionRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationAnalyticsServiceServerRetention)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.ServerRetention(ctx, req.(*v1.ServerRetentionRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*v1.ServerRetentionResponse)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _AnalyticsService_OnlineStats0_HTTP_Handler(srv AnalyticsServiceHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in v1.OnlineStatsRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationAnalyticsServiceOnlineStats)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.OnlineStats(ctx, req.(*v1.OnlineStatsRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*v1.OnlineStatsResponse)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _AnalyticsService_Economy0_HTTP_Handler(srv AnalyticsServiceHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in v1.EconomyRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationAnalyticsServiceEconomy)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.Economy(ctx, req.(*v1.EconomyRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*v1.EconomyResponse)
+		return ctx.Result(200, reply)
+	}
+}
+
 type AnalyticsServiceHTTPClient interface {
 	// ActiveUsers 活跃用户
 	ActiveUsers(ctx context.Context, req *v1.ActiveUsersRequest, opts ...http.CallOption) (rsp *v1.ActiveUsersResponse, err error)
@@ -615,6 +693,8 @@ type AnalyticsServiceHTTPClient interface {
 	Click(ctx context.Context, req *v1.ClickRequest, opts ...http.CallOption) (rsp *v1.ClickResponse, err error)
 	// Distribution 分布分析
 	Distribution(ctx context.Context, req *v1.DistributionRequest, opts ...http.CallOption) (rsp *v1.DistributionResponse, err error)
+	// Economy 经济系统/代币流向
+	Economy(ctx context.Context, req *v1.EconomyRequest, opts ...http.CallOption) (rsp *v1.EconomyResponse, err error)
 	// EventTrend 事件量趋势
 	EventTrend(ctx context.Context, req *v1.EventTrendRequest, opts ...http.CallOption) (rsp *v1.EventTrendResponse, err error)
 	// Funnel 漏斗分析
@@ -633,6 +713,8 @@ type AnalyticsServiceHTTPClient interface {
 	Matrix(ctx context.Context, req *v1.MatrixRequest, opts ...http.CallOption) (rsp *v1.MatrixResponse, err error)
 	// NewVsOld 新老用户对比
 	NewVsOld(ctx context.Context, req *v1.NewVsOldRequest, opts ...http.CallOption) (rsp *v1.NewVsOldResponse, err error)
+	// OnlineStats 同时在线 PCU/ACU
+	OnlineStats(ctx context.Context, req *v1.OnlineStatsRequest, opts ...http.CallOption) (rsp *v1.OnlineStatsResponse, err error)
 	// PathSankey 热门转化路径
 	PathSankey(ctx context.Context, req *v1.PathSankeyRequest, opts ...http.CallOption) (rsp *v1.PathSankeyResponse, err error)
 	// Retention 留存分析
@@ -641,6 +723,8 @@ type AnalyticsServiceHTTPClient interface {
 	Revenue(ctx context.Context, req *v1.RevenueRequest, opts ...http.CallOption) (rsp *v1.RevenueResponse, err error)
 	// Segmentation 用户分群/圈选
 	Segmentation(ctx context.Context, req *v1.SegmentationRequest, opts ...http.CallOption) (rsp *v1.SegmentationResponse, err error)
+	// ServerRetention 滚服留存
+	ServerRetention(ctx context.Context, req *v1.ServerRetentionRequest, opts ...http.CallOption) (rsp *v1.ServerRetentionResponse, err error)
 	// SessionAnalysis 会话分析
 	SessionAnalysis(ctx context.Context, req *v1.SessionAnalysisRequest, opts ...http.CallOption) (rsp *v1.SessionAnalysisResponse, err error)
 	// WhaleTier 鲸鱼用户/付费分层
@@ -745,6 +829,20 @@ func (c *AnalyticsServiceHTTPClientImpl) Distribution(ctx context.Context, in *v
 	pattern := "/admin/v1/analytics/distribution"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationAnalyticsServiceDistribution))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+// Economy 经济系统/代币流向
+func (c *AnalyticsServiceHTTPClientImpl) Economy(ctx context.Context, in *v1.EconomyRequest, opts ...http.CallOption) (*v1.EconomyResponse, error) {
+	var out v1.EconomyResponse
+	pattern := "/admin/v1/analytics/economy"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationAnalyticsServiceEconomy))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {
@@ -879,6 +977,20 @@ func (c *AnalyticsServiceHTTPClientImpl) NewVsOld(ctx context.Context, in *v1.Ne
 	return &out, nil
 }
 
+// OnlineStats 同时在线 PCU/ACU
+func (c *AnalyticsServiceHTTPClientImpl) OnlineStats(ctx context.Context, in *v1.OnlineStatsRequest, opts ...http.CallOption) (*v1.OnlineStatsResponse, error) {
+	var out v1.OnlineStatsResponse
+	pattern := "/admin/v1/analytics/online-stats"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationAnalyticsServiceOnlineStats))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
 // PathSankey 热门转化路径
 func (c *AnalyticsServiceHTTPClientImpl) PathSankey(ctx context.Context, in *v1.PathSankeyRequest, opts ...http.CallOption) (*v1.PathSankeyResponse, error) {
 	var out v1.PathSankeyResponse
@@ -927,6 +1039,20 @@ func (c *AnalyticsServiceHTTPClientImpl) Segmentation(ctx context.Context, in *v
 	pattern := "/admin/v1/analytics/segmentation"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationAnalyticsServiceSegmentation))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+// ServerRetention 滚服留存
+func (c *AnalyticsServiceHTTPClientImpl) ServerRetention(ctx context.Context, in *v1.ServerRetentionRequest, opts ...http.CallOption) (*v1.ServerRetentionResponse, error) {
+	var out v1.ServerRetentionResponse
+	pattern := "/admin/v1/analytics/server-retention"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationAnalyticsServiceServerRetention))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {

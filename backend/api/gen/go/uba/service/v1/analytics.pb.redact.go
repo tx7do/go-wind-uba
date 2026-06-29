@@ -282,6 +282,39 @@ func (s *redactedAnalyticsServiceServer) LTV(ctx context.Context, in *LTVRequest
 	return res, err
 }
 
+// ServerRetention is the redacted wrapper for the actual AnalyticsServiceServer.ServerRetention method
+// Unary RPC
+func (s *redactedAnalyticsServiceServer) ServerRetention(ctx context.Context, in *ServerRetentionRequest) (*ServerRetentionResponse, error) {
+	res, err := s.srv.ServerRetention(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
+// OnlineStats is the redacted wrapper for the actual AnalyticsServiceServer.OnlineStats method
+// Unary RPC
+func (s *redactedAnalyticsServiceServer) OnlineStats(ctx context.Context, in *OnlineStatsRequest) (*OnlineStatsResponse, error) {
+	res, err := s.srv.OnlineStats(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
+// Economy is the redacted wrapper for the actual AnalyticsServiceServer.Economy method
+// Unary RPC
+func (s *redactedAnalyticsServiceServer) Economy(ctx context.Context, in *EconomyRequest) (*EconomyResponse, error) {
+	res, err := s.srv.Economy(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
 // Redact method implementation for TimeRange
 func (x *TimeRange) Redact() string {
 	if x == nil {
@@ -1357,5 +1390,117 @@ func (x *LTVResponse) Redact() string {
 	// Safe field: Points
 
 	// Safe field: MaxDays
+	return x.String()
+}
+
+// Redact method implementation for ServerRetentionRequest
+func (x *ServerRetentionRequest) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: TimeRange
+
+	// Safe field: AppId
+
+	// Safe field: ServerId
+
+	// Safe field: MaxOffsetDays
+	return x.String()
+}
+
+// Redact method implementation for ServerRetentionRow
+func (x *ServerRetentionRow) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: ServerId
+
+	// Safe field: CohortSize
+
+	// Safe field: RetentionRates
+	return x.String()
+}
+
+// Redact method implementation for ServerRetentionResponse
+func (x *ServerRetentionResponse) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Rows
+
+	// Safe field: OffsetDays
+	return x.String()
+}
+
+// Redact method implementation for OnlineStatsRequest
+func (x *OnlineStatsRequest) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: TimeRange
+
+	// Safe field: AppId
+
+	// Safe field: ServerId
+	return x.String()
+}
+
+// Redact method implementation for OnlineStatsResponse
+func (x *OnlineStatsResponse) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Pcu
+
+	// Safe field: Acu
+
+	// Safe field: DurationMinutes
+
+	// Safe field: TotalSessions
+	return x.String()
+}
+
+// Redact method implementation for EconomyRequest
+func (x *EconomyRequest) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: TimeRange
+
+	// Safe field: AppId
+
+	// Safe field: Currency
+	return x.String()
+}
+
+// Redact method implementation for CurrencyBalance
+func (x *CurrencyBalance) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Currency
+
+	// Safe field: Source
+
+	// Safe field: Sink
+
+	// Safe field: Net
+	return x.String()
+}
+
+// Redact method implementation for EconomyResponse
+func (x *EconomyResponse) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Currencies
 	return x.String()
 }

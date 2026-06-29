@@ -1914,6 +1914,226 @@ GROUP BY label, day_n`, dimSelect, tenantCond)
 }
 
 // ============================================================================
+// 滚服留存（按区服分组，复用留存算法）
+// 数据源：events_fact（新加 server_id 列）。
+// ============================================================================
+
+func (r *AnalyticsRepo) ServerRetention(ctx context.Context, req *ubaV1.ServerRetentionRequest) (*ubaV1.ServerRetentionResponse, error) {
+	startMs, endMs := normTimeRange(req.GetTimeRange())
+	maxOffset := int64(req.GetMaxOffsetDays())
+	if maxOffset <= 0 {
+		maxOffset = 7
+	}
+	offsetDays := make([]uint32, 0, maxOffset+1)
+	for d := int64(0); d <= maxOffset; d++ {
+		offsetDays = append(offsetDays, uint32(d))
+	}
+
+	var whereParts []string
+	var args []any
+	if v := req.GetAppId(); v != 0 {
+		whereParts = append(whereParts, "tenant_id = ?")
+		args = append(args, v)
+	}
+	whereParts = append(whereParts, "server_id != ''")
+	if sid := req.GetServerId(); sid != "" {
+		whereParts = append(whereParts, "server_id = ?")
+		args = append(args, sid)
+	}
+	args = append(args, time.UnixMilli(startMs), time.UnixMilli(endMs))
+	whereCond := strings.Join(whereParts, " AND ") + " AND "
+
+	// 同期群规模：按 server_id 分组，统计每个用户在该 server 的首事件日（首日新增）。
+	// users_dim 无 server_id，故以 events_fact 按用户首事件近似首日新增。
+	cohortQ := fmt.Sprintf(`
+SELECT server_id, COUNT(*) AS cohort_size FROM (
+  SELECT user_id, server_id, MIN(to_date(event_time)) AS first_day
+  FROM events_fact
+  WHERE %sevent_time >= ? AND event_time < ? AND server_id != '' AND user_id > 0
+  GROUP BY user_id, server_id
+) t GROUP BY server_id ORDER BY cohort_size DESC LIMIT 50`, whereCond)
+
+	type cohortRow struct {
+		ServerID   string `db:"server_id"`
+		CohortSize int64  `db:"cohort_size"`
+	}
+	var cohortRows []cohortRow
+	if err := r.db.SelectContext(ctx, &cohortRows, cohortQ, args...); err != nil {
+		r.log.Errorf("ServerRetention cohort query failed: %v", err)
+		return nil, ubaV1.ErrorInternalServerError("server retention query failed")
+	}
+
+	// 各 server 的各偏移天留存用户数：JOIN 同期群首日，DATEDIFF 算偏移。
+	rows := make([]*ubaV1.ServerRetentionRow, 0, len(cohortRows))
+	for _, cr := range cohortRows {
+		rates := map[string]float64{"0": 1.0}
+		// 逐偏移天查询该 server 的留存用户（去重）
+		for _, d := range offsetDays {
+			if d == 0 {
+				continue
+			}
+			retArgs := []any{cr.ServerID, time.UnixMilli(startMs), time.UnixMilli(endMs)}
+			retQ := `
+SELECT COUNT(DISTINCT e.user_id) AS retained
+FROM events_fact e
+JOIN (
+  SELECT user_id, MIN(to_date(event_time)) AS first_day
+  FROM events_fact
+  WHERE server_id = ? AND event_time >= ? AND event_time < ? AND user_id > 0
+  GROUP BY user_id
+) f ON f.user_id = e.user_id
+WHERE e.server_id = ? AND DATEDIFF(to_date(e.event_time), f.first_day) = ?`
+			if v := req.GetAppId(); v != 0 {
+				retQ = strings.Replace(retQ, "WHERE e.server_id", "WHERE e.tenant_id = ? AND e.server_id", 1)
+				retArgs = append([]any{v}, retArgs...)
+			}
+			retArgs = append(retArgs, cr.ServerID, int64(d))
+			var retained int64
+			if err := r.db.GetContext(ctx, &retained, retQ, retArgs...); err != nil && err != sql.ErrNoRows {
+				retained = 0
+			}
+			if cr.CohortSize > 0 {
+				rates[fmt.Sprintf("%d", d)] = float64(retained) / float64(cr.CohortSize)
+			}
+		}
+		rows = append(rows, &ubaV1.ServerRetentionRow{
+			ServerId:       cr.ServerID,
+			CohortSize:     cr.CohortSize,
+			RetentionRates: rates,
+		})
+	}
+	return &ubaV1.ServerRetentionResponse{Rows: rows, OffsetDays: offsetDays}, nil
+}
+
+// ============================================================================
+// 同时在线 PCU/ACU（基于 sessions_fact 会话区间推算）
+// ACU = Σ(duration) / 时长分钟；PCU 估算 = 活跃会话峰值（近似）。
+// ============================================================================
+
+func (r *AnalyticsRepo) OnlineStats(ctx context.Context, req *ubaV1.OnlineStatsRequest) (*ubaV1.OnlineStatsResponse, error) {
+	startMs, endMs := normTimeRange(req.GetTimeRange())
+
+	var whereParts []string
+	var args []any
+	if v := req.GetAppId(); v != 0 {
+		whereParts = append(whereParts, "tenant_id = ?")
+		args = append(args, v)
+	}
+	if sid := req.GetServerId(); sid != "" {
+		whereParts = append(whereParts, "server_id = ?")
+		args = append(args, sid)
+	}
+	args = append(args, time.UnixMilli(startMs), time.UnixMilli(endMs))
+	whereCond := ""
+	if len(whereParts) > 0 {
+		whereCond = strings.Join(whereParts, " AND ") + " AND "
+	}
+
+	// ACU：总会话在线分钟 / 统计时长分钟。
+	// 总在线分钟 = Σ(duration_ms) / 60000；统计时长 = (end-start)/60000。
+	q := fmt.Sprintf(`
+SELECT
+  COUNT(*) AS total_sessions,
+  IFNULL(SUM(duration_ms), 0) AS total_duration_ms
+FROM sessions_fact
+WHERE %sstart_time >= ? AND start_time < ?`, whereCond)
+	var s struct {
+		TotalSessions   int64 `db:"total_sessions"`
+		TotalDurationMs int64 `db:"total_duration_ms"`
+	}
+	if err := r.db.GetContext(ctx, &s, q, args...); err != nil && err != sql.ErrNoRows {
+		r.log.Errorf("OnlineStats query failed: %v", err)
+		return nil, ubaV1.ErrorInternalServerError("online stats query failed")
+	}
+
+	spanMs := endMs - startMs
+	durationMinutes := spanMs / int64(time.Minute/time.Millisecond)
+	if durationMinutes <= 0 {
+		durationMinutes = 1
+	}
+	totalOnlineMinutes := s.TotalDurationMs / 60000
+	acu := totalOnlineMinutes / durationMinutes
+	// PCU 近似：平均每分钟并发会话数 * 峰值系数（无分钟桶时用 ACU 的 2-3 倍估算上限）。
+	// 精确 PCU 需分钟级会话重叠统计，MVP 用活跃会话估算：取统计窗口内并发会话的合理上界。
+	// 这里用「窗口内会话总数 / (时长/平均会话时长)」的倒数为并发估算，并取 max(acu, 并发估算)。
+	avgSessionMin := int64(0)
+	if s.TotalSessions > 0 {
+		avgSessionMin = totalOnlineMinutes / s.TotalSessions
+	}
+	var pcu int64 = acu
+	if avgSessionMin > 0 {
+		concurrency := s.TotalSessions * avgSessionMin / durationMinutes
+		if concurrency > pcu {
+			pcu = concurrency
+		}
+	}
+
+	return &ubaV1.OnlineStatsResponse{
+		Pcu:             pcu,
+		Acu:             acu,
+		DurationMinutes: durationMinutes,
+		TotalSessions:   s.TotalSessions,
+	}, nil
+}
+
+// ============================================================================
+// 经济系统/代币流向（产出 Source / 消耗 Sink 平衡）
+// 数据源：events_fact（amount 正=产出 负=消耗 + object_type='item'）。
+// ============================================================================
+
+func (r *AnalyticsRepo) Economy(ctx context.Context, req *ubaV1.EconomyRequest) (*ubaV1.EconomyResponse, error) {
+	startMs, endMs := normTimeRange(req.GetTimeRange())
+
+	var whereParts []string
+	var args []any
+	if v := req.GetAppId(); v != 0 {
+		whereParts = append(whereParts, "tenant_id = ?")
+		args = append(args, v)
+	}
+	whereParts = append(whereParts, "object_type = 'item'")
+	if c := req.GetCurrency(); c != "" {
+		// events_fact 无 currency 列，按 object_name 近似过滤（代币名）
+		whereParts = append(whereParts, "object_name = ?")
+		args = append(args, c)
+	}
+	args = append(args, time.UnixMilli(startMs), time.UnixMilli(endMs))
+	whereCond := strings.Join(whereParts, " AND ") + " AND "
+
+	// events_fact 无 currency 列，按 object_name（代币/道具名）分组；amount 正负分产出/消耗。
+	q := fmt.Sprintf(`
+SELECT
+  IFNULL(NULLIF(object_name, ''), object_id) AS currency,
+  ROUND(SUM(IF(amount > 0, amount, 0)), 2) AS source,
+  ROUND(SUM(IF(amount < 0, -amount, 0)), 2) AS sink
+FROM events_fact
+WHERE %sevent_time >= ? AND event_time < ? AND amount != 0
+GROUP BY currency
+ORDER BY source DESC`, whereCond)
+
+	type row struct {
+		Currency string  `db:"currency"`
+		Source   float64 `db:"source"`
+		Sink     float64 `db:"sink"`
+	}
+	var rows []row
+	if err := r.db.SelectContext(ctx, &rows, q, args...); err != nil {
+		r.log.Errorf("Economy query failed: %v", err)
+		return nil, ubaV1.ErrorInternalServerError("economy query failed")
+	}
+
+	currencies := make([]*ubaV1.CurrencyBalance, 0, len(rows))
+	for _, rw := range rows {
+		currencies = append(currencies, &ubaV1.CurrencyBalance{
+			Currency: rw.Currency,
+			Source:   rw.Source,
+			Sink:     rw.Sink,
+			Net:      rw.Source - rw.Sink,
+		})
+	}
+	return &ubaV1.EconomyResponse{Currencies: currencies}, nil
+}
+
+// ============================================================================
 // 工具函数
 // ============================================================================
 

@@ -144,6 +144,8 @@ export class UbaClient {
       quantity: options?.quantity,
       score: options?.score,
       metrics: options?.metrics,
+      serverId: options?.serverId,
+      level: options?.level,
       clickX: options?.clickX,
       clickY: options?.clickY,
       elementXpath: options?.elementXpath,
@@ -274,6 +276,9 @@ export class UbaClient {
       quantity: options?.quantity,
       score: options?.score,
       metrics: options?.metrics,
+      // 游戏专属维度（游戏方在 track 时传入）
+      serverId: options?.serverId,
+      level: options?.level,
       // 页面级公共字段（点击热力图/路径分析用）
       clickX: options?.clickX,
       clickY: options?.clickY,

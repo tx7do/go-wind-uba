@@ -52,6 +52,9 @@ type EventsFact struct {
 	ElementXpath  *string          `db:"element_xpath"`
 	PageUrl       *string          `db:"page_url"`
 	ViewportWidth *uint32          `db:"viewport_width"`
+	// 游戏专属维度
+	ServerID      *string          `db:"server_id"`
+	Level         *uint32          `db:"level"`
 	CreatedAt     *time.Time       `db:"created_at"`
 	UpdatedAt     *time.Time       `db:"updated_at"`
 }

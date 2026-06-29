@@ -183,4 +183,28 @@ service AnalyticsService {
       body: "*"
     };
   }
+
+  // 滚服留存
+  rpc ServerRetention(uba.service.v1.ServerRetentionRequest) returns (uba.service.v1.ServerRetentionResponse) {
+    option (google.api.http) = {
+      post: "/admin/v1/analytics/server-retention"
+      body: "*"
+    };
+  }
+
+  // 同时在线 PCU/ACU
+  rpc OnlineStats(uba.service.v1.OnlineStatsRequest) returns (uba.service.v1.OnlineStatsResponse) {
+    option (google.api.http) = {
+      post: "/admin/v1/analytics/online-stats"
+      body: "*"
+    };
+  }
+
+  // 经济系统/代币流向
+  rpc Economy(uba.service.v1.EconomyRequest) returns (uba.service.v1.EconomyResponse) {
+    option (google.api.http) = {
+      post: "/admin/v1/analytics/economy"
+      body: "*"
+    };
+  }
 }

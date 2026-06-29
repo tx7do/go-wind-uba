@@ -59,6 +59,9 @@ func (s *AnalyticsService) repo() interface {
 	LevelAnalysis(context.Context, *ubaV1.LevelAnalysisRequest) (*ubaV1.LevelAnalysisResponse, error)
 	WhaleTier(context.Context, *ubaV1.WhaleTierRequest) (*ubaV1.WhaleTierResponse, error)
 	LTV(context.Context, *ubaV1.LTVRequest) (*ubaV1.LTVResponse, error)
+	ServerRetention(context.Context, *ubaV1.ServerRetentionRequest) (*ubaV1.ServerRetentionResponse, error)
+	OnlineStats(context.Context, *ubaV1.OnlineStatsRequest) (*ubaV1.OnlineStatsResponse, error)
+	Economy(context.Context, *ubaV1.EconomyRequest) (*ubaV1.EconomyResponse, error)
 } {
 	if data.UseClickHouse {
 		return s.ckRepo
@@ -152,4 +155,16 @@ func (s *AnalyticsService) WhaleTier(ctx context.Context, req *ubaV1.WhaleTierRe
 
 func (s *AnalyticsService) LTV(ctx context.Context, req *ubaV1.LTVRequest) (*ubaV1.LTVResponse, error) {
 	return s.repo().LTV(ctx, req)
+}
+
+func (s *AnalyticsService) ServerRetention(ctx context.Context, req *ubaV1.ServerRetentionRequest) (*ubaV1.ServerRetentionResponse, error) {
+	return s.repo().ServerRetention(ctx, req)
+}
+
+func (s *AnalyticsService) OnlineStats(ctx context.Context, req *ubaV1.OnlineStatsRequest) (*ubaV1.OnlineStatsResponse, error) {
+	return s.repo().OnlineStats(ctx, req)
+}
+
+func (s *AnalyticsService) Economy(ctx context.Context, req *ubaV1.EconomyRequest) (*ubaV1.EconomyResponse, error) {
+	return s.repo().Economy(ctx, req)
 }

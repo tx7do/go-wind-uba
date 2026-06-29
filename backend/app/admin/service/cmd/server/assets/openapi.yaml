@@ -140,6 +140,25 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/DistributionResponse'
+    /admin/v1/analytics/economy:
+        post:
+            tags:
+                - AnalyticsService
+            description: 经济系统/代币流向
+            operationId: AnalyticsService_Economy
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/EconomyRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/EconomyResponse'
     /admin/v1/analytics/event-trend:
         post:
             tags:
@@ -311,6 +330,25 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/NewVsOldResponse'
+    /admin/v1/analytics/online-stats:
+        post:
+            tags:
+                - AnalyticsService
+            description: 同时在线 PCU/ACU
+            operationId: AnalyticsService_OnlineStats
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/OnlineStatsRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/OnlineStatsResponse'
     /admin/v1/analytics/path-sankey:
         post:
             tags:
@@ -387,6 +425,25 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/SegmentationResponse'
+    /admin/v1/analytics/server-retention:
+        post:
+            tags:
+                - AnalyticsService
+            description: 滚服留存
+            operationId: AnalyticsService_ServerRetention
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/ServerRetentionRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ServerRetentionResponse'
     /admin/v1/analytics/session-analysis:
         post:
             tags:
@@ -7295,6 +7352,13 @@ components:
                     type: integer
                     description: 视口宽度（像素），用于响应式热力图归一化
                     format: uint32
+                serverId:
+                    type: string
+                    description: 游戏区服 ID（如 s1、cn-east-1），滚服留存/区服维度分析用
+                level:
+                    type: integer
+                    description: 玩家等级（事件发生时的等级快照），游戏维度分析用
+                    format: uint32
                 createdAt:
                     type: string
                     description: 创建时间
@@ -7704,6 +7768,25 @@ components:
                 data:
                     $ref: '#/components/schemas/Webhook'
             description: 创建网络钩子 - 请求
+        CurrencyBalance:
+            type: object
+            properties:
+                currency:
+                    type: string
+                    description: 代币类型（GOLD/DIAMOND 等）
+                source:
+                    type: number
+                    description: 产出总量（Source：充值/奖励/掉落等获取）
+                    format: double
+                sink:
+                    type: number
+                    description: 消耗总量（Sink：购买/升级等支出）
+                    format: double
+                net:
+                    type: number
+                    description: 净流入（产出 - 消耗，正值=通胀倾向，负值=通缩）
+                    format: double
+            description: 单代币的产出消耗平衡
         DataAccessAuditLog:
             type: object
             properties:
@@ -8143,6 +8226,29 @@ components:
                     description: 可选，最后修改时间
                     format: date-time
             description: 文件下载响应
+        EconomyRequest:
+            type: object
+            properties:
+                timeRange:
+                    allOf:
+                        - $ref: '#/components/schemas/TimeRange'
+                    description: 时间范围
+                appId:
+                    type: integer
+                    description: 应用 ID 过滤（可选）
+                    format: uint32
+                currency:
+                    type: string
+                    description: 代币类型过滤（可选，如 GOLD/DIAMOND，空表示全部）
+            description: ============== 经济系统/代币流向 ==============
+        EconomyResponse:
+            type: object
+            properties:
+                currencies:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/CurrencyBalance'
+                    description: 各代币的产出消耗平衡
         EditUserPasswordRequest:
             type: object
             properties:
@@ -10176,6 +10282,36 @@ components:
                     description: 更新时间
                     format: date-time
             description: 对象维度（对应 objects_dim 表）
+        OnlineStatsRequest:
+            type: object
+            properties:
+                timeRange:
+                    allOf:
+                        - $ref: '#/components/schemas/TimeRange'
+                    description: 时间范围
+                appId:
+                    type: integer
+                    description: 应用 ID 过滤（可选）
+                    format: uint32
+                serverId:
+                    type: string
+                    description: 区服过滤（可选）
+            description: ============== 同时在线 PCU/ACU ==============
+        OnlineStatsResponse:
+            type: object
+            properties:
+                pcu:
+                    type: string
+                    description: PCU 峰值同时在线（时间段内最大同时在线数）
+                acu:
+                    type: string
+                    description: ACU 平均同时在线
+                durationMinutes:
+                    type: string
+                    description: 统计时长（分钟）
+                totalSessions:
+                    type: string
+                    description: 总会话数
         OperationAuditLog:
             type: object
             properties:
@@ -11496,6 +11632,55 @@ components:
                     type: string
                     description: 渠道
             description: 序列中的一个行为事件
+        ServerRetentionRequest:
+            type: object
+            properties:
+                timeRange:
+                    allOf:
+                        - $ref: '#/components/schemas/TimeRange'
+                    description: 时间范围（按首次活跃日过滤）
+                appId:
+                    type: integer
+                    description: 应用 ID 过滤（可选）
+                    format: uint32
+                serverId:
+                    type: string
+                    description: 区服 ID 过滤（可选，空表示全部区服对比）
+                maxOffsetDays:
+                    type: integer
+                    description: 最大偏移天数（默认 7）
+                    format: uint32
+            description: ============== 滚服留存（按区服分组） ==============
+        ServerRetentionResponse:
+            type: object
+            properties:
+                rows:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ServerRetentionRow'
+                    description: 各区服留存
+                offsetDays:
+                    type: array
+                    items:
+                        type: integer
+                        format: uint32
+                    description: 偏移天列表（横轴）
+        ServerRetentionRow:
+            type: object
+            properties:
+                serverId:
+                    type: string
+                    description: 区服 ID
+                cohortSize:
+                    type: string
+                    description: 首日新增用户数（同期群规模）
+                retentionRates:
+                    type: object
+                    additionalProperties:
+                        type: number
+                        format: double
+                    description: 各偏移天的留存率（key=天数，如 "1"/"3"/"7"）
+            description: 单区服留存
         Session:
             type: object
             properties:

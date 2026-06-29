@@ -237,6 +237,14 @@ func (m *BehaviorEvent) validate(all bool) error {
 		// no validation rules for ViewportWidth
 	}
 
+	if m.ServerId != nil {
+		// no validation rules for ServerId
+	}
+
+	if m.Level != nil {
+		// no validation rules for Level
+	}
+
 	if m.CreatedAt != nil {
 
 		if all {

@@ -1771,3 +1771,202 @@ GROUP BY label, day_n`, dimSelect, tenantCond)
 	}
 	return &ubaV1.LTVResponse{Points: points, MaxDays: 90}, nil
 }
+
+// ============================================================================
+// 滚服留存（按区服分组，复用留存算法）
+// 数据源：events_fact（新加 server_id 列）。
+// ============================================================================
+
+func (r *AnalyticsRepo) ServerRetention(ctx context.Context, req *ubaV1.ServerRetentionRequest) (*ubaV1.ServerRetentionResponse, error) {
+	startMs, endMs := normTimeRange(req.GetTimeRange())
+	maxOffset := int64(req.GetMaxOffsetDays())
+	if maxOffset <= 0 {
+		maxOffset = 7
+	}
+	offsetDays := make([]uint32, 0, maxOffset+1)
+	for d := int64(0); d <= maxOffset; d++ {
+		offsetDays = append(offsetDays, uint32(d))
+	}
+
+	var whereParts []string
+	var args []any
+	if v := req.GetAppId(); v != 0 {
+		whereParts = append(whereParts, "tenant_id = ?")
+		args = append(args, v)
+	}
+	whereParts = append(whereParts, "server_id != ''")
+	if sid := req.GetServerId(); sid != "" {
+		whereParts = append(whereParts, "server_id = ?")
+		args = append(args, sid)
+	}
+	args = append(args, time.UnixMilli(startMs), time.UnixMilli(endMs))
+	whereCond := strings.Join(whereParts, " AND ") + " AND "
+
+	// 同期群：每个用户在该 server 的首事件日（首日新增），按 server 分组。
+	cohortQ := fmt.Sprintf(`
+SELECT server_id, count() AS cohort_size FROM (
+  SELECT user_id, server_id, min(toDate(event_time)) AS first_day
+  FROM events_fact
+  WHERE %sevent_time >= ? AND event_time < ? AND server_id != '' AND user_id > 0
+  GROUP BY user_id, server_id
+) GROUP BY server_id ORDER BY cohort_size DESC LIMIT 50`, whereCond)
+	type cohortRow struct {
+		ServerID   string `db:"server_id" ch:"server_id"`
+		CohortSize int64  `db:"cohort_size" ch:"cohort_size"`
+	}
+	var cohortRows []cohortRow
+	if err := r.db.Select(ctx, &cohortRows, cohortQ, args...); err != nil {
+		r.log.Errorf("ServerRetention cohort query failed: %v", err)
+		return nil, ubaV1.ErrorInternalServerError("server retention query failed")
+	}
+
+	rows := make([]*ubaV1.ServerRetentionRow, 0, len(cohortRows))
+	for _, cr := range cohortRows {
+		rates := map[string]float64{"0": 1.0}
+		for _, d := range offsetDays {
+			if d == 0 {
+				continue
+			}
+			retArgs := []any{cr.ServerID, time.UnixMilli(startMs), time.UnixMilli(endMs)}
+			retQ := `
+SELECT count(DISTINCT e.user_id) AS retained
+FROM events_fact e
+INNER JOIN (
+  SELECT user_id, min(toDate(event_time)) AS first_day
+  FROM events_fact
+  WHERE server_id = ? AND event_time >= ? AND event_time < ? AND user_id > 0
+  GROUP BY user_id
+) f ON f.user_id = e.user_id
+WHERE e.server_id = ? AND dateDiff('day', f.first_day, toDate(e.event_time)) = ?`
+			if v := req.GetAppId(); v != 0 {
+				retQ = strings.Replace(retQ, "WHERE e.server_id", "WHERE e.tenant_id = ? AND e.server_id", 1)
+				retArgs = append([]any{v}, retArgs...)
+			}
+			retArgs = append(retArgs, cr.ServerID, int64(d))
+			var retained int64
+			_ = r.db.QueryRow(ctx, &retained, retQ, retArgs...)
+			if cr.CohortSize > 0 {
+				rates[fmt.Sprintf("%d", d)] = float64(retained) / float64(cr.CohortSize)
+			}
+		}
+		rows = append(rows, &ubaV1.ServerRetentionRow{
+			ServerId: cr.ServerID, CohortSize: cr.CohortSize, RetentionRates: rates,
+		})
+	}
+	return &ubaV1.ServerRetentionResponse{Rows: rows, OffsetDays: offsetDays}, nil
+}
+
+// ============================================================================
+// 同时在线 PCU/ACU（基于 sessions_fact 会话区间推算）
+// ============================================================================
+
+func (r *AnalyticsRepo) OnlineStats(ctx context.Context, req *ubaV1.OnlineStatsRequest) (*ubaV1.OnlineStatsResponse, error) {
+	startMs, endMs := normTimeRange(req.GetTimeRange())
+
+	var whereParts []string
+	var args []any
+	if v := req.GetAppId(); v != 0 {
+		whereParts = append(whereParts, "tenant_id = ?")
+		args = append(args, v)
+	}
+	if sid := req.GetServerId(); sid != "" {
+		whereParts = append(whereParts, "server_id = ?")
+		args = append(args, sid)
+	}
+	args = append(args, time.UnixMilli(startMs), time.UnixMilli(endMs))
+	whereCond := ""
+	if len(whereParts) > 0 {
+		whereCond = strings.Join(whereParts, " AND ") + " AND "
+	}
+
+	q := fmt.Sprintf(`
+SELECT
+  count() AS total_sessions,
+  ifNull(sum(duration_ms), 0) AS total_duration_ms
+FROM sessions_fact
+WHERE %sstart_time >= ? AND start_time < ?`, whereCond)
+	var s struct {
+		TotalSessions   int64 `db:"total_sessions" ch:"total_sessions"`
+		TotalDurationMs int64 `db:"total_duration_ms" ch:"total_duration_ms"`
+	}
+	if err := r.db.QueryRow(ctx, &s, q, args...); err != nil {
+		r.log.Errorf("OnlineStats query failed: %v", err)
+		return nil, ubaV1.ErrorInternalServerError("online stats query failed")
+	}
+
+	spanMs := endMs - startMs
+	durationMinutes := spanMs / int64(time.Minute/time.Millisecond)
+	if durationMinutes <= 0 {
+		durationMinutes = 1
+	}
+	totalOnlineMinutes := s.TotalDurationMs / 60000
+	acu := totalOnlineMinutes / durationMinutes
+	var pcu int64 = acu
+	avgSessionMin := int64(0)
+	if s.TotalSessions > 0 {
+		avgSessionMin = totalOnlineMinutes / s.TotalSessions
+	}
+	if avgSessionMin > 0 {
+		concurrency := s.TotalSessions * avgSessionMin / durationMinutes
+		if concurrency > pcu {
+			pcu = concurrency
+		}
+	}
+
+	return &ubaV1.OnlineStatsResponse{
+		Pcu: pcu, Acu: acu, DurationMinutes: durationMinutes, TotalSessions: s.TotalSessions,
+	}, nil
+}
+
+// ============================================================================
+// 经济系统/代币流向（产出 Source / 消耗 Sink 平衡）
+// 数据源：events_fact（amount 正=产出 负=消耗 + object_type='item'）。
+// ============================================================================
+
+func (r *AnalyticsRepo) Economy(ctx context.Context, req *ubaV1.EconomyRequest) (*ubaV1.EconomyResponse, error) {
+	startMs, endMs := normTimeRange(req.GetTimeRange())
+
+	var whereParts []string
+	var args []any
+	if v := req.GetAppId(); v != 0 {
+		whereParts = append(whereParts, "tenant_id = ?")
+		args = append(args, v)
+	}
+	whereParts = append(whereParts, "object_type = 'item'")
+	if c := req.GetCurrency(); c != "" {
+		// events_fact 无 currency 列，按 object_name 近似过滤（代币名）
+		whereParts = append(whereParts, "object_name = ?")
+		args = append(args, c)
+	}
+	args = append(args, time.UnixMilli(startMs), time.UnixMilli(endMs))
+	whereCond := strings.Join(whereParts, " AND ") + " AND "
+
+	// events_fact 无 currency 列，按 object_name（代币/道具名）分组；amount 正负分产出/消耗。
+	q := fmt.Sprintf(`
+SELECT
+  if(object_name = '', object_id, object_name) AS currency,
+  round(sumIf(toFloat64OrZero(toString(amount)), amount > 0), 2) AS source,
+  round(sumIf(toFloat64OrZero(toString(amount)) * -1, amount < 0), 2) AS sink
+FROM events_fact
+WHERE %sevent_time >= ? AND event_time < ? AND amount != 0
+GROUP BY currency
+ORDER BY source DESC`, whereCond)
+
+	type row struct {
+		Currency string  `db:"currency" ch:"currency"`
+		Source   float64 `db:"source" ch:"source"`
+		Sink     float64 `db:"sink" ch:"sink"`
+	}
+	var rows []row
+	if err := r.db.Select(ctx, &rows, q, args...); err != nil {
+		r.log.Errorf("Economy query failed: %v", err)
+		return nil, ubaV1.ErrorInternalServerError("economy query failed")
+	}
+	currencies := make([]*ubaV1.CurrencyBalance, 0, len(rows))
+	for _, rw := range rows {
+		currencies = append(currencies, &ubaV1.CurrencyBalance{
+			Currency: rw.Currency, Source: rw.Source, Sink: rw.Sink, Net: rw.Source - rw.Sink,
+		})
+	}
+	return &ubaV1.EconomyResponse{Currencies: currencies}, nil
+}

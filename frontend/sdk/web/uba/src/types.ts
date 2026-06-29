@@ -37,6 +37,10 @@ export interface BehaviorEvent {
   metrics?: Record<string, number>;
   opResult?: string;
   errorCode?: string;
+  /** 游戏区服 ID（如 s1、cn-east-1，游戏专属维度） */
+  serverId?: string;
+  /** 玩家等级（游戏专属维度，事件发生时的等级快照） */
+  level?: number;
   /** 点击坐标 X（相对文档，像素；autotrack 自动填充） */
   clickX?: number;
   /** 点击坐标 Y（相对文档，像素） */
@@ -144,6 +148,10 @@ export interface ReportEvent {
   opResult?: string;
   /** 错误码 */
   errorCode?: string;
+  /** 游戏区服 ID */
+  serverId?: string;
+  /** 玩家等级 */
+  level?: number;
   /** 点击坐标 X（相对文档，像素；autotrack 自动填充） */
   clickX?: number;
   /** 点击坐标 Y（相对文档，像素） */
@@ -248,6 +256,10 @@ export interface TrackOptions {
   metrics?: Record<string, number>;
   /** 自定义属性，并入 properties */
   properties?: Record<string, string>;
+  /** 游戏区服 ID */
+  serverId?: string;
+  /** 玩家等级 */
+  level?: number;
   /** 点击坐标 X（相对文档，像素） */
   clickX?: number;
   /** 点击坐标 Y（相对文档，像素） */

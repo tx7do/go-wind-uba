@@ -55,4 +55,7 @@ type EventsFact struct {
 	ElementXpath  *string            `ch:"element_xpath"`
 	PageUrl       *string            `ch:"page_url"`
 	ViewportWidth *uint32            `ch:"viewport_width"`
+	// 游戏专属维度
+	ServerID      *string            `ch:"server_id"`
+	Level         *uint32            `ch:"level"`
 }

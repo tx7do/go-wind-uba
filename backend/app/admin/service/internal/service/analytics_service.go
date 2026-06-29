@@ -113,3 +113,15 @@ func (s *AnalyticsService) WhaleTier(ctx context.Context, req *ubaV1.WhaleTierRe
 func (s *AnalyticsService) LTV(ctx context.Context, req *ubaV1.LTVRequest) (*ubaV1.LTVResponse, error) {
 	return s.client.LTV(ctx, req)
 }
+
+func (s *AnalyticsService) ServerRetention(ctx context.Context, req *ubaV1.ServerRetentionRequest) (*ubaV1.ServerRetentionResponse, error) {
+	return s.client.ServerRetention(ctx, req)
+}
+
+func (s *AnalyticsService) OnlineStats(ctx context.Context, req *ubaV1.OnlineStatsRequest) (*ubaV1.OnlineStatsResponse, error) {
+	return s.client.OnlineStats(ctx, req)
+}
+
+func (s *AnalyticsService) Economy(ctx context.Context, req *ubaV1.EconomyRequest) (*ubaV1.EconomyResponse, error) {
+	return s.client.Economy(ctx, req)
+}

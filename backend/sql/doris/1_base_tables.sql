@@ -60,6 +60,9 @@ CREATE TABLE IF NOT EXISTS events_fact (
     element_xpath VARCHAR(512) COMMENT '被点击元素的 XPath',
     page_url VARCHAR(512) COMMENT '页面 URL',
     viewport_width SMALLINT COMMENT '视口宽度（像素）',
+    -- 游戏专属维度
+    server_id VARCHAR(64) COMMENT '游戏区服 ID（滚服留存/区服维度分析用）',
+    level SMALLINT COMMENT '玩家等级（事件发生时快照）',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
 

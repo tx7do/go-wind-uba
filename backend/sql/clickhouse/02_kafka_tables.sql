@@ -101,6 +101,8 @@ SELECT JSONExtractString(raw, 'eventId')                                  AS eve
        JSONExtractString(raw, 'elementXpath')                            AS element_xpath,
        JSONExtractString(raw, 'pageUrl')                                 AS page_url,
        toUInt16OrDefault(JSONExtractString(raw, 'viewportWidth'), 0)      AS viewport_width,
+       JSONExtractString(raw, 'serverId')                                AS server_id,
+       toUInt16OrDefault(JSONExtractString(raw, 'level'), 0)             AS level,
 
        now()                                                              AS created_at,
        now()                                                              AS updated_at

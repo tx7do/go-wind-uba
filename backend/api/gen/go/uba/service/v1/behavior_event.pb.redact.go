@@ -182,6 +182,10 @@ func (x *BehaviorEvent) Redact() string {
 
 	// Safe field: ViewportWidth
 
+	// Safe field: ServerId
+
+	// Safe field: Level
+
 	// Safe field: CreatedAt
 
 	// Safe field: UpdatedAt

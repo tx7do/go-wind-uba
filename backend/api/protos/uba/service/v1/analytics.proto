@@ -72,6 +72,15 @@ service AnalyticsService {
 
   // 历史生命周期价值 LTV（用户在第 N 天的累计付费价值）
   rpc LTV(LTVRequest) returns (LTVResponse) {}
+
+  // 滚服留存（按区服分组的留存）
+  rpc ServerRetention(ServerRetentionRequest) returns (ServerRetentionResponse) {}
+
+  // 同时在线 PCU/ACU（基于会话区间推算）
+  rpc OnlineStats(OnlineStatsRequest) returns (OnlineStatsResponse) {}
+
+  // 经济系统/代币流向（产出与消耗平衡）
+  rpc Economy(EconomyRequest) returns (EconomyResponse) {}
 }
 
 // 时间粒度
@@ -864,4 +873,81 @@ message LTVResponse {
   repeated LTVPoint points = 1 [json_name = "points"];
   // 观察的最大天数
   uint32 max_days = 2 [json_name = "maxDays"];
+}
+
+// ============== 滚服留存（按区服分组） ==============
+message ServerRetentionRequest {
+  // 时间范围（按首次活跃日过滤）
+  TimeRange time_range = 1 [json_name = "timeRange"];
+  // 应用 ID 过滤（可选）
+  optional uint32 app_id = 2 [json_name = "appId"];
+  // 区服 ID 过滤（可选，空表示全部区服对比）
+  optional string server_id = 3 [json_name = "serverId"];
+  // 最大偏移天数（默认 7）
+  optional uint32 max_offset_days = 4 [json_name = "maxOffsetDays"];
+}
+
+// 单区服留存
+message ServerRetentionRow {
+  // 区服 ID
+  string server_id = 1 [json_name = "serverId"];
+  // 首日新增用户数（同期群规模）
+  int64 cohort_size = 2 [json_name = "cohortSize"];
+  // 各偏移天的留存率（key=天数，如 "1"/"3"/"7"）
+  map<string, double> retention_rates = 3 [json_name = "retentionRates"];
+}
+
+message ServerRetentionResponse {
+  // 各区服留存
+  repeated ServerRetentionRow rows = 1 [json_name = "rows"];
+  // 偏移天列表（横轴）
+  repeated uint32 offset_days = 2 [json_name = "offsetDays"];
+}
+
+// ============== 同时在线 PCU/ACU ==============
+message OnlineStatsRequest {
+  // 时间范围
+  TimeRange time_range = 1 [json_name = "timeRange"];
+  // 应用 ID 过滤（可选）
+  optional uint32 app_id = 2 [json_name = "appId"];
+  // 区服过滤（可选）
+  optional string server_id = 3 [json_name = "serverId"];
+}
+
+message OnlineStatsResponse {
+  // PCU 峰值同时在线（时间段内最大同时在线数）
+  int64 pcu = 1 [json_name = "pcu"];
+  // ACU 平均同时在线
+  int64 acu = 2 [json_name = "acu"];
+  // 统计时长（分钟）
+  int64 duration_minutes = 3 [json_name = "durationMinutes"];
+  // 总会话数
+  int64 total_sessions = 4 [json_name = "totalSessions"];
+}
+
+// ============== 经济系统/代币流向 ==============
+message EconomyRequest {
+  // 时间范围
+  TimeRange time_range = 1 [json_name = "timeRange"];
+  // 应用 ID 过滤（可选）
+  optional uint32 app_id = 2 [json_name = "appId"];
+  // 代币类型过滤（可选，如 GOLD/DIAMOND，空表示全部）
+  optional string currency = 3 [json_name = "currency"];
+}
+
+// 单代币的产出消耗平衡
+message CurrencyBalance {
+  // 代币类型（GOLD/DIAMOND 等）
+  string currency = 1 [json_name = "currency"];
+  // 产出总量（Source：充值/奖励/掉落等获取）
+  double source = 2 [json_name = "source"];
+  // 消耗总量（Sink：购买/升级等支出）
+  double sink = 3 [json_name = "sink"];
+  // 净流入（产出 - 消耗，正值=通胀倾向，负值=通缩）
+  double net = 4 [json_name = "net"];
+}
+
+message EconomyResponse {
+  // 各代币的产出消耗平衡
+  repeated CurrencyBalance currencies = 1 [json_name = "currencies"];
 }

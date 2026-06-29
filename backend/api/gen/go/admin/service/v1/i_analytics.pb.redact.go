@@ -281,3 +281,36 @@ func (s *redactedAnalyticsServiceServer) LTV(ctx context.Context, in *ubapb.LTVR
 	}
 	return res, err
 }
+
+// ServerRetention is the redacted wrapper for the actual AnalyticsServiceServer.ServerRetention method
+// Unary RPC
+func (s *redactedAnalyticsServiceServer) ServerRetention(ctx context.Context, in *ubapb.ServerRetentionRequest) (*ubapb.ServerRetentionResponse, error) {
+	res, err := s.srv.ServerRetention(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
+// OnlineStats is the redacted wrapper for the actual AnalyticsServiceServer.OnlineStats method
+// Unary RPC
+func (s *redactedAnalyticsServiceServer) OnlineStats(ctx context.Context, in *ubapb.OnlineStatsRequest) (*ubapb.OnlineStatsResponse, error) {
+	res, err := s.srv.OnlineStats(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
+// Economy is the redacted wrapper for the actual AnalyticsServiceServer.Economy method
+// Unary RPC
+func (s *redactedAnalyticsServiceServer) Economy(ctx context.Context, in *ubapb.EconomyRequest) (*ubapb.EconomyResponse, error) {
+	res, err := s.srv.Economy(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}

@@ -28,7 +28,7 @@ COLUMNS(
     ip_city, country, geo, user_agent, referer, network, context, duration_ms,
     temp_amount, quantity, score, metrics, properties, error_code, op_result,
     risk_level, trace_id, os, app_version, channel, temp_server_time,
-    click_x, click_y, element_xpath, page_url, viewport_width,
+    click_x, click_y, element_xpath, page_url, viewport_width, server_id, level,
 
     event_time = str_to_date(replace(replace(temp_event_time, 'T', ' '), 'Z', ''), '%Y-%m-%d %H:%i:%s'),
     -- amount：清理千分位/货币符号等非数字字符，空或非法时落 0（DECIMAL 列默认值）
@@ -46,7 +46,7 @@ PROPERTIES
     "max_batch_interval" = "10",
     "max_batch_rows" = "200000",
     "format" = "json",
-    "jsonpaths" = "[\"$.eventId\", \"$.tenantId\", \"$.userId\", \"$.deviceId\", \"$.accountId\", \"$.globalUserId\", \"$.eventTime\", \"$.eventCategory\", \"$.eventName\", \"$.eventAction\", \"$.objectType\", \"$.objectId\", \"$.objectName\", \"$.sessionId\", \"$.sessionSeq\", \"$.platform\", \"$.ip\", \"$.ipCity\", \"$.country\", \"$.geo\", \"$.userAgent\", \"$.referer\", \"$.network\", \"$.context\", \"$.durationMs\", \"$.amount\", \"$.quantity\", \"$.score\", \"$.metrics\", \"$.properties\", \"$.errorCode\", \"$.opResult\", \"$.riskLevel\", \"$.traceId\", \"$.os\", \"$.appVersion\", \"$.channel\", \"$.serverTime\", \"$.clickX\", \"$.clickY\", \"$.elementXpath\", \"$.pageUrl\", \"$.viewportWidth\"]",
+    "jsonpaths" = "[\"$.eventId\", \"$.tenantId\", \"$.userId\", \"$.deviceId\", \"$.accountId\", \"$.globalUserId\", \"$.eventTime\", \"$.eventCategory\", \"$.eventName\", \"$.eventAction\", \"$.objectType\", \"$.objectId\", \"$.objectName\", \"$.sessionId\", \"$.sessionSeq\", \"$.platform\", \"$.ip\", \"$.ipCity\", \"$.country\", \"$.geo\", \"$.userAgent\", \"$.referer\", \"$.network\", \"$.context\", \"$.durationMs\", \"$.amount\", \"$.quantity\", \"$.score\", \"$.metrics\", \"$.properties\", \"$.errorCode\", \"$.opResult\", \"$.riskLevel\", \"$.traceId\", \"$.os\", \"$.appVersion\", \"$.channel\", \"$.serverTime\", \"$.clickX\", \"$.clickY\", \"$.elementXpath\", \"$.pageUrl\", \"$.viewportWidth\", \"$.serverId\", \"$.level\"]",
     "strip_outer_array" = "false",
     "num_as_string" = "true"
 )

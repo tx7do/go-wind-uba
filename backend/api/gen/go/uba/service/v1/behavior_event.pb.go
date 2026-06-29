@@ -83,13 +83,16 @@ type BehaviorEvent struct {
 	RiskLevel *string `protobuf:"bytes,35,opt,name=risk_level,json=riskLevel,proto3,oneof" json:"risk_level,omitempty"` // 风险等级，事件相关的风险等级信息，可以用于分析事件的风险特征和安全问题，具体含义由业务定义
 	TraceId   string  `protobuf:"bytes,36,opt,name=trace_id,json=traceId,proto3" json:"trace_id,omitempty"`             // Trace ID，事件相关的分布式追踪标识，可以用于分析事件的调用链和系统性能，通常由服务器生成并传递给客户端进行上报
 	// 点击热力图字段（SDK autotrack 自动填充，仅 click 事件有意义）
-	ClickX        *uint32                `protobuf:"varint,45,opt,name=click_x,json=clickX,proto3,oneof" json:"click_x,omitempty"`                      // 点击坐标 X
-	ClickY        *uint32                `protobuf:"varint,46,opt,name=click_y,json=clickY,proto3,oneof" json:"click_y,omitempty"`                      // 点击坐标 Y
-	ElementXpath  *string                `protobuf:"bytes,47,opt,name=element_xpath,json=elementXpath,proto3,oneof" json:"element_xpath,omitempty"`     // 被点击元素 XPath
-	PageUrl       *string                `protobuf:"bytes,48,opt,name=page_url,json=pageUrl,proto3,oneof" json:"page_url,omitempty"`                    // 页面 URL
-	ViewportWidth *uint32                `protobuf:"varint,49,opt,name=viewport_width,json=viewportWidth,proto3,oneof" json:"viewport_width,omitempty"` // 视口宽度
-	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,200,opt,name=created_at,json=createdAt,proto3,oneof" json:"created_at,omitempty"`             // 创建时间
-	UpdatedAt     *timestamppb.Timestamp `protobuf:"bytes,201,opt,name=updated_at,json=updatedAt,proto3,oneof" json:"updated_at,omitempty"`             // 更新时间
+	ClickX        *uint32 `protobuf:"varint,45,opt,name=click_x,json=clickX,proto3,oneof" json:"click_x,omitempty"`                      // 点击坐标 X
+	ClickY        *uint32 `protobuf:"varint,46,opt,name=click_y,json=clickY,proto3,oneof" json:"click_y,omitempty"`                      // 点击坐标 Y
+	ElementXpath  *string `protobuf:"bytes,47,opt,name=element_xpath,json=elementXpath,proto3,oneof" json:"element_xpath,omitempty"`     // 被点击元素 XPath
+	PageUrl       *string `protobuf:"bytes,48,opt,name=page_url,json=pageUrl,proto3,oneof" json:"page_url,omitempty"`                    // 页面 URL
+	ViewportWidth *uint32 `protobuf:"varint,49,opt,name=viewport_width,json=viewportWidth,proto3,oneof" json:"viewport_width,omitempty"` // 视口宽度
+	// 游戏专属维度（游戏方在 track 时传入，事件发生时的快照）
+	ServerId      *string                `protobuf:"bytes,50,opt,name=server_id,json=serverId,proto3,oneof" json:"server_id,omitempty"`     // 游戏区服 ID
+	Level         *uint32                `protobuf:"varint,51,opt,name=level,proto3,oneof" json:"level,omitempty"`                          // 玩家等级
+	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,200,opt,name=created_at,json=createdAt,proto3,oneof" json:"created_at,omitempty"` // 创建时间
+	UpdatedAt     *timestamppb.Timestamp `protobuf:"bytes,201,opt,name=updated_at,json=updatedAt,proto3,oneof" json:"updated_at,omitempty"` // 更新时间
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -432,6 +435,20 @@ func (x *BehaviorEvent) GetViewportWidth() uint32 {
 	return 0
 }
 
+func (x *BehaviorEvent) GetServerId() string {
+	if x != nil && x.ServerId != nil {
+		return *x.ServerId
+	}
+	return ""
+}
+
+func (x *BehaviorEvent) GetLevel() uint32 {
+	if x != nil && x.Level != nil {
+		return *x.Level
+	}
+	return 0
+}
+
 func (x *BehaviorEvent) GetCreatedAt() *timestamppb.Timestamp {
 	if x != nil {
 		return x.CreatedAt
@@ -636,7 +653,7 @@ var File_uba_service_v1_behavior_event_proto protoreflect.FileDescriptor
 
 const file_uba_service_v1_behavior_event_proto_rawDesc = "" +
 	"\n" +
-	"#uba/service/v1/behavior_event.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1epagination/v1/pagination.proto\x1a\x1buba/service/v1/common.proto\"\x81<\n" +
+	"#uba/service/v1/behavior_event.proto\x12\x0euba.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1epagination/v1/pagination.proto\x1a\x1buba/service/v1/common.proto\"\xfa=\n" +
 	"\rBehaviorEvent\x12\x7f\n" +
 	"\bevent_id\x18\x01 \x01(\tBd\xbaGa\x92\x02^事件ID，建议使用 UUID，作为事件的唯一标识，同时也可用于路由和去重R\aeventId\x12[\n" +
 	"\ttenant_id\x18\x02 \x01(\rB>\xbaG;\x92\x028租户ID，事件所属的租户，用于多租户隔离R\btenantId\x12~\n" +
@@ -698,11 +715,13 @@ const file_uba_service_v1_behavior_event_proto_rawDesc = "" +
 	"\aclick_y\x18. \x01(\rBD\xbaGA\x92\x02>点击坐标 Y（相对文档，像素），点击热力图用H\x0fR\x06clickY\x88\x01\x01\x12e\n" +
 	"\relement_xpath\x18/ \x01(\tB;\xbaG8\x92\x025被点击元素的 XPath，如 /html/body/div[2]/a[1]H\x10R\felementXpath\x88\x01\x01\x12T\n" +
 	"\bpage_url\x180 \x01(\tB4\xbaG1\x92\x02.页面 URL，热力图按页面分组的前提H\x11R\apageUrl\x88\x01\x01\x12n\n" +
-	"\x0eviewport_width\x181 \x01(\rBB\xbaG?\x92\x02<视口宽度（像素），用于响应式热力图归一化H\x12R\rviewportWidth\x88\x01\x01\x12S\n" +
+	"\x0eviewport_width\x181 \x01(\rBB\xbaG?\x92\x02<视口宽度（像素），用于响应式热力图归一化H\x12R\rviewportWidth\x88\x01\x01\x12t\n" +
+	"\tserver_id\x182 \x01(\tBR\xbaGO\x92\x02L游戏区服 ID（如 s1、cn-east-1），滚服留存/区服维度分析用H\x13R\bserverId\x88\x01\x01\x12i\n" +
+	"\x05level\x183 \x01(\rBN\xbaGK\x92\x02H玩家等级（事件发生时的等级快照），游戏维度分析用H\x14R\x05level\x88\x01\x01\x12S\n" +
 	"\n" +
-	"created_at\x18\xc8\x01 \x01(\v2\x1a.google.protobuf.TimestampB\x12\xbaG\x0f\x92\x02\f创建时间H\x13R\tcreatedAt\x88\x01\x01\x12S\n" +
+	"created_at\x18\xc8\x01 \x01(\v2\x1a.google.protobuf.TimestampB\x12\xbaG\x0f\x92\x02\f创建时间H\x15R\tcreatedAt\x88\x01\x01\x12S\n" +
 	"\n" +
-	"updated_at\x18\xc9\x01 \x01(\v2\x1a.google.protobuf.TimestampB\x12\xbaG\x0f\x92\x02\f更新时间H\x14R\tupdatedAt\x88\x01\x01\x1a:\n" +
+	"updated_at\x18\xc9\x01 \x01(\v2\x1a.google.protobuf.TimestampB\x12\xbaG\x0f\x92\x02\f更新时间H\x16R\tupdatedAt\x88\x01\x01\x1a:\n" +
 	"\fContextEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1a:\n" +
@@ -738,7 +757,10 @@ const file_uba_service_v1_behavior_event_proto_rawDesc = "" +
 	"\b_click_yB\x10\n" +
 	"\x0e_element_xpathB\v\n" +
 	"\t_page_urlB\x11\n" +
-	"\x0f_viewport_widthB\r\n" +
+	"\x0f_viewport_widthB\f\n" +
+	"\n" +
+	"_server_idB\b\n" +
+	"\x06_levelB\r\n" +
 	"\v_created_atB\r\n" +
 	"\v_updated_at\"f\n" +
 	"\x19ListBehaviorEventResponse\x123\n" +

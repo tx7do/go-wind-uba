@@ -234,6 +234,16 @@ message BehaviorEvent {
     (gnostic.openapi.v3.property) = {description: "视口宽度（像素），用于响应式热力图归一化"}
   ]; // 视口宽度
 
+  // 游戏专属维度（游戏方在 track 时传入，事件发生时的快照）
+  optional string server_id = 50 [
+    json_name = "serverId",
+    (gnostic.openapi.v3.property) = {description: "游戏区服 ID（如 s1、cn-east-1），滚服留存/区服维度分析用"}
+  ]; // 游戏区服 ID
+  optional uint32 level = 51 [
+    json_name = "level",
+    (gnostic.openapi.v3.property) = {description: "玩家等级（事件发生时的等级快照），游戏维度分析用"}
+  ]; // 玩家等级
+
   optional google.protobuf.Timestamp created_at = 200 [
     json_name = "createdAt",
     (gnostic.openapi.v3.property) = {description: "创建时间"}

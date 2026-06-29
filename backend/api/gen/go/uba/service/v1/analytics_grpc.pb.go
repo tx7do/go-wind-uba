@@ -41,6 +41,9 @@ const (
 	AnalyticsService_LevelAnalysis_FullMethodName    = "/uba.service.v1.AnalyticsService/LevelAnalysis"
 	AnalyticsService_WhaleTier_FullMethodName        = "/uba.service.v1.AnalyticsService/WhaleTier"
 	AnalyticsService_LTV_FullMethodName              = "/uba.service.v1.AnalyticsService/LTV"
+	AnalyticsService_ServerRetention_FullMethodName  = "/uba.service.v1.AnalyticsService/ServerRetention"
+	AnalyticsService_OnlineStats_FullMethodName      = "/uba.service.v1.AnalyticsService/OnlineStats"
+	AnalyticsService_Economy_FullMethodName          = "/uba.service.v1.AnalyticsService/Economy"
 )
 
 // AnalyticsServiceClient is the client API for AnalyticsService service.
@@ -93,6 +96,12 @@ type AnalyticsServiceClient interface {
 	WhaleTier(ctx context.Context, in *WhaleTierRequest, opts ...grpc.CallOption) (*WhaleTierResponse, error)
 	// 历史生命周期价值 LTV（用户在第 N 天的累计付费价值）
 	LTV(ctx context.Context, in *LTVRequest, opts ...grpc.CallOption) (*LTVResponse, error)
+	// 滚服留存（按区服分组的留存）
+	ServerRetention(ctx context.Context, in *ServerRetentionRequest, opts ...grpc.CallOption) (*ServerRetentionResponse, error)
+	// 同时在线 PCU/ACU（基于会话区间推算）
+	OnlineStats(ctx context.Context, in *OnlineStatsRequest, opts ...grpc.CallOption) (*OnlineStatsResponse, error)
+	// 经济系统/代币流向（产出与消耗平衡）
+	Economy(ctx context.Context, in *EconomyRequest, opts ...grpc.CallOption) (*EconomyResponse, error)
 }
 
 type analyticsServiceClient struct {
@@ -323,6 +332,36 @@ func (c *analyticsServiceClient) LTV(ctx context.Context, in *LTVRequest, opts .
 	return out, nil
 }
 
+func (c *analyticsServiceClient) ServerRetention(ctx context.Context, in *ServerRetentionRequest, opts ...grpc.CallOption) (*ServerRetentionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ServerRetentionResponse)
+	err := c.cc.Invoke(ctx, AnalyticsService_ServerRetention_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *analyticsServiceClient) OnlineStats(ctx context.Context, in *OnlineStatsRequest, opts ...grpc.CallOption) (*OnlineStatsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(OnlineStatsResponse)
+	err := c.cc.Invoke(ctx, AnalyticsService_OnlineStats_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *analyticsServiceClient) Economy(ctx context.Context, in *EconomyRequest, opts ...grpc.CallOption) (*EconomyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(EconomyResponse)
+	err := c.cc.Invoke(ctx, AnalyticsService_Economy_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AnalyticsServiceServer is the server API for AnalyticsService service.
 // All implementations must embed UnimplementedAnalyticsServiceServer
 // for forward compatibility.
@@ -373,6 +412,12 @@ type AnalyticsServiceServer interface {
 	WhaleTier(context.Context, *WhaleTierRequest) (*WhaleTierResponse, error)
 	// 历史生命周期价值 LTV（用户在第 N 天的累计付费价值）
 	LTV(context.Context, *LTVRequest) (*LTVResponse, error)
+	// 滚服留存（按区服分组的留存）
+	ServerRetention(context.Context, *ServerRetentionRequest) (*ServerRetentionResponse, error)
+	// 同时在线 PCU/ACU（基于会话区间推算）
+	OnlineStats(context.Context, *OnlineStatsRequest) (*OnlineStatsResponse, error)
+	// 经济系统/代币流向（产出与消耗平衡）
+	Economy(context.Context, *EconomyRequest) (*EconomyResponse, error)
 	mustEmbedUnimplementedAnalyticsServiceServer()
 }
 
@@ -448,6 +493,15 @@ func (UnimplementedAnalyticsServiceServer) WhaleTier(context.Context, *WhaleTier
 }
 func (UnimplementedAnalyticsServiceServer) LTV(context.Context, *LTVRequest) (*LTVResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method LTV not implemented")
+}
+func (UnimplementedAnalyticsServiceServer) ServerRetention(context.Context, *ServerRetentionRequest) (*ServerRetentionResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ServerRetention not implemented")
+}
+func (UnimplementedAnalyticsServiceServer) OnlineStats(context.Context, *OnlineStatsRequest) (*OnlineStatsResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method OnlineStats not implemented")
+}
+func (UnimplementedAnalyticsServiceServer) Economy(context.Context, *EconomyRequest) (*EconomyResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method Economy not implemented")
 }
 func (UnimplementedAnalyticsServiceServer) mustEmbedUnimplementedAnalyticsServiceServer() {}
 func (UnimplementedAnalyticsServiceServer) testEmbeddedByValue()                          {}
@@ -866,6 +920,60 @@ func _AnalyticsService_LTV_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AnalyticsService_ServerRetention_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ServerRetentionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AnalyticsServiceServer).ServerRetention(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AnalyticsService_ServerRetention_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AnalyticsServiceServer).ServerRetention(ctx, req.(*ServerRetentionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AnalyticsService_OnlineStats_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OnlineStatsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AnalyticsServiceServer).OnlineStats(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AnalyticsService_OnlineStats_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AnalyticsServiceServer).OnlineStats(ctx, req.(*OnlineStatsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AnalyticsService_Economy_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EconomyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AnalyticsServiceServer).Economy(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AnalyticsService_Economy_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AnalyticsServiceServer).Economy(ctx, req.(*EconomyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AnalyticsService_ServiceDesc is the grpc.ServiceDesc for AnalyticsService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -960,6 +1068,18 @@ var AnalyticsService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "LTV",
 			Handler:    _AnalyticsService_LTV_Handler,
+		},
+		{
+			MethodName: "ServerRetention",
+			Handler:    _AnalyticsService_ServerRetention_Handler,
+		},
+		{
+			MethodName: "OnlineStats",
+			Handler:    _AnalyticsService_OnlineStats_Handler,
+		},
+		{
+			MethodName: "Economy",
+			Handler:    _AnalyticsService_Economy_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
