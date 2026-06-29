@@ -51,6 +51,11 @@ func (s *AnalyticsService) repo() interface {
 	Churn(context.Context, *ubaV1.ChurnRequest) (*ubaV1.ChurnResponse, error)
 	Interval(context.Context, *ubaV1.IntervalRequest) (*ubaV1.IntervalResponse, error)
 	Matrix(context.Context, *ubaV1.MatrixRequest) (*ubaV1.MatrixResponse, error)
+	Revenue(context.Context, *ubaV1.RevenueRequest) (*ubaV1.RevenueResponse, error)
+	SessionAnalysis(context.Context, *ubaV1.SessionAnalysisRequest) (*ubaV1.SessionAnalysisResponse, error)
+	Anomaly(context.Context, *ubaV1.AnomalyRequest) (*ubaV1.AnomalyResponse, error)
+	NewVsOld(context.Context, *ubaV1.NewVsOldRequest) (*ubaV1.NewVsOldResponse, error)
+	PathSankey(context.Context, *ubaV1.PathSankeyRequest) (*ubaV1.PathSankeyResponse, error)
 } {
 	if data.UseClickHouse {
 		return s.ckRepo
@@ -112,4 +117,24 @@ func (s *AnalyticsService) Interval(ctx context.Context, req *ubaV1.IntervalRequ
 
 func (s *AnalyticsService) Matrix(ctx context.Context, req *ubaV1.MatrixRequest) (*ubaV1.MatrixResponse, error) {
 	return s.repo().Matrix(ctx, req)
+}
+
+func (s *AnalyticsService) Revenue(ctx context.Context, req *ubaV1.RevenueRequest) (*ubaV1.RevenueResponse, error) {
+	return s.repo().Revenue(ctx, req)
+}
+
+func (s *AnalyticsService) SessionAnalysis(ctx context.Context, req *ubaV1.SessionAnalysisRequest) (*ubaV1.SessionAnalysisResponse, error) {
+	return s.repo().SessionAnalysis(ctx, req)
+}
+
+func (s *AnalyticsService) Anomaly(ctx context.Context, req *ubaV1.AnomalyRequest) (*ubaV1.AnomalyResponse, error) {
+	return s.repo().Anomaly(ctx, req)
+}
+
+func (s *AnalyticsService) NewVsOld(ctx context.Context, req *ubaV1.NewVsOldRequest) (*ubaV1.NewVsOldResponse, error) {
+	return s.repo().NewVsOld(ctx, req)
+}
+
+func (s *AnalyticsService) PathSankey(ctx context.Context, req *ubaV1.PathSankeyRequest) (*ubaV1.PathSankeyResponse, error) {
+	return s.repo().PathSankey(ctx, req)
 }

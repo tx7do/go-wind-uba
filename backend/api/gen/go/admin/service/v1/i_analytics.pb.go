@@ -26,7 +26,7 @@ var File_admin_service_v1_i_analytics_proto protoreflect.FileDescriptor
 
 const file_admin_service_v1_i_analytics_proto_rawDesc = "" +
 	"\n" +
-	"\"admin/service/v1/i_analytics.proto\x12\x10admin.service.v1\x1a\x1cgoogle/api/annotations.proto\x1a\x1euba/service/v1/analytics.proto2\xe7\r\n" +
+	"\"admin/service/v1/i_analytics.proto\x12\x10admin.service.v1\x1a\x1cgoogle/api/annotations.proto\x1a\x1euba/service/v1/analytics.proto2\xe0\x12\n" +
 	"\x10AnalyticsService\x12\x7f\n" +
 	"\n" +
 	"EventTrend\x12!.uba.service.v1.EventTrendRequest\x1a\".uba.service.v1.EventTrendResponse\"*\x82\xd3\xe4\x93\x02$:\x01*\"\x1f/admin/v1/analytics/event-trend\x12n\n" +
@@ -42,7 +42,13 @@ const file_admin_service_v1_i_analytics_proto_rawDesc = "" +
 	"\tLifecycle\x12 .uba.service.v1.LifecycleRequest\x1a!.uba.service.v1.LifecycleResponse\"(\x82\xd3\xe4\x93\x02\":\x01*\"\x1d/admin/v1/analytics/lifecycle\x12j\n" +
 	"\x05Churn\x12\x1c.uba.service.v1.ChurnRequest\x1a\x1d.uba.service.v1.ChurnResponse\"$\x82\xd3\xe4\x93\x02\x1e:\x01*\"\x19/admin/v1/analytics/churn\x12v\n" +
 	"\bInterval\x12\x1f.uba.service.v1.IntervalRequest\x1a .uba.service.v1.IntervalResponse\"'\x82\xd3\xe4\x93\x02!:\x01*\"\x1c/admin/v1/analytics/interval\x12n\n" +
-	"\x06Matrix\x12\x1d.uba.service.v1.MatrixRequest\x1a\x1e.uba.service.v1.MatrixResponse\"%\x82\xd3\xe4\x93\x02\x1f:\x01*\"\x1a/admin/v1/analytics/matrixB\xba\x01\n" +
+	"\x06Matrix\x12\x1d.uba.service.v1.MatrixRequest\x1a\x1e.uba.service.v1.MatrixResponse\"%\x82\xd3\xe4\x93\x02\x1f:\x01*\"\x1a/admin/v1/analytics/matrix\x12r\n" +
+	"\aRevenue\x12\x1e.uba.service.v1.RevenueRequest\x1a\x1f.uba.service.v1.RevenueResponse\"&\x82\xd3\xe4\x93\x02 :\x01*\"\x1b/admin/v1/analytics/revenue\x12\x93\x01\n" +
+	"\x0fSessionAnalysis\x12&.uba.service.v1.SessionAnalysisRequest\x1a'.uba.service.v1.SessionAnalysisResponse\"/\x82\xd3\xe4\x93\x02):\x01*\"$/admin/v1/analytics/session-analysis\x12r\n" +
+	"\aAnomaly\x12\x1e.uba.service.v1.AnomalyRequest\x1a\x1f.uba.service.v1.AnomalyResponse\"&\x82\xd3\xe4\x93\x02 :\x01*\"\x1b/admin/v1/analytics/anomaly\x12x\n" +
+	"\bNewVsOld\x12\x1f.uba.service.v1.NewVsOldRequest\x1a .uba.service.v1.NewVsOldResponse\")\x82\xd3\xe4\x93\x02#:\x01*\"\x1e/admin/v1/analytics/new-vs-old\x12\x7f\n" +
+	"\n" +
+	"PathSankey\x12!.uba.service.v1.PathSankeyRequest\x1a\".uba.service.v1.PathSankeyResponse\"*\x82\xd3\xe4\x93\x02$:\x01*\"\x1f/admin/v1/analytics/path-sankeyB\xba\x01\n" +
 	"\x14com.admin.service.v1B\x0fIAnalyticsProtoP\x01Z/go-wind-uba/api/gen/go/admin/service/v1;adminpb\xa2\x02\x03ASX\xaa\x02\x10Admin.Service.V1\xca\x02\x10Admin\\Service\\V1\xe2\x02\x1cAdmin\\Service\\V1\\GPBMetadata\xea\x02\x12Admin::Service::V1b\x06proto3"
 
 var file_admin_service_v1_i_analytics_proto_goTypes = []any{
@@ -60,20 +66,30 @@ var file_admin_service_v1_i_analytics_proto_goTypes = []any{
 	(*v1.ChurnRequest)(nil),             // 11: uba.service.v1.ChurnRequest
 	(*v1.IntervalRequest)(nil),          // 12: uba.service.v1.IntervalRequest
 	(*v1.MatrixRequest)(nil),            // 13: uba.service.v1.MatrixRequest
-	(*v1.EventTrendResponse)(nil),       // 14: uba.service.v1.EventTrendResponse
-	(*v1.FunnelResponse)(nil),           // 15: uba.service.v1.FunnelResponse
-	(*v1.RetentionResponse)(nil),        // 16: uba.service.v1.RetentionResponse
-	(*v1.GroupByResponse)(nil),          // 17: uba.service.v1.GroupByResponse
-	(*v1.ActiveUsersResponse)(nil),      // 18: uba.service.v1.ActiveUsersResponse
-	(*v1.AttributionResponse)(nil),      // 19: uba.service.v1.AttributionResponse
-	(*v1.DistributionResponse)(nil),     // 20: uba.service.v1.DistributionResponse
-	(*v1.BehaviorSequenceResponse)(nil), // 21: uba.service.v1.BehaviorSequenceResponse
-	(*v1.SegmentationResponse)(nil),     // 22: uba.service.v1.SegmentationResponse
-	(*v1.ClickResponse)(nil),            // 23: uba.service.v1.ClickResponse
-	(*v1.LifecycleResponse)(nil),        // 24: uba.service.v1.LifecycleResponse
-	(*v1.ChurnResponse)(nil),            // 25: uba.service.v1.ChurnResponse
-	(*v1.IntervalResponse)(nil),         // 26: uba.service.v1.IntervalResponse
-	(*v1.MatrixResponse)(nil),           // 27: uba.service.v1.MatrixResponse
+	(*v1.RevenueRequest)(nil),           // 14: uba.service.v1.RevenueRequest
+	(*v1.SessionAnalysisRequest)(nil),   // 15: uba.service.v1.SessionAnalysisRequest
+	(*v1.AnomalyRequest)(nil),           // 16: uba.service.v1.AnomalyRequest
+	(*v1.NewVsOldRequest)(nil),          // 17: uba.service.v1.NewVsOldRequest
+	(*v1.PathSankeyRequest)(nil),        // 18: uba.service.v1.PathSankeyRequest
+	(*v1.EventTrendResponse)(nil),       // 19: uba.service.v1.EventTrendResponse
+	(*v1.FunnelResponse)(nil),           // 20: uba.service.v1.FunnelResponse
+	(*v1.RetentionResponse)(nil),        // 21: uba.service.v1.RetentionResponse
+	(*v1.GroupByResponse)(nil),          // 22: uba.service.v1.GroupByResponse
+	(*v1.ActiveUsersResponse)(nil),      // 23: uba.service.v1.ActiveUsersResponse
+	(*v1.AttributionResponse)(nil),      // 24: uba.service.v1.AttributionResponse
+	(*v1.DistributionResponse)(nil),     // 25: uba.service.v1.DistributionResponse
+	(*v1.BehaviorSequenceResponse)(nil), // 26: uba.service.v1.BehaviorSequenceResponse
+	(*v1.SegmentationResponse)(nil),     // 27: uba.service.v1.SegmentationResponse
+	(*v1.ClickResponse)(nil),            // 28: uba.service.v1.ClickResponse
+	(*v1.LifecycleResponse)(nil),        // 29: uba.service.v1.LifecycleResponse
+	(*v1.ChurnResponse)(nil),            // 30: uba.service.v1.ChurnResponse
+	(*v1.IntervalResponse)(nil),         // 31: uba.service.v1.IntervalResponse
+	(*v1.MatrixResponse)(nil),           // 32: uba.service.v1.MatrixResponse
+	(*v1.RevenueResponse)(nil),          // 33: uba.service.v1.RevenueResponse
+	(*v1.SessionAnalysisResponse)(nil),  // 34: uba.service.v1.SessionAnalysisResponse
+	(*v1.AnomalyResponse)(nil),          // 35: uba.service.v1.AnomalyResponse
+	(*v1.NewVsOldResponse)(nil),         // 36: uba.service.v1.NewVsOldResponse
+	(*v1.PathSankeyResponse)(nil),       // 37: uba.service.v1.PathSankeyResponse
 }
 var file_admin_service_v1_i_analytics_proto_depIdxs = []int32{
 	0,  // 0: admin.service.v1.AnalyticsService.EventTrend:input_type -> uba.service.v1.EventTrendRequest
@@ -90,22 +106,32 @@ var file_admin_service_v1_i_analytics_proto_depIdxs = []int32{
 	11, // 11: admin.service.v1.AnalyticsService.Churn:input_type -> uba.service.v1.ChurnRequest
 	12, // 12: admin.service.v1.AnalyticsService.Interval:input_type -> uba.service.v1.IntervalRequest
 	13, // 13: admin.service.v1.AnalyticsService.Matrix:input_type -> uba.service.v1.MatrixRequest
-	14, // 14: admin.service.v1.AnalyticsService.EventTrend:output_type -> uba.service.v1.EventTrendResponse
-	15, // 15: admin.service.v1.AnalyticsService.Funnel:output_type -> uba.service.v1.FunnelResponse
-	16, // 16: admin.service.v1.AnalyticsService.Retention:output_type -> uba.service.v1.RetentionResponse
-	17, // 17: admin.service.v1.AnalyticsService.GroupBy:output_type -> uba.service.v1.GroupByResponse
-	18, // 18: admin.service.v1.AnalyticsService.ActiveUsers:output_type -> uba.service.v1.ActiveUsersResponse
-	19, // 19: admin.service.v1.AnalyticsService.Attribution:output_type -> uba.service.v1.AttributionResponse
-	20, // 20: admin.service.v1.AnalyticsService.Distribution:output_type -> uba.service.v1.DistributionResponse
-	21, // 21: admin.service.v1.AnalyticsService.BehaviorSequence:output_type -> uba.service.v1.BehaviorSequenceResponse
-	22, // 22: admin.service.v1.AnalyticsService.Segmentation:output_type -> uba.service.v1.SegmentationResponse
-	23, // 23: admin.service.v1.AnalyticsService.Click:output_type -> uba.service.v1.ClickResponse
-	24, // 24: admin.service.v1.AnalyticsService.Lifecycle:output_type -> uba.service.v1.LifecycleResponse
-	25, // 25: admin.service.v1.AnalyticsService.Churn:output_type -> uba.service.v1.ChurnResponse
-	26, // 26: admin.service.v1.AnalyticsService.Interval:output_type -> uba.service.v1.IntervalResponse
-	27, // 27: admin.service.v1.AnalyticsService.Matrix:output_type -> uba.service.v1.MatrixResponse
-	14, // [14:28] is the sub-list for method output_type
-	0,  // [0:14] is the sub-list for method input_type
+	14, // 14: admin.service.v1.AnalyticsService.Revenue:input_type -> uba.service.v1.RevenueRequest
+	15, // 15: admin.service.v1.AnalyticsService.SessionAnalysis:input_type -> uba.service.v1.SessionAnalysisRequest
+	16, // 16: admin.service.v1.AnalyticsService.Anomaly:input_type -> uba.service.v1.AnomalyRequest
+	17, // 17: admin.service.v1.AnalyticsService.NewVsOld:input_type -> uba.service.v1.NewVsOldRequest
+	18, // 18: admin.service.v1.AnalyticsService.PathSankey:input_type -> uba.service.v1.PathSankeyRequest
+	19, // 19: admin.service.v1.AnalyticsService.EventTrend:output_type -> uba.service.v1.EventTrendResponse
+	20, // 20: admin.service.v1.AnalyticsService.Funnel:output_type -> uba.service.v1.FunnelResponse
+	21, // 21: admin.service.v1.AnalyticsService.Retention:output_type -> uba.service.v1.RetentionResponse
+	22, // 22: admin.service.v1.AnalyticsService.GroupBy:output_type -> uba.service.v1.GroupByResponse
+	23, // 23: admin.service.v1.AnalyticsService.ActiveUsers:output_type -> uba.service.v1.ActiveUsersResponse
+	24, // 24: admin.service.v1.AnalyticsService.Attribution:output_type -> uba.service.v1.AttributionResponse
+	25, // 25: admin.service.v1.AnalyticsService.Distribution:output_type -> uba.service.v1.DistributionResponse
+	26, // 26: admin.service.v1.AnalyticsService.BehaviorSequence:output_type -> uba.service.v1.BehaviorSequenceResponse
+	27, // 27: admin.service.v1.AnalyticsService.Segmentation:output_type -> uba.service.v1.SegmentationResponse
+	28, // 28: admin.service.v1.AnalyticsService.Click:output_type -> uba.service.v1.ClickResponse
+	29, // 29: admin.service.v1.AnalyticsService.Lifecycle:output_type -> uba.service.v1.LifecycleResponse
+	30, // 30: admin.service.v1.AnalyticsService.Churn:output_type -> uba.service.v1.ChurnResponse
+	31, // 31: admin.service.v1.AnalyticsService.Interval:output_type -> uba.service.v1.IntervalResponse
+	32, // 32: admin.service.v1.AnalyticsService.Matrix:output_type -> uba.service.v1.MatrixResponse
+	33, // 33: admin.service.v1.AnalyticsService.Revenue:output_type -> uba.service.v1.RevenueResponse
+	34, // 34: admin.service.v1.AnalyticsService.SessionAnalysis:output_type -> uba.service.v1.SessionAnalysisResponse
+	35, // 35: admin.service.v1.AnalyticsService.Anomaly:output_type -> uba.service.v1.AnomalyResponse
+	36, // 36: admin.service.v1.AnalyticsService.NewVsOld:output_type -> uba.service.v1.NewVsOldResponse
+	37, // 37: admin.service.v1.AnalyticsService.PathSankey:output_type -> uba.service.v1.PathSankeyResponse
+	19, // [19:38] is the sub-list for method output_type
+	0,  // [0:19] is the sub-list for method input_type
 	0,  // [0:0] is the sub-list for extension type_name
 	0,  // [0:0] is the sub-list for extension extendee
 	0,  // [0:0] is the sub-list for field type_name

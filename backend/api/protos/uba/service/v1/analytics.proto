@@ -48,6 +48,21 @@ service AnalyticsService {
 
   // 矩阵/象限分析（双轴分四象限，识别核心/边缘功能）
   rpc Matrix(MatrixRequest) returns (MatrixResponse) {}
+
+  // 付费/营收分析（ARPU/ARPPU/付费率/GMV 趋势）
+  rpc Revenue(RevenueRequest) returns (RevenueResponse) {}
+
+  // 会话分析（跳出率/时长分位 P50/P90/会话深度）
+  rpc SessionAnalysis(SessionAnalysisRequest) returns (SessionAnalysisResponse) {}
+
+  // 同比环比/异常检测（事件 PV/UV 环比涨跌 + 7日基线异常预警）
+  rpc Anomaly(AnomalyRequest) returns (AnomalyResponse) {}
+
+  // 新老用户对比（构成占比 + 行为/付费差异）
+  rpc NewVsOld(NewVsOldRequest) returns (NewVsOldResponse) {}
+
+  // 热门转化路径（群体路径 TOP + 转化率）
+  rpc PathSankey(PathSankeyRequest) returns (PathSankeyResponse) {}
 }
 
 // 时间粒度
@@ -580,4 +595,161 @@ message MatrixResponse {
   double y_threshold = 3 [json_name = "yThreshold"];
   // 使用的维度
   string dimension = 4 [json_name = "dimension"];
+}
+
+// ============== 付费/营收分析 ==============
+message RevenueRequest {
+  // 时间范围
+  TimeRange time_range = 1 [json_name = "timeRange"];
+  // 应用 ID 过滤（可选）
+  optional uint32 app_id = 2 [json_name = "appId"];
+  // 时间粒度（默认 DAY）
+  AnalyticsGranularity granularity = 3 [json_name = "granularity"];
+}
+
+// 单日营收数据点
+message RevenuePoint {
+  // 时间桶（Unix 毫秒）
+  int64 timestamp = 1 [json_name = "timestamp"];
+  // GMV（总成交额）
+  double gmv = 2 [json_name = "gmv"];
+  // 付费用户数
+  int64 pay_users = 3 [json_name = "payUsers"];
+  // 付费订单数
+  int64 pay_orders = 4 [json_name = "payOrders"];
+  // ARPU（GMV / 活跃用户数，活跃用户另查）
+  double arpu = 5 [json_name = "arpu"];
+  // ARPPU（GMV / 付费用户数）
+  double arppu = 6 [json_name = "arppu"];
+  // 付费率（0-1，pay_users / active_users）
+  double pay_rate = 7 [json_name = "payRate"];
+}
+
+message RevenueResponse {
+  // 按日/粒度的营收趋势
+  repeated RevenuePoint points = 1 [json_name = "points"];
+  // 区间 GMV 汇总
+  double total_gmv = 2 [json_name = "totalGmv"];
+  // 区间付费用户数（去重）
+  int64 total_pay_users = 3 [json_name = "totalPayUsers"];
+  // 区间订单数
+  int64 total_pay_orders = 4 [json_name = "totalPayOrders"];
+  // 客单价（GMV / 订单数）
+  double avg_order_value = 5 [json_name = "avgOrderValue"];
+}
+
+// ============== 会话分析 ==============
+message SessionAnalysisRequest {
+  // 时间范围
+  TimeRange time_range = 1 [json_name = "timeRange"];
+  // 应用 ID 过滤（可选）
+  optional uint32 app_id = 2 [json_name = "appId"];
+  // 平台过滤（可选，空表示全部）
+  optional string platform = 3 [json_name = "platform"];
+}
+
+message SessionAnalysisResponse {
+  // 会话总数
+  int64 session_count = 1 [json_name = "sessionCount"];
+  // 会话用户数（去重）
+  int64 unique_users = 2 [json_name = "uniqueUsers"];
+  // 平均会话时长（秒）
+  double avg_duration_sec = 3 [json_name = "avgDurationSec"];
+  // P50 会话时长（秒）
+  double p50_duration_sec = 4 [json_name = "p50DurationSec"];
+  // P90 会话时长（秒）
+  double p90_duration_sec = 5 [json_name = "p90DurationSec"];
+  // 跳出率（0-1）
+  double bounce_rate = 6 [json_name = "bounceRate"];
+  // 会话深度（人均事件数 = 总事件 / 会话数）
+  double avg_depth = 7 [json_name = "avgDepth"];
+}
+
+// ============== 同比环比/异常检测 ==============
+message AnomalyRequest {
+  // 时间范围（通常取近 8+ 天以算 7 日基线）
+  TimeRange time_range = 1 [json_name = "timeRange"];
+  // 应用 ID 过滤（可选）
+  optional uint32 app_id = 2 [json_name = "appId"];
+  // 事件名过滤（可选，空表示全部事件聚合）
+  optional string event_name = 3 [json_name = "eventName"];
+}
+
+// 单事件/日的同比环比数据
+message AnomalyPoint {
+  // 事件名
+  string event_name = 1 [json_name = "eventName"];
+  // 统计日期（Unix 毫秒）
+  int64 stat_date = 2 [json_name = "statDate"];
+  // 当日 PV
+  int64 pv = 3 [json_name = "pv"];
+  // 当日 UV
+  int64 uv = 4 [json_name = "uv"];
+  // 7 日均值（基线）
+  double baseline = 5 [json_name = "baseline"];
+  // 环比昨日涨跌（0-1，正为涨）
+  double wow_change = 6 [json_name = "wowChange"];
+  // 是否异常（当日 PV < 7日均值 * 阈值，默认 0.5）
+  bool is_anomaly = 7 [json_name = "isAnomaly"];
+}
+
+message AnomalyResponse {
+  // 各事件/日的趋势 + 异常标记
+  repeated AnomalyPoint points = 1 [json_name = "points"];
+  // 异常事件数（去重）
+  int64 anomaly_count = 2 [json_name = "anomalyCount"];
+}
+
+// ============== 新老用户对比 ==============
+message NewVsOldRequest {
+  // 时间范围
+  TimeRange time_range = 1 [json_name = "timeRange"];
+  // 应用 ID 过滤（可选）
+  optional uint32 app_id = 2 [json_name = "appId"];
+  // 新用户判定天数（注册距今 N 天内算新用户，默认 7）
+  optional uint32 new_user_days = 3 [json_name = "newUserDays"];
+}
+
+message NewVsOldSegment {
+  // 用户类型：new 新用户 / old 老用户
+  string user_type = 1 [json_name = "userType"];
+  // 用户数
+  int64 user_count = 2 [json_name = "userCount"];
+  // 事件量
+  int64 event_count = 3 [json_name = "eventCount"];
+  // 付费用户数
+  int64 pay_users = 4 [json_name = "payUsers"];
+  // 付费率（0-1）
+  double pay_rate = 5 [json_name = "payRate"];
+}
+
+message NewVsOldResponse {
+  // 新/老用户各维度对比
+  repeated NewVsOldSegment segments = 1 [json_name = "segments"];
+}
+
+// ============== 热门转化路径 ==============
+message PathSankeyRequest {
+  // 时间范围
+  TimeRange time_range = 1 [json_name = "timeRange"];
+  // 应用 ID 过滤（可选）
+  optional uint32 app_id = 2 [json_name = "appId"];
+  // 返回前 N 条热门路径（默认 20）
+  optional uint32 top_n = 3 [json_name = "topN"];
+}
+
+message PathBucket {
+  // 事件序列（如 "view_home,add_to_cart,pay_success"）
+  string event_sequence = 1 [json_name = "eventSequence"];
+  // 路径出现次数
+  int64 support_count = 2 [json_name = "supportCount"];
+  // 走过该路径的去重用户数
+  int64 unique_users = 3 [json_name = "uniqueUsers"];
+  // 转化率（0-1）
+  double conversion_rate = 4 [json_name = "conversionRate"];
+}
+
+message PathSankeyResponse {
+  // 热门路径列表（按 support_count 降序）
+  repeated PathBucket paths = 1 [json_name = "paths"];
 }

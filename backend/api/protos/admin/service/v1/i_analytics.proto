@@ -119,4 +119,44 @@ service AnalyticsService {
       body: "*"
     };
   }
+
+  // 付费/营收分析
+  rpc Revenue(uba.service.v1.RevenueRequest) returns (uba.service.v1.RevenueResponse) {
+    option (google.api.http) = {
+      post: "/admin/v1/analytics/revenue"
+      body: "*"
+    };
+  }
+
+  // 会话分析
+  rpc SessionAnalysis(uba.service.v1.SessionAnalysisRequest) returns (uba.service.v1.SessionAnalysisResponse) {
+    option (google.api.http) = {
+      post: "/admin/v1/analytics/session-analysis"
+      body: "*"
+    };
+  }
+
+  // 同比环比/异常检测
+  rpc Anomaly(uba.service.v1.AnomalyRequest) returns (uba.service.v1.AnomalyResponse) {
+    option (google.api.http) = {
+      post: "/admin/v1/analytics/anomaly"
+      body: "*"
+    };
+  }
+
+  // 新老用户对比
+  rpc NewVsOld(uba.service.v1.NewVsOldRequest) returns (uba.service.v1.NewVsOldResponse) {
+    option (google.api.http) = {
+      post: "/admin/v1/analytics/new-vs-old"
+      body: "*"
+    };
+  }
+
+  // 热门转化路径
+  rpc PathSankey(uba.service.v1.PathSankeyRequest) returns (uba.service.v1.PathSankeyResponse) {
+    option (google.api.http) = {
+      post: "/admin/v1/analytics/path-sankey"
+      body: "*"
+    };
+  }
 }

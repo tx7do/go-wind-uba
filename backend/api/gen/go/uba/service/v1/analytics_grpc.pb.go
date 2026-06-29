@@ -33,6 +33,11 @@ const (
 	AnalyticsService_Churn_FullMethodName            = "/uba.service.v1.AnalyticsService/Churn"
 	AnalyticsService_Interval_FullMethodName         = "/uba.service.v1.AnalyticsService/Interval"
 	AnalyticsService_Matrix_FullMethodName           = "/uba.service.v1.AnalyticsService/Matrix"
+	AnalyticsService_Revenue_FullMethodName          = "/uba.service.v1.AnalyticsService/Revenue"
+	AnalyticsService_SessionAnalysis_FullMethodName  = "/uba.service.v1.AnalyticsService/SessionAnalysis"
+	AnalyticsService_Anomaly_FullMethodName          = "/uba.service.v1.AnalyticsService/Anomaly"
+	AnalyticsService_NewVsOld_FullMethodName         = "/uba.service.v1.AnalyticsService/NewVsOld"
+	AnalyticsService_PathSankey_FullMethodName       = "/uba.service.v1.AnalyticsService/PathSankey"
 )
 
 // AnalyticsServiceClient is the client API for AnalyticsService service.
@@ -69,6 +74,16 @@ type AnalyticsServiceClient interface {
 	Interval(ctx context.Context, in *IntervalRequest, opts ...grpc.CallOption) (*IntervalResponse, error)
 	// 矩阵/象限分析（双轴分四象限，识别核心/边缘功能）
 	Matrix(ctx context.Context, in *MatrixRequest, opts ...grpc.CallOption) (*MatrixResponse, error)
+	// 付费/营收分析（ARPU/ARPPU/付费率/GMV 趋势）
+	Revenue(ctx context.Context, in *RevenueRequest, opts ...grpc.CallOption) (*RevenueResponse, error)
+	// 会话分析（跳出率/时长分位 P50/P90/会话深度）
+	SessionAnalysis(ctx context.Context, in *SessionAnalysisRequest, opts ...grpc.CallOption) (*SessionAnalysisResponse, error)
+	// 同比环比/异常检测（事件 PV/UV 环比涨跌 + 7日基线异常预警）
+	Anomaly(ctx context.Context, in *AnomalyRequest, opts ...grpc.CallOption) (*AnomalyResponse, error)
+	// 新老用户对比（构成占比 + 行为/付费差异）
+	NewVsOld(ctx context.Context, in *NewVsOldRequest, opts ...grpc.CallOption) (*NewVsOldResponse, error)
+	// 热门转化路径（群体路径 TOP + 转化率）
+	PathSankey(ctx context.Context, in *PathSankeyRequest, opts ...grpc.CallOption) (*PathSankeyResponse, error)
 }
 
 type analyticsServiceClient struct {
@@ -219,6 +234,56 @@ func (c *analyticsServiceClient) Matrix(ctx context.Context, in *MatrixRequest, 
 	return out, nil
 }
 
+func (c *analyticsServiceClient) Revenue(ctx context.Context, in *RevenueRequest, opts ...grpc.CallOption) (*RevenueResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(RevenueResponse)
+	err := c.cc.Invoke(ctx, AnalyticsService_Revenue_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *analyticsServiceClient) SessionAnalysis(ctx context.Context, in *SessionAnalysisRequest, opts ...grpc.CallOption) (*SessionAnalysisResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SessionAnalysisResponse)
+	err := c.cc.Invoke(ctx, AnalyticsService_SessionAnalysis_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *analyticsServiceClient) Anomaly(ctx context.Context, in *AnomalyRequest, opts ...grpc.CallOption) (*AnomalyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AnomalyResponse)
+	err := c.cc.Invoke(ctx, AnalyticsService_Anomaly_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *analyticsServiceClient) NewVsOld(ctx context.Context, in *NewVsOldRequest, opts ...grpc.CallOption) (*NewVsOldResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(NewVsOldResponse)
+	err := c.cc.Invoke(ctx, AnalyticsService_NewVsOld_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *analyticsServiceClient) PathSankey(ctx context.Context, in *PathSankeyRequest, opts ...grpc.CallOption) (*PathSankeyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(PathSankeyResponse)
+	err := c.cc.Invoke(ctx, AnalyticsService_PathSankey_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AnalyticsServiceServer is the server API for AnalyticsService service.
 // All implementations must embed UnimplementedAnalyticsServiceServer
 // for forward compatibility.
@@ -253,6 +318,16 @@ type AnalyticsServiceServer interface {
 	Interval(context.Context, *IntervalRequest) (*IntervalResponse, error)
 	// 矩阵/象限分析（双轴分四象限，识别核心/边缘功能）
 	Matrix(context.Context, *MatrixRequest) (*MatrixResponse, error)
+	// 付费/营收分析（ARPU/ARPPU/付费率/GMV 趋势）
+	Revenue(context.Context, *RevenueRequest) (*RevenueResponse, error)
+	// 会话分析（跳出率/时长分位 P50/P90/会话深度）
+	SessionAnalysis(context.Context, *SessionAnalysisRequest) (*SessionAnalysisResponse, error)
+	// 同比环比/异常检测（事件 PV/UV 环比涨跌 + 7日基线异常预警）
+	Anomaly(context.Context, *AnomalyRequest) (*AnomalyResponse, error)
+	// 新老用户对比（构成占比 + 行为/付费差异）
+	NewVsOld(context.Context, *NewVsOldRequest) (*NewVsOldResponse, error)
+	// 热门转化路径（群体路径 TOP + 转化率）
+	PathSankey(context.Context, *PathSankeyRequest) (*PathSankeyResponse, error)
 	mustEmbedUnimplementedAnalyticsServiceServer()
 }
 
@@ -304,6 +379,21 @@ func (UnimplementedAnalyticsServiceServer) Interval(context.Context, *IntervalRe
 }
 func (UnimplementedAnalyticsServiceServer) Matrix(context.Context, *MatrixRequest) (*MatrixResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method Matrix not implemented")
+}
+func (UnimplementedAnalyticsServiceServer) Revenue(context.Context, *RevenueRequest) (*RevenueResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method Revenue not implemented")
+}
+func (UnimplementedAnalyticsServiceServer) SessionAnalysis(context.Context, *SessionAnalysisRequest) (*SessionAnalysisResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method SessionAnalysis not implemented")
+}
+func (UnimplementedAnalyticsServiceServer) Anomaly(context.Context, *AnomalyRequest) (*AnomalyResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method Anomaly not implemented")
+}
+func (UnimplementedAnalyticsServiceServer) NewVsOld(context.Context, *NewVsOldRequest) (*NewVsOldResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method NewVsOld not implemented")
+}
+func (UnimplementedAnalyticsServiceServer) PathSankey(context.Context, *PathSankeyRequest) (*PathSankeyResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method PathSankey not implemented")
 }
 func (UnimplementedAnalyticsServiceServer) mustEmbedUnimplementedAnalyticsServiceServer() {}
 func (UnimplementedAnalyticsServiceServer) testEmbeddedByValue()                          {}
@@ -578,6 +668,96 @@ func _AnalyticsService_Matrix_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AnalyticsService_Revenue_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RevenueRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AnalyticsServiceServer).Revenue(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AnalyticsService_Revenue_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AnalyticsServiceServer).Revenue(ctx, req.(*RevenueRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AnalyticsService_SessionAnalysis_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SessionAnalysisRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AnalyticsServiceServer).SessionAnalysis(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AnalyticsService_SessionAnalysis_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AnalyticsServiceServer).SessionAnalysis(ctx, req.(*SessionAnalysisRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AnalyticsService_Anomaly_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AnomalyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AnalyticsServiceServer).Anomaly(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AnalyticsService_Anomaly_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AnalyticsServiceServer).Anomaly(ctx, req.(*AnomalyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AnalyticsService_NewVsOld_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(NewVsOldRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AnalyticsServiceServer).NewVsOld(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AnalyticsService_NewVsOld_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AnalyticsServiceServer).NewVsOld(ctx, req.(*NewVsOldRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AnalyticsService_PathSankey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PathSankeyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AnalyticsServiceServer).PathSankey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AnalyticsService_PathSankey_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AnalyticsServiceServer).PathSankey(ctx, req.(*PathSankeyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AnalyticsService_ServiceDesc is the grpc.ServiceDesc for AnalyticsService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -640,6 +820,26 @@ var AnalyticsService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Matrix",
 			Handler:    _AnalyticsService_Matrix_Handler,
+		},
+		{
+			MethodName: "Revenue",
+			Handler:    _AnalyticsService_Revenue_Handler,
+		},
+		{
+			MethodName: "SessionAnalysis",
+			Handler:    _AnalyticsService_SessionAnalysis_Handler,
+		},
+		{
+			MethodName: "Anomaly",
+			Handler:    _AnalyticsService_Anomaly_Handler,
+		},
+		{
+			MethodName: "NewVsOld",
+			Handler:    _AnalyticsService_NewVsOld_Handler,
+		},
+		{
+			MethodName: "PathSankey",
+			Handler:    _AnalyticsService_PathSankey_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

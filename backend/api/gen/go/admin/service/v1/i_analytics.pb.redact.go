@@ -193,3 +193,58 @@ func (s *redactedAnalyticsServiceServer) Matrix(ctx context.Context, in *ubapb.M
 	}
 	return res, err
 }
+
+// Revenue is the redacted wrapper for the actual AnalyticsServiceServer.Revenue method
+// Unary RPC
+func (s *redactedAnalyticsServiceServer) Revenue(ctx context.Context, in *ubapb.RevenueRequest) (*ubapb.RevenueResponse, error) {
+	res, err := s.srv.Revenue(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
+// SessionAnalysis is the redacted wrapper for the actual AnalyticsServiceServer.SessionAnalysis method
+// Unary RPC
+func (s *redactedAnalyticsServiceServer) SessionAnalysis(ctx context.Context, in *ubapb.SessionAnalysisRequest) (*ubapb.SessionAnalysisResponse, error) {
+	res, err := s.srv.SessionAnalysis(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
+// Anomaly is the redacted wrapper for the actual AnalyticsServiceServer.Anomaly method
+// Unary RPC
+func (s *redactedAnalyticsServiceServer) Anomaly(ctx context.Context, in *ubapb.AnomalyRequest) (*ubapb.AnomalyResponse, error) {
+	res, err := s.srv.Anomaly(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
+// NewVsOld is the redacted wrapper for the actual AnalyticsServiceServer.NewVsOld method
+// Unary RPC
+func (s *redactedAnalyticsServiceServer) NewVsOld(ctx context.Context, in *ubapb.NewVsOldRequest) (*ubapb.NewVsOldResponse, error) {
+	res, err := s.srv.NewVsOld(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
+// PathSankey is the redacted wrapper for the actual AnalyticsServiceServer.PathSankey method
+// Unary RPC
+func (s *redactedAnalyticsServiceServer) PathSankey(ctx context.Context, in *ubapb.PathSankeyRequest) (*ubapb.PathSankeyResponse, error) {
+	res, err := s.srv.PathSankey(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}

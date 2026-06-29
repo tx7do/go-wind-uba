@@ -194,6 +194,61 @@ func (s *redactedAnalyticsServiceServer) Matrix(ctx context.Context, in *MatrixR
 	return res, err
 }
 
+// Revenue is the redacted wrapper for the actual AnalyticsServiceServer.Revenue method
+// Unary RPC
+func (s *redactedAnalyticsServiceServer) Revenue(ctx context.Context, in *RevenueRequest) (*RevenueResponse, error) {
+	res, err := s.srv.Revenue(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
+// SessionAnalysis is the redacted wrapper for the actual AnalyticsServiceServer.SessionAnalysis method
+// Unary RPC
+func (s *redactedAnalyticsServiceServer) SessionAnalysis(ctx context.Context, in *SessionAnalysisRequest) (*SessionAnalysisResponse, error) {
+	res, err := s.srv.SessionAnalysis(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
+// Anomaly is the redacted wrapper for the actual AnalyticsServiceServer.Anomaly method
+// Unary RPC
+func (s *redactedAnalyticsServiceServer) Anomaly(ctx context.Context, in *AnomalyRequest) (*AnomalyResponse, error) {
+	res, err := s.srv.Anomaly(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
+// NewVsOld is the redacted wrapper for the actual AnalyticsServiceServer.NewVsOld method
+// Unary RPC
+func (s *redactedAnalyticsServiceServer) NewVsOld(ctx context.Context, in *NewVsOldRequest) (*NewVsOldResponse, error) {
+	res, err := s.srv.NewVsOld(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
+// PathSankey is the redacted wrapper for the actual AnalyticsServiceServer.PathSankey method
+// Unary RPC
+func (s *redactedAnalyticsServiceServer) PathSankey(ctx context.Context, in *PathSankeyRequest) (*PathSankeyResponse, error) {
+	res, err := s.srv.PathSankey(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
 // Redact method implementation for TimeRange
 func (x *TimeRange) Redact() string {
 	if x == nil {
@@ -907,5 +962,225 @@ func (x *MatrixResponse) Redact() string {
 	// Safe field: YThreshold
 
 	// Safe field: Dimension
+	return x.String()
+}
+
+// Redact method implementation for RevenueRequest
+func (x *RevenueRequest) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: TimeRange
+
+	// Safe field: AppId
+
+	// Safe field: Granularity
+	return x.String()
+}
+
+// Redact method implementation for RevenuePoint
+func (x *RevenuePoint) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Timestamp
+
+	// Safe field: Gmv
+
+	// Safe field: PayUsers
+
+	// Safe field: PayOrders
+
+	// Safe field: Arpu
+
+	// Safe field: Arppu
+
+	// Safe field: PayRate
+	return x.String()
+}
+
+// Redact method implementation for RevenueResponse
+func (x *RevenueResponse) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Points
+
+	// Safe field: TotalGmv
+
+	// Safe field: TotalPayUsers
+
+	// Safe field: TotalPayOrders
+
+	// Safe field: AvgOrderValue
+	return x.String()
+}
+
+// Redact method implementation for SessionAnalysisRequest
+func (x *SessionAnalysisRequest) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: TimeRange
+
+	// Safe field: AppId
+
+	// Safe field: Platform
+	return x.String()
+}
+
+// Redact method implementation for SessionAnalysisResponse
+func (x *SessionAnalysisResponse) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: SessionCount
+
+	// Safe field: UniqueUsers
+
+	// Safe field: AvgDurationSec
+
+	// Safe field: P50DurationSec
+
+	// Safe field: P90DurationSec
+
+	// Safe field: BounceRate
+
+	// Safe field: AvgDepth
+	return x.String()
+}
+
+// Redact method implementation for AnomalyRequest
+func (x *AnomalyRequest) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: TimeRange
+
+	// Safe field: AppId
+
+	// Safe field: EventName
+	return x.String()
+}
+
+// Redact method implementation for AnomalyPoint
+func (x *AnomalyPoint) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: EventName
+
+	// Safe field: StatDate
+
+	// Safe field: Pv
+
+	// Safe field: Uv
+
+	// Safe field: Baseline
+
+	// Safe field: WowChange
+
+	// Safe field: IsAnomaly
+	return x.String()
+}
+
+// Redact method implementation for AnomalyResponse
+func (x *AnomalyResponse) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Points
+
+	// Safe field: AnomalyCount
+	return x.String()
+}
+
+// Redact method implementation for NewVsOldRequest
+func (x *NewVsOldRequest) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: TimeRange
+
+	// Safe field: AppId
+
+	// Safe field: NewUserDays
+	return x.String()
+}
+
+// Redact method implementation for NewVsOldSegment
+func (x *NewVsOldSegment) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: UserType
+
+	// Safe field: UserCount
+
+	// Safe field: EventCount
+
+	// Safe field: PayUsers
+
+	// Safe field: PayRate
+	return x.String()
+}
+
+// Redact method implementation for NewVsOldResponse
+func (x *NewVsOldResponse) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Segments
+	return x.String()
+}
+
+// Redact method implementation for PathSankeyRequest
+func (x *PathSankeyRequest) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: TimeRange
+
+	// Safe field: AppId
+
+	// Safe field: TopN
+	return x.String()
+}
+
+// Redact method implementation for PathBucket
+func (x *PathBucket) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: EventSequence
+
+	// Safe field: SupportCount
+
+	// Safe field: UniqueUsers
+
+	// Safe field: ConversionRate
+	return x.String()
+}
+
+// Redact method implementation for PathSankeyResponse
+func (x *PathSankeyResponse) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Paths
 	return x.String()
 }

@@ -1170,3 +1170,346 @@ LIMIT 100`, dim, tenantCond, dim)
 		Points: points, XThreshold: xThreshold, YThreshold: yThreshold, Dimension: dim,
 	}, nil
 }
+
+// ============================================================================
+// 付费/营收分析（ARPU/ARPPU/付费率/GMV 趋势）
+// ClickHouse 数据源：pay_agg_daily_view（已聚合 total_pay_user_count/grand_total_amount 等）。
+// ============================================================================
+
+func (r *AnalyticsRepo) Revenue(ctx context.Context, req *ubaV1.RevenueRequest) (*ubaV1.RevenueResponse, error) {
+	startMs, endMs := normTimeRange(req.GetTimeRange())
+
+	tenantCond := ""
+	args := []any{time.UnixMilli(startMs), time.UnixMilli(endMs)}
+	if v := req.GetAppId(); v != 0 {
+		tenantCond = "tenant_id = ? AND "
+		args = append([]any{v}, args...)
+	}
+
+	// 付费数据：pay_agg_daily_view（已聚合 grand_total_amount/total_pay_user_count/total_pay_order_count）
+	payQ := fmt.Sprintf(`
+SELECT stat_date AS d,
+       sum(grand_total_amount) AS gmv,
+       sum(total_pay_user_count) AS pay_users,
+       sum(total_pay_order_count) AS pay_orders
+FROM pay_agg_daily_view
+WHERE %sstat_date >= toDate(?) AND stat_date < toDate(?)
+GROUP BY d ORDER BY d`, tenantCond)
+	type payRow struct {
+		D         time.Time `db:"d" ch:"d"`
+		Gmv       float64   `db:"gmv" ch:"gmv"`
+		PayUsers  int64     `db:"pay_users" ch:"pay_users"`
+		PayOrders int64     `db:"pay_orders" ch:"pay_orders"`
+	}
+	var payRows []payRow
+	if err := r.db.Select(ctx, &payRows, payQ, args...); err != nil {
+		r.log.Errorf("Revenue pay query failed: %v", err)
+		return nil, ubaV1.ErrorInternalServerError("revenue query failed")
+	}
+
+	// 活跃用户：events_agg_daily_view（pay_agg 无 active 字段），按日去重 UV
+	activeQ := fmt.Sprintf(`
+SELECT stat_date AS d, uniqCombinedMerge(uv) AS active_users
+FROM events_agg_daily_view
+WHERE %sstat_date >= toDate(?) AND stat_date < toDate(?)
+GROUP BY d`, tenantCond)
+	type activeRow struct {
+		D           time.Time `db:"d" ch:"d"`
+		ActiveUsers int64     `db:"active_users" ch:"active_users"`
+	}
+	var activeRows []activeRow
+	if err := r.db.Select(ctx, &activeRows, activeQ, args...); err != nil {
+		r.log.Errorf("Revenue active query failed: %v", err)
+		activeRows = nil
+	}
+	activeMap := map[int64]int64{}
+	for _, ar := range activeRows {
+		activeMap[ar.D.UnixMilli()] = ar.ActiveUsers
+	}
+
+	var totalGmv float64
+	var totalPayUsers, totalPayOrders int64
+	points := make([]*ubaV1.RevenuePoint, 0, len(payRows))
+	for _, rw := range payRows {
+		totalGmv += rw.Gmv
+		totalPayUsers += rw.PayUsers
+		totalPayOrders += rw.PayOrders
+		ts := rw.D.UnixMilli()
+		activeUsers := activeMap[ts]
+		var arpu, arppu, payRate float64
+		if activeUsers > 0 {
+			arpu = rw.Gmv / float64(activeUsers)
+			payRate = float64(rw.PayUsers) / float64(activeUsers)
+		}
+		if rw.PayUsers > 0 {
+			arppu = rw.Gmv / float64(rw.PayUsers)
+		}
+		points = append(points, &ubaV1.RevenuePoint{
+			Timestamp: ts,
+			Gmv:       rw.Gmv, PayUsers: rw.PayUsers, PayOrders: rw.PayOrders,
+			Arpu: arpu, Arppu: arppu, PayRate: payRate,
+		})
+	}
+	var avgOrderValue float64
+	if totalPayOrders > 0 {
+		avgOrderValue = totalGmv / float64(totalPayOrders)
+	}
+	return &ubaV1.RevenueResponse{
+		Points: points, TotalGmv: totalGmv,
+		TotalPayUsers: totalPayUsers, TotalPayOrders: totalPayOrders,
+		AvgOrderValue: avgOrderValue,
+	}, nil
+}
+
+// ============================================================================
+// 会话分析（跳出率/时长分位 P50/P90/会话深度）
+// ClickHouse 数据源：sessions_agg_daily_view（已聚合 p50/p90/bounce_rate）。
+// ============================================================================
+
+func (r *AnalyticsRepo) SessionAnalysis(ctx context.Context, req *ubaV1.SessionAnalysisRequest) (*ubaV1.SessionAnalysisResponse, error) {
+	startMs, endMs := normTimeRange(req.GetTimeRange())
+
+	var whereParts []string
+	var args []any
+	if v := req.GetAppId(); v != 0 {
+		whereParts = append(whereParts, "tenant_id = ?")
+		args = append(args, v)
+	}
+	if p := req.GetPlatform(); p != "" {
+		whereParts = append(whereParts, "platform = ?")
+		args = append(args, p)
+	}
+	whereCond := ""
+	if len(whereParts) > 0 {
+		whereCond = strings.Join(whereParts, " AND ") + " AND "
+	}
+	args = append(args, time.UnixMilli(startMs), time.UnixMilli(endMs))
+
+	q := fmt.Sprintf(`
+SELECT
+  sum(session_count) AS session_count,
+  uniqCombinedMerge(unique_users) AS unique_users,
+  sum(duration_sum) / sum(duration_count) / 1000.0 AS avg_duration_sec,
+  quantileTimingMerge(0.5)(p50_duration) / 1000.0 AS p50_sec,
+  quantileTimingMerge(0.9)(p90_duration) / 1000.0 AS p90_sec,
+  sum(bounce_sum) / sum(bounce_count) AS bounce_rate
+FROM sessions_agg_daily_view
+WHERE %sstat_date >= toDate(?) AND stat_date < toDate(?)`, whereCond)
+
+	var s struct {
+		SessionCount int64   `db:"session_count" ch:"session_count"`
+		UniqueUsers  int64   `db:"unique_users" ch:"unique_users"`
+		AvgDurSec    float64 `db:"avg_duration_sec" ch:"avg_duration_sec"`
+		P50Sec       float64 `db:"p50_sec" ch:"p50_sec"`
+		P90Sec       float64 `db:"p90_sec" ch:"p90_sec"`
+		BounceRate   float64 `db:"bounce_rate" ch:"bounce_rate"`
+	}
+	if err := r.db.QueryRow(ctx, &s, q, args...); err != nil {
+		r.log.Errorf("SessionAnalysis query failed: %v", err)
+		return nil, ubaV1.ErrorInternalServerError("session analysis query failed")
+	}
+
+	// 会话深度：events_fact 总事件 / 会话数
+	depthTenantCond := ""
+	depthArgs := []any{time.UnixMilli(startMs), time.UnixMilli(endMs)}
+	if v := req.GetAppId(); v != 0 {
+		depthTenantCond = "tenant_id = ? AND "
+		depthArgs = append([]any{v}, depthArgs...)
+	}
+	depthQ := fmt.Sprintf(`SELECT count() FROM events_fact WHERE %sevent_time >= ? AND event_time < ?`, depthTenantCond)
+	var totalEvents int64
+	_ = r.db.QueryRow(ctx, &totalEvents, depthQ, depthArgs...)
+	var avgDepth float64
+	if s.SessionCount > 0 {
+		avgDepth = float64(totalEvents) / float64(s.SessionCount)
+	}
+
+	return &ubaV1.SessionAnalysisResponse{
+		SessionCount: s.SessionCount, UniqueUsers: s.UniqueUsers,
+		AvgDurationSec: s.AvgDurSec, P50DurationSec: s.P50Sec, P90DurationSec: s.P90Sec,
+		BounceRate: s.BounceRate, AvgDepth: avgDepth,
+	}, nil
+}
+
+// ============================================================================
+// 同比环比/异常检测（事件 PV/UV 环比 + 7日基线）
+// ClickHouse 数据源：events_agg_daily_view + 窗口函数。
+// ============================================================================
+
+func (r *AnalyticsRepo) Anomaly(ctx context.Context, req *ubaV1.AnomalyRequest) (*ubaV1.AnomalyResponse, error) {
+	startMs, endMs := normTimeRange(req.GetTimeRange())
+
+	var whereParts []string
+	var args []any
+	if v := req.GetAppId(); v != 0 {
+		whereParts = append(whereParts, "tenant_id = ?")
+		args = append(args, v)
+	}
+	if en := req.GetEventName(); en != "" {
+		whereParts = append(whereParts, "event_name = ?")
+		args = append(args, en)
+	}
+	whereCond := ""
+	if len(whereParts) > 0 {
+		whereCond = strings.Join(whereParts, " AND ") + " AND "
+	}
+	args = append(args, time.UnixMilli(startMs), time.UnixMilli(endMs))
+
+	q := fmt.Sprintf(`
+SELECT event_name, d, pv, uv, baseline, wow_change FROM (
+  SELECT
+    event_name, d, pv, uv,
+    avg(pv) OVER (PARTITION BY event_name ORDER BY d ROWS BETWEEN 7 PRECEDING AND 1 PRECEDING) AS baseline,
+    if(lag(pv) OVER (PARTITION BY event_name ORDER BY d) > 0,
+       (pv - lag(pv) OVER (PARTITION BY event_name ORDER BY d)) / lag(pv) OVER (PARTITION BY event_name ORDER BY d),
+       0) AS wow_change
+  FROM (
+    SELECT event_name, stat_date AS d,
+           sum(pv) AS pv, uniqCombinedMerge(uv) AS uv
+    FROM events_agg_daily_view
+    WHERE %sstat_date >= toDate(?) AND stat_date < toDate(?)
+    GROUP BY event_name, d
+  ) daily
+) ranked
+WHERE baseline > 0
+ORDER BY event_name, d`, whereCond)
+
+	type row struct {
+		EventName string    `db:"event_name" ch:"event_name"`
+		D         time.Time `db:"d" ch:"d"`
+		Pv        int64     `db:"pv" ch:"pv"`
+		Uv        int64     `db:"uv" ch:"uv"`
+		Baseline  float64   `db:"baseline" ch:"baseline"`
+		WowChange float64   `db:"wow_change" ch:"wow_change"`
+	}
+	var rows []row
+	if err := r.db.Select(ctx, &rows, q, args...); err != nil {
+		r.log.Errorf("Anomaly query failed: %v", err)
+		return nil, ubaV1.ErrorInternalServerError("anomaly query failed")
+	}
+	points := make([]*ubaV1.AnomalyPoint, 0, len(rows))
+	anomalySet := map[string]bool{}
+	for _, rw := range rows {
+		isAnomaly := rw.Baseline > 0 && float64(rw.Pv) < rw.Baseline*0.5
+		if isAnomaly {
+			anomalySet[rw.EventName] = true
+		}
+		points = append(points, &ubaV1.AnomalyPoint{
+			EventName: rw.EventName, StatDate: rw.D.UnixMilli(),
+			Pv: rw.Pv, Uv: rw.Uv, Baseline: rw.Baseline, WowChange: rw.WowChange, IsAnomaly: isAnomaly,
+		})
+	}
+	return &ubaV1.AnomalyResponse{Points: points, AnomalyCount: int64(len(anomalySet))}, nil
+}
+
+// ============================================================================
+// 新老用户对比（构成占比 + 事件/付费差异）
+// ClickHouse 数据源：users_dim + events_fact。
+// ============================================================================
+
+func (r *AnalyticsRepo) NewVsOld(ctx context.Context, req *ubaV1.NewVsOldRequest) (*ubaV1.NewVsOldResponse, error) {
+	startMs, endMs := normTimeRange(req.GetTimeRange())
+	newUserDays := int64(req.GetNewUserDays())
+	if newUserDays <= 0 {
+		newUserDays = 7
+	}
+
+	tenantCond := ""
+	args := []any{time.UnixMilli(startMs), time.UnixMilli(endMs)}
+	if v := req.GetAppId(); v != 0 {
+		tenantCond = "tenant_id = ? AND "
+		args = append([]any{v}, args...)
+	}
+
+	q := fmt.Sprintf(`
+SELECT
+  multiIf(u.first_active_date >= today() - INTERVAL %d DAY, 'new', 'old') AS user_type,
+  count(DISTINCT e.user_id) AS user_count,
+  count() AS event_count,
+  countDistinctIf(e.user_id, e.amount > 0) AS pay_users
+FROM events_fact e
+INNER JOIN users_dim u ON u.tenant_id = e.tenant_id AND u.user_id = e.user_id
+WHERE e.%sevent_time >= ? AND e.event_time < ? AND e.user_id > 0
+GROUP BY user_type`, newUserDays, tenantCond)
+
+	type row struct {
+		UserType   string `db:"user_type" ch:"user_type"`
+		UserCount  int64  `db:"user_count" ch:"user_count"`
+		EventCount int64  `db:"event_count" ch:"event_count"`
+		PayUsers   int64  `db:"pay_users" ch:"pay_users"`
+	}
+	var rows []row
+	if err := r.db.Select(ctx, &rows, q, args...); err != nil {
+		r.log.Errorf("NewVsOld query failed: %v", err)
+		return nil, ubaV1.ErrorInternalServerError("new vs old query failed")
+	}
+	segMap := map[string]*ubaV1.NewVsOldSegment{}
+	for _, rw := range rows {
+		var payRate float64
+		if rw.UserCount > 0 {
+			payRate = float64(rw.PayUsers) / float64(rw.UserCount)
+		}
+		segMap[rw.UserType] = &ubaV1.NewVsOldSegment{
+			UserType: rw.UserType, UserCount: rw.UserCount,
+			EventCount: rw.EventCount, PayUsers: rw.PayUsers, PayRate: payRate,
+		}
+	}
+	segments := make([]*ubaV1.NewVsOldSegment, 0, 2)
+	for _, t := range []string{"new", "old"} {
+		if seg, ok := segMap[t]; ok {
+			segments = append(segments, seg)
+		}
+	}
+	return &ubaV1.NewVsOldResponse{Segments: segments}, nil
+}
+
+// ============================================================================
+// 热门转化路径（群体路径 TOP + 转化率）
+// ClickHouse 数据源：popular_paths_daily_view（event_sequence + support_count + conversion）。
+// ============================================================================
+
+func (r *AnalyticsRepo) PathSankey(ctx context.Context, req *ubaV1.PathSankeyRequest) (*ubaV1.PathSankeyResponse, error) {
+	startMs, endMs := normTimeRange(req.GetTimeRange())
+	topN := int64(req.GetTopN())
+	if topN <= 0 || topN > 200 {
+		topN = 20
+	}
+
+	tenantCond := ""
+	args := []any{time.UnixMilli(startMs), time.UnixMilli(endMs), topN}
+	if v := req.GetAppId(); v != 0 {
+		tenantCond = "tenant_id = ? AND "
+		args = append([]any{v}, args...)
+	}
+
+	q := fmt.Sprintf(`
+SELECT arrayStringConcat(event_sequence, ' → ') AS event_sequence_str,
+       sum(support_count) AS support_count,
+       uniqCombinedMerge(unique_users) AS unique_users,
+       any(conversion_rate) AS conversion_rate
+FROM popular_paths_daily_view
+WHERE %sstat_date >= toDate(?) AND stat_date < toDate(?)
+GROUP BY event_sequence, event_sequence_str
+ORDER BY support_count DESC
+LIMIT ?`, tenantCond)
+
+	type row struct {
+		EventSequence  string  `db:"event_sequence_str" ch:"event_sequence_str"`
+		SupportCount   int64   `db:"support_count" ch:"support_count"`
+		UniqueUsers    int64   `db:"unique_users" ch:"unique_users"`
+		ConversionRate float64 `db:"conversion_rate" ch:"conversion_rate"`
+	}
+	var rows []row
+	if err := r.db.Select(ctx, &rows, q, args...); err != nil {
+		r.log.Errorf("PathSankey query failed: %v", err)
+		return nil, ubaV1.ErrorInternalServerError("path sankey query failed")
+	}
+	paths := make([]*ubaV1.PathBucket, 0, len(rows))
+	for _, rw := range rows {
+		paths = append(paths, &ubaV1.PathBucket{
+			EventSequence: rw.EventSequence, SupportCount: rw.SupportCount,
+			UniqueUsers: rw.UniqueUsers, ConversionRate: rw.ConversionRate,
+		})
+	}
+	return &ubaV1.PathSankeyResponse{Paths: paths}, nil
+}

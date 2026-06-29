@@ -26,6 +26,25 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ActiveUsersResponse'
+    /admin/v1/analytics/anomaly:
+        post:
+            tags:
+                - AnalyticsService
+            description: 同比环比/异常检测
+            operationId: AnalyticsService_Anomaly
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/AnomalyRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/AnomalyResponse'
     /admin/v1/analytics/attribution:
         post:
             tags:
@@ -235,6 +254,44 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/MatrixResponse'
+    /admin/v1/analytics/new-vs-old:
+        post:
+            tags:
+                - AnalyticsService
+            description: 新老用户对比
+            operationId: AnalyticsService_NewVsOld
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/NewVsOldRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/NewVsOldResponse'
+    /admin/v1/analytics/path-sankey:
+        post:
+            tags:
+                - AnalyticsService
+            description: 热门转化路径
+            operationId: AnalyticsService_PathSankey
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/PathSankeyRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/PathSankeyResponse'
     /admin/v1/analytics/retention:
         post:
             tags:
@@ -254,6 +311,25 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/RetentionResponse'
+    /admin/v1/analytics/revenue:
+        post:
+            tags:
+                - AnalyticsService
+            description: 付费/营收分析
+            operationId: AnalyticsService_Revenue
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/RevenueRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/RevenueResponse'
     /admin/v1/analytics/segmentation:
         post:
             tags:
@@ -273,6 +349,25 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/SegmentationResponse'
+    /admin/v1/analytics/session-analysis:
+        post:
+            tags:
+                - AnalyticsService
+            description: 会话分析
+            operationId: AnalyticsService_SessionAnalysis
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/SessionAnalysisRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/SessionAnalysisResponse'
     /admin/v1/api-audit-logs:
         get:
             tags:
@@ -6639,6 +6734,59 @@ components:
                 latestDau:
                     type: string
                     description: 最新一天的 DAU
+        AnomalyPoint:
+            type: object
+            properties:
+                eventName:
+                    type: string
+                    description: 事件名
+                statDate:
+                    type: string
+                    description: 统计日期（Unix 毫秒）
+                pv:
+                    type: string
+                    description: 当日 PV
+                uv:
+                    type: string
+                    description: 当日 UV
+                baseline:
+                    type: number
+                    description: 7 日均值（基线）
+                    format: double
+                wowChange:
+                    type: number
+                    description: 环比昨日涨跌（0-1，正为涨）
+                    format: double
+                isAnomaly:
+                    type: boolean
+                    description: 是否异常（当日 PV < 7日均值 * 阈值，默认 0.5）
+            description: 单事件/日的同比环比数据
+        AnomalyRequest:
+            type: object
+            properties:
+                timeRange:
+                    allOf:
+                        - $ref: '#/components/schemas/TimeRange'
+                    description: 时间范围（通常取近 8+ 天以算 7 日基线）
+                appId:
+                    type: integer
+                    description: 应用 ID 过滤（可选）
+                    format: uint32
+                eventName:
+                    type: string
+                    description: 事件名过滤（可选，空表示全部事件聚合）
+            description: ============== 同比环比/异常检测 ==============
+        AnomalyResponse:
+            type: object
+            properties:
+                points:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/AnomalyPoint'
+                    description: 各事件/日的趋势 + 异常标记
+                anomalyCount:
+                    type: string
+                    description: 异常事件数（去重）
         Api:
             type: object
             properties:
@@ -9757,6 +9905,49 @@ components:
                 meta:
                     $ref: '#/components/schemas/MenuMeta'
             description: 路由项
+        NewVsOldRequest:
+            type: object
+            properties:
+                timeRange:
+                    allOf:
+                        - $ref: '#/components/schemas/TimeRange'
+                    description: 时间范围
+                appId:
+                    type: integer
+                    description: 应用 ID 过滤（可选）
+                    format: uint32
+                newUserDays:
+                    type: integer
+                    description: 新用户判定天数（注册距今 N 天内算新用户，默认 7）
+                    format: uint32
+            description: ============== 新老用户对比 ==============
+        NewVsOldResponse:
+            type: object
+            properties:
+                segments:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/NewVsOldSegment'
+                    description: 新/老用户各维度对比
+        NewVsOldSegment:
+            type: object
+            properties:
+                userType:
+                    type: string
+                    description: 用户类型：new 新用户 / old 老用户
+                userCount:
+                    type: string
+                    description: 用户数
+                eventCount:
+                    type: string
+                    description: 事件量
+                payUsers:
+                    type: string
+                    description: 付费用户数
+                payRate:
+                    type: number
+                    description: 付费率（0-1）
+                    format: double
         ObjectDim:
             type: object
             properties:
@@ -10070,6 +10261,22 @@ components:
                     description: 删除时间
                     format: date-time
             description: 组织单元
+        PathBucket:
+            type: object
+            properties:
+                eventSequence:
+                    type: string
+                    description: 事件序列（如 "view_home,add_to_cart,pay_success"）
+                supportCount:
+                    type: string
+                    description: 路径出现次数
+                uniqueUsers:
+                    type: string
+                    description: 走过该路径的去重用户数
+                conversionRate:
+                    type: number
+                    description: 转化率（0-1）
+                    format: double
         PathNode:
             type: object
             properties:
@@ -10091,6 +10298,30 @@ components:
                     description: 步骤索引，节点在路径中的位置，从0开始
                     format: uint32
             description: 路径节点（事件路径中的单个事件节点，包含事件信息和对象信息）
+        PathSankeyRequest:
+            type: object
+            properties:
+                timeRange:
+                    allOf:
+                        - $ref: '#/components/schemas/TimeRange'
+                    description: 时间范围
+                appId:
+                    type: integer
+                    description: 应用 ID 过滤（可选）
+                    format: uint32
+                topN:
+                    type: integer
+                    description: 返回前 N 条热门路径（默认 20）
+                    format: uint32
+            description: ============== 热门转化路径 ==============
+        PathSankeyResponse:
+            type: object
+            properties:
+                paths:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/PathBucket'
+                    description: 热门路径列表（按 support_count 降序）
         Permission:
             type: object
             properties:
@@ -10583,6 +10814,79 @@ components:
                         type: integer
                         format: uint32
                     description: 所有偏移天列表（横轴）
+        RevenuePoint:
+            type: object
+            properties:
+                timestamp:
+                    type: string
+                    description: 时间桶（Unix 毫秒）
+                gmv:
+                    type: number
+                    description: GMV（总成交额）
+                    format: double
+                payUsers:
+                    type: string
+                    description: 付费用户数
+                payOrders:
+                    type: string
+                    description: 付费订单数
+                arpu:
+                    type: number
+                    description: ARPU（GMV / 活跃用户数，活跃用户另查）
+                    format: double
+                arppu:
+                    type: number
+                    description: ARPPU（GMV / 付费用户数）
+                    format: double
+                payRate:
+                    type: number
+                    description: 付费率（0-1，pay_users / active_users）
+                    format: double
+            description: 单日营收数据点
+        RevenueRequest:
+            type: object
+            properties:
+                timeRange:
+                    allOf:
+                        - $ref: '#/components/schemas/TimeRange'
+                    description: 时间范围
+                appId:
+                    type: integer
+                    description: 应用 ID 过滤（可选）
+                    format: uint32
+                granularity:
+                    enum:
+                        - ANALYTICS_GRANULARITY_UNSPECIFIED
+                        - HOUR
+                        - DAY
+                        - WEEK
+                        - MONTH
+                    type: string
+                    description: 时间粒度（默认 DAY）
+                    format: enum
+            description: ============== 付费/营收分析 ==============
+        RevenueResponse:
+            type: object
+            properties:
+                points:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/RevenuePoint'
+                    description: 按日/粒度的营收趋势
+                totalGmv:
+                    type: number
+                    description: 区间 GMV 汇总
+                    format: double
+                totalPayUsers:
+                    type: string
+                    description: 区间付费用户数（去重）
+                totalPayOrders:
+                    type: string
+                    description: 区间订单数
+                avgOrderValue:
+                    type: number
+                    description: 客单价（GMV / 订单数）
+                    format: double
         RevokeMessageRequest:
             type: object
             properties:
@@ -11088,6 +11392,50 @@ components:
                     description: 更新时间，会话最近一次更新的时间
                     format: date-time
             description: 会话（对应 sessions 表）
+        SessionAnalysisRequest:
+            type: object
+            properties:
+                timeRange:
+                    allOf:
+                        - $ref: '#/components/schemas/TimeRange'
+                    description: 时间范围
+                appId:
+                    type: integer
+                    description: 应用 ID 过滤（可选）
+                    format: uint32
+                platform:
+                    type: string
+                    description: 平台过滤（可选，空表示全部）
+            description: ============== 会话分析 ==============
+        SessionAnalysisResponse:
+            type: object
+            properties:
+                sessionCount:
+                    type: string
+                    description: 会话总数
+                uniqueUsers:
+                    type: string
+                    description: 会话用户数（去重）
+                avgDurationSec:
+                    type: number
+                    description: 平均会话时长（秒）
+                    format: double
+                p50DurationSec:
+                    type: number
+                    description: P50 会话时长（秒）
+                    format: double
+                p90DurationSec:
+                    type: number
+                    description: P90 会话时长（秒）
+                    format: double
+                bounceRate:
+                    type: number
+                    description: 跳出率（0-1）
+                    format: double
+                avgDepth:
+                    type: number
+                    description: 会话深度（人均事件数 = 总事件 / 会话数）
+                    format: double
         StorageObject:
             type: object
             properties:

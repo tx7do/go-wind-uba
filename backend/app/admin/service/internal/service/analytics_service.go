@@ -81,3 +81,23 @@ func (s *AnalyticsService) Interval(ctx context.Context, req *ubaV1.IntervalRequ
 func (s *AnalyticsService) Matrix(ctx context.Context, req *ubaV1.MatrixRequest) (*ubaV1.MatrixResponse, error) {
 	return s.client.Matrix(ctx, req)
 }
+
+func (s *AnalyticsService) Revenue(ctx context.Context, req *ubaV1.RevenueRequest) (*ubaV1.RevenueResponse, error) {
+	return s.client.Revenue(ctx, req)
+}
+
+func (s *AnalyticsService) SessionAnalysis(ctx context.Context, req *ubaV1.SessionAnalysisRequest) (*ubaV1.SessionAnalysisResponse, error) {
+	return s.client.SessionAnalysis(ctx, req)
+}
+
+func (s *AnalyticsService) Anomaly(ctx context.Context, req *ubaV1.AnomalyRequest) (*ubaV1.AnomalyResponse, error) {
+	return s.client.Anomaly(ctx, req)
+}
+
+func (s *AnalyticsService) NewVsOld(ctx context.Context, req *ubaV1.NewVsOldRequest) (*ubaV1.NewVsOldResponse, error) {
+	return s.client.NewVsOld(ctx, req)
+}
+
+func (s *AnalyticsService) PathSankey(ctx context.Context, req *ubaV1.PathSankeyRequest) (*ubaV1.PathSankeyResponse, error) {
+	return s.client.PathSankey(ctx, req)
+}

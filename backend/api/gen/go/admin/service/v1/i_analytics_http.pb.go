@@ -21,6 +21,7 @@ var _ = binding.EncodeURL
 const _ = http.SupportPackageIsVersion1
 
 const OperationAnalyticsServiceActiveUsers = "/admin.service.v1.AnalyticsService/ActiveUsers"
+const OperationAnalyticsServiceAnomaly = "/admin.service.v1.AnalyticsService/Anomaly"
 const OperationAnalyticsServiceAttribution = "/admin.service.v1.AnalyticsService/Attribution"
 const OperationAnalyticsServiceBehaviorSequence = "/admin.service.v1.AnalyticsService/BehaviorSequence"
 const OperationAnalyticsServiceChurn = "/admin.service.v1.AnalyticsService/Churn"
@@ -32,12 +33,18 @@ const OperationAnalyticsServiceGroupBy = "/admin.service.v1.AnalyticsService/Gro
 const OperationAnalyticsServiceInterval = "/admin.service.v1.AnalyticsService/Interval"
 const OperationAnalyticsServiceLifecycle = "/admin.service.v1.AnalyticsService/Lifecycle"
 const OperationAnalyticsServiceMatrix = "/admin.service.v1.AnalyticsService/Matrix"
+const OperationAnalyticsServiceNewVsOld = "/admin.service.v1.AnalyticsService/NewVsOld"
+const OperationAnalyticsServicePathSankey = "/admin.service.v1.AnalyticsService/PathSankey"
 const OperationAnalyticsServiceRetention = "/admin.service.v1.AnalyticsService/Retention"
+const OperationAnalyticsServiceRevenue = "/admin.service.v1.AnalyticsService/Revenue"
 const OperationAnalyticsServiceSegmentation = "/admin.service.v1.AnalyticsService/Segmentation"
+const OperationAnalyticsServiceSessionAnalysis = "/admin.service.v1.AnalyticsService/SessionAnalysis"
 
 type AnalyticsServiceHTTPServer interface {
 	// ActiveUsers 活跃用户
 	ActiveUsers(context.Context, *v1.ActiveUsersRequest) (*v1.ActiveUsersResponse, error)
+	// Anomaly 同比环比/异常检测
+	Anomaly(context.Context, *v1.AnomalyRequest) (*v1.AnomalyResponse, error)
 	// Attribution 归因分析
 	Attribution(context.Context, *v1.AttributionRequest) (*v1.AttributionResponse, error)
 	// BehaviorSequence 行为序列
@@ -60,10 +67,18 @@ type AnalyticsServiceHTTPServer interface {
 	Lifecycle(context.Context, *v1.LifecycleRequest) (*v1.LifecycleResponse, error)
 	// Matrix 矩阵/象限分析
 	Matrix(context.Context, *v1.MatrixRequest) (*v1.MatrixResponse, error)
+	// NewVsOld 新老用户对比
+	NewVsOld(context.Context, *v1.NewVsOldRequest) (*v1.NewVsOldResponse, error)
+	// PathSankey 热门转化路径
+	PathSankey(context.Context, *v1.PathSankeyRequest) (*v1.PathSankeyResponse, error)
 	// Retention 留存分析
 	Retention(context.Context, *v1.RetentionRequest) (*v1.RetentionResponse, error)
+	// Revenue 付费/营收分析
+	Revenue(context.Context, *v1.RevenueRequest) (*v1.RevenueResponse, error)
 	// Segmentation 用户分群/圈选
 	Segmentation(context.Context, *v1.SegmentationRequest) (*v1.SegmentationResponse, error)
+	// SessionAnalysis 会话分析
+	SessionAnalysis(context.Context, *v1.SessionAnalysisRequest) (*v1.SessionAnalysisResponse, error)
 }
 
 func RegisterAnalyticsServiceHTTPServer(s *http.Server, srv AnalyticsServiceHTTPServer) {
@@ -82,6 +97,11 @@ func RegisterAnalyticsServiceHTTPServer(s *http.Server, srv AnalyticsServiceHTTP
 	r.POST("/admin/v1/analytics/churn", _AnalyticsService_Churn0_HTTP_Handler(srv))
 	r.POST("/admin/v1/analytics/interval", _AnalyticsService_Interval0_HTTP_Handler(srv))
 	r.POST("/admin/v1/analytics/matrix", _AnalyticsService_Matrix0_HTTP_Handler(srv))
+	r.POST("/admin/v1/analytics/revenue", _AnalyticsService_Revenue0_HTTP_Handler(srv))
+	r.POST("/admin/v1/analytics/session-analysis", _AnalyticsService_SessionAnalysis0_HTTP_Handler(srv))
+	r.POST("/admin/v1/analytics/anomaly", _AnalyticsService_Anomaly0_HTTP_Handler(srv))
+	r.POST("/admin/v1/analytics/new-vs-old", _AnalyticsService_NewVsOld0_HTTP_Handler(srv))
+	r.POST("/admin/v1/analytics/path-sankey", _AnalyticsService_PathSankey0_HTTP_Handler(srv))
 }
 
 func _AnalyticsService_EventTrend0_HTTP_Handler(srv AnalyticsServiceHTTPServer) func(ctx http.Context) error {
@@ -392,9 +412,121 @@ func _AnalyticsService_Matrix0_HTTP_Handler(srv AnalyticsServiceHTTPServer) func
 	}
 }
 
+func _AnalyticsService_Revenue0_HTTP_Handler(srv AnalyticsServiceHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in v1.RevenueRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationAnalyticsServiceRevenue)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.Revenue(ctx, req.(*v1.RevenueRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*v1.RevenueResponse)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _AnalyticsService_SessionAnalysis0_HTTP_Handler(srv AnalyticsServiceHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in v1.SessionAnalysisRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationAnalyticsServiceSessionAnalysis)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.SessionAnalysis(ctx, req.(*v1.SessionAnalysisRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*v1.SessionAnalysisResponse)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _AnalyticsService_Anomaly0_HTTP_Handler(srv AnalyticsServiceHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in v1.AnomalyRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationAnalyticsServiceAnomaly)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.Anomaly(ctx, req.(*v1.AnomalyRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*v1.AnomalyResponse)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _AnalyticsService_NewVsOld0_HTTP_Handler(srv AnalyticsServiceHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in v1.NewVsOldRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationAnalyticsServiceNewVsOld)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.NewVsOld(ctx, req.(*v1.NewVsOldRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*v1.NewVsOldResponse)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _AnalyticsService_PathSankey0_HTTP_Handler(srv AnalyticsServiceHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in v1.PathSankeyRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationAnalyticsServicePathSankey)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.PathSankey(ctx, req.(*v1.PathSankeyRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*v1.PathSankeyResponse)
+		return ctx.Result(200, reply)
+	}
+}
+
 type AnalyticsServiceHTTPClient interface {
 	// ActiveUsers 活跃用户
 	ActiveUsers(ctx context.Context, req *v1.ActiveUsersRequest, opts ...http.CallOption) (rsp *v1.ActiveUsersResponse, err error)
+	// Anomaly 同比环比/异常检测
+	Anomaly(ctx context.Context, req *v1.AnomalyRequest, opts ...http.CallOption) (rsp *v1.AnomalyResponse, err error)
 	// Attribution 归因分析
 	Attribution(ctx context.Context, req *v1.AttributionRequest, opts ...http.CallOption) (rsp *v1.AttributionResponse, err error)
 	// BehaviorSequence 行为序列
@@ -417,10 +549,18 @@ type AnalyticsServiceHTTPClient interface {
 	Lifecycle(ctx context.Context, req *v1.LifecycleRequest, opts ...http.CallOption) (rsp *v1.LifecycleResponse, err error)
 	// Matrix 矩阵/象限分析
 	Matrix(ctx context.Context, req *v1.MatrixRequest, opts ...http.CallOption) (rsp *v1.MatrixResponse, err error)
+	// NewVsOld 新老用户对比
+	NewVsOld(ctx context.Context, req *v1.NewVsOldRequest, opts ...http.CallOption) (rsp *v1.NewVsOldResponse, err error)
+	// PathSankey 热门转化路径
+	PathSankey(ctx context.Context, req *v1.PathSankeyRequest, opts ...http.CallOption) (rsp *v1.PathSankeyResponse, err error)
 	// Retention 留存分析
 	Retention(ctx context.Context, req *v1.RetentionRequest, opts ...http.CallOption) (rsp *v1.RetentionResponse, err error)
+	// Revenue 付费/营收分析
+	Revenue(ctx context.Context, req *v1.RevenueRequest, opts ...http.CallOption) (rsp *v1.RevenueResponse, err error)
 	// Segmentation 用户分群/圈选
 	Segmentation(ctx context.Context, req *v1.SegmentationRequest, opts ...http.CallOption) (rsp *v1.SegmentationResponse, err error)
+	// SessionAnalysis 会话分析
+	SessionAnalysis(ctx context.Context, req *v1.SessionAnalysisRequest, opts ...http.CallOption) (rsp *v1.SessionAnalysisResponse, err error)
 }
 
 type AnalyticsServiceHTTPClientImpl struct {
@@ -437,6 +577,20 @@ func (c *AnalyticsServiceHTTPClientImpl) ActiveUsers(ctx context.Context, in *v1
 	pattern := "/admin/v1/analytics/active-users"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationAnalyticsServiceActiveUsers))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+// Anomaly 同比环比/异常检测
+func (c *AnalyticsServiceHTTPClientImpl) Anomaly(ctx context.Context, in *v1.AnomalyRequest, opts ...http.CallOption) (*v1.AnomalyResponse, error) {
+	var out v1.AnomalyResponse
+	pattern := "/admin/v1/analytics/anomaly"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationAnalyticsServiceAnomaly))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {
@@ -599,6 +753,34 @@ func (c *AnalyticsServiceHTTPClientImpl) Matrix(ctx context.Context, in *v1.Matr
 	return &out, nil
 }
 
+// NewVsOld 新老用户对比
+func (c *AnalyticsServiceHTTPClientImpl) NewVsOld(ctx context.Context, in *v1.NewVsOldRequest, opts ...http.CallOption) (*v1.NewVsOldResponse, error) {
+	var out v1.NewVsOldResponse
+	pattern := "/admin/v1/analytics/new-vs-old"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationAnalyticsServiceNewVsOld))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+// PathSankey 热门转化路径
+func (c *AnalyticsServiceHTTPClientImpl) PathSankey(ctx context.Context, in *v1.PathSankeyRequest, opts ...http.CallOption) (*v1.PathSankeyResponse, error) {
+	var out v1.PathSankeyResponse
+	pattern := "/admin/v1/analytics/path-sankey"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationAnalyticsServicePathSankey))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
 // Retention 留存分析
 func (c *AnalyticsServiceHTTPClientImpl) Retention(ctx context.Context, in *v1.RetentionRequest, opts ...http.CallOption) (*v1.RetentionResponse, error) {
 	var out v1.RetentionResponse
@@ -613,12 +795,40 @@ func (c *AnalyticsServiceHTTPClientImpl) Retention(ctx context.Context, in *v1.R
 	return &out, nil
 }
 
+// Revenue 付费/营收分析
+func (c *AnalyticsServiceHTTPClientImpl) Revenue(ctx context.Context, in *v1.RevenueRequest, opts ...http.CallOption) (*v1.RevenueResponse, error) {
+	var out v1.RevenueResponse
+	pattern := "/admin/v1/analytics/revenue"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationAnalyticsServiceRevenue))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
 // Segmentation 用户分群/圈选
 func (c *AnalyticsServiceHTTPClientImpl) Segmentation(ctx context.Context, in *v1.SegmentationRequest, opts ...http.CallOption) (*v1.SegmentationResponse, error) {
 	var out v1.SegmentationResponse
 	pattern := "/admin/v1/analytics/segmentation"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationAnalyticsServiceSegmentation))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+// SessionAnalysis 会话分析
+func (c *AnalyticsServiceHTTPClientImpl) SessionAnalysis(ctx context.Context, in *v1.SessionAnalysisRequest, opts ...http.CallOption) (*v1.SessionAnalysisResponse, error) {
+	var out v1.SessionAnalysisResponse
+	pattern := "/admin/v1/analytics/session-analysis"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationAnalyticsServiceSessionAnalysis))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {
