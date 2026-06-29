@@ -535,7 +535,7 @@ ORDER BY stat_date;
 SELECT
     context['campaign_id'] AS campaign_id,
     COUNT(*)                                              AS pv,
-    HLL_CARDINALITY(HLL_HASH(user_id))                    AS uv,
+    HLL_CARDINALITY(HLL_UNION(HLL_HASH(user_id))                    AS uv,
     ROUND(SUM(amount), 2)                                  AS total_amount
 FROM events_fact
 WHERE tenant_id = ${TENANT_ID}
@@ -783,7 +783,7 @@ SELECT
     SUM(IF(event_name = 'level_fail',   1, 0)) AS fail_cnt,
     ROUND(SUM(IF(event_name = 'level_finish', 1, 0))
           / NULLIF(SUM(IF(event_name IN ('level_finish','level_fail'), 1, 0)), 0) * 100, 2) AS pass_rate_pct,
-    HLL_CARDINALITY(HLL_HASH(user_id))         AS player_cnt
+    HLL_CARDINALITY(HLL_UNION(HLL_HASH(user_id))         AS player_cnt
 FROM events_fact
 WHERE tenant_id = ${TENANT_ID}
   AND object_type = 'level'
@@ -856,7 +856,7 @@ GROUP BY platform;
 -- 11.7 新手引导漏斗转化（教程各步骤流失）
 SELECT
     context['tutorial_step'] AS step,
-    HLL_CARDINALITY(HLL_HASH(user_id)) AS reach_users,
+    HLL_CARDINALITY(HLL_UNION(HLL_HASH(user_id)) AS reach_users,
     COUNT(*) AS event_cnt
 FROM events_fact
 WHERE tenant_id = ${TENANT_ID}
@@ -1014,7 +1014,7 @@ ORDER BY stat_date;
 SELECT
     object_id,
     MAX(object_name) AS product_name,
-    HLL_CARDINALITY(HLL_HASH(user_id)) AS cart_users
+    HLL_CARDINALITY(HLL_UNION(HLL_HASH(user_id)) AS cart_users
 FROM events_fact
 WHERE tenant_id = ${TENANT_ID}
   AND event_name = 'add_to_cart'
@@ -1028,7 +1028,7 @@ LIMIT 30;
 -- 12.7b 下单用户（按商品，与 12.7a 同维度对照，cart_users - order_users 即流失用户估算）
 SELECT
     object_id,
-    HLL_CARDINALITY(HLL_HASH(user_id)) AS order_users
+    HLL_CARDINALITY(HLL_UNION(HLL_HASH(user_id)) AS order_users
 FROM events_fact
 WHERE tenant_id = ${TENANT_ID}
   AND event_name = 'place_order'
@@ -1043,7 +1043,7 @@ LIMIT 30;
 SELECT
     context['keyword'] AS keyword,
     COUNT(*) AS search_cnt,
-    HLL_CARDINALITY(HLL_HASH(user_id)) AS searcher_uv,
+    HLL_CARDINALITY(HLL_UNION(HLL_HASH(user_id)) AS searcher_uv,
     SUM(IF(event_action = 'click', 1, 0)) AS click_cnt,
     ROUND(SUM(IF(event_action = 'click', 1, 0)) / COUNT(*) * 100, 2) AS ctr_pct
 FROM events_fact
@@ -1176,7 +1176,7 @@ ORDER BY duration_bucket;
 -- 15.1 新老用户构成（活跃用户中新/老占比）
 SELECT
     IF(u.first_active_date >= DATE_SUB(CURDATE(), INTERVAL 7 DAY), 'new_7d', 'old') AS user_type,
-    HLL_CARDINALITY(HLL_HASH(e.user_id)) AS uv,
+    HLL_CARDINALITY(HLL_UNION(HLL_HASH(e.user_id)) AS uv,
     COUNT(*) AS event_cnt
 FROM events_fact e
 JOIN users_dim u ON u.tenant_id = e.tenant_id AND u.user_id = e.user_id
@@ -1203,11 +1203,11 @@ LIMIT 20;
 -- 15.3 新老用户付费对比（新用户付费率 vs 老用户付费率）
 SELECT
     IF(u.first_active_date >= DATE_SUB(CURDATE(), INTERVAL 7 DAY), 'new_7d', 'old') AS user_type,
-    HLL_CARDINALITY(HLL_HASH(e.user_id))                          AS active_uv,
-    HLL_CARDINALITY(HLL_HASH(IF(e.amount > 0, e.user_id, NULL)))   AS pay_uv,
+    HLL_CARDINALITY(HLL_UNION(HLL_HASH(e.user_id))                          AS active_uv,
+    HLL_CARDINALITY(HLL_UNION(HLL_HASH(IF(e.amount > 0, e.user_id, NULL)))   AS pay_uv,
     ROUND(SUM(e.amount), 2)                                        AS gmv,
-    ROUND(HLL_CARDINALITY(HLL_HASH(IF(e.amount > 0, e.user_id, NULL)))
-          / NULLIF(HLL_CARDINALITY(HLL_HASH(e.user_id)), 0) * 100, 2) AS pay_rate_pct
+    ROUND(HLL_CARDINALITY(HLL_UNION(HLL_HASH(IF(e.amount > 0, e.user_id, NULL)))
+          / NULLIF(HLL_CARDINALITY(HLL_UNION(HLL_HASH(e.user_id)), 0) * 100, 2) AS pay_rate_pct
 FROM events_fact e
 JOIN users_dim u ON u.tenant_id = e.tenant_id AND u.user_id = e.user_id
 WHERE e.tenant_id = ${TENANT_ID}
@@ -1233,7 +1233,7 @@ WITH converters AS (
 )
 SELECT
     e.channel,
-    HLL_CARDINALITY(HLL_HASH(e.user_id)) AS converter_uv
+    HLL_CARDINALITY(HLL_UNION(HLL_HASH(e.user_id)) AS converter_uv
 FROM events_fact e
 JOIN converters c ON e.user_id = c.user_id
 WHERE e.tenant_id = ${TENANT_ID}

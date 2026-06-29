@@ -379,7 +379,7 @@ SELECT
     risk_type,
     status,
     COUNT(*)                                            AS status_count,
-    HLL_CARDINALITY(HLL_HASH(user_id))                 AS affected_users,
+    HLL_CARDINALITY(HLL_UNION(HLL_HASH(user_id)))      AS affected_users,
     ROUND(AVG(risk_score), 2)                           AS avg_risk_score
 FROM risk_events
 WHERE rule_id > 0
@@ -409,7 +409,7 @@ SELECT
     device_id,
     platform,
     COUNT(*)                              AS event_cnt,
-    HLL_CARDINALITY(HLL_HASH(user_id))    AS user_uv,
+    HLL_CARDINALITY(HLL_UNION(HLL_HASH(user_id)))    AS user_uv,
     COUNT(DISTINCT user_id)               AS distinct_users,
     COUNT(DISTINCT session_id)            AS session_count,
     MIN(event_time)                       AS first_seen,
