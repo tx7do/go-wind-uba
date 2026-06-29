@@ -5,6 +5,8 @@ import type {
   ubaservicev1_AttributionResponse,
   ubaservicev1_BehaviorSequenceRequest,
   ubaservicev1_BehaviorSequenceResponse,
+  ubaservicev1_ClickRequest,
+  ubaservicev1_ClickResponse,
   ubaservicev1_DistributionRequest,
   ubaservicev1_DistributionResponse,
   ubaservicev1_EventTrendRequest,
@@ -234,6 +236,28 @@ export async function fetchSegmentation(req: ubaservicev1_SegmentationRequest) {
   return queryClient.fetchQuery({
     queryKey: ['analytics', 'segmentation', req],
     queryFn: () => apiClient.analyticsService.Segmentation(req),
+    staleTime: 60_000,
+  });
+}
+
+// ==============================
+// 点击热力图（按页面网格分桶聚合）
+// ==============================
+export function useClick(
+  req: ubaservicev1_ClickRequest,
+  options?: UseQueryOptions<ubaservicev1_ClickResponse, Error>,
+) {
+  return useQuery({
+    queryKey: ['analytics', 'click', req],
+    queryFn: () => apiClient.analyticsService.Click(req),
+    ...options,
+  });
+}
+
+export async function fetchClick(req: ubaservicev1_ClickRequest) {
+  return queryClient.fetchQuery({
+    queryKey: ['analytics', 'click', req],
+    queryFn: () => apiClient.analyticsService.Click(req),
     staleTime: 60_000,
   });
 }

@@ -323,6 +323,10 @@ export interface AnalyticsService {
   Segmentation(
     request: ubaservicev1_SegmentationRequest,
   ): Promise<ubaservicev1_SegmentationResponse>;
+  // 点击热力图
+  Click(
+    request: ubaservicev1_ClickRequest,
+  ): Promise<ubaservicev1_ClickResponse>;
 }
 
 export function createAnalyticsServiceClient(
@@ -400,6 +404,14 @@ export function createAnalyticsServiceClient(
         service: 'AnalyticsService',
         method: 'Segmentation',
       }) as Promise<ubaservicev1_SegmentationResponse>;
+    },
+    Click(request) {
+      const path = `admin/v1/analytics/click`;
+      const body = JSON.stringify(request);
+      return transport.unary(path, 'POST', body, {
+        service: 'AnalyticsService',
+        method: 'Click',
+      }) as Promise<ubaservicev1_ClickResponse>;
     },
   };
 }
@@ -732,6 +744,51 @@ export type ubaservicev1_SegmentationResponse = {
   total: number | undefined;
   // 命中的用户 ID 列表
   userIds: number[] | undefined;
+};
+
+// ============== 点击热力图 ==============
+export type ubaservicev1_ClickRequest = {
+  // 应用 ID 过滤（可选）
+  appId?: number;
+  // 网格大小（像素，默认 20）
+  gridSize?: number;
+  // 页面 URL（必填，按页面分组热力图）
+  pageUrl: string | undefined;
+  // 时间范围
+  timeRange: ubaservicev1_TimeRange | undefined;
+};
+
+export type ubaservicev1_ClickResponse = {
+  // 使用的网格大小
+  gridSize: number | undefined;
+  // 热力图网格点列表
+  points: ubaservicev1_ClickHeatPoint[] | undefined;
+  // 元素点击 TOP
+  topElements: ubaservicev1_ClickElementBucket[] | undefined;
+  // 总点击次数
+  totalClicks: number | undefined;
+};
+
+// 热力图网格点
+export type ubaservicev1_ClickHeatPoint = {
+  // 该网格的点击次数
+  count: number | undefined;
+  // 热度（0-1，相对最大点击数的归一化值）
+  intensity: number | undefined;
+  // 网格左上角 X（像素）
+  x: number | undefined;
+  // 网格左上角 Y（像素）
+  y: number | undefined;
+};
+
+// 元素点击 TOP（按 element_xpath 聚合）
+export type ubaservicev1_ClickElementBucket = {
+  // 点击次数
+  count: number | undefined;
+  // 元素 XPath
+  elementXpath: string | undefined;
+  // 占比（0-1）
+  percentage: number | undefined;
 };
 
 // API资源管理服务
@@ -1965,6 +2022,9 @@ export type ubaservicev1_BehaviorEvent = {
   amount: string | undefined;
   appVersion?: string;
   channel?: string;
+  // 点击热力图字段（SDK autotrack 自动填充，仅 click 事件有意义）
+  clickX?: number;
+  clickY?: number;
   // 业务上下文
   context: { [key: string]: string } | undefined;
   country?: string;
@@ -1972,6 +2032,7 @@ export type ubaservicev1_BehaviorEvent = {
   deviceId: string | undefined;
   // 指标：Metrics
   durationMs: number | undefined;
+  elementXpath?: string;
   errorCode: string | undefined;
   eventAction: string | undefined;
   // 行为：What
@@ -1997,6 +2058,7 @@ export type ubaservicev1_BehaviorEvent = {
   // 企业级字段
   opResult?: string;
   os?: string;
+  pageUrl?: string;
   // 环境
   platform?: string;
   // 扩展属性
@@ -2017,6 +2079,7 @@ export type ubaservicev1_BehaviorEvent = {
   userAgent?: string;
   // 主体：Who
   userId: number | undefined;
+  viewportWidth?: number;
 };
 
 // 查询行为事件详情请求

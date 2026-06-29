@@ -68,7 +68,8 @@
     "attribution": "Attribution",
     "distribution": "Distribution",
     "behaviorSequence": "Behavior Sequence",
-    "segmentation": "Segmentation"
+    "segmentation": "Segmentation",
+    "click": "Click Heatmap"
   },
   "opsAnalysis": {
     "moduleName": "Operations",

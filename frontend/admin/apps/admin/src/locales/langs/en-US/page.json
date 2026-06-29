@@ -127,7 +127,17 @@
     "atLeast": "at least",
     "times": "times",
     "matchedUsers": "Matched Users",
-    "index": "Index"
+    "index": "Index",
+    "clickHeatmap": "Click Heatmap",
+    "pageUrl": "Page URL",
+    "pageUrlPlaceholder": "Enter page URL, e.g. https://example.com/home",
+    "gridSize": "Grid Size",
+    "totalClicks": "Total Clicks",
+    "heatmapPoints": "Heatmap Points",
+    "inputPageUrlFirst": "Enter a page URL first to query",
+    "topClickedElements": "Top Clicked Elements",
+    "elementXpath": "Element XPath",
+    "clickCount": "Clicks"
   },
   "eventSchema": {
     "status": "Status",

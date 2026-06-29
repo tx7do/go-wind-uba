@@ -127,7 +127,17 @@
     "atLeast": "至少",
     "times": "次",
     "matchedUsers": "命中用户数",
-    "index": "序号"
+    "index": "序号",
+    "clickHeatmap": "点击热力图",
+    "pageUrl": "页面 URL",
+    "pageUrlPlaceholder": "输入页面 URL，如 https://example.com/home",
+    "gridSize": "网格大小",
+    "totalClicks": "总点击数",
+    "heatmapPoints": "热力网格数",
+    "inputPageUrlFirst": "请先输入页面 URL 再查询",
+    "topClickedElements": "元素点击 TOP",
+    "elementXpath": "元素 XPath",
+    "clickCount": "点击数"
   },
   "eventSchema": {
     "status": "状态",

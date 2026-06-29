@@ -68,7 +68,8 @@
     "attribution": "归因分析",
     "distribution": "分布分析",
     "behaviorSequence": "行为序列",
-    "segmentation": "用户分群"
+    "segmentation": "用户分群",
+    "click": "点击热力图"
   },
   "opsAnalysis": {
     "moduleName": "运营分析",

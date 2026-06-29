@@ -169,6 +169,17 @@ const dataAnalysis: RouteRecordRaw[] = [
         component: () =>
           import('#/views/app/data-analysis/segmentation/index.vue'),
       },
+      {
+        path: 'click',
+        name: 'ClickHeatmap',
+        meta: {
+          order: 14,
+          icon: 'lucide:mouse-pointer-click',
+          title: $t('menu.dataAnalysis.click'),
+          authority: ['sys:platform_admin'],
+        },
+        component: () => import('#/views/app/data-analysis/click/index.vue'),
+      },
     ],
   },
 ];
