@@ -249,6 +249,39 @@ func (s *redactedAnalyticsServiceServer) PathSankey(ctx context.Context, in *Pat
 	return res, err
 }
 
+// LevelAnalysis is the redacted wrapper for the actual AnalyticsServiceServer.LevelAnalysis method
+// Unary RPC
+func (s *redactedAnalyticsServiceServer) LevelAnalysis(ctx context.Context, in *LevelAnalysisRequest) (*LevelAnalysisResponse, error) {
+	res, err := s.srv.LevelAnalysis(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
+// WhaleTier is the redacted wrapper for the actual AnalyticsServiceServer.WhaleTier method
+// Unary RPC
+func (s *redactedAnalyticsServiceServer) WhaleTier(ctx context.Context, in *WhaleTierRequest) (*WhaleTierResponse, error) {
+	res, err := s.srv.WhaleTier(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
+// LTV is the redacted wrapper for the actual AnalyticsServiceServer.LTV method
+// Unary RPC
+func (s *redactedAnalyticsServiceServer) LTV(ctx context.Context, in *LTVRequest) (*LTVResponse, error) {
+	res, err := s.srv.LTV(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
 // Redact method implementation for TimeRange
 func (x *TimeRange) Redact() string {
 	if x == nil {
@@ -1182,5 +1215,147 @@ func (x *PathSankeyResponse) Redact() string {
 	}
 
 	// Safe field: Paths
+	return x.String()
+}
+
+// Redact method implementation for LevelAnalysisRequest
+func (x *LevelAnalysisRequest) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: TimeRange
+
+	// Safe field: AppId
+
+	// Safe field: LevelId
+	return x.String()
+}
+
+// Redact method implementation for LevelStat
+func (x *LevelStat) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: LevelId
+
+	// Safe field: LevelName
+
+	// Safe field: AttemptCount
+
+	// Safe field: FinishCount
+
+	// Safe field: FailCount
+
+	// Safe field: PassRate
+
+	// Safe field: StuckRate
+
+	// Safe field: AvgScore
+
+	// Safe field: Star3Rate
+
+	// Safe field: PlayerCount
+	return x.String()
+}
+
+// Redact method implementation for LevelAnalysisResponse
+func (x *LevelAnalysisResponse) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Levels
+	return x.String()
+}
+
+// Redact method implementation for WhaleTierRequest
+func (x *WhaleTierRequest) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: AppId
+	return x.String()
+}
+
+// Redact method implementation for PayTierSegment
+func (x *PayTierSegment) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Tier
+
+	// Safe field: TierLabel
+
+	// Safe field: UserCount
+
+	// Safe field: Percentage
+
+	// Safe field: TotalAmount
+
+	// Safe field: RevenueShare
+
+	// Safe field: Arppu
+	return x.String()
+}
+
+// Redact method implementation for WhaleTierResponse
+func (x *WhaleTierResponse) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Segments
+
+	// Safe field: TotalUsers
+
+	// Safe field: TotalRevenue
+	return x.String()
+}
+
+// Redact method implementation for LTVRequest
+func (x *LTVRequest) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: TimeRange
+
+	// Safe field: AppId
+
+	// Safe field: Dimension
+	return x.String()
+}
+
+// Redact method implementation for LTVPoint
+func (x *LTVPoint) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Label
+
+	// Safe field: DayN
+
+	// Safe field: Ltv
+
+	// Safe field: CohortSize
+
+	// Safe field: TotalAmount
+	return x.String()
+}
+
+// Redact method implementation for LTVResponse
+func (x *LTVResponse) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Points
+
+	// Safe field: MaxDays
 	return x.String()
 }

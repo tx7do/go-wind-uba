@@ -7957,3 +7957,1135 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = PathSankeyResponseValidationError{}
+
+// Validate checks the field values on LevelAnalysisRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *LevelAnalysisRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on LevelAnalysisRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// LevelAnalysisRequestMultiError, or nil if none found.
+func (m *LevelAnalysisRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *LevelAnalysisRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if all {
+		switch v := interface{}(m.GetTimeRange()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, LevelAnalysisRequestValidationError{
+					field:  "TimeRange",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, LevelAnalysisRequestValidationError{
+					field:  "TimeRange",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetTimeRange()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return LevelAnalysisRequestValidationError{
+				field:  "TimeRange",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if m.AppId != nil {
+		// no validation rules for AppId
+	}
+
+	if m.LevelId != nil {
+		// no validation rules for LevelId
+	}
+
+	if len(errors) > 0 {
+		return LevelAnalysisRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// LevelAnalysisRequestMultiError is an error wrapping multiple validation
+// errors returned by LevelAnalysisRequest.ValidateAll() if the designated
+// constraints aren't met.
+type LevelAnalysisRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m LevelAnalysisRequestMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m LevelAnalysisRequestMultiError) AllErrors() []error { return m }
+
+// LevelAnalysisRequestValidationError is the validation error returned by
+// LevelAnalysisRequest.Validate if the designated constraints aren't met.
+type LevelAnalysisRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e LevelAnalysisRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e LevelAnalysisRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e LevelAnalysisRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e LevelAnalysisRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e LevelAnalysisRequestValidationError) ErrorName() string {
+	return "LevelAnalysisRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e LevelAnalysisRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sLevelAnalysisRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = LevelAnalysisRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = LevelAnalysisRequestValidationError{}
+
+// Validate checks the field values on LevelStat with the rules defined in the
+// proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *LevelStat) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on LevelStat with the rules defined in
+// the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in LevelStatMultiError, or nil
+// if none found.
+func (m *LevelStat) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *LevelStat) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for LevelId
+
+	// no validation rules for LevelName
+
+	// no validation rules for AttemptCount
+
+	// no validation rules for FinishCount
+
+	// no validation rules for FailCount
+
+	// no validation rules for PassRate
+
+	// no validation rules for StuckRate
+
+	// no validation rules for AvgScore
+
+	// no validation rules for Star3Rate
+
+	// no validation rules for PlayerCount
+
+	if len(errors) > 0 {
+		return LevelStatMultiError(errors)
+	}
+
+	return nil
+}
+
+// LevelStatMultiError is an error wrapping multiple validation errors returned
+// by LevelStat.ValidateAll() if the designated constraints aren't met.
+type LevelStatMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m LevelStatMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m LevelStatMultiError) AllErrors() []error { return m }
+
+// LevelStatValidationError is the validation error returned by
+// LevelStat.Validate if the designated constraints aren't met.
+type LevelStatValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e LevelStatValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e LevelStatValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e LevelStatValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e LevelStatValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e LevelStatValidationError) ErrorName() string { return "LevelStatValidationError" }
+
+// Error satisfies the builtin error interface
+func (e LevelStatValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sLevelStat.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = LevelStatValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = LevelStatValidationError{}
+
+// Validate checks the field values on LevelAnalysisResponse with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *LevelAnalysisResponse) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on LevelAnalysisResponse with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// LevelAnalysisResponseMultiError, or nil if none found.
+func (m *LevelAnalysisResponse) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *LevelAnalysisResponse) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	for idx, item := range m.GetLevels() {
+		_, _ = idx, item
+
+		if all {
+			switch v := interface{}(item).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, LevelAnalysisResponseValidationError{
+						field:  fmt.Sprintf("Levels[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, LevelAnalysisResponseValidationError{
+						field:  fmt.Sprintf("Levels[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(item).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return LevelAnalysisResponseValidationError{
+					field:  fmt.Sprintf("Levels[%v]", idx),
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
+	if len(errors) > 0 {
+		return LevelAnalysisResponseMultiError(errors)
+	}
+
+	return nil
+}
+
+// LevelAnalysisResponseMultiError is an error wrapping multiple validation
+// errors returned by LevelAnalysisResponse.ValidateAll() if the designated
+// constraints aren't met.
+type LevelAnalysisResponseMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m LevelAnalysisResponseMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m LevelAnalysisResponseMultiError) AllErrors() []error { return m }
+
+// LevelAnalysisResponseValidationError is the validation error returned by
+// LevelAnalysisResponse.Validate if the designated constraints aren't met.
+type LevelAnalysisResponseValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e LevelAnalysisResponseValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e LevelAnalysisResponseValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e LevelAnalysisResponseValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e LevelAnalysisResponseValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e LevelAnalysisResponseValidationError) ErrorName() string {
+	return "LevelAnalysisResponseValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e LevelAnalysisResponseValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sLevelAnalysisResponse.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = LevelAnalysisResponseValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = LevelAnalysisResponseValidationError{}
+
+// Validate checks the field values on WhaleTierRequest with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// first error encountered is returned, or nil if there are no violations.
+func (m *WhaleTierRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on WhaleTierRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// WhaleTierRequestMultiError, or nil if none found.
+func (m *WhaleTierRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *WhaleTierRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if m.AppId != nil {
+		// no validation rules for AppId
+	}
+
+	if len(errors) > 0 {
+		return WhaleTierRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// WhaleTierRequestMultiError is an error wrapping multiple validation errors
+// returned by WhaleTierRequest.ValidateAll() if the designated constraints
+// aren't met.
+type WhaleTierRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m WhaleTierRequestMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m WhaleTierRequestMultiError) AllErrors() []error { return m }
+
+// WhaleTierRequestValidationError is the validation error returned by
+// WhaleTierRequest.Validate if the designated constraints aren't met.
+type WhaleTierRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e WhaleTierRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e WhaleTierRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e WhaleTierRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e WhaleTierRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e WhaleTierRequestValidationError) ErrorName() string { return "WhaleTierRequestValidationError" }
+
+// Error satisfies the builtin error interface
+func (e WhaleTierRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sWhaleTierRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = WhaleTierRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = WhaleTierRequestValidationError{}
+
+// Validate checks the field values on PayTierSegment with the rules defined in
+// the proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *PayTierSegment) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on PayTierSegment with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in PayTierSegmentMultiError,
+// or nil if none found.
+func (m *PayTierSegment) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *PayTierSegment) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Tier
+
+	// no validation rules for TierLabel
+
+	// no validation rules for UserCount
+
+	// no validation rules for Percentage
+
+	// no validation rules for TotalAmount
+
+	// no validation rules for RevenueShare
+
+	// no validation rules for Arppu
+
+	if len(errors) > 0 {
+		return PayTierSegmentMultiError(errors)
+	}
+
+	return nil
+}
+
+// PayTierSegmentMultiError is an error wrapping multiple validation errors
+// returned by PayTierSegment.ValidateAll() if the designated constraints
+// aren't met.
+type PayTierSegmentMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m PayTierSegmentMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m PayTierSegmentMultiError) AllErrors() []error { return m }
+
+// PayTierSegmentValidationError is the validation error returned by
+// PayTierSegment.Validate if the designated constraints aren't met.
+type PayTierSegmentValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e PayTierSegmentValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e PayTierSegmentValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e PayTierSegmentValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e PayTierSegmentValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e PayTierSegmentValidationError) ErrorName() string { return "PayTierSegmentValidationError" }
+
+// Error satisfies the builtin error interface
+func (e PayTierSegmentValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sPayTierSegment.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = PayTierSegmentValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = PayTierSegmentValidationError{}
+
+// Validate checks the field values on WhaleTierResponse with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// first error encountered is returned, or nil if there are no violations.
+func (m *WhaleTierResponse) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on WhaleTierResponse with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// WhaleTierResponseMultiError, or nil if none found.
+func (m *WhaleTierResponse) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *WhaleTierResponse) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	for idx, item := range m.GetSegments() {
+		_, _ = idx, item
+
+		if all {
+			switch v := interface{}(item).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, WhaleTierResponseValidationError{
+						field:  fmt.Sprintf("Segments[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, WhaleTierResponseValidationError{
+						field:  fmt.Sprintf("Segments[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(item).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return WhaleTierResponseValidationError{
+					field:  fmt.Sprintf("Segments[%v]", idx),
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
+	// no validation rules for TotalUsers
+
+	// no validation rules for TotalRevenue
+
+	if len(errors) > 0 {
+		return WhaleTierResponseMultiError(errors)
+	}
+
+	return nil
+}
+
+// WhaleTierResponseMultiError is an error wrapping multiple validation errors
+// returned by WhaleTierResponse.ValidateAll() if the designated constraints
+// aren't met.
+type WhaleTierResponseMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m WhaleTierResponseMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m WhaleTierResponseMultiError) AllErrors() []error { return m }
+
+// WhaleTierResponseValidationError is the validation error returned by
+// WhaleTierResponse.Validate if the designated constraints aren't met.
+type WhaleTierResponseValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e WhaleTierResponseValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e WhaleTierResponseValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e WhaleTierResponseValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e WhaleTierResponseValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e WhaleTierResponseValidationError) ErrorName() string {
+	return "WhaleTierResponseValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e WhaleTierResponseValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sWhaleTierResponse.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = WhaleTierResponseValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = WhaleTierResponseValidationError{}
+
+// Validate checks the field values on LTVRequest with the rules defined in the
+// proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *LTVRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on LTVRequest with the rules defined in
+// the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in LTVRequestMultiError, or
+// nil if none found.
+func (m *LTVRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *LTVRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if all {
+		switch v := interface{}(m.GetTimeRange()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, LTVRequestValidationError{
+					field:  "TimeRange",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, LTVRequestValidationError{
+					field:  "TimeRange",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetTimeRange()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return LTVRequestValidationError{
+				field:  "TimeRange",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if m.AppId != nil {
+		// no validation rules for AppId
+	}
+
+	if m.Dimension != nil {
+		// no validation rules for Dimension
+	}
+
+	if len(errors) > 0 {
+		return LTVRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// LTVRequestMultiError is an error wrapping multiple validation errors
+// returned by LTVRequest.ValidateAll() if the designated constraints aren't met.
+type LTVRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m LTVRequestMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m LTVRequestMultiError) AllErrors() []error { return m }
+
+// LTVRequestValidationError is the validation error returned by
+// LTVRequest.Validate if the designated constraints aren't met.
+type LTVRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e LTVRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e LTVRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e LTVRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e LTVRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e LTVRequestValidationError) ErrorName() string { return "LTVRequestValidationError" }
+
+// Error satisfies the builtin error interface
+func (e LTVRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sLTVRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = LTVRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = LTVRequestValidationError{}
+
+// Validate checks the field values on LTVPoint with the rules defined in the
+// proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *LTVPoint) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on LTVPoint with the rules defined in
+// the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in LTVPointMultiError, or nil
+// if none found.
+func (m *LTVPoint) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *LTVPoint) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Label
+
+	// no validation rules for DayN
+
+	// no validation rules for Ltv
+
+	// no validation rules for CohortSize
+
+	// no validation rules for TotalAmount
+
+	if len(errors) > 0 {
+		return LTVPointMultiError(errors)
+	}
+
+	return nil
+}
+
+// LTVPointMultiError is an error wrapping multiple validation errors returned
+// by LTVPoint.ValidateAll() if the designated constraints aren't met.
+type LTVPointMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m LTVPointMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m LTVPointMultiError) AllErrors() []error { return m }
+
+// LTVPointValidationError is the validation error returned by
+// LTVPoint.Validate if the designated constraints aren't met.
+type LTVPointValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e LTVPointValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e LTVPointValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e LTVPointValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e LTVPointValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e LTVPointValidationError) ErrorName() string { return "LTVPointValidationError" }
+
+// Error satisfies the builtin error interface
+func (e LTVPointValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sLTVPoint.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = LTVPointValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = LTVPointValidationError{}
+
+// Validate checks the field values on LTVResponse with the rules defined in
+// the proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *LTVResponse) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on LTVResponse with the rules defined in
+// the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in LTVResponseMultiError, or
+// nil if none found.
+func (m *LTVResponse) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *LTVResponse) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	for idx, item := range m.GetPoints() {
+		_, _ = idx, item
+
+		if all {
+			switch v := interface{}(item).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, LTVResponseValidationError{
+						field:  fmt.Sprintf("Points[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, LTVResponseValidationError{
+						field:  fmt.Sprintf("Points[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(item).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return LTVResponseValidationError{
+					field:  fmt.Sprintf("Points[%v]", idx),
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
+	// no validation rules for MaxDays
+
+	if len(errors) > 0 {
+		return LTVResponseMultiError(errors)
+	}
+
+	return nil
+}
+
+// LTVResponseMultiError is an error wrapping multiple validation errors
+// returned by LTVResponse.ValidateAll() if the designated constraints aren't met.
+type LTVResponseMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m LTVResponseMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m LTVResponseMultiError) AllErrors() []error { return m }
+
+// LTVResponseValidationError is the validation error returned by
+// LTVResponse.Validate if the designated constraints aren't met.
+type LTVResponseValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e LTVResponseValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e LTVResponseValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e LTVResponseValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e LTVResponseValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e LTVResponseValidationError) ErrorName() string { return "LTVResponseValidationError" }
+
+// Error satisfies the builtin error interface
+func (e LTVResponseValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sLTVResponse.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = LTVResponseValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = LTVResponseValidationError{}

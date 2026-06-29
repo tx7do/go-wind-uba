@@ -63,6 +63,15 @@ service AnalyticsService {
 
   // 热门转化路径（群体路径 TOP + 转化率）
   rpc PathSankey(PathSankeyRequest) returns (PathSankeyResponse) {}
+
+  // 关卡/数值平衡分析（通过率/失败率/卡关率/分数分布）
+  rpc LevelAnalysis(LevelAnalysisRequest) returns (LevelAnalysisResponse) {}
+
+  // 鲸鱼用户/付费分层（按累计充值自动分层）
+  rpc WhaleTier(WhaleTierRequest) returns (WhaleTierResponse) {}
+
+  // 历史生命周期价值 LTV（用户在第 N 天的累计付费价值）
+  rpc LTV(LTVRequest) returns (LTVResponse) {}
 }
 
 // 时间粒度
@@ -752,4 +761,107 @@ message PathBucket {
 message PathSankeyResponse {
   // 热门路径列表（按 support_count 降序）
   repeated PathBucket paths = 1 [json_name = "paths"];
+}
+
+// ============== 关卡/数值平衡分析 ==============
+message LevelAnalysisRequest {
+  // 时间范围
+  TimeRange time_range = 1 [json_name = "timeRange"];
+  // 应用 ID 过滤（可选）
+  optional uint32 app_id = 2 [json_name = "appId"];
+  // 指定关卡 ID（可选，空表示全部关卡）
+  optional string level_id = 3 [json_name = "levelId"];
+}
+
+// 单关分析结果
+message LevelStat {
+  // 关卡 ID
+  string level_id = 1 [json_name = "levelId"];
+  // 关卡名
+  string level_name = 2 [json_name = "levelName"];
+  // 尝试次数（level_start）
+  int64 attempt_count = 3 [json_name = "attemptCount"];
+  // 完成次数（level_finish）
+  int64 finish_count = 4 [json_name = "finishCount"];
+  // 失败次数（level_fail）
+  int64 fail_count = 5 [json_name = "failCount"];
+  // 通过率（0-1，finish / (finish+fail)）
+  double pass_rate = 6 [json_name = "passRate"];
+  // 卡关率（0-1，1 - passRate，值越高说明越难/流失点）
+  double stuck_rate = 7 [json_name = "stuckRate"];
+  // 平均分
+  double avg_score = 8 [json_name = "avgScore"];
+  // 满星率（0-1，context['stars']==3 占比）
+  double star3_rate = 9 [json_name = "star3Rate"];
+  // 挑战该关卡的玩家数（去重）
+  int64 player_count = 10 [json_name = "playerCount"];
+}
+
+message LevelAnalysisResponse {
+  // 各关卡统计（按 player_count 降序）
+  repeated LevelStat levels = 1 [json_name = "levels"];
+}
+
+// ============== 鲸鱼用户/付费分层 ==============
+message WhaleTierRequest {
+  // 应用 ID 过滤（可选）
+  optional uint32 app_id = 1 [json_name = "appId"];
+}
+
+// 付费分层
+message PayTierSegment {
+  // 分层标识：whale 大课长 / dolphin 中课长 / minnow 小课长 / non_pay 免费
+  string tier = 1 [json_name = "tier"];
+  // 分层中文名
+  string tier_label = 2 [json_name = "tierLabel"];
+  // 该层用户数
+  int64 user_count = 3 [json_name = "userCount"];
+  // 占比（0-1）
+  double percentage = 4 [json_name = "percentage"];
+  // 该层累计充值总额
+  double total_amount = 5 [json_name = "totalAmount"];
+  // 该层收入贡献占比（0-1）
+  double revenue_share = 6 [json_name = "revenueShare"];
+  // 该层 ARPPU
+  double arppu = 7 [json_name = "arppu"];
+}
+
+message WhaleTierResponse {
+  // 各付费分层
+  repeated PayTierSegment segments = 1 [json_name = "segments"];
+  // 总用户数
+  int64 total_users = 2 [json_name = "totalUsers"];
+  // 总流水
+  double total_revenue = 3 [json_name = "totalRevenue"];
+}
+
+// ============== 历史生命周期价值 LTV ==============
+message LTVRequest {
+  // 注册时间范围（按 register_time 过滤同期群）
+  TimeRange time_range = 1 [json_name = "timeRange"];
+  // 应用 ID 过滤（可选）
+  optional uint32 app_id = 2 [json_name = "appId"];
+  // 归因维度（可选，按渠道分组 LTV）：channel（默认，配合归因模型）
+  optional string dimension = 3 [json_name = "dimension"];
+}
+
+// 单个 LTV 数据点（某天/某维度的累计付费价值）
+message LTVPoint {
+  // 维度值（如渠道名，未分组时为空）
+  string label = 1 [json_name = "label"];
+  // 注册后第 N 天（0=注册当天）
+  uint32 day_n = 2 [json_name = "dayN"];
+  // 该同期群累计人均付费（LTV）
+  double ltv = 3 [json_name = "ltv"];
+  // 该同期群人数
+  int64 cohort_size = 4 [json_name = "cohortSize"];
+  // 累计付费总额
+  double total_amount = 5 [json_name = "totalAmount"];
+}
+
+message LTVResponse {
+  // LTV 曲线数据点（按 day_n 升序，同维度聚合）
+  repeated LTVPoint points = 1 [json_name = "points"];
+  // 观察的最大天数
+  uint32 max_days = 2 [json_name = "maxDays"];
 }

@@ -216,6 +216,25 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/IntervalResponse'
+    /admin/v1/analytics/level-analysis:
+        post:
+            tags:
+                - AnalyticsService
+            description: 关卡/数值平衡分析
+            operationId: AnalyticsService_LevelAnalysis
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/LevelAnalysisRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/LevelAnalysisResponse'
     /admin/v1/analytics/lifecycle:
         post:
             tags:
@@ -235,6 +254,25 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/LifecycleResponse'
+    /admin/v1/analytics/ltv:
+        post:
+            tags:
+                - AnalyticsService
+            description: 历史生命周期价值 LTV
+            operationId: AnalyticsService_LTV
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/LTVRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/LTVResponse'
     /admin/v1/analytics/matrix:
         post:
             tags:
@@ -368,6 +406,25 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/SessionAnalysisResponse'
+    /admin/v1/analytics/whale-tier:
+        post:
+            tags:
+                - AnalyticsService
+            description: 鲸鱼用户/付费分层
+            operationId: AnalyticsService_WhaleTier
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/WhaleTierRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/WhaleTierResponse'
     /admin/v1/api-audit-logs:
         get:
             tags:
@@ -8881,6 +8938,55 @@ components:
                     type: object
                     description: 元数据
             description: Kratos错误返回
+        LTVPoint:
+            type: object
+            properties:
+                label:
+                    type: string
+                    description: 维度值（如渠道名，未分组时为空）
+                dayN:
+                    type: integer
+                    description: 注册后第 N 天（0=注册当天）
+                    format: uint32
+                ltv:
+                    type: number
+                    description: 该同期群累计人均付费（LTV）
+                    format: double
+                cohortSize:
+                    type: string
+                    description: 该同期群人数
+                totalAmount:
+                    type: number
+                    description: 累计付费总额
+                    format: double
+            description: 单个 LTV 数据点（某天/某维度的累计付费价值）
+        LTVRequest:
+            type: object
+            properties:
+                timeRange:
+                    allOf:
+                        - $ref: '#/components/schemas/TimeRange'
+                    description: 注册时间范围（按 register_time 过滤同期群）
+                appId:
+                    type: integer
+                    description: 应用 ID 过滤（可选）
+                    format: uint32
+                dimension:
+                    type: string
+                    description: 归因维度（可选，按渠道分组 LTV）：channel（默认，配合归因模型）
+            description: ============== 历史生命周期价值 LTV ==============
+        LTVResponse:
+            type: object
+            properties:
+                points:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/LTVPoint'
+                    description: LTV 曲线数据点（按 day_n 升序，同维度聚合）
+                maxDays:
+                    type: integer
+                    description: 观察的最大天数
+                    format: uint32
         Language:
             type: object
             properties:
@@ -8932,6 +9038,67 @@ components:
                     description: 删除时间
                     format: date-time
             description: 语言
+        LevelAnalysisRequest:
+            type: object
+            properties:
+                timeRange:
+                    allOf:
+                        - $ref: '#/components/schemas/TimeRange'
+                    description: 时间范围
+                appId:
+                    type: integer
+                    description: 应用 ID 过滤（可选）
+                    format: uint32
+                levelId:
+                    type: string
+                    description: 指定关卡 ID（可选，空表示全部关卡）
+            description: ============== 关卡/数值平衡分析 ==============
+        LevelAnalysisResponse:
+            type: object
+            properties:
+                levels:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/LevelStat'
+                    description: 各关卡统计（按 player_count 降序）
+        LevelStat:
+            type: object
+            properties:
+                levelId:
+                    type: string
+                    description: 关卡 ID
+                levelName:
+                    type: string
+                    description: 关卡名
+                attemptCount:
+                    type: string
+                    description: 尝试次数（level_start）
+                finishCount:
+                    type: string
+                    description: 完成次数（level_finish）
+                failCount:
+                    type: string
+                    description: 失败次数（level_fail）
+                passRate:
+                    type: number
+                    description: 通过率（0-1，finish / (finish+fail)）
+                    format: double
+                stuckRate:
+                    type: number
+                    description: 卡关率（0-1，1 - passRate，值越高说明越难/流失点）
+                    format: double
+                avgScore:
+                    type: number
+                    description: 平均分
+                    format: double
+                star3Rate:
+                    type: number
+                    description: 满星率（0-1，context['stars']==3 占比）
+                    format: double
+                playerCount:
+                    type: string
+                    description: 挑战该关卡的玩家数（去重）
+            description: 单关分析结果
         LifecycleRequest:
             type: object
             properties:
@@ -10322,6 +10489,35 @@ components:
                     items:
                         $ref: '#/components/schemas/PathBucket'
                     description: 热门路径列表（按 support_count 降序）
+        PayTierSegment:
+            type: object
+            properties:
+                tier:
+                    type: string
+                    description: 分层标识：whale 大课长 / dolphin 中课长 / minnow 小课长 / non_pay 免费
+                tierLabel:
+                    type: string
+                    description: 分层中文名
+                userCount:
+                    type: string
+                    description: 该层用户数
+                percentage:
+                    type: number
+                    description: 占比（0-1）
+                    format: double
+                totalAmount:
+                    type: number
+                    description: 该层累计充值总额
+                    format: double
+                revenueShare:
+                    type: number
+                    description: 该层收入贡献占比（0-1）
+                    format: double
+                arppu:
+                    type: number
+                    description: 该层 ARPPU
+                    format: double
+            description: 付费分层
         Permission:
             type: object
             properties:
@@ -12678,6 +12874,29 @@ components:
                         type: string
                     description: 事件属性过滤，键值对
             description: 网络钩子过滤器
+        WhaleTierRequest:
+            type: object
+            properties:
+                appId:
+                    type: integer
+                    description: 应用 ID 过滤（可选）
+                    format: uint32
+            description: ============== 鲸鱼用户/付费分层 ==============
+        WhaleTierResponse:
+            type: object
+            properties:
+                segments:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/PayTierSegment'
+                    description: 各付费分层
+                totalUsers:
+                    type: string
+                    description: 总用户数
+                totalRevenue:
+                    type: number
+                    description: 总流水
+                    format: double
     responses:
         default:
             description: default kratos response

@@ -248,3 +248,36 @@ func (s *redactedAnalyticsServiceServer) PathSankey(ctx context.Context, in *uba
 	}
 	return res, err
 }
+
+// LevelAnalysis is the redacted wrapper for the actual AnalyticsServiceServer.LevelAnalysis method
+// Unary RPC
+func (s *redactedAnalyticsServiceServer) LevelAnalysis(ctx context.Context, in *ubapb.LevelAnalysisRequest) (*ubapb.LevelAnalysisResponse, error) {
+	res, err := s.srv.LevelAnalysis(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
+// WhaleTier is the redacted wrapper for the actual AnalyticsServiceServer.WhaleTier method
+// Unary RPC
+func (s *redactedAnalyticsServiceServer) WhaleTier(ctx context.Context, in *ubapb.WhaleTierRequest) (*ubapb.WhaleTierResponse, error) {
+	res, err := s.srv.WhaleTier(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
+// LTV is the redacted wrapper for the actual AnalyticsServiceServer.LTV method
+// Unary RPC
+func (s *redactedAnalyticsServiceServer) LTV(ctx context.Context, in *ubapb.LTVRequest) (*ubapb.LTVResponse, error) {
+	res, err := s.srv.LTV(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}

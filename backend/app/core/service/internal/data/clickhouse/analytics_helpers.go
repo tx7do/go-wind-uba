@@ -39,9 +39,17 @@ func allowedDimension(dim string) (string, bool) {
 		"event_category": "event_category",
 		"os":             "os",
 		"network":        "network",
+		// 游戏维度：events_fact 无此列，需 JOIN users_dim（见 GroupBy 的 joinUsersDim）。
+		"user_level": "user_level",
+		"vip_level":  "vip_level",
 	}
 	v, ok := m[dim]
 	return v, ok
+}
+
+// joinUsersDim 返回该维度是否需要 JOIN users_dim（user_level/vip_level 在维度表，非事实表）。
+func joinUsersDim(dim string) bool {
+	return dim == "user_level" || dim == "vip_level"
 }
 
 func metricExpr(metric string) (string, error) {

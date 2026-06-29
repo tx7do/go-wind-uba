@@ -221,9 +221,17 @@ func (r *AnalyticsRepo) GroupBy(ctx context.Context, req *ubaV1.GroupByRequest) 
 		return nil, ubaV1.ErrorBadRequest(err.Error())
 	}
 
+	// user_level/vip_level 在 users_dim，非 events_fact：需 JOIN。
+	joinClause := ""
+	dimCol := col
+	if joinUsersDim(req.GetDimension()) {
+		joinClause = " INNER JOIN users_dim u ON u.tenant_id = events_fact.tenant_id AND u.user_id = events_fact.user_id"
+		dimCol = "u." + col
+	}
+
 	q := fmt.Sprintf(
-		"SELECT %s AS label, %s AS value FROM events_fact WHERE event_time >= ? AND event_time < ?",
-		col, metric,
+		"SELECT %s AS label, %s AS value FROM events_fact %s WHERE event_time >= ? AND event_time < ?",
+		dimCol, metric, joinClause,
 	)
 	args := []any{time.UnixMilli(startMs), time.UnixMilli(endMs)}
 	if v := req.GetEventName(); v != "" {
@@ -231,7 +239,7 @@ func (r *AnalyticsRepo) GroupBy(ctx context.Context, req *ubaV1.GroupByRequest) 
 		args = append(args, v)
 	}
 	if v := req.GetAppId(); v != 0 {
-		q += " AND tenant_id = ?"
+		q += " AND events_fact.tenant_id = ?"
 		args = append(args, v)
 	}
 	q += fmt.Sprintf(" GROUP BY label ORDER BY value DESC LIMIT %d", topN)
@@ -1512,4 +1520,254 @@ LIMIT ?`, tenantCond)
 		})
 	}
 	return &ubaV1.PathSankeyResponse{Paths: paths}, nil
+}
+
+// ============================================================================
+// 关卡/数值平衡分析（通过率/失败率/卡关率/分数分布/满星率）
+// ClickHouse 数据源：events_fact（object_type='level'）。
+// ============================================================================
+
+func (r *AnalyticsRepo) LevelAnalysis(ctx context.Context, req *ubaV1.LevelAnalysisRequest) (*ubaV1.LevelAnalysisResponse, error) {
+	startMs, endMs := normTimeRange(req.GetTimeRange())
+
+	var whereParts []string
+	var args []any
+	if v := req.GetAppId(); v != 0 {
+		whereParts = append(whereParts, "tenant_id = ?")
+		args = append(args, v)
+	}
+	whereParts = append(whereParts, "object_type = 'level'")
+	if lid := req.GetLevelId(); lid != "" {
+		whereParts = append(whereParts, "object_id = ?")
+		args = append(args, lid)
+	}
+	args = append(args, time.UnixMilli(startMs), time.UnixMilli(endMs))
+	whereCond := strings.Join(whereParts, " AND ") + " AND "
+
+	// CH 取 context map 用 context['stars']，metrics 用 metrics['score']。
+	q := fmt.Sprintf(`
+SELECT
+  object_id AS level_id,
+  any(object_name) AS level_name,
+  countIf(event_name = 'level_start') AS attempt_count,
+  countIf(event_name = 'level_finish') AS finish_count,
+  countIf(event_name = 'level_fail') AS fail_count,
+  round(avgIf(metrics['score'], event_name = 'level_finish'), 1) AS avg_score,
+  countIf(event_name = 'level_finish' AND context['stars'] = '3') AS star3_count,
+  count(DISTINCT user_id) AS player_count
+FROM events_fact
+WHERE %sevent_time >= ? AND event_time < ?
+GROUP BY object_id
+ORDER BY player_count DESC
+LIMIT 100`, whereCond)
+
+	type row struct {
+		LevelId     string  `db:"level_id" ch:"level_id"`
+		LevelName   string  `db:"level_name" ch:"level_name"`
+		AttemptCnt  int64   `db:"attempt_count" ch:"attempt_count"`
+		FinishCnt   int64   `db:"finish_count" ch:"finish_count"`
+		FailCnt     int64   `db:"fail_count" ch:"fail_count"`
+		AvgScore    float64 `db:"avg_score" ch:"avg_score"`
+		Star3Count  int64   `db:"star3_count" ch:"star3_count"`
+		PlayerCount int64   `db:"player_count" ch:"player_count"`
+	}
+	var rows []row
+	if err := r.db.Select(ctx, &rows, q, args...); err != nil {
+		r.log.Errorf("LevelAnalysis query failed: %v", err)
+		return nil, ubaV1.ErrorInternalServerError("level analysis query failed")
+	}
+	levels := make([]*ubaV1.LevelStat, 0, len(rows))
+	for _, rw := range rows {
+		var passRate, star3Rate float64
+		total := rw.FinishCnt + rw.FailCnt
+		if total > 0 {
+			passRate = float64(rw.FinishCnt) / float64(total)
+		}
+		if rw.FinishCnt > 0 {
+			star3Rate = float64(rw.Star3Count) / float64(rw.FinishCnt)
+		}
+		levels = append(levels, &ubaV1.LevelStat{
+			LevelId: rw.LevelId, LevelName: rw.LevelName,
+			AttemptCount: rw.AttemptCnt, FinishCount: rw.FinishCnt, FailCount: rw.FailCnt,
+			PassRate: passRate, StuckRate: 1 - passRate, AvgScore: rw.AvgScore,
+			Star3Rate: star3Rate, PlayerCount: rw.PlayerCount,
+		})
+	}
+	return &ubaV1.LevelAnalysisResponse{Levels: levels}, nil
+}
+
+// ============================================================================
+// 鲸鱼用户/付费分层（按累计充值自动分层）
+// ClickHouse 数据源：users_dim（total_pay_amount）。
+// ============================================================================
+
+func (r *AnalyticsRepo) WhaleTier(ctx context.Context, req *ubaV1.WhaleTierRequest) (*ubaV1.WhaleTierResponse, error) {
+	tenantCond := ""
+	args := []any{}
+	if v := req.GetAppId(); v != 0 {
+		tenantCond = "tenant_id = ? AND "
+		args = append(args, v)
+	}
+
+	q := fmt.Sprintf(`
+SELECT
+  multiIf(
+    total_pay_amount >= 10000, 'whale',
+    total_pay_amount >= 1000, 'dolphin',
+    total_pay_amount > 0, 'minnow',
+    'non_pay'
+  ) AS tier,
+  count() AS user_count,
+  round(sum(toFloat64OrZero(toString(total_pay_amount))), 2) AS total_amount
+FROM users_dim
+WHERE %suser_id IS NOT NULL
+GROUP BY tier`, tenantCond)
+
+	type row struct {
+		Tier        string  `db:"tier" ch:"tier"`
+		UserCount   int64   `db:"user_count" ch:"user_count"`
+		TotalAmount float64 `db:"total_amount" ch:"total_amount"`
+	}
+	var rows []row
+	if err := r.db.Select(ctx, &rows, q, args...); err != nil {
+		r.log.Errorf("WhaleTier query failed: %v", err)
+		return nil, ubaV1.ErrorInternalServerError("whale tier query failed")
+	}
+	labels := map[string]string{
+		"whale": "大课长", "dolphin": "中课长", "minnow": "小课长", "non_pay": "免费玩家",
+	}
+	var totalUsers int64
+	var totalRevenue float64
+	tierMap := map[string]*row{}
+	for i := range rows {
+		totalUsers += rows[i].UserCount
+		totalRevenue += rows[i].TotalAmount
+		tierMap[rows[i].Tier] = &rows[i]
+	}
+	order := []string{"whale", "dolphin", "minnow", "non_pay"}
+	segments := make([]*ubaV1.PayTierSegment, 0, len(order))
+	for _, t := range order {
+		rw, ok := tierMap[t]
+		if !ok {
+			continue
+		}
+		var pct, revShare, arppu float64
+		if totalUsers > 0 {
+			pct = float64(rw.UserCount) / float64(totalUsers)
+		}
+		if totalRevenue > 0 {
+			revShare = rw.TotalAmount / totalRevenue
+		}
+		if rw.UserCount > 0 {
+			arppu = rw.TotalAmount / float64(rw.UserCount)
+		}
+		segments = append(segments, &ubaV1.PayTierSegment{
+			Tier: t, TierLabel: labels[t], UserCount: rw.UserCount,
+			Percentage: pct, TotalAmount: rw.TotalAmount,
+			RevenueShare: revShare, Arppu: arppu,
+		})
+	}
+	return &ubaV1.WhaleTierResponse{
+		Segments: segments, TotalUsers: totalUsers, TotalRevenue: totalRevenue,
+	}, nil
+}
+
+// ============================================================================
+// 历史生命周期价值 LTV（用户在第 N 天的累计付费价值，支持按渠道分组）
+// ClickHouse 数据源：users_dim JOIN events_fact；dateDiff('day', register, event)。
+// ============================================================================
+
+func (r *AnalyticsRepo) LTV(ctx context.Context, req *ubaV1.LTVRequest) (*ubaV1.LTVResponse, error) {
+	startMs, endMs := normTimeRange(req.GetTimeRange())
+	maxDays := []uint32{0, 1, 3, 7, 14, 30, 60, 90}
+
+	tenantCond := ""
+	args := []any{time.UnixMilli(startMs), time.UnixMilli(endMs)}
+	if v := req.GetAppId(); v != 0 {
+		tenantCond = "tenant_id = ? AND "
+		args = append([]any{v}, args...)
+	}
+
+	dimSelect := "'' AS label"
+	if dim := req.GetDimension(); dim == "channel" {
+		dimSelect = "register_channel AS label"
+	}
+
+	// 同期群规模
+	cohortQ := fmt.Sprintf(`
+SELECT %s AS label, count() AS cohort_size
+FROM users_dim
+WHERE %sregister_time >= ? AND register_time < ?
+GROUP BY label`, dimSelect, tenantCond)
+	type cohortRow struct {
+		Label      string `db:"label" ch:"label"`
+		CohortSize int64  `db:"cohort_size" ch:"cohort_size"`
+	}
+	var cohortRows []cohortRow
+	if err := r.db.Select(ctx, &cohortRows, cohortQ, args...); err != nil {
+		r.log.Errorf("LTV cohort query failed: %v", err)
+		return nil, ubaV1.ErrorInternalServerError("ltv query failed")
+	}
+	cohortMap := map[string]int64{}
+	for _, cr := range cohortRows {
+		cohortMap[cr.Label] = cr.CohortSize
+	}
+
+	// 付费事件按 (label, day_bucket) 聚合
+	payArgs := append([]any{}, args...)
+	payQ := fmt.Sprintf(`
+SELECT %s AS label,
+  multiIf(
+    dateDiff('day', u.register_time, e.event_time) <= 0, 0,
+    dateDiff('day', u.register_time, e.event_time) <= 1, 1,
+    dateDiff('day', u.register_time, e.event_time) <= 3, 3,
+    dateDiff('day', u.register_time, e.event_time) <= 7, 7,
+    dateDiff('day', u.register_time, e.event_time) <= 14, 14,
+    dateDiff('day', u.register_time, e.event_time) <= 30, 30,
+    dateDiff('day', u.register_time, e.event_time) <= 60, 60,
+    90
+  ) AS day_n,
+  round(sum(toFloat64OrZero(toString(e.amount))), 2) AS total_amount
+FROM events_fact e
+INNER JOIN users_dim u ON u.tenant_id = e.tenant_id AND u.user_id = e.user_id
+WHERE u.%sregister_time >= ? AND u.register_time < ? AND e.amount > 0 AND e.user_id > 0
+GROUP BY label, day_n`, dimSelect, tenantCond)
+	type payRow struct {
+		Label       string  `db:"label" ch:"label"`
+		DayN        int64   `db:"day_n" ch:"day_n"`
+		TotalAmount float64 `db:"total_amount" ch:"total_amount"`
+	}
+	var payRows []payRow
+	if err := r.db.Select(ctx, &payRows, payQ, payArgs...); err != nil {
+		r.log.Errorf("LTV pay query failed: %v", err)
+		return nil, ubaV1.ErrorInternalServerError("ltv query failed")
+	}
+
+	bucketSum := map[string]map[int64]float64{}
+	for _, pr := range payRows {
+		if bucketSum[pr.Label] == nil {
+			bucketSum[pr.Label] = map[int64]float64{}
+		}
+		bucketSum[pr.Label][pr.DayN] = pr.TotalAmount
+	}
+
+	points := make([]*ubaV1.LTVPoint, 0)
+	for label, size := range cohortMap {
+		var cumulative float64
+		dayBuckets := bucketSum[label]
+		for _, dn := range maxDays {
+			if amt, ok := dayBuckets[int64(dn)]; ok {
+				cumulative += amt
+			}
+			var ltv float64
+			if size > 0 {
+				ltv = cumulative / float64(size)
+			}
+			points = append(points, &ubaV1.LTVPoint{
+				Label: label, DayN: dn, Ltv: ltv,
+				CohortSize: size, TotalAmount: cumulative,
+			})
+		}
+	}
+	return &ubaV1.LTVResponse{Points: points, MaxDays: 90}, nil
 }

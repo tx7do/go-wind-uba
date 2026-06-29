@@ -4328,6 +4328,651 @@ func (x *PathSankeyResponse) GetPaths() []*PathBucket {
 	return nil
 }
 
+// ============== 关卡/数值平衡分析 ==============
+type LevelAnalysisRequest struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 时间范围
+	TimeRange *TimeRange `protobuf:"bytes,1,opt,name=time_range,json=timeRange,proto3" json:"time_range,omitempty"`
+	// 应用 ID 过滤（可选）
+	AppId *uint32 `protobuf:"varint,2,opt,name=app_id,json=appId,proto3,oneof" json:"app_id,omitempty"`
+	// 指定关卡 ID（可选，空表示全部关卡）
+	LevelId       *string `protobuf:"bytes,3,opt,name=level_id,json=levelId,proto3,oneof" json:"level_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *LevelAnalysisRequest) Reset() {
+	*x = LevelAnalysisRequest{}
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[61]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *LevelAnalysisRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LevelAnalysisRequest) ProtoMessage() {}
+
+func (x *LevelAnalysisRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[61]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LevelAnalysisRequest.ProtoReflect.Descriptor instead.
+func (*LevelAnalysisRequest) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{61}
+}
+
+func (x *LevelAnalysisRequest) GetTimeRange() *TimeRange {
+	if x != nil {
+		return x.TimeRange
+	}
+	return nil
+}
+
+func (x *LevelAnalysisRequest) GetAppId() uint32 {
+	if x != nil && x.AppId != nil {
+		return *x.AppId
+	}
+	return 0
+}
+
+func (x *LevelAnalysisRequest) GetLevelId() string {
+	if x != nil && x.LevelId != nil {
+		return *x.LevelId
+	}
+	return ""
+}
+
+// 单关分析结果
+type LevelStat struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 关卡 ID
+	LevelId string `protobuf:"bytes,1,opt,name=level_id,json=levelId,proto3" json:"level_id,omitempty"`
+	// 关卡名
+	LevelName string `protobuf:"bytes,2,opt,name=level_name,json=levelName,proto3" json:"level_name,omitempty"`
+	// 尝试次数（level_start）
+	AttemptCount int64 `protobuf:"varint,3,opt,name=attempt_count,json=attemptCount,proto3" json:"attempt_count,omitempty"`
+	// 完成次数（level_finish）
+	FinishCount int64 `protobuf:"varint,4,opt,name=finish_count,json=finishCount,proto3" json:"finish_count,omitempty"`
+	// 失败次数（level_fail）
+	FailCount int64 `protobuf:"varint,5,opt,name=fail_count,json=failCount,proto3" json:"fail_count,omitempty"`
+	// 通过率（0-1，finish / (finish+fail)）
+	PassRate float64 `protobuf:"fixed64,6,opt,name=pass_rate,json=passRate,proto3" json:"pass_rate,omitempty"`
+	// 卡关率（0-1，1 - passRate，值越高说明越难/流失点）
+	StuckRate float64 `protobuf:"fixed64,7,opt,name=stuck_rate,json=stuckRate,proto3" json:"stuck_rate,omitempty"`
+	// 平均分
+	AvgScore float64 `protobuf:"fixed64,8,opt,name=avg_score,json=avgScore,proto3" json:"avg_score,omitempty"`
+	// 满星率（0-1，context['stars']==3 占比）
+	Star3Rate float64 `protobuf:"fixed64,9,opt,name=star3_rate,json=star3Rate,proto3" json:"star3_rate,omitempty"`
+	// 挑战该关卡的玩家数（去重）
+	PlayerCount   int64 `protobuf:"varint,10,opt,name=player_count,json=playerCount,proto3" json:"player_count,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *LevelStat) Reset() {
+	*x = LevelStat{}
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[62]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *LevelStat) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LevelStat) ProtoMessage() {}
+
+func (x *LevelStat) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[62]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LevelStat.ProtoReflect.Descriptor instead.
+func (*LevelStat) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{62}
+}
+
+func (x *LevelStat) GetLevelId() string {
+	if x != nil {
+		return x.LevelId
+	}
+	return ""
+}
+
+func (x *LevelStat) GetLevelName() string {
+	if x != nil {
+		return x.LevelName
+	}
+	return ""
+}
+
+func (x *LevelStat) GetAttemptCount() int64 {
+	if x != nil {
+		return x.AttemptCount
+	}
+	return 0
+}
+
+func (x *LevelStat) GetFinishCount() int64 {
+	if x != nil {
+		return x.FinishCount
+	}
+	return 0
+}
+
+func (x *LevelStat) GetFailCount() int64 {
+	if x != nil {
+		return x.FailCount
+	}
+	return 0
+}
+
+func (x *LevelStat) GetPassRate() float64 {
+	if x != nil {
+		return x.PassRate
+	}
+	return 0
+}
+
+func (x *LevelStat) GetStuckRate() float64 {
+	if x != nil {
+		return x.StuckRate
+	}
+	return 0
+}
+
+func (x *LevelStat) GetAvgScore() float64 {
+	if x != nil {
+		return x.AvgScore
+	}
+	return 0
+}
+
+func (x *LevelStat) GetStar3Rate() float64 {
+	if x != nil {
+		return x.Star3Rate
+	}
+	return 0
+}
+
+func (x *LevelStat) GetPlayerCount() int64 {
+	if x != nil {
+		return x.PlayerCount
+	}
+	return 0
+}
+
+type LevelAnalysisResponse struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 各关卡统计（按 player_count 降序）
+	Levels        []*LevelStat `protobuf:"bytes,1,rep,name=levels,proto3" json:"levels,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *LevelAnalysisResponse) Reset() {
+	*x = LevelAnalysisResponse{}
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[63]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *LevelAnalysisResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LevelAnalysisResponse) ProtoMessage() {}
+
+func (x *LevelAnalysisResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[63]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LevelAnalysisResponse.ProtoReflect.Descriptor instead.
+func (*LevelAnalysisResponse) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{63}
+}
+
+func (x *LevelAnalysisResponse) GetLevels() []*LevelStat {
+	if x != nil {
+		return x.Levels
+	}
+	return nil
+}
+
+// ============== 鲸鱼用户/付费分层 ==============
+type WhaleTierRequest struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 应用 ID 过滤（可选）
+	AppId         *uint32 `protobuf:"varint,1,opt,name=app_id,json=appId,proto3,oneof" json:"app_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *WhaleTierRequest) Reset() {
+	*x = WhaleTierRequest{}
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[64]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *WhaleTierRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*WhaleTierRequest) ProtoMessage() {}
+
+func (x *WhaleTierRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[64]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use WhaleTierRequest.ProtoReflect.Descriptor instead.
+func (*WhaleTierRequest) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{64}
+}
+
+func (x *WhaleTierRequest) GetAppId() uint32 {
+	if x != nil && x.AppId != nil {
+		return *x.AppId
+	}
+	return 0
+}
+
+// 付费分层
+type PayTierSegment struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 分层标识：whale 大课长 / dolphin 中课长 / minnow 小课长 / non_pay 免费
+	Tier string `protobuf:"bytes,1,opt,name=tier,proto3" json:"tier,omitempty"`
+	// 分层中文名
+	TierLabel string `protobuf:"bytes,2,opt,name=tier_label,json=tierLabel,proto3" json:"tier_label,omitempty"`
+	// 该层用户数
+	UserCount int64 `protobuf:"varint,3,opt,name=user_count,json=userCount,proto3" json:"user_count,omitempty"`
+	// 占比（0-1）
+	Percentage float64 `protobuf:"fixed64,4,opt,name=percentage,proto3" json:"percentage,omitempty"`
+	// 该层累计充值总额
+	TotalAmount float64 `protobuf:"fixed64,5,opt,name=total_amount,json=totalAmount,proto3" json:"total_amount,omitempty"`
+	// 该层收入贡献占比（0-1）
+	RevenueShare float64 `protobuf:"fixed64,6,opt,name=revenue_share,json=revenueShare,proto3" json:"revenue_share,omitempty"`
+	// 该层 ARPPU
+	Arppu         float64 `protobuf:"fixed64,7,opt,name=arppu,proto3" json:"arppu,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PayTierSegment) Reset() {
+	*x = PayTierSegment{}
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[65]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PayTierSegment) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PayTierSegment) ProtoMessage() {}
+
+func (x *PayTierSegment) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[65]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PayTierSegment.ProtoReflect.Descriptor instead.
+func (*PayTierSegment) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{65}
+}
+
+func (x *PayTierSegment) GetTier() string {
+	if x != nil {
+		return x.Tier
+	}
+	return ""
+}
+
+func (x *PayTierSegment) GetTierLabel() string {
+	if x != nil {
+		return x.TierLabel
+	}
+	return ""
+}
+
+func (x *PayTierSegment) GetUserCount() int64 {
+	if x != nil {
+		return x.UserCount
+	}
+	return 0
+}
+
+func (x *PayTierSegment) GetPercentage() float64 {
+	if x != nil {
+		return x.Percentage
+	}
+	return 0
+}
+
+func (x *PayTierSegment) GetTotalAmount() float64 {
+	if x != nil {
+		return x.TotalAmount
+	}
+	return 0
+}
+
+func (x *PayTierSegment) GetRevenueShare() float64 {
+	if x != nil {
+		return x.RevenueShare
+	}
+	return 0
+}
+
+func (x *PayTierSegment) GetArppu() float64 {
+	if x != nil {
+		return x.Arppu
+	}
+	return 0
+}
+
+type WhaleTierResponse struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 各付费分层
+	Segments []*PayTierSegment `protobuf:"bytes,1,rep,name=segments,proto3" json:"segments,omitempty"`
+	// 总用户数
+	TotalUsers int64 `protobuf:"varint,2,opt,name=total_users,json=totalUsers,proto3" json:"total_users,omitempty"`
+	// 总流水
+	TotalRevenue  float64 `protobuf:"fixed64,3,opt,name=total_revenue,json=totalRevenue,proto3" json:"total_revenue,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *WhaleTierResponse) Reset() {
+	*x = WhaleTierResponse{}
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[66]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *WhaleTierResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*WhaleTierResponse) ProtoMessage() {}
+
+func (x *WhaleTierResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[66]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use WhaleTierResponse.ProtoReflect.Descriptor instead.
+func (*WhaleTierResponse) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{66}
+}
+
+func (x *WhaleTierResponse) GetSegments() []*PayTierSegment {
+	if x != nil {
+		return x.Segments
+	}
+	return nil
+}
+
+func (x *WhaleTierResponse) GetTotalUsers() int64 {
+	if x != nil {
+		return x.TotalUsers
+	}
+	return 0
+}
+
+func (x *WhaleTierResponse) GetTotalRevenue() float64 {
+	if x != nil {
+		return x.TotalRevenue
+	}
+	return 0
+}
+
+// ============== 历史生命周期价值 LTV ==============
+type LTVRequest struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 注册时间范围（按 register_time 过滤同期群）
+	TimeRange *TimeRange `protobuf:"bytes,1,opt,name=time_range,json=timeRange,proto3" json:"time_range,omitempty"`
+	// 应用 ID 过滤（可选）
+	AppId *uint32 `protobuf:"varint,2,opt,name=app_id,json=appId,proto3,oneof" json:"app_id,omitempty"`
+	// 归因维度（可选，按渠道分组 LTV）：channel（默认，配合归因模型）
+	Dimension     *string `protobuf:"bytes,3,opt,name=dimension,proto3,oneof" json:"dimension,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *LTVRequest) Reset() {
+	*x = LTVRequest{}
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[67]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *LTVRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LTVRequest) ProtoMessage() {}
+
+func (x *LTVRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[67]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LTVRequest.ProtoReflect.Descriptor instead.
+func (*LTVRequest) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{67}
+}
+
+func (x *LTVRequest) GetTimeRange() *TimeRange {
+	if x != nil {
+		return x.TimeRange
+	}
+	return nil
+}
+
+func (x *LTVRequest) GetAppId() uint32 {
+	if x != nil && x.AppId != nil {
+		return *x.AppId
+	}
+	return 0
+}
+
+func (x *LTVRequest) GetDimension() string {
+	if x != nil && x.Dimension != nil {
+		return *x.Dimension
+	}
+	return ""
+}
+
+// 单个 LTV 数据点（某天/某维度的累计付费价值）
+type LTVPoint struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 维度值（如渠道名，未分组时为空）
+	Label string `protobuf:"bytes,1,opt,name=label,proto3" json:"label,omitempty"`
+	// 注册后第 N 天（0=注册当天）
+	DayN uint32 `protobuf:"varint,2,opt,name=day_n,json=dayN,proto3" json:"day_n,omitempty"`
+	// 该同期群累计人均付费（LTV）
+	Ltv float64 `protobuf:"fixed64,3,opt,name=ltv,proto3" json:"ltv,omitempty"`
+	// 该同期群人数
+	CohortSize int64 `protobuf:"varint,4,opt,name=cohort_size,json=cohortSize,proto3" json:"cohort_size,omitempty"`
+	// 累计付费总额
+	TotalAmount   float64 `protobuf:"fixed64,5,opt,name=total_amount,json=totalAmount,proto3" json:"total_amount,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *LTVPoint) Reset() {
+	*x = LTVPoint{}
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[68]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *LTVPoint) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LTVPoint) ProtoMessage() {}
+
+func (x *LTVPoint) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[68]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LTVPoint.ProtoReflect.Descriptor instead.
+func (*LTVPoint) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{68}
+}
+
+func (x *LTVPoint) GetLabel() string {
+	if x != nil {
+		return x.Label
+	}
+	return ""
+}
+
+func (x *LTVPoint) GetDayN() uint32 {
+	if x != nil {
+		return x.DayN
+	}
+	return 0
+}
+
+func (x *LTVPoint) GetLtv() float64 {
+	if x != nil {
+		return x.Ltv
+	}
+	return 0
+}
+
+func (x *LTVPoint) GetCohortSize() int64 {
+	if x != nil {
+		return x.CohortSize
+	}
+	return 0
+}
+
+func (x *LTVPoint) GetTotalAmount() float64 {
+	if x != nil {
+		return x.TotalAmount
+	}
+	return 0
+}
+
+type LTVResponse struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// LTV 曲线数据点（按 day_n 升序，同维度聚合）
+	Points []*LTVPoint `protobuf:"bytes,1,rep,name=points,proto3" json:"points,omitempty"`
+	// 观察的最大天数
+	MaxDays       uint32 `protobuf:"varint,2,opt,name=max_days,json=maxDays,proto3" json:"max_days,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *LTVResponse) Reset() {
+	*x = LTVResponse{}
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[69]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *LTVResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LTVResponse) ProtoMessage() {}
+
+func (x *LTVResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[69]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LTVResponse.ProtoReflect.Descriptor instead.
+func (*LTVResponse) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{69}
+}
+
+func (x *LTVResponse) GetPoints() []*LTVPoint {
+	if x != nil {
+		return x.Points
+	}
+	return nil
+}
+
+func (x *LTVResponse) GetMaxDays() uint32 {
+	if x != nil {
+		return x.MaxDays
+	}
+	return 0
+}
+
 var File_uba_service_v1_analytics_proto protoreflect.FileDescriptor
 
 const file_uba_service_v1_analytics_proto_rawDesc = "" +
@@ -4742,13 +5387,77 @@ const file_uba_service_v1_analytics_proto_rawDesc = "" +
 	"\funique_users\x18\x03 \x01(\x03R\vuniqueUsers\x12'\n" +
 	"\x0fconversion_rate\x18\x04 \x01(\x01R\x0econversionRate\"F\n" +
 	"\x12PathSankeyResponse\x120\n" +
-	"\x05paths\x18\x01 \x03(\v2\x1a.uba.service.v1.PathBucketR\x05paths*e\n" +
+	"\x05paths\x18\x01 \x03(\v2\x1a.uba.service.v1.PathBucketR\x05paths\"\xa4\x01\n" +
+	"\x14LevelAnalysisRequest\x128\n" +
+	"\n" +
+	"time_range\x18\x01 \x01(\v2\x19.uba.service.v1.TimeRangeR\ttimeRange\x12\x1a\n" +
+	"\x06app_id\x18\x02 \x01(\rH\x00R\x05appId\x88\x01\x01\x12\x1e\n" +
+	"\blevel_id\x18\x03 \x01(\tH\x01R\alevelId\x88\x01\x01B\t\n" +
+	"\a_app_idB\v\n" +
+	"\t_level_id\"\xc7\x02\n" +
+	"\tLevelStat\x12\x19\n" +
+	"\blevel_id\x18\x01 \x01(\tR\alevelId\x12\x1d\n" +
+	"\n" +
+	"level_name\x18\x02 \x01(\tR\tlevelName\x12#\n" +
+	"\rattempt_count\x18\x03 \x01(\x03R\fattemptCount\x12!\n" +
+	"\ffinish_count\x18\x04 \x01(\x03R\vfinishCount\x12\x1d\n" +
+	"\n" +
+	"fail_count\x18\x05 \x01(\x03R\tfailCount\x12\x1b\n" +
+	"\tpass_rate\x18\x06 \x01(\x01R\bpassRate\x12\x1d\n" +
+	"\n" +
+	"stuck_rate\x18\a \x01(\x01R\tstuckRate\x12\x1b\n" +
+	"\tavg_score\x18\b \x01(\x01R\bavgScore\x12\x1d\n" +
+	"\n" +
+	"star3_rate\x18\t \x01(\x01R\tstar3Rate\x12!\n" +
+	"\fplayer_count\x18\n" +
+	" \x01(\x03R\vplayerCount\"J\n" +
+	"\x15LevelAnalysisResponse\x121\n" +
+	"\x06levels\x18\x01 \x03(\v2\x19.uba.service.v1.LevelStatR\x06levels\"9\n" +
+	"\x10WhaleTierRequest\x12\x1a\n" +
+	"\x06app_id\x18\x01 \x01(\rH\x00R\x05appId\x88\x01\x01B\t\n" +
+	"\a_app_id\"\xe0\x01\n" +
+	"\x0ePayTierSegment\x12\x12\n" +
+	"\x04tier\x18\x01 \x01(\tR\x04tier\x12\x1d\n" +
+	"\n" +
+	"tier_label\x18\x02 \x01(\tR\ttierLabel\x12\x1d\n" +
+	"\n" +
+	"user_count\x18\x03 \x01(\x03R\tuserCount\x12\x1e\n" +
+	"\n" +
+	"percentage\x18\x04 \x01(\x01R\n" +
+	"percentage\x12!\n" +
+	"\ftotal_amount\x18\x05 \x01(\x01R\vtotalAmount\x12#\n" +
+	"\rrevenue_share\x18\x06 \x01(\x01R\frevenueShare\x12\x14\n" +
+	"\x05arppu\x18\a \x01(\x01R\x05arppu\"\x95\x01\n" +
+	"\x11WhaleTierResponse\x12:\n" +
+	"\bsegments\x18\x01 \x03(\v2\x1e.uba.service.v1.PayTierSegmentR\bsegments\x12\x1f\n" +
+	"\vtotal_users\x18\x02 \x01(\x03R\n" +
+	"totalUsers\x12#\n" +
+	"\rtotal_revenue\x18\x03 \x01(\x01R\ftotalRevenue\"\x9e\x01\n" +
+	"\n" +
+	"LTVRequest\x128\n" +
+	"\n" +
+	"time_range\x18\x01 \x01(\v2\x19.uba.service.v1.TimeRangeR\ttimeRange\x12\x1a\n" +
+	"\x06app_id\x18\x02 \x01(\rH\x00R\x05appId\x88\x01\x01\x12!\n" +
+	"\tdimension\x18\x03 \x01(\tH\x01R\tdimension\x88\x01\x01B\t\n" +
+	"\a_app_idB\f\n" +
+	"\n" +
+	"_dimension\"\x8b\x01\n" +
+	"\bLTVPoint\x12\x14\n" +
+	"\x05label\x18\x01 \x01(\tR\x05label\x12\x13\n" +
+	"\x05day_n\x18\x02 \x01(\rR\x04dayN\x12\x10\n" +
+	"\x03ltv\x18\x03 \x01(\x01R\x03ltv\x12\x1f\n" +
+	"\vcohort_size\x18\x04 \x01(\x03R\n" +
+	"cohortSize\x12!\n" +
+	"\ftotal_amount\x18\x05 \x01(\x01R\vtotalAmount\"Z\n" +
+	"\vLTVResponse\x120\n" +
+	"\x06points\x18\x01 \x03(\v2\x18.uba.service.v1.LTVPointR\x06points\x12\x19\n" +
+	"\bmax_days\x18\x02 \x01(\rR\amaxDays*e\n" +
 	"\x14AnalyticsGranularity\x12%\n" +
 	"!ANALYTICS_GRANULARITY_UNSPECIFIED\x10\x00\x12\b\n" +
 	"\x04HOUR\x10\x01\x12\a\n" +
 	"\x03DAY\x10\x02\x12\b\n" +
 	"\x04WEEK\x10\x03\x12\t\n" +
-	"\x05MONTH\x10\x042\xd7\f\n" +
+	"\x05MONTH\x10\x042\xcd\x0e\n" +
 	"\x10AnalyticsService\x12U\n" +
 	"\n" +
 	"EventTrend\x12!.uba.service.v1.EventTrendRequest\x1a\".uba.service.v1.EventTrendResponse\"\x00\x12I\n" +
@@ -4770,7 +5479,10 @@ const file_uba_service_v1_analytics_proto_rawDesc = "" +
 	"\aAnomaly\x12\x1e.uba.service.v1.AnomalyRequest\x1a\x1f.uba.service.v1.AnomalyResponse\"\x00\x12O\n" +
 	"\bNewVsOld\x12\x1f.uba.service.v1.NewVsOldRequest\x1a .uba.service.v1.NewVsOldResponse\"\x00\x12U\n" +
 	"\n" +
-	"PathSankey\x12!.uba.service.v1.PathSankeyRequest\x1a\".uba.service.v1.PathSankeyResponse\"\x00B\xab\x01\n" +
+	"PathSankey\x12!.uba.service.v1.PathSankeyRequest\x1a\".uba.service.v1.PathSankeyResponse\"\x00\x12^\n" +
+	"\rLevelAnalysis\x12$.uba.service.v1.LevelAnalysisRequest\x1a%.uba.service.v1.LevelAnalysisResponse\"\x00\x12R\n" +
+	"\tWhaleTier\x12 .uba.service.v1.WhaleTierRequest\x1a!.uba.service.v1.WhaleTierResponse\"\x00\x12@\n" +
+	"\x03LTV\x12\x1a.uba.service.v1.LTVRequest\x1a\x1b.uba.service.v1.LTVResponse\"\x00B\xab\x01\n" +
 	"\x12com.uba.service.v1B\x0eAnalyticsProtoP\x01Z+go-wind-uba/api/gen/go/uba/service/v1;ubapb\xa2\x02\x03USX\xaa\x02\x0eUba.Service.V1\xca\x02\x0eUba\\Service\\V1\xe2\x02\x1aUba\\Service\\V1\\GPBMetadata\xea\x02\x10Uba::Service::V1b\x06proto3"
 
 var (
@@ -4786,7 +5498,7 @@ func file_uba_service_v1_analytics_proto_rawDescGZIP() []byte {
 }
 
 var file_uba_service_v1_analytics_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_uba_service_v1_analytics_proto_msgTypes = make([]protoimpl.MessageInfo, 61)
+var file_uba_service_v1_analytics_proto_msgTypes = make([]protoimpl.MessageInfo, 70)
 var file_uba_service_v1_analytics_proto_goTypes = []any{
 	(AnalyticsGranularity)(0),        // 0: uba.service.v1.AnalyticsGranularity
 	(*TimeRange)(nil),                // 1: uba.service.v1.TimeRange
@@ -4850,6 +5562,15 @@ var file_uba_service_v1_analytics_proto_goTypes = []any{
 	(*PathSankeyRequest)(nil),        // 59: uba.service.v1.PathSankeyRequest
 	(*PathBucket)(nil),               // 60: uba.service.v1.PathBucket
 	(*PathSankeyResponse)(nil),       // 61: uba.service.v1.PathSankeyResponse
+	(*LevelAnalysisRequest)(nil),     // 62: uba.service.v1.LevelAnalysisRequest
+	(*LevelStat)(nil),                // 63: uba.service.v1.LevelStat
+	(*LevelAnalysisResponse)(nil),    // 64: uba.service.v1.LevelAnalysisResponse
+	(*WhaleTierRequest)(nil),         // 65: uba.service.v1.WhaleTierRequest
+	(*PayTierSegment)(nil),           // 66: uba.service.v1.PayTierSegment
+	(*WhaleTierResponse)(nil),        // 67: uba.service.v1.WhaleTierResponse
+	(*LTVRequest)(nil),               // 68: uba.service.v1.LTVRequest
+	(*LTVPoint)(nil),                 // 69: uba.service.v1.LTVPoint
+	(*LTVResponse)(nil),              // 70: uba.service.v1.LTVResponse
 }
 var file_uba_service_v1_analytics_proto_depIdxs = []int32{
 	1,  // 0: uba.service.v1.EventTrendRequest.time_range:type_name -> uba.service.v1.TimeRange
@@ -4898,49 +5619,60 @@ var file_uba_service_v1_analytics_proto_depIdxs = []int32{
 	57, // 43: uba.service.v1.NewVsOldResponse.segments:type_name -> uba.service.v1.NewVsOldSegment
 	1,  // 44: uba.service.v1.PathSankeyRequest.time_range:type_name -> uba.service.v1.TimeRange
 	60, // 45: uba.service.v1.PathSankeyResponse.paths:type_name -> uba.service.v1.PathBucket
-	3,  // 46: uba.service.v1.AnalyticsService.EventTrend:input_type -> uba.service.v1.EventTrendRequest
-	6,  // 47: uba.service.v1.AnalyticsService.Funnel:input_type -> uba.service.v1.FunnelRequest
-	10, // 48: uba.service.v1.AnalyticsService.Retention:input_type -> uba.service.v1.RetentionRequest
-	12, // 49: uba.service.v1.AnalyticsService.GroupBy:input_type -> uba.service.v1.GroupByRequest
-	15, // 50: uba.service.v1.AnalyticsService.ActiveUsers:input_type -> uba.service.v1.ActiveUsersRequest
-	18, // 51: uba.service.v1.AnalyticsService.Attribution:input_type -> uba.service.v1.AttributionRequest
-	21, // 52: uba.service.v1.AnalyticsService.Distribution:input_type -> uba.service.v1.DistributionRequest
-	25, // 53: uba.service.v1.AnalyticsService.BehaviorSequence:input_type -> uba.service.v1.BehaviorSequenceRequest
-	29, // 54: uba.service.v1.AnalyticsService.Segmentation:input_type -> uba.service.v1.SegmentationRequest
-	31, // 55: uba.service.v1.AnalyticsService.Click:input_type -> uba.service.v1.ClickRequest
-	35, // 56: uba.service.v1.AnalyticsService.Lifecycle:input_type -> uba.service.v1.LifecycleRequest
-	38, // 57: uba.service.v1.AnalyticsService.Churn:input_type -> uba.service.v1.ChurnRequest
-	42, // 58: uba.service.v1.AnalyticsService.Interval:input_type -> uba.service.v1.IntervalRequest
-	45, // 59: uba.service.v1.AnalyticsService.Matrix:input_type -> uba.service.v1.MatrixRequest
-	48, // 60: uba.service.v1.AnalyticsService.Revenue:input_type -> uba.service.v1.RevenueRequest
-	51, // 61: uba.service.v1.AnalyticsService.SessionAnalysis:input_type -> uba.service.v1.SessionAnalysisRequest
-	53, // 62: uba.service.v1.AnalyticsService.Anomaly:input_type -> uba.service.v1.AnomalyRequest
-	56, // 63: uba.service.v1.AnalyticsService.NewVsOld:input_type -> uba.service.v1.NewVsOldRequest
-	59, // 64: uba.service.v1.AnalyticsService.PathSankey:input_type -> uba.service.v1.PathSankeyRequest
-	4,  // 65: uba.service.v1.AnalyticsService.EventTrend:output_type -> uba.service.v1.EventTrendResponse
-	7,  // 66: uba.service.v1.AnalyticsService.Funnel:output_type -> uba.service.v1.FunnelResponse
-	11, // 67: uba.service.v1.AnalyticsService.Retention:output_type -> uba.service.v1.RetentionResponse
-	14, // 68: uba.service.v1.AnalyticsService.GroupBy:output_type -> uba.service.v1.GroupByResponse
-	17, // 69: uba.service.v1.AnalyticsService.ActiveUsers:output_type -> uba.service.v1.ActiveUsersResponse
-	20, // 70: uba.service.v1.AnalyticsService.Attribution:output_type -> uba.service.v1.AttributionResponse
-	24, // 71: uba.service.v1.AnalyticsService.Distribution:output_type -> uba.service.v1.DistributionResponse
-	27, // 72: uba.service.v1.AnalyticsService.BehaviorSequence:output_type -> uba.service.v1.BehaviorSequenceResponse
-	30, // 73: uba.service.v1.AnalyticsService.Segmentation:output_type -> uba.service.v1.SegmentationResponse
-	34, // 74: uba.service.v1.AnalyticsService.Click:output_type -> uba.service.v1.ClickResponse
-	37, // 75: uba.service.v1.AnalyticsService.Lifecycle:output_type -> uba.service.v1.LifecycleResponse
-	41, // 76: uba.service.v1.AnalyticsService.Churn:output_type -> uba.service.v1.ChurnResponse
-	44, // 77: uba.service.v1.AnalyticsService.Interval:output_type -> uba.service.v1.IntervalResponse
-	47, // 78: uba.service.v1.AnalyticsService.Matrix:output_type -> uba.service.v1.MatrixResponse
-	50, // 79: uba.service.v1.AnalyticsService.Revenue:output_type -> uba.service.v1.RevenueResponse
-	52, // 80: uba.service.v1.AnalyticsService.SessionAnalysis:output_type -> uba.service.v1.SessionAnalysisResponse
-	55, // 81: uba.service.v1.AnalyticsService.Anomaly:output_type -> uba.service.v1.AnomalyResponse
-	58, // 82: uba.service.v1.AnalyticsService.NewVsOld:output_type -> uba.service.v1.NewVsOldResponse
-	61, // 83: uba.service.v1.AnalyticsService.PathSankey:output_type -> uba.service.v1.PathSankeyResponse
-	65, // [65:84] is the sub-list for method output_type
-	46, // [46:65] is the sub-list for method input_type
-	46, // [46:46] is the sub-list for extension type_name
-	46, // [46:46] is the sub-list for extension extendee
-	0,  // [0:46] is the sub-list for field type_name
+	1,  // 46: uba.service.v1.LevelAnalysisRequest.time_range:type_name -> uba.service.v1.TimeRange
+	63, // 47: uba.service.v1.LevelAnalysisResponse.levels:type_name -> uba.service.v1.LevelStat
+	66, // 48: uba.service.v1.WhaleTierResponse.segments:type_name -> uba.service.v1.PayTierSegment
+	1,  // 49: uba.service.v1.LTVRequest.time_range:type_name -> uba.service.v1.TimeRange
+	69, // 50: uba.service.v1.LTVResponse.points:type_name -> uba.service.v1.LTVPoint
+	3,  // 51: uba.service.v1.AnalyticsService.EventTrend:input_type -> uba.service.v1.EventTrendRequest
+	6,  // 52: uba.service.v1.AnalyticsService.Funnel:input_type -> uba.service.v1.FunnelRequest
+	10, // 53: uba.service.v1.AnalyticsService.Retention:input_type -> uba.service.v1.RetentionRequest
+	12, // 54: uba.service.v1.AnalyticsService.GroupBy:input_type -> uba.service.v1.GroupByRequest
+	15, // 55: uba.service.v1.AnalyticsService.ActiveUsers:input_type -> uba.service.v1.ActiveUsersRequest
+	18, // 56: uba.service.v1.AnalyticsService.Attribution:input_type -> uba.service.v1.AttributionRequest
+	21, // 57: uba.service.v1.AnalyticsService.Distribution:input_type -> uba.service.v1.DistributionRequest
+	25, // 58: uba.service.v1.AnalyticsService.BehaviorSequence:input_type -> uba.service.v1.BehaviorSequenceRequest
+	29, // 59: uba.service.v1.AnalyticsService.Segmentation:input_type -> uba.service.v1.SegmentationRequest
+	31, // 60: uba.service.v1.AnalyticsService.Click:input_type -> uba.service.v1.ClickRequest
+	35, // 61: uba.service.v1.AnalyticsService.Lifecycle:input_type -> uba.service.v1.LifecycleRequest
+	38, // 62: uba.service.v1.AnalyticsService.Churn:input_type -> uba.service.v1.ChurnRequest
+	42, // 63: uba.service.v1.AnalyticsService.Interval:input_type -> uba.service.v1.IntervalRequest
+	45, // 64: uba.service.v1.AnalyticsService.Matrix:input_type -> uba.service.v1.MatrixRequest
+	48, // 65: uba.service.v1.AnalyticsService.Revenue:input_type -> uba.service.v1.RevenueRequest
+	51, // 66: uba.service.v1.AnalyticsService.SessionAnalysis:input_type -> uba.service.v1.SessionAnalysisRequest
+	53, // 67: uba.service.v1.AnalyticsService.Anomaly:input_type -> uba.service.v1.AnomalyRequest
+	56, // 68: uba.service.v1.AnalyticsService.NewVsOld:input_type -> uba.service.v1.NewVsOldRequest
+	59, // 69: uba.service.v1.AnalyticsService.PathSankey:input_type -> uba.service.v1.PathSankeyRequest
+	62, // 70: uba.service.v1.AnalyticsService.LevelAnalysis:input_type -> uba.service.v1.LevelAnalysisRequest
+	65, // 71: uba.service.v1.AnalyticsService.WhaleTier:input_type -> uba.service.v1.WhaleTierRequest
+	68, // 72: uba.service.v1.AnalyticsService.LTV:input_type -> uba.service.v1.LTVRequest
+	4,  // 73: uba.service.v1.AnalyticsService.EventTrend:output_type -> uba.service.v1.EventTrendResponse
+	7,  // 74: uba.service.v1.AnalyticsService.Funnel:output_type -> uba.service.v1.FunnelResponse
+	11, // 75: uba.service.v1.AnalyticsService.Retention:output_type -> uba.service.v1.RetentionResponse
+	14, // 76: uba.service.v1.AnalyticsService.GroupBy:output_type -> uba.service.v1.GroupByResponse
+	17, // 77: uba.service.v1.AnalyticsService.ActiveUsers:output_type -> uba.service.v1.ActiveUsersResponse
+	20, // 78: uba.service.v1.AnalyticsService.Attribution:output_type -> uba.service.v1.AttributionResponse
+	24, // 79: uba.service.v1.AnalyticsService.Distribution:output_type -> uba.service.v1.DistributionResponse
+	27, // 80: uba.service.v1.AnalyticsService.BehaviorSequence:output_type -> uba.service.v1.BehaviorSequenceResponse
+	30, // 81: uba.service.v1.AnalyticsService.Segmentation:output_type -> uba.service.v1.SegmentationResponse
+	34, // 82: uba.service.v1.AnalyticsService.Click:output_type -> uba.service.v1.ClickResponse
+	37, // 83: uba.service.v1.AnalyticsService.Lifecycle:output_type -> uba.service.v1.LifecycleResponse
+	41, // 84: uba.service.v1.AnalyticsService.Churn:output_type -> uba.service.v1.ChurnResponse
+	44, // 85: uba.service.v1.AnalyticsService.Interval:output_type -> uba.service.v1.IntervalResponse
+	47, // 86: uba.service.v1.AnalyticsService.Matrix:output_type -> uba.service.v1.MatrixResponse
+	50, // 87: uba.service.v1.AnalyticsService.Revenue:output_type -> uba.service.v1.RevenueResponse
+	52, // 88: uba.service.v1.AnalyticsService.SessionAnalysis:output_type -> uba.service.v1.SessionAnalysisResponse
+	55, // 89: uba.service.v1.AnalyticsService.Anomaly:output_type -> uba.service.v1.AnomalyResponse
+	58, // 90: uba.service.v1.AnalyticsService.NewVsOld:output_type -> uba.service.v1.NewVsOldResponse
+	61, // 91: uba.service.v1.AnalyticsService.PathSankey:output_type -> uba.service.v1.PathSankeyResponse
+	64, // 92: uba.service.v1.AnalyticsService.LevelAnalysis:output_type -> uba.service.v1.LevelAnalysisResponse
+	67, // 93: uba.service.v1.AnalyticsService.WhaleTier:output_type -> uba.service.v1.WhaleTierResponse
+	70, // 94: uba.service.v1.AnalyticsService.LTV:output_type -> uba.service.v1.LTVResponse
+	73, // [73:95] is the sub-list for method output_type
+	51, // [51:73] is the sub-list for method input_type
+	51, // [51:51] is the sub-list for extension type_name
+	51, // [51:51] is the sub-list for extension extendee
+	0,  // [0:51] is the sub-list for field type_name
 }
 
 func init() { file_uba_service_v1_analytics_proto_init() }
@@ -4969,13 +5701,16 @@ func file_uba_service_v1_analytics_proto_init() {
 	file_uba_service_v1_analytics_proto_msgTypes[52].OneofWrappers = []any{}
 	file_uba_service_v1_analytics_proto_msgTypes[55].OneofWrappers = []any{}
 	file_uba_service_v1_analytics_proto_msgTypes[58].OneofWrappers = []any{}
+	file_uba_service_v1_analytics_proto_msgTypes[61].OneofWrappers = []any{}
+	file_uba_service_v1_analytics_proto_msgTypes[64].OneofWrappers = []any{}
+	file_uba_service_v1_analytics_proto_msgTypes[67].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_uba_service_v1_analytics_proto_rawDesc), len(file_uba_service_v1_analytics_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   61,
+			NumMessages:   70,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

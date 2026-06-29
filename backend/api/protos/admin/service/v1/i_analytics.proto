@@ -159,4 +159,28 @@ service AnalyticsService {
       body: "*"
     };
   }
+
+  // 关卡/数值平衡分析
+  rpc LevelAnalysis(uba.service.v1.LevelAnalysisRequest) returns (uba.service.v1.LevelAnalysisResponse) {
+    option (google.api.http) = {
+      post: "/admin/v1/analytics/level-analysis"
+      body: "*"
+    };
+  }
+
+  // 鲸鱼用户/付费分层
+  rpc WhaleTier(uba.service.v1.WhaleTierRequest) returns (uba.service.v1.WhaleTierResponse) {
+    option (google.api.http) = {
+      post: "/admin/v1/analytics/whale-tier"
+      body: "*"
+    };
+  }
+
+  // 历史生命周期价值 LTV
+  rpc LTV(uba.service.v1.LTVRequest) returns (uba.service.v1.LTVResponse) {
+    option (google.api.http) = {
+      post: "/admin/v1/analytics/ltv"
+      body: "*"
+    };
+  }
 }

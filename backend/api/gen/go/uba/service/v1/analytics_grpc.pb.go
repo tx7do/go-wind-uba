@@ -38,6 +38,9 @@ const (
 	AnalyticsService_Anomaly_FullMethodName          = "/uba.service.v1.AnalyticsService/Anomaly"
 	AnalyticsService_NewVsOld_FullMethodName         = "/uba.service.v1.AnalyticsService/NewVsOld"
 	AnalyticsService_PathSankey_FullMethodName       = "/uba.service.v1.AnalyticsService/PathSankey"
+	AnalyticsService_LevelAnalysis_FullMethodName    = "/uba.service.v1.AnalyticsService/LevelAnalysis"
+	AnalyticsService_WhaleTier_FullMethodName        = "/uba.service.v1.AnalyticsService/WhaleTier"
+	AnalyticsService_LTV_FullMethodName              = "/uba.service.v1.AnalyticsService/LTV"
 )
 
 // AnalyticsServiceClient is the client API for AnalyticsService service.
@@ -84,6 +87,12 @@ type AnalyticsServiceClient interface {
 	NewVsOld(ctx context.Context, in *NewVsOldRequest, opts ...grpc.CallOption) (*NewVsOldResponse, error)
 	// 热门转化路径（群体路径 TOP + 转化率）
 	PathSankey(ctx context.Context, in *PathSankeyRequest, opts ...grpc.CallOption) (*PathSankeyResponse, error)
+	// 关卡/数值平衡分析（通过率/失败率/卡关率/分数分布）
+	LevelAnalysis(ctx context.Context, in *LevelAnalysisRequest, opts ...grpc.CallOption) (*LevelAnalysisResponse, error)
+	// 鲸鱼用户/付费分层（按累计充值自动分层）
+	WhaleTier(ctx context.Context, in *WhaleTierRequest, opts ...grpc.CallOption) (*WhaleTierResponse, error)
+	// 历史生命周期价值 LTV（用户在第 N 天的累计付费价值）
+	LTV(ctx context.Context, in *LTVRequest, opts ...grpc.CallOption) (*LTVResponse, error)
 }
 
 type analyticsServiceClient struct {
@@ -284,6 +293,36 @@ func (c *analyticsServiceClient) PathSankey(ctx context.Context, in *PathSankeyR
 	return out, nil
 }
 
+func (c *analyticsServiceClient) LevelAnalysis(ctx context.Context, in *LevelAnalysisRequest, opts ...grpc.CallOption) (*LevelAnalysisResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(LevelAnalysisResponse)
+	err := c.cc.Invoke(ctx, AnalyticsService_LevelAnalysis_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *analyticsServiceClient) WhaleTier(ctx context.Context, in *WhaleTierRequest, opts ...grpc.CallOption) (*WhaleTierResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(WhaleTierResponse)
+	err := c.cc.Invoke(ctx, AnalyticsService_WhaleTier_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *analyticsServiceClient) LTV(ctx context.Context, in *LTVRequest, opts ...grpc.CallOption) (*LTVResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(LTVResponse)
+	err := c.cc.Invoke(ctx, AnalyticsService_LTV_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AnalyticsServiceServer is the server API for AnalyticsService service.
 // All implementations must embed UnimplementedAnalyticsServiceServer
 // for forward compatibility.
@@ -328,6 +367,12 @@ type AnalyticsServiceServer interface {
 	NewVsOld(context.Context, *NewVsOldRequest) (*NewVsOldResponse, error)
 	// 热门转化路径（群体路径 TOP + 转化率）
 	PathSankey(context.Context, *PathSankeyRequest) (*PathSankeyResponse, error)
+	// 关卡/数值平衡分析（通过率/失败率/卡关率/分数分布）
+	LevelAnalysis(context.Context, *LevelAnalysisRequest) (*LevelAnalysisResponse, error)
+	// 鲸鱼用户/付费分层（按累计充值自动分层）
+	WhaleTier(context.Context, *WhaleTierRequest) (*WhaleTierResponse, error)
+	// 历史生命周期价值 LTV（用户在第 N 天的累计付费价值）
+	LTV(context.Context, *LTVRequest) (*LTVResponse, error)
 	mustEmbedUnimplementedAnalyticsServiceServer()
 }
 
@@ -394,6 +439,15 @@ func (UnimplementedAnalyticsServiceServer) NewVsOld(context.Context, *NewVsOldRe
 }
 func (UnimplementedAnalyticsServiceServer) PathSankey(context.Context, *PathSankeyRequest) (*PathSankeyResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method PathSankey not implemented")
+}
+func (UnimplementedAnalyticsServiceServer) LevelAnalysis(context.Context, *LevelAnalysisRequest) (*LevelAnalysisResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method LevelAnalysis not implemented")
+}
+func (UnimplementedAnalyticsServiceServer) WhaleTier(context.Context, *WhaleTierRequest) (*WhaleTierResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method WhaleTier not implemented")
+}
+func (UnimplementedAnalyticsServiceServer) LTV(context.Context, *LTVRequest) (*LTVResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method LTV not implemented")
 }
 func (UnimplementedAnalyticsServiceServer) mustEmbedUnimplementedAnalyticsServiceServer() {}
 func (UnimplementedAnalyticsServiceServer) testEmbeddedByValue()                          {}
@@ -758,6 +812,60 @@ func _AnalyticsService_PathSankey_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AnalyticsService_LevelAnalysis_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LevelAnalysisRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AnalyticsServiceServer).LevelAnalysis(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AnalyticsService_LevelAnalysis_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AnalyticsServiceServer).LevelAnalysis(ctx, req.(*LevelAnalysisRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AnalyticsService_WhaleTier_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WhaleTierRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AnalyticsServiceServer).WhaleTier(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AnalyticsService_WhaleTier_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AnalyticsServiceServer).WhaleTier(ctx, req.(*WhaleTierRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AnalyticsService_LTV_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LTVRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AnalyticsServiceServer).LTV(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AnalyticsService_LTV_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AnalyticsServiceServer).LTV(ctx, req.(*LTVRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AnalyticsService_ServiceDesc is the grpc.ServiceDesc for AnalyticsService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -840,6 +948,18 @@ var AnalyticsService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "PathSankey",
 			Handler:    _AnalyticsService_PathSankey_Handler,
+		},
+		{
+			MethodName: "LevelAnalysis",
+			Handler:    _AnalyticsService_LevelAnalysis_Handler,
+		},
+		{
+			MethodName: "WhaleTier",
+			Handler:    _AnalyticsService_WhaleTier_Handler,
+		},
+		{
+			MethodName: "LTV",
+			Handler:    _AnalyticsService_LTV_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

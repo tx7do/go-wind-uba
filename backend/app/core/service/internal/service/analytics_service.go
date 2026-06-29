@@ -56,6 +56,9 @@ func (s *AnalyticsService) repo() interface {
 	Anomaly(context.Context, *ubaV1.AnomalyRequest) (*ubaV1.AnomalyResponse, error)
 	NewVsOld(context.Context, *ubaV1.NewVsOldRequest) (*ubaV1.NewVsOldResponse, error)
 	PathSankey(context.Context, *ubaV1.PathSankeyRequest) (*ubaV1.PathSankeyResponse, error)
+	LevelAnalysis(context.Context, *ubaV1.LevelAnalysisRequest) (*ubaV1.LevelAnalysisResponse, error)
+	WhaleTier(context.Context, *ubaV1.WhaleTierRequest) (*ubaV1.WhaleTierResponse, error)
+	LTV(context.Context, *ubaV1.LTVRequest) (*ubaV1.LTVResponse, error)
 } {
 	if data.UseClickHouse {
 		return s.ckRepo
@@ -137,4 +140,16 @@ func (s *AnalyticsService) NewVsOld(ctx context.Context, req *ubaV1.NewVsOldRequ
 
 func (s *AnalyticsService) PathSankey(ctx context.Context, req *ubaV1.PathSankeyRequest) (*ubaV1.PathSankeyResponse, error) {
 	return s.repo().PathSankey(ctx, req)
+}
+
+func (s *AnalyticsService) LevelAnalysis(ctx context.Context, req *ubaV1.LevelAnalysisRequest) (*ubaV1.LevelAnalysisResponse, error) {
+	return s.repo().LevelAnalysis(ctx, req)
+}
+
+func (s *AnalyticsService) WhaleTier(ctx context.Context, req *ubaV1.WhaleTierRequest) (*ubaV1.WhaleTierResponse, error) {
+	return s.repo().WhaleTier(ctx, req)
+}
+
+func (s *AnalyticsService) LTV(ctx context.Context, req *ubaV1.LTVRequest) (*ubaV1.LTVResponse, error) {
+	return s.repo().LTV(ctx, req)
 }

@@ -239,9 +239,17 @@ func (r *AnalyticsRepo) GroupBy(ctx context.Context, req *ubaV1.GroupByRequest) 
 		return nil, ubaV1.ErrorBadRequest(err.Error())
 	}
 
+	// user_level/vip_level 在 users_dim，非 events_fact：需 JOIN。
+	joinClause := ""
+	dimCol := col
+	if joinUsersDim(req.GetDimension()) {
+		joinClause = " JOIN users_dim u ON u.tenant_id = events_fact.tenant_id AND u.user_id = events_fact.user_id"
+		dimCol = "u." + col
+	}
+
 	q := fmt.Sprintf(
-		"SELECT %s AS label, %s AS value FROM events_fact WHERE event_time >= ? AND event_time < ?",
-		col, metricExpr,
+		"SELECT %s AS label, %s AS value FROM events_fact %s WHERE event_time >= ? AND event_time < ?",
+		dimCol, metricExpr, joinClause,
 	)
 	args := []any{time.UnixMilli(startMs), time.UnixMilli(endMs)}
 	if v := req.GetEventName(); v != "" {
@@ -249,7 +257,7 @@ func (r *AnalyticsRepo) GroupBy(ctx context.Context, req *ubaV1.GroupByRequest) 
 		args = append(args, v)
 	}
 	if v := req.GetAppId(); v != 0 {
-		q += " AND tenant_id = ?"
+		q += " AND events_fact.tenant_id = ?"
 		args = append(args, v)
 	}
 	q += fmt.Sprintf(" GROUP BY label ORDER BY value DESC LIMIT %d", topN)
@@ -1626,6 +1634,286 @@ LIMIT ?`, tenantCond)
 }
 
 // ============================================================================
+// 关卡/数值平衡分析（通过率/失败率/卡关率/分数分布/满星率）
+// Doris 数据源：events_fact（object_type='level'，event_name=level_start/finish/fail）。
+// 参考模板：doris/query.sql §11.2。
+// ============================================================================
+
+func (r *AnalyticsRepo) LevelAnalysis(ctx context.Context, req *ubaV1.LevelAnalysisRequest) (*ubaV1.LevelAnalysisResponse, error) {
+	startMs, endMs := normTimeRange(req.GetTimeRange())
+
+	var whereParts []string
+	var args []any
+	if v := req.GetAppId(); v != 0 {
+		whereParts = append(whereParts, "tenant_id = ?")
+		args = append(args, v)
+	}
+	whereParts = append(whereParts, "object_type = 'level'")
+	if lid := req.GetLevelId(); lid != "" {
+		whereParts = append(whereParts, "object_id = ?")
+		args = append(args, lid)
+	}
+	args = append(args, time.UnixMilli(startMs), time.UnixMilli(endMs))
+	whereCond := strings.Join(whereParts, " AND ") + " AND "
+
+	// 关卡维度聚合：统计各关的尝试/完成/失败/分数/满星/玩家数。
+	q := fmt.Sprintf(`
+SELECT
+  object_id AS level_id,
+  MAX(object_name) AS level_name,
+  SUM(IF(event_name = 'level_start',  1, 0)) AS attempt_count,
+  SUM(IF(event_name = 'level_finish', 1, 0)) AS finish_count,
+  SUM(IF(event_name = 'level_fail',   1, 0)) AS fail_count,
+  ROUND(AVG(IF(event_name = 'level_finish', metrics['score'], NULL)), 1) AS avg_score,
+  SUM(IF(event_name = 'level_finish' AND context['stars'] = '3', 1, 0)) AS star3_count,
+  HLL_CARDINALITY(HLL_HASH(user_id)) AS player_count
+FROM events_fact
+WHERE %sevent_time >= ? AND event_time < ?
+GROUP BY object_id
+ORDER BY player_count DESC
+LIMIT 100`, whereCond)
+
+	type row struct {
+		LevelId      string  `db:"level_id"`
+		LevelName    string  `db:"level_name"`
+		AttemptCnt   int64   `db:"attempt_count"`
+		FinishCnt    int64   `db:"finish_count"`
+		FailCnt      int64   `db:"fail_count"`
+		AvgScore     float64 `db:"avg_score"`
+		Star3Count   int64   `db:"star3_count"`
+		PlayerCount  uint64  `db:"player_count"`
+	}
+	var rows []row
+	if err := r.db.SelectContext(ctx, &rows, q, args...); err != nil {
+		r.log.Errorf("LevelAnalysis query failed: %v", err)
+		return nil, ubaV1.ErrorInternalServerError("level analysis query failed")
+	}
+
+	levels := make([]*ubaV1.LevelStat, 0, len(rows))
+	for _, rw := range rows {
+		var passRate, star3Rate float64
+		total := rw.FinishCnt + rw.FailCnt
+		if total > 0 {
+			passRate = float64(rw.FinishCnt) / float64(total)
+		}
+		if rw.FinishCnt > 0 {
+			star3Rate = float64(rw.Star3Count) / float64(rw.FinishCnt)
+		}
+		levels = append(levels, &ubaV1.LevelStat{
+			LevelId:      rw.LevelId,
+			LevelName:    rw.LevelName,
+			AttemptCount: rw.AttemptCnt,
+			FinishCount:  rw.FinishCnt,
+			FailCount:    rw.FailCnt,
+			PassRate:     passRate,
+			StuckRate:    1 - passRate,
+			AvgScore:     rw.AvgScore,
+			Star3Rate:    star3Rate,
+			PlayerCount:  int64(rw.PlayerCount),
+		})
+	}
+	return &ubaV1.LevelAnalysisResponse{Levels: levels}, nil
+}
+
+// ============================================================================
+// 鲸鱼用户/付费分层（按累计充值自动分层，二八定律分析）
+// Doris 数据源：users_dim（total_pay_amount）。
+// 参考模板：doris/query.sql §4.2。
+// ============================================================================
+
+func (r *AnalyticsRepo) WhaleTier(ctx context.Context, req *ubaV1.WhaleTierRequest) (*ubaV1.WhaleTierResponse, error) {
+	tenantCond := ""
+	args := []any{}
+	if v := req.GetAppId(); v != 0 {
+		tenantCond = "tenant_id = ? AND "
+		args = append(args, v)
+	}
+
+	// 按 total_pay_amount 分层：whale(>=1万) / dolphin(>=1千) / minnow(>0) / non_pay(0)
+	q := fmt.Sprintf(`
+SELECT
+  CASE
+    WHEN total_pay_amount >= 10000 THEN 'whale'
+    WHEN total_pay_amount >= 1000  THEN 'dolphin'
+    WHEN total_pay_amount > 0      THEN 'minnow'
+    ELSE 'non_pay'
+  END AS tier,
+  COUNT(*) AS user_count,
+  ROUND(SUM(total_pay_amount), 2) AS total_amount
+FROM users_dim
+WHERE %suser_id IS NOT NULL
+GROUP BY tier`, tenantCond)
+
+	type row struct {
+		Tier        string  `db:"tier"`
+		UserCount   int64   `db:"user_count"`
+		TotalAmount float64 `db:"total_amount"`
+	}
+	var rows []row
+	if err := r.db.SelectContext(ctx, &rows, q, args...); err != nil {
+		r.log.Errorf("WhaleTier query failed: %v", err)
+		return nil, ubaV1.ErrorInternalServerError("whale tier query failed")
+	}
+
+	labels := map[string]string{
+		"whale": "大课长", "dolphin": "中课长", "minnow": "小课长", "non_pay": "免费玩家",
+	}
+	var totalUsers int64
+	var totalRevenue float64
+	tierMap := map[string]*row{}
+	for i := range rows {
+		totalUsers += rows[i].UserCount
+		totalRevenue += rows[i].TotalAmount
+		tierMap[rows[i].Tier] = &rows[i]
+	}
+	order := []string{"whale", "dolphin", "minnow", "non_pay"}
+	segments := make([]*ubaV1.PayTierSegment, 0, len(order))
+	for _, t := range order {
+		rw, ok := tierMap[t]
+		if !ok {
+			continue
+		}
+		var pct, revShare, arppu float64
+		if totalUsers > 0 {
+			pct = float64(rw.UserCount) / float64(totalUsers)
+		}
+		if totalRevenue > 0 {
+			revShare = rw.TotalAmount / totalRevenue
+		}
+		if rw.UserCount > 0 {
+			arppu = rw.TotalAmount / float64(rw.UserCount)
+		}
+		segments = append(segments, &ubaV1.PayTierSegment{
+			Tier:         t,
+			TierLabel:    labels[t],
+			UserCount:    rw.UserCount,
+			Percentage:   pct,
+			TotalAmount:  rw.TotalAmount,
+			RevenueShare: revShare,
+			Arppu:        arppu,
+		})
+	}
+	return &ubaV1.WhaleTierResponse{
+		Segments:     segments,
+		TotalUsers:   totalUsers,
+		TotalRevenue: totalRevenue,
+	}, nil
+}
+
+// ============================================================================
+// 历史生命周期价值 LTV（用户在第 N 天的累计付费价值，支持按渠道分组配合归因）
+// Doris 数据源：users_dim（register_time）JOIN events_fact（amount）。
+// 算法：按注册同期群，累计付费金额 / 同期群人数 = LTV(N)。
+// ============================================================================
+
+func (r *AnalyticsRepo) LTV(ctx context.Context, req *ubaV1.LTVRequest) (*ubaV1.LTVResponse, error) {
+	startMs, endMs := normTimeRange(req.GetTimeRange())
+	// 观察天数（默认 30，最大 90）
+	maxDays := []uint32{0, 1, 3, 7, 14, 30, 60, 90}
+
+	tenantCond := ""
+	args := []any{time.UnixMilli(startMs), time.UnixMilli(endMs)}
+	if v := req.GetAppId(); v != 0 {
+		tenantCond = "tenant_id = ? AND "
+		args = append([]any{v}, args...)
+	}
+
+	// 按维度分组（默认无分组，整体 LTV；可选 channel 配合归因）。
+	// 同期群：register_time 在时间范围内的用户。
+	// LTV(N) = 该群截至第 N 天的累计付费总额 / 该群人数。
+	// 用 JOIN：每个付费事件关联用户的 register_time，算 event_day = DATEDIFF(event_time, register_time)。
+	dimSelect := "'' AS label"
+	if dim := req.GetDimension(); dim == "channel" {
+		dimSelect = "u.register_channel AS label"
+	}
+
+	// 先取同期群规模（按维度分组的人数）
+	cohortQ := fmt.Sprintf(`
+SELECT %s AS label, COUNT(*) AS cohort_size
+FROM users_dim u
+WHERE u.%sregister_time >= ? AND register_time < ?
+GROUP BY label`, dimSelect, tenantCond)
+	type cohortRow struct {
+		Label      string `db:"label"`
+		CohortSize int64  `db:"cohort_size"`
+	}
+	var cohortRows []cohortRow
+	if err := r.db.SelectContext(ctx, &cohortRows, cohortQ, args...); err != nil {
+		r.log.Errorf("LTV cohort query failed: %v", err)
+		return nil, ubaV1.ErrorInternalServerError("ltv query failed")
+	}
+	cohortMap := map[string]int64{}
+	for _, cr := range cohortRows {
+		cohortMap[cr.Label] = cr.CohortSize
+	}
+
+	// 取同期群的付费事件，算 event_day 并按 (label, day_bucket) 累计。
+	// 注：DATEDIFF(event_time, register_time) 为事件距注册天数。
+	payArgs := append([]any{}, args...)
+	payQ := fmt.Sprintf(`
+SELECT %s AS label,
+  CASE
+    WHEN DATEDIFF(e.event_time, u.register_time) <= 0  THEN 0
+    WHEN DATEDIFF(e.event_time, u.register_time) <= 1  THEN 1
+    WHEN DATEDIFF(e.event_time, u.register_time) <= 3  THEN 3
+    WHEN DATEDIFF(e.event_time, u.register_time) <= 7  THEN 7
+    WHEN DATEDIFF(e.event_time, u.register_time) <= 14 THEN 14
+    WHEN DATEDIFF(e.event_time, u.register_time) <= 30 THEN 30
+    WHEN DATEDIFF(e.event_time, u.register_time) <= 60 THEN 60
+    ELSE 90
+  END AS day_n,
+  ROUND(SUM(e.amount), 2) AS total_amount
+FROM events_fact e
+JOIN users_dim u ON u.tenant_id = e.tenant_id AND u.user_id = e.user_id
+WHERE u.%sregister_time >= ? AND u.register_time < ? AND e.amount > 0 AND e.user_id > 0
+GROUP BY label, day_n`, dimSelect, tenantCond)
+	type payRow struct {
+		Label       string  `db:"label"`
+		DayN        int64   `db:"day_n"`
+		TotalAmount float64 `db:"total_amount"`
+	}
+	var payRows []payRow
+	if err := r.db.SelectContext(ctx, &payRows, payQ, payArgs...); err != nil {
+		r.log.Errorf("LTV pay query failed: %v", err)
+		return nil, ubaV1.ErrorInternalServerError("ltv query failed")
+	}
+
+	// 累计：每个 label 按 day_n 升序累加金额（累计到第 N 天）。
+	bucketSum := map[string]map[int64]float64{}
+	for _, pr := range payRows {
+		if bucketSum[pr.Label] == nil {
+			bucketSum[pr.Label] = map[int64]float64{}
+		}
+		bucketSum[pr.Label][pr.DayN] = pr.TotalAmount
+	}
+
+	points := make([]*ubaV1.LTVPoint, 0)
+	for label, size := range cohortMap {
+		// 按观察天数升序累计
+		var cumulative float64
+		dayBuckets := bucketSum[label]
+		for _, dn := range maxDays {
+			if amt, ok := dayBuckets[int64(dn)]; ok {
+				cumulative += amt
+			}
+			var ltv float64
+			if size > 0 {
+				ltv = cumulative / float64(size)
+			}
+			points = append(points, &ubaV1.LTVPoint{
+				Label:       label,
+				DayN:        dn,
+				Ltv:         ltv,
+				CohortSize:  size,
+				TotalAmount: cumulative,
+			})
+		}
+	}
+
+	return &ubaV1.LTVResponse{Points: points, MaxDays: 90}, nil
+}
+
+// ============================================================================
 // 工具函数
 // ============================================================================
 
@@ -1717,17 +2005,25 @@ func alignMs(ms int64, interval time.Duration) int64 {
 // allowedDimension 白名单化维度字段，防止 SQL 注入。
 func allowedDimension(dim string) (string, bool) {
 	m := map[string]string{
-		"platform":    "platform",
-		"channel":     "channel",
-		"country":     "country",
-		"app_version": "app_version",
-		"event_name":  "event_name",
+		"platform":       "platform",
+		"channel":        "channel",
+		"country":        "country",
+		"app_version":    "app_version",
+		"event_name":     "event_name",
 		"event_category": "event_category",
-		"os":          "os",
-		"network":     "network",
+		"os":             "os",
+		"network":        "network",
+		// 游戏维度：events_fact 无此列，需 JOIN users_dim（见 GroupBy 的 joinUsersDim）。
+		"user_level": "user_level",
+		"vip_level":  "vip_level",
 	}
 	v, ok := m[dim]
 	return v, ok
+}
+
+// joinUsersDim 返回该维度是否需要 JOIN users_dim（user_level/vip_level 在维度表，非事实表）。
+func joinUsersDim(dim string) bool {
+	return dim == "user_level" || dim == "vip_level"
 }
 
 func metricExpr(metric, col string) (string, error) {

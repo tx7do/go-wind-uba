@@ -101,3 +101,15 @@ func (s *AnalyticsService) NewVsOld(ctx context.Context, req *ubaV1.NewVsOldRequ
 func (s *AnalyticsService) PathSankey(ctx context.Context, req *ubaV1.PathSankeyRequest) (*ubaV1.PathSankeyResponse, error) {
 	return s.client.PathSankey(ctx, req)
 }
+
+func (s *AnalyticsService) LevelAnalysis(ctx context.Context, req *ubaV1.LevelAnalysisRequest) (*ubaV1.LevelAnalysisResponse, error) {
+	return s.client.LevelAnalysis(ctx, req)
+}
+
+func (s *AnalyticsService) WhaleTier(ctx context.Context, req *ubaV1.WhaleTierRequest) (*ubaV1.WhaleTierResponse, error) {
+	return s.client.WhaleTier(ctx, req)
+}
+
+func (s *AnalyticsService) LTV(ctx context.Context, req *ubaV1.LTVRequest) (*ubaV1.LTVResponse, error) {
+	return s.client.LTV(ctx, req)
+}

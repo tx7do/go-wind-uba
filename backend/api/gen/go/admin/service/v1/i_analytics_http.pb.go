@@ -31,6 +31,8 @@ const OperationAnalyticsServiceEventTrend = "/admin.service.v1.AnalyticsService/
 const OperationAnalyticsServiceFunnel = "/admin.service.v1.AnalyticsService/Funnel"
 const OperationAnalyticsServiceGroupBy = "/admin.service.v1.AnalyticsService/GroupBy"
 const OperationAnalyticsServiceInterval = "/admin.service.v1.AnalyticsService/Interval"
+const OperationAnalyticsServiceLTV = "/admin.service.v1.AnalyticsService/LTV"
+const OperationAnalyticsServiceLevelAnalysis = "/admin.service.v1.AnalyticsService/LevelAnalysis"
 const OperationAnalyticsServiceLifecycle = "/admin.service.v1.AnalyticsService/Lifecycle"
 const OperationAnalyticsServiceMatrix = "/admin.service.v1.AnalyticsService/Matrix"
 const OperationAnalyticsServiceNewVsOld = "/admin.service.v1.AnalyticsService/NewVsOld"
@@ -39,6 +41,7 @@ const OperationAnalyticsServiceRetention = "/admin.service.v1.AnalyticsService/R
 const OperationAnalyticsServiceRevenue = "/admin.service.v1.AnalyticsService/Revenue"
 const OperationAnalyticsServiceSegmentation = "/admin.service.v1.AnalyticsService/Segmentation"
 const OperationAnalyticsServiceSessionAnalysis = "/admin.service.v1.AnalyticsService/SessionAnalysis"
+const OperationAnalyticsServiceWhaleTier = "/admin.service.v1.AnalyticsService/WhaleTier"
 
 type AnalyticsServiceHTTPServer interface {
 	// ActiveUsers 活跃用户
@@ -63,6 +66,10 @@ type AnalyticsServiceHTTPServer interface {
 	GroupBy(context.Context, *v1.GroupByRequest) (*v1.GroupByResponse, error)
 	// Interval 间隔时间分析
 	Interval(context.Context, *v1.IntervalRequest) (*v1.IntervalResponse, error)
+	// LTV 历史生命周期价值 LTV
+	LTV(context.Context, *v1.LTVRequest) (*v1.LTVResponse, error)
+	// LevelAnalysis 关卡/数值平衡分析
+	LevelAnalysis(context.Context, *v1.LevelAnalysisRequest) (*v1.LevelAnalysisResponse, error)
 	// Lifecycle 用户生命周期
 	Lifecycle(context.Context, *v1.LifecycleRequest) (*v1.LifecycleResponse, error)
 	// Matrix 矩阵/象限分析
@@ -79,6 +86,8 @@ type AnalyticsServiceHTTPServer interface {
 	Segmentation(context.Context, *v1.SegmentationRequest) (*v1.SegmentationResponse, error)
 	// SessionAnalysis 会话分析
 	SessionAnalysis(context.Context, *v1.SessionAnalysisRequest) (*v1.SessionAnalysisResponse, error)
+	// WhaleTier 鲸鱼用户/付费分层
+	WhaleTier(context.Context, *v1.WhaleTierRequest) (*v1.WhaleTierResponse, error)
 }
 
 func RegisterAnalyticsServiceHTTPServer(s *http.Server, srv AnalyticsServiceHTTPServer) {
@@ -102,6 +111,9 @@ func RegisterAnalyticsServiceHTTPServer(s *http.Server, srv AnalyticsServiceHTTP
 	r.POST("/admin/v1/analytics/anomaly", _AnalyticsService_Anomaly0_HTTP_Handler(srv))
 	r.POST("/admin/v1/analytics/new-vs-old", _AnalyticsService_NewVsOld0_HTTP_Handler(srv))
 	r.POST("/admin/v1/analytics/path-sankey", _AnalyticsService_PathSankey0_HTTP_Handler(srv))
+	r.POST("/admin/v1/analytics/level-analysis", _AnalyticsService_LevelAnalysis0_HTTP_Handler(srv))
+	r.POST("/admin/v1/analytics/whale-tier", _AnalyticsService_WhaleTier0_HTTP_Handler(srv))
+	r.POST("/admin/v1/analytics/ltv", _AnalyticsService_LTV0_HTTP_Handler(srv))
 }
 
 func _AnalyticsService_EventTrend0_HTTP_Handler(srv AnalyticsServiceHTTPServer) func(ctx http.Context) error {
@@ -522,6 +534,72 @@ func _AnalyticsService_PathSankey0_HTTP_Handler(srv AnalyticsServiceHTTPServer) 
 	}
 }
 
+func _AnalyticsService_LevelAnalysis0_HTTP_Handler(srv AnalyticsServiceHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in v1.LevelAnalysisRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationAnalyticsServiceLevelAnalysis)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.LevelAnalysis(ctx, req.(*v1.LevelAnalysisRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*v1.LevelAnalysisResponse)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _AnalyticsService_WhaleTier0_HTTP_Handler(srv AnalyticsServiceHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in v1.WhaleTierRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationAnalyticsServiceWhaleTier)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.WhaleTier(ctx, req.(*v1.WhaleTierRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*v1.WhaleTierResponse)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _AnalyticsService_LTV0_HTTP_Handler(srv AnalyticsServiceHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in v1.LTVRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationAnalyticsServiceLTV)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.LTV(ctx, req.(*v1.LTVRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*v1.LTVResponse)
+		return ctx.Result(200, reply)
+	}
+}
+
 type AnalyticsServiceHTTPClient interface {
 	// ActiveUsers 活跃用户
 	ActiveUsers(ctx context.Context, req *v1.ActiveUsersRequest, opts ...http.CallOption) (rsp *v1.ActiveUsersResponse, err error)
@@ -545,6 +623,10 @@ type AnalyticsServiceHTTPClient interface {
 	GroupBy(ctx context.Context, req *v1.GroupByRequest, opts ...http.CallOption) (rsp *v1.GroupByResponse, err error)
 	// Interval 间隔时间分析
 	Interval(ctx context.Context, req *v1.IntervalRequest, opts ...http.CallOption) (rsp *v1.IntervalResponse, err error)
+	// LTV 历史生命周期价值 LTV
+	LTV(ctx context.Context, req *v1.LTVRequest, opts ...http.CallOption) (rsp *v1.LTVResponse, err error)
+	// LevelAnalysis 关卡/数值平衡分析
+	LevelAnalysis(ctx context.Context, req *v1.LevelAnalysisRequest, opts ...http.CallOption) (rsp *v1.LevelAnalysisResponse, err error)
 	// Lifecycle 用户生命周期
 	Lifecycle(ctx context.Context, req *v1.LifecycleRequest, opts ...http.CallOption) (rsp *v1.LifecycleResponse, err error)
 	// Matrix 矩阵/象限分析
@@ -561,6 +643,8 @@ type AnalyticsServiceHTTPClient interface {
 	Segmentation(ctx context.Context, req *v1.SegmentationRequest, opts ...http.CallOption) (rsp *v1.SegmentationResponse, err error)
 	// SessionAnalysis 会话分析
 	SessionAnalysis(ctx context.Context, req *v1.SessionAnalysisRequest, opts ...http.CallOption) (rsp *v1.SessionAnalysisResponse, err error)
+	// WhaleTier 鲸鱼用户/付费分层
+	WhaleTier(ctx context.Context, req *v1.WhaleTierRequest, opts ...http.CallOption) (rsp *v1.WhaleTierResponse, err error)
 }
 
 type AnalyticsServiceHTTPClientImpl struct {
@@ -725,6 +809,34 @@ func (c *AnalyticsServiceHTTPClientImpl) Interval(ctx context.Context, in *v1.In
 	return &out, nil
 }
 
+// LTV 历史生命周期价值 LTV
+func (c *AnalyticsServiceHTTPClientImpl) LTV(ctx context.Context, in *v1.LTVRequest, opts ...http.CallOption) (*v1.LTVResponse, error) {
+	var out v1.LTVResponse
+	pattern := "/admin/v1/analytics/ltv"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationAnalyticsServiceLTV))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+// LevelAnalysis 关卡/数值平衡分析
+func (c *AnalyticsServiceHTTPClientImpl) LevelAnalysis(ctx context.Context, in *v1.LevelAnalysisRequest, opts ...http.CallOption) (*v1.LevelAnalysisResponse, error) {
+	var out v1.LevelAnalysisResponse
+	pattern := "/admin/v1/analytics/level-analysis"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationAnalyticsServiceLevelAnalysis))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
 // Lifecycle 用户生命周期
 func (c *AnalyticsServiceHTTPClientImpl) Lifecycle(ctx context.Context, in *v1.LifecycleRequest, opts ...http.CallOption) (*v1.LifecycleResponse, error) {
 	var out v1.LifecycleResponse
@@ -829,6 +941,20 @@ func (c *AnalyticsServiceHTTPClientImpl) SessionAnalysis(ctx context.Context, in
 	pattern := "/admin/v1/analytics/session-analysis"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationAnalyticsServiceSessionAnalysis))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+// WhaleTier 鲸鱼用户/付费分层
+func (c *AnalyticsServiceHTTPClientImpl) WhaleTier(ctx context.Context, in *v1.WhaleTierRequest, opts ...http.CallOption) (*v1.WhaleTierResponse, error) {
+	var out v1.WhaleTierResponse
+	pattern := "/admin/v1/analytics/whale-tier"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationAnalyticsServiceWhaleTier))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {
