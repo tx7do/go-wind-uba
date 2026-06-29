@@ -21,6 +21,12 @@ import type {
   ubaservicev1_NewVsOldResponse,
   ubaservicev1_PathSankeyRequest,
   ubaservicev1_PathSankeyResponse,
+  ubaservicev1_LevelAnalysisRequest,
+  ubaservicev1_LevelAnalysisResponse,
+  ubaservicev1_LTVRequest,
+  ubaservicev1_LTVResponse,
+  ubaservicev1_WhaleTierRequest,
+  ubaservicev1_WhaleTierResponse,
   ubaservicev1_RevenueRequest,
   ubaservicev1_RevenueResponse,
   ubaservicev1_SessionAnalysisRequest,
@@ -476,6 +482,74 @@ export async function fetchPathSankey(req: ubaservicev1_PathSankeyRequest) {
   return queryClient.fetchQuery({
     queryKey: ['analytics', 'pathSankey', req],
     queryFn: () => apiClient.analyticsService.PathSankey(req),
+    staleTime: 60_000,
+  });
+}
+
+// ==============================
+// 关卡/数值平衡分析
+// ==============================
+export function useLevelAnalysis(
+  req: ubaservicev1_LevelAnalysisRequest,
+  options?: UseQueryOptions<ubaservicev1_LevelAnalysisResponse, Error>,
+) {
+  return useQuery({
+    queryKey: ['analytics', 'levelAnalysis', req],
+    queryFn: () => apiClient.analyticsService.LevelAnalysis(req),
+    ...options,
+  });
+}
+
+export async function fetchLevelAnalysis(
+  req: ubaservicev1_LevelAnalysisRequest,
+) {
+  return queryClient.fetchQuery({
+    queryKey: ['analytics', 'levelAnalysis', req],
+    queryFn: () => apiClient.analyticsService.LevelAnalysis(req),
+    staleTime: 60_000,
+  });
+}
+
+// ==============================
+// 鲸鱼用户/付费分层
+// ==============================
+export function useWhaleTier(
+  req: ubaservicev1_WhaleTierRequest,
+  options?: UseQueryOptions<ubaservicev1_WhaleTierResponse, Error>,
+) {
+  return useQuery({
+    queryKey: ['analytics', 'whaleTier', req],
+    queryFn: () => apiClient.analyticsService.WhaleTier(req),
+    ...options,
+  });
+}
+
+export async function fetchWhaleTier(req: ubaservicev1_WhaleTierRequest) {
+  return queryClient.fetchQuery({
+    queryKey: ['analytics', 'whaleTier', req],
+    queryFn: () => apiClient.analyticsService.WhaleTier(req),
+    staleTime: 60_000,
+  });
+}
+
+// ==============================
+// 历史生命周期价值 LTV
+// ==============================
+export function useLTV(
+  req: ubaservicev1_LTVRequest,
+  options?: UseQueryOptions<ubaservicev1_LTVResponse, Error>,
+) {
+  return useQuery({
+    queryKey: ['analytics', 'ltv', req],
+    queryFn: () => apiClient.analyticsService.LTV(req),
+    ...options,
+  });
+}
+
+export async function fetchLTV(req: ubaservicev1_LTVRequest) {
+  return queryClient.fetchQuery({
+    queryKey: ['analytics', 'ltv', req],
+    queryFn: () => apiClient.analyticsService.LTV(req),
     staleTime: 60_000,
   });
 }

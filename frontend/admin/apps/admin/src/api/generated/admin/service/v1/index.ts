@@ -363,6 +363,18 @@ export interface AnalyticsService {
   PathSankey(
     request: ubaservicev1_PathSankeyRequest,
   ): Promise<ubaservicev1_PathSankeyResponse>;
+  // 关卡/数值平衡分析
+  LevelAnalysis(
+    request: ubaservicev1_LevelAnalysisRequest,
+  ): Promise<ubaservicev1_LevelAnalysisResponse>;
+  // 鲸鱼用户/付费分层
+  WhaleTier(
+    request: ubaservicev1_WhaleTierRequest,
+  ): Promise<ubaservicev1_WhaleTierResponse>;
+  // 历史生命周期价值 LTV
+  LTV(
+    request: ubaservicev1_LTVRequest,
+  ): Promise<ubaservicev1_LTVResponse>;
 }
 
 export function createAnalyticsServiceClient(
@@ -520,6 +532,30 @@ export function createAnalyticsServiceClient(
         service: 'AnalyticsService',
         method: 'PathSankey',
       }) as Promise<ubaservicev1_PathSankeyResponse>;
+    },
+    LevelAnalysis(request) {
+      const path = `admin/v1/analytics/level-analysis`;
+      const body = JSON.stringify(request);
+      return transport.unary(path, 'POST', body, {
+        service: 'AnalyticsService',
+        method: 'LevelAnalysis',
+      }) as Promise<ubaservicev1_LevelAnalysisResponse>;
+    },
+    WhaleTier(request) {
+      const path = `admin/v1/analytics/whale-tier`;
+      const body = JSON.stringify(request);
+      return transport.unary(path, 'POST', body, {
+        service: 'AnalyticsService',
+        method: 'WhaleTier',
+      }) as Promise<ubaservicev1_WhaleTierResponse>;
+    },
+    LTV(request) {
+      const path = `admin/v1/analytics/ltv`;
+      const body = JSON.stringify(request);
+      return transport.unary(path, 'POST', body, {
+        service: 'AnalyticsService',
+        method: 'LTV',
+      }) as Promise<ubaservicev1_LTVResponse>;
     },
   };
 }
@@ -1196,6 +1232,109 @@ export type ubaservicev1_PathBucket = {
   supportCount: number | undefined;
   // 走过该路径的去重用户数
   uniqueUsers: number | undefined;
+};
+
+// ============== 关卡/数值平衡分析 ==============
+export type ubaservicev1_LevelAnalysisRequest = {
+  // 应用 ID 过滤（可选）
+  appId?: number;
+  // 指定关卡 ID（可选，空表示全部关卡）
+  levelId?: string;
+  // 时间范围
+  timeRange: ubaservicev1_TimeRange | undefined;
+};
+
+export type ubaservicev1_LevelAnalysisResponse = {
+  // 各关卡统计（按 player_count 降序）
+  levels: ubaservicev1_LevelStat[] | undefined;
+};
+
+// 单关分析结果
+export type ubaservicev1_LevelStat = {
+  // 尝试次数（level_start）
+  attemptCount: number | undefined;
+  // 平均分
+  avgScore: number | undefined;
+  // 失败次数（level_fail）
+  failCount: number | undefined;
+  // 完成次数（level_finish）
+  finishCount: number | undefined;
+  // 关卡 ID
+  levelId: string | undefined;
+  // 关卡名
+  levelName: string | undefined;
+  // 通过率（0-1，finish / (finish+fail)）
+  passRate: number | undefined;
+  // 挑战该关卡的玩家数（去重）
+  playerCount: number | undefined;
+  // 满星率（0-1，context['stars']==3 占比）
+  star3Rate: number | undefined;
+  // 卡关率（0-1，1 - passRate，值越高说明越难/流失点）
+  stuckRate: number | undefined;
+};
+
+// ============== 鲸鱼用户/付费分层 ==============
+export type ubaservicev1_WhaleTierRequest = {
+  // 应用 ID 过滤（可选）
+  appId?: number;
+};
+
+export type ubaservicev1_WhaleTierResponse = {
+  // 各付费分层
+  segments: ubaservicev1_PayTierSegment[] | undefined;
+  // 总流水
+  totalRevenue: number | undefined;
+  // 总用户数
+  totalUsers: number | undefined;
+};
+
+// 付费分层
+export type ubaservicev1_PayTierSegment = {
+  // 该层 ARPPU
+  arppu: number | undefined;
+  // 占比（0-1）
+  percentage: number | undefined;
+  // 该层收入贡献占比（0-1）
+  revenueShare: number | undefined;
+  // 分层标识：whale 大课长 / dolphin 中课长 / minnow 小课长 / non_pay 免费
+  tier: string | undefined;
+  // 分层中文名
+  tierLabel: string | undefined;
+  // 该层累计充值总额
+  totalAmount: number | undefined;
+  // 该层用户数
+  userCount: number | undefined;
+};
+
+// ============== 历史生命周期价值 LTV ==============
+export type ubaservicev1_LTVRequest = {
+  // 应用 ID 过滤（可选）
+  appId?: number;
+  // 归因维度（可选，按渠道分组 LTV）：channel（默认，配合归因模型）
+  dimension?: string;
+  // 注册时间范围（按 register_time 过滤同期群）
+  timeRange: ubaservicev1_TimeRange | undefined;
+};
+
+export type ubaservicev1_LTVResponse = {
+  // 观察的最大天数
+  maxDays: number | undefined;
+  // LTV 曲线数据点（按 day_n 升序，同维度聚合）
+  points: ubaservicev1_LTVPoint[] | undefined;
+};
+
+// 单个 LTV 数据点（某天/某维度的累计付费价值）
+export type ubaservicev1_LTVPoint = {
+  // 该同期群人数
+  cohortSize: number | undefined;
+  // 注册后第 N 天（0=注册当天）
+  dayN: number | undefined;
+  // 维度值（如渠道名，未分组时为空）
+  label: string | undefined;
+  // 该同期群累计人均付费（LTV）
+  ltv: number | undefined;
+  // 累计付费总额
+  totalAmount: number | undefined;
 };
 
 // API资源管理服务

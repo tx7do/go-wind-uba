@@ -78,7 +78,10 @@
     "sessionAnalysis": "Session Analysis",
     "anomaly": "Anomaly Detection",
     "newVsOld": "New vs Old",
-    "pathSankey": "Conversion Paths"
+    "pathSankey": "Conversion Paths",
+    "levelAnalysis": "Level Analysis",
+    "whaleTier": "Whale / Pay Tier",
+    "ltv": "LTV"
   },
   "opsAnalysis": {
     "moduleName": "Operations",

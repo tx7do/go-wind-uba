@@ -283,6 +283,41 @@ const dataAnalysis: RouteRecordRaw[] = [
         component: () =>
           import('#/views/app/data-analysis/path-sankey/index.vue'),
       },
+      {
+        path: 'level-analysis',
+        name: 'LevelAnalysis',
+        meta: {
+          order: 24,
+          icon: 'lucide:triangle-right',
+          title: $t('menu.dataAnalysis.levelAnalysis'),
+          authority: ['sys:platform_admin'],
+        },
+        component: () =>
+          import('#/views/app/data-analysis/level-analysis/index.vue'),
+      },
+      {
+        path: 'whale-tier',
+        name: 'WhaleTier',
+        meta: {
+          order: 25,
+          icon: 'lucide:gem',
+          title: $t('menu.dataAnalysis.whaleTier'),
+          authority: ['sys:platform_admin'],
+        },
+        component: () =>
+          import('#/views/app/data-analysis/whale-tier/index.vue'),
+      },
+      {
+        path: 'ltv',
+        name: 'LTV',
+        meta: {
+          order: 26,
+          icon: 'lucide:trending-up',
+          title: $t('menu.dataAnalysis.ltv'),
+          authority: ['sys:platform_admin'],
+        },
+        component: () => import('#/views/app/data-analysis/ltv/index.vue'),
+      },
     ],
   },
 ];

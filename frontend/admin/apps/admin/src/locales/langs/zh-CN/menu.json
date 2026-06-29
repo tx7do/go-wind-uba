@@ -78,7 +78,10 @@
     "sessionAnalysis": "会话分析",
     "anomaly": "异常检测",
     "newVsOld": "新老用户对比",
-    "pathSankey": "转化路径"
+    "pathSankey": "转化路径",
+    "levelAnalysis": "关卡分析",
+    "whaleTier": "付费分层",
+    "ltv": "LTV 生命周期价值"
   },
   "opsAnalysis": {
     "moduleName": "运营分析",
