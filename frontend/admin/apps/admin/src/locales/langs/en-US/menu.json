@@ -69,7 +69,11 @@
     "distribution": "Distribution",
     "behaviorSequence": "Behavior Sequence",
     "segmentation": "Segmentation",
-    "click": "Click Heatmap"
+    "click": "Click Heatmap",
+    "lifecycle": "Lifecycle",
+    "churn": "Churn & Reactivation",
+    "interval": "Time Interval",
+    "matrix": "Matrix Analysis"
   },
   "opsAnalysis": {
     "moduleName": "Operations",

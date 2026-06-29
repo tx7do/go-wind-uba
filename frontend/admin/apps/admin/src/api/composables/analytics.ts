@@ -7,6 +7,14 @@ import type {
   ubaservicev1_BehaviorSequenceResponse,
   ubaservicev1_ClickRequest,
   ubaservicev1_ClickResponse,
+  ubaservicev1_ChurnRequest,
+  ubaservicev1_ChurnResponse,
+  ubaservicev1_IntervalRequest,
+  ubaservicev1_IntervalResponse,
+  ubaservicev1_LifecycleRequest,
+  ubaservicev1_LifecycleResponse,
+  ubaservicev1_MatrixRequest,
+  ubaservicev1_MatrixResponse,
   ubaservicev1_DistributionRequest,
   ubaservicev1_DistributionResponse,
   ubaservicev1_EventTrendRequest,
@@ -258,6 +266,94 @@ export async function fetchClick(req: ubaservicev1_ClickRequest) {
   return queryClient.fetchQuery({
     queryKey: ['analytics', 'click', req],
     queryFn: () => apiClient.analyticsService.Click(req),
+    staleTime: 60_000,
+  });
+}
+
+// ==============================
+// 用户生命周期
+// ==============================
+export function useLifecycle(
+  req: ubaservicev1_LifecycleRequest,
+  options?: UseQueryOptions<ubaservicev1_LifecycleResponse, Error>,
+) {
+  return useQuery({
+    queryKey: ['analytics', 'lifecycle', req],
+    queryFn: () => apiClient.analyticsService.Lifecycle(req),
+    ...options,
+  });
+}
+
+export async function fetchLifecycle(req: ubaservicev1_LifecycleRequest) {
+  return queryClient.fetchQuery({
+    queryKey: ['analytics', 'lifecycle', req],
+    queryFn: () => apiClient.analyticsService.Lifecycle(req),
+    staleTime: 60_000,
+  });
+}
+
+// ==============================
+// 流失与回流
+// ==============================
+export function useChurn(
+  req: ubaservicev1_ChurnRequest,
+  options?: UseQueryOptions<ubaservicev1_ChurnResponse, Error>,
+) {
+  return useQuery({
+    queryKey: ['analytics', 'churn', req],
+    queryFn: () => apiClient.analyticsService.Churn(req),
+    ...options,
+  });
+}
+
+export async function fetchChurn(req: ubaservicev1_ChurnRequest) {
+  return queryClient.fetchQuery({
+    queryKey: ['analytics', 'churn', req],
+    queryFn: () => apiClient.analyticsService.Churn(req),
+    staleTime: 60_000,
+  });
+}
+
+// ==============================
+// 间隔时间分析
+// ==============================
+export function useInterval(
+  req: ubaservicev1_IntervalRequest,
+  options?: UseQueryOptions<ubaservicev1_IntervalResponse, Error>,
+) {
+  return useQuery({
+    queryKey: ['analytics', 'interval', req],
+    queryFn: () => apiClient.analyticsService.Interval(req),
+    ...options,
+  });
+}
+
+export async function fetchInterval(req: ubaservicev1_IntervalRequest) {
+  return queryClient.fetchQuery({
+    queryKey: ['analytics', 'interval', req],
+    queryFn: () => apiClient.analyticsService.Interval(req),
+    staleTime: 60_000,
+  });
+}
+
+// ==============================
+// 矩阵/象限分析
+// ==============================
+export function useMatrix(
+  req: ubaservicev1_MatrixRequest,
+  options?: UseQueryOptions<ubaservicev1_MatrixResponse, Error>,
+) {
+  return useQuery({
+    queryKey: ['analytics', 'matrix', req],
+    queryFn: () => apiClient.analyticsService.Matrix(req),
+    ...options,
+  });
+}
+
+export async function fetchMatrix(req: ubaservicev1_MatrixRequest) {
+  return queryClient.fetchQuery({
+    queryKey: ['analytics', 'matrix', req],
+    queryFn: () => apiClient.analyticsService.Matrix(req),
     staleTime: 60_000,
   });
 }

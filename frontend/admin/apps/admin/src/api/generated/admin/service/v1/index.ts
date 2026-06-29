@@ -327,6 +327,22 @@ export interface AnalyticsService {
   Click(
     request: ubaservicev1_ClickRequest,
   ): Promise<ubaservicev1_ClickResponse>;
+  // 用户生命周期
+  Lifecycle(
+    request: ubaservicev1_LifecycleRequest,
+  ): Promise<ubaservicev1_LifecycleResponse>;
+  // 流失与回流
+  Churn(
+    request: ubaservicev1_ChurnRequest,
+  ): Promise<ubaservicev1_ChurnResponse>;
+  // 间隔时间分析
+  Interval(
+    request: ubaservicev1_IntervalRequest,
+  ): Promise<ubaservicev1_IntervalResponse>;
+  // 矩阵/象限分析
+  Matrix(
+    request: ubaservicev1_MatrixRequest,
+  ): Promise<ubaservicev1_MatrixResponse>;
 }
 
 export function createAnalyticsServiceClient(
@@ -412,6 +428,38 @@ export function createAnalyticsServiceClient(
         service: 'AnalyticsService',
         method: 'Click',
       }) as Promise<ubaservicev1_ClickResponse>;
+    },
+    Lifecycle(request) {
+      const path = `admin/v1/analytics/lifecycle`;
+      const body = JSON.stringify(request);
+      return transport.unary(path, 'POST', body, {
+        service: 'AnalyticsService',
+        method: 'Lifecycle',
+      }) as Promise<ubaservicev1_LifecycleResponse>;
+    },
+    Churn(request) {
+      const path = `admin/v1/analytics/churn`;
+      const body = JSON.stringify(request);
+      return transport.unary(path, 'POST', body, {
+        service: 'AnalyticsService',
+        method: 'Churn',
+      }) as Promise<ubaservicev1_ChurnResponse>;
+    },
+    Interval(request) {
+      const path = `admin/v1/analytics/interval`;
+      const body = JSON.stringify(request);
+      return transport.unary(path, 'POST', body, {
+        service: 'AnalyticsService',
+        method: 'Interval',
+      }) as Promise<ubaservicev1_IntervalResponse>;
+    },
+    Matrix(request) {
+      const path = `admin/v1/analytics/matrix`;
+      const body = JSON.stringify(request);
+      return transport.unary(path, 'POST', body, {
+        service: 'AnalyticsService',
+        method: 'Matrix',
+      }) as Promise<ubaservicev1_MatrixResponse>;
     },
   };
 }
@@ -789,6 +837,148 @@ export type ubaservicev1_ClickElementBucket = {
   elementXpath: string | undefined;
   // 占比（0-1）
   percentage: number | undefined;
+};
+
+// ============== 用户生命周期 ==============
+export type ubaservicev1_LifecycleRequest = {
+  // 应用 ID 过滤（可选）
+  appId?: number;
+  // 流失判定天数（最后活跃距今 > N 天算流失，默认 30）
+  churnDays?: number;
+  // 新用户判定天数（注册距今 N 天内算新用户，默认 7）
+  newUserDays?: number;
+  // 时间范围（基准日，end_ms 视为"今天"）
+  timeRange: ubaservicev1_TimeRange | undefined;
+};
+
+export type ubaservicev1_LifecycleResponse = {
+  // 各阶段分布
+  stages: ubaservicev1_LifecycleStage[] | undefined;
+  // 总用户数
+  totalUsers: number | undefined;
+};
+
+// 生命周期阶段
+export type ubaservicev1_LifecycleStage = {
+  // 占比（0-1）
+  percentage: number | undefined;
+  // 阶段标识：new_user / active / retained / churned / reactivated
+  stage: string | undefined;
+  // 阶段中文名
+  stageLabel: string | undefined;
+  // 该阶段用户数
+  userCount: number | undefined;
+};
+
+// ============== 流失与回流 ==============
+export type ubaservicev1_ChurnRequest = {
+  // 应用 ID 过滤（可选）
+  appId?: number;
+  // 流失判定天数（最后活跃距今 > N 天算流失，默认 30）
+  churnDays?: number;
+  // 回流窗口（近 N 天内重新活跃算回流，默认 7）
+  reactivationDays?: number;
+  // 时间范围（回流窗口，end_ms 视为"今天"）
+  timeRange: ubaservicev1_TimeRange | undefined;
+};
+
+export type ubaservicev1_ChurnResponse = {
+  // 流失时长分布
+  churnBuckets: ubaservicev1_ChurnBucket[] | undefined;
+  // 流失用户总数
+  churnedUsers: number | undefined;
+  // 回流用户数（曾是流失、近期又活跃）
+  reactivatedUsers: number | undefined;
+  // 回流率（reactivated / churned，0-1）
+  reactivationRate: number | undefined;
+  // 回流触发事件 TOP
+  triggers: ubaservicev1_ReactivationTrigger[] | undefined;
+};
+
+// 流失时长分桶
+export type ubaservicev1_ChurnBucket = {
+  // 分桶标签：30_60d / 60_90d / 90_plus
+  bucket: string | undefined;
+  // 该桶流失用户数
+  userCount: number | undefined;
+};
+
+// 回流触发事件 TOP
+export type ubaservicev1_ReactivationTrigger = {
+  // 触发次数
+  count: number | undefined;
+  // 事件名
+  eventName: string | undefined;
+  // 占比（0-1）
+  percentage: number | undefined;
+};
+
+// ============== 间隔时间分析 ==============
+export type ubaservicev1_IntervalRequest = {
+  // 应用 ID 过滤（可选）
+  appId?: number;
+  // 起始事件名（如 register）
+  eventFrom: string | undefined;
+  // 结束事件名（如 pay_success）
+  eventTo: string | undefined;
+  // 时间范围
+  timeRange: ubaservicev1_TimeRange | undefined;
+};
+
+export type ubaservicev1_IntervalResponse = {
+  avgHours: number | undefined;
+  // 各分桶分布
+  buckets: ubaservicev1_IntervalBucket[] | undefined;
+  // 总样本数
+  count: number | undefined;
+  // 分位数摘要（单位：小时）
+  p50Hours: number | undefined;
+  p90Hours: number | undefined;
+};
+
+// 间隔分桶
+export type ubaservicev1_IntervalBucket = {
+  // 分桶标签：instant / lt_1h / 1_24h / 1_7d / 7d_plus
+  bucket: string | undefined;
+  // 该桶样本数
+  count: number | undefined;
+  // 占比（0-1）
+  percentage: number | undefined;
+};
+
+// ============== 矩阵/象限分析 ==============
+export type ubaservicev1_MatrixRequest = {
+  // 应用 ID 过滤（可选）
+  appId?: number;
+  // 分析维度（默认 event_name）
+  dimension?: string;
+  // X/Y 的象限划分阈值类型：median 中位数（默认）/ avg 均值
+  split?: string;
+  // 时间范围
+  timeRange: ubaservicev1_TimeRange | undefined;
+};
+
+export type ubaservicev1_MatrixResponse = {
+  // 使用的维度
+  dimension: string | undefined;
+  // 各散点（维度值 + 双轴值 + 象限）
+  points: ubaservicev1_MatrixPoint[] | undefined;
+  // X 轴阈值（中位数/均值）
+  xThreshold: number | undefined;
+  // Y 轴阈值
+  yThreshold: number | undefined;
+};
+
+// 矩阵散点
+export type ubaservicev1_MatrixPoint = {
+  // 维度值（如事件名）
+  label: string | undefined;
+  // 象限：core 核心 / star 明星 / niche 小众 / edge 边缘
+  quadrant: string | undefined;
+  // X 轴值（使用人数，去重 UV）
+  x: number | undefined;
+  // Y 轴值（使用频次，总次数）
+  y: number | undefined;
 };
 
 // API资源管理服务

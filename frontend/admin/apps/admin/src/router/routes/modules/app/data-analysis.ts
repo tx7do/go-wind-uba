@@ -180,6 +180,51 @@ const dataAnalysis: RouteRecordRaw[] = [
         },
         component: () => import('#/views/app/data-analysis/click/index.vue'),
       },
+      {
+        path: 'lifecycle',
+        name: 'Lifecycle',
+        meta: {
+          order: 15,
+          icon: 'lucide:git-fork',
+          title: $t('menu.dataAnalysis.lifecycle'),
+          authority: ['sys:platform_admin'],
+        },
+        component: () =>
+          import('#/views/app/data-analysis/lifecycle/index.vue'),
+      },
+      {
+        path: 'churn',
+        name: 'Churn',
+        meta: {
+          order: 16,
+          icon: 'lucide:user-minus',
+          title: $t('menu.dataAnalysis.churn'),
+          authority: ['sys:platform_admin'],
+        },
+        component: () => import('#/views/app/data-analysis/churn/index.vue'),
+      },
+      {
+        path: 'interval',
+        name: 'Interval',
+        meta: {
+          order: 17,
+          icon: 'lucide:timer',
+          title: $t('menu.dataAnalysis.interval'),
+          authority: ['sys:platform_admin'],
+        },
+        component: () => import('#/views/app/data-analysis/interval/index.vue'),
+      },
+      {
+        path: 'matrix',
+        name: 'Matrix',
+        meta: {
+          order: 18,
+          icon: 'lucide:layout-grid',
+          title: $t('menu.dataAnalysis.matrix'),
+          authority: ['sys:platform_admin'],
+        },
+        component: () => import('#/views/app/data-analysis/matrix/index.vue'),
+      },
     ],
   },
 ];

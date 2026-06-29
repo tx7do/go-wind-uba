@@ -69,7 +69,11 @@
     "distribution": "分布分析",
     "behaviorSequence": "行为序列",
     "segmentation": "用户分群",
-    "click": "点击热力图"
+    "click": "点击热力图",
+    "lifecycle": "生命周期",
+    "churn": "流失与回流",
+    "interval": "间隔时间",
+    "matrix": "矩阵分析"
   },
   "opsAnalysis": {
     "moduleName": "运营分析",
