@@ -622,14 +622,14 @@ func (r *AnalyticsRepo) BehaviorSequence(ctx context.Context, req *ubaV1.Behavio
 		where = append(where, "event_name = ?")
 		args = append(args, en)
 	}
-	args = append(args, limit)
 
+	// LIMIT 不用占位符（Doris 某些版本不支持 LIMIT ?）
 	q := fmt.Sprintf(`
 SELECT event_time, event_name, session_id, session_seq, referer, platform, channel
 FROM events_fact
 WHERE %s
 ORDER BY event_time ASC
-LIMIT ?`, strings.Join(where, " AND "))
+LIMIT %d`, strings.Join(where, " AND "), limit)
 
 	type evRow struct {
 		EventTime  *time.Time `db:"event_time"`
@@ -726,8 +726,7 @@ WHERE NOT EXISTS (
 		args = append(args, exc.GetEventName(), time.UnixMilli(startMs), time.UnixMilli(endMs))
 	}
 
-	q = q + " LIMIT ?"
-	args = append(args, limit)
+	q = q + fmt.Sprintf(" LIMIT %d", limit)
 
 	var userIDs []uint32
 	if err := r.db.SelectContext(ctx, &userIDs, q, args...); err != nil {
@@ -1604,7 +1603,7 @@ func (r *AnalyticsRepo) PathSankey(ctx context.Context, req *ubaV1.PathSankeyReq
 	}
 
 	tenantCond := ""
-	args := []any{time.UnixMilli(startMs), time.UnixMilli(endMs), topN}
+	args := []any{time.UnixMilli(startMs), time.UnixMilli(endMs)}
 	if v := req.GetAppId(); v != 0 {
 		tenantCond = "tenant_id = ? AND "
 		args = append([]any{v}, args...)
@@ -1619,7 +1618,7 @@ FROM popular_paths_daily
 WHERE %sstat_date >= DATE(?) AND stat_date < DATE(?)
 GROUP BY event_sequence
 ORDER BY support_count DESC
-LIMIT ?`, tenantCond)
+LIMIT %d`, tenantCond, topN)
 
 	type row struct {
 		EventSequence  string  `db:"event_sequence"`
