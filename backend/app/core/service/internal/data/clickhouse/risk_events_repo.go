@@ -92,3 +92,31 @@ func (r *RiskEventsRepo) List(ctx context.Context, req *paginationV1.PagingReque
 		Total: result.Total,
 	}, nil
 }
+
+// Get 按风险事件 ID（risk_event_id，字符串）查询单条风险事件。
+// 注意：表的主键是 risk_event_id（Snowflake 字符串），而非自增数字 ID，
+// 故此处用 risk_event_id 精确匹配，并返回未命中标记（nil, nil）由上层转 NotFound。
+func (r *RiskEventsRepo) Get(ctx context.Context, riskEventID string) (*ubaV1.RiskEvent, error) {
+	if riskEventID == "" {
+		return nil, ubaV1.ErrorBadRequest("risk event id is required")
+	}
+	q := "SELECT * FROM " + r.tableName + " WHERE risk_event_id = ? LIMIT 1"
+
+	var rawResults []any
+	creator := func() any {
+		var e schema.RiskEvents
+		return &e
+	}
+	if err := r.db.Query(ctx, creator, &rawResults, q, riskEventID); err != nil {
+		r.log.Errorf("failed to get risk event data: %v", err)
+		return nil, ubaV1.ErrorInternalServerError("failed to get risk event data")
+	}
+	if len(rawResults) == 0 {
+		return nil, nil
+	}
+	if ptr, ok := rawResults[0].(*schema.RiskEvents); ok {
+		return r.mapper.ToDTO(ptr), nil
+	}
+	r.log.Errorf("unexpected result type")
+	return nil, ubaV1.ErrorInternalServerError("unexpected result type")
+}

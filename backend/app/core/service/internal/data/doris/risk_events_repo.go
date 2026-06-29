@@ -2,6 +2,7 @@ package doris
 
 import (
 	"context"
+	"database/sql"
 
 	"github.com/go-kratos/kratos/v2/log"
 	paginationV1 "github.com/tx7do/go-crud/api/gen/go/pagination/v1"
@@ -95,4 +96,24 @@ func (r *RiskEventsRepo) List(ctx context.Context, req *paginationV1.PagingReque
 		Items: result.Items,
 		Total: result.Total,
 	}, nil
+}
+
+// Get 按风险事件 ID（risk_event_id，字符串）查询单条风险事件。
+// 注意：表的主键是 risk_event_id（Snowflake 字符串），而非自增数字 ID，
+// 故此处用 risk_event_id 精确匹配，并返回未命中标记（nil, nil）由上层转 NotFound。
+func (r *RiskEventsRepo) Get(ctx context.Context, riskEventID string) (*ubaV1.RiskEvent, error) {
+	if riskEventID == "" {
+		return nil, ubaV1.ErrorBadRequest("risk event id is required")
+	}
+	q := "SELECT * FROM " + r.tableName + " WHERE risk_event_id = ? LIMIT 1"
+	var entity schema.RiskEvents
+	if err := r.db.GetContext(ctx, &entity, q, riskEventID); err != nil {
+		// 未命中：Doris 经 database/sql 返回 sql.ErrNoRows，视为不存在。
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+		r.log.Errorf("failed to get risk event data: %v", err)
+		return nil, ubaV1.ErrorInternalServerError("failed to get risk event data")
+	}
+	return r.mapper.ToDTO(&entity), nil
 }
