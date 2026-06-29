@@ -175,6 +175,24 @@ components:
                 traceId:
                     type: string
                     description: Trace ID，事件相关的分布式追踪标识，可以用于分析事件的调用链和系统性能，通常由服务器生成并传递给客户端进行上报
+                clickX:
+                    type: integer
+                    description: 点击坐标 X（相对文档，像素），点击热力图用
+                    format: uint32
+                clickY:
+                    type: integer
+                    description: 点击坐标 Y（相对文档，像素），点击热力图用
+                    format: uint32
+                elementXpath:
+                    type: string
+                    description: 被点击元素的 XPath，如 /html/body/div[2]/a[1]
+                pageUrl:
+                    type: string
+                    description: 页面 URL，热力图按页面分组的前提
+                viewportWidth:
+                    type: integer
+                    description: 视口宽度（像素），用于响应式热力图归一化
+                    format: uint32
                 createdAt:
                     type: string
                     description: 创建时间
