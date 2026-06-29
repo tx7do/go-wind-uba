@@ -1294,16 +1294,17 @@ func (r *AnalyticsRepo) SessionAnalysis(ctx context.Context, req *ubaV1.SessionA
 	}
 	args = append(args, time.UnixMilli(startMs), time.UnixMilli(endMs))
 
+	// 直接查 sessions_fact（不依赖 sessions_agg_daily_view 聚合表）。
 	q := fmt.Sprintf(`
 SELECT
-  sum(session_count) AS session_count,
-  uniqCombinedMerge(unique_users) AS unique_users,
-  sum(duration_sum) / sum(duration_count) / 1000.0 AS avg_duration_sec,
-  quantileTimingMerge(0.5)(p50_duration) / 1000.0 AS p50_sec,
-  quantileTimingMerge(0.9)(p90_duration) / 1000.0 AS p90_sec,
-  sum(bounce_sum) / sum(bounce_count) AS bounce_rate
-FROM sessions_agg_daily_view
-WHERE %sstat_date >= toDate(?) AND stat_date < toDate(?)`, whereCond)
+  count() AS session_count,
+  count(DISTINCT user_id) AS unique_users,
+  ifNull(avg(duration_ms) / 1000.0, 0) AS avg_duration_sec,
+  ifNull(quantile(0.5)(duration_ms) / 1000.0, 0) AS p50_sec,
+  ifNull(quantile(0.9)(duration_ms) / 1000.0, 0) AS p90_sec,
+  ifNull(avg(toUInt8(is_bounce)), 0) AS bounce_rate
+FROM sessions_fact
+WHERE %sstart_time >= ? AND start_time < ?`, whereCond)
 
 	var s struct {
 		SessionCount int64   `db:"session_count" ch:"session_count"`
@@ -1491,16 +1492,23 @@ func (r *AnalyticsRepo) PathSankey(ctx context.Context, req *ubaV1.PathSankeyReq
 		args = append([]any{v}, args...)
 	}
 
+	// 直接查 events_fact：按用户会话内事件序列拼接路径（groupArray + arrayStringConcat）。
 	q := fmt.Sprintf(`
-SELECT arrayStringConcat(event_sequence, ' → ') AS event_sequence_str,
-       sum(support_count) AS support_count,
-       uniqCombinedMerge(unique_users) AS unique_users,
-       any(conversion_rate) AS conversion_rate
-FROM popular_paths_daily_view
-WHERE %sstat_date >= toDate(?) AND stat_date < toDate(?)
-GROUP BY event_sequence, event_sequence_str
+SELECT event_sequence_str, count() AS support_count, count(DISTINCT user_id) AS unique_users, 0 AS conversion_rate
+FROM (
+  SELECT user_id, session_id, arrayStringConcat(groupArray(event_name), ' → ') AS event_sequence_str
+  FROM (
+    SELECT user_id, session_id, event_name, event_time
+    FROM events_fact
+    WHERE %sevent_time >= ? AND event_time < ? AND session_id != '' AND user_id > 0
+    ORDER BY user_id, session_id, event_time
+  )
+  GROUP BY user_id, session_id
+)
+WHERE event_sequence_str != ''
+GROUP BY event_sequence_str
 ORDER BY support_count DESC
-LIMIT ?`, tenantCond)
+LIMIT %d`, tenantCond, topN)
 
 	type row struct {
 		EventSequence  string  `db:"event_sequence_str" ch:"event_sequence_str"`

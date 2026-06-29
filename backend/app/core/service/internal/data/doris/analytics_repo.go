@@ -1380,21 +1380,22 @@ func (r *AnalyticsRepo) SessionAnalysis(ctx context.Context, req *ubaV1.SessionA
 	}
 	args = append(args, time.UnixMilli(startMs), time.UnixMilli(endMs))
 
-	// 会话聚合：SUM(session_count)，HLL 去重用户，时长分位用 QUANTILE_PERCENT。
+	// 直接查 sessions_fact（不依赖 sessions_agg_daily 聚合表，避免无数据）。
+	// 会话数=COUNT(*)，去重用户=COUNT(DISTINCT user_id)，时长分位=PERCENTILE_APPROX。
 	q := fmt.Sprintf(`
 SELECT
-  IFNULL(SUM(session_count), 0) AS session_count,
-  HLL_CARDINALITY(HLL_UNION(unique_users)) AS unique_users,
-  IFNULL(ROUND(SUM(duration_sum) / NULLIF(SUM(duration_count), 0) / 1000.0, 2), 0) AS avg_duration_sec,
-  IFNULL(ROUND(QUANTILE_PERCENT(QUANTILE_UNION(duration_quantile), 0.5) / 1000.0, 2), 0) AS p50_sec,
-  IFNULL(ROUND(QUANTILE_PERCENT(QUANTILE_UNION(duration_quantile), 0.9) / 1000.0, 2), 0) AS p90_sec,
-  IFNULL(ROUND(SUM(bounce_sum) / NULLIF(SUM(bounce_count), 0), 4), 0) AS bounce_rate
-FROM sessions_agg_daily
-WHERE %sstat_date >= DATE(?) AND stat_date < DATE(?)`, whereCond)
+  COUNT(*) AS session_count,
+  COUNT(DISTINCT user_id) AS unique_users,
+  IFNULL(ROUND(AVG(CAST(duration_ms AS DOUBLE)) / 1000.0, 2), 0) AS avg_duration_sec,
+  IFNULL(ROUND(PERCENTILE_APPROX(CAST(duration_ms AS DOUBLE), 0.5) / 1000.0, 2), 0) AS p50_sec,
+  IFNULL(ROUND(PERCENTILE_APPROX(CAST(duration_ms AS DOUBLE), 0.9) / 1000.0, 2), 0) AS p90_sec,
+  IFNULL(ROUND(AVG(CAST(is_bounce AS INT)) / 100.0, 4), 0) AS bounce_rate
+FROM sessions_fact
+WHERE %sstart_time >= ? AND start_time < ?`, whereCond)
 
 	var s struct {
 		SessionCount int64   `db:"session_count"`
-		UniqueUsers  uint64  `db:"unique_users"`
+		UniqueUsers  int64   `db:"unique_users"`
 		AvgDurSec    float64 `db:"avg_duration_sec"`
 		P50Sec       float64 `db:"p50_sec"`
 		P90Sec       float64 `db:"p90_sec"`
@@ -1609,13 +1610,21 @@ func (r *AnalyticsRepo) PathSankey(ctx context.Context, req *ubaV1.PathSankeyReq
 		args = append([]any{v}, args...)
 	}
 
+	// 直接查 events_fact：按用户的会话内事件序列拼接路径，再聚合统计 TOP 路径。
+	// 用 GROUP_CONCAT 把同用户同会话的事件名按时间拼成 "a → b → c" 路径。
 	q := fmt.Sprintf(`
-SELECT array_join(event_sequence, ' → ') AS event_sequence,
-       SUM(support_count) AS support_count,
-       HLL_CARDINALITY(HLL_UNION(unique_users)) AS unique_users,
-       IF(SUM(conversion_count) > 0, SUM(conversion_sum) / SUM(conversion_count), 0) AS conversion_rate
-FROM popular_paths_daily
-WHERE %sstat_date >= DATE(?) AND stat_date < DATE(?)
+SELECT event_sequence, COUNT(*) AS support_count, COUNT(DISTINCT user_id) AS unique_users, 0 AS conversion_rate
+FROM (
+  SELECT user_id, session_id, GROUP_CONCAT(event_name SEPARATOR ' → ') AS event_sequence
+  FROM (
+    SELECT user_id, session_id, event_name, event_time
+    FROM events_fact
+    WHERE %sevent_time >= ? AND event_time < ? AND session_id != '' AND user_id > 0
+    ORDER BY user_id, session_id, event_time
+  ) ordered
+  GROUP BY user_id, session_id
+) paths
+WHERE event_sequence IS NOT NULL AND event_sequence != ''
 GROUP BY event_sequence
 ORDER BY support_count DESC
 LIMIT %d`, tenantCond, topN)
