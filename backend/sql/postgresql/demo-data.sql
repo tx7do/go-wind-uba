@@ -140,42 +140,37 @@ DELETE FROM uba_tag_definitions WHERE tenant_id = 1 AND code IN
 INSERT INTO uba_tag_definitions
   (created_at, updated_at, created_by, updated_by, tenant_id,
    name, code, description, category, tag_type,
-   is_system, is_dynamic, refresh_interval_seconds, condition_expr, default_value, status)
+   is_system, is_dynamic, refresh_interval_seconds, rule)
 VALUES
   (NOW(), NOW(), 1, 1, 1,
    'VIP等级', 'vip_level', '用户VIP等级标签（0-5）',
    'TAG_CATEGORY_USER', 'TAG_TYPE_ENUM',
    true, true, 3600,
-   'user.vip_level',
-   '0', 'ON'),
+   '{"expression":"user.vip_level"}'),
 
   (NOW(), NOW(), 1, 1, 1,
    '付费用户', 'pay_user', '是否有付费记录',
    'TAG_CATEGORY_BUSINESS', 'TAG_TYPE_BOOLEAN',
    true, true, 1800,
-   'count(events where event_name == "pay_success" and user_id == ctx.user_id) > 0',
-   'false', 'ON'),
+   '{"expression":"count(events where event_name == \"pay_success\" and user_id == ctx.user_id) > 0"}'),
 
   (NOW(), NOW(), 1, 1, 1,
    '高风险用户', 'high_risk_user', '风险等级为 high 或 critical 的用户',
    'TAG_CATEGORY_RISK', 'TAG_TYPE_BOOLEAN',
    true, true, 600,
-   'user.risk_level in ["high","critical"]',
-   'false', 'ON'),
+   '{"expression":"user.risk_level in [\"high\",\"critical\"]"}'),
 
   (NOW(), NOW(), 1, 1, 1,
    '流失风险用户', 'churn_risk', '7天内未活跃的用户',
    'TAG_CATEGORY_BEHAVIOR', 'TAG_TYPE_BOOLEAN',
    false, true, 86400,
-   'now() - user.last_active_date > 7d',
-   'false', 'ON'),
+   '{"expression":"now() - user.last_active_date > 7d"}'),
 
   (NOW(), NOW(), 1, 1, 1,
    '新用户', 'new_user', '注册7天内的用户',
    'TAG_CATEGORY_USER', 'TAG_TYPE_BOOLEAN',
    true, true, 3600,
-   'now() - user.register_time <= 7d',
-   'false', 'ON');
+   '{"expression":"now() - user.register_time <= 7d"}');
 
 -- ============================================================
 -- 数据说明
