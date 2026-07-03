@@ -295,6 +295,40 @@ func (m *EventTrendRequest) validate(all bool) error {
 
 	// no validation rules for Granularity
 
+	for idx, item := range m.GetQueries() {
+		_, _ = idx, item
+
+		if all {
+			switch v := interface{}(item).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, EventTrendRequestValidationError{
+						field:  fmt.Sprintf("Queries[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, EventTrendRequestValidationError{
+						field:  fmt.Sprintf("Queries[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(item).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return EventTrendRequestValidationError{
+					field:  fmt.Sprintf("Queries[%v]", idx),
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
 	if m.AppId != nil {
 		// no validation rules for AppId
 	}
@@ -305,6 +339,43 @@ func (m *EventTrendRequest) validate(all bool) error {
 
 	if m.Platform != nil {
 		// no validation rules for Platform
+	}
+
+	if m.Dimension != nil {
+		// no validation rules for Dimension
+	}
+
+	if m.GlobalFilter != nil {
+
+		if all {
+			switch v := interface{}(m.GetGlobalFilter()).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, EventTrendRequestValidationError{
+						field:  "GlobalFilter",
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, EventTrendRequestValidationError{
+						field:  "GlobalFilter",
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(m.GetGlobalFilter()).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return EventTrendRequestValidationError{
+					field:  "GlobalFilter",
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
 	}
 
 	if len(errors) > 0 {
@@ -447,6 +518,40 @@ func (m *EventTrendResponse) validate(all bool) error {
 
 	// no validation rules for Total
 
+	for idx, item := range m.GetSeries() {
+		_, _ = idx, item
+
+		if all {
+			switch v := interface{}(item).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, EventTrendResponseValidationError{
+						field:  fmt.Sprintf("Series[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, EventTrendResponseValidationError{
+						field:  fmt.Sprintf("Series[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(item).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return EventTrendResponseValidationError{
+					field:  fmt.Sprintf("Series[%v]", idx),
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
 	if len(errors) > 0 {
 		return EventTrendResponseMultiError(errors)
 	}
@@ -526,6 +631,526 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = EventTrendResponseValidationError{}
+
+// Validate checks the field values on EventQuery with the rules defined in the
+// proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *EventQuery) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on EventQuery with the rules defined in
+// the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in EventQueryMultiError, or
+// nil if none found.
+func (m *EventQuery) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *EventQuery) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if m.EventName != nil {
+		// no validation rules for EventName
+	}
+
+	if m.Metric != nil {
+		// no validation rules for Metric
+	}
+
+	if m.Filter != nil {
+
+		if all {
+			switch v := interface{}(m.GetFilter()).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, EventQueryValidationError{
+						field:  "Filter",
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, EventQueryValidationError{
+						field:  "Filter",
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(m.GetFilter()).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return EventQueryValidationError{
+					field:  "Filter",
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
+	if m.DisplayName != nil {
+		// no validation rules for DisplayName
+	}
+
+	if len(errors) > 0 {
+		return EventQueryMultiError(errors)
+	}
+
+	return nil
+}
+
+// EventQueryMultiError is an error wrapping multiple validation errors
+// returned by EventQuery.ValidateAll() if the designated constraints aren't met.
+type EventQueryMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m EventQueryMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m EventQueryMultiError) AllErrors() []error { return m }
+
+// EventQueryValidationError is the validation error returned by
+// EventQuery.Validate if the designated constraints aren't met.
+type EventQueryValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e EventQueryValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e EventQueryValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e EventQueryValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e EventQueryValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e EventQueryValidationError) ErrorName() string { return "EventQueryValidationError" }
+
+// Error satisfies the builtin error interface
+func (e EventQueryValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sEventQuery.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = EventQueryValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = EventQueryValidationError{}
+
+// Validate checks the field values on EventSeries with the rules defined in
+// the proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *EventSeries) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on EventSeries with the rules defined in
+// the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in EventSeriesMultiError, or
+// nil if none found.
+func (m *EventSeries) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *EventSeries) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Name
+
+	for idx, item := range m.GetPoints() {
+		_, _ = idx, item
+
+		if all {
+			switch v := interface{}(item).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, EventSeriesValidationError{
+						field:  fmt.Sprintf("Points[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, EventSeriesValidationError{
+						field:  fmt.Sprintf("Points[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(item).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return EventSeriesValidationError{
+					field:  fmt.Sprintf("Points[%v]", idx),
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
+	// no validation rules for Total
+
+	if len(errors) > 0 {
+		return EventSeriesMultiError(errors)
+	}
+
+	return nil
+}
+
+// EventSeriesMultiError is an error wrapping multiple validation errors
+// returned by EventSeries.ValidateAll() if the designated constraints aren't met.
+type EventSeriesMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m EventSeriesMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m EventSeriesMultiError) AllErrors() []error { return m }
+
+// EventSeriesValidationError is the validation error returned by
+// EventSeries.Validate if the designated constraints aren't met.
+type EventSeriesValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e EventSeriesValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e EventSeriesValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e EventSeriesValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e EventSeriesValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e EventSeriesValidationError) ErrorName() string { return "EventSeriesValidationError" }
+
+// Error satisfies the builtin error interface
+func (e EventSeriesValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sEventSeries.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = EventSeriesValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = EventSeriesValidationError{}
+
+// Validate checks the field values on PropertyFilter with the rules defined in
+// the proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *PropertyFilter) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on PropertyFilter with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in PropertyFilterMultiError,
+// or nil if none found.
+func (m *PropertyFilter) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *PropertyFilter) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Scope
+
+	// no validation rules for Field
+
+	// no validation rules for Op
+
+	if len(errors) > 0 {
+		return PropertyFilterMultiError(errors)
+	}
+
+	return nil
+}
+
+// PropertyFilterMultiError is an error wrapping multiple validation errors
+// returned by PropertyFilter.ValidateAll() if the designated constraints
+// aren't met.
+type PropertyFilterMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m PropertyFilterMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m PropertyFilterMultiError) AllErrors() []error { return m }
+
+// PropertyFilterValidationError is the validation error returned by
+// PropertyFilter.Validate if the designated constraints aren't met.
+type PropertyFilterValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e PropertyFilterValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e PropertyFilterValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e PropertyFilterValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e PropertyFilterValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e PropertyFilterValidationError) ErrorName() string { return "PropertyFilterValidationError" }
+
+// Error satisfies the builtin error interface
+func (e PropertyFilterValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sPropertyFilter.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = PropertyFilterValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = PropertyFilterValidationError{}
+
+// Validate checks the field values on FilterGroup with the rules defined in
+// the proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *FilterGroup) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on FilterGroup with the rules defined in
+// the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in FilterGroupMultiError, or
+// nil if none found.
+func (m *FilterGroup) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *FilterGroup) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	for idx, item := range m.GetFilters() {
+		_, _ = idx, item
+
+		if all {
+			switch v := interface{}(item).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, FilterGroupValidationError{
+						field:  fmt.Sprintf("Filters[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, FilterGroupValidationError{
+						field:  fmt.Sprintf("Filters[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(item).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return FilterGroupValidationError{
+					field:  fmt.Sprintf("Filters[%v]", idx),
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
+	if len(errors) > 0 {
+		return FilterGroupMultiError(errors)
+	}
+
+	return nil
+}
+
+// FilterGroupMultiError is an error wrapping multiple validation errors
+// returned by FilterGroup.ValidateAll() if the designated constraints aren't met.
+type FilterGroupMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m FilterGroupMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m FilterGroupMultiError) AllErrors() []error { return m }
+
+// FilterGroupValidationError is the validation error returned by
+// FilterGroup.Validate if the designated constraints aren't met.
+type FilterGroupValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e FilterGroupValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e FilterGroupValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e FilterGroupValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e FilterGroupValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e FilterGroupValidationError) ErrorName() string { return "FilterGroupValidationError" }
+
+// Error satisfies the builtin error interface
+func (e FilterGroupValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sFilterGroup.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = FilterGroupValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = FilterGroupValidationError{}
 
 // Validate checks the field values on FunnelStep with the rules defined in the
 // proto definition for this message. If any rules are violated, the first

@@ -641,7 +641,12 @@ export type AnalyticsDimension =
   | 'os'
   | 'platform';
 
-export type AnalyticsMetric = 'COUNT' | 'SUM_AMOUNT' | 'UNIQUE_USER';
+export type AnalyticsMetric =
+  | 'AVG_AMOUNT'
+  | 'COUNT'
+  | 'PER_USER'
+  | 'SUM_AMOUNT'
+  | 'UNIQUE_USER';
 
 export type AnalyticsGranularity =
   | 'ANALYTICS_GRANULARITY_UNSPECIFIED'

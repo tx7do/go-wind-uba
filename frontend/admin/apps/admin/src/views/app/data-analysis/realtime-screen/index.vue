@@ -113,6 +113,7 @@ async function refreshCharts() {
     fetchEventTrend({
       timeRange: { startMs: now - 60 * 60 * 1000, endMs: now },
       granularity: 'HOUR',
+      queries: [],
     })
       .then((resp) => {
         trendPoints.value = (resp.points ?? []).map((p) => ({

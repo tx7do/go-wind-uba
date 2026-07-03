@@ -107,6 +107,7 @@ async function loadDashboard() {
 
     // 事件趋势
     fetchEventTrend({
+      queries: [],
       timeRange: range,
       granularity: 'ANALYTICS_GRANULARITY_UNSPECIFIED',
     })

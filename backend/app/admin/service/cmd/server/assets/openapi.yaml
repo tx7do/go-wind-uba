@@ -8362,6 +8362,25 @@ components:
                     type: string
                     description: 描述
             description: 事件属性定义
+        EventQuery:
+            type: object
+            properties:
+                eventName:
+                    type: string
+                    description: 事件名（可选，空表示全部事件）
+                metric:
+                    type: string
+                    description: |-
+                        聚合指标：COUNT=事件数(默认)，UNIQUE_USER=去重用户数，SUM_AMOUNT=金额求和，
+                                  AVG_AMOUNT=平均金额，PER_USER=人均次数
+                filter:
+                    allOf:
+                        - $ref: '#/components/schemas/FilterGroup'
+                    description: 该事件自身过滤（与 global_filter 取 AND）
+                displayName:
+                    type: string
+                    description: 序列显示名（可选，默认用 event_name 或 "全部事件"）
+            description: 单条事件查询（事件分析中的一条趋势线）
         EventSchema:
             type: object
             properties:
@@ -8415,6 +8434,21 @@ components:
                     description: 更新时间
                     format: date-time
             description: 事件 Schema
+        EventSeries:
+            type: object
+            properties:
+                name:
+                    type: string
+                    description: 序列名（事件名，或 "事件名 / 维度值" 拆分场景）
+                points:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/TimeSeriesPoint'
+                    description: 趋势数据点
+                total:
+                    type: string
+                    description: 该序列区间总量
+            description: 一条趋势线
         EventTrendRequest:
             type: object
             properties:
@@ -8438,10 +8472,22 @@ components:
                     format: uint32
                 eventName:
                     type: string
-                    description: 事件名过滤（可选，空表示全部事件）
+                    description: 事件名过滤（可选，空表示全部事件）——向后兼容字段，queries 为空时使用
                 platform:
                     type: string
-                    description: 平台过滤（可选）
+                    description: 平台过滤（可选）——向后兼容字段
+                queries:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/EventQuery'
+                    description: 多事件查询（每条 query 对应一条趋势线）。为空时按 event_name/platform 旧逻辑降级
+                dimension:
+                    type: string
+                    description: 全局维度拆分（可选，空表示不拆分）。设置后每条 query 按该维度拆成多条线
+                globalFilter:
+                    allOf:
+                        - $ref: '#/components/schemas/FilterGroup'
+                    description: 全局过滤（可选，作用于所有 queries）
             description: ============== 事件趋势 ==============
         EventTrendResponse:
             type: object
@@ -8450,7 +8496,7 @@ components:
                     type: array
                     items:
                         $ref: '#/components/schemas/TimeSeriesPoint'
-                    description: 趋势数据点
+                    description: 趋势数据点（向后兼容：取 series[0].points，单线场景使用）
                 granularity:
                     enum:
                         - ANALYTICS_GRANULARITY_UNSPECIFIED
@@ -8463,7 +8509,12 @@ components:
                     format: enum
                 total:
                     type: string
-                    description: 区间内事件总量
+                    description: 区间内事件总量（向后兼容：取 series[0].total）
+                series:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/EventSeries'
+                    description: 多 series 趋势（多事件对比 / 维度拆分场景使用）
         File:
             type: object
             properties:
@@ -8553,6 +8604,15 @@ components:
                     description: 删除时间
                     format: date-time
             description: 文件
+        FilterGroup:
+            type: object
+            properties:
+                filters:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/PropertyFilter'
+                    description: 过滤条件列表（AND 组合）
+            description: 过滤条件组（内部多条 PropertyFilter 取 AND）
         FunnelRequest:
             type: object
             properties:
@@ -11061,6 +11121,42 @@ components:
                     type: string
                     description: 预签名约束的 Content-Type（可选）
             description: 预签名选项
+        PropertyFilter:
+            type: object
+            properties:
+                scope:
+                    enum:
+                        - FIELD_SCOPE_UNSPECIFIED
+                        - DIMENSION
+                        - EVENT_CONTEXT
+                        - EVENT_PROPERTY
+                        - EVENT_METRIC
+                    type: string
+                    description: 字段作用域
+                    format: enum
+                field:
+                    type: string
+                    description: 字段名：DIMENSION 时为白名单列名；其他时为 Map 键名（需匹配 ^[A-Za-z0-9_]+$）
+                op:
+                    enum:
+                        - OPERATOR_UNSPECIFIED
+                        - EQ
+                        - NEQ
+                        - CONTAINS
+                        - IN
+                        - GT
+                        - GTE
+                        - LT
+                        - LTE
+                    type: string
+                    description: 比较算子
+                    format: enum
+                values:
+                    type: array
+                    items:
+                        type: string
+                    description: 比较值列表（IN 用多值，其他算子取首个）
+            description: 属性过滤条件（单条）
         ReactivationTrigger:
             type: object
             properties:

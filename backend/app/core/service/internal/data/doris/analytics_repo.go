@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"regexp"
 	"sort"
 	"strings"
 	"time"
@@ -15,6 +16,9 @@ import (
 
 	ubaV1 "go-wind-uba/api/gen/go/uba/service/v1"
 )
+
+// mapKeyRe 约束 Map 键名仅允许字母/数字/下划线，防止 SQL 注入。
+var mapKeyRe = regexp.MustCompile(`^[A-Za-z0-9_]+$`)
 
 // AnalyticsRepo 基于 Doris（MySQL 协议）的 BI 聚合查询仓库。
 // 所有查询走原生 SQL（GROUP BY），数据源为 events_fact / sessions_fact。
@@ -39,56 +43,221 @@ func NewAnalyticsRepo(
 
 func (r *AnalyticsRepo) EventTrend(ctx context.Context, req *ubaV1.EventTrendRequest) (*ubaV1.EventTrendResponse, error) {
 	startMs, endMs := normTimeRange(req.GetTimeRange())
-	gran := req.GetGranularity()
+	gran := effectiveGranularity(req.GetGranularity(), startMs, endMs)
 	bucketExpr, interval := granularityExpr(gran)
 
-	var where []string
-	args := []any{time.UnixMilli(startMs), time.UnixMilli(endMs)}
-	where = append(where, "event_time >= ?", "event_time < ?")
-	if v := req.GetEventName(); v != "" {
-		where = append(where, "event_name = ?")
-		args = append(args, v)
-	}
-	if v := req.GetPlatform(); v != "" {
-		where = append(where, "platform = ?")
-		args = append(args, v)
-	}
-	if v := req.GetAppId(); v != 0 {
-		where = append(where, "tenant_id = ?")
-		args = append(args, v)
+	// 维度拆分列（可选）
+	dimCol := ""
+	dimNeedJoin := false
+	if d := req.GetDimension(); d != "" {
+		col, join, err := dimensionColumnExpr(d)
+		if err != nil {
+			return nil, ubaV1.ErrorBadRequest(fmt.Sprintf("invalid dimension: %v", err))
+		}
+		dimCol = col
+		dimNeedJoin = join
 	}
 
-	q := fmt.Sprintf(
-		"SELECT %s AS bucket, COUNT(*) AS cnt FROM events_fact WHERE %s GROUP BY bucket ORDER BY bucket",
-		bucketExpr, strings.Join(where, " AND "),
+	// 全局过滤
+	gfClauses, gfArgs, gfNeedJoin, err := buildFilterWhere(req.GetGlobalFilter())
+	if err != nil {
+		return nil, ubaV1.ErrorBadRequest(fmt.Sprintf("invalid global filter: %v", err))
+	}
+
+	// 归一化 queries：为空时降级为单条 COUNT query（向后兼容）
+	queries := req.GetQueries()
+	if len(queries) == 0 {
+		q := &ubaV1.EventQuery{Metric: ptrString("COUNT")}
+		if v := req.GetEventName(); v != "" {
+			q.EventName = ptrString(v)
+		}
+		if v := req.GetPlatform(); v != "" {
+			q.Filter = &ubaV1.FilterGroup{
+				Filters: []*ubaV1.PropertyFilter{{
+					Scope:  ubaV1.PropertyFilter_DIMENSION,
+					Field:  "platform",
+					Op:     ubaV1.PropertyFilter_EQ,
+					Values: []string{v},
+				}},
+			}
+		}
+		queries = []*ubaV1.EventQuery{q}
+	}
+
+	resp := &ubaV1.EventTrendResponse{Granularity: gran, Series: make([]*ubaV1.EventSeries, 0, len(queries))}
+
+	for _, q := range queries {
+		if q == nil {
+			continue
+		}
+		metricSQL, err := metricExpr(q.GetMetric(), "")
+		if err != nil {
+			return nil, ubaV1.ErrorBadRequest(fmt.Sprintf("invalid metric: %v", err))
+		}
+
+		qfClauses, qfArgs, qfNeedJoin, err := buildFilterWhere(q.GetFilter())
+		if err != nil {
+			return nil, ubaV1.ErrorBadRequest(fmt.Sprintf("invalid query filter: %v", err))
+		}
+
+		needJoin := dimNeedJoin || gfNeedJoin || qfNeedJoin
+		var where []string
+		args := []any{time.UnixMilli(startMs), time.UnixMilli(endMs)}
+		where = append(where, "event_time >= ?", "event_time < ?")
+		if v := req.GetAppId(); v != 0 {
+			where = append(where, "events_fact.tenant_id = ?")
+			args = append(args, v)
+		}
+		if v := q.GetEventName(); v != "" {
+			where = append(where, "events_fact.event_name = ?")
+			args = append(args, v)
+		}
+		where = append(where, gfClauses...)
+		args = append(args, gfArgs...)
+		where = append(where, qfClauses...)
+		args = append(args, qfArgs...)
+
+		joinClause := ""
+		if needJoin {
+			joinClause = " INNER JOIN users_dim u ON u.tenant_id = events_fact.tenant_id AND u.user_id = events_fact.user_id"
+		}
+
+		if dimCol != "" {
+			if err := r.eventTrendSplit(ctx, resp, q, bucketExpr, dimCol, metricSQL, joinClause, where, args, startMs, endMs, interval); err != nil {
+				return nil, err
+			}
+		} else {
+			if err := r.eventTrendSingle(ctx, resp, q, bucketExpr, metricSQL, joinClause, where, args, startMs, endMs, interval); err != nil {
+				return nil, err
+			}
+		}
+	}
+
+	// 向后兼容：points/total 取第一条 series
+	if len(resp.Series) > 0 {
+		resp.Points = resp.Series[0].GetPoints()
+		resp.Total = resp.Series[0].GetTotal()
+	}
+	return resp, nil
+}
+
+// eventTrendSingle 处理单条趋势线（无维度拆分）。
+func (r *AnalyticsRepo) eventTrendSingle(
+	ctx context.Context, resp *ubaV1.EventTrendResponse,
+	q *ubaV1.EventQuery, bucketExpr, metricSQL, joinClause string,
+	where []string, args []any, startMs, endMs int64, interval time.Duration,
+) error {
+	qstr := fmt.Sprintf(
+		"SELECT %s AS bucket, %s AS val FROM events_fact%s WHERE %s GROUP BY bucket ORDER BY bucket",
+		bucketExpr, metricSQL, joinClause, strings.Join(where, " AND "),
 	)
-
 	type row struct {
-		Bucket string `db:"bucket"`
-		Cnt    int64  `db:"cnt"`
+		Bucket string  `db:"bucket"`
+		Val    float64 `db:"val"`
 	}
 	var rows []row
-	if err := r.db.SelectContext(ctx, &rows, q, args...); err != nil {
-		r.log.Errorf("EventTrend query failed: %v", err)
-		return nil, ubaV1.ErrorInternalServerError(fmt.Sprintf("event trend query failed: %v", err))
+	if err := r.db.SelectContext(ctx, &rows, qstr, args...); err != nil {
+		r.log.Errorf("EventTrend(single) query failed: %v", err)
+		return ubaV1.ErrorInternalServerError(fmt.Sprintf("event trend query failed: %v", err))
 	}
-
 	points := make([]*ubaV1.TimeSeriesPoint, 0, len(rows))
 	var total int64
 	for _, rw := range rows {
 		ts := parseBucketMs(rw.Bucket)
-		points = append(points, &ubaV1.TimeSeriesPoint{Timestamp: ts, Value: float64(rw.Cnt)})
-		total += rw.Cnt
+		points = append(points, &ubaV1.TimeSeriesPoint{Timestamp: ts, Value: rw.Val})
+		total += int64(rw.Val)
+	}
+	points = fillMissingBuckets(points, startMs, endMs, interval)
+	resp.Series = append(resp.Series, &ubaV1.EventSeries{
+		Name:   seriesNameOf(q),
+		Points: points,
+		Total:  total,
+	})
+	return nil
+}
+
+// eventTrendSplit 处理维度拆分：查出 (bucket, dim_val, val)，在 Go 层按 dim_val pivot 成多条 series。
+func (r *AnalyticsRepo) eventTrendSplit(
+	ctx context.Context, resp *ubaV1.EventTrendResponse,
+	q *ubaV1.EventQuery, bucketExpr, dimCol, metricSQL, joinClause string,
+	where []string, args []any, startMs, endMs int64, interval time.Duration,
+) error {
+	const topN = 10
+	qstr := fmt.Sprintf(
+		"SELECT %s AS bucket, %s AS dim_val, %s AS val FROM events_fact%s WHERE %s GROUP BY bucket, dim_val ORDER BY bucket",
+		bucketExpr, dimCol, metricSQL, joinClause, strings.Join(where, " AND "),
+	)
+	type row struct {
+		Bucket  string  `db:"bucket"`
+		DimVal  string  `db:"dim_val"`
+		Val     float64 `db:"val"`
+	}
+	var rows []row
+	if err := r.db.SelectContext(ctx, &rows, qstr, args...); err != nil {
+		r.log.Errorf("EventTrend(split) query failed: %v", err)
+		return ubaV1.ErrorInternalServerError(fmt.Sprintf("event trend query failed: %v", err))
 	}
 
-	// 补全空桶，保证前端折线连续
-	points = fillMissingBuckets(points, startMs, endMs, interval)
+	totals := make(map[string]float64)
+	for _, rw := range rows {
+		label := rw.DimVal
+		if label == "" {
+			label = "unknown"
+		}
+		totals[label] += rw.Val
+	}
+	topLabels := topKeysByValue(totals, topN)
+	topSet := make(map[string]bool, len(topLabels))
+	for _, l := range topLabels {
+		topSet[l] = true
+	}
 
-	return &ubaV1.EventTrendResponse{
-		Points:      points,
-		Granularity: effectiveGranularity(gran, startMs, endMs),
-		Total:       total,
-	}, nil
+	type seriesAcc struct {
+		points map[int64]float64
+		total  int64
+	}
+	acc := map[string]*seriesAcc{}
+	get := func(label string) *seriesAcc {
+		a, ok := acc[label]
+		if !ok {
+			a = &seriesAcc{points: map[int64]float64{}}
+			acc[label] = a
+		}
+		return a
+	}
+	for _, rw := range rows {
+		label := rw.DimVal
+		if label == "" {
+			label = "unknown"
+		}
+		if !topSet[label] {
+			label = "其他"
+		}
+		a := get(label)
+		a.points[parseBucketMs(rw.Bucket)] += rw.Val
+		a.total += int64(rw.Val)
+	}
+
+	order := append([]string{}, topLabels...)
+	if _, has := acc["其他"]; has {
+		order = append(order, "其他")
+	}
+	base := seriesNameOf(q)
+	for _, label := range order {
+		a := acc[label]
+		points := make([]*ubaV1.TimeSeriesPoint, 0, len(a.points))
+		for ts, v := range a.points {
+			points = append(points, &ubaV1.TimeSeriesPoint{Timestamp: ts, Value: v})
+		}
+		sort.Slice(points, func(i, j int) bool { return points[i].GetTimestamp() < points[j].GetTimestamp() })
+		points = fillMissingBuckets(points, startMs, endMs, interval)
+		resp.Series = append(resp.Series, &ubaV1.EventSeries{
+			Name:   base + " / " + label,
+			Points: points,
+			Total:  a.total,
+		})
+	}
+	return nil
 }
 
 // ============================================================================
@@ -2284,9 +2453,172 @@ func metricExpr(metric, col string) (string, error) {
 		return "COUNT(DISTINCT user_id)", nil
 	case "SUM_AMOUNT":
 		return "CAST(COALESCE(SUM(CAST(amount AS DOUBLE)), 0) AS DOUBLE)", nil
+	case "AVG_AMOUNT":
+		return "AVG(CAST(amount AS DOUBLE))", nil
+	case "PER_USER":
+		// 人均次数：事件数 / 去重用户数（NULLIF 防除零）
+		return "CAST(COUNT(*) AS DOUBLE) / NULLIF(COUNT(DISTINCT user_id), 0)", nil
 	default:
 		return "", fmt.Errorf("unsupported metric: %s", metric)
 	}
+}
+
+// operatorSQL 把 PropertyFilter.Operator 映射为 SQL 片段（Doris 方言）。
+// 返回 (sql片段, 是否 IN 多值, 错误)。
+func operatorSQL(op ubaV1.PropertyFilter_Operator) (sql string, isIn bool, err error) {
+	switch op {
+	case ubaV1.PropertyFilter_OPERATOR_UNSPECIFIED, ubaV1.PropertyFilter_EQ:
+		return "=", false, nil
+	case ubaV1.PropertyFilter_NEQ:
+		return "<>", false, nil
+	case ubaV1.PropertyFilter_CONTAINS:
+		// Doris 用 position(... IN ...) > 0 模拟大小写不敏感包含
+		return "position({} IN {}) > 0", false, nil
+	case ubaV1.PropertyFilter_IN:
+		return "IN", true, nil
+	case ubaV1.PropertyFilter_GT:
+		return ">", false, nil
+	case ubaV1.PropertyFilter_GTE:
+		return ">=", false, nil
+	case ubaV1.PropertyFilter_LT:
+		return "<", false, nil
+	case ubaV1.PropertyFilter_LTE:
+		return "<=", false, nil
+	default:
+		return "", false, fmt.Errorf("unsupported operator: %s", op)
+	}
+}
+
+// resolveFilterColumn 把 (scope, field) 解析为安全的 SQL 列表达式。
+func resolveFilterColumn(scope ubaV1.PropertyFilter_FieldScope, field string) (string, bool, error) {
+	switch scope {
+	case ubaV1.PropertyFilter_FIELD_SCOPE_UNSPECIFIED, ubaV1.PropertyFilter_DIMENSION:
+		col, ok := allowedDimension(field)
+		if !ok {
+			return "", false, fmt.Errorf("invalid dimension field: %s", field)
+		}
+		if joinUsersDim(field) {
+			return "u." + col, true, nil
+		}
+		return col, false, nil
+	case ubaV1.PropertyFilter_EVENT_CONTEXT:
+		if !mapKeyRe.MatchString(field) {
+			return "", false, fmt.Errorf("invalid context key: %s", field)
+		}
+		return "context['" + field + "']", false, nil
+	case ubaV1.PropertyFilter_EVENT_PROPERTY:
+		if !mapKeyRe.MatchString(field) {
+			return "", false, fmt.Errorf("invalid properties key: %s", field)
+		}
+		return "properties['" + field + "']", false, nil
+	case ubaV1.PropertyFilter_EVENT_METRIC:
+		if !mapKeyRe.MatchString(field) {
+			return "", false, fmt.Errorf("invalid metrics key: %s", field)
+		}
+		return "metrics['" + field + "']", false, nil
+	default:
+		return "", false, fmt.Errorf("unsupported scope: %s", scope)
+	}
+}
+
+// buildFilterWhere 把 FilterGroup 构造为 WHERE 子句片段与参数。
+func buildFilterWhere(group *ubaV1.FilterGroup) ([]string, []any, bool, error) {
+	if group == nil || len(group.GetFilters()) == 0 {
+		return nil, nil, false, nil
+	}
+	var (
+		clauses []string
+		args    []any
+		needJoin bool
+	)
+	for _, f := range group.GetFilters() {
+		if f == nil {
+			continue
+		}
+		col, join, err := resolveFilterColumn(f.GetScope(), f.GetField())
+		if err != nil {
+			return nil, nil, false, err
+		}
+		if join {
+			needJoin = true
+		}
+		opSQL, isIn, err := operatorSQL(f.GetOp())
+		if err != nil {
+			return nil, nil, false, err
+		}
+		vals := f.GetValues()
+		if isIn {
+			if len(vals) == 0 {
+				continue
+			}
+			placeholders := make([]string, len(vals))
+			for i, v := range vals {
+				placeholders[i] = "?"
+				args = append(args, v)
+			}
+			clauses = append(clauses, fmt.Sprintf("%s IN (%s)", col, strings.Join(placeholders, ", ")))
+			continue
+		}
+		if len(vals) == 0 {
+			continue
+		}
+		if f.GetOp() == ubaV1.PropertyFilter_CONTAINS {
+			// 模板：position({?} IN {col}) > 0 —— 注意 Doris position 参数顺序：needle, haystack
+			clauses = append(clauses, fmt.Sprintf(opSQL, "?", col))
+			args = append(args, vals[0])
+			continue
+		}
+		clauses = append(clauses, fmt.Sprintf("%s %s ?", col, opSQL))
+		args = append(args, vals[0])
+	}
+	return clauses, args, needJoin, nil
+}
+
+// dimensionColumnExpr 把维度名解析为 SELECT/GROUP BY 用的列表达式。
+func dimensionColumnExpr(dim string) (string, bool, error) {
+	col, ok := allowedDimension(dim)
+	if !ok {
+		return "", false, fmt.Errorf("invalid dimension: %s", dim)
+	}
+	if joinUsersDim(dim) {
+		return "u." + col, true, nil
+	}
+	return col, false, nil
+}
+
+// seriesNameOf 解析 EventQuery 的序列显示名。
+func seriesNameOf(q *ubaV1.EventQuery) string {
+	if v := q.GetDisplayName(); v != "" {
+		return v
+	}
+	if v := q.GetEventName(); v != "" {
+		return v
+	}
+	return "全部事件"
+}
+
+// ptrString 返回 s 的指针。
+func ptrString(s string) *string { return &s }
+
+// topKeysByValue 按 value 降序返回前 n 个 key。
+func topKeysByValue(m map[string]float64, n int) []string {
+	type kv struct {
+		k string
+		v float64
+	}
+	all := make([]kv, 0, len(m))
+	for k, v := range m {
+		all = append(all, kv{k, v})
+	}
+	sort.Slice(all, func(i, j int) bool { return all[i].v > all[j].v })
+	if n > len(all) {
+		n = len(all)
+	}
+	out := make([]string, 0, n)
+	for i := 0; i < n; i++ {
+		out = append(out, all[i].k)
+	}
+	return out
 }
 
 // 兼容 sql.ErrNoRows

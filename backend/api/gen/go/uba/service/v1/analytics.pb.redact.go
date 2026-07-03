@@ -354,6 +354,12 @@ func (x *EventTrendRequest) Redact() string {
 	// Safe field: EventName
 
 	// Safe field: Platform
+
+	// Safe field: Queries
+
+	// Safe field: Dimension
+
+	// Safe field: GlobalFilter
 	return x.String()
 }
 
@@ -368,6 +374,64 @@ func (x *EventTrendResponse) Redact() string {
 	// Safe field: Granularity
 
 	// Safe field: Total
+
+	// Safe field: Series
+	return x.String()
+}
+
+// Redact method implementation for EventQuery
+func (x *EventQuery) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: EventName
+
+	// Safe field: Metric
+
+	// Safe field: Filter
+
+	// Safe field: DisplayName
+	return x.String()
+}
+
+// Redact method implementation for EventSeries
+func (x *EventSeries) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Name
+
+	// Safe field: Points
+
+	// Safe field: Total
+	return x.String()
+}
+
+// Redact method implementation for PropertyFilter
+func (x *PropertyFilter) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Scope
+
+	// Safe field: Field
+
+	// Safe field: Op
+
+	// Safe field: Values
+	return x.String()
+}
+
+// Redact method implementation for FilterGroup
+func (x *FilterGroup) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Filters
 	return x.String()
 }
 

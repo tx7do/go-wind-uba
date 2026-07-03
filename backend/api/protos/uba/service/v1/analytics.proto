@@ -133,19 +133,102 @@ message EventTrendRequest {
   AnalyticsGranularity granularity = 2 [json_name = "granularity"];
   // 应用 ID 过滤（可选，0 表示全部）
   optional uint32 app_id = 3 [json_name = "appId"];
-  // 事件名过滤（可选，空表示全部事件）
+  // 事件名过滤（可选，空表示全部事件）——向后兼容字段，queries 为空时使用
   optional string event_name = 4 [json_name = "eventName"];
-  // 平台过滤（可选）
+  // 平台过滤（可选）——向后兼容字段
   optional string platform = 5 [json_name = "platform"];
+  // 多事件查询（每条 query 对应一条趋势线）。为空时按 event_name/platform 旧逻辑降级
+  repeated EventQuery queries = 6 [json_name = "queries"];
+  // 全局维度拆分（可选，空表示不拆分）。设置后每条 query 按该维度拆成多条线
+  optional string dimension = 7 [json_name = "dimension"];
+  // 全局过滤（可选，作用于所有 queries）
+  optional FilterGroup global_filter = 8 [json_name = "globalFilter"];
 }
 
 message EventTrendResponse {
-  // 趋势数据点
+  // 趋势数据点（向后兼容：取 series[0].points，单线场景使用）
   repeated TimeSeriesPoint points = 1 [json_name = "points"];
   // 时间粒度（服务端实际使用的粒度，可能因 UNSPECIFIED 而自动选择）
   AnalyticsGranularity granularity = 2 [json_name = "granularity"];
-  // 区间内事件总量
+  // 区间内事件总量（向后兼容：取 series[0].total）
   int64 total = 3 [json_name = "total"];
+  // 多 series 趋势（多事件对比 / 维度拆分场景使用）
+  repeated EventSeries series = 4 [json_name = "series"];
+}
+
+// 单条事件查询（事件分析中的一条趋势线）
+message EventQuery {
+  // 事件名（可选，空表示全部事件）
+  optional string event_name = 1 [json_name = "eventName"];
+  // 聚合指标：COUNT=事件数(默认)，UNIQUE_USER=去重用户数，SUM_AMOUNT=金额求和，
+  //          AVG_AMOUNT=平均金额，PER_USER=人均次数
+  optional string metric = 2 [json_name = "metric"];
+  // 该事件自身过滤（与 global_filter 取 AND）
+  optional FilterGroup filter = 3 [json_name = "filter"];
+  // 序列显示名（可选，默认用 event_name 或 "全部事件"）
+  optional string display_name = 4 [json_name = "displayName"];
+}
+
+// 一条趋势线
+message EventSeries {
+  // 序列名（事件名，或 "事件名 / 维度值" 拆分场景）
+  string name = 1 [json_name = "name"];
+  // 趋势数据点
+  repeated TimeSeriesPoint points = 2 [json_name = "points"];
+  // 该序列区间总量
+  int64 total = 3 [json_name = "total"];
+}
+
+// 属性过滤条件（单条）
+message PropertyFilter {
+  // 字段作用域
+  enum FieldScope {
+    // 未指定（按 DIMENSION 处理）
+    FIELD_SCOPE_UNSPECIFIED = 0;
+    // 标准维度列（platform/channel/country/app_version/event_name/event_category/os/network/user_level/vip_level）
+    DIMENSION = 1;
+    // events_fact.context['key'] Map 键
+    EVENT_CONTEXT = 2;
+    // events_fact.properties['key'] Map 键
+    EVENT_PROPERTY = 3;
+    // events_fact.metrics['key'] Map 键
+    EVENT_METRIC = 4;
+  }
+  // 字段作用域
+  FieldScope scope = 1 [json_name = "scope"];
+  // 字段名：DIMENSION 时为白名单列名；其他时为 Map 键名（需匹配 ^[A-Za-z0-9_]+$）
+  string field = 2 [json_name = "field"];
+  // 比较算子
+  enum Operator {
+    // 未指定（按 EQ 处理）
+    OPERATOR_UNSPECIFIED = 0;
+    // 等于
+    EQ = 1;
+    // 不等于
+    NEQ = 2;
+    // 包含（子串）
+    CONTAINS = 3;
+    // 属于（多值命中任一）
+    IN = 4;
+    // 大于
+    GT = 5;
+    // 大于等于
+    GTE = 6;
+    // 小于
+    LT = 7;
+    // 小于等于
+    LTE = 8;
+  }
+  // 比较算子
+  Operator op = 3 [json_name = "op"];
+  // 比较值列表（IN 用多值，其他算子取首个）
+  repeated string values = 4 [json_name = "values"];
+}
+
+// 过滤条件组（内部多条 PropertyFilter 取 AND）
+message FilterGroup {
+  // 过滤条件列表（AND 组合）
+  repeated PropertyFilter filters = 1 [json_name = "filters"];
 }
 
 // ============== 漏斗分析 ==============

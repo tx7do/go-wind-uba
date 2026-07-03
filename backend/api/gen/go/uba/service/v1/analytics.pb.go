@@ -84,6 +84,144 @@ func (AnalyticsGranularity) EnumDescriptor() ([]byte, []int) {
 	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{0}
 }
 
+// 字段作用域
+type PropertyFilter_FieldScope int32
+
+const (
+	// 未指定（按 DIMENSION 处理）
+	PropertyFilter_FIELD_SCOPE_UNSPECIFIED PropertyFilter_FieldScope = 0
+	// 标准维度列（platform/channel/country/app_version/event_name/event_category/os/network/user_level/vip_level）
+	PropertyFilter_DIMENSION PropertyFilter_FieldScope = 1
+	// events_fact.context['key'] Map 键
+	PropertyFilter_EVENT_CONTEXT PropertyFilter_FieldScope = 2
+	// events_fact.properties['key'] Map 键
+	PropertyFilter_EVENT_PROPERTY PropertyFilter_FieldScope = 3
+	// events_fact.metrics['key'] Map 键
+	PropertyFilter_EVENT_METRIC PropertyFilter_FieldScope = 4
+)
+
+// Enum value maps for PropertyFilter_FieldScope.
+var (
+	PropertyFilter_FieldScope_name = map[int32]string{
+		0: "FIELD_SCOPE_UNSPECIFIED",
+		1: "DIMENSION",
+		2: "EVENT_CONTEXT",
+		3: "EVENT_PROPERTY",
+		4: "EVENT_METRIC",
+	}
+	PropertyFilter_FieldScope_value = map[string]int32{
+		"FIELD_SCOPE_UNSPECIFIED": 0,
+		"DIMENSION":               1,
+		"EVENT_CONTEXT":           2,
+		"EVENT_PROPERTY":          3,
+		"EVENT_METRIC":            4,
+	}
+)
+
+func (x PropertyFilter_FieldScope) Enum() *PropertyFilter_FieldScope {
+	p := new(PropertyFilter_FieldScope)
+	*p = x
+	return p
+}
+
+func (x PropertyFilter_FieldScope) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (PropertyFilter_FieldScope) Descriptor() protoreflect.EnumDescriptor {
+	return file_uba_service_v1_analytics_proto_enumTypes[1].Descriptor()
+}
+
+func (PropertyFilter_FieldScope) Type() protoreflect.EnumType {
+	return &file_uba_service_v1_analytics_proto_enumTypes[1]
+}
+
+func (x PropertyFilter_FieldScope) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use PropertyFilter_FieldScope.Descriptor instead.
+func (PropertyFilter_FieldScope) EnumDescriptor() ([]byte, []int) {
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{6, 0}
+}
+
+// 比较算子
+type PropertyFilter_Operator int32
+
+const (
+	// 未指定（按 EQ 处理）
+	PropertyFilter_OPERATOR_UNSPECIFIED PropertyFilter_Operator = 0
+	// 等于
+	PropertyFilter_EQ PropertyFilter_Operator = 1
+	// 不等于
+	PropertyFilter_NEQ PropertyFilter_Operator = 2
+	// 包含（子串）
+	PropertyFilter_CONTAINS PropertyFilter_Operator = 3
+	// 属于（多值命中任一）
+	PropertyFilter_IN PropertyFilter_Operator = 4
+	// 大于
+	PropertyFilter_GT PropertyFilter_Operator = 5
+	// 大于等于
+	PropertyFilter_GTE PropertyFilter_Operator = 6
+	// 小于
+	PropertyFilter_LT PropertyFilter_Operator = 7
+	// 小于等于
+	PropertyFilter_LTE PropertyFilter_Operator = 8
+)
+
+// Enum value maps for PropertyFilter_Operator.
+var (
+	PropertyFilter_Operator_name = map[int32]string{
+		0: "OPERATOR_UNSPECIFIED",
+		1: "EQ",
+		2: "NEQ",
+		3: "CONTAINS",
+		4: "IN",
+		5: "GT",
+		6: "GTE",
+		7: "LT",
+		8: "LTE",
+	}
+	PropertyFilter_Operator_value = map[string]int32{
+		"OPERATOR_UNSPECIFIED": 0,
+		"EQ":                   1,
+		"NEQ":                  2,
+		"CONTAINS":             3,
+		"IN":                   4,
+		"GT":                   5,
+		"GTE":                  6,
+		"LT":                   7,
+		"LTE":                  8,
+	}
+)
+
+func (x PropertyFilter_Operator) Enum() *PropertyFilter_Operator {
+	p := new(PropertyFilter_Operator)
+	*p = x
+	return p
+}
+
+func (x PropertyFilter_Operator) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (PropertyFilter_Operator) Descriptor() protoreflect.EnumDescriptor {
+	return file_uba_service_v1_analytics_proto_enumTypes[2].Descriptor()
+}
+
+func (PropertyFilter_Operator) Type() protoreflect.EnumType {
+	return &file_uba_service_v1_analytics_proto_enumTypes[2]
+}
+
+func (x PropertyFilter_Operator) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use PropertyFilter_Operator.Descriptor instead.
+func (PropertyFilter_Operator) EnumDescriptor() ([]byte, []int) {
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{6, 1}
+}
+
 // 时间范围（毫秒时间戳，start/end 均含端点）
 type TimeRange struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -203,10 +341,16 @@ type EventTrendRequest struct {
 	Granularity AnalyticsGranularity `protobuf:"varint,2,opt,name=granularity,proto3,enum=uba.service.v1.AnalyticsGranularity" json:"granularity,omitempty"`
 	// 应用 ID 过滤（可选，0 表示全部）
 	AppId *uint32 `protobuf:"varint,3,opt,name=app_id,json=appId,proto3,oneof" json:"app_id,omitempty"`
-	// 事件名过滤（可选，空表示全部事件）
+	// 事件名过滤（可选，空表示全部事件）——向后兼容字段，queries 为空时使用
 	EventName *string `protobuf:"bytes,4,opt,name=event_name,json=eventName,proto3,oneof" json:"event_name,omitempty"`
-	// 平台过滤（可选）
-	Platform      *string `protobuf:"bytes,5,opt,name=platform,proto3,oneof" json:"platform,omitempty"`
+	// 平台过滤（可选）——向后兼容字段
+	Platform *string `protobuf:"bytes,5,opt,name=platform,proto3,oneof" json:"platform,omitempty"`
+	// 多事件查询（每条 query 对应一条趋势线）。为空时按 event_name/platform 旧逻辑降级
+	Queries []*EventQuery `protobuf:"bytes,6,rep,name=queries,proto3" json:"queries,omitempty"`
+	// 全局维度拆分（可选，空表示不拆分）。设置后每条 query 按该维度拆成多条线
+	Dimension *string `protobuf:"bytes,7,opt,name=dimension,proto3,oneof" json:"dimension,omitempty"`
+	// 全局过滤（可选，作用于所有 queries）
+	GlobalFilter  *FilterGroup `protobuf:"bytes,8,opt,name=global_filter,json=globalFilter,proto3,oneof" json:"global_filter,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -276,14 +420,37 @@ func (x *EventTrendRequest) GetPlatform() string {
 	return ""
 }
 
+func (x *EventTrendRequest) GetQueries() []*EventQuery {
+	if x != nil {
+		return x.Queries
+	}
+	return nil
+}
+
+func (x *EventTrendRequest) GetDimension() string {
+	if x != nil && x.Dimension != nil {
+		return *x.Dimension
+	}
+	return ""
+}
+
+func (x *EventTrendRequest) GetGlobalFilter() *FilterGroup {
+	if x != nil {
+		return x.GlobalFilter
+	}
+	return nil
+}
+
 type EventTrendResponse struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// 趋势数据点
+	// 趋势数据点（向后兼容：取 series[0].points，单线场景使用）
 	Points []*TimeSeriesPoint `protobuf:"bytes,1,rep,name=points,proto3" json:"points,omitempty"`
 	// 时间粒度（服务端实际使用的粒度，可能因 UNSPECIFIED 而自动选择）
 	Granularity AnalyticsGranularity `protobuf:"varint,2,opt,name=granularity,proto3,enum=uba.service.v1.AnalyticsGranularity" json:"granularity,omitempty"`
-	// 区间内事件总量
-	Total         int64 `protobuf:"varint,3,opt,name=total,proto3" json:"total,omitempty"`
+	// 区间内事件总量（向后兼容：取 series[0].total）
+	Total int64 `protobuf:"varint,3,opt,name=total,proto3" json:"total,omitempty"`
+	// 多 series 趋势（多事件对比 / 维度拆分场景使用）
+	Series        []*EventSeries `protobuf:"bytes,4,rep,name=series,proto3" json:"series,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -339,6 +506,271 @@ func (x *EventTrendResponse) GetTotal() int64 {
 	return 0
 }
 
+func (x *EventTrendResponse) GetSeries() []*EventSeries {
+	if x != nil {
+		return x.Series
+	}
+	return nil
+}
+
+// 单条事件查询（事件分析中的一条趋势线）
+type EventQuery struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 事件名（可选，空表示全部事件）
+	EventName *string `protobuf:"bytes,1,opt,name=event_name,json=eventName,proto3,oneof" json:"event_name,omitempty"`
+	// 聚合指标：COUNT=事件数(默认)，UNIQUE_USER=去重用户数，SUM_AMOUNT=金额求和，
+	//
+	//	AVG_AMOUNT=平均金额，PER_USER=人均次数
+	Metric *string `protobuf:"bytes,2,opt,name=metric,proto3,oneof" json:"metric,omitempty"`
+	// 该事件自身过滤（与 global_filter 取 AND）
+	Filter *FilterGroup `protobuf:"bytes,3,opt,name=filter,proto3,oneof" json:"filter,omitempty"`
+	// 序列显示名（可选，默认用 event_name 或 "全部事件"）
+	DisplayName   *string `protobuf:"bytes,4,opt,name=display_name,json=displayName,proto3,oneof" json:"display_name,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *EventQuery) Reset() {
+	*x = EventQuery{}
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *EventQuery) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*EventQuery) ProtoMessage() {}
+
+func (x *EventQuery) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use EventQuery.ProtoReflect.Descriptor instead.
+func (*EventQuery) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *EventQuery) GetEventName() string {
+	if x != nil && x.EventName != nil {
+		return *x.EventName
+	}
+	return ""
+}
+
+func (x *EventQuery) GetMetric() string {
+	if x != nil && x.Metric != nil {
+		return *x.Metric
+	}
+	return ""
+}
+
+func (x *EventQuery) GetFilter() *FilterGroup {
+	if x != nil {
+		return x.Filter
+	}
+	return nil
+}
+
+func (x *EventQuery) GetDisplayName() string {
+	if x != nil && x.DisplayName != nil {
+		return *x.DisplayName
+	}
+	return ""
+}
+
+// 一条趋势线
+type EventSeries struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 序列名（事件名，或 "事件名 / 维度值" 拆分场景）
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// 趋势数据点
+	Points []*TimeSeriesPoint `protobuf:"bytes,2,rep,name=points,proto3" json:"points,omitempty"`
+	// 该序列区间总量
+	Total         int64 `protobuf:"varint,3,opt,name=total,proto3" json:"total,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *EventSeries) Reset() {
+	*x = EventSeries{}
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *EventSeries) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*EventSeries) ProtoMessage() {}
+
+func (x *EventSeries) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use EventSeries.ProtoReflect.Descriptor instead.
+func (*EventSeries) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *EventSeries) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *EventSeries) GetPoints() []*TimeSeriesPoint {
+	if x != nil {
+		return x.Points
+	}
+	return nil
+}
+
+func (x *EventSeries) GetTotal() int64 {
+	if x != nil {
+		return x.Total
+	}
+	return 0
+}
+
+// 属性过滤条件（单条）
+type PropertyFilter struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 字段作用域
+	Scope PropertyFilter_FieldScope `protobuf:"varint,1,opt,name=scope,proto3,enum=uba.service.v1.PropertyFilter_FieldScope" json:"scope,omitempty"`
+	// 字段名：DIMENSION 时为白名单列名；其他时为 Map 键名（需匹配 ^[A-Za-z0-9_]+$）
+	Field string `protobuf:"bytes,2,opt,name=field,proto3" json:"field,omitempty"`
+	// 比较算子
+	Op PropertyFilter_Operator `protobuf:"varint,3,opt,name=op,proto3,enum=uba.service.v1.PropertyFilter_Operator" json:"op,omitempty"`
+	// 比较值列表（IN 用多值，其他算子取首个）
+	Values        []string `protobuf:"bytes,4,rep,name=values,proto3" json:"values,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PropertyFilter) Reset() {
+	*x = PropertyFilter{}
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PropertyFilter) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PropertyFilter) ProtoMessage() {}
+
+func (x *PropertyFilter) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PropertyFilter.ProtoReflect.Descriptor instead.
+func (*PropertyFilter) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *PropertyFilter) GetScope() PropertyFilter_FieldScope {
+	if x != nil {
+		return x.Scope
+	}
+	return PropertyFilter_FIELD_SCOPE_UNSPECIFIED
+}
+
+func (x *PropertyFilter) GetField() string {
+	if x != nil {
+		return x.Field
+	}
+	return ""
+}
+
+func (x *PropertyFilter) GetOp() PropertyFilter_Operator {
+	if x != nil {
+		return x.Op
+	}
+	return PropertyFilter_OPERATOR_UNSPECIFIED
+}
+
+func (x *PropertyFilter) GetValues() []string {
+	if x != nil {
+		return x.Values
+	}
+	return nil
+}
+
+// 过滤条件组（内部多条 PropertyFilter 取 AND）
+type FilterGroup struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 过滤条件列表（AND 组合）
+	Filters       []*PropertyFilter `protobuf:"bytes,1,rep,name=filters,proto3" json:"filters,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *FilterGroup) Reset() {
+	*x = FilterGroup{}
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *FilterGroup) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FilterGroup) ProtoMessage() {}
+
+func (x *FilterGroup) ProtoReflect() protoreflect.Message {
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FilterGroup.ProtoReflect.Descriptor instead.
+func (*FilterGroup) Descriptor() ([]byte, []int) {
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *FilterGroup) GetFilters() []*PropertyFilter {
+	if x != nil {
+		return x.Filters
+	}
+	return nil
+}
+
 // ============== 漏斗分析 ==============
 type FunnelStep struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -358,7 +790,7 @@ type FunnelStep struct {
 
 func (x *FunnelStep) Reset() {
 	*x = FunnelStep{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[4]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -370,7 +802,7 @@ func (x *FunnelStep) String() string {
 func (*FunnelStep) ProtoMessage() {}
 
 func (x *FunnelStep) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[4]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -383,7 +815,7 @@ func (x *FunnelStep) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FunnelStep.ProtoReflect.Descriptor instead.
 func (*FunnelStep) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{4}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *FunnelStep) GetStepIndex() uint32 {
@@ -437,7 +869,7 @@ type FunnelRequest struct {
 
 func (x *FunnelRequest) Reset() {
 	*x = FunnelRequest{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[5]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -449,7 +881,7 @@ func (x *FunnelRequest) String() string {
 func (*FunnelRequest) ProtoMessage() {}
 
 func (x *FunnelRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[5]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -462,7 +894,7 @@ func (x *FunnelRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FunnelRequest.ProtoReflect.Descriptor instead.
 func (*FunnelRequest) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{5}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *FunnelRequest) GetTimeRange() *TimeRange {
@@ -509,7 +941,7 @@ type FunnelResponse struct {
 
 func (x *FunnelResponse) Reset() {
 	*x = FunnelResponse{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[6]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -521,7 +953,7 @@ func (x *FunnelResponse) String() string {
 func (*FunnelResponse) ProtoMessage() {}
 
 func (x *FunnelResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[6]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -534,7 +966,7 @@ func (x *FunnelResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FunnelResponse.ProtoReflect.Descriptor instead.
 func (*FunnelResponse) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{6}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *FunnelResponse) GetSteps() []*FunnelStep {
@@ -580,7 +1012,7 @@ type RetentionCell struct {
 
 func (x *RetentionCell) Reset() {
 	*x = RetentionCell{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[7]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -592,7 +1024,7 @@ func (x *RetentionCell) String() string {
 func (*RetentionCell) ProtoMessage() {}
 
 func (x *RetentionCell) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[7]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -605,7 +1037,7 @@ func (x *RetentionCell) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RetentionCell.ProtoReflect.Descriptor instead.
 func (*RetentionCell) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{7}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *RetentionCell) GetOffsetDays() uint32 {
@@ -643,7 +1075,7 @@ type RetentionCohort struct {
 
 func (x *RetentionCohort) Reset() {
 	*x = RetentionCohort{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[8]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -655,7 +1087,7 @@ func (x *RetentionCohort) String() string {
 func (*RetentionCohort) ProtoMessage() {}
 
 func (x *RetentionCohort) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[8]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -668,7 +1100,7 @@ func (x *RetentionCohort) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RetentionCohort.ProtoReflect.Descriptor instead.
 func (*RetentionCohort) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{8}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *RetentionCohort) GetCohortDate() int64 {
@@ -710,7 +1142,7 @@ type RetentionRequest struct {
 
 func (x *RetentionRequest) Reset() {
 	*x = RetentionRequest{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[9]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -722,7 +1154,7 @@ func (x *RetentionRequest) String() string {
 func (*RetentionRequest) ProtoMessage() {}
 
 func (x *RetentionRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[9]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -735,7 +1167,7 @@ func (x *RetentionRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RetentionRequest.ProtoReflect.Descriptor instead.
 func (*RetentionRequest) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{9}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *RetentionRequest) GetTimeRange() *TimeRange {
@@ -785,7 +1217,7 @@ type RetentionResponse struct {
 
 func (x *RetentionResponse) Reset() {
 	*x = RetentionResponse{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[10]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -797,7 +1229,7 @@ func (x *RetentionResponse) String() string {
 func (*RetentionResponse) ProtoMessage() {}
 
 func (x *RetentionResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[10]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -810,7 +1242,7 @@ func (x *RetentionResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RetentionResponse.ProtoReflect.Descriptor instead.
 func (*RetentionResponse) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{10}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *RetentionResponse) GetCohorts() []*RetentionCohort {
@@ -848,7 +1280,7 @@ type GroupByRequest struct {
 
 func (x *GroupByRequest) Reset() {
 	*x = GroupByRequest{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[11]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -860,7 +1292,7 @@ func (x *GroupByRequest) String() string {
 func (*GroupByRequest) ProtoMessage() {}
 
 func (x *GroupByRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[11]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -873,7 +1305,7 @@ func (x *GroupByRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GroupByRequest.ProtoReflect.Descriptor instead.
 func (*GroupByRequest) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{11}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *GroupByRequest) GetTimeRange() *TimeRange {
@@ -932,7 +1364,7 @@ type GroupByBucket struct {
 
 func (x *GroupByBucket) Reset() {
 	*x = GroupByBucket{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[12]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -944,7 +1376,7 @@ func (x *GroupByBucket) String() string {
 func (*GroupByBucket) ProtoMessage() {}
 
 func (x *GroupByBucket) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[12]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -957,7 +1389,7 @@ func (x *GroupByBucket) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GroupByBucket.ProtoReflect.Descriptor instead.
 func (*GroupByBucket) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{12}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *GroupByBucket) GetLabel() string {
@@ -995,7 +1427,7 @@ type GroupByResponse struct {
 
 func (x *GroupByResponse) Reset() {
 	*x = GroupByResponse{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[13]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1007,7 +1439,7 @@ func (x *GroupByResponse) String() string {
 func (*GroupByResponse) ProtoMessage() {}
 
 func (x *GroupByResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[13]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1020,7 +1452,7 @@ func (x *GroupByResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GroupByResponse.ProtoReflect.Descriptor instead.
 func (*GroupByResponse) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{13}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *GroupByResponse) GetBuckets() []*GroupByBucket {
@@ -1059,7 +1491,7 @@ type ActiveUsersRequest struct {
 
 func (x *ActiveUsersRequest) Reset() {
 	*x = ActiveUsersRequest{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[14]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1071,7 +1503,7 @@ func (x *ActiveUsersRequest) String() string {
 func (*ActiveUsersRequest) ProtoMessage() {}
 
 func (x *ActiveUsersRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[14]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1084,7 +1516,7 @@ func (x *ActiveUsersRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ActiveUsersRequest.ProtoReflect.Descriptor instead.
 func (*ActiveUsersRequest) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{14}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *ActiveUsersRequest) GetTimeRange() *TimeRange {
@@ -1124,7 +1556,7 @@ type ActiveUsersPoint struct {
 
 func (x *ActiveUsersPoint) Reset() {
 	*x = ActiveUsersPoint{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[15]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1136,7 +1568,7 @@ func (x *ActiveUsersPoint) String() string {
 func (*ActiveUsersPoint) ProtoMessage() {}
 
 func (x *ActiveUsersPoint) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[15]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1149,7 +1581,7 @@ func (x *ActiveUsersPoint) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ActiveUsersPoint.ProtoReflect.Descriptor instead.
 func (*ActiveUsersPoint) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{15}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *ActiveUsersPoint) GetTimestamp() int64 {
@@ -1192,7 +1624,7 @@ type ActiveUsersResponse struct {
 
 func (x *ActiveUsersResponse) Reset() {
 	*x = ActiveUsersResponse{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[16]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1204,7 +1636,7 @@ func (x *ActiveUsersResponse) String() string {
 func (*ActiveUsersResponse) ProtoMessage() {}
 
 func (x *ActiveUsersResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[16]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1217,7 +1649,7 @@ func (x *ActiveUsersResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ActiveUsersResponse.ProtoReflect.Descriptor instead.
 func (*ActiveUsersResponse) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{16}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *ActiveUsersResponse) GetPoints() []*ActiveUsersPoint {
@@ -1253,7 +1685,7 @@ type AttributionRequest struct {
 
 func (x *AttributionRequest) Reset() {
 	*x = AttributionRequest{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[17]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1265,7 +1697,7 @@ func (x *AttributionRequest) String() string {
 func (*AttributionRequest) ProtoMessage() {}
 
 func (x *AttributionRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[17]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1278,7 +1710,7 @@ func (x *AttributionRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AttributionRequest.ProtoReflect.Descriptor instead.
 func (*AttributionRequest) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{17}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *AttributionRequest) GetTimeRange() *TimeRange {
@@ -1330,7 +1762,7 @@ type AttributionBucket struct {
 
 func (x *AttributionBucket) Reset() {
 	*x = AttributionBucket{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[18]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1342,7 +1774,7 @@ func (x *AttributionBucket) String() string {
 func (*AttributionBucket) ProtoMessage() {}
 
 func (x *AttributionBucket) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[18]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1355,7 +1787,7 @@ func (x *AttributionBucket) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AttributionBucket.ProtoReflect.Descriptor instead.
 func (*AttributionBucket) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{18}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{22}
 }
 
 func (x *AttributionBucket) GetLabel() string {
@@ -1395,7 +1827,7 @@ type AttributionResponse struct {
 
 func (x *AttributionResponse) Reset() {
 	*x = AttributionResponse{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[19]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1407,7 +1839,7 @@ func (x *AttributionResponse) String() string {
 func (*AttributionResponse) ProtoMessage() {}
 
 func (x *AttributionResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[19]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1420,7 +1852,7 @@ func (x *AttributionResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AttributionResponse.ProtoReflect.Descriptor instead.
 func (*AttributionResponse) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{19}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{23}
 }
 
 func (x *AttributionResponse) GetBuckets() []*AttributionBucket {
@@ -1466,7 +1898,7 @@ type DistributionRequest struct {
 
 func (x *DistributionRequest) Reset() {
 	*x = DistributionRequest{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[20]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1478,7 +1910,7 @@ func (x *DistributionRequest) String() string {
 func (*DistributionRequest) ProtoMessage() {}
 
 func (x *DistributionRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[20]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1491,7 +1923,7 @@ func (x *DistributionRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DistributionRequest.ProtoReflect.Descriptor instead.
 func (*DistributionRequest) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{20}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{24}
 }
 
 func (x *DistributionRequest) GetTimeRange() *TimeRange {
@@ -1530,7 +1962,7 @@ type DistributionBucket struct {
 
 func (x *DistributionBucket) Reset() {
 	*x = DistributionBucket{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[21]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[25]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1542,7 +1974,7 @@ func (x *DistributionBucket) String() string {
 func (*DistributionBucket) ProtoMessage() {}
 
 func (x *DistributionBucket) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[21]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[25]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1555,7 +1987,7 @@ func (x *DistributionBucket) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DistributionBucket.ProtoReflect.Descriptor instead.
 func (*DistributionBucket) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{21}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{25}
 }
 
 func (x *DistributionBucket) GetBucket() string {
@@ -1598,7 +2030,7 @@ type DistributionSummary struct {
 
 func (x *DistributionSummary) Reset() {
 	*x = DistributionSummary{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[22]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[26]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1610,7 +2042,7 @@ func (x *DistributionSummary) String() string {
 func (*DistributionSummary) ProtoMessage() {}
 
 func (x *DistributionSummary) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[22]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[26]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1623,7 +2055,7 @@ func (x *DistributionSummary) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DistributionSummary.ProtoReflect.Descriptor instead.
 func (*DistributionSummary) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{22}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{26}
 }
 
 func (x *DistributionSummary) GetAvgSec() float64 {
@@ -1673,7 +2105,7 @@ type DistributionResponse struct {
 
 func (x *DistributionResponse) Reset() {
 	*x = DistributionResponse{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[23]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[27]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1685,7 +2117,7 @@ func (x *DistributionResponse) String() string {
 func (*DistributionResponse) ProtoMessage() {}
 
 func (x *DistributionResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[23]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[27]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1698,7 +2130,7 @@ func (x *DistributionResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DistributionResponse.ProtoReflect.Descriptor instead.
 func (*DistributionResponse) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{23}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{27}
 }
 
 func (x *DistributionResponse) GetBuckets() []*DistributionBucket {
@@ -1734,7 +2166,7 @@ type BehaviorSequenceRequest struct {
 
 func (x *BehaviorSequenceRequest) Reset() {
 	*x = BehaviorSequenceRequest{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[24]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[28]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1746,7 +2178,7 @@ func (x *BehaviorSequenceRequest) String() string {
 func (*BehaviorSequenceRequest) ProtoMessage() {}
 
 func (x *BehaviorSequenceRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[24]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[28]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1759,7 +2191,7 @@ func (x *BehaviorSequenceRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use BehaviorSequenceRequest.ProtoReflect.Descriptor instead.
 func (*BehaviorSequenceRequest) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{24}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{28}
 }
 
 func (x *BehaviorSequenceRequest) GetTimeRange() *TimeRange {
@@ -1820,7 +2252,7 @@ type SequenceEvent struct {
 
 func (x *SequenceEvent) Reset() {
 	*x = SequenceEvent{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[25]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[29]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1832,7 +2264,7 @@ func (x *SequenceEvent) String() string {
 func (*SequenceEvent) ProtoMessage() {}
 
 func (x *SequenceEvent) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[25]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[29]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1845,7 +2277,7 @@ func (x *SequenceEvent) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SequenceEvent.ProtoReflect.Descriptor instead.
 func (*SequenceEvent) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{25}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{29}
 }
 
 func (x *SequenceEvent) GetTimestamp() int64 {
@@ -1909,7 +2341,7 @@ type BehaviorSequenceResponse struct {
 
 func (x *BehaviorSequenceResponse) Reset() {
 	*x = BehaviorSequenceResponse{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[26]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[30]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1921,7 +2353,7 @@ func (x *BehaviorSequenceResponse) String() string {
 func (*BehaviorSequenceResponse) ProtoMessage() {}
 
 func (x *BehaviorSequenceResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[26]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[30]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1934,7 +2366,7 @@ func (x *BehaviorSequenceResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use BehaviorSequenceResponse.ProtoReflect.Descriptor instead.
 func (*BehaviorSequenceResponse) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{26}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{30}
 }
 
 func (x *BehaviorSequenceResponse) GetUserId() uint32 {
@@ -1965,7 +2397,7 @@ type SegmentCondition struct {
 
 func (x *SegmentCondition) Reset() {
 	*x = SegmentCondition{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[27]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[31]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1977,7 +2409,7 @@ func (x *SegmentCondition) String() string {
 func (*SegmentCondition) ProtoMessage() {}
 
 func (x *SegmentCondition) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[27]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[31]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1990,7 +2422,7 @@ func (x *SegmentCondition) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SegmentCondition.ProtoReflect.Descriptor instead.
 func (*SegmentCondition) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{27}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{31}
 }
 
 func (x *SegmentCondition) GetEventName() string {
@@ -2025,7 +2457,7 @@ type SegmentationRequest struct {
 
 func (x *SegmentationRequest) Reset() {
 	*x = SegmentationRequest{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[28]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[32]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2037,7 +2469,7 @@ func (x *SegmentationRequest) String() string {
 func (*SegmentationRequest) ProtoMessage() {}
 
 func (x *SegmentationRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[28]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[32]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2050,7 +2482,7 @@ func (x *SegmentationRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SegmentationRequest.ProtoReflect.Descriptor instead.
 func (*SegmentationRequest) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{28}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{32}
 }
 
 func (x *SegmentationRequest) GetTimeRange() *TimeRange {
@@ -2100,7 +2532,7 @@ type SegmentationResponse struct {
 
 func (x *SegmentationResponse) Reset() {
 	*x = SegmentationResponse{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[29]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[33]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2112,7 +2544,7 @@ func (x *SegmentationResponse) String() string {
 func (*SegmentationResponse) ProtoMessage() {}
 
 func (x *SegmentationResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[29]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[33]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2125,7 +2557,7 @@ func (x *SegmentationResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SegmentationResponse.ProtoReflect.Descriptor instead.
 func (*SegmentationResponse) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{29}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{33}
 }
 
 func (x *SegmentationResponse) GetUserIds() []uint32 {
@@ -2159,7 +2591,7 @@ type ClickRequest struct {
 
 func (x *ClickRequest) Reset() {
 	*x = ClickRequest{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[30]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[34]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2171,7 +2603,7 @@ func (x *ClickRequest) String() string {
 func (*ClickRequest) ProtoMessage() {}
 
 func (x *ClickRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[30]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[34]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2184,7 +2616,7 @@ func (x *ClickRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ClickRequest.ProtoReflect.Descriptor instead.
 func (*ClickRequest) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{30}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{34}
 }
 
 func (x *ClickRequest) GetTimeRange() *TimeRange {
@@ -2232,7 +2664,7 @@ type ClickHeatPoint struct {
 
 func (x *ClickHeatPoint) Reset() {
 	*x = ClickHeatPoint{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[31]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[35]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2244,7 +2676,7 @@ func (x *ClickHeatPoint) String() string {
 func (*ClickHeatPoint) ProtoMessage() {}
 
 func (x *ClickHeatPoint) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[31]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[35]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2257,7 +2689,7 @@ func (x *ClickHeatPoint) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ClickHeatPoint.ProtoReflect.Descriptor instead.
 func (*ClickHeatPoint) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{31}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{35}
 }
 
 func (x *ClickHeatPoint) GetX() uint32 {
@@ -2303,7 +2735,7 @@ type ClickElementBucket struct {
 
 func (x *ClickElementBucket) Reset() {
 	*x = ClickElementBucket{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[32]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[36]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2315,7 +2747,7 @@ func (x *ClickElementBucket) String() string {
 func (*ClickElementBucket) ProtoMessage() {}
 
 func (x *ClickElementBucket) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[32]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[36]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2328,7 +2760,7 @@ func (x *ClickElementBucket) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ClickElementBucket.ProtoReflect.Descriptor instead.
 func (*ClickElementBucket) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{32}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{36}
 }
 
 func (x *ClickElementBucket) GetElementXpath() string {
@@ -2368,7 +2800,7 @@ type ClickResponse struct {
 
 func (x *ClickResponse) Reset() {
 	*x = ClickResponse{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[33]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[37]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2380,7 +2812,7 @@ func (x *ClickResponse) String() string {
 func (*ClickResponse) ProtoMessage() {}
 
 func (x *ClickResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[33]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[37]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2393,7 +2825,7 @@ func (x *ClickResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ClickResponse.ProtoReflect.Descriptor instead.
 func (*ClickResponse) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{33}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{37}
 }
 
 func (x *ClickResponse) GetPoints() []*ClickHeatPoint {
@@ -2441,7 +2873,7 @@ type LifecycleRequest struct {
 
 func (x *LifecycleRequest) Reset() {
 	*x = LifecycleRequest{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[34]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[38]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2453,7 +2885,7 @@ func (x *LifecycleRequest) String() string {
 func (*LifecycleRequest) ProtoMessage() {}
 
 func (x *LifecycleRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[34]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[38]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2466,7 +2898,7 @@ func (x *LifecycleRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LifecycleRequest.ProtoReflect.Descriptor instead.
 func (*LifecycleRequest) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{34}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{38}
 }
 
 func (x *LifecycleRequest) GetTimeRange() *TimeRange {
@@ -2514,7 +2946,7 @@ type LifecycleStage struct {
 
 func (x *LifecycleStage) Reset() {
 	*x = LifecycleStage{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[35]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[39]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2526,7 +2958,7 @@ func (x *LifecycleStage) String() string {
 func (*LifecycleStage) ProtoMessage() {}
 
 func (x *LifecycleStage) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[35]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[39]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2539,7 +2971,7 @@ func (x *LifecycleStage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LifecycleStage.ProtoReflect.Descriptor instead.
 func (*LifecycleStage) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{35}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{39}
 }
 
 func (x *LifecycleStage) GetStage() string {
@@ -2582,7 +3014,7 @@ type LifecycleResponse struct {
 
 func (x *LifecycleResponse) Reset() {
 	*x = LifecycleResponse{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[36]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[40]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2594,7 +3026,7 @@ func (x *LifecycleResponse) String() string {
 func (*LifecycleResponse) ProtoMessage() {}
 
 func (x *LifecycleResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[36]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[40]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2607,7 +3039,7 @@ func (x *LifecycleResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LifecycleResponse.ProtoReflect.Descriptor instead.
 func (*LifecycleResponse) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{36}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{40}
 }
 
 func (x *LifecycleResponse) GetStages() []*LifecycleStage {
@@ -2641,7 +3073,7 @@ type ChurnRequest struct {
 
 func (x *ChurnRequest) Reset() {
 	*x = ChurnRequest{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[37]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[41]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2653,7 +3085,7 @@ func (x *ChurnRequest) String() string {
 func (*ChurnRequest) ProtoMessage() {}
 
 func (x *ChurnRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[37]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[41]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2666,7 +3098,7 @@ func (x *ChurnRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ChurnRequest.ProtoReflect.Descriptor instead.
 func (*ChurnRequest) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{37}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{41}
 }
 
 func (x *ChurnRequest) GetTimeRange() *TimeRange {
@@ -2710,7 +3142,7 @@ type ChurnBucket struct {
 
 func (x *ChurnBucket) Reset() {
 	*x = ChurnBucket{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[38]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[42]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2722,7 +3154,7 @@ func (x *ChurnBucket) String() string {
 func (*ChurnBucket) ProtoMessage() {}
 
 func (x *ChurnBucket) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[38]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[42]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2735,7 +3167,7 @@ func (x *ChurnBucket) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ChurnBucket.ProtoReflect.Descriptor instead.
 func (*ChurnBucket) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{38}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{42}
 }
 
 func (x *ChurnBucket) GetBucket() string {
@@ -2767,7 +3199,7 @@ type ReactivationTrigger struct {
 
 func (x *ReactivationTrigger) Reset() {
 	*x = ReactivationTrigger{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[39]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[43]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2779,7 +3211,7 @@ func (x *ReactivationTrigger) String() string {
 func (*ReactivationTrigger) ProtoMessage() {}
 
 func (x *ReactivationTrigger) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[39]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[43]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2792,7 +3224,7 @@ func (x *ReactivationTrigger) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ReactivationTrigger.ProtoReflect.Descriptor instead.
 func (*ReactivationTrigger) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{39}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{43}
 }
 
 func (x *ReactivationTrigger) GetEventName() string {
@@ -2834,7 +3266,7 @@ type ChurnResponse struct {
 
 func (x *ChurnResponse) Reset() {
 	*x = ChurnResponse{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[40]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[44]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2846,7 +3278,7 @@ func (x *ChurnResponse) String() string {
 func (*ChurnResponse) ProtoMessage() {}
 
 func (x *ChurnResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[40]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[44]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2859,7 +3291,7 @@ func (x *ChurnResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ChurnResponse.ProtoReflect.Descriptor instead.
 func (*ChurnResponse) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{40}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{44}
 }
 
 func (x *ChurnResponse) GetChurnBuckets() []*ChurnBucket {
@@ -2914,7 +3346,7 @@ type IntervalRequest struct {
 
 func (x *IntervalRequest) Reset() {
 	*x = IntervalRequest{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[41]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[45]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2926,7 +3358,7 @@ func (x *IntervalRequest) String() string {
 func (*IntervalRequest) ProtoMessage() {}
 
 func (x *IntervalRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[41]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[45]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2939,7 +3371,7 @@ func (x *IntervalRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use IntervalRequest.ProtoReflect.Descriptor instead.
 func (*IntervalRequest) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{41}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{45}
 }
 
 func (x *IntervalRequest) GetTimeRange() *TimeRange {
@@ -2985,7 +3417,7 @@ type IntervalBucket struct {
 
 func (x *IntervalBucket) Reset() {
 	*x = IntervalBucket{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[42]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[46]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2997,7 +3429,7 @@ func (x *IntervalBucket) String() string {
 func (*IntervalBucket) ProtoMessage() {}
 
 func (x *IntervalBucket) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[42]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[46]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3010,7 +3442,7 @@ func (x *IntervalBucket) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use IntervalBucket.ProtoReflect.Descriptor instead.
 func (*IntervalBucket) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{42}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{46}
 }
 
 func (x *IntervalBucket) GetBucket() string {
@@ -3050,7 +3482,7 @@ type IntervalResponse struct {
 
 func (x *IntervalResponse) Reset() {
 	*x = IntervalResponse{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[43]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[47]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3062,7 +3494,7 @@ func (x *IntervalResponse) String() string {
 func (*IntervalResponse) ProtoMessage() {}
 
 func (x *IntervalResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[43]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[47]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3075,7 +3507,7 @@ func (x *IntervalResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use IntervalResponse.ProtoReflect.Descriptor instead.
 func (*IntervalResponse) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{43}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{47}
 }
 
 func (x *IntervalResponse) GetBuckets() []*IntervalBucket {
@@ -3130,7 +3562,7 @@ type MatrixRequest struct {
 
 func (x *MatrixRequest) Reset() {
 	*x = MatrixRequest{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[44]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[48]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3142,7 +3574,7 @@ func (x *MatrixRequest) String() string {
 func (*MatrixRequest) ProtoMessage() {}
 
 func (x *MatrixRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[44]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[48]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3155,7 +3587,7 @@ func (x *MatrixRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MatrixRequest.ProtoReflect.Descriptor instead.
 func (*MatrixRequest) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{44}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{48}
 }
 
 func (x *MatrixRequest) GetTimeRange() *TimeRange {
@@ -3203,7 +3635,7 @@ type MatrixPoint struct {
 
 func (x *MatrixPoint) Reset() {
 	*x = MatrixPoint{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[45]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[49]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3215,7 +3647,7 @@ func (x *MatrixPoint) String() string {
 func (*MatrixPoint) ProtoMessage() {}
 
 func (x *MatrixPoint) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[45]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[49]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3228,7 +3660,7 @@ func (x *MatrixPoint) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MatrixPoint.ProtoReflect.Descriptor instead.
 func (*MatrixPoint) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{45}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{49}
 }
 
 func (x *MatrixPoint) GetLabel() string {
@@ -3275,7 +3707,7 @@ type MatrixResponse struct {
 
 func (x *MatrixResponse) Reset() {
 	*x = MatrixResponse{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[46]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[50]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3287,7 +3719,7 @@ func (x *MatrixResponse) String() string {
 func (*MatrixResponse) ProtoMessage() {}
 
 func (x *MatrixResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[46]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[50]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3300,7 +3732,7 @@ func (x *MatrixResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MatrixResponse.ProtoReflect.Descriptor instead.
 func (*MatrixResponse) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{46}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{50}
 }
 
 func (x *MatrixResponse) GetPoints() []*MatrixPoint {
@@ -3346,7 +3778,7 @@ type RevenueRequest struct {
 
 func (x *RevenueRequest) Reset() {
 	*x = RevenueRequest{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[47]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[51]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3358,7 +3790,7 @@ func (x *RevenueRequest) String() string {
 func (*RevenueRequest) ProtoMessage() {}
 
 func (x *RevenueRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[47]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[51]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3371,7 +3803,7 @@ func (x *RevenueRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RevenueRequest.ProtoReflect.Descriptor instead.
 func (*RevenueRequest) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{47}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{51}
 }
 
 func (x *RevenueRequest) GetTimeRange() *TimeRange {
@@ -3418,7 +3850,7 @@ type RevenuePoint struct {
 
 func (x *RevenuePoint) Reset() {
 	*x = RevenuePoint{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[48]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[52]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3430,7 +3862,7 @@ func (x *RevenuePoint) String() string {
 func (*RevenuePoint) ProtoMessage() {}
 
 func (x *RevenuePoint) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[48]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[52]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3443,7 +3875,7 @@ func (x *RevenuePoint) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RevenuePoint.ProtoReflect.Descriptor instead.
 func (*RevenuePoint) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{48}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{52}
 }
 
 func (x *RevenuePoint) GetTimestamp() int64 {
@@ -3513,7 +3945,7 @@ type RevenueResponse struct {
 
 func (x *RevenueResponse) Reset() {
 	*x = RevenueResponse{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[49]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[53]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3525,7 +3957,7 @@ func (x *RevenueResponse) String() string {
 func (*RevenueResponse) ProtoMessage() {}
 
 func (x *RevenueResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[49]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[53]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3538,7 +3970,7 @@ func (x *RevenueResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RevenueResponse.ProtoReflect.Descriptor instead.
 func (*RevenueResponse) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{49}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{53}
 }
 
 func (x *RevenueResponse) GetPoints() []*RevenuePoint {
@@ -3591,7 +4023,7 @@ type SessionAnalysisRequest struct {
 
 func (x *SessionAnalysisRequest) Reset() {
 	*x = SessionAnalysisRequest{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[50]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[54]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3603,7 +4035,7 @@ func (x *SessionAnalysisRequest) String() string {
 func (*SessionAnalysisRequest) ProtoMessage() {}
 
 func (x *SessionAnalysisRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[50]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[54]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3616,7 +4048,7 @@ func (x *SessionAnalysisRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SessionAnalysisRequest.ProtoReflect.Descriptor instead.
 func (*SessionAnalysisRequest) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{50}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{54}
 }
 
 func (x *SessionAnalysisRequest) GetTimeRange() *TimeRange {
@@ -3662,7 +4094,7 @@ type SessionAnalysisResponse struct {
 
 func (x *SessionAnalysisResponse) Reset() {
 	*x = SessionAnalysisResponse{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[51]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[55]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3674,7 +4106,7 @@ func (x *SessionAnalysisResponse) String() string {
 func (*SessionAnalysisResponse) ProtoMessage() {}
 
 func (x *SessionAnalysisResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[51]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[55]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3687,7 +4119,7 @@ func (x *SessionAnalysisResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SessionAnalysisResponse.ProtoReflect.Descriptor instead.
 func (*SessionAnalysisResponse) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{51}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{55}
 }
 
 func (x *SessionAnalysisResponse) GetSessionCount() int64 {
@@ -3754,7 +4186,7 @@ type AnomalyRequest struct {
 
 func (x *AnomalyRequest) Reset() {
 	*x = AnomalyRequest{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[52]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[56]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3766,7 +4198,7 @@ func (x *AnomalyRequest) String() string {
 func (*AnomalyRequest) ProtoMessage() {}
 
 func (x *AnomalyRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[52]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[56]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3779,7 +4211,7 @@ func (x *AnomalyRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AnomalyRequest.ProtoReflect.Descriptor instead.
 func (*AnomalyRequest) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{52}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{56}
 }
 
 func (x *AnomalyRequest) GetTimeRange() *TimeRange {
@@ -3826,7 +4258,7 @@ type AnomalyPoint struct {
 
 func (x *AnomalyPoint) Reset() {
 	*x = AnomalyPoint{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[53]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[57]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3838,7 +4270,7 @@ func (x *AnomalyPoint) String() string {
 func (*AnomalyPoint) ProtoMessage() {}
 
 func (x *AnomalyPoint) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[53]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[57]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3851,7 +4283,7 @@ func (x *AnomalyPoint) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AnomalyPoint.ProtoReflect.Descriptor instead.
 func (*AnomalyPoint) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{53}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{57}
 }
 
 func (x *AnomalyPoint) GetEventName() string {
@@ -3915,7 +4347,7 @@ type AnomalyResponse struct {
 
 func (x *AnomalyResponse) Reset() {
 	*x = AnomalyResponse{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[54]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[58]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3927,7 +4359,7 @@ func (x *AnomalyResponse) String() string {
 func (*AnomalyResponse) ProtoMessage() {}
 
 func (x *AnomalyResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[54]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[58]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3940,7 +4372,7 @@ func (x *AnomalyResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AnomalyResponse.ProtoReflect.Descriptor instead.
 func (*AnomalyResponse) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{54}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{58}
 }
 
 func (x *AnomalyResponse) GetPoints() []*AnomalyPoint {
@@ -3972,7 +4404,7 @@ type NewVsOldRequest struct {
 
 func (x *NewVsOldRequest) Reset() {
 	*x = NewVsOldRequest{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[55]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[59]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3984,7 +4416,7 @@ func (x *NewVsOldRequest) String() string {
 func (*NewVsOldRequest) ProtoMessage() {}
 
 func (x *NewVsOldRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[55]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[59]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3997,7 +4429,7 @@ func (x *NewVsOldRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use NewVsOldRequest.ProtoReflect.Descriptor instead.
 func (*NewVsOldRequest) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{55}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{59}
 }
 
 func (x *NewVsOldRequest) GetTimeRange() *TimeRange {
@@ -4039,7 +4471,7 @@ type NewVsOldSegment struct {
 
 func (x *NewVsOldSegment) Reset() {
 	*x = NewVsOldSegment{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[56]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[60]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4051,7 +4483,7 @@ func (x *NewVsOldSegment) String() string {
 func (*NewVsOldSegment) ProtoMessage() {}
 
 func (x *NewVsOldSegment) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[56]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[60]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4064,7 +4496,7 @@ func (x *NewVsOldSegment) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use NewVsOldSegment.ProtoReflect.Descriptor instead.
 func (*NewVsOldSegment) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{56}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{60}
 }
 
 func (x *NewVsOldSegment) GetUserType() string {
@@ -4112,7 +4544,7 @@ type NewVsOldResponse struct {
 
 func (x *NewVsOldResponse) Reset() {
 	*x = NewVsOldResponse{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[57]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[61]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4124,7 +4556,7 @@ func (x *NewVsOldResponse) String() string {
 func (*NewVsOldResponse) ProtoMessage() {}
 
 func (x *NewVsOldResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[57]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[61]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4137,7 +4569,7 @@ func (x *NewVsOldResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use NewVsOldResponse.ProtoReflect.Descriptor instead.
 func (*NewVsOldResponse) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{57}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{61}
 }
 
 func (x *NewVsOldResponse) GetSegments() []*NewVsOldSegment {
@@ -4162,7 +4594,7 @@ type PathSankeyRequest struct {
 
 func (x *PathSankeyRequest) Reset() {
 	*x = PathSankeyRequest{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[58]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[62]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4174,7 +4606,7 @@ func (x *PathSankeyRequest) String() string {
 func (*PathSankeyRequest) ProtoMessage() {}
 
 func (x *PathSankeyRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[58]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[62]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4187,7 +4619,7 @@ func (x *PathSankeyRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PathSankeyRequest.ProtoReflect.Descriptor instead.
 func (*PathSankeyRequest) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{58}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{62}
 }
 
 func (x *PathSankeyRequest) GetTimeRange() *TimeRange {
@@ -4227,7 +4659,7 @@ type PathBucket struct {
 
 func (x *PathBucket) Reset() {
 	*x = PathBucket{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[59]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[63]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4239,7 +4671,7 @@ func (x *PathBucket) String() string {
 func (*PathBucket) ProtoMessage() {}
 
 func (x *PathBucket) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[59]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[63]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4252,7 +4684,7 @@ func (x *PathBucket) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PathBucket.ProtoReflect.Descriptor instead.
 func (*PathBucket) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{59}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{63}
 }
 
 func (x *PathBucket) GetEventSequence() string {
@@ -4293,7 +4725,7 @@ type PathSankeyResponse struct {
 
 func (x *PathSankeyResponse) Reset() {
 	*x = PathSankeyResponse{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[60]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[64]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4305,7 +4737,7 @@ func (x *PathSankeyResponse) String() string {
 func (*PathSankeyResponse) ProtoMessage() {}
 
 func (x *PathSankeyResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[60]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[64]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4318,7 +4750,7 @@ func (x *PathSankeyResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PathSankeyResponse.ProtoReflect.Descriptor instead.
 func (*PathSankeyResponse) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{60}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{64}
 }
 
 func (x *PathSankeyResponse) GetPaths() []*PathBucket {
@@ -4343,7 +4775,7 @@ type LevelAnalysisRequest struct {
 
 func (x *LevelAnalysisRequest) Reset() {
 	*x = LevelAnalysisRequest{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[61]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[65]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4355,7 +4787,7 @@ func (x *LevelAnalysisRequest) String() string {
 func (*LevelAnalysisRequest) ProtoMessage() {}
 
 func (x *LevelAnalysisRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[61]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[65]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4368,7 +4800,7 @@ func (x *LevelAnalysisRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LevelAnalysisRequest.ProtoReflect.Descriptor instead.
 func (*LevelAnalysisRequest) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{61}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{65}
 }
 
 func (x *LevelAnalysisRequest) GetTimeRange() *TimeRange {
@@ -4421,7 +4853,7 @@ type LevelStat struct {
 
 func (x *LevelStat) Reset() {
 	*x = LevelStat{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[62]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[66]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4433,7 +4865,7 @@ func (x *LevelStat) String() string {
 func (*LevelStat) ProtoMessage() {}
 
 func (x *LevelStat) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[62]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[66]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4446,7 +4878,7 @@ func (x *LevelStat) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LevelStat.ProtoReflect.Descriptor instead.
 func (*LevelStat) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{62}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{66}
 }
 
 func (x *LevelStat) GetLevelId() string {
@@ -4529,7 +4961,7 @@ type LevelAnalysisResponse struct {
 
 func (x *LevelAnalysisResponse) Reset() {
 	*x = LevelAnalysisResponse{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[63]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[67]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4541,7 +4973,7 @@ func (x *LevelAnalysisResponse) String() string {
 func (*LevelAnalysisResponse) ProtoMessage() {}
 
 func (x *LevelAnalysisResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[63]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[67]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4554,7 +4986,7 @@ func (x *LevelAnalysisResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LevelAnalysisResponse.ProtoReflect.Descriptor instead.
 func (*LevelAnalysisResponse) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{63}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{67}
 }
 
 func (x *LevelAnalysisResponse) GetLevels() []*LevelStat {
@@ -4575,7 +5007,7 @@ type WhaleTierRequest struct {
 
 func (x *WhaleTierRequest) Reset() {
 	*x = WhaleTierRequest{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[64]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[68]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4587,7 +5019,7 @@ func (x *WhaleTierRequest) String() string {
 func (*WhaleTierRequest) ProtoMessage() {}
 
 func (x *WhaleTierRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[64]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[68]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4600,7 +5032,7 @@ func (x *WhaleTierRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use WhaleTierRequest.ProtoReflect.Descriptor instead.
 func (*WhaleTierRequest) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{64}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{68}
 }
 
 func (x *WhaleTierRequest) GetAppId() uint32 {
@@ -4633,7 +5065,7 @@ type PayTierSegment struct {
 
 func (x *PayTierSegment) Reset() {
 	*x = PayTierSegment{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[65]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[69]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4645,7 +5077,7 @@ func (x *PayTierSegment) String() string {
 func (*PayTierSegment) ProtoMessage() {}
 
 func (x *PayTierSegment) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[65]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[69]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4658,7 +5090,7 @@ func (x *PayTierSegment) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PayTierSegment.ProtoReflect.Descriptor instead.
 func (*PayTierSegment) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{65}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{69}
 }
 
 func (x *PayTierSegment) GetTier() string {
@@ -4724,7 +5156,7 @@ type WhaleTierResponse struct {
 
 func (x *WhaleTierResponse) Reset() {
 	*x = WhaleTierResponse{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[66]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[70]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4736,7 +5168,7 @@ func (x *WhaleTierResponse) String() string {
 func (*WhaleTierResponse) ProtoMessage() {}
 
 func (x *WhaleTierResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[66]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[70]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4749,7 +5181,7 @@ func (x *WhaleTierResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use WhaleTierResponse.ProtoReflect.Descriptor instead.
 func (*WhaleTierResponse) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{66}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{70}
 }
 
 func (x *WhaleTierResponse) GetSegments() []*PayTierSegment {
@@ -4788,7 +5220,7 @@ type LTVRequest struct {
 
 func (x *LTVRequest) Reset() {
 	*x = LTVRequest{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[67]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[71]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4800,7 +5232,7 @@ func (x *LTVRequest) String() string {
 func (*LTVRequest) ProtoMessage() {}
 
 func (x *LTVRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[67]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[71]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4813,7 +5245,7 @@ func (x *LTVRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LTVRequest.ProtoReflect.Descriptor instead.
 func (*LTVRequest) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{67}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{71}
 }
 
 func (x *LTVRequest) GetTimeRange() *TimeRange {
@@ -4856,7 +5288,7 @@ type LTVPoint struct {
 
 func (x *LTVPoint) Reset() {
 	*x = LTVPoint{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[68]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[72]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4868,7 +5300,7 @@ func (x *LTVPoint) String() string {
 func (*LTVPoint) ProtoMessage() {}
 
 func (x *LTVPoint) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[68]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[72]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4881,7 +5313,7 @@ func (x *LTVPoint) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LTVPoint.ProtoReflect.Descriptor instead.
 func (*LTVPoint) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{68}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{72}
 }
 
 func (x *LTVPoint) GetLabel() string {
@@ -4931,7 +5363,7 @@ type LTVResponse struct {
 
 func (x *LTVResponse) Reset() {
 	*x = LTVResponse{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[69]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[73]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4943,7 +5375,7 @@ func (x *LTVResponse) String() string {
 func (*LTVResponse) ProtoMessage() {}
 
 func (x *LTVResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[69]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[73]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4956,7 +5388,7 @@ func (x *LTVResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LTVResponse.ProtoReflect.Descriptor instead.
 func (*LTVResponse) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{69}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{73}
 }
 
 func (x *LTVResponse) GetPoints() []*LTVPoint {
@@ -4990,7 +5422,7 @@ type ServerRetentionRequest struct {
 
 func (x *ServerRetentionRequest) Reset() {
 	*x = ServerRetentionRequest{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[70]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[74]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5002,7 +5434,7 @@ func (x *ServerRetentionRequest) String() string {
 func (*ServerRetentionRequest) ProtoMessage() {}
 
 func (x *ServerRetentionRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[70]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[74]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5015,7 +5447,7 @@ func (x *ServerRetentionRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ServerRetentionRequest.ProtoReflect.Descriptor instead.
 func (*ServerRetentionRequest) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{70}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{74}
 }
 
 func (x *ServerRetentionRequest) GetTimeRange() *TimeRange {
@@ -5061,7 +5493,7 @@ type ServerRetentionRow struct {
 
 func (x *ServerRetentionRow) Reset() {
 	*x = ServerRetentionRow{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[71]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[75]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5073,7 +5505,7 @@ func (x *ServerRetentionRow) String() string {
 func (*ServerRetentionRow) ProtoMessage() {}
 
 func (x *ServerRetentionRow) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[71]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[75]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5086,7 +5518,7 @@ func (x *ServerRetentionRow) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ServerRetentionRow.ProtoReflect.Descriptor instead.
 func (*ServerRetentionRow) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{71}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{75}
 }
 
 func (x *ServerRetentionRow) GetServerId() string {
@@ -5122,7 +5554,7 @@ type ServerRetentionResponse struct {
 
 func (x *ServerRetentionResponse) Reset() {
 	*x = ServerRetentionResponse{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[72]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[76]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5134,7 +5566,7 @@ func (x *ServerRetentionResponse) String() string {
 func (*ServerRetentionResponse) ProtoMessage() {}
 
 func (x *ServerRetentionResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[72]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[76]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5147,7 +5579,7 @@ func (x *ServerRetentionResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ServerRetentionResponse.ProtoReflect.Descriptor instead.
 func (*ServerRetentionResponse) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{72}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{76}
 }
 
 func (x *ServerRetentionResponse) GetRows() []*ServerRetentionRow {
@@ -5179,7 +5611,7 @@ type OnlineStatsRequest struct {
 
 func (x *OnlineStatsRequest) Reset() {
 	*x = OnlineStatsRequest{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[73]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[77]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5191,7 +5623,7 @@ func (x *OnlineStatsRequest) String() string {
 func (*OnlineStatsRequest) ProtoMessage() {}
 
 func (x *OnlineStatsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[73]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[77]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5204,7 +5636,7 @@ func (x *OnlineStatsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use OnlineStatsRequest.ProtoReflect.Descriptor instead.
 func (*OnlineStatsRequest) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{73}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{77}
 }
 
 func (x *OnlineStatsRequest) GetTimeRange() *TimeRange {
@@ -5244,7 +5676,7 @@ type OnlineStatsResponse struct {
 
 func (x *OnlineStatsResponse) Reset() {
 	*x = OnlineStatsResponse{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[74]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[78]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5256,7 +5688,7 @@ func (x *OnlineStatsResponse) String() string {
 func (*OnlineStatsResponse) ProtoMessage() {}
 
 func (x *OnlineStatsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[74]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[78]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5269,7 +5701,7 @@ func (x *OnlineStatsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use OnlineStatsResponse.ProtoReflect.Descriptor instead.
 func (*OnlineStatsResponse) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{74}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{78}
 }
 
 func (x *OnlineStatsResponse) GetPcu() int64 {
@@ -5315,7 +5747,7 @@ type EconomyRequest struct {
 
 func (x *EconomyRequest) Reset() {
 	*x = EconomyRequest{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[75]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[79]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5327,7 +5759,7 @@ func (x *EconomyRequest) String() string {
 func (*EconomyRequest) ProtoMessage() {}
 
 func (x *EconomyRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[75]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[79]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5340,7 +5772,7 @@ func (x *EconomyRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use EconomyRequest.ProtoReflect.Descriptor instead.
 func (*EconomyRequest) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{75}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{79}
 }
 
 func (x *EconomyRequest) GetTimeRange() *TimeRange {
@@ -5381,7 +5813,7 @@ type CurrencyBalance struct {
 
 func (x *CurrencyBalance) Reset() {
 	*x = CurrencyBalance{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[76]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[80]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5393,7 +5825,7 @@ func (x *CurrencyBalance) String() string {
 func (*CurrencyBalance) ProtoMessage() {}
 
 func (x *CurrencyBalance) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[76]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[80]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5406,7 +5838,7 @@ func (x *CurrencyBalance) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CurrencyBalance.ProtoReflect.Descriptor instead.
 func (*CurrencyBalance) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{76}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{80}
 }
 
 func (x *CurrencyBalance) GetCurrency() string {
@@ -5447,7 +5879,7 @@ type EconomyResponse struct {
 
 func (x *EconomyResponse) Reset() {
 	*x = EconomyResponse{}
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[77]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[81]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5459,7 +5891,7 @@ func (x *EconomyResponse) String() string {
 func (*EconomyResponse) ProtoMessage() {}
 
 func (x *EconomyResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_uba_service_v1_analytics_proto_msgTypes[77]
+	mi := &file_uba_service_v1_analytics_proto_msgTypes[81]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5472,7 +5904,7 @@ func (x *EconomyResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use EconomyResponse.ProtoReflect.Descriptor instead.
 func (*EconomyResponse) Descriptor() ([]byte, []int) {
-	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{77}
+	return file_uba_service_v1_analytics_proto_rawDescGZIP(), []int{81}
 }
 
 func (x *EconomyResponse) GetCurrencies() []*CurrencyBalance {
@@ -5492,7 +5924,7 @@ const file_uba_service_v1_analytics_proto_rawDesc = "" +
 	"\x06end_ms\x18\x02 \x01(\x03B)\xbaG&\x92\x02#结束时间（含），Unix 毫秒R\x05endMs\"x\n" +
 	"\x0fTimeSeriesPoint\x12A\n" +
 	"\ttimestamp\x18\x01 \x01(\x03B#\xbaG \x92\x02\x1d时间桶起点，Unix 毫秒R\ttimestamp\x12\"\n" +
-	"\x05value\x18\x02 \x01(\x01B\f\xbaG\t\x92\x02\x06数值R\x05value\"\x9d\x02\n" +
+	"\x05value\x18\x02 \x01(\x01B\f\xbaG\t\x92\x02\x06数值R\x05value\"\xdd\x03\n" +
 	"\x11EventTrendRequest\x128\n" +
 	"\n" +
 	"time_range\x18\x01 \x01(\v2\x19.uba.service.v1.TimeRangeR\ttimeRange\x12F\n" +
@@ -5500,14 +5932,60 @@ const file_uba_service_v1_analytics_proto_rawDesc = "" +
 	"\x06app_id\x18\x03 \x01(\rH\x00R\x05appId\x88\x01\x01\x12\"\n" +
 	"\n" +
 	"event_name\x18\x04 \x01(\tH\x01R\teventName\x88\x01\x01\x12\x1f\n" +
-	"\bplatform\x18\x05 \x01(\tH\x02R\bplatform\x88\x01\x01B\t\n" +
+	"\bplatform\x18\x05 \x01(\tH\x02R\bplatform\x88\x01\x01\x124\n" +
+	"\aqueries\x18\x06 \x03(\v2\x1a.uba.service.v1.EventQueryR\aqueries\x12!\n" +
+	"\tdimension\x18\a \x01(\tH\x03R\tdimension\x88\x01\x01\x12E\n" +
+	"\rglobal_filter\x18\b \x01(\v2\x1b.uba.service.v1.FilterGroupH\x04R\fglobalFilter\x88\x01\x01B\t\n" +
 	"\a_app_idB\r\n" +
 	"\v_event_nameB\v\n" +
-	"\t_platform\"\xab\x01\n" +
+	"\t_platformB\f\n" +
+	"\n" +
+	"_dimensionB\x10\n" +
+	"\x0e_global_filter\"\xe0\x01\n" +
 	"\x12EventTrendResponse\x127\n" +
 	"\x06points\x18\x01 \x03(\v2\x1f.uba.service.v1.TimeSeriesPointR\x06points\x12F\n" +
 	"\vgranularity\x18\x02 \x01(\x0e2$.uba.service.v1.AnalyticsGranularityR\vgranularity\x12\x14\n" +
-	"\x05total\x18\x03 \x01(\x03R\x05total\"\xac\x01\n" +
+	"\x05total\x18\x03 \x01(\x03R\x05total\x123\n" +
+	"\x06series\x18\x04 \x03(\v2\x1b.uba.service.v1.EventSeriesR\x06series\"\xe5\x01\n" +
+	"\n" +
+	"EventQuery\x12\"\n" +
+	"\n" +
+	"event_name\x18\x01 \x01(\tH\x00R\teventName\x88\x01\x01\x12\x1b\n" +
+	"\x06metric\x18\x02 \x01(\tH\x01R\x06metric\x88\x01\x01\x128\n" +
+	"\x06filter\x18\x03 \x01(\v2\x1b.uba.service.v1.FilterGroupH\x02R\x06filter\x88\x01\x01\x12&\n" +
+	"\fdisplay_name\x18\x04 \x01(\tH\x03R\vdisplayName\x88\x01\x01B\r\n" +
+	"\v_event_nameB\t\n" +
+	"\a_metricB\t\n" +
+	"\a_filterB\x0f\n" +
+	"\r_display_name\"p\n" +
+	"\vEventSeries\x12\x12\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x127\n" +
+	"\x06points\x18\x02 \x03(\v2\x1f.uba.service.v1.TimeSeriesPointR\x06points\x12\x14\n" +
+	"\x05total\x18\x03 \x01(\x03R\x05total\"\x9a\x03\n" +
+	"\x0ePropertyFilter\x12?\n" +
+	"\x05scope\x18\x01 \x01(\x0e2).uba.service.v1.PropertyFilter.FieldScopeR\x05scope\x12\x14\n" +
+	"\x05field\x18\x02 \x01(\tR\x05field\x127\n" +
+	"\x02op\x18\x03 \x01(\x0e2'.uba.service.v1.PropertyFilter.OperatorR\x02op\x12\x16\n" +
+	"\x06values\x18\x04 \x03(\tR\x06values\"q\n" +
+	"\n" +
+	"FieldScope\x12\x1b\n" +
+	"\x17FIELD_SCOPE_UNSPECIFIED\x10\x00\x12\r\n" +
+	"\tDIMENSION\x10\x01\x12\x11\n" +
+	"\rEVENT_CONTEXT\x10\x02\x12\x12\n" +
+	"\x0eEVENT_PROPERTY\x10\x03\x12\x10\n" +
+	"\fEVENT_METRIC\x10\x04\"m\n" +
+	"\bOperator\x12\x18\n" +
+	"\x14OPERATOR_UNSPECIFIED\x10\x00\x12\x06\n" +
+	"\x02EQ\x10\x01\x12\a\n" +
+	"\x03NEQ\x10\x02\x12\f\n" +
+	"\bCONTAINS\x10\x03\x12\x06\n" +
+	"\x02IN\x10\x04\x12\x06\n" +
+	"\x02GT\x10\x05\x12\a\n" +
+	"\x03GTE\x10\x06\x12\x06\n" +
+	"\x02LT\x10\a\x12\a\n" +
+	"\x03LTE\x10\b\"G\n" +
+	"\vFilterGroup\x128\n" +
+	"\afilters\x18\x01 \x03(\v2\x1e.uba.service.v1.PropertyFilterR\afilters\"\xac\x01\n" +
 	"\n" +
 	"FunnelStep\x12\x1d\n" +
 	"\n" +
@@ -6060,203 +6538,217 @@ func file_uba_service_v1_analytics_proto_rawDescGZIP() []byte {
 	return file_uba_service_v1_analytics_proto_rawDescData
 }
 
-var file_uba_service_v1_analytics_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_uba_service_v1_analytics_proto_msgTypes = make([]protoimpl.MessageInfo, 79)
+var file_uba_service_v1_analytics_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
+var file_uba_service_v1_analytics_proto_msgTypes = make([]protoimpl.MessageInfo, 83)
 var file_uba_service_v1_analytics_proto_goTypes = []any{
 	(AnalyticsGranularity)(0),        // 0: uba.service.v1.AnalyticsGranularity
-	(*TimeRange)(nil),                // 1: uba.service.v1.TimeRange
-	(*TimeSeriesPoint)(nil),          // 2: uba.service.v1.TimeSeriesPoint
-	(*EventTrendRequest)(nil),        // 3: uba.service.v1.EventTrendRequest
-	(*EventTrendResponse)(nil),       // 4: uba.service.v1.EventTrendResponse
-	(*FunnelStep)(nil),               // 5: uba.service.v1.FunnelStep
-	(*FunnelRequest)(nil),            // 6: uba.service.v1.FunnelRequest
-	(*FunnelResponse)(nil),           // 7: uba.service.v1.FunnelResponse
-	(*RetentionCell)(nil),            // 8: uba.service.v1.RetentionCell
-	(*RetentionCohort)(nil),          // 9: uba.service.v1.RetentionCohort
-	(*RetentionRequest)(nil),         // 10: uba.service.v1.RetentionRequest
-	(*RetentionResponse)(nil),        // 11: uba.service.v1.RetentionResponse
-	(*GroupByRequest)(nil),           // 12: uba.service.v1.GroupByRequest
-	(*GroupByBucket)(nil),            // 13: uba.service.v1.GroupByBucket
-	(*GroupByResponse)(nil),          // 14: uba.service.v1.GroupByResponse
-	(*ActiveUsersRequest)(nil),       // 15: uba.service.v1.ActiveUsersRequest
-	(*ActiveUsersPoint)(nil),         // 16: uba.service.v1.ActiveUsersPoint
-	(*ActiveUsersResponse)(nil),      // 17: uba.service.v1.ActiveUsersResponse
-	(*AttributionRequest)(nil),       // 18: uba.service.v1.AttributionRequest
-	(*AttributionBucket)(nil),        // 19: uba.service.v1.AttributionBucket
-	(*AttributionResponse)(nil),      // 20: uba.service.v1.AttributionResponse
-	(*DistributionRequest)(nil),      // 21: uba.service.v1.DistributionRequest
-	(*DistributionBucket)(nil),       // 22: uba.service.v1.DistributionBucket
-	(*DistributionSummary)(nil),      // 23: uba.service.v1.DistributionSummary
-	(*DistributionResponse)(nil),     // 24: uba.service.v1.DistributionResponse
-	(*BehaviorSequenceRequest)(nil),  // 25: uba.service.v1.BehaviorSequenceRequest
-	(*SequenceEvent)(nil),            // 26: uba.service.v1.SequenceEvent
-	(*BehaviorSequenceResponse)(nil), // 27: uba.service.v1.BehaviorSequenceResponse
-	(*SegmentCondition)(nil),         // 28: uba.service.v1.SegmentCondition
-	(*SegmentationRequest)(nil),      // 29: uba.service.v1.SegmentationRequest
-	(*SegmentationResponse)(nil),     // 30: uba.service.v1.SegmentationResponse
-	(*ClickRequest)(nil),             // 31: uba.service.v1.ClickRequest
-	(*ClickHeatPoint)(nil),           // 32: uba.service.v1.ClickHeatPoint
-	(*ClickElementBucket)(nil),       // 33: uba.service.v1.ClickElementBucket
-	(*ClickResponse)(nil),            // 34: uba.service.v1.ClickResponse
-	(*LifecycleRequest)(nil),         // 35: uba.service.v1.LifecycleRequest
-	(*LifecycleStage)(nil),           // 36: uba.service.v1.LifecycleStage
-	(*LifecycleResponse)(nil),        // 37: uba.service.v1.LifecycleResponse
-	(*ChurnRequest)(nil),             // 38: uba.service.v1.ChurnRequest
-	(*ChurnBucket)(nil),              // 39: uba.service.v1.ChurnBucket
-	(*ReactivationTrigger)(nil),      // 40: uba.service.v1.ReactivationTrigger
-	(*ChurnResponse)(nil),            // 41: uba.service.v1.ChurnResponse
-	(*IntervalRequest)(nil),          // 42: uba.service.v1.IntervalRequest
-	(*IntervalBucket)(nil),           // 43: uba.service.v1.IntervalBucket
-	(*IntervalResponse)(nil),         // 44: uba.service.v1.IntervalResponse
-	(*MatrixRequest)(nil),            // 45: uba.service.v1.MatrixRequest
-	(*MatrixPoint)(nil),              // 46: uba.service.v1.MatrixPoint
-	(*MatrixResponse)(nil),           // 47: uba.service.v1.MatrixResponse
-	(*RevenueRequest)(nil),           // 48: uba.service.v1.RevenueRequest
-	(*RevenuePoint)(nil),             // 49: uba.service.v1.RevenuePoint
-	(*RevenueResponse)(nil),          // 50: uba.service.v1.RevenueResponse
-	(*SessionAnalysisRequest)(nil),   // 51: uba.service.v1.SessionAnalysisRequest
-	(*SessionAnalysisResponse)(nil),  // 52: uba.service.v1.SessionAnalysisResponse
-	(*AnomalyRequest)(nil),           // 53: uba.service.v1.AnomalyRequest
-	(*AnomalyPoint)(nil),             // 54: uba.service.v1.AnomalyPoint
-	(*AnomalyResponse)(nil),          // 55: uba.service.v1.AnomalyResponse
-	(*NewVsOldRequest)(nil),          // 56: uba.service.v1.NewVsOldRequest
-	(*NewVsOldSegment)(nil),          // 57: uba.service.v1.NewVsOldSegment
-	(*NewVsOldResponse)(nil),         // 58: uba.service.v1.NewVsOldResponse
-	(*PathSankeyRequest)(nil),        // 59: uba.service.v1.PathSankeyRequest
-	(*PathBucket)(nil),               // 60: uba.service.v1.PathBucket
-	(*PathSankeyResponse)(nil),       // 61: uba.service.v1.PathSankeyResponse
-	(*LevelAnalysisRequest)(nil),     // 62: uba.service.v1.LevelAnalysisRequest
-	(*LevelStat)(nil),                // 63: uba.service.v1.LevelStat
-	(*LevelAnalysisResponse)(nil),    // 64: uba.service.v1.LevelAnalysisResponse
-	(*WhaleTierRequest)(nil),         // 65: uba.service.v1.WhaleTierRequest
-	(*PayTierSegment)(nil),           // 66: uba.service.v1.PayTierSegment
-	(*WhaleTierResponse)(nil),        // 67: uba.service.v1.WhaleTierResponse
-	(*LTVRequest)(nil),               // 68: uba.service.v1.LTVRequest
-	(*LTVPoint)(nil),                 // 69: uba.service.v1.LTVPoint
-	(*LTVResponse)(nil),              // 70: uba.service.v1.LTVResponse
-	(*ServerRetentionRequest)(nil),   // 71: uba.service.v1.ServerRetentionRequest
-	(*ServerRetentionRow)(nil),       // 72: uba.service.v1.ServerRetentionRow
-	(*ServerRetentionResponse)(nil),  // 73: uba.service.v1.ServerRetentionResponse
-	(*OnlineStatsRequest)(nil),       // 74: uba.service.v1.OnlineStatsRequest
-	(*OnlineStatsResponse)(nil),      // 75: uba.service.v1.OnlineStatsResponse
-	(*EconomyRequest)(nil),           // 76: uba.service.v1.EconomyRequest
-	(*CurrencyBalance)(nil),          // 77: uba.service.v1.CurrencyBalance
-	(*EconomyResponse)(nil),          // 78: uba.service.v1.EconomyResponse
-	nil,                              // 79: uba.service.v1.ServerRetentionRow.RetentionRatesEntry
+	(PropertyFilter_FieldScope)(0),   // 1: uba.service.v1.PropertyFilter.FieldScope
+	(PropertyFilter_Operator)(0),     // 2: uba.service.v1.PropertyFilter.Operator
+	(*TimeRange)(nil),                // 3: uba.service.v1.TimeRange
+	(*TimeSeriesPoint)(nil),          // 4: uba.service.v1.TimeSeriesPoint
+	(*EventTrendRequest)(nil),        // 5: uba.service.v1.EventTrendRequest
+	(*EventTrendResponse)(nil),       // 6: uba.service.v1.EventTrendResponse
+	(*EventQuery)(nil),               // 7: uba.service.v1.EventQuery
+	(*EventSeries)(nil),              // 8: uba.service.v1.EventSeries
+	(*PropertyFilter)(nil),           // 9: uba.service.v1.PropertyFilter
+	(*FilterGroup)(nil),              // 10: uba.service.v1.FilterGroup
+	(*FunnelStep)(nil),               // 11: uba.service.v1.FunnelStep
+	(*FunnelRequest)(nil),            // 12: uba.service.v1.FunnelRequest
+	(*FunnelResponse)(nil),           // 13: uba.service.v1.FunnelResponse
+	(*RetentionCell)(nil),            // 14: uba.service.v1.RetentionCell
+	(*RetentionCohort)(nil),          // 15: uba.service.v1.RetentionCohort
+	(*RetentionRequest)(nil),         // 16: uba.service.v1.RetentionRequest
+	(*RetentionResponse)(nil),        // 17: uba.service.v1.RetentionResponse
+	(*GroupByRequest)(nil),           // 18: uba.service.v1.GroupByRequest
+	(*GroupByBucket)(nil),            // 19: uba.service.v1.GroupByBucket
+	(*GroupByResponse)(nil),          // 20: uba.service.v1.GroupByResponse
+	(*ActiveUsersRequest)(nil),       // 21: uba.service.v1.ActiveUsersRequest
+	(*ActiveUsersPoint)(nil),         // 22: uba.service.v1.ActiveUsersPoint
+	(*ActiveUsersResponse)(nil),      // 23: uba.service.v1.ActiveUsersResponse
+	(*AttributionRequest)(nil),       // 24: uba.service.v1.AttributionRequest
+	(*AttributionBucket)(nil),        // 25: uba.service.v1.AttributionBucket
+	(*AttributionResponse)(nil),      // 26: uba.service.v1.AttributionResponse
+	(*DistributionRequest)(nil),      // 27: uba.service.v1.DistributionRequest
+	(*DistributionBucket)(nil),       // 28: uba.service.v1.DistributionBucket
+	(*DistributionSummary)(nil),      // 29: uba.service.v1.DistributionSummary
+	(*DistributionResponse)(nil),     // 30: uba.service.v1.DistributionResponse
+	(*BehaviorSequenceRequest)(nil),  // 31: uba.service.v1.BehaviorSequenceRequest
+	(*SequenceEvent)(nil),            // 32: uba.service.v1.SequenceEvent
+	(*BehaviorSequenceResponse)(nil), // 33: uba.service.v1.BehaviorSequenceResponse
+	(*SegmentCondition)(nil),         // 34: uba.service.v1.SegmentCondition
+	(*SegmentationRequest)(nil),      // 35: uba.service.v1.SegmentationRequest
+	(*SegmentationResponse)(nil),     // 36: uba.service.v1.SegmentationResponse
+	(*ClickRequest)(nil),             // 37: uba.service.v1.ClickRequest
+	(*ClickHeatPoint)(nil),           // 38: uba.service.v1.ClickHeatPoint
+	(*ClickElementBucket)(nil),       // 39: uba.service.v1.ClickElementBucket
+	(*ClickResponse)(nil),            // 40: uba.service.v1.ClickResponse
+	(*LifecycleRequest)(nil),         // 41: uba.service.v1.LifecycleRequest
+	(*LifecycleStage)(nil),           // 42: uba.service.v1.LifecycleStage
+	(*LifecycleResponse)(nil),        // 43: uba.service.v1.LifecycleResponse
+	(*ChurnRequest)(nil),             // 44: uba.service.v1.ChurnRequest
+	(*ChurnBucket)(nil),              // 45: uba.service.v1.ChurnBucket
+	(*ReactivationTrigger)(nil),      // 46: uba.service.v1.ReactivationTrigger
+	(*ChurnResponse)(nil),            // 47: uba.service.v1.ChurnResponse
+	(*IntervalRequest)(nil),          // 48: uba.service.v1.IntervalRequest
+	(*IntervalBucket)(nil),           // 49: uba.service.v1.IntervalBucket
+	(*IntervalResponse)(nil),         // 50: uba.service.v1.IntervalResponse
+	(*MatrixRequest)(nil),            // 51: uba.service.v1.MatrixRequest
+	(*MatrixPoint)(nil),              // 52: uba.service.v1.MatrixPoint
+	(*MatrixResponse)(nil),           // 53: uba.service.v1.MatrixResponse
+	(*RevenueRequest)(nil),           // 54: uba.service.v1.RevenueRequest
+	(*RevenuePoint)(nil),             // 55: uba.service.v1.RevenuePoint
+	(*RevenueResponse)(nil),          // 56: uba.service.v1.RevenueResponse
+	(*SessionAnalysisRequest)(nil),   // 57: uba.service.v1.SessionAnalysisRequest
+	(*SessionAnalysisResponse)(nil),  // 58: uba.service.v1.SessionAnalysisResponse
+	(*AnomalyRequest)(nil),           // 59: uba.service.v1.AnomalyRequest
+	(*AnomalyPoint)(nil),             // 60: uba.service.v1.AnomalyPoint
+	(*AnomalyResponse)(nil),          // 61: uba.service.v1.AnomalyResponse
+	(*NewVsOldRequest)(nil),          // 62: uba.service.v1.NewVsOldRequest
+	(*NewVsOldSegment)(nil),          // 63: uba.service.v1.NewVsOldSegment
+	(*NewVsOldResponse)(nil),         // 64: uba.service.v1.NewVsOldResponse
+	(*PathSankeyRequest)(nil),        // 65: uba.service.v1.PathSankeyRequest
+	(*PathBucket)(nil),               // 66: uba.service.v1.PathBucket
+	(*PathSankeyResponse)(nil),       // 67: uba.service.v1.PathSankeyResponse
+	(*LevelAnalysisRequest)(nil),     // 68: uba.service.v1.LevelAnalysisRequest
+	(*LevelStat)(nil),                // 69: uba.service.v1.LevelStat
+	(*LevelAnalysisResponse)(nil),    // 70: uba.service.v1.LevelAnalysisResponse
+	(*WhaleTierRequest)(nil),         // 71: uba.service.v1.WhaleTierRequest
+	(*PayTierSegment)(nil),           // 72: uba.service.v1.PayTierSegment
+	(*WhaleTierResponse)(nil),        // 73: uba.service.v1.WhaleTierResponse
+	(*LTVRequest)(nil),               // 74: uba.service.v1.LTVRequest
+	(*LTVPoint)(nil),                 // 75: uba.service.v1.LTVPoint
+	(*LTVResponse)(nil),              // 76: uba.service.v1.LTVResponse
+	(*ServerRetentionRequest)(nil),   // 77: uba.service.v1.ServerRetentionRequest
+	(*ServerRetentionRow)(nil),       // 78: uba.service.v1.ServerRetentionRow
+	(*ServerRetentionResponse)(nil),  // 79: uba.service.v1.ServerRetentionResponse
+	(*OnlineStatsRequest)(nil),       // 80: uba.service.v1.OnlineStatsRequest
+	(*OnlineStatsResponse)(nil),      // 81: uba.service.v1.OnlineStatsResponse
+	(*EconomyRequest)(nil),           // 82: uba.service.v1.EconomyRequest
+	(*CurrencyBalance)(nil),          // 83: uba.service.v1.CurrencyBalance
+	(*EconomyResponse)(nil),          // 84: uba.service.v1.EconomyResponse
+	nil,                              // 85: uba.service.v1.ServerRetentionRow.RetentionRatesEntry
 }
 var file_uba_service_v1_analytics_proto_depIdxs = []int32{
-	1,  // 0: uba.service.v1.EventTrendRequest.time_range:type_name -> uba.service.v1.TimeRange
+	3,  // 0: uba.service.v1.EventTrendRequest.time_range:type_name -> uba.service.v1.TimeRange
 	0,  // 1: uba.service.v1.EventTrendRequest.granularity:type_name -> uba.service.v1.AnalyticsGranularity
-	2,  // 2: uba.service.v1.EventTrendResponse.points:type_name -> uba.service.v1.TimeSeriesPoint
-	0,  // 3: uba.service.v1.EventTrendResponse.granularity:type_name -> uba.service.v1.AnalyticsGranularity
-	1,  // 4: uba.service.v1.FunnelRequest.time_range:type_name -> uba.service.v1.TimeRange
-	5,  // 5: uba.service.v1.FunnelResponse.steps:type_name -> uba.service.v1.FunnelStep
-	8,  // 6: uba.service.v1.RetentionCohort.cells:type_name -> uba.service.v1.RetentionCell
-	1,  // 7: uba.service.v1.RetentionRequest.time_range:type_name -> uba.service.v1.TimeRange
-	9,  // 8: uba.service.v1.RetentionResponse.cohorts:type_name -> uba.service.v1.RetentionCohort
-	1,  // 9: uba.service.v1.GroupByRequest.time_range:type_name -> uba.service.v1.TimeRange
-	13, // 10: uba.service.v1.GroupByResponse.buckets:type_name -> uba.service.v1.GroupByBucket
-	1,  // 11: uba.service.v1.ActiveUsersRequest.time_range:type_name -> uba.service.v1.TimeRange
-	0,  // 12: uba.service.v1.ActiveUsersRequest.granularity:type_name -> uba.service.v1.AnalyticsGranularity
-	16, // 13: uba.service.v1.ActiveUsersResponse.points:type_name -> uba.service.v1.ActiveUsersPoint
-	1,  // 14: uba.service.v1.AttributionRequest.time_range:type_name -> uba.service.v1.TimeRange
-	19, // 15: uba.service.v1.AttributionResponse.buckets:type_name -> uba.service.v1.AttributionBucket
-	1,  // 16: uba.service.v1.DistributionRequest.time_range:type_name -> uba.service.v1.TimeRange
-	22, // 17: uba.service.v1.DistributionResponse.buckets:type_name -> uba.service.v1.DistributionBucket
-	23, // 18: uba.service.v1.DistributionResponse.summary:type_name -> uba.service.v1.DistributionSummary
-	1,  // 19: uba.service.v1.BehaviorSequenceRequest.time_range:type_name -> uba.service.v1.TimeRange
-	26, // 20: uba.service.v1.BehaviorSequenceResponse.events:type_name -> uba.service.v1.SequenceEvent
-	1,  // 21: uba.service.v1.SegmentationRequest.time_range:type_name -> uba.service.v1.TimeRange
-	28, // 22: uba.service.v1.SegmentationRequest.include:type_name -> uba.service.v1.SegmentCondition
-	28, // 23: uba.service.v1.SegmentationRequest.exclude:type_name -> uba.service.v1.SegmentCondition
-	1,  // 24: uba.service.v1.ClickRequest.time_range:type_name -> uba.service.v1.TimeRange
-	32, // 25: uba.service.v1.ClickResponse.points:type_name -> uba.service.v1.ClickHeatPoint
-	33, // 26: uba.service.v1.ClickResponse.top_elements:type_name -> uba.service.v1.ClickElementBucket
-	1,  // 27: uba.service.v1.LifecycleRequest.time_range:type_name -> uba.service.v1.TimeRange
-	36, // 28: uba.service.v1.LifecycleResponse.stages:type_name -> uba.service.v1.LifecycleStage
-	1,  // 29: uba.service.v1.ChurnRequest.time_range:type_name -> uba.service.v1.TimeRange
-	39, // 30: uba.service.v1.ChurnResponse.churn_buckets:type_name -> uba.service.v1.ChurnBucket
-	40, // 31: uba.service.v1.ChurnResponse.triggers:type_name -> uba.service.v1.ReactivationTrigger
-	1,  // 32: uba.service.v1.IntervalRequest.time_range:type_name -> uba.service.v1.TimeRange
-	43, // 33: uba.service.v1.IntervalResponse.buckets:type_name -> uba.service.v1.IntervalBucket
-	1,  // 34: uba.service.v1.MatrixRequest.time_range:type_name -> uba.service.v1.TimeRange
-	46, // 35: uba.service.v1.MatrixResponse.points:type_name -> uba.service.v1.MatrixPoint
-	1,  // 36: uba.service.v1.RevenueRequest.time_range:type_name -> uba.service.v1.TimeRange
-	0,  // 37: uba.service.v1.RevenueRequest.granularity:type_name -> uba.service.v1.AnalyticsGranularity
-	49, // 38: uba.service.v1.RevenueResponse.points:type_name -> uba.service.v1.RevenuePoint
-	1,  // 39: uba.service.v1.SessionAnalysisRequest.time_range:type_name -> uba.service.v1.TimeRange
-	1,  // 40: uba.service.v1.AnomalyRequest.time_range:type_name -> uba.service.v1.TimeRange
-	54, // 41: uba.service.v1.AnomalyResponse.points:type_name -> uba.service.v1.AnomalyPoint
-	1,  // 42: uba.service.v1.NewVsOldRequest.time_range:type_name -> uba.service.v1.TimeRange
-	57, // 43: uba.service.v1.NewVsOldResponse.segments:type_name -> uba.service.v1.NewVsOldSegment
-	1,  // 44: uba.service.v1.PathSankeyRequest.time_range:type_name -> uba.service.v1.TimeRange
-	60, // 45: uba.service.v1.PathSankeyResponse.paths:type_name -> uba.service.v1.PathBucket
-	1,  // 46: uba.service.v1.LevelAnalysisRequest.time_range:type_name -> uba.service.v1.TimeRange
-	63, // 47: uba.service.v1.LevelAnalysisResponse.levels:type_name -> uba.service.v1.LevelStat
-	66, // 48: uba.service.v1.WhaleTierResponse.segments:type_name -> uba.service.v1.PayTierSegment
-	1,  // 49: uba.service.v1.LTVRequest.time_range:type_name -> uba.service.v1.TimeRange
-	69, // 50: uba.service.v1.LTVResponse.points:type_name -> uba.service.v1.LTVPoint
-	1,  // 51: uba.service.v1.ServerRetentionRequest.time_range:type_name -> uba.service.v1.TimeRange
-	79, // 52: uba.service.v1.ServerRetentionRow.retention_rates:type_name -> uba.service.v1.ServerRetentionRow.RetentionRatesEntry
-	72, // 53: uba.service.v1.ServerRetentionResponse.rows:type_name -> uba.service.v1.ServerRetentionRow
-	1,  // 54: uba.service.v1.OnlineStatsRequest.time_range:type_name -> uba.service.v1.TimeRange
-	1,  // 55: uba.service.v1.EconomyRequest.time_range:type_name -> uba.service.v1.TimeRange
-	77, // 56: uba.service.v1.EconomyResponse.currencies:type_name -> uba.service.v1.CurrencyBalance
-	3,  // 57: uba.service.v1.AnalyticsService.EventTrend:input_type -> uba.service.v1.EventTrendRequest
-	6,  // 58: uba.service.v1.AnalyticsService.Funnel:input_type -> uba.service.v1.FunnelRequest
-	10, // 59: uba.service.v1.AnalyticsService.Retention:input_type -> uba.service.v1.RetentionRequest
-	12, // 60: uba.service.v1.AnalyticsService.GroupBy:input_type -> uba.service.v1.GroupByRequest
-	15, // 61: uba.service.v1.AnalyticsService.ActiveUsers:input_type -> uba.service.v1.ActiveUsersRequest
-	18, // 62: uba.service.v1.AnalyticsService.Attribution:input_type -> uba.service.v1.AttributionRequest
-	21, // 63: uba.service.v1.AnalyticsService.Distribution:input_type -> uba.service.v1.DistributionRequest
-	25, // 64: uba.service.v1.AnalyticsService.BehaviorSequence:input_type -> uba.service.v1.BehaviorSequenceRequest
-	29, // 65: uba.service.v1.AnalyticsService.Segmentation:input_type -> uba.service.v1.SegmentationRequest
-	31, // 66: uba.service.v1.AnalyticsService.Click:input_type -> uba.service.v1.ClickRequest
-	35, // 67: uba.service.v1.AnalyticsService.Lifecycle:input_type -> uba.service.v1.LifecycleRequest
-	38, // 68: uba.service.v1.AnalyticsService.Churn:input_type -> uba.service.v1.ChurnRequest
-	42, // 69: uba.service.v1.AnalyticsService.Interval:input_type -> uba.service.v1.IntervalRequest
-	45, // 70: uba.service.v1.AnalyticsService.Matrix:input_type -> uba.service.v1.MatrixRequest
-	48, // 71: uba.service.v1.AnalyticsService.Revenue:input_type -> uba.service.v1.RevenueRequest
-	51, // 72: uba.service.v1.AnalyticsService.SessionAnalysis:input_type -> uba.service.v1.SessionAnalysisRequest
-	53, // 73: uba.service.v1.AnalyticsService.Anomaly:input_type -> uba.service.v1.AnomalyRequest
-	56, // 74: uba.service.v1.AnalyticsService.NewVsOld:input_type -> uba.service.v1.NewVsOldRequest
-	59, // 75: uba.service.v1.AnalyticsService.PathSankey:input_type -> uba.service.v1.PathSankeyRequest
-	62, // 76: uba.service.v1.AnalyticsService.LevelAnalysis:input_type -> uba.service.v1.LevelAnalysisRequest
-	65, // 77: uba.service.v1.AnalyticsService.WhaleTier:input_type -> uba.service.v1.WhaleTierRequest
-	68, // 78: uba.service.v1.AnalyticsService.LTV:input_type -> uba.service.v1.LTVRequest
-	71, // 79: uba.service.v1.AnalyticsService.ServerRetention:input_type -> uba.service.v1.ServerRetentionRequest
-	74, // 80: uba.service.v1.AnalyticsService.OnlineStats:input_type -> uba.service.v1.OnlineStatsRequest
-	76, // 81: uba.service.v1.AnalyticsService.Economy:input_type -> uba.service.v1.EconomyRequest
-	4,  // 82: uba.service.v1.AnalyticsService.EventTrend:output_type -> uba.service.v1.EventTrendResponse
-	7,  // 83: uba.service.v1.AnalyticsService.Funnel:output_type -> uba.service.v1.FunnelResponse
-	11, // 84: uba.service.v1.AnalyticsService.Retention:output_type -> uba.service.v1.RetentionResponse
-	14, // 85: uba.service.v1.AnalyticsService.GroupBy:output_type -> uba.service.v1.GroupByResponse
-	17, // 86: uba.service.v1.AnalyticsService.ActiveUsers:output_type -> uba.service.v1.ActiveUsersResponse
-	20, // 87: uba.service.v1.AnalyticsService.Attribution:output_type -> uba.service.v1.AttributionResponse
-	24, // 88: uba.service.v1.AnalyticsService.Distribution:output_type -> uba.service.v1.DistributionResponse
-	27, // 89: uba.service.v1.AnalyticsService.BehaviorSequence:output_type -> uba.service.v1.BehaviorSequenceResponse
-	30, // 90: uba.service.v1.AnalyticsService.Segmentation:output_type -> uba.service.v1.SegmentationResponse
-	34, // 91: uba.service.v1.AnalyticsService.Click:output_type -> uba.service.v1.ClickResponse
-	37, // 92: uba.service.v1.AnalyticsService.Lifecycle:output_type -> uba.service.v1.LifecycleResponse
-	41, // 93: uba.service.v1.AnalyticsService.Churn:output_type -> uba.service.v1.ChurnResponse
-	44, // 94: uba.service.v1.AnalyticsService.Interval:output_type -> uba.service.v1.IntervalResponse
-	47, // 95: uba.service.v1.AnalyticsService.Matrix:output_type -> uba.service.v1.MatrixResponse
-	50, // 96: uba.service.v1.AnalyticsService.Revenue:output_type -> uba.service.v1.RevenueResponse
-	52, // 97: uba.service.v1.AnalyticsService.SessionAnalysis:output_type -> uba.service.v1.SessionAnalysisResponse
-	55, // 98: uba.service.v1.AnalyticsService.Anomaly:output_type -> uba.service.v1.AnomalyResponse
-	58, // 99: uba.service.v1.AnalyticsService.NewVsOld:output_type -> uba.service.v1.NewVsOldResponse
-	61, // 100: uba.service.v1.AnalyticsService.PathSankey:output_type -> uba.service.v1.PathSankeyResponse
-	64, // 101: uba.service.v1.AnalyticsService.LevelAnalysis:output_type -> uba.service.v1.LevelAnalysisResponse
-	67, // 102: uba.service.v1.AnalyticsService.WhaleTier:output_type -> uba.service.v1.WhaleTierResponse
-	70, // 103: uba.service.v1.AnalyticsService.LTV:output_type -> uba.service.v1.LTVResponse
-	73, // 104: uba.service.v1.AnalyticsService.ServerRetention:output_type -> uba.service.v1.ServerRetentionResponse
-	75, // 105: uba.service.v1.AnalyticsService.OnlineStats:output_type -> uba.service.v1.OnlineStatsResponse
-	78, // 106: uba.service.v1.AnalyticsService.Economy:output_type -> uba.service.v1.EconomyResponse
-	82, // [82:107] is the sub-list for method output_type
-	57, // [57:82] is the sub-list for method input_type
-	57, // [57:57] is the sub-list for extension type_name
-	57, // [57:57] is the sub-list for extension extendee
-	0,  // [0:57] is the sub-list for field type_name
+	7,  // 2: uba.service.v1.EventTrendRequest.queries:type_name -> uba.service.v1.EventQuery
+	10, // 3: uba.service.v1.EventTrendRequest.global_filter:type_name -> uba.service.v1.FilterGroup
+	4,  // 4: uba.service.v1.EventTrendResponse.points:type_name -> uba.service.v1.TimeSeriesPoint
+	0,  // 5: uba.service.v1.EventTrendResponse.granularity:type_name -> uba.service.v1.AnalyticsGranularity
+	8,  // 6: uba.service.v1.EventTrendResponse.series:type_name -> uba.service.v1.EventSeries
+	10, // 7: uba.service.v1.EventQuery.filter:type_name -> uba.service.v1.FilterGroup
+	4,  // 8: uba.service.v1.EventSeries.points:type_name -> uba.service.v1.TimeSeriesPoint
+	1,  // 9: uba.service.v1.PropertyFilter.scope:type_name -> uba.service.v1.PropertyFilter.FieldScope
+	2,  // 10: uba.service.v1.PropertyFilter.op:type_name -> uba.service.v1.PropertyFilter.Operator
+	9,  // 11: uba.service.v1.FilterGroup.filters:type_name -> uba.service.v1.PropertyFilter
+	3,  // 12: uba.service.v1.FunnelRequest.time_range:type_name -> uba.service.v1.TimeRange
+	11, // 13: uba.service.v1.FunnelResponse.steps:type_name -> uba.service.v1.FunnelStep
+	14, // 14: uba.service.v1.RetentionCohort.cells:type_name -> uba.service.v1.RetentionCell
+	3,  // 15: uba.service.v1.RetentionRequest.time_range:type_name -> uba.service.v1.TimeRange
+	15, // 16: uba.service.v1.RetentionResponse.cohorts:type_name -> uba.service.v1.RetentionCohort
+	3,  // 17: uba.service.v1.GroupByRequest.time_range:type_name -> uba.service.v1.TimeRange
+	19, // 18: uba.service.v1.GroupByResponse.buckets:type_name -> uba.service.v1.GroupByBucket
+	3,  // 19: uba.service.v1.ActiveUsersRequest.time_range:type_name -> uba.service.v1.TimeRange
+	0,  // 20: uba.service.v1.ActiveUsersRequest.granularity:type_name -> uba.service.v1.AnalyticsGranularity
+	22, // 21: uba.service.v1.ActiveUsersResponse.points:type_name -> uba.service.v1.ActiveUsersPoint
+	3,  // 22: uba.service.v1.AttributionRequest.time_range:type_name -> uba.service.v1.TimeRange
+	25, // 23: uba.service.v1.AttributionResponse.buckets:type_name -> uba.service.v1.AttributionBucket
+	3,  // 24: uba.service.v1.DistributionRequest.time_range:type_name -> uba.service.v1.TimeRange
+	28, // 25: uba.service.v1.DistributionResponse.buckets:type_name -> uba.service.v1.DistributionBucket
+	29, // 26: uba.service.v1.DistributionResponse.summary:type_name -> uba.service.v1.DistributionSummary
+	3,  // 27: uba.service.v1.BehaviorSequenceRequest.time_range:type_name -> uba.service.v1.TimeRange
+	32, // 28: uba.service.v1.BehaviorSequenceResponse.events:type_name -> uba.service.v1.SequenceEvent
+	3,  // 29: uba.service.v1.SegmentationRequest.time_range:type_name -> uba.service.v1.TimeRange
+	34, // 30: uba.service.v1.SegmentationRequest.include:type_name -> uba.service.v1.SegmentCondition
+	34, // 31: uba.service.v1.SegmentationRequest.exclude:type_name -> uba.service.v1.SegmentCondition
+	3,  // 32: uba.service.v1.ClickRequest.time_range:type_name -> uba.service.v1.TimeRange
+	38, // 33: uba.service.v1.ClickResponse.points:type_name -> uba.service.v1.ClickHeatPoint
+	39, // 34: uba.service.v1.ClickResponse.top_elements:type_name -> uba.service.v1.ClickElementBucket
+	3,  // 35: uba.service.v1.LifecycleRequest.time_range:type_name -> uba.service.v1.TimeRange
+	42, // 36: uba.service.v1.LifecycleResponse.stages:type_name -> uba.service.v1.LifecycleStage
+	3,  // 37: uba.service.v1.ChurnRequest.time_range:type_name -> uba.service.v1.TimeRange
+	45, // 38: uba.service.v1.ChurnResponse.churn_buckets:type_name -> uba.service.v1.ChurnBucket
+	46, // 39: uba.service.v1.ChurnResponse.triggers:type_name -> uba.service.v1.ReactivationTrigger
+	3,  // 40: uba.service.v1.IntervalRequest.time_range:type_name -> uba.service.v1.TimeRange
+	49, // 41: uba.service.v1.IntervalResponse.buckets:type_name -> uba.service.v1.IntervalBucket
+	3,  // 42: uba.service.v1.MatrixRequest.time_range:type_name -> uba.service.v1.TimeRange
+	52, // 43: uba.service.v1.MatrixResponse.points:type_name -> uba.service.v1.MatrixPoint
+	3,  // 44: uba.service.v1.RevenueRequest.time_range:type_name -> uba.service.v1.TimeRange
+	0,  // 45: uba.service.v1.RevenueRequest.granularity:type_name -> uba.service.v1.AnalyticsGranularity
+	55, // 46: uba.service.v1.RevenueResponse.points:type_name -> uba.service.v1.RevenuePoint
+	3,  // 47: uba.service.v1.SessionAnalysisRequest.time_range:type_name -> uba.service.v1.TimeRange
+	3,  // 48: uba.service.v1.AnomalyRequest.time_range:type_name -> uba.service.v1.TimeRange
+	60, // 49: uba.service.v1.AnomalyResponse.points:type_name -> uba.service.v1.AnomalyPoint
+	3,  // 50: uba.service.v1.NewVsOldRequest.time_range:type_name -> uba.service.v1.TimeRange
+	63, // 51: uba.service.v1.NewVsOldResponse.segments:type_name -> uba.service.v1.NewVsOldSegment
+	3,  // 52: uba.service.v1.PathSankeyRequest.time_range:type_name -> uba.service.v1.TimeRange
+	66, // 53: uba.service.v1.PathSankeyResponse.paths:type_name -> uba.service.v1.PathBucket
+	3,  // 54: uba.service.v1.LevelAnalysisRequest.time_range:type_name -> uba.service.v1.TimeRange
+	69, // 55: uba.service.v1.LevelAnalysisResponse.levels:type_name -> uba.service.v1.LevelStat
+	72, // 56: uba.service.v1.WhaleTierResponse.segments:type_name -> uba.service.v1.PayTierSegment
+	3,  // 57: uba.service.v1.LTVRequest.time_range:type_name -> uba.service.v1.TimeRange
+	75, // 58: uba.service.v1.LTVResponse.points:type_name -> uba.service.v1.LTVPoint
+	3,  // 59: uba.service.v1.ServerRetentionRequest.time_range:type_name -> uba.service.v1.TimeRange
+	85, // 60: uba.service.v1.ServerRetentionRow.retention_rates:type_name -> uba.service.v1.ServerRetentionRow.RetentionRatesEntry
+	78, // 61: uba.service.v1.ServerRetentionResponse.rows:type_name -> uba.service.v1.ServerRetentionRow
+	3,  // 62: uba.service.v1.OnlineStatsRequest.time_range:type_name -> uba.service.v1.TimeRange
+	3,  // 63: uba.service.v1.EconomyRequest.time_range:type_name -> uba.service.v1.TimeRange
+	83, // 64: uba.service.v1.EconomyResponse.currencies:type_name -> uba.service.v1.CurrencyBalance
+	5,  // 65: uba.service.v1.AnalyticsService.EventTrend:input_type -> uba.service.v1.EventTrendRequest
+	12, // 66: uba.service.v1.AnalyticsService.Funnel:input_type -> uba.service.v1.FunnelRequest
+	16, // 67: uba.service.v1.AnalyticsService.Retention:input_type -> uba.service.v1.RetentionRequest
+	18, // 68: uba.service.v1.AnalyticsService.GroupBy:input_type -> uba.service.v1.GroupByRequest
+	21, // 69: uba.service.v1.AnalyticsService.ActiveUsers:input_type -> uba.service.v1.ActiveUsersRequest
+	24, // 70: uba.service.v1.AnalyticsService.Attribution:input_type -> uba.service.v1.AttributionRequest
+	27, // 71: uba.service.v1.AnalyticsService.Distribution:input_type -> uba.service.v1.DistributionRequest
+	31, // 72: uba.service.v1.AnalyticsService.BehaviorSequence:input_type -> uba.service.v1.BehaviorSequenceRequest
+	35, // 73: uba.service.v1.AnalyticsService.Segmentation:input_type -> uba.service.v1.SegmentationRequest
+	37, // 74: uba.service.v1.AnalyticsService.Click:input_type -> uba.service.v1.ClickRequest
+	41, // 75: uba.service.v1.AnalyticsService.Lifecycle:input_type -> uba.service.v1.LifecycleRequest
+	44, // 76: uba.service.v1.AnalyticsService.Churn:input_type -> uba.service.v1.ChurnRequest
+	48, // 77: uba.service.v1.AnalyticsService.Interval:input_type -> uba.service.v1.IntervalRequest
+	51, // 78: uba.service.v1.AnalyticsService.Matrix:input_type -> uba.service.v1.MatrixRequest
+	54, // 79: uba.service.v1.AnalyticsService.Revenue:input_type -> uba.service.v1.RevenueRequest
+	57, // 80: uba.service.v1.AnalyticsService.SessionAnalysis:input_type -> uba.service.v1.SessionAnalysisRequest
+	59, // 81: uba.service.v1.AnalyticsService.Anomaly:input_type -> uba.service.v1.AnomalyRequest
+	62, // 82: uba.service.v1.AnalyticsService.NewVsOld:input_type -> uba.service.v1.NewVsOldRequest
+	65, // 83: uba.service.v1.AnalyticsService.PathSankey:input_type -> uba.service.v1.PathSankeyRequest
+	68, // 84: uba.service.v1.AnalyticsService.LevelAnalysis:input_type -> uba.service.v1.LevelAnalysisRequest
+	71, // 85: uba.service.v1.AnalyticsService.WhaleTier:input_type -> uba.service.v1.WhaleTierRequest
+	74, // 86: uba.service.v1.AnalyticsService.LTV:input_type -> uba.service.v1.LTVRequest
+	77, // 87: uba.service.v1.AnalyticsService.ServerRetention:input_type -> uba.service.v1.ServerRetentionRequest
+	80, // 88: uba.service.v1.AnalyticsService.OnlineStats:input_type -> uba.service.v1.OnlineStatsRequest
+	82, // 89: uba.service.v1.AnalyticsService.Economy:input_type -> uba.service.v1.EconomyRequest
+	6,  // 90: uba.service.v1.AnalyticsService.EventTrend:output_type -> uba.service.v1.EventTrendResponse
+	13, // 91: uba.service.v1.AnalyticsService.Funnel:output_type -> uba.service.v1.FunnelResponse
+	17, // 92: uba.service.v1.AnalyticsService.Retention:output_type -> uba.service.v1.RetentionResponse
+	20, // 93: uba.service.v1.AnalyticsService.GroupBy:output_type -> uba.service.v1.GroupByResponse
+	23, // 94: uba.service.v1.AnalyticsService.ActiveUsers:output_type -> uba.service.v1.ActiveUsersResponse
+	26, // 95: uba.service.v1.AnalyticsService.Attribution:output_type -> uba.service.v1.AttributionResponse
+	30, // 96: uba.service.v1.AnalyticsService.Distribution:output_type -> uba.service.v1.DistributionResponse
+	33, // 97: uba.service.v1.AnalyticsService.BehaviorSequence:output_type -> uba.service.v1.BehaviorSequenceResponse
+	36, // 98: uba.service.v1.AnalyticsService.Segmentation:output_type -> uba.service.v1.SegmentationResponse
+	40, // 99: uba.service.v1.AnalyticsService.Click:output_type -> uba.service.v1.ClickResponse
+	43, // 100: uba.service.v1.AnalyticsService.Lifecycle:output_type -> uba.service.v1.LifecycleResponse
+	47, // 101: uba.service.v1.AnalyticsService.Churn:output_type -> uba.service.v1.ChurnResponse
+	50, // 102: uba.service.v1.AnalyticsService.Interval:output_type -> uba.service.v1.IntervalResponse
+	53, // 103: uba.service.v1.AnalyticsService.Matrix:output_type -> uba.service.v1.MatrixResponse
+	56, // 104: uba.service.v1.AnalyticsService.Revenue:output_type -> uba.service.v1.RevenueResponse
+	58, // 105: uba.service.v1.AnalyticsService.SessionAnalysis:output_type -> uba.service.v1.SessionAnalysisResponse
+	61, // 106: uba.service.v1.AnalyticsService.Anomaly:output_type -> uba.service.v1.AnomalyResponse
+	64, // 107: uba.service.v1.AnalyticsService.NewVsOld:output_type -> uba.service.v1.NewVsOldResponse
+	67, // 108: uba.service.v1.AnalyticsService.PathSankey:output_type -> uba.service.v1.PathSankeyResponse
+	70, // 109: uba.service.v1.AnalyticsService.LevelAnalysis:output_type -> uba.service.v1.LevelAnalysisResponse
+	73, // 110: uba.service.v1.AnalyticsService.WhaleTier:output_type -> uba.service.v1.WhaleTierResponse
+	76, // 111: uba.service.v1.AnalyticsService.LTV:output_type -> uba.service.v1.LTVResponse
+	79, // 112: uba.service.v1.AnalyticsService.ServerRetention:output_type -> uba.service.v1.ServerRetentionResponse
+	81, // 113: uba.service.v1.AnalyticsService.OnlineStats:output_type -> uba.service.v1.OnlineStatsResponse
+	84, // 114: uba.service.v1.AnalyticsService.Economy:output_type -> uba.service.v1.EconomyResponse
+	90, // [90:115] is the sub-list for method output_type
+	65, // [65:90] is the sub-list for method input_type
+	65, // [65:65] is the sub-list for extension type_name
+	65, // [65:65] is the sub-list for extension extendee
+	0,  // [0:65] is the sub-list for field type_name
 }
 
 func init() { file_uba_service_v1_analytics_proto_init() }
@@ -6265,39 +6757,40 @@ func file_uba_service_v1_analytics_proto_init() {
 		return
 	}
 	file_uba_service_v1_analytics_proto_msgTypes[2].OneofWrappers = []any{}
-	file_uba_service_v1_analytics_proto_msgTypes[5].OneofWrappers = []any{}
+	file_uba_service_v1_analytics_proto_msgTypes[4].OneofWrappers = []any{}
 	file_uba_service_v1_analytics_proto_msgTypes[9].OneofWrappers = []any{}
-	file_uba_service_v1_analytics_proto_msgTypes[11].OneofWrappers = []any{}
-	file_uba_service_v1_analytics_proto_msgTypes[14].OneofWrappers = []any{}
-	file_uba_service_v1_analytics_proto_msgTypes[17].OneofWrappers = []any{}
-	file_uba_service_v1_analytics_proto_msgTypes[20].OneofWrappers = []any{}
+	file_uba_service_v1_analytics_proto_msgTypes[13].OneofWrappers = []any{}
+	file_uba_service_v1_analytics_proto_msgTypes[15].OneofWrappers = []any{}
+	file_uba_service_v1_analytics_proto_msgTypes[18].OneofWrappers = []any{}
+	file_uba_service_v1_analytics_proto_msgTypes[21].OneofWrappers = []any{}
 	file_uba_service_v1_analytics_proto_msgTypes[24].OneofWrappers = []any{}
-	file_uba_service_v1_analytics_proto_msgTypes[25].OneofWrappers = []any{}
-	file_uba_service_v1_analytics_proto_msgTypes[27].OneofWrappers = []any{}
 	file_uba_service_v1_analytics_proto_msgTypes[28].OneofWrappers = []any{}
-	file_uba_service_v1_analytics_proto_msgTypes[30].OneofWrappers = []any{}
+	file_uba_service_v1_analytics_proto_msgTypes[29].OneofWrappers = []any{}
+	file_uba_service_v1_analytics_proto_msgTypes[31].OneofWrappers = []any{}
+	file_uba_service_v1_analytics_proto_msgTypes[32].OneofWrappers = []any{}
 	file_uba_service_v1_analytics_proto_msgTypes[34].OneofWrappers = []any{}
-	file_uba_service_v1_analytics_proto_msgTypes[37].OneofWrappers = []any{}
+	file_uba_service_v1_analytics_proto_msgTypes[38].OneofWrappers = []any{}
 	file_uba_service_v1_analytics_proto_msgTypes[41].OneofWrappers = []any{}
-	file_uba_service_v1_analytics_proto_msgTypes[44].OneofWrappers = []any{}
-	file_uba_service_v1_analytics_proto_msgTypes[47].OneofWrappers = []any{}
-	file_uba_service_v1_analytics_proto_msgTypes[50].OneofWrappers = []any{}
-	file_uba_service_v1_analytics_proto_msgTypes[52].OneofWrappers = []any{}
-	file_uba_service_v1_analytics_proto_msgTypes[55].OneofWrappers = []any{}
-	file_uba_service_v1_analytics_proto_msgTypes[58].OneofWrappers = []any{}
-	file_uba_service_v1_analytics_proto_msgTypes[61].OneofWrappers = []any{}
-	file_uba_service_v1_analytics_proto_msgTypes[64].OneofWrappers = []any{}
-	file_uba_service_v1_analytics_proto_msgTypes[67].OneofWrappers = []any{}
-	file_uba_service_v1_analytics_proto_msgTypes[70].OneofWrappers = []any{}
-	file_uba_service_v1_analytics_proto_msgTypes[73].OneofWrappers = []any{}
-	file_uba_service_v1_analytics_proto_msgTypes[75].OneofWrappers = []any{}
+	file_uba_service_v1_analytics_proto_msgTypes[45].OneofWrappers = []any{}
+	file_uba_service_v1_analytics_proto_msgTypes[48].OneofWrappers = []any{}
+	file_uba_service_v1_analytics_proto_msgTypes[51].OneofWrappers = []any{}
+	file_uba_service_v1_analytics_proto_msgTypes[54].OneofWrappers = []any{}
+	file_uba_service_v1_analytics_proto_msgTypes[56].OneofWrappers = []any{}
+	file_uba_service_v1_analytics_proto_msgTypes[59].OneofWrappers = []any{}
+	file_uba_service_v1_analytics_proto_msgTypes[62].OneofWrappers = []any{}
+	file_uba_service_v1_analytics_proto_msgTypes[65].OneofWrappers = []any{}
+	file_uba_service_v1_analytics_proto_msgTypes[68].OneofWrappers = []any{}
+	file_uba_service_v1_analytics_proto_msgTypes[71].OneofWrappers = []any{}
+	file_uba_service_v1_analytics_proto_msgTypes[74].OneofWrappers = []any{}
+	file_uba_service_v1_analytics_proto_msgTypes[77].OneofWrappers = []any{}
+	file_uba_service_v1_analytics_proto_msgTypes[79].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_uba_service_v1_analytics_proto_rawDesc), len(file_uba_service_v1_analytics_proto_rawDesc)),
-			NumEnums:      1,
-			NumMessages:   79,
+			NumEnums:      3,
+			NumMessages:   83,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

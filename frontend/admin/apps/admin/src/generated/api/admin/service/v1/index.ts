@@ -599,12 +599,18 @@ export function createAnalyticsServiceClient(
 export type ubaservicev1_EventTrendRequest = {
   // 应用 ID 过滤（可选，0 表示全部）
   appId?: number;
-  // 事件名过滤（可选，空表示全部事件）
+  // 全局维度拆分（可选，空表示不拆分）。设置后每条 query 按该维度拆成多条线
+  dimension?: string;
+  // 事件名过滤（可选，空表示全部事件）——向后兼容字段，queries 为空时使用
   eventName?: string;
+  // 全局过滤（可选，作用于所有 queries）
+  globalFilter?: ubaservicev1_FilterGroup;
   // 时间粒度
   granularity: ubaservicev1_AnalyticsGranularity | undefined;
-  // 平台过滤（可选）
+  // 平台过滤（可选）——向后兼容字段
   platform?: string;
+  // 多事件查询（每条 query 对应一条趋势线）。为空时按 event_name/platform 旧逻辑降级
+  queries: ubaservicev1_EventQuery[] | undefined;
   // 时间范围
   timeRange: ubaservicev1_TimeRange | undefined;
 };
@@ -629,12 +635,77 @@ export type ubaservicev1_AnalyticsGranularity =
   | 'MONTH'
   // 周
   | 'WEEK';
+// 单条事件查询（事件分析中的一条趋势线）
+export type ubaservicev1_EventQuery = {
+  // 序列显示名（可选，默认用 event_name 或 "全部事件"）
+  displayName?: string;
+  // 事件名（可选，空表示全部事件）
+  eventName?: string;
+  // 该事件自身过滤（与 global_filter 取 AND）
+  filter?: ubaservicev1_FilterGroup;
+  // 聚合指标：COUNT=事件数(默认)，UNIQUE_USER=去重用户数，SUM_AMOUNT=金额求和，
+  // AVG_AMOUNT=平均金额，PER_USER=人均次数
+  metric?: string;
+};
+
+// 过滤条件组（内部多条 PropertyFilter 取 AND）
+export type ubaservicev1_FilterGroup = {
+  // 过滤条件列表（AND 组合）
+  filters: ubaservicev1_PropertyFilter[] | undefined;
+};
+
+// 属性过滤条件（单条）
+export type ubaservicev1_PropertyFilter = {
+  // 字段名：DIMENSION 时为白名单列名；其他时为 Map 键名（需匹配 ^[A-Za-z0-9_]+$）
+  field: string | undefined;
+  // 比较算子
+  op: ubaservicev1_PropertyFilter_Operator | undefined;
+  // 字段作用域
+  scope: ubaservicev1_PropertyFilter_FieldScope | undefined;
+  // 比较值列表（IN 用多值，其他算子取首个）
+  values: string[] | undefined;
+};
+
+// 字段作用域
+export type ubaservicev1_PropertyFilter_FieldScope =
+  // 标准维度列（platform/channel/country/app_version/event_name/event_category/os/network/user_level/vip_level）
+  | 'DIMENSION'
+  // events_fact.context['key'] Map 键
+  | 'EVENT_CONTEXT'
+  // events_fact.metrics['key'] Map 键
+  | 'EVENT_METRIC'
+  // events_fact.properties['key'] Map 键
+  | 'EVENT_PROPERTY'
+  // 未指定（按 DIMENSION 处理）
+  | 'FIELD_SCOPE_UNSPECIFIED';
+// 比较算子
+export type ubaservicev1_PropertyFilter_Operator =
+  // 包含（子串）
+  | 'CONTAINS'
+  // 等于
+  | 'EQ'
+  // 大于
+  | 'GT'
+  // 大于等于
+  | 'GTE'
+  // 属于（多值命中任一）
+  | 'IN'
+  // 小于
+  | 'LT'
+  // 小于等于
+  | 'LTE'
+  // 不等于
+  | 'NEQ'
+  // 未指定（按 EQ 处理）
+  | 'OPERATOR_UNSPECIFIED';
 export type ubaservicev1_EventTrendResponse = {
   // 时间粒度（服务端实际使用的粒度，可能因 UNSPECIFIED 而自动选择）
   granularity: ubaservicev1_AnalyticsGranularity | undefined;
-  // 趋势数据点
+  // 趋势数据点（向后兼容：取 series[0].points，单线场景使用）
   points: ubaservicev1_TimeSeriesPoint[] | undefined;
-  // 区间内事件总量
+  // 多 series 趋势（多事件对比 / 维度拆分场景使用）
+  series: ubaservicev1_EventSeries[] | undefined;
+  // 区间内事件总量（向后兼容：取 series[0].total）
   total: number | undefined;
 };
 
@@ -644,6 +715,16 @@ export type ubaservicev1_TimeSeriesPoint = {
   timestamp: number | undefined;
   // 数值
   value: number | undefined;
+};
+
+// 一条趋势线
+export type ubaservicev1_EventSeries = {
+  // 序列名（事件名，或 "事件名 / 维度值" 拆分场景）
+  name: string | undefined;
+  // 趋势数据点
+  points: ubaservicev1_TimeSeriesPoint[] | undefined;
+  // 该序列区间总量
+  total: number | undefined;
 };
 
 export type ubaservicev1_FunnelRequest = {
