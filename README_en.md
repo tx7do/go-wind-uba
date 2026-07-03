@@ -123,9 +123,10 @@ The platform provides 25 analysis models across three categories: general behavi
 
 ### Data Collection SDK
 
-| SDK | Description |
-| --- | --- |
-| Web SDK (JavaScript) | Browser event collection with auto-tracking and custom events |
+| SDK | Platforms | Description |
+| --- | --- | --- |
+| Web SDK (TypeScript) | Browser / Node | Web event collection with auto-tracking and custom events, sendBeacon fallback on unload |
+| C# SDK (.NET) | Unity (native + WebGL) / Godot 4 / .NET | Game/client tracking with batch reporting and retry fallback, zero-dependency core library |
 
 ---
 
@@ -270,6 +271,20 @@ go-wind-uba/
 │   └── sdk/web/                        # Web data collection SDK
 └── LICENSE                             # MIT License
 ```
+
+---
+
+## 📚 Documentation
+
+| Document | Description | Audience |
+| --- | --- | --- |
+| [System Architecture](docs/architecture.md) | Service responsibilities, data flow, storage tiers, key design patterns | Those who want to understand the overall design |
+| [Development Guide](docs/development_guide.md) | Code generation pipeline, adding services/entities/analysis aggregates/frontend pages | Developers |
+| [SDK Integration Guide](docs/sdk_integration.md) | Get appId/appSecret, SDK selection, reporting protocol, full field set | Tracking integrators |
+| [Web SDK Documentation](frontend/sdk/web/uba/README.md) | Full Web SDK API | Web integrators |
+| [C# SDK Documentation](sdk/csharp/README.md) | Full C# SDK (Unity/Godot) API | Game/client integrators |
+| [Deployment Guide](backend/docs/build_deploy.md) | Build, Docker deployment | Ops |
+| [Superset Deployment](backend/docs/deploy_superset.md) | BI visualization platform integration | Data analysts |
 
 ---
 
@@ -421,9 +436,9 @@ make docker-up
 
 | Service | Description | Ports |
 | --- | --- | --- |
-| **Core Service** | Core business service handling event storage, analysis modeling, risk detection, tag management, and data synchronization | - |
-| **Admin Service** | Admin dashboard BFF providing user management, permissions, configuration, and reporting APIs | HTTP: 9700 / gRPC: 9701 |
-| **Collector Service** | Event collection BFF receiving client-side event data, validating, and forwarding to message queue | HTTP: 9800 / gRPC: 9801 |
+| **Core Service** | Core business service handling event storage, analysis modeling, risk detection, tag management, and data synchronization | gRPC: dynamic port (via etcd service discovery) |
+| **Admin Service** | Admin dashboard BFF providing user management, permissions, configuration, and reporting APIs | HTTP: 5600 / SSE: 5601 |
+| **Collector Service** | Event collection BFF receiving client-side event data, validating, and forwarding to message queue | HTTP: 5700 |
 
 ---
 
@@ -437,42 +452,65 @@ make docker-up
 
 ---
 
-## Web SDK Integration
+## SDK Integration
 
-```html
-<script type="text/javascript" src="report_sdk.js"></script>
-<script type="text/javascript">
-    // Initialize (singleton pattern)
-    // Parameters: collector service URL, AppID, AppKey, debug mode
-    // Debug mode: 0=normal, 1=test (persist), 2=test (no persist)
-    const tracker = new EventReport(
-        "http://localhost:9800",
-        "your_app_id",
-        "your_app_key",
-        0
-    );
+> For the full integration process (creating an app to get appId/appSecret, choosing an SDK,
+> reporting protocol), see the
+> [Data Collection SDK Integration Guide](docs/sdk_integration.md).
 
-    // Set global properties
-    tracker.setSuperProperties({ platform: "web", version: "1.0.0" });
+### Web SDK Quick Start
 
-    // Track custom event
-    tracker.track("page_view", { page: "/home", title: "Homepage" });
+```ts
+import { UbaClient } from '@go-wind-uba/uba-sdk';
 
-    // Report user attributes
-    tracker.userSet({ name: "John", vip_level: 3 }).trackUserData();
-</script>
+// Initialize (singleton; appId/appSecret are obtained after creating an app
+// under "Application Management" in the admin backend)
+const uba = UbaClient.init({
+  appId: 'your_app_id',
+  appSecret: 'your_app_secret',
+  endpoint: 'http://localhost:5700', // collector service address
+});
+
+// Set super properties (automatically attached to every subsequent event)
+uba.setSuperProperties({ platform: 'web', version: '1.0.0' });
+
+// Track a custom event
+uba.track('page_view', { page: '/home', title: 'Home' });
+
+// Bind the user after login
+uba.identify(1001);
+uba.track('purchase', { orderId: 'ORD-001' }, { amount: '99.90', quantity: 1 });
 ```
 
-> See [Web SDK Documentation](frontend/sdk/web/README.md) for details.
+> See the [Web SDK Documentation](frontend/sdk/web/uba/README.md) for details.
+
+### C# SDK (Unity / Godot)
+
+```csharp
+using Uba;
+
+var client = new UbaClient(new UbaConfig {
+    AppId = "your_app_id",
+    AppSecret = "your_app_secret",
+    Endpoint = "http://localhost:5700",
+});
+
+client.Track("scene_load", new() { ["scene"] = "Main" });
+```
+
+> Unity WebGL must use `UnityWebRequestTransport` (HttpClient is unavailable in WebGL).
+> See the [C# SDK Documentation](sdk/csharp/README.md) for details.
 
 ---
 
 ## References
 
+- [ZhuLong-BI (User Event Analysis Platform)](https://www.yuque.com/jianghurenchenggolang/oehqme/hen7qy#JFdyf)
+- [AARRR Model for Product Managers](https://www.woshipm.com/operate/5460612.html)
+- [User Behavior Analytics vs BI — The Difference](https://www.niutoushe.com/54408)
+- [Key Points for User Behavior Analysis](https://www.fanruan.com/bw/zwoz)
+- [What is Business Intelligence (BI)?](https://www.sap.cn/products/technology-platform/cloud-analytics/what-is-business-intelligence-bi.html)
 - [Business Intelligence in Microservices: Improving Performance](https://dzone.com/articles/business-intelligence-in-microservices-improving-p)
-- [Building Data Lake with ClickHouse High-Performance Engine Cluster](https://toutiao.io/posts/pklw5vz/preview)
-- [ClickHouse Kafka Integration](https://learn-bigdata.incubator.edurt.io/docs/ClickHouse/Action/engine-kafka/)
-- [Apply CDC from MySQL to ClickHouse](https://medium.com/@hoptical/apply-cdc-from-mysql-to-clickhouse-d660873311c7)
 - [ClickHouse Real-Time Application and Optimization](https://mp.weixin.qq.com/s/hqUCFSr8cu3x3u8HCA6WYg)
 - [From Maintaining Hundreds of Tables to One — UEI Model](https://zhuanlan.zhihu.com/p/623182999)
 

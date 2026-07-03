@@ -468,7 +468,7 @@ import { UbaClient } from '@go-wind-uba/uba-sdk';
 const uba = UbaClient.init({
   appId: 'your_app_id',
   appSecret: 'your_app_secret',
-  endpoint: 'http://localhost:9800', // collector 服务地址
+  endpoint: 'http://localhost:5700', // collector 服务地址
 });
 
 // 设置公共属性（后续每条事件自动携带）
@@ -492,7 +492,7 @@ using Uba;
 var client = new UbaClient(new UbaConfig {
     AppId = "your_app_id",
     AppSecret = "your_app_secret",
-    Endpoint = "http://localhost:9800",
+    Endpoint = "http://localhost:5700",
 });
 
 client.Track("scene_load", new() { ["scene"] = "Main" });
@@ -512,6 +512,7 @@ client.Track("scene_load", new() { ["scene"] = "Main" });
 - [什么是商业智能 (BI)？](https://www.sap.cn/products/technology-platform/cloud-analytics/what-is-business-intelligence-bi.html)
 - [Business Intelligence in Microservices: Improving Performance](https://dzone.com/articles/business-intelligence-in-microservices-improving-p)
 - [ClickHouse 在实时场景的应用和优化](https://mp.weixin.qq.com/s/hqUCFSr8cu3x3u8HCA6WYg)
+- [从维护数百张表到一张表 —— UEI 模型](https://zhuanlan.zhihu.com/p/623182999)
 
 ---
 

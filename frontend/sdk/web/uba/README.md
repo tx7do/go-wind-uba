@@ -18,8 +18,8 @@
 
 ```bash
 cd frontend/sdk/web/uba
-npm install      # 安装 typescript
-npm run build    # 构建 dist/
+pnpm install     # 安装 typescript
+pnpm build       # 构建 dist/
 ```
 
 ## 快速开始
@@ -160,7 +160,7 @@ dist/
 ## 联调
 
 启动 collector 服务后，浏览器打开 `test.html`（需同目录或正确路径）：
-1. `npm run build` 生成 `dist/`
+1. `pnpm build` 生成 `dist/`
 2. 修改 `test.html` 里的 `appId` / `appSecret` / `endpoint`
 3. 浏览器打开，点击按钮触发上报，观察 Network 和 Console
 

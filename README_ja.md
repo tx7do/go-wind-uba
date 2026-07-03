@@ -24,7 +24,7 @@
 
 ## プロジェクトの特徴
 
-- **25以上の分析モデル**：一般ユーザー行動分析（イベント/ファネル/リテンション/アトリビューション/分布/パス/セグメンテーション/クリック/属性/行動シーケンス）、ユーザー深掘りインサイト（ライフサイクル/流失と回帰/間隔時間/マトリクス/収益/セッション/異常検出/新旧比較/コンバージョンパス）、ゲーム特化（レベル分析/課金階層/LTV/サーバー別リテンション/PCU/経済システム）の3カテゴリをカバー。基礎指標から深掘り归因、ゲームバランス分析までワンストップ
+- **25以上の分析モデル**：一般ユーザー行動分析（イベント/ファネル/リテンション/アトリビューション/分布/パス/セグメンテーション/クリック/属性/行動シーケンス）、ユーザー深掘りインサイト（ライフサイクル/流失と回帰/間隔時間/マトリクス/収益/セッション/異常検出/新旧比較/コンバージョンパス）、ゲーム特化（レベル分析/課金階層/LTV/サーバー別リテンション/PCU/経済システム）の3カテゴリをカバー。基礎指標から深掘りアトリビューション、ゲームバランス分析までワンストップ
 - **切替可能なデュアルOLAPエンジン**：ClickHouseとApache Dorisの両方をネイティブサポート、必要に応じていずれかをデプロイ、極致のクエリパフォーマンス
 - **フルリンクイベント収集**：独自開発のWeb SDK、ゼロコードトラッキング＋カスタムイベント、Kafka経由でリアルタイムにデータウェアハウスへ書き込み
 - **マルチテナントアーキテクチャ**：テナントデータの物理的隔離、部門・ロール・管理者の自動初期化、すぐに使用可能
@@ -123,9 +123,10 @@
 
 ### データ収集SDK
 
-| SDK | 説明 |
-| --- | --- |
-| Web SDK (JavaScript) | ブラウザイベント収集、自動トラッキングとカスタムイベント対応 |
+| SDK | 対応プラットフォーム | 説明 |
+| --- | --- | --- |
+| Web SDK (TypeScript) | ブラウザ / Node | Webイベント収集、自動トラッキング＋カスタムイベント、sendBeaconによるアンロード時フォールバック |
+| C# SDK (.NET) | Unity（ネイティブ + WebGL）/ Godot 4 / .NET | ゲーム/クライアント計測、バッチ報告＋リトライ降格、ゼロ依存コアライブラリ |
 
 ---
 
@@ -270,6 +271,20 @@ go-wind-uba/
 │   └── sdk/web/                        # Webデータ収集SDK
 └── LICENSE                             # MITライセンス
 ```
+
+---
+
+## 📚 ドキュメントナビゲーション
+
+| ドキュメント | 説明 | 対象読者 |
+| --- | --- | --- |
+| [システムアーキテクチャ](docs/architecture.md) | サービス責務、データフロー、ストレージ階層、主要設計パターン | 全体設計を理解したい人 |
+| [二次開発ガイド](docs/development_guide.md) | コード生成パイプライン、サービス/エンティティ/分析集計/フロントエンドページの追加 | 二次開発者 |
+| [SDK導入ガイド](docs/sdk_integration.md) | appId/appSecret取得、SDK選定、報告プロトコル、フィールド一覧 | 計測導入者 |
+| [Web SDKドキュメント](frontend/sdk/web/uba/README.md) | Web SDK完全API | Web導入者 |
+| [C# SDKドキュメント](sdk/csharp/README.md) | C# SDK（Unity/Godot）完全API | ゲーム/クライアント導入者 |
+| [デプロイドキュメント](backend/docs/build_deploy.md) | ビルド、Dockerデプロイ | 運用 |
+| [Supersetデプロイ](backend/docs/deploy_superset.md) | BI可視化プラットフォーム連携 | データ分析 |
 
 ---
 
@@ -421,9 +436,9 @@ make docker-up
 
 | サービス | 説明 | ポート |
 | --- | --- | --- |
-| **Core Service** | コアビジネスサービス。イベント保存、分析モデリング、リスク検出、タグ管理、データ同期などの主要ロジックを担当 | - |
-| **Admin Service** | 管理画面BFF。ユーザー管理、権限管理、設定管理、レポート照会などのAPIを提供 | HTTP: 9700 / gRPC: 9701 |
-| **Collector Service** | イベント収集BFF。クライアントからのイベントデータを受信し、検証後にメッセージキューに転送 | HTTP: 9800 / gRPC: 9801 |
+| **Core Service** | コアビジネスサービス。イベント保存、分析モデリング、リスク検出、タグ管理、データ同期などの主要ロジックを担当 | gRPC: 動的ポート（etcd サービスディスカバリ経由） |
+| **Admin Service** | 管理画面BFF。ユーザー管理、権限管理、設定管理、レポート照会などのAPIを提供 | HTTP: 5600 / SSE: 5601 |
+| **Collector Service** | イベント収集BFF。クライアントからのイベントデータを受信し、検証後にメッセージキューに転送 | HTTP: 5700 |
 
 ---
 
@@ -437,33 +452,66 @@ make docker-up
 
 ---
 
-## Web SDK統合
+## SDK統合
 
-```html
-<script type="text/javascript" src="report_sdk.js"></script>
-<script type="text/javascript">
-    // 初期化（シングルトンパターン）
-    // パラメータ：収集サービスURL, AppID, AppKey, デバッグモード
-    // デバッグモード：0=通常, 1=テスト（保存あり）, 2=テスト（保存なし）
-    const tracker = new EventReport(
-        "http://localhost:9800",
-        "your_app_id",
-        "your_app_key",
-        0
-    );
+> 完全な導入手順（appId/appSecret 取得のためのアプリ作成、SDK 選定、上报プロトコル）は
+> [データ収集 SDK 導入ガイド](docs/sdk_integration.md) を参照してください。
 
-    // グローバルプロパティの設定
-    tracker.setSuperProperties({ platform: "web", version: "1.0.0" });
+### Web SDK クイックスタート
 
-    // カスタムイベントのトラッキング
-    tracker.track("page_view", { page: "/home", title: "ホームページ" });
+```ts
+import { UbaClient } from '@go-wind-uba/uba-sdk';
 
-    // ユーザー属性の報告
-    tracker.userSet({ name: "田中太郎", vip_level: 3 }).trackUserData();
-</script>
+// 初期化（シングルトン。appId/appSecret は管理画面の
+// 「アプリケーション管理」でアプリ作成後に取得します）
+const uba = UbaClient.init({
+  appId: 'your_app_id',
+  appSecret: 'your_app_secret',
+  endpoint: 'http://localhost:5700', // collector サービスのアドレス
+});
+
+// スーパープロパティを設定（以降のすべてのイベントに自動付与）
+uba.setSuperProperties({ platform: 'web', version: '1.0.0' });
+
+// カスタムイベントのトラッキング
+uba.track('page_view', { page: '/home', title: 'ホーム' });
+
+// ログイン後にユーザーを紐付け
+uba.identify(1001);
+uba.track('purchase', { orderId: 'ORD-001' }, { amount: '99.90', quantity: 1 });
 ```
 
-> 詳細は [Web SDKドキュメント](frontend/sdk/web/README.md) を参照してください。
+> 詳細は [Web SDK ドキュメント](frontend/sdk/web/uba/README.md) を参照してください。
+
+### C# SDK（Unity / Godot）
+
+```csharp
+using Uba;
+
+var client = new UbaClient(new UbaConfig {
+    AppId = "your_app_id",
+    AppSecret = "your_app_secret",
+    Endpoint = "http://localhost:5700",
+});
+
+client.Track("scene_load", new() { ["scene"] = "Main" });
+```
+
+> Unity WebGL では `UnityWebRequestTransport` を使用してください（WebGL では HttpClient は利用できません）。
+> 詳細は [C# SDK ドキュメント](sdk/csharp/README.md) を参照してください。
+
+---
+
+## リファレンス
+
+- [鑄龍-BI（ユーザーイベント分析プラットフォーム）](https://www.yuque.com/jianghurenchenggolang/oehqme/hen7qy#JFdyf)
+- [プロダクトマネージャーが知っておくべき AARRR モデル](https://www.woshipm.com/operate/5460612.html)
+- [ユーザー行動分析と BI の違い](https://www.niutoushe.com/54408)
+- [ユーザー行動分析の要点](https://www.fanruan.com/bw/zwoz)
+- [ビジネスインテリジェンス（BI）とは？](https://www.sap.cn/products/technology-platform/cloud-analytics/what-is-business-intelligence-bi.html)
+- [Business Intelligence in Microservices: Improving Performance](https://dzone.com/articles/business-intelligence-in-microservices-improving-p)
+- [ClickHouse のリアルタイム応用と最適化](https://mp.weixin.qq.com/s/hqUCFSr8cu3x3u8HCA6WYg)
+- [数百テーブルの保守から一つへ —— UEI モデル](https://zhuanlan.zhihu.com/p/623182999)
 
 ---
 

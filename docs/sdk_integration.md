@@ -73,8 +73,8 @@
 
 ```bash
 cd frontend/sdk/web/uba
-npm install      # 安装 typescript
-npm run build    # 构建 dist/
+pnpm install     # 安装 typescript
+pnpm build       # 构建 dist/
 ```
 
 ### 初始化与上报
@@ -279,7 +279,7 @@ go run ./app/collector/service/cmd/server/ -c ./app/collector/service/configs
 
 ### Web SDK 联调
 
-1. `cd frontend/sdk/web/uba && npm run build` 生成 `dist/`。
+1. `cd frontend/sdk/web/uba && pnpm build` 生成 `dist/`。
 2. 修改 `test.html` 里的 `appId` / `appSecret` / `endpoint`。
 3. 浏览器打开，点击按钮触发上报，观察 Network 面板与 Console。
 
