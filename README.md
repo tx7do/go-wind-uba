@@ -1,16 +1,12 @@
-<p align="center">
-  <h1 align="center">GoWind UBA · 风行用户行为分析平台</h1>
-  <p align="center">
-    开箱即用的企业级用户行为分析与商业智能平台
-  </p>
-  <p align="center">
-    <em>让每一次用户行为都有迹可循，让每一份数据洞察触手可及</em>
-  </p>
-</p>
+<div align="center">
 
-<p align="center">
-  <a href="README.md">中文</a> · <a href="README_en.md">English</a> · <a href="README_ja.md">日本語</a>
-</p>
+<img src="docs/brand/vortex-tile.svg" width="120" alt="GoWind UBA · 风行用户行为分析平台" />
+
+# GoWind UBA · 风行用户行为分析平台
+
+[English](./README_en.md) | **中文** | [日本語](./README_ja.md)
+
+</div>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Go-1.25+-00ADD8?style=flat-square&logo=Go" alt="Go Version" />

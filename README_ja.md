@@ -1,16 +1,12 @@
-<p align="center">
-  <h1 align="center">GoWind UBA · ユーザー行動分析プラットフォーム</h1>
-  <p align="center">
-    すぐに使えるエンタープライズグレードのユーザー行動分析・ビジネスインテリジェンスプラットフォーム
-  </p>
-  <p align="center">
-    <em>すべてのユーザー行動を追跡可能に、すべてのデータインサイトを手軽に</em>
-  </p>
-</p>
+<div align="center">
 
-<p align="center">
-  <a href="README.md">中文</a> · <a href="README_en.md">English</a> · <a href="README_ja.md">日本語</a>
-</p>
+<img src="docs/brand/vortex-tile.svg" width="120" alt="GoWind UBA · ユーザー行動分析プラットフォーム" />
+
+# GoWind UBA · ユーザー行動分析プラットフォーム
+
+[English](./README_en.md) | [中文](./README.md) | **日本語**
+
+</div>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Go-1.25+-00ADD8?style=flat-square&logo=Go" alt="Go Version" />
@@ -127,6 +123,8 @@
 | --- | --- | --- |
 | Web SDK (TypeScript) | ブラウザ / Node | Webイベント収集、自動トラッキング＋カスタムイベント、sendBeaconによるアンロード時フォールバック |
 | C# SDK (.NET) | Unity（ネイティブ + WebGL）/ Godot 4 / .NET | ゲーム/クライアント計測、バッチ報告＋リトライ降格、ゼロ依存コアライブラリ |
+
+> 導入手順については、[データ収集 SDK 導入ガイド](docs/sdk_integration.md) を参照してください。
 
 ---
 
@@ -462,8 +460,7 @@ make docker-up
 ```ts
 import { UbaClient } from '@go-wind-uba/uba-sdk';
 
-// 初期化（シングルトン。appId/appSecret は管理画面の
-// 「アプリケーション管理」でアプリ作成後に取得します）
+// 初期化（シングルトン。appId/appSecret は管理画面の「アプリケーション管理」でアプリ作成後に取得します）
 const uba = UbaClient.init({
   appId: 'your_app_id',
   appSecret: 'your_app_secret',

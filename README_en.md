@@ -1,16 +1,12 @@
-<p align="center">
-  <h1 align="center">GoWind UBA · User Behavior Analytics Platform</h1>
-  <p align="center">
-    An out-of-the-box enterprise-grade User Behavior Analytics & Business Intelligence platform
-  </p>
-  <p align="center">
-    <em>Make every user action traceable, every data insight accessible</em>
-  </p>
-</p>
+<div align="center">
 
-<p align="center">
-  <a href="README.md">中文</a> · <a href="README_en.md">English</a> · <a href="README_ja.md">日本語</a>
-</p>
+<img src="docs/brand/vortex-tile.svg" width="120" alt="GoWind UBA · User Behavior Analytics Platform" />
+
+# GoWind UBA · User Behavior Analytics Platform
+
+**English** | [中文](./README.md) | [日本語](./README_ja.md)
+
+</div>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Go-1.25+-00ADD8?style=flat-square&logo=Go" alt="Go Version" />
@@ -127,6 +123,8 @@ The platform provides 25 analysis models across three categories: general behavi
 | --- | --- | --- |
 | Web SDK (TypeScript) | Browser / Node | Web event collection with auto-tracking and custom events, sendBeacon fallback on unload |
 | C# SDK (.NET) | Unity (native + WebGL) / Godot 4 / .NET | Game/client tracking with batch reporting and retry fallback, zero-dependency core library |
+
+> For integration instructions, see the [Data Collection SDK Integration Guide](docs/sdk_integration.md).
 
 ---
 
@@ -454,8 +452,7 @@ make docker-up
 
 ## SDK Integration
 
-> For the full integration process (creating an app to get appId/appSecret, choosing an SDK,
-> reporting protocol), see the
+> For the full integration process (creating an app to get appId/appSecret, choosing an SDK, reporting protocol), see the
 > [Data Collection SDK Integration Guide](docs/sdk_integration.md).
 
 ### Web SDK Quick Start
@@ -463,8 +460,7 @@ make docker-up
 ```ts
 import { UbaClient } from '@go-wind-uba/uba-sdk';
 
-// Initialize (singleton; appId/appSecret are obtained after creating an app
-// under "Application Management" in the admin backend)
+// Initialize (singleton; appId/appSecret are obtained after creating an app under "Application Management" in the admin backend)
 const uba = UbaClient.init({
   appId: 'your_app_id',
   appSecret: 'your_app_secret',
