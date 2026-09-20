@@ -35,8 +35,7 @@ func TestMenuMetaFieldMask(t *testing.T) {
 	}
 	updateMenuReq.UpdateMask.Normalize()
 	if !updateMenuReq.UpdateMask.IsValid(updateMenuReq.Data) {
-		// Return an error.
-		panic("invalid field mask")
+		t.Fatalf("field mask %v is invalid for resourceV1.Menu", updateMenuReq.UpdateMask.GetPaths())
 	}
 	fieldmaskutil.Filter(updateMenuReq.GetData(), updateMenuReq.UpdateMask.GetPaths())
 

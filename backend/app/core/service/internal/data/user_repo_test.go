@@ -40,20 +40,27 @@ func TestUserFieldMask(t *testing.T) {
 			//Avatar:   trans.String("Avatar1"),
 			Address: trans.String("Address1"),
 		},
+		// 这里的键必须是 proto 字段名本身：FieldMask.IsValid 直接按 descriptor 的名字查，
+		// 而 genproto 这版的 Normalize() 并不改 camelCase（实测 userName/realName/roleId 全部 invalid）。
+		// 生产路径靠 go-crud 的 field.NormalizeFieldMaskPaths 先转 snake_case 才没出问题。
 		UpdateMask: &field_mask.FieldMask{
-			Paths: []string{"userName", "realName", "avatar", "roleId"},
+			Paths: []string{"username", "realname", "avatar", "role_id"},
 		},
 	}
 	updateUserReq.UpdateMask.Normalize()
 	if !updateUserReq.UpdateMask.IsValid(u) {
-		// Return an error.
-		panic("invalid field mask")
+		t.Fatalf("field mask %v is invalid for identityV1.User", updateUserReq.UpdateMask.GetPaths())
 	}
 
 	fieldmaskutil.Filter(updateUserReq.GetData(), updateUserReq.UpdateMask.GetPaths())
 	proto.Merge(u, updateUserReq.GetData())
 
 	fmt.Println(reSpaces.ReplaceAllString(u.String(), " "))
+
+	// PATCH 语义：被 mask 覆盖的字段更新，未列出的 address 必须保持原值。
+	assert.Equal(t, "UserName1", u.GetUsername())
+	assert.Equal(t, "RealName1", u.GetRealname())
+	assert.Equal(t, "Address", u.GetAddress())
 }
 
 func TestFilterReuseMask(t *testing.T) {
@@ -97,11 +104,11 @@ func TestMessageNil(t *testing.T) {
 
 	pr := u.ProtoReflect()
 	md := pr.Descriptor()
-	fd := md.Fields().ByName("userName")
+	// descriptor 查找用的是 proto 字段名（username），不是 JSON/camel 名（userName）。
+	// 传错名字 ByName 返回 nil，紧接着的 pr.Get(nil) 会 panic —— 原来这里是空的 if，挡不住。
+	fd := md.Fields().ByName("username")
 	if fd == nil {
-
-	} else {
-		fmt.Println(fd, fd.Name())
+		t.Fatalf("field %q not found on %s", "username", md.FullName())
 	}
 
 	v := pr.Get(fd)
@@ -163,7 +170,7 @@ func TestCopier(t *testing.T) {
 		assert.Equal(t, protoMsg.GetNickname(), *entMsg.Nickname)
 		assert.Equal(t, protoMsg.GetRealname(), *entMsg.Realname)
 		assert.Equal(t, protoMsg.GetEmail(), *entMsg.Email)
-		assert.Equal(t, protoMsg.GetTenantId(), entMsg.TenantID)
+		assert.Equal(t, protoMsg.GetTenantId(), *entMsg.TenantID)
 		assert.Equal(t, protoMsg.GetId(), entMsg.ID)
 	}
 
