@@ -47,14 +47,14 @@ type EventsFact struct {
 	Amount        *decimal.Decimal `db:"amount"`
 	DurationMs    *uint32          `db:"duration_ms"`
 	// 点击热力图字段
-	ClickX        *uint32          `db:"click_x"`
-	ClickY        *uint32          `db:"click_y"`
-	ElementXpath  *string          `db:"element_xpath"`
-	PageUrl       *string          `db:"page_url"`
-	ViewportWidth *uint32          `db:"viewport_width"`
+	ClickX        *uint32 `db:"click_x"`
+	ClickY        *uint32 `db:"click_y"`
+	ElementXpath  *string `db:"element_xpath"`
+	PageUrl       *string `db:"page_url"`
+	ViewportWidth *uint32 `db:"viewport_width"`
 	// 游戏专属维度
-	ServerID      *string          `db:"server_id"`
-	Level         *uint32          `db:"level"`
-	CreatedAt     *time.Time       `db:"created_at"`
-	UpdatedAt     *time.Time       `db:"updated_at"`
+	ServerID  *string    `db:"server_id"`
+	Level     *uint32    `db:"level"`
+	CreatedAt *time.Time `db:"created_at"`
+	UpdatedAt *time.Time `db:"updated_at"`
 }

@@ -147,8 +147,8 @@ func buildFilterWhere(group *ubaV1.FilterGroup) ([]string, []any, bool, error) {
 		return nil, nil, false, nil
 	}
 	var (
-		clauses []string
-		args    []any
+		clauses  []string
+		args     []any
 		needJoin bool
 	)
 	for _, f := range group.GetFilters() {

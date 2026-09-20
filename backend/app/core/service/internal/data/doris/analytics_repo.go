@@ -188,9 +188,9 @@ func (r *AnalyticsRepo) eventTrendSplit(
 		bucketExpr, dimCol, metricSQL, joinClause, strings.Join(where, " AND "),
 	)
 	type row struct {
-		Bucket  string  `db:"bucket"`
-		DimVal  string  `db:"dim_val"`
-		Val     float64 `db:"val"`
+		Bucket string  `db:"bucket"`
+		DimVal string  `db:"dim_val"`
+		Val    float64 `db:"val"`
 	}
 	var rows []row
 	if err := r.db.SelectContext(ctx, &rows, qstr, args...); err != nil {
@@ -629,7 +629,7 @@ LIMIT 20`,
 	args = append(args, time.UnixMilli(startMs), time.UnixMilli(endMs))
 
 	type row struct {
-		DimVal     string `db:"dim_val"`
+		DimVal      string `db:"dim_val"`
 		ConverterUv int64  `db:"converter_uv"`
 	}
 	var rows []row
@@ -973,9 +973,9 @@ LIMIT 2000`, gridSize, gridSize, gridSize, gridSize, tenantCond)
 			intensity = float64(gr.Cnt) / float64(maxCnt)
 		}
 		points = append(points, &ubaV1.ClickHeatPoint{
-			X:        uint32(gr.GridX),
-			Y:        uint32(gr.GridY),
-			Count:    gr.Cnt,
+			X:         uint32(gr.GridX),
+			Y:         uint32(gr.GridY),
+			Count:     gr.Cnt,
 			Intensity: intensity,
 		})
 	}
@@ -1074,7 +1074,7 @@ SELECT stage, COUNT(*) AS user_cnt FROM (
 ) t GROUP BY stage`, tenantCond)
 	args = append(args,
 		newUserDays,
-		now,          // active DATE_SUB(now, 1 day)
+		now,            // active DATE_SUB(now, 1 day)
 		now, churnDays, // churned DATE_SUB(now, churnDays)
 		now, churnDays, // reactivated DATE_SUB(now, churnDays) —— 近 churnDays 内回流
 	)
@@ -1387,9 +1387,9 @@ ORDER BY uv DESC
 LIMIT 100`, dim, tenantCond, dim)
 
 	type ptRow struct {
-		Label string  `db:"label"`
-		UV    int64   `db:"uv"`
-		Freq  int64   `db:"freq"`
+		Label string `db:"label"`
+		UV    int64  `db:"uv"`
+		Freq  int64  `db:"freq"`
 	}
 	var rows []ptRow
 	if err := r.db.SelectContext(ctx, &rows, q, args...); err != nil {
@@ -1430,18 +1430,18 @@ LIMIT 100`, dim, tenantCond, dim)
 			quadrant = "edge" // 边缘：低人低频
 		}
 		points = append(points, &ubaV1.MatrixPoint{
-			Label:     rw.Label,
-			X:         x,
-			Y:         y,
-			Quadrant:  quadrant,
+			Label:    rw.Label,
+			X:        x,
+			Y:        y,
+			Quadrant: quadrant,
 		})
 	}
 
 	return &ubaV1.MatrixResponse{
-		Points:      points,
-		XThreshold:  xThreshold,
-		YThreshold:  yThreshold,
-		Dimension:   dim,
+		Points:     points,
+		XThreshold: xThreshold,
+		YThreshold: yThreshold,
+		Dimension:  dim,
 	}, nil
 }
 
@@ -1472,11 +1472,11 @@ WHERE %sevent_time >= ? AND event_time < ?
 GROUP BY d ORDER BY d`, tenantCond)
 
 	type row struct {
-		D            time.Time `db:"d"`
-		Gmv          float64   `db:"gmv"`
-		PayUsers     uint64    `db:"pay_users"`
-		PayOrders    int64     `db:"pay_orders"`
-		ActiveUsers  uint64    `db:"active_users"`
+		D           time.Time `db:"d"`
+		Gmv         float64   `db:"gmv"`
+		PayUsers    uint64    `db:"pay_users"`
+		PayOrders   int64     `db:"pay_orders"`
+		ActiveUsers uint64    `db:"active_users"`
 	}
 	var rows []row
 	if err := r.db.SelectContext(ctx, &rows, q, args...); err != nil {
@@ -1863,14 +1863,14 @@ ORDER BY player_count DESC
 LIMIT 100`, whereCond)
 
 	type row struct {
-		LevelId      string  `db:"level_id"`
-		LevelName    string  `db:"level_name"`
-		AttemptCnt   int64   `db:"attempt_count"`
-		FinishCnt    int64   `db:"finish_count"`
-		FailCnt      int64   `db:"fail_count"`
-		AvgScore     float64 `db:"avg_score"`
-		Star3Count   int64   `db:"star3_count"`
-		PlayerCount  uint64  `db:"player_count"`
+		LevelId     string  `db:"level_id"`
+		LevelName   string  `db:"level_name"`
+		AttemptCnt  int64   `db:"attempt_count"`
+		FinishCnt   int64   `db:"finish_count"`
+		FailCnt     int64   `db:"fail_count"`
+		AvgScore    float64 `db:"avg_score"`
+		Star3Count  int64   `db:"star3_count"`
+		PlayerCount uint64  `db:"player_count"`
 	}
 	var rows []row
 	if err := r.db.SelectContext(ctx, &rows, q, args...); err != nil {
@@ -2527,8 +2527,8 @@ func buildFilterWhere(group *ubaV1.FilterGroup) ([]string, []any, bool, error) {
 		return nil, nil, false, nil
 	}
 	var (
-		clauses []string
-		args    []any
+		clauses  []string
+		args     []any
 		needJoin bool
 	)
 	for _, f := range group.GetFilters() {
