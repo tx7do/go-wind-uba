@@ -52,7 +52,7 @@ func (r *AnalyticsRepo) EventTrend(ctx context.Context, req *ubaV1.EventTrendReq
 	if d := req.GetDimension(); d != "" {
 		col, join, err := dimensionColumnExpr(d)
 		if err != nil {
-			return nil, ubaV1.ErrorBadRequest(fmt.Sprintf("invalid dimension: %v", err))
+			return nil, ubaV1.ErrorBadRequest("invalid dimension: %v", err)
 		}
 		dimCol = col
 		dimNeedJoin = join
@@ -61,7 +61,7 @@ func (r *AnalyticsRepo) EventTrend(ctx context.Context, req *ubaV1.EventTrendReq
 	// 全局过滤
 	gfClauses, gfArgs, gfNeedJoin, err := buildFilterWhere(req.GetGlobalFilter())
 	if err != nil {
-		return nil, ubaV1.ErrorBadRequest(fmt.Sprintf("invalid global filter: %v", err))
+		return nil, ubaV1.ErrorBadRequest("invalid global filter: %v", err)
 	}
 
 	// 归一化 queries：为空时降级为单条 COUNT query（向后兼容）
@@ -92,12 +92,12 @@ func (r *AnalyticsRepo) EventTrend(ctx context.Context, req *ubaV1.EventTrendReq
 		}
 		metricSQL, err := metricExpr(q.GetMetric(), "")
 		if err != nil {
-			return nil, ubaV1.ErrorBadRequest(fmt.Sprintf("invalid metric: %v", err))
+			return nil, ubaV1.ErrorBadRequest("invalid metric: %v", err)
 		}
 
 		qfClauses, qfArgs, qfNeedJoin, err := buildFilterWhere(q.GetFilter())
 		if err != nil {
-			return nil, ubaV1.ErrorBadRequest(fmt.Sprintf("invalid query filter: %v", err))
+			return nil, ubaV1.ErrorBadRequest("invalid query filter: %v", err)
 		}
 
 		needJoin := dimNeedJoin || gfNeedJoin || qfNeedJoin
@@ -158,7 +158,7 @@ func (r *AnalyticsRepo) eventTrendSingle(
 	var rows []row
 	if err := r.db.SelectContext(ctx, &rows, qstr, args...); err != nil {
 		r.log.Errorf("EventTrend(single) query failed: %v", err)
-		return ubaV1.ErrorInternalServerError(fmt.Sprintf("event trend query failed: %v", err))
+		return ubaV1.ErrorInternalServerError("event trend query failed: %v", err)
 	}
 	points := make([]*ubaV1.TimeSeriesPoint, 0, len(rows))
 	var total int64
@@ -195,7 +195,7 @@ func (r *AnalyticsRepo) eventTrendSplit(
 	var rows []row
 	if err := r.db.SelectContext(ctx, &rows, qstr, args...); err != nil {
 		r.log.Errorf("EventTrend(split) query failed: %v", err)
-		return ubaV1.ErrorInternalServerError(fmt.Sprintf("event trend query failed: %v", err))
+		return ubaV1.ErrorInternalServerError("event trend query failed: %v", err)
 	}
 
 	totals := make(map[string]float64)
@@ -288,7 +288,7 @@ func (r *AnalyticsRepo) Funnel(ctx context.Context, req *ubaV1.FunnelRequest) (*
 		var cnt int64
 		if err := r.db.GetContext(ctx, &cnt, q+" LIMIT 1", args...); err != nil {
 			r.log.Errorf("Funnel step %d query failed: %v", i, err)
-			return nil, ubaV1.ErrorInternalServerError(fmt.Sprintf("funnel query failed: %v", err))
+			return nil, ubaV1.ErrorInternalServerError("funnel query failed: %v", err)
 		}
 		step := &ubaV1.FunnelStep{
 			StepIndex: uint32(i + 1),
@@ -341,7 +341,7 @@ func (r *AnalyticsRepo) Retention(ctx context.Context, req *ubaV1.RetentionReque
 	}
 	if err := r.db.SelectContext(ctx, &cohortRows, cohortQ, startMs, endMs); err != nil {
 		r.log.Errorf("Retention cohort query failed: %v", err)
-		return nil, ubaV1.ErrorInternalServerError(fmt.Sprintf("retention query failed: %v", err))
+		return nil, ubaV1.ErrorInternalServerError("retention query failed: %v", err)
 	}
 
 	// offsetDays 横轴
@@ -395,7 +395,7 @@ func (r *AnalyticsRepo) Retention(ctx context.Context, req *ubaV1.RetentionReque
 func (r *AnalyticsRepo) GroupBy(ctx context.Context, req *ubaV1.GroupByRequest) (*ubaV1.GroupByResponse, error) {
 	col, ok := allowedDimension(req.GetDimension())
 	if !ok {
-		return nil, ubaV1.ErrorBadRequest(fmt.Sprintf("unsupported dimension: %s", req.GetDimension()))
+		return nil, ubaV1.ErrorBadRequest("unsupported dimension: %s", req.GetDimension())
 	}
 	startMs, endMs := normTimeRange(req.GetTimeRange())
 	topN := int(req.GetTopN())
@@ -405,7 +405,7 @@ func (r *AnalyticsRepo) GroupBy(ctx context.Context, req *ubaV1.GroupByRequest) 
 
 	metricExpr, err := metricExpr(req.GetMetric(), col)
 	if err != nil {
-		return nil, ubaV1.ErrorBadRequest(err.Error())
+		return nil, ubaV1.ErrorBadRequest("%s", err.Error())
 	}
 
 	// user_level/vip_level 在 users_dim，非 events_fact：需 JOIN。
@@ -438,7 +438,7 @@ func (r *AnalyticsRepo) GroupBy(ctx context.Context, req *ubaV1.GroupByRequest) 
 	var rows []row
 	if err := r.db.SelectContext(ctx, &rows, q, args...); err != nil {
 		r.log.Errorf("GroupBy query failed: %v", err)
-		return nil, ubaV1.ErrorInternalServerError(fmt.Sprintf("group-by query failed: %v", err))
+		return nil, ubaV1.ErrorInternalServerError("group-by query failed: %v", err)
 	}
 
 	var total float64
@@ -494,7 +494,7 @@ GROUP BY stat_date ORDER BY stat_date`, tenantCond)
 	var dauRows []dauRow
 	if err := r.db.SelectContext(ctx, &dauRows, dauQ, dauArgs...); err != nil {
 		r.log.Errorf("ActiveUsers DAU query failed: %v", err)
-		return nil, ubaV1.ErrorInternalServerError(fmt.Sprintf("active users query failed: %v", err))
+		return nil, ubaV1.ErrorInternalServerError("active users query failed: %v", err)
 	}
 
 	// ② WAU/MAU：取最近一天的滚动 7/30 天去重（dashboard 只需最新值做 KPI）。
@@ -555,7 +555,7 @@ func (r *AnalyticsRepo) activeUsersFromEventsFact(ctx context.Context, req *ubaV
 	var rows []row
 	if err := r.db.SelectContext(ctx, &rows, q, args...); err != nil {
 		r.log.Errorf("ActiveUsers query failed: %v", err)
-		return nil, ubaV1.ErrorInternalServerError(fmt.Sprintf("active users query failed: %v", err))
+		return nil, ubaV1.ErrorInternalServerError("active users query failed: %v", err)
 	}
 
 	points := make([]*ubaV1.ActiveUsersPoint, 0, len(rows))
@@ -635,7 +635,7 @@ LIMIT 20`,
 	var rows []row
 	if err := r.db.SelectContext(ctx, &rows, q, args...); err != nil {
 		r.log.Errorf("Attribution query failed: %v", err)
-		return nil, ubaV1.ErrorInternalServerError(fmt.Sprintf("attribution query failed: %v", err))
+		return nil, ubaV1.ErrorInternalServerError("attribution query failed: %v", err)
 	}
 
 	var total int64
@@ -710,7 +710,7 @@ ORDER BY duration_bucket`, tenantCond)
 	var bRows []bucketRow
 	if err := r.db.SelectContext(ctx, &bRows, bucketQ, args...); err != nil {
 		r.log.Errorf("Distribution bucket query failed: %v", err)
-		return nil, ubaV1.ErrorInternalServerError(fmt.Sprintf("distribution query failed: %v", err))
+		return nil, ubaV1.ErrorInternalServerError("distribution query failed: %v", err)
 	}
 
 	var bucketTotal int64
@@ -751,7 +751,7 @@ WHERE %sevent_name = ? AND duration_ms > 0 AND event_time >= ? AND event_time < 
 	}
 	if err := r.db.GetContext(ctx, &s, summaryQ, args...); err != nil && err != sql.ErrNoRows {
 		r.log.Errorf("Distribution summary query failed: %v", err)
-		return nil, ubaV1.ErrorInternalServerError(fmt.Sprintf("distribution summary query failed: %v", err))
+		return nil, ubaV1.ErrorInternalServerError("distribution summary query failed: %v", err)
 	}
 
 	return &ubaV1.DistributionResponse{
@@ -812,7 +812,7 @@ LIMIT %d`, strings.Join(where, " AND "), limit)
 	var rows []evRow
 	if err := r.db.SelectContext(ctx, &rows, q, args...); err != nil {
 		r.log.Errorf("BehaviorSequence query failed: %v", err)
-		return nil, ubaV1.ErrorInternalServerError(fmt.Sprintf("behavior sequence query failed: %v", err))
+		return nil, ubaV1.ErrorInternalServerError("behavior sequence query failed: %v", err)
 	}
 
 	events := make([]*ubaV1.SequenceEvent, 0, len(rows))
@@ -900,7 +900,7 @@ WHERE NOT EXISTS (
 	var userIDs []uint32
 	if err := r.db.SelectContext(ctx, &userIDs, q, args...); err != nil {
 		r.log.Errorf("Segmentation query failed: %v", err)
-		return nil, ubaV1.ErrorInternalServerError(fmt.Sprintf("segmentation query failed: %v", err))
+		return nil, ubaV1.ErrorInternalServerError("segmentation query failed: %v", err)
 	}
 
 	return &ubaV1.SegmentationResponse{
@@ -955,7 +955,7 @@ LIMIT 2000`, gridSize, gridSize, gridSize, gridSize, tenantCond)
 	var gRows []gridRow
 	if err := r.db.SelectContext(ctx, &gRows, gridSQL, gridArgs...); err != nil {
 		r.log.Errorf("Click grid query failed: %v", err)
-		return nil, ubaV1.ErrorInternalServerError(fmt.Sprintf("click query failed: %v", err))
+		return nil, ubaV1.ErrorInternalServerError("click query failed: %v", err)
 	}
 
 	var maxCnt int64
@@ -1086,7 +1086,7 @@ SELECT stage, COUNT(*) AS user_cnt FROM (
 	var rows []stageRow
 	if err := r.db.SelectContext(ctx, &rows, q, args...); err != nil {
 		r.log.Errorf("Lifecycle query failed: %v", err)
-		return nil, ubaV1.ErrorInternalServerError(fmt.Sprintf("lifecycle query failed: %v", err))
+		return nil, ubaV1.ErrorInternalServerError("lifecycle query failed: %v", err)
 	}
 
 	labels := map[string]string{
@@ -1168,7 +1168,7 @@ GROUP BY bucket ORDER BY bucket`, tenantCond)
 	var bRows []bucketRow
 	if err := r.db.SelectContext(ctx, &bRows, churnQ, churnArgs...); err != nil {
 		r.log.Errorf("Churn bucket query failed: %v", err)
-		return nil, ubaV1.ErrorInternalServerError(fmt.Sprintf("churn query failed: %v", err))
+		return nil, ubaV1.ErrorInternalServerError("churn query failed: %v", err)
 	}
 	var churnedUsers int64
 	buckets := make([]*ubaV1.ChurnBucket, 0, len(bRows))
@@ -1308,7 +1308,7 @@ GROUP BY bucket ORDER BY bucket`, tenantCond)
 	var rows []bucketRow
 	if err := r.db.SelectContext(ctx, &rows, q, args...); err != nil {
 		r.log.Errorf("Interval query failed: %v", err)
-		return nil, ubaV1.ErrorInternalServerError(fmt.Sprintf("interval query failed: %v", err))
+		return nil, ubaV1.ErrorInternalServerError("interval query failed: %v", err)
 	}
 
 	var total int64
@@ -1394,7 +1394,7 @@ LIMIT 100`, dim, tenantCond, dim)
 	var rows []ptRow
 	if err := r.db.SelectContext(ctx, &rows, q, args...); err != nil {
 		r.log.Errorf("Matrix query failed: %v", err)
-		return nil, ubaV1.ErrorInternalServerError(fmt.Sprintf("matrix query failed: %v", err))
+		return nil, ubaV1.ErrorInternalServerError("matrix query failed: %v", err)
 	}
 	if len(rows) == 0 {
 		return &ubaV1.MatrixResponse{Points: []*ubaV1.MatrixPoint{}, Dimension: dim}, nil
@@ -1481,7 +1481,7 @@ GROUP BY d ORDER BY d`, tenantCond)
 	var rows []row
 	if err := r.db.SelectContext(ctx, &rows, q, args...); err != nil {
 		r.log.Errorf("Revenue query failed: %v", err)
-		return nil, ubaV1.ErrorInternalServerError(fmt.Sprintf("revenue query failed: %v", err))
+		return nil, ubaV1.ErrorInternalServerError("revenue query failed: %v", err)
 	}
 
 	var totalGmv float64
@@ -1526,7 +1526,7 @@ GROUP BY d ORDER BY d`, tenantCond)
 
 // ============================================================================
 // 会话分析（跳出率/时长分位 P50/P90/会话深度）
-// Doris 数据源：sessions_agg_daily（duration_quantile 用 QUANTILE_PERCENT 还原）+ events_fact（深度）。
+// Doris 数据源：sessions_fact + events_fact（不读 sessions_agg_daily，见函数内注释）。
 // ============================================================================
 
 func (r *AnalyticsRepo) SessionAnalysis(ctx context.Context, req *ubaV1.SessionAnalysisRequest) (*ubaV1.SessionAnalysisResponse, error) {
@@ -1572,7 +1572,7 @@ WHERE %sstart_time >= ? AND start_time < ?`, whereCond)
 	}
 	if err := r.db.GetContext(ctx, &s, q, args...); err != nil && err != sql.ErrNoRows {
 		r.log.Errorf("SessionAnalysis query failed: %v", err)
-		return nil, ubaV1.ErrorInternalServerError(fmt.Sprintf("session analysis query failed: %v", err))
+		return nil, ubaV1.ErrorInternalServerError("session analysis query failed: %v", err)
 	}
 
 	// 会话深度：人均事件数（events_fact 总事件数 / 会话数），扫事实表。
@@ -1663,7 +1663,7 @@ ORDER BY event_name, d`, whereCond)
 	var rows []row
 	if err := r.db.SelectContext(ctx, &rows, q, args...); err != nil {
 		r.log.Errorf("Anomaly query failed: %v", err)
-		return nil, ubaV1.ErrorInternalServerError(fmt.Sprintf("anomaly query failed: %v", err))
+		return nil, ubaV1.ErrorInternalServerError("anomaly query failed: %v", err)
 	}
 
 	points := make([]*ubaV1.AnomalyPoint, 0, len(rows))
@@ -1732,7 +1732,7 @@ GROUP BY user_type`, tenantCond)
 	qArgs := append([]any{newUserDays}, args...)
 	if err := r.db.SelectContext(ctx, &rows, q, qArgs...); err != nil {
 		r.log.Errorf("NewVsOld query failed: %v", err)
-		return nil, ubaV1.ErrorInternalServerError(fmt.Sprintf("new vs old query failed: %v", err))
+		return nil, ubaV1.ErrorInternalServerError("new vs old query failed: %v", err)
 	}
 
 	segMap := map[string]*ubaV1.NewVsOldSegment{}
@@ -1761,7 +1761,7 @@ GROUP BY user_type`, tenantCond)
 
 // ============================================================================
 // 热门转化路径（群体路径 TOP + 转化率）
-// Doris 数据源：popular_paths_daily（event_sequence ARRAY + support_count + conversion）。
+// Doris 数据源：events_fact（实时聚路径，不读 popular_paths_daily 聚合表）。
 // 参考模板：doris/query.sql §6.1。
 // ============================================================================
 
@@ -1807,7 +1807,7 @@ LIMIT %d`, tenantCond, topN)
 	var rows []row
 	if err := r.db.SelectContext(ctx, &rows, q, args...); err != nil {
 		r.log.Errorf("PathSankey query failed: %v", err)
-		return nil, ubaV1.ErrorInternalServerError(fmt.Sprintf("path sankey query failed: %v", err))
+		return nil, ubaV1.ErrorInternalServerError("path sankey query failed: %v", err)
 	}
 
 	paths := make([]*ubaV1.PathBucket, 0, len(rows))
@@ -1875,7 +1875,7 @@ LIMIT 100`, whereCond)
 	var rows []row
 	if err := r.db.SelectContext(ctx, &rows, q, args...); err != nil {
 		r.log.Errorf("LevelAnalysis query failed: %v", err)
-		return nil, ubaV1.ErrorInternalServerError(fmt.Sprintf("level analysis query failed: %v", err))
+		return nil, ubaV1.ErrorInternalServerError("level analysis query failed: %v", err)
 	}
 
 	levels := make([]*ubaV1.LevelStat, 0, len(rows))
@@ -1941,7 +1941,7 @@ GROUP BY tier`, tenantCond)
 	var rows []row
 	if err := r.db.SelectContext(ctx, &rows, q, args...); err != nil {
 		r.log.Errorf("WhaleTier query failed: %v", err)
-		return nil, ubaV1.ErrorInternalServerError(fmt.Sprintf("whale tier query failed: %v", err))
+		return nil, ubaV1.ErrorInternalServerError("whale tier query failed: %v", err)
 	}
 
 	labels := map[string]string{
@@ -2029,7 +2029,7 @@ GROUP BY label`, dimSelect, tenantCond)
 	var cohortRows []cohortRow
 	if err := r.db.SelectContext(ctx, &cohortRows, cohortQ, args...); err != nil {
 		r.log.Errorf("LTV cohort query failed: %v", err)
-		return nil, ubaV1.ErrorInternalServerError(fmt.Sprintf("ltv query failed: %v", err))
+		return nil, ubaV1.ErrorInternalServerError("ltv query failed: %v", err)
 	}
 	cohortMap := map[string]int64{}
 	for _, cr := range cohortRows {
@@ -2064,7 +2064,7 @@ GROUP BY label, day_n`, dimSelect, tenantCond)
 	var payRows []payRow
 	if err := r.db.SelectContext(ctx, &payRows, payQ, payArgs...); err != nil {
 		r.log.Errorf("LTV pay query failed: %v", err)
-		return nil, ubaV1.ErrorInternalServerError(fmt.Sprintf("ltv query failed: %v", err))
+		return nil, ubaV1.ErrorInternalServerError("ltv query failed: %v", err)
 	}
 
 	// 累计：每个 label 按 day_n 升序累加金额（累计到第 N 天）。
@@ -2149,7 +2149,7 @@ SELECT server_id, COUNT(*) AS cohort_size FROM (
 	var cohortRows []cohortRow
 	if err := r.db.SelectContext(ctx, &cohortRows, cohortQ, args...); err != nil {
 		r.log.Errorf("ServerRetention cohort query failed: %v", err)
-		return nil, ubaV1.ErrorInternalServerError(fmt.Sprintf("server retention query failed: %v", err))
+		return nil, ubaV1.ErrorInternalServerError("server retention query failed: %v", err)
 	}
 
 	// 各 server 的各偏移天留存用户数：JOIN 同期群首日，DATEDIFF 算偏移。
@@ -2227,7 +2227,7 @@ WHERE %sstart_time >= ? AND start_time < ?`, whereCond)
 	}
 	if err := r.db.GetContext(ctx, &s, q, args...); err != nil && err != sql.ErrNoRows {
 		r.log.Errorf("OnlineStats query failed: %v", err)
-		return nil, ubaV1.ErrorInternalServerError(fmt.Sprintf("online stats query failed: %v", err))
+		return nil, ubaV1.ErrorInternalServerError("online stats query failed: %v", err)
 	}
 
 	spanMs := endMs - startMs
@@ -2302,7 +2302,7 @@ ORDER BY source DESC`, whereCond)
 	var rows []row
 	if err := r.db.SelectContext(ctx, &rows, q, args...); err != nil {
 		r.log.Errorf("Economy query failed: %v", err)
-		return nil, ubaV1.ErrorInternalServerError(fmt.Sprintf("economy query failed: %v", err))
+		return nil, ubaV1.ErrorInternalServerError("economy query failed: %v", err)
 	}
 
 	currencies := make([]*ubaV1.CurrencyBalance, 0, len(rows))

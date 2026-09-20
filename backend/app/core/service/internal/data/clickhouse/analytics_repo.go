@@ -419,7 +419,7 @@ func (r *AnalyticsRepo) Retention(ctx context.Context, req *ubaV1.RetentionReque
 func (r *AnalyticsRepo) GroupBy(ctx context.Context, req *ubaV1.GroupByRequest) (*ubaV1.GroupByResponse, error) {
 	col, ok := allowedDimension(req.GetDimension())
 	if !ok {
-		return nil, ubaV1.ErrorBadRequest(fmt.Sprintf("unsupported dimension: %s", req.GetDimension()))
+		return nil, ubaV1.ErrorBadRequest("unsupported dimension: %s", req.GetDimension())
 	}
 	startMs, endMs := normTimeRange(req.GetTimeRange())
 	topN := int(req.GetTopN())
@@ -429,7 +429,7 @@ func (r *AnalyticsRepo) GroupBy(ctx context.Context, req *ubaV1.GroupByRequest) 
 
 	metric, err := metricExpr(req.GetMetric())
 	if err != nil {
-		return nil, ubaV1.ErrorBadRequest(err.Error())
+		return nil, ubaV1.ErrorBadRequest("%s", err.Error())
 	}
 
 	// user_level/vip_level 在 users_dim，非 events_fact：需 JOIN。
@@ -950,7 +950,7 @@ WHERE %sevent_name = 'click' AND page_url = ? AND click_x > 0 AND click_y > 0
   AND event_time >= ? AND event_time < ?
 GROUP BY grid_x, grid_y
 ORDER BY cnt DESC
-LIMIT 2000`, tenantCond)
+LIMIT 2000`, gridSize, gridSize, gridSize, gridSize, tenantCond)
 
 	type gridRow struct {
 		GridX int64 `db:"grid_x" ch:"grid_x"`
@@ -1483,7 +1483,7 @@ GROUP BY d`, tenantCond)
 
 // ============================================================================
 // 会话分析（跳出率/时长分位 P50/P90/会话深度）
-// ClickHouse 数据源：sessions_agg_daily_view（已聚合 p50/p90/bounce_rate）。
+// ClickHouse 数据源：sessions_fact + events_fact（不读 sessions_agg_daily_view，见函数内注释）。
 // ============================================================================
 
 func (r *AnalyticsRepo) SessionAnalysis(ctx context.Context, req *ubaV1.SessionAnalysisRequest) (*ubaV1.SessionAnalysisResponse, error) {
@@ -1686,7 +1686,7 @@ GROUP BY user_type`, newUserDays, tenantCond)
 
 // ============================================================================
 // 热门转化路径（群体路径 TOP + 转化率）
-// ClickHouse 数据源：popular_paths_daily_view（event_sequence + support_count + conversion）。
+// ClickHouse 数据源：events_fact（实时聚路径，不读 popular_paths_daily_view）。
 // ============================================================================
 
 func (r *AnalyticsRepo) PathSankey(ctx context.Context, req *ubaV1.PathSankeyRequest) (*ubaV1.PathSankeyResponse, error) {

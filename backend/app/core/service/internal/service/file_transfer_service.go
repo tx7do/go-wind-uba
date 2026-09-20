@@ -270,24 +270,24 @@ func (s *FileTransferService) downloadFileFromURL(ctx context.Context, downloadU
 	// 如果需要支持断点续传，可在此构造请求并设置 Range 头
 	httpReq, err := http.NewRequestWithContext(ctx, "GET", downloadUrl, nil)
 	if err != nil {
-		return nil, storageV1.ErrorDownloadFailed(err.Error())
+		return nil, storageV1.ErrorDownloadFailed("%s", err.Error())
 	}
 	// 示例：如果你要设置 Range（可选）
 	// httpReq.Header.Set("Range", "bytes=100-")
 
 	resp, err := http.DefaultClient.Do(httpReq)
 	if err != nil {
-		return nil, storageV1.ErrorDownloadFailed(err.Error())
+		return nil, storageV1.ErrorDownloadFailed("%s", err.Error())
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusPartialContent {
-		return nil, storageV1.ErrorDownloadFailed("unexpected status: " + resp.Status)
+		return nil, storageV1.ErrorDownloadFailed("unexpected status: %s", resp.Status)
 	}
 
 	fileData, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, storageV1.ErrorDownloadFailed(err.Error())
+		return nil, storageV1.ErrorDownloadFailed("%s", err.Error())
 	}
 
 	return &storageV1.DownloadFileResponse{
