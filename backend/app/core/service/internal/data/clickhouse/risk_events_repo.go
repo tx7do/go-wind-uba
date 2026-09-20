@@ -34,6 +34,9 @@ func NewRiskEventsRepo(
 		db:        db,
 		tableName: "risk_events",
 		mapper:    mapper.NewCopierMapper[ubaV1.RiskEvent, schema.RiskEvents](),
+		riskEventStatusConverter: mapper.NewEnumTypeConverter[ubaV1.RiskEvent_Status, string](
+			ubaV1.RiskEvent_Status_name, ubaV1.RiskEvent_Status_value,
+		),
 	}
 	repo.init()
 	return repo

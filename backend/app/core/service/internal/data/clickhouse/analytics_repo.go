@@ -1393,7 +1393,8 @@ LIMIT 100`, dim, tenantCond, dim)
 
 // ============================================================================
 // 付费/营收分析（ARPU/ARPPU/付费率/GMV 趋势）
-// ClickHouse 数据源：pay_agg_daily_view（已聚合 total_pay_user_count/grand_total_amount 等）。
+// ClickHouse 数据源：pay_agg_daily_view（已聚合 total_pay_user_count/grand_total_amount 等）
+// + events_agg_daily 基础表（活跃用户 UV，须合并 AggregateFunction 状态）。
 // ============================================================================
 
 func (r *AnalyticsRepo) Revenue(ctx context.Context, req *ubaV1.RevenueRequest) (*ubaV1.RevenueResponse, error) {
@@ -1427,10 +1428,11 @@ GROUP BY d ORDER BY d`, tenantCond)
 		return nil, ubaV1.ErrorInternalServerError("revenue query failed")
 	}
 
-	// 活跃用户：events_agg_daily_view（pay_agg 无 active 字段），按日去重 UV
+	// 活跃用户：基础表 events_agg_daily（pay_agg 无 active 字段），按日去重 UV。
+	// 不能查 events_agg_daily_view —— view 已把 uv merge 成 UInt64，再套 uniqCombinedMerge 是非法参数类型。
 	activeQ := fmt.Sprintf(`
 SELECT stat_date AS d, uniqCombinedMerge(uv) AS active_users
-FROM events_agg_daily_view
+FROM events_agg_daily
 WHERE %sstat_date >= toDate(?) AND stat_date < toDate(?)
 GROUP BY d`, tenantCond)
 	type activeRow struct {
@@ -1440,7 +1442,7 @@ GROUP BY d`, tenantCond)
 	var activeRows []activeRow
 	if err := r.db.Select(ctx, &activeRows, activeQ, args...); err != nil {
 		r.log.Errorf("Revenue active query failed: %v", err)
-		activeRows = nil
+		return nil, ubaV1.ErrorInternalServerError("revenue query failed")
 	}
 	activeMap := map[int64]int64{}
 	for _, ar := range activeRows {
@@ -1554,7 +1556,7 @@ WHERE %sstart_time >= ? AND start_time < ?`, whereCond)
 
 // ============================================================================
 // 同比环比/异常检测（事件 PV/UV 环比 + 7日基线）
-// ClickHouse 数据源：events_agg_daily_view + 窗口函数。
+// ClickHouse 数据源：events_agg_daily 基础表 + 窗口函数（uv 是 AggregateFunction 状态，须在基础表上 merge）。
 // ============================================================================
 
 func (r *AnalyticsRepo) Anomaly(ctx context.Context, req *ubaV1.AnomalyRequest) (*ubaV1.AnomalyResponse, error) {
@@ -1587,7 +1589,7 @@ SELECT event_name, d, pv, uv, baseline, wow_change FROM (
   FROM (
     SELECT event_name, stat_date AS d,
            sum(pv) AS pv, uniqCombinedMerge(uv) AS uv
-    FROM events_agg_daily_view
+    FROM events_agg_daily
     WHERE %sstat_date >= toDate(?) AND stat_date < toDate(?)
     GROUP BY event_name, d
   ) daily
