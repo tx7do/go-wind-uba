@@ -1,4 +1,4 @@
-﻿-- 插入字典类型
+-- 插入字典类型
 INSERT INTO public.sys_dict_types (
     id, type_code, type_name, sort_order, is_enabled, created_at, updated_at
 ) VALUES

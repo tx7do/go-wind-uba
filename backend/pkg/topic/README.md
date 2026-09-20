@@ -1,4 +1,4 @@
-﻿# Kafka Topic 设计文档
+# Kafka Topic 设计文档
 
 ## Topic 列表设计
 

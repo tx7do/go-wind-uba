@@ -1,0 +1,88 @@
+# ============================================================
+# 换行与文本属性规约
+# 背景：sql/ 下若干文件带 UTF-8 BOM，BOM 紧跟 `--` 会让 MySQL/Doris
+#       词法器把首行当标识符而非注释，导致整个脚本执行失败；
+#       另有 11 个文件的 blob 存的是 CRLF，跨平台协作时反复产生无意义 diff。
+# 规约：仓库内一律 LF，检出也是 LF；二进制不参与任何转换。
+# ============================================================
+
+* text=auto eol=lf
+
+# ---------- 文本类型显式固定 ----------
+*.go      text eol=lf
+*.mod     text eol=lf
+*.sum     text eol=lf
+*.proto   text eol=lf
+*.sql     text eol=lf
+*.ts      text eol=lf
+*.mts     text eol=lf
+*.cts     text eol=lf
+*.vue     text eol=lf
+*.js      text eol=lf
+*.mjs     text eol=lf
+*.cjs     text eol=lf
+*.jsx     text eol=lf
+*.tsx     text eol=lf
+*.css     text eol=lf
+*.scss    text eol=lf
+*.less    text eol=lf
+*.html    text eol=lf
+*.json    text eol=lf
+*.yaml    text eol=lf
+*.yml     text eol=lf
+*.toml    text eol=lf
+*.md      text eol=lf
+*.txt     text eol=lf
+*.cs      text eol=lf
+*.csproj  text eol=lf
+*.xml     text eol=lf
+*.sh      text eol=lf
+*.bash    text eol=lf
+*.ps1     text eol=lf
+*.iml     text eol=lf
+.env*     text eol=lf
+
+Makefile  text eol=lf
+*.mk      text eol=lf
+Dockerfile* text eol=lf
+
+# ---------- 二进制：不做换行转换、不做文本 diff ----------
+*.png            binary
+*.jpg            binary
+*.jpeg           binary
+*.gif            binary
+*.ico            binary
+*.webp           binary
+*.bmp            binary
+*.pdf            binary
+*.woff           binary
+*.woff2          binary
+*.ttf            binary
+*.eot            binary
+*.otf            binary
+*.zip            binary
+*.gz             binary
+*.tgz            binary
+*.7z             binary
+*.jar            binary
+*.war            binary
+*.dll            binary
+*.so             binary
+*.dylib          binary
+*.a              binary
+*.lib            binary
+*.exe            binary
+*.apk            binary
+*.unitypackage   binary
+*.pdb            binary
+*.bundle         binary
+
+# SVG 是文本，保留 diff 能力
+*.svg  text eol=lf
+
+# ---------- 生成物：禁止手改（见 AGENTS.md 第 5 节铁律），PR 中默认折叠 ----------
+backend/api/gen/**                              text eol=lf linguist-generated=true
+backend/app/*/internal/data/ent/**              text eol=lf linguist-generated=true
+**/wire_gen.go                                  text eol=lf linguist-generated=true
+frontend/admin/apps/admin/src/generated/**       text eol=lf linguist-generated=true
+frontend/admin/apps/admin/src/api/generated/**   text eol=lf linguist-generated=true
