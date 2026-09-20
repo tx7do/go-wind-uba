@@ -85,6 +85,22 @@ func TestMenuPermissionConverter_ConvertCode(t *testing.T) {
 			typ:      resourceV1.Menu_MENU,
 			want:     "inner:view",
 		},
+		{
+			// README 的示例表以此为准：多段路径丢掉顶层布局段
+			name:     "menu drops the layout segment",
+			fullPath: "/admin/settings",
+			title:    "",
+			typ:      resourceV1.Menu_MENU,
+			want:     "setting:view",
+		},
+		{
+			// 未知类型不产动作，返回不带后缀的权限主体
+			name:     "unknown type -> bare base",
+			fullPath: "/admin/orders",
+			title:    "",
+			typ:      resourceV1.Menu_Type(999),
+			want:     "order",
+		},
 	}
 
 	for _, tt := range tests {

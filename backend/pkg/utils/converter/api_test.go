@@ -22,6 +22,8 @@ func TestApiPermissionConverter_ConvertByPath(t *testing.T) {
 		{"hyphen group", "GET", "/v1/user-groups", "user-group:view"},
 		{"get task by typeNames", "GET", "/admin/v1/tasks:type-names", "task:view"},
 		{"walk route", "GET", "/admin/v1/apis/walk-route", "api:view"},
+		{"pure param path has no resource", "GET", "/v1/{id}", ""},
+		{"empty path", "GET", "", ""},
 	}
 
 	for _, tc := range cases {
@@ -44,10 +46,13 @@ func TestApiPermissionConverter_ConvertByOperationID(t *testing.T) {
 		op   string
 		want string
 	}{
-		{"rpc with service and name", "TaskService_ListTaskTypeName", "task:task-type-name:list"},
-		{"rpc without Service suffix", "Task_ListTaskTypeName", "task:task-type-name:list"},
-		{"get walk route data", "ApiService_GetWalkRouteData", "api:walk-route-data:get"},
-		{"rpc without name", "Task_List", "task:list"},
+		// 读取类动词一律收敛到 view：权限码的词表由菜单侧决定（见 menu.go typeToAction），
+		// core 的 appendAPis 用字符串相等把 API 绑到权限上，出现 :list / :get 就永远绑不上。
+		{"rpc with service and name", "TaskService_ListTaskTypeName", "task:task-type-name:view"},
+		{"rpc without Service suffix", "Task_ListTaskTypeName", "task:task-type-name:view"},
+		{"get walk route data", "ApiService_GetWalkRouteData", "api:walk-route-data:view"},
+		{"rpc without name", "Task_List", "task:view"},
+		{"delete with trailing name", "Task_DeleteTask", "task:task:delete"},
 		{"invalid rpc format", "GetStatus", ""},
 	}
 

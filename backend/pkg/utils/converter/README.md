@@ -2,71 +2,104 @@
 
 ## 概述
 
-本工具将菜单信息转换为权限码，权限码用于权限控制与校验。权限码由模块（`Module`）、子模块（`SubModule`）与动作（`Action`）组成，使用分隔符 `:` 串联，均为单数、小写，多个单词使用 `-` 连接。
+本工具把**菜单**与 **API** 两类资源映射成同一种权限码，权限码用于权限控制与校验。
+权限码由模块（`Module`）、子模块（`SubModule`）与动作（`Action`）组成，用 `:` 串联，
+均为单数、小写，多个单词用 `-` 连接：`{module}:{submodule}:{action}`（无子模块时省略）。
+
+两个转换器分别负责一半：
+
+| 入口 | 谁在用 | 说明 |
+|---|---|---|
+| `MenuPermissionConverter.ConvertCode(path, title, type)` | `app/admin/service/.../permission_service.go:279` | 从菜单树产出权限码 |
+| `ApiPermissionConverter.ConvertCodeByPath(method, path)` | `app/core/service/.../permission_service.go:232` | 从 API 产出权限码，用于把 API 绑到权限上 |
+| `ApiPermissionConverter.ConvertCodeByOperationID(operationID)` | 生产路径**未使用**（同文件上一行被注释掉） | 行为仅由测试锁定 |
+
+## 关键不变式：动作词表由菜单侧决定
+
+`core` 的 `appendAPis` 用**字符串相等**把 API 码与菜单产出的权限码配对
+（`codes[code]` ↔ `perm.GetCode()`）。因此 API 侧能产出的 `action` 必须落在菜单侧的词表里
+（`dir / view / create / edit / delete / import / export / jump / act`），
+否则这条 API **永远绑不到任何权限，而且是静默的**。
+
+这就是 `api.go` 里把 `list / get / retrieve / query / exist` 一律收敛成 `view` 的原因
+（`menu.go` 的 `Menu_MENU`/`Menu_EMBEDDED` 产出的是 `view`，不产出 `list`）。
+新增动词映射前先想清楚它在菜单侧有没有对应项。
 
 ## 命名与格式规则
 
-- 路径到模块规则：
-    - 去除首尾多余的 `/` 和空白。
-    - 将路径中的 `/` 替换为 `:`，得到模块与子模块的组合。
-    - 对每个段使用单数化（例如 `users` -> `user`）。
-    - 统一小写。
-    - 例如：`/admin/settings/` -> `admin:setting`（再接动作）。
+- 路径到模块规则（菜单侧 `ConvertCode`）：
+    - `strings.TrimSpace` 后去掉首尾 `/`；为空则返回空码。
+    - 按 `/` 切段；**段数 > 1 时丢掉第一段**（约定：菜单树顶层是布局段，不参与权限命名）。
+      例：`/admin/settings` → `setting`，而单段的 `/users` → `user`（不会被误丢）。
+    - 每段 `inflection.Singular` 单数化，跳过空白段与以 `:` 开头的段。
+    - 用 `:` 连接为权限主体，再接动作。
 
-- 动作（Action）命名：
-    - 动作为短小英文标识，统一小写。
-    - 最终权限码形如：`{module}:{submodule}:{action}`（当仅有 module 时省略 submodule）。
+- 路径到模块规则（API 侧 `pathToResource`）：
+    - `stripVersionPrefix`：去掉开头的 `api` 段与第一个版本段（`v1`、`v1.9`、`v10`…，
+      仅当它出现在前两段时）。`/api/v1/admin/settings` → `admin/settings`。
+    - `removePathParams`：丢掉 `{id}` 形式的参数段（允许 `{ id }` 带空白）。
+    - 只取剩下的**第一段**，单数化后再取 `:` 之前的部分。
+      例：`/admin/v1/tasks:type-names` → `task`。
+    - 若资源名为空（路径退化成纯参数段，如 `/v1/{id}`），`ConvertCodeByPath` 返回**空串**，
+      调用方按 `code == ""` 跳过 —— 不产出 `":view"` 这种畸形码。
+
+- 动作（Action）命名：短小英文标识，统一小写，多词用 `-`。
 
 ## Menu_Type 到 Action 的映射
 
 - `Menu_CATALOG` -> `dir`
-- `Menu_MENU` -> `access`
-- `Menu_BUTTON` -> 根据按钮标题分类（参见下表）
+- `Menu_MENU` -> `view`
+- `Menu_BUTTON` -> 按按钮标题分类（见下表）
 - `Menu_EMBEDDED` -> `view`
 - `Menu_LINK` -> `jump`
-- 未知类型 -> 空字符串（不生成动作）
+- 未知类型 -> 空字符串（此时 `ConvertCode` 返回**不带动作后缀**的权限主体）
 
-## 按钮标题到 Action 的映射（常用关键词）
+> 早期文档把 `Menu_MENU` 写成 `access`，代码从未产出过 `access`，以本表为准。
 
-- **add**: `"add"`, `"create"`, `"new"`, `"新增"`, `"添加"`, `"创建"` 等 -> `add`
-- **edit**: `"edit"`, `"update"`, `"modify"`, `"save"`, `"保存"`, `"修改"`, `"更新"`, `"编辑"` -> `edit`
-- **delete**: `"delete"`, `"del"`, `"remove"`, `"删除"`, `"移除"` -> `delete`
-- **import**: `"import"`, `"导入"`, `"导入为"`, `"importcsv"`, `"importexcel"` -> `import`
-- **export**: `"export"`, `"导出"`, `"下载"`, `"exportcsv"`, `"exportexcel"` -> `export`
-- 其它或空白标题 -> `act`
+## 按钮标题到 Action 的映射（`buttonAction`）
 
-匹配逻辑：
+判定顺序：`create` → `edit` → `delete` → `import` → `export`，都不命中则 `act`；
+标题为空（含只有空白）直接 `act`。
 
-- 先做 `strings.TrimSpace` 并转小写。
-- 优先按关键词集进行匹配（可采用前缀/包含/完全匹配的策略，项目中实现为 `matchAnyKeyword`）。
-- 支持中文与英文关键词混合匹配。
+| 结果 | 关键词 |
+|---|---|
+| `create` | `add`、`addto`、`add+`、`create`、`new`、`plus`、`append`、`新增`、`添加`、`创建` |
+| `edit` | `edit`、`update`、`modify`、`save`、`patch`、`保存`、`修改`、`更新`、`编辑` |
+| `delete` | `delete`、`del`、`remove`、`destroy`、`drop`、`discard`、`trash`、`删除`、`移除`、`弃用`、`清除` |
+| `import` | `import`、`importcsv`、`importexcel`、`导入`、`导入为` |
+| `export` | `export`、`download`、`exportcsv`、`exportexcel`、`导出`、`下载`、`导出为` |
 
-## 实现注意点
+匹配策略（`matchAnyKeyword`）：标题先 `TrimSpace` + 转小写；先按分词做**精确或前缀**匹配
+（`Add-to-list` 因 token `add` 前缀命中 `create`，尽管里面有 `list`），
+再回退到整句 `Contains`（`一键导出为Excel` 靠这条命中 `导出` → `export`）。
 
-- 路径拆分与单数化依赖 `inflection.Singular`（若移除相关逻辑，请同步移除 `import`）。
-- 若使用 `tokenize` 并检查 Unicode 字符类别，需要在 `import` 中包含 `unicode`。
-- `buttonAction` 建议支持 `import` 关键字（如 `import`、`导入` 等），并返回动作 `import`。
-- 在调用 `buttonAction` 前应对标题做 `strings.TrimSpace` 以避免空白影响结果。
+## HTTP 方法到 Action 的映射（`methodToAction`）
+
+- 路径以 `/list` 结尾时**优先**判为 `view`（覆盖方法本身，`POST /v1/users/list` 也是 `view`）。
+- 其余按 `GET→view`、`POST→create`、`PUT/PATCH→edit`、`DELETE→delete`；方法名大小写不敏感。
+- 未列出的方法回退成小写方法名（如 `OPTIONS` → `options`）。这类码按上面的不变式注定绑不上，
+  属预期行为：这类端点本来也不该被当成业务权限。
 
 ## 示例
 
-- 输入：路径 `/users`，类型 `Menu_BUTTON`，标题 `新增`  
-  输出权限码示例：`user:add`
-
-- 输入：路径 `/admin/settings`，类型 `Menu_MENU`，标题 空  
-  输出权限码示例：`admin:setting:access`
-
-- 输入：路径 `/reports`，类型 `Menu_BUTTON`，标题 `一键导出为Excel`  
-  输出权限码示例：`report:export`
+| 输入 | 输出 |
+|---|---|
+| 路径 `/users`，`Menu_BUTTON`，标题 `新增` | `user:create` |
+| 路径 `/admin/settings`，`Menu_MENU` | `setting:view` |
+| 路径 `/reports`，`Menu_BUTTON`，标题 `一键导出为Excel` | `report:export` |
+| `GET /v1/users` | `user:view` |
+| `DELETE /v1/users/{id}` | `user:delete` |
+| `TaskService_ListTaskTypeName` | `task:task-type-name:view` |
+| `Task_DeleteTask` | `task:task:delete` |
 
 ## 单元测试
 
-已包含或建议的测试文件：
+- `menu_test.go`：`ConvertCode` 的路径处理（含丢弃首段）、单数化与各 `Menu_Type` 分支、
+  `typeToAction` / `buttonAction` 的标题映射。
+- `api_test.go`：`ConvertCodeByPath` / `ConvertCodeByOperationID`、
+  `stripVersionPrefix` / `removePathParams` / `singularizeSegments` / `methodToAction`。
 
-- `pkg/utils/converter/convert_code_test.go`（覆盖路径处理、单数化与类型映射）
-- `pkg/utils/converter/type_to_action_test.go`（覆盖各 `Menu_Type` 分支与 `buttonAction` 的多种标题映射）
-
-运行测试（在项目根目录）：
+运行（在 `backend/` 下）：
 
 ```bash
 go test ./pkg/utils/converter -v

@@ -22,7 +22,10 @@ func NewApiPermissionConverter() *ApiPermissionConverter {
 	return &ApiPermissionConverter{}
 }
 
-// ConvertCodeByOperationID 通过 operationID 生成 resource:action 风格的 code（如 users:delete, users:list）
+// ConvertCodeByOperationID 通过 operationID 生成 resource:action 风格的 code
+// （如 Task_DeleteTask -> task:task:delete）。
+// 生产路径目前走 ConvertCodeByPath（见 core/permission_service.go 里被注释掉的这一行），
+// 本函数的行为只由测试锁定。
 func (c *ApiPermissionConverter) ConvertCodeByOperationID(operationID string) string {
 	service, action, name, ok := c.splitOperationID(operationID)
 	if !ok {
@@ -36,6 +39,9 @@ func (c *ApiPermissionConverter) ConvertCodeByOperationID(operationID string) st
 	}
 
 	action = stringcase.KebabCase(action)
+	// 动作词表必须与 menu.go 的 typeToAction/buttonAction 一致：core 的 appendAPis 拿这里的
+	// code 与菜单生成的权限码做字符串相等来绑定，出现 :list / :get 这类菜单不会产出的动词，
+	// 该 API 就永远绑不到任何权限上（且是静默不绑）。
 	switch action {
 	case "list", "get", "retrieve", "query", "exist":
 		action = "view"
@@ -50,11 +56,16 @@ func (c *ApiPermissionConverter) ConvertCodeByOperationID(operationID string) st
 	return resource + ":" + action
 }
 
-// ConvertCodeByPath 通过 HTTP 方法和路径生成 resource:action 风格的 code（如 users:delete, users:list）
+// ConvertCodeByPath 通过 HTTP 方法和路径生成 resource:action 风格的 code（如 user:delete、user:view）
 func (c *ApiPermissionConverter) ConvertCodeByPath(method, path string) string {
 	resource := c.pathToResource(path)
+	if resource == "" {
+		// 路径退化成一个参数段（/v1/{id}）时没有资源名可用。返回空串，让调用方按已有的
+		// `if code == "" { continue }` 跳过，而不是拼出 ":view" 这种永远匹配不到权限的畸形码。
+		return ""
+	}
 	action := c.methodToAction(method, path)
-	return (resource) + ":" + action
+	return resource + ":" + action
 }
 
 // methodToAction 将 HTTP 方法转换为动作字符串
