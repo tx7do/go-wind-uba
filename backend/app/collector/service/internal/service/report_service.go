@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 	"strings"
 	"time"
 
@@ -43,9 +44,28 @@ func NewReportService(
 	}
 }
 
+// publish 把一条事件投递到它的主题。
+//
+// kafkaBroker 为 nil 意味着 data.kafka 未配置或集群不可达（见 data.NewKafkaBroker）：
+// 此时必须让上报失败并把原因回给 SDK，而不是在空接口上调用方法 panic 掉整个 collector ——
+// 采集端会重试，进程崩溃则只会留下一段看不见的空档。
+func (s *ReportService) publish(ctx context.Context, topicName string, event any) error {
+	if s.kafkaBroker == nil {
+		return errors.New("kafka broker unavailable: check data.kafka.endpoints")
+	}
+	return s.kafkaBroker.Publish(ctx, topicName, broker.NewMessage(event))
+}
+
+// HealthCheck 不能只回答"进程还活着"：kafka 不可达时每条上报都会被拒，这时监控需要一个能
+// 变红的信号，而不是继续报 OK。所以 broker 缺失时报 DEGRADED。
 func (s *ReportService) HealthCheck(_ context.Context, _ *emptypb.Empty) (*collectorV1.HealthCheckResponse, error) {
+	status := collectorV1.HealthCheckResponse_OK
+	if s.kafkaBroker == nil {
+		status = collectorV1.HealthCheckResponse_DEGRADED
+	}
+
 	return &collectorV1.HealthCheckResponse{
-		Status:    collectorV1.HealthCheckResponse_OK,
+		Status:    status,
 		Timestamp: time.Now().UnixMilli(),
 	}, nil
 }
@@ -316,7 +336,7 @@ func (s *ReportService) handleBehavior(ctx context.Context, evt *ubaV1.ReportEve
 	// 点击热力图字段透传：BehaviorEvent oneof 内已由 SDK 填充，
 	// collector 无需回退（ReportEvent 顶层未定义这些字段），直接随 Kafka 发布即可。
 
-	if err := s.kafkaBroker.Publish(ctx, topic.UbaEventRaw, broker.NewMessage(behaviorEvent)); err != nil {
+	if err := s.publish(ctx, topic.UbaEventRaw, behaviorEvent); err != nil {
 		s.log.Errorf("failed to publish behavior event to kafka: %v", err)
 		return ubaV1.ErrorInternalServerError("failed to process behavior event")
 	}
@@ -379,7 +399,7 @@ func (s *ReportService) handleRisk(ctx context.Context, evt *ubaV1.ReportEvent, 
 		riskEvent.SessionId = trans.Ptr(evt.GetSessionId())
 	}
 
-	if err := s.kafkaBroker.Publish(ctx, topic.UbaEventRisk, broker.NewMessage(riskEvent)); err != nil {
+	if err := s.publish(ctx, topic.UbaEventRisk, riskEvent); err != nil {
 		s.log.Errorf("failed to publish risk event to kafka: %v", err)
 		return ubaV1.ErrorInternalServerError("failed to process risk event")
 	}

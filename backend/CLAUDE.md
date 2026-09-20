@@ -30,10 +30,23 @@
 api/protos/   契约真相源(按业务域)
 api/gen/      生成物(禁改)
 app/<svc>/service/internal/{data,service,server}  DDD 三层
+cmd/uba-ingest/  入仓运维 CLI(schema / Routine Load / ETL 调度 / 健康度)
 sql/{postgresql,doris,clickhouse}/  DDL + 初始数据
-pkg/          跨服务基础库
-Makefile      api/ent/wire/build/lint/test
+pkg/          跨服务基础库(入仓的纯逻辑在 pkg/dorisinit)
+Makefile      api/ent/wire/build/lint/test/ingest
 ```
+
+## 数据入仓(别写 Go 消费者)
+
+kafka → Doris 的搬运由 **Doris Routine Load** 负责(FE 管调度与位点),Go 侧只做装配、调度、
+观测,入口 `uba-ingest`:`apply`(幂等建表 + 确保任务在跑)/ `status`(健康度,可当
+healthcheck)/ `etl [--loop --at 02:00]`(每日回算)/ `render`(只渲染不连库)。
+
+- DSN、broker 只从 configs 或 `UBA_DORIS_DSN` / `UBA_KAFKA_BROKERS` 来,**不要加接收密钥的命令行参数**。
+- 退出码 `2` = 需要人工(任务处于终态,自动重建会重放整个 topic)。
+- `etl` 默认只跑 `06_etl.sql` 的 §1/§2(UNIQUE KEY 表,可重跑);§3~§5 写 AGGREGATE 表,
+  同一天算两次是**累加**,要显式 `--sections` 且保证一天只算一次。
+- `sql/doris/*.sql` 不许带 BOM、统一 LF(有守门测试 `sql/doris/assets_test.go`)。
 
 ## 动手前默认动作
 

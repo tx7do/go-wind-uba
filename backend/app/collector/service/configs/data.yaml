@@ -8,5 +8,10 @@ data:
 
   kafka:
     codec: json
+    # 容器网络里的服务名，和上面的 redis:6379 同一套；在宿主机上直接跑 collector 时
+    # 改成 127.0.0.1:9092（compose 暴露的宿主端口）。
     endpoints:
-      - "127.0.0.1:9092"
+      - "kafka:9092"
+    # 启动时创建 uba_events_raw / uba_risk_events（32 分区 / 副本 1）。
+    # Doris 的 Routine Load 不会替我们建 topic，所以这一步必须在采集侧发生。
+    allow_auto_topic_creation: true

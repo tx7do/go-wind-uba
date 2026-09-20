@@ -330,3 +330,63 @@ services:
       args:
         SERVICE_NAME: core
         APP_VERSION: 1.0.0
+
+  # ─────────────── 数据入仓运维（uba-ingest）───────────────
+  # 事件的搬运本身由 Doris 的 Routine Load 负责，这两个容器只做装好它、盯住它那一段。
+  # 都复用 core-service 的镜像与 /app/configs（里面有 data.doris.dsn）。
+
+  # 一次性任务：建 gw_uba 的库表，并确保两个 Routine Load 消费任务在跑。
+  # 幂等，所以每次 compose up 都可以重跑。
+  ingest:
+    image: go-wind-uba/core-service:1.0.0
+    pull_policy: never
+    restart: "no"
+    networks:
+      - app-tier
+    depends_on:
+      - kafka
+      - doris-fe
+      - doris-be
+    environment:
+      - TZ=Asia/Shanghai
+      # core 的 configs 里没有 kafka 段，这里补上。写的是 Doris BE 视角下的地址，
+      # 所以是容器网络里的服务名，而不是宿主机上看的 127.0.0.1:9092。
+      - UBA_KAFKA_BROKERS=kafka:9092
+    # Doris 第一次拉起要几分钟，--wait 让它自己等完，不必人工重跑
+    entrypoint: [ "/app/bin/uba-ingest", "-c", "/app/configs", "apply", "--wait", "5m" ]
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      args:
+        SERVICE_NAME: core
+        APP_VERSION: 1.0.0
+
+  # 常驻调度：每天 02:00 回算前一天（等价于宿主 cron，但不依赖 cron 与额外镜像）。
+  # 失败自动重试 6 次，之后等下一个槽位——陈旧一天不该压过今晚这一天。
+  ingest-etl:
+    image: go-wind-uba/core-service:1.0.0
+    pull_policy: never
+    restart: always
+    networks:
+      - app-tier
+    depends_on:
+      ingest:
+        condition: service_completed_successfully
+      doris-be:
+        condition: service_started
+    environment:
+      - TZ=Asia/Shanghai
+    entrypoint: [ "/app/bin/uba-ingest", "-c", "/app/configs", "etl", "--loop", "--at", "02:00" ]
+    # 健康检查直接问 status：任一被脚本声明的 Routine Load 任务没在消费，容器就 unhealthy
+    healthcheck:
+      test: [ "CMD", "/app/bin/uba-ingest", "-c", "/app/configs", "status" ]
+      interval: 2m
+      timeout: 30s
+      retries: 3
+      start_period: 3m
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      args:
+        SERVICE_NAME: core
+        APP_VERSION: 1.0.0

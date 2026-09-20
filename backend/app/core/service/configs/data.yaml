@@ -44,12 +44,14 @@ data:
     connection_open_strategy: "round_robin" # 连接打开策略：in_order、round_robin、random
 
   doris:
-    dsn: "root:@tcp(localhost:9030)/gw_uba?charset=utf8mb4&parseTime=True&loc=Local"
+    # 与上面的 postgres/redis 一样走 compose 的容器网络（FE 的 MySQL 协议端口 9030、
+    # BE 的 HTTP 端口 8040）。在宿主机上直接跑 core 时改回 localhost。
+    dsn: "root:@tcp(doris-fe:9030)/gw_uba?charset=utf8mb4&parseTime=True&loc=Local"
     max_idle_connections: 25
     max_open_connections: 25
     connection_max_lifetime: 300s
     stream_load:
-      endpoint: "http://localhost:8040/api/gw_uba/_stream_load"
+      endpoint: "http://doris-be:8040/api/gw_uba/_stream_load"
       username: "root"
       password: "*Abcd123456"
       method: "POST"

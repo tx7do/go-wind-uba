@@ -3,9 +3,21 @@
 -- 数据库：gw_uba
 -- 用途：从 events_fact / risk_events 聚合填充派生表与聚合表。
 --       Kafka 仅灌入两张原始事实表，其余派生表需本脚本产出数据。
--- 执行顺序：6（在 02_kafka_tables 之后、05_views 之前或之后均可）
--- 执行方式：定时调度（如每日凌晨），或配合 Doris Job 自动执行。
--- 调度参数：${RUN_DATE} 待回算日期，形如 '2026-06-28'；不传则取昨天。
+-- 执行顺序：6（在 02_kafka_tables 之后）
+--
+-- 执行方式：`uba-ingest etl --date 2026-06-28`（一次性回算），
+--          或 `uba-ingest etl --loop --at 02:00`（常驻调度，不需要宿主 cron；
+--          docker-compose 里的 ingest-etl 服务就是这个）。
+--          它按编号小节挑选语句、在同一连接上顺序执行。
+--          默认只跑 §1 sessions_fact 与 §2 users_dim —— 这两张是 UNIQUE KEY 表，重跑同一天
+--          是覆盖，调度重启容器也不会算重；§3~§5 写的是 AGGREGATE 表，同一天算两次会累加，
+--          且分析查询目前只读前两张表，所以 §3~§5 要显式 --sections 3,4,5 才跑。
+-- 调度参数：{{.RunDate}} 待回算日期，形如 '2026-06-28'；不传则取昨天。
+--          手工执行时先用 `uba-ingest render --script 06_etl.sql --date …`
+--          生成可直接粘贴的 SQL。
+-- 小节约定：`-- <编号>. <标题>` 注释行是小节边界，`-- 2.1` 这类子小节归属父节，
+--          因此 §2 的 SET enable_unique_key_partial_update 与它下面的 INSERT
+--          总是一起跑在同一连接上。
 -- 兼容版本：Apache Doris 2.0+ / 4.x
 -- ============================================================
 
@@ -22,10 +34,9 @@ USE gw_uba;
 
 
 -- ============================================================
--- 0. 调度日期变量（手工执行时取消注释并替换；调度系统传入 ${RUN_DATE}）
+-- 0. 调度日期：以下语句统一使用日期占位符（由 uba-ingest 注入，渲染后为带引号的日期字面量）
 -- ============================================================
--- SET @run_date = DATE_SUB(CURDATE(), INTERVAL 1 DAY);
--- 以下统一用 ${RUN_DATE} 占位；手工执行请全局替换为目标日期。
+-- 不经 uba-ingest 手工执行时，用编辑器把占位符全局替换为目标日期即可。
 
 
 -- ============================================================
@@ -64,7 +75,7 @@ SELECT
     ROUND(SUM(amount), 2)                                AS total_amount,
     SUM(IF(event_name = 'pay', 1, 0))                    AS pay_event_count
 FROM events_fact
-WHERE to_date(event_time) = ${RUN_DATE}
+WHERE to_date(event_time) = '{{.RunDate}}'
   AND session_id IS NOT NULL AND session_id != ''
 GROUP BY session_id, tenant_id, session_date;
 
@@ -104,7 +115,7 @@ JOIN (
     -- 当天活跃的 (tenant_id, user_id) 集合，作为增量触发范围
     SELECT DISTINCT tenant_id, user_id
     FROM events_fact
-    WHERE to_date(event_time) = ${RUN_DATE}
+    WHERE to_date(event_time) = '{{.RunDate}}'
       AND user_id > 0
 ) act
   ON act.tenant_id = e.tenant_id
@@ -141,7 +152,7 @@ SELECT
     ROUND(SUM(total_amount), 2)                          AS total_amount,
     QUANTILE_UNION(duration_ms)                          AS duration_quantile
 FROM sessions_fact
-WHERE session_date = ${RUN_DATE}
+WHERE session_date = '{{.RunDate}}'
 GROUP BY tenant_id, stat_date, platform;
 -- 注：QUANTILE_STATE 列写入用 QUANTILE_UNION(col)，读取用 QUANTILE_PERCENT(col, p) 还原任意分位。
 --     单列 duration_quantile 即可支持 P50/P90/P99 等任意分位查询，无需冗余多列。
@@ -162,7 +173,7 @@ SELECT
     expire_date                                          AS stat_date,
     COUNT(DISTINCT user_id)                              AS user_count
 FROM user_tags
-WHERE expire_date = ${RUN_DATE}
+WHERE expire_date = '{{.RunDate}}'
   AND is_active = 1
 GROUP BY tenant_id, tag_id, tag_value, expire_date;
 
@@ -190,18 +201,18 @@ SELECT
     SUM(IF(is_converted = 1, 1, 0))                      AS conversion_sum,
     COUNT(*)                                             AS conversion_count
 FROM path_features
-WHERE event_date = ${RUN_DATE}
+WHERE event_date = '{{.RunDate}}'
 GROUP BY tenant_id, event_date, path_hash, first_3_events;
 
 
 -- ============================================================
 -- 6. 校验：回算当日各派生表行数
 -- ============================================================
-SELECT 'sessions_fact'      AS tbl, COUNT(*) AS cnt FROM sessions_fact      WHERE session_date = ${RUN_DATE}
+SELECT 'sessions_fact'      AS tbl, COUNT(*) AS cnt FROM sessions_fact      WHERE session_date = '{{.RunDate}}'
 UNION ALL
-SELECT 'sessions_agg_daily' AS tbl, COUNT(*) AS cnt FROM sessions_agg_daily WHERE stat_date = ${RUN_DATE}
+SELECT 'sessions_agg_daily' AS tbl, COUNT(*) AS cnt FROM sessions_agg_daily WHERE stat_date = '{{.RunDate}}'
 UNION ALL
-SELECT 'users_dim(updated)' AS tbl, COUNT(*) AS cnt FROM users_dim          WHERE last_active_date = ${RUN_DATE};
+SELECT 'users_dim(updated)' AS tbl, COUNT(*) AS cnt FROM users_dim          WHERE last_active_date = '{{.RunDate}}';
 
 
 -- ============================================================

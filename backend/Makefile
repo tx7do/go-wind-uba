@@ -15,7 +15,7 @@ ROOT_DIR	:= $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
 
 SRCS_MK		:= $(foreach dir, app, $(wildcard $(dir)/*/*/Makefile))
 
-.PHONY: help wire gen ent build api openapi init all vendor dep test cover vet lint docker \
+.PHONY: help wire gen ent build build_only ingest api openapi init all vendor dep test cover vet lint docker \
 		install-dev install-prod docker-up docker-down docker-libs pm2-deploy
 
 # show environment variables
@@ -121,6 +121,10 @@ build_only:
       cd $(dir);\
       make build_only;\
     )
+
+# build the Doris ingestion ops CLI (schema / routine load / etl scheduling) -> bin/uba-ingest
+ingest:
+	@CGO_ENABLED=0 go build -o bin/uba-ingest ./cmd/uba-ingest/
 
 # export configuration to etcd
 export:

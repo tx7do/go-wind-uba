@@ -1,19 +1,25 @@
-﻿-- ============================================================
+-- ============================================================
 -- UBA 系统 - Kafka 接入层
 -- 数据库：gw_uba
 -- 用途：定义从 Kafka 主题实时加载数据到 Doris 的 Routine Load 任务
 -- 执行顺序：2
+--
+-- 执行方式：由 `uba-ingest apply` 渲染并执行（见 backend/cmd/uba-ingest），
+--          占位符 {{.KafkaBrokerList}} 取自 configs 的 data.kafka.endpoints。
+--          本地手工执行时先用 `uba-ingest render` 输出替换后的 SQL。
+--
+-- 注意：这里刻意【不】写 STOP/DROP ROUTINE LOAD。Doris 的 CREATE ROUTINE LOAD 没有
+--      IF NOT EXISTS，重复执行会报“already used”，但先 STOP+DROP 再 CREATE 会把作业
+--      已提交的 Kafka offset 一并丢弃，下次从 OFFSET_BEGINNING 全量重放。
+--      幂等由 uba-ingest 保证：作业不存在则创建，PAUSED 则 RESUME，RUNNING 则跳过，
+--      STOPPED/CANCELLED 属终态，交人工处理。
+--
+-- 另：Doris 由 BE 连接 broker，kafka_broker_list 必须是 BE 容器内可解析的地址；
+--     作业若因 partition 数与 kafka_partitions/kafka_offsets 不符而 PAUSED，
+--     需修正作业定义后手工 RESUME。
 -- ============================================================
 
 USE gw_uba;
-
--- 停止现有任务（如果存在）
-STOP ROUTINE LOAD FOR gw_uba.job_events_to_fact;
-STOP ROUTINE LOAD FOR gw_uba.job_risk_events_to_fact;
-
--- 删除现有任务（如果需要重新创建）
-DROP ROUTINE LOAD IF EXISTS gw_uba.job_events_to_fact;
-DROP ROUTINE LOAD IF EXISTS gw_uba.job_risk_events_to_fact;
 
 
 -- ============================================================
@@ -52,7 +58,7 @@ PROPERTIES
 )
 FROM KAFKA
 (
-    "kafka_broker_list" = "kafka:9092",
+    "kafka_broker_list" = "{{.KafkaBrokerList}}",
     "kafka_topic" = "uba_events_raw",
     "property.group.id" = "uba_ingest_doris",
     "property.kafka_default_offsets" = "OFFSET_BEGINNING"
@@ -92,7 +98,7 @@ PROPERTIES
 )
 FROM KAFKA
 (
-    "kafka_broker_list" = "kafka:9092",
+    "kafka_broker_list" = "{{.KafkaBrokerList}}",
     "kafka_topic" = "uba_risk_events",
     "property.group.id" = "uba_risk_detector",
     "property.kafka_default_offsets" = "OFFSET_BEGINNING"
