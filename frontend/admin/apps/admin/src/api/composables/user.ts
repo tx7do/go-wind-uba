@@ -89,8 +89,15 @@ export function useCreateUser(
   >,
 ) {
   return useMutation({
-    mutationFn: ({ data, password }) =>
-      apiClient.userService.Create({ data, password }),
+    // 表单是一整份 values 摊进 data 的，password 并不是 User 的字段：
+    // 留在 data 里会被后端 protojson 当未知字段静默丢掉，必须提到请求顶层。
+    mutationFn: ({ data, password }) => {
+      const { password: nested, ...rest } = (data ?? {}) as Record<string, any>;
+      return apiClient.userService.Create({
+        data: rest as identityservicev1_User,
+        password: password || nested || undefined,
+      });
+    },
     ...options,
   });
 }
@@ -118,12 +125,22 @@ export function useUpdateUser(
   >,
 ) {
   return useMutation({
-    mutationFn: ({ id, values }: { id: number; values: Record<string, any> }) =>
-      apiClient.userService.Update({
+    mutationFn: ({
+      id,
+      values,
+    }: {
+      id: number;
+      values: Record<string, any>;
+    }) => {
+      // 同 useCreateUser：password 要提到请求顶层，并且不能进 update_mask（User 无此字段）。
+      const { password, ...rest } = values ?? {};
+      return apiClient.userService.Update({
         id,
-        data: { ...values } as any,
-        updateMask: makeUpdateMask(Object.keys(values ?? {})),
-      }),
+        data: rest as any,
+        password: password || undefined,
+        updateMask: makeUpdateMask(Object.keys(rest)),
+      });
+    },
     ...options,
   });
 }
