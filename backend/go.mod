@@ -249,3 +249,7 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	sigs.k8s.io/yaml v1.6.0 // indirect
 )
+
+// x/net v0.54.0 把 http2.Server 的 TrailerPrefix 关在 `//go:build !(go1.27 && !http2legacy)` 后面，
+// grpc 的 handler_server.go 直接引它，Go 1.27 工具链下整个后端 build 不起。v0.55.0 已把该符号移出开关文件。
+exclude golang.org/x/net v0.54.0
