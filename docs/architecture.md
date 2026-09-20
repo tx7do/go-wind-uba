@@ -79,7 +79,7 @@ graph TB
 | 职责 | 事件入库、分析建模、风险检测、标签管理、用户画像、数据同步 |
 | 数据源 | PostgreSQL（业务实体，走 ent ORM）+ OLAP 引擎（分析数据） |
 | 对外协议 | gRPC（供 admin/collector 调用） |
-| 特点 | 承载所有"重"业务逻辑；通过 `data.UseClickHouse` 在 ClickHouse / Doris 间二选一 |
+| 特点 | 承载所有"重"业务逻辑；`data.UseClickHouse` 在 ClickHouse / Doris 间二选一，但它是**编译期常量 `false`**（详见「OLAP 双引擎设计」） |
 
 ### 3. Admin Service（管理后台 BFF）
 
@@ -167,11 +167,35 @@ Admin 前端
 | **Kafka** | 事件流缓冲（collector → Doris 的解耦管道；消费端是 Doris Routine Load，不是 Go 服务） | kratos broker 生产 / Doris FE 拉取 |
 | **MinIO** | 对象存储（文件上传） | S3 兼容 |
 
-### OLAP 双引擎设计
+### OLAP 双引擎设计（现状：只有 Doris 是活的）
 
-- ClickHouse 与 Doris **二选一**，运行时通过 `data.UseClickHouse` 切换。
-- **同一份业务模型**，字段、分区、索引、主键定义在两种引擎间保持一致（schema 在 `internal/data/{clickhouse,doris}/schema/` 镜像定义）。
-- repo 层按引擎分支：`if data.UseClickHouse { ckRepo } else { dorisRepo }`。
+- 代码按引擎双写：`internal/data/{doris,clickhouse}/` 各一份 repo + `schema/` 镜像定义，
+  service 层 `if data.UseClickHouse { ckRepo } else { dorisRepo }` 分支路由。
+- **但 `data.UseClickHouse` 是编译期常量而非配置项** —— `internal/data/data.go:35` 写死
+  `const UseClickHouse bool = false`。因此 ClickHouse 分支被编译掉、`configs/data.yaml` 里的
+  `data.clickhouse` 段并不能启用它；换引擎要改这行常量重新构建。下面这些 ClickHouse 缺陷也都是**潜伏**的，
+  当前部署不会触发。
+- ClickHouse 侧已核实的缺陷（若要真启用 ClickHouse，先修这些）：
+  1. **无事件去重**：`sql/clickhouse/1_base_tables.sql:104` 是普通 `MergeTree`，而 Doris 侧是
+     `UNIQUE KEY(event_id, tenant_id, event_time)`（`sql/doris/1_base_tables.sql:82`）。
+     Routine Load / Kafka 引擎表都是 at-least-once，重放会重复计入所有 PV/UV/GMV。
+  2. **查询从不加 `FINAL`**：`sessions_fact`/`risk_events`/`users_dim` 用 `ReplacingMergeTree`，
+     但 Go 层没有任何一处写 `FINAL`，合并前的多版本会被一起统计。
+  3. **`users_dim` 只有批次内局部值**：`sql/clickhouse/05_views.sql:85-95` 的 `mv_users_dim`
+     把 `register_time`/`register_channel`/`user_level`/`vip_level` 直接写成 `1970`/`''`/`0`，
+     `first_active_date` 也只取单个插入块的 `min(event_date)`；Doris 侧由 `06_etl.sql` 全历史回算。
+     ⇒ 鲸鱼分层 / LTV / 流失 / 生命周期 / 新老客对比在 ClickHouse 上结果不成立。
+  4. **对已合并列再次 merge**：`clickhouse/analytics_repo.go:1432`（Revenue）与 `:1589`（Anomaly）
+     对 `events_agg_daily_view.uv` 用 `uniqCombinedMerge()`，而该视图在
+     `sql/clickhouse/03_aggregate_tables.sql:514` 已经 `uniqCombinedMerge(uv) AS uv` 归约成 UInt64
+     ⇒ 参数类型非法；Revenue 把错误吞掉（`:1441-1443` 置 `activeRows = nil`）导致 ARPU/付费率静默为 0，
+     Anomaly 直接返回 500。
+  5. **风险事件仓储的枚举转换器是 nil**：`clickhouse/risk_events_repo.go:25` 声明后构造函数里从未赋值
+     （`:28-40`），却在 `init()` 的 `:53` 解引用；Doris 侧正常赋值（`doris/risk_events_repo.go:39`）。
+  6. **没有装配路径**：`sql/clickhouse/assets.go` 嵌入的 5 个脚本在 Go 侧零引用，既没有 `06_etl.sql`
+     等价物，broker 地址也硬编码在 `sql/clickhouse/02_kafka_tables.sql:16,34`（Doris 侧是 `{{.KafkaBrokerList}}`）。
+- **Doris 侧这条环是闭合的**：分析模型只读 `events_fact` / `users_dim` / `sessions_fact`，
+  三者分别由 Routine Load 与 `06_etl.sql` §1/§2 灌数，且 `uba-ingest apply` 会装配到位点可观测。
 
 ---
 

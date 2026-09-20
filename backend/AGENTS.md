@@ -13,7 +13,7 @@
 | 依赖注入 | [Google Wire](https://github.com/google/wire)(生成式,编译期) |
 | 业务库 | PostgreSQL(`lib/pq`、`jackc/pgx`) |
 | 分析库(OLAP) | Apache Doris(`tx7do/go-crud/doris`) |
-| 分析库(可选) | ClickHouse(`tx7do/go-crud/clickhouse`) |
+| 分析库(编译期停用) | ClickHouse(`tx7do/go-crud/clickhouse`) —— `data.UseClickHouse` 是 `internal/data/data.go:35` 的常量 `false`,代码在但不会被执行;要启用须改常量重编,缺陷清单见 `docs/architecture.md`「OLAP 双引擎设计」 |
 | 缓存/队列 | Redis(`redis/go-redis/v9`)、[Asynq](https://github.com/hibiken/asynq) 任务队列 |
 | 对象存储 | MinIO(`minio/minio-go`) |
 | 鉴权 | JWT(`golang-jwt/jwt/v5`、`tx7do/kratos-authn`)、Casbin/OPA(`tx7do/kratos-authz`) |

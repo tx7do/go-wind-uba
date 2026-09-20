@@ -488,7 +488,7 @@ make docker-up
 
 ## OLAP 引擎选型与 Schema 设计
 
-- **ClickHouse 与 Apache Doris 为二选一关系**，部署时按需选择其一作为分析引擎即可，运行时通过 `data.UseClickHouse` 配置项切换
+- **ClickHouse 与 Apache Doris 为二选一关系**，但开关 `data.UseClickHouse` 目前是 `internal/data/data.go` 里的**编译期常量 `false`**：ClickHouse 分支被编译掉，实际只有 Doris 在跑。换引擎需改该常量并重新构建，且 ClickHouse 侧仍有已知缺陷（详见 `docs/architecture.md` 的「双引擎」一节）
 - 两种引擎共用同一份业务模型，字段、分区、索引、主键定义保持一致
 - 支持 struct 定义自动生成、注解（json、ch）自动处理
 - 支持批量数据写入，严格模式下自动补齐 NOT NULL 字段

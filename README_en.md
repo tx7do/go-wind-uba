@@ -491,7 +491,7 @@ make docker-up
 
 ## OLAP Engine Selection & Schema Design
 
-- **ClickHouse and Apache Doris are mutually exclusive** — choose either one as the analytical engine during deployment; switch at runtime via the `data.UseClickHouse` flag
+- **ClickHouse and Apache Doris are mutually exclusive**, but the `data.UseClickHouse` switch is currently a **compile-time constant `false`** in `internal/data/data.go`: the ClickHouse branch is compiled out and only Doris actually runs. Switching engines means editing that constant and rebuilding — and the ClickHouse side still has known defects (see the "dual engine" section of `docs/architecture.md`)
 - Both engines share the same business model with consistent fields, partitions, indexes, and primary keys
 - Automatic struct generation with annotation processing (json, ch tags)
 - Batch data ingestion with auto-fill for NOT NULL fields in strict mode

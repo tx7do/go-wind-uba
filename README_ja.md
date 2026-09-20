@@ -489,7 +489,7 @@ make docker-up
 
 ## OLAPエンジン選択とスキーマ設計
 
-- **ClickHouseとApache Dorisは相互排他**——デプロイ時にいずれか一方を分析エンジンとして選択、実行時に `data.UseClickHouse` フラグで切り替え可能
+- **ClickHouseとApache Dorisは相互排他**ですが、`data.UseClickHouse` は現状 `internal/data/data.go` の**コンパイル時定数 `false`** です：ClickHouse 分岐はコンパイルから外れ、実際に動くのは Doris のみ。エンジン切替にはこの定数を変更して再ビルドが必要で、ClickHouse 側には既知の欠陥が残っています（`docs/architecture.md` の「デュアルエンジン」節を参照）
 - 両エンジンは同じビジネスモデルを共有し、フィールド・パーティション・インデックス・主キー定義を一致して維持
 - struct定義の自動生成、アノテーション（json、ch）の自動処理
 - バッチデータ書き込み、strictモードでのNOT NULLフィールドの自動補完
