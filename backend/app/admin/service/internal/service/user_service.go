@@ -186,18 +186,8 @@ func (s *UserService) Update(ctx context.Context, req *identityV1.UpdateUserRequ
 
 	req.Data.Id = trans.Ptr(req.GetId())
 
-	if req.GetPassword() != "" {
-		if _, err = s.userCredentialServiceClient.ResetCredential(ctx, &authenticationV1.ResetCredentialRequest{
-			IdentityType:  authenticationV1.UserCredential_USERNAME,
-			Identifier:    req.Data.GetUsername(),
-			NewCredential: req.GetPassword(),
-			NeedDecrypt:   false,
-		}); err != nil {
-			s.log.Errorf("reset user password err: %v", err)
-			return nil, err
-		}
-	}
-
+	// 密码不在此处重置：core 的 UserService.Update 已按顶层 req.password 调
+	// userCredentialRepo.ResetCredential，这里再走一次是重复写同一份凭据。
 	var roleIds []uint32
 	if len(req.Data.GetRoleIds()) > 0 {
 		roleIds = req.Data.GetRoleIds()
