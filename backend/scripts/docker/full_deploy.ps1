@@ -29,6 +29,7 @@ Compose 文件路径 (默认: docker-compose.yml)
 .NOTES
 启动的服务（完整）：
   - 主应用服务（根据 docker-compose.yml 定义）
+  - ingest / ingest-etl（入仓装配与每日回算调度，见 backend/AGENTS.md 第 6 节）
   - PostgreSQL 数据库
   - Redis 缓存
   - MinIO 对象存储

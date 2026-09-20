@@ -125,6 +125,11 @@ FE 负责调度、并发、重试与位点,Go 侧只做"装配 → 调度 → �
 纯逻辑(语句切分、分类、决策)在 `pkg/dorisinit`,`sql/doris` 用 `go:embed` 编进二进制,
 所以 slim 运行镜像里没有 `sql/` 目录也能跑。
 
+**只覆盖 Doris。** ClickHouse 侧的入仓是另一套机制(`sql/clickhouse/02_kafka_tables.sql` 的 Kafka
+表引擎 + 物化视图),同样自动,但 `uba-ingest` 不管它:broker 地址硬编码在脚本里,要改环境就得改文件,
+也没有每日回算(等价于 `06_etl.sql` 的那部分)。所以"选 ClickHouse"不等于"没有入仓",
+而是"入仓要手工装配"。
+
 **DSN 与 broker 只从 configs 或环境变量来,绝不上命令行**(命令行值会进 `ps` 与 shell 历史),
 打印时 DSN 一律脱敏:
 
@@ -155,5 +160,5 @@ compose 已接好:`ingest`(一次性 `apply`)与 `ingest-etl`(`etl --loop`,healt
 
 - `wire_gen.go` 编译报错 → 多半是 ProviderSet 缺 Provider 或有循环依赖,先看 `wire.go`。
 - proto 改了但前端没拿到 → 确认 `make api` 也生成了 TypeScript 输出(`protoc-gen-typescript-http`),前端在 `frontend/admin/apps/admin/src/generated/api/` 消费。
-- Doris 查询超时/报错 → 先看 `sql/doris/` 里对应聚合表/视图是否已建,以及 Kafka 物化表是否在
-  消费 —— 后者一句 `uba-ingest status` 就有状态、位点延迟和错误计数,不用手写 SHOW。
+- Doris 查询超时/报错 → 先看 `sql/doris/` 里对应聚合表/视图是否已建,以及两个 Routine Load 任务
+  是否在跑 —— 后者一句 `uba-ingest status` 就有状态、位点延迟和错误计数,不用手写 SHOW。

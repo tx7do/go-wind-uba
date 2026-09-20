@@ -134,16 +134,25 @@
 graph TB
     SDK["クライアント層<br/>Web SDK · アプリSDK · ミニプログラムSDK"]
     Collector["Collector Service<br/>イベントデータ受信 · 検証 · 転送"]
-    Core["Core Service<br/>イベント保存 · 分析モデリング · リスク検出 · タグ管理 · データ同期"]
+    Kafka["Kafka<br/>uba_events_raw · uba_risk_events"]
+    Core["Core Service<br/>分析モデリング · リスク検出 · タグ管理 · イベント読み書き"]
     Admin["Admin Service<br/>管理画面BFF · 権限管理 · レポート · 設定"]
     Frontend["管理画面フロントエンド<br/>Vue 3 + Ant Design Vue + Vben Admin"]
+    Ingest["uba-ingest<br/>テーブル作成 · Routine Load 構成 · 日次ETL · ヘルスチェック"]
+    OLAP[(OLAPエンジン<br/>ClickHouse または Apache Doris いずれかを選択)]
 
     SDK -->|"イベント報告"| Collector
-    Collector -->|"Kafka"| Core
-    Core --- OLAP[(OLAPエンジン<br/>ClickHouse または Apache Doris いずれかを選択)]
+    Collector -->|"produce"| Kafka
+    Kafka -->|"自動取り込み"| OLAP
+    Ingest -.->|"構成 / スケジューリング / 監視（Dorisのみ）"| OLAP
+    Core -->|"分析クエリ"| OLAP
     Core -->|"gRPC"| Admin
     Admin -->|"HTTP / gRPC"| Frontend
 ```
+
+> イベントの転送はGo経由ではありません：`Collector` はKafkaに書き込むだけであり、OLAPエンジン側が
+> 能動的に取り込む —— Dorisは **Routine Load**、ClickHouseは **Kafkaテーブルエンジン + マテリアライズドビュー**。
+> `uba-ingest` はDoris側の配線の構築と監視を担当する（下記「入倉配線を確立」参照）。
 
 ---
 
@@ -243,10 +252,13 @@ go-wind-uba/
 │   │   ├── admin/service/              # Adminサービス（管理画面BFF）
 │   │   ├── collector/service/          # Collectorサービス（イベント収集BFF）
 │   │   └── core/service/               # Coreサービス（ビジネスロジック）
+│   ├── cmd/                            # 運用コマンドラインツール
+│   │   └── uba-ingest/                 # 入倉配線CLI（テーブル作成 · Routine Load · 日次ETL · ヘルスチェック）
 │   ├── pkg/                            # 共有パッケージ
 │   │   ├── authorizer/                 # 認可エンジン
 │   │   ├── constants/                  # 定数
 │   │   ├── crypto/                     # 暗号化ユーティリティ（AES-GCM）
+│   │   ├── dorisinit/                  # Doris入倉配線の純粋ロジック（スクリプト分割 · レンダリング · 判定）
 │   │   ├── jwt/                        # JWTユーティリティ
 │   │   ├── metadata/                   # メタデータ管理
 │   │   ├── middleware/                 # ミドルウェア（認可/ログ/ent/メタデータ）
@@ -257,7 +269,7 @@ go-wind-uba/
 │   │   └── utils/                      # 汎用ユーティリティ
 │   ├── sql/                            # データベーススクリプト
 │   │   ├── clickhouse/                 # ClickHouseスキーマ
-│   │   ├── doris/                      # Dorisスキーマ
+│   │   ├── doris/                      # Dorisスキーマ（Goテンプレート、uba-ingestがレンダリング）
 │   │   └── postgresql/                 # PostgreSQLスキーマ
 │   ├── scripts/                        # デプロイスクリプト
 │   │   ├── deploy/                     # PM2デプロイスクリプト
@@ -370,20 +382,52 @@ go run ./app/collector/service/cmd/server/ -c ./app/collector/service/configs
 
 ### 3. データベースの初期化
 
-`sql/` ディレクトリのスキーマスクリプトを実行：
+PostgreSQL のテーブル構造は Core の初回起動時に ent が自動マイグレーションする（`app/core/service/configs/data.yaml` の
+`data.database.migrate: true`）。したがって辞書のシードデータは上のステップ 2 で Core を起動した**あと**に流し込む；OLAP 側はエンジンを選択：
 
 ```bash
-# PostgreSQL（業務データベース）
-psql -h localhost -U postgres -d gwubd -f sql/postgresql/schema.sql
+cd backend
 
-# ClickHouse（分析エンジン、Dorisといずれかを選択）
-clickhouse-client --queries-file sql/clickhouse/schema.sql
+# PostgreSQL（業務データベース）：辞書・初期データのみ（テーブルは自動マイグレーション）
+psql -h localhost -U postgres -d gwubd -f sql/postgresql/default-data.sql
 
-# Doris（分析エンジン、ClickHouseといずれかを選択）
-mysql -h localhost -P 9030 -u root < sql/doris/schema.sql
+# 任意：デモデータ
+psql -h localhost -U postgres -d gwubd -f sql/postgresql/demo-data.sql
+
+# ClickHouse（分析エンジン、Doris といずれかを選択）：純粋な SQL、ファイル名順に実行
+clickhouse-client --queries-file sql/clickhouse/1_base_tables.sql sql/clickhouse/02_kafka_tables.sql sql/clickhouse/03_aggregate_tables.sql sql/clickhouse/04_indexes.sql sql/clickhouse/05_views.sql
+
+# Doris（分析エンジン、ClickHouse といずれかを選択）：スクリプトに {{...}} プレースホルダが含まれ、そのまま流し込めない → 次のステップの uba-ingest apply を参照
 ```
 
-### 4. フロントエンドの起動
+### 4. 入倉配線を確立（Doris Routine Load）
+
+SDKから報告されたイベントはCollectorがKafkaに書き込み、**KafkaからDorisへの搬送はDoris自身の
+Routine Load が担当**します。Go側でコンシューマを書かないのは意図的な設計です：スケジューリング、
+並行度、再試行、オフセットはFEが管理します。構成と監視は `uba-ingest` に統一されています。
+
+```bash
+cd backend
+
+# 入倉運用CLIをビルド
+make ingest
+
+# gw_uba のテーブルを作成し、宣言済みのRoutine Loadジョブを確実に稼働させる（冪等；--wait はDoris準備待ち）
+./bin/uba-ingest -c app/core/service/configs apply --wait 5m
+
+# 監視：ジョブ状態 / オフセット遅延 / エラーカウント；宣言済みなのに未消費 → 終了コード 1
+./bin/uba-ingest -c app/core/service/configs status --json
+
+# 日次集計の再計算（cronの代替；コンテナ構成では ingest-etl が常駐代行）
+./bin/uba-ingest -c app/core/service/configs etl --loop --at 02:00
+```
+
+DSN とブローカーは `configs` または環境変数（`UBA_DORIS_DSN` / `UBA_KAFKA_BROKERS`）からのみ読み込み、
+コマンドラインには渡しません。上記の構成と日次集計は Docker Compose 構成では既に配線済みです：
+`ingest`（一回限りの `apply`）と `ingest-etl`（常駐スケジューラ、healthcheck は `status`）。
+詳細と変更時の規約は `backend/AGENTS.md` 第6節を参照してください。
+
+### 5. フロントエンドの起動
 
 ```bash
 cd frontend/admin
@@ -414,6 +458,9 @@ make gen
 
 # 全サービスのビルド
 make build
+
+# 入倉運用CLIをビルド
+make ingest
 
 # テストの実行
 make test

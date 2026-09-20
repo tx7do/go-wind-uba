@@ -1,5 +1,11 @@
 # Kafka Topic 设计文档
 
+> **本文为设计草案,与代码不一致,勿作为实现依据。**
+> 命名的权威来源是 `kafka.go` 里的常量(实际用 `uba_events_raw` 这类下划线命名,而非本文的 `uba.events.raw`)。
+> 目前只有 `uba_events_raw` 与 `uba_risk_events` 被 collector 真正写入;
+> 二者的消费方是 **Doris Routine Load**(组名 `uba_ingest_doris`),不是下面的 Go 消费者进程。
+> 下表其余 topic 与消费组尚未实现。
+
 ## Topic 列表设计
 
 ### 1. 核心业务 Topic

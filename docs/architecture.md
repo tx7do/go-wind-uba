@@ -24,7 +24,8 @@ graph TB
     end
 
     subgraph 计算与存储
-        Core["Core Service<br/>gRPC 服务发现<br/>分析建模·风险检测·入库"]
+        Core["Core Service<br/>gRPC 服务发现<br/>分析建模·风险检测·标签画像"]
+        Ingest["uba-ingest<br/>建表·Routine Load 装配·每日ETL·健康度"]
         PG[("PostgreSQL<br/>业务/配置数据")]
         OLAP[("OLAP 引擎<br/>ClickHouse 或 Doris")]
     end
@@ -42,9 +43,10 @@ graph TB
     WebSDK -->|"POST /uba/v1/report"| Collector
     CSSDK -->|"POST /uba/v1/report"| Collector
     Collector -->|"Publish"| Kafka
-    Kafka -.->|"消费入库"| Core
+    Kafka -->|"引擎侧自动拉取入库"| OLAP
     Core --> PG
     Core --> OLAP
+    Ingest -.->|"装配·调度（仅 Doris）"| OLAP
     Frontend -->|"HTTP/SSE"| Admin
     Admin -->|"gRPC"| Core
     Core -.->|"注册/发现"| Etcd
@@ -107,19 +109,41 @@ SDK 上报
               └─ uba_risk_events  （风险事件）
 ```
 
-### ⚠️ Kafka 消费端现状（重要）
+### 入仓链路：Kafka → Doris 由 Routine Load 负责（设计选择）
 
-> **诚实披露**：截至当前版本，`uba_events_raw` / `uba_risk_events` 的 **Kafka 消费入库逻辑尚未在 core 服务内实现**。
->
-> - Collector 已正确 `Publish` 到 Kafka；
-> - Core 提供了 `BehaviorEventService.BatchCreate` 等入库入口（能力具备）；
-> - 但 **连接两者的消费者（subscriber）在 core 代码中缺失**。
->
-> **这意味着上报数据目前会停留在 Kafka，不会自动落库**。生产化时需二选一补齐：
-> 1. **在 core 内实现 broker subscriber**（订阅 `uba_events_raw` → 调 `BatchCreate` 入 OLAP），参考 kratos broker 用法；或
-> 2. **引入独立消费者**（如 Flink job / 独立 worker 服务）消费 Kafka 落库。
->
-> 在补齐前，可临时让 collector 改为直接 gRPC 调 core 的 `BatchCreate`（同步写入）做联调。
+> 本节此前写的是"Kafka 消费入库逻辑尚未实现，上报数据会停在 Kafka"。
+> **core 里没有 Kafka 消费者这句仍然成立，而且是有意的**；不成立的是"没有落库路径"——
+> 搬运由 Doris 自己的 **Routine Load** 完成，Go 侧只负责装配、调度与观测。
+
+```
+Kafka topic                       Doris 侧（FE 负责调度 / 并发 / 重试 / 位点）
+  uba_events_raw    ──Routine Load job_events_to_fact────>  events_fact
+  uba_risk_events   ──Routine Load job_risk_events_to_fact─>  risk_events
+                                    （json 直插事实表，无中间 Kafka 引擎表）
+```
+
+任务的声明在 `backend/sql/doris/02_kafka_tables.sql`（`{{.KafkaBrokerList}}` 由 `uba-ingest` 渲染），
+Go 侧的三个动作都在 `backend/cmd/uba-ingest`：
+
+| 子命令 | 职责 |
+|--------|------|
+| `apply` | 建库表 + 确保声明的任务在跑（幂等；`--wait` 等 Doris 就绪；默认拒绝脚本里的 STOP/DROP，因为那会丢位点） |
+| `status` | 任务状态 / 位点延迟 / 错误计数；"声明了但没在消费"→ 退出码 1，可直接当 healthcheck |
+| `etl` | 跑 `06_etl.sql` 的每日回算小节；`--loop --at 02:00` 常驻代管 cron |
+
+纯逻辑（脚本切分/分类、SHOW 结果解析、apply 决策）在 `backend/pkg/dorisinit`，
+细节与改动守则见 `backend/AGENTS.md` 第 6 节。
+
+三条口径要注意：
+
+- **ClickHouse 走的是另一套机制**：`sql/clickhouse/02_kafka_tables.sql` 用 Kafka 表引擎 +
+  物化视图把同一批 topic 灌进 `events_fact` / `risk_events`，链路同样是自动的。差别在于它
+  **不由 `uba-ingest` 装配**（broker 地址硬编码在脚本里，换环境要改文件），也没有 Doris 侧的
+  `06_etl.sql` 每日回算 —— 依赖聚合表的分析模型在 ClickHouse 上需自行回算。
+- Core 的 `BehaviorEventService.BatchCreate` 那条 gRPC 入库路径依然存在（用于补数/联调），
+  但它不是主链路；主链路是上面两个 Routine Load 任务。
+- `app/core/service/configs/data.yaml` 里的 `data.doris.stream_load` 段**没有任何业务代码读取**，
+  属遗留配置。
 
 ### 查询链路（读）
 
@@ -140,7 +164,7 @@ Admin 前端
 | **PostgreSQL** | 业务/配置实体（应用、用户、角色、权限、字典、菜单、事件 Schema 等） | ent ORM |
 | **OLAP（ClickHouse 或 Doris）** | 分析数据（events_fact / sessions_fact / risk_events 等事实表） | 原生 SQL + `go-crud` repo 封装 |
 | **Redis** | 缓存、异步任务队列（Asynq） | kratos cache + asynq |
-| **Kafka** | 事件流缓冲（collector → core 的解耦管道） | kratos broker |
+| **Kafka** | 事件流缓冲（collector → Doris 的解耦管道；消费端是 Doris Routine Load，不是 Go 服务） | kratos broker 生产 / Doris FE 拉取 |
 | **MinIO** | 对象存储（文件上传） | S3 兼容 |
 
 ### OLAP 双引擎设计

@@ -163,6 +163,9 @@ ent generate --feature privacy --feature entql --feature sql/modifier --feature 
 - **双引擎镜像**：在 `internal/data/doris/` 和 `internal/data/clickhouse/` 各实现一份，SQL 函数按方言调整（如 Doris 用 `DATE_FORMAT`，ClickHouse 用 `toStartOfHour`/`toDate`）。
 - **防 SQL 注入**：维度字段走**白名单 map**，metric 走 switch，数值用 `%d` 强转后拼接。
 - **service 层按 `data.UseClickHouse` 分支**选 repo。
+- **新增 Doris 表/回算步骤改在 `sql/doris/`**，由 `uba-ingest apply` / `etl` 装配执行，不要手敲：
+  脚本里的 `{{.KafkaBrokerList}}`、`{{.RunDate}}` 等占位符要经模板渲染，且文件须 LF、无 BOM
+  （守门测试 `sql/doris/assets_test.go`）。新增小节请保持幂等，见 `backend/AGENTS.md` 第 6 节。
 - 聚合请求/响应消息参考已有的 `RiskEventSummary`、`AnalyticsService` 设计。
 
 ---

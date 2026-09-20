@@ -134,16 +134,25 @@
 graph TB
     SDK["客户端层<br/>Web SDK · App SDK · 小程序 SDK"]
     Collector["Collector Service<br/>埋点数据接收 · 校验 · 转发"]
-    Core["Core Service<br/>事件存储 · 分析建模 · 风险检测 · 标签管理 · 数据同步"]
+    Kafka["Kafka<br/>uba_events_raw · uba_risk_events"]
+    Core["Core Service<br/>分析建模 · 风险检测 · 标签管理 · 事件读写"]
     Admin["Admin Service<br/>管理后台 BFF · 权限管理 · 报表 · 配置"]
     Frontend["管理后台前端<br/>Vue 3 + Ant Design Vue + Vben Admin"]
+    Ingest["uba-ingest<br/>建表 · Routine Load 装配 · 每日 ETL · 健康度"]
+    OLAP[(OLAP 引擎<br/>ClickHouse 或 Apache Doris 二选一)]
 
     SDK -->|"事件上报"| Collector
-    Collector -->|"Kafka"| Core
-    Core --- OLAP[(OLAP 引擎<br/>ClickHouse 或 Apache Doris 二选一)]
+    Collector -->|"produce"| Kafka
+    Kafka -->|"自动拉取入仓"| OLAP
+    Ingest -.->|"装配 / 调度 / 观测（仅 Doris）"| OLAP
+    Core -->|"分析查询"| OLAP
     Core -->|"gRPC"| Admin
     Admin -->|"HTTP / gRPC"| Frontend
 ```
+
+> 事件的搬运不经过 Go：`Collector` 只负责写入 Kafka，入仓由 OLAP 引擎自己拉取 —— Doris 用
+> **Routine Load**，ClickHouse 用 **Kafka 表引擎 + 物化视图**。`uba-ingest` 负责把 Doris 这条
+> 管道装好并盯着它（见下方「打通数据入仓」）。
 
 ---
 
@@ -243,10 +252,13 @@ go-wind-uba/
 │   │   ├── admin/service/              # Admin 服务（管理后台 BFF）
 │   │   ├── collector/service/          # Collector 服务（埋点采集 BFF）
 │   │   └── core/service/               # Core 服务（核心业务逻辑）
+│   ├── cmd/                            # 运维命令行工具
+│   │   └── uba-ingest/                 # 入仓装配 CLI（建表 · Routine Load · 每日 ETL · 健康度）
 │   ├── pkg/                            # 公共包
 │   │   ├── authorizer/                 # 鉴权引擎
 │   │   ├── constants/                  # 常量定义
 │   │   ├── crypto/                     # 加密工具（AES-GCM）
+│   │   ├── dorisinit/                  # Doris 入仓装配的纯逻辑（脚本切分 · 渲染 · 决策）
 │   │   ├── jwt/                        # JWT 工具
 │   │   ├── metadata/                   # 元数据管理
 │   │   ├── middleware/                 # 中间件（鉴权/日志/Ent/元数据）
@@ -257,7 +269,7 @@ go-wind-uba/
 │   │   └── utils/                      # 通用工具
 │   ├── sql/                            # 数据库脚本
 │   │   ├── clickhouse/                 # ClickHouse 建表脚本
-│   │   ├── doris/                      # Doris 建表脚本
+│   │   ├── doris/                      # Doris 建表脚本（Go 模板，由 uba-ingest 渲染执行）
 │   │   └── postgresql/                 # PostgreSQL 建表脚本
 │   ├── scripts/                        # 部署脚本
 │   │   ├── deploy/                     # PM2 部署脚本
@@ -370,20 +382,51 @@ go run ./app/collector/service/cmd/server/ -c ./app/collector/service/configs
 
 ### 3. 初始化数据库
 
-执行 `sql/` 目录下的建表脚本：
+PostgreSQL 的表结构由 ent 在 Core 首次启动时自动迁移（`app/core/service/configs/data.yaml` 里
+`data.database.migrate: true`），因此字典种子数据要在上面第 2 步跑过 Core 之后再灌；OLAP 侧按引擎选择：
 
 ```bash
-# PostgreSQL（业务库）
-psql -h localhost -U postgres -d gwubd -f sql/postgresql/schema.sql
+cd backend
 
-# ClickHouse（分析引擎，与 Doris 二选一）
-clickhouse-client --queries-file sql/clickhouse/schema.sql
+# PostgreSQL（业务库）：只需导入字典/初始数据（表结构已自动迁移）
+psql -h localhost -U postgres -d gwubd -f sql/postgresql/default-data.sql
 
-# Doris（分析引擎，与 ClickHouse 二选一）
-mysql -h localhost -P 9030 -u root < sql/doris/schema.sql
+# 可选：演示数据
+psql -h localhost -U postgres -d gwubd -f sql/postgresql/demo-data.sql
+
+# ClickHouse（分析引擎，与 Doris 二选一）：纯 SQL，按文件名顺序执行
+clickhouse-client --queries-file sql/clickhouse/1_base_tables.sql sql/clickhouse/02_kafka_tables.sql sql/clickhouse/03_aggregate_tables.sql sql/clickhouse/04_indexes.sql sql/clickhouse/05_views.sql
+
+# Doris（分析引擎，与 ClickHouse 二选一）：脚本含 {{...}} 占位符，不能直接执行，见下一步 uba-ingest apply
 ```
 
-### 4. 启动前端
+### 4. 打通数据入仓（Doris Routine Load）
+
+SDK 上报的事件先由 Collector 写入 Kafka，**从 Kafka 搬进 Doris 由 Doris 自己的 Routine Load 完成**
+—— 不在 Go 侧写消费者是有意的设计：调度、并发、重试与消费位点交给 FE。
+装配与观测统一走 `uba-ingest`：
+
+```bash
+cd backend
+
+# 构建入仓运维 CLI
+make ingest
+
+# 建 gw_uba 库表，并确保声明的 Routine Load 任务在跑（幂等；--wait 等 Doris 就绪）
+./bin/uba-ingest -c app/core/service/configs apply --wait 5m
+
+# 观测：任务状态 / 位点延迟 / 错误计数；脚本声明了但没在消费 → 退出码 1
+./bin/uba-ingest -c app/core/service/configs status --json
+
+# 每日聚合回算（等价 cron；容器部署时由 ingest-etl 常驻代管）
+./bin/uba-ingest -c app/core/service/configs etl --loop --at 02:00
+```
+
+DSN 与 broker 只从 `configs` 或环境变量（`UBA_DORIS_DSN` / `UBA_KAFKA_BROKERS`）读取，不走命令行。
+上面的装配与每日回算在 Docker Compose 部署下已接好：`ingest`（一次性 `apply`）与 `ingest-etl`（常驻调度，
+healthcheck 就是 `status`）。细节与改动守则见 `backend/AGENTS.md` 第 6 节。
+
+### 5. 启动前端
 
 ```bash
 cd frontend/admin
@@ -414,6 +457,9 @@ make gen
 
 # 构建所有服务
 make build
+
+# 构建入仓运维 CLI
+make ingest
 
 # 运行测试
 make test

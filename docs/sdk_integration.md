@@ -290,7 +290,7 @@ go run ./app/collector/service/cmd/server/ -c ./app/collector/service/configs
 | 上报返回 401 | appId/appSecret 错误，或应用状态非 `ON`；检查管理后台「应用管理」 |
 | 事件未入库但无报错 | 检查响应体 `failedCount`，可能字段校验部分失败；开启 SDK `debug` 查看日志 |
 | Unity WebGL 上报失败 | 确认使用 `UnityWebRequestTransport` 而非默认 HttpClient |
-| 数据查不到 | 确认 collector → Kafka → core 链路通畅；`tenantId` 由服务端补全，勿手动上报 |
+| 数据查不到 | 确认 collector → Kafka → Doris（Routine Load）入仓链路在跑：`uba-ingest status`；`tenantId` 由服务端补全，勿手动上报 |
 | 页面跳转丢失事件 | 确认 `enableBeacon: true`（默认开启），卸载时用 sendBeacon 兜底 |
 
 ---

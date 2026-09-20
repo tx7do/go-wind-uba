@@ -35,7 +35,7 @@ backend/
 
 ## 环境要求
 
-- Go 1.20+
+- Go 1.25+（`go.mod` 要求 1.25.7；低版本工具链下 `GOTOOLCHAIN=auto` 会自动拉取）
 - ClickHouse 25.0+ 或 Apache Doris 4.0+
 - PostgreSQL 12+
 - Redis 7+
@@ -46,7 +46,13 @@ backend/
 ## 部署流程
 
 1. 安装依赖组件（数据库、消息队列、对象存储等）
-2. 执行 `sql/clickhouse/` 和 `sql/doris/` 下的建表脚本
+2. 建表：
+   - **Doris**：用 `uba-ingest` 装配，不要手敲 SQL —— `sql/doris/*.sql` 里含 `{{.KafkaBrokerList}}`
+     等模板占位符，直接用 `mysql <` 执行会失败。`make ingest` 后跑
+     `./bin/uba-ingest -c app/core/service/configs apply --wait 5m`（详见 `AGENTS.md` 第 6 节）。
+   - **ClickHouse**：脚本是纯 SQL，按文件名顺序直接执行 `sql/clickhouse/` 下的文件即可；
+     入仓由 Kafka 表引擎 + 物化视图承担（`02_kafka_tables.sql`，broker 地址硬编码在脚本里，
+     换环境要改文件），`uba-ingest` 不覆盖它，也没有每日回算脚本。
 3. 配置环境变量和配置文件（参考 `app/core/service/configs/`）
 4. 编译并启动各服务（可用 Makefile 或脚本自动化）
 5. 通过 Admin Service 管理租户、标签、规则等

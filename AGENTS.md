@@ -38,29 +38,34 @@ go-wind-uba/
 ## 4. 数据流(理解全局的关键)
 
 ```
-用户终端
-  │  (浏览器/小程序/App …)
+用户终端 (浏览器/小程序/App …)
+  │ SDK 上报(Web TS / C# / …)
   ▼
-各语言 SDK(Web TS / C# / …)  ── 采集行为 ──┐
-                                            ▼
-                              backend/app/collector  (采集服务)
-                                            │
-                        ┌───────────────────┴───────────────────┐
-                        ▼                                       ▼
-                PostgreSQL(业务元数据)                   Apache Doris(事件/聚合)
-                        │                                       │
-                        └───────────────┬───────────────────────┘
-                                        ▼
-                              backend/app/core(分析服务,28+ 模型)
-                                        │ SSE / REST
-                                        ▼
-                              frontend/admin(管理后台可视化)
+backend/app/collector        鉴权·校验·补全,只转发不落库
+  │ Publish
+  ▼
+Kafka                        uba_events_raw / uba_risk_events
+  │ 引擎侧自动拉取入库 —— 不在 Go 侧写消费者是设计选择
+  ▼
+OLAP(二选一)                 Doris: Routine Load / ClickHouse: Kafka 表引擎 + 物化视图
+  ▲
+backend/cmd/uba-ingest       装配·调度·观测(仅 Doris)
+
+PostgreSQL                   业务/配置元数据,core 启动时由 ent 自动迁移
+  │
+  └─► backend/app/core       读 PG + OLAP,跑 28+ 分析模型
+        ▲ gRPC
+      backend/app/admin      管理后台 BFF:权限·菜单·转发
+        ▲ HTTP / SSE
+      frontend/admin         管理后台可视化
 ```
 
-- **采集**:`collector` 服务接收 SDK 上报。
-- **存储分流**:业务配置/元数据进 PG;行为事件进 Doris(OLAP,可选 ClickHouse)。
-- **分析**:`core` 服务跑各类分析模型查询 Doris。
-- **呈现**:`admin` 前端通过 REST + SSE 实时展示。
+- **采集**:`collector` 服务接收 SDK 上报,鉴权/校验/补全后只发 Kafka。
+- **入仓**:Kafka → OLAP 由**引擎自己拉**(Doris Routine Load / ClickHouse Kafka 表引擎),
+  不写 Go 消费者是设计选择;装配与观测走 `backend/cmd/uba-ingest`,详见 `backend/AGENTS.md` 第 6 节。
+- **存储分流**:业务配置/元数据进 PG;行为事件与分析聚合进 OLAP(二选一)。
+- **分析**:`core` 服务跑各类分析模型查询 OLAP。
+- **呈现**:`admin` 服务转 `core` 的 gRPC,前端通过 REST + SSE 实时展示。
 
 ## 5. 全仓库铁律
 

@@ -134,16 +134,25 @@ The platform provides 25 analysis models across three categories: general behavi
 graph TB
     SDK["Client Layer<br/>Web SDK · App SDK · Mini Program SDK"]
     Collector["Collector Service<br/>Event Data Reception · Validation · Forwarding"]
-    Core["Core Service<br/>Event Storage · Analysis · Risk Detection · Tags · Sync"]
+    Kafka["Kafka<br/>uba_events_raw · uba_risk_events"]
+    Core["Core Service<br/>Analysis · Risk Detection · Tags · Event Read/Write"]
     Admin["Admin Service<br/>Admin BFF · Permissions · Reports · Configuration"]
     Frontend["Admin Frontend<br/>Vue 3 + Ant Design Vue + Vben Admin"]
+    Ingest["uba-ingest<br/>Schema · Routine Load Provisioning · Daily ETL · Health"]
+    OLAP[(OLAP Engine<br/>ClickHouse or Apache Doris — choose one)]
 
     SDK -->|"Event Reporting"| Collector
-    Collector -->|"Kafka"| Core
-    Core --- OLAP[(OLAP Engine<br/>ClickHouse or Apache Doris — choose one)]
+    Collector -->|"produce"| Kafka
+    Kafka -->|"pulled in automatically"| OLAP
+    Ingest -.->|"provision / schedule / observe (Doris only)"| OLAP
+    Core -->|"analysis queries"| OLAP
     Core -->|"gRPC"| Admin
     Admin -->|"HTTP / gRPC"| Frontend
 ```
+
+> Events are not moved by Go code: `Collector` only writes to Kafka, and the OLAP engine pulls them
+> in — Doris via **Routine Load**, ClickHouse via **Kafka engine tables + materialized views**.
+> `uba-ingest` sets up and watches the Doris pipeline (see "Wire up ingestion" below).
 
 ---
 
@@ -243,10 +252,13 @@ go-wind-uba/
 │   │   ├── admin/service/              # Admin service (Management BFF)
 │   │   ├── collector/service/          # Collector service (Event collection BFF)
 │   │   └── core/service/               # Core service (Business logic)
+│   ├── cmd/                            # Ops command-line tools
+│   │   └── uba-ingest/                 # Ingestion provisioning CLI (schema · Routine Load · daily ETL · health)
 │   ├── pkg/                            # Shared packages
 │   │   ├── authorizer/                 # Authorization engine
 │   │   ├── constants/                  # Constants
 │   │   ├── crypto/                     # Encryption utilities (AES-GCM)
+│   │   ├── dorisinit/                  # Pure logic behind Doris ingestion provisioning (script split · render · decisions)
 │   │   ├── jwt/                        # JWT utilities
 │   │   ├── metadata/                   # Metadata management
 │   │   ├── middleware/                 # Middleware (auth/logging/ent/metadata)
@@ -257,7 +269,7 @@ go-wind-uba/
 │   │   └── utils/                      # General utilities
 │   ├── sql/                            # Database scripts
 │   │   ├── clickhouse/                 # ClickHouse schema
-│   │   ├── doris/                      # Doris schema
+│   │   ├── doris/                      # Doris schema (Go templates, rendered by uba-ingest)
 │   │   └── postgresql/                 # PostgreSQL schema
 │   ├── scripts/                        # Deployment scripts
 │   │   ├── deploy/                     # PM2 deployment scripts
@@ -370,20 +382,54 @@ go run ./app/collector/service/cmd/server/ -c ./app/collector/service/configs
 
 ### 3. Initialize Databases
 
-Execute the schema scripts in the `sql/` directory:
+PostgreSQL tables are migrated automatically by ent the first time Core starts (`data.database.migrate: true`
+in `app/core/service/configs/data.yaml`), so load the dictionary seed **after** step 2 above; on the OLAP
+side, pick your engine:
 
 ```bash
-# PostgreSQL (business database)
-psql -h localhost -U postgres -d gwubd -f sql/postgresql/schema.sql
+cd backend
 
-# ClickHouse (analytical engine, choose one with Doris)
-clickhouse-client --queries-file sql/clickhouse/schema.sql
+# PostgreSQL (business database): only the dictionary/seed data (schema is auto-migrated)
+psql -h localhost -U postgres -d gwubd -f sql/postgresql/default-data.sql
 
-# Doris (analytical engine, choose one with ClickHouse)
-mysql -h localhost -P 9030 -u root < sql/doris/schema.sql
+# Optional: demo data
+psql -h localhost -U postgres -d gwubd -f sql/postgresql/demo-data.sql
+
+# ClickHouse (analytical engine, choose one with Doris): plain SQL, run in filename order
+clickhouse-client --queries-file sql/clickhouse/1_base_tables.sql sql/clickhouse/02_kafka_tables.sql sql/clickhouse/03_aggregate_tables.sql sql/clickhouse/04_indexes.sql sql/clickhouse/05_views.sql
+
+# Doris (analytical engine, choose one with ClickHouse): the scripts contain {{...}} placeholders and cannot be piped in — see uba-ingest apply in the next step
 ```
 
-### 4. Start Frontend
+### 4. Wire up Ingestion (Doris Routine Load)
+
+Events reported by SDKs are written to Kafka by Collector, and **the move from Kafka into Doris is
+done by Doris' own Routine Load** — not writing a Go consumer is a deliberate design choice:
+scheduling, concurrency, retries and offsets belong to the FE. Provisioning and observability go
+through `uba-ingest`:
+
+```bash
+cd backend
+
+# Build the ingestion ops CLI
+make ingest
+
+# Create the gw_uba schema and ensure the declared Routine Load jobs run (idempotent; --wait blocks until Doris is ready)
+./bin/uba-ingest -c app/core/service/configs apply --wait 5m
+
+# Observe: job state / offset lag / error counters; declared but not consuming -> exit code 1
+./bin/uba-ingest -c app/core/service/configs status --json
+
+# Daily roll-ups (a cron equivalent; under Docker the long-running ingest-etl container owns this)
+./bin/uba-ingest -c app/core/service/configs etl --loop --at 02:00
+```
+
+The DSN and brokers are read only from `configs` or the environment (`UBA_DORIS_DSN` /
+`UBA_KAFKA_BROKERS`), never from the command line. The provisioning and the daily roll-up above are
+already wired under Docker Compose: `ingest` (one-shot `apply`) and `ingest-etl` (a long-running scheduler whose healthcheck is
+`status`). See section 6 of `backend/AGENTS.md` for details and the rules for changing this pipeline.
+
+### 5. Start Frontend
 
 ```bash
 cd frontend/admin
@@ -414,6 +460,9 @@ make gen
 
 # Build all services
 make build
+
+# Build the ingestion ops CLI
+make ingest
 
 # Run tests
 make test

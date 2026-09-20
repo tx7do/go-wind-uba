@@ -6,7 +6,7 @@
 
 ## 这是什么
 
-**GoWind UBA** —— 企业级用户行为分析平台。SDK 采集 → collector 入库 → core 分析(Doris)→ admin 前端可视化。
+**GoWind UBA** —— 企业级用户行为分析平台。SDK 采集 → collector 转 Kafka → OLAP 引擎自拉入仓 → core 分析(Doris/ClickHouse)→ admin 前端可视化。
 
 ## 仓库结构
 
@@ -32,11 +32,14 @@ docs/         架构/开发/SDK 文档
 ## 数据流(必须理解)
 
 ```
-SDK → collector(采集) → {PostgreSQL 业务元数据 | Doris 事件聚合}
-                          → core(28+ 分析模型) → admin(SSE/REST 可视化)
+SDK → collector(采集,只发不写库) → Kafka(uba_events_raw / uba_risk_events)
+      → OLAP 引擎侧自动拉取入库(Doris Routine Load / CK Kafka 表引擎+MV)
+      → core(28+ 分析模型,读 PG + OLAP) → admin(SSE/REST 可视化)
+                          PostgreSQL 存业务元数据(core 启动时 ent 自动迁移)
 ```
 
-- PG 存业务元数据(事务),Doris 存行为/做分析(OLAP),别混用。
+- PG 存业务元数据(事务),Doris/ClickHouse 存行为与分析聚合(OLAP),别混用。
+- **入仓不写 Go 消费者**:搬运由 OLAP 引擎自己拉;装配/调度/观测走 `backend/cmd/uba-ingest`(仅 Doris)。
 
 ## 找对文件
 
