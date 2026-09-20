@@ -38,8 +38,7 @@ type PermissionService struct {
 
 	roleRepo *data.RoleRepo
 
-	menuPermissionConverter *converter.MenuPermissionConverter
-	apiPermissionConverter  *converter.ApiPermissionConverter
+	apiPermissionConverter *converter.ApiPermissionConverter
 }
 
 func NewPermissionService(
@@ -51,14 +50,13 @@ func NewPermissionService(
 	roleRepo *data.RoleRepo,
 ) *PermissionService {
 	svc := &PermissionService{
-		log:                     ctx.NewLoggerHelper("permission/service/core-service"),
-		permissionRepo:          permissionRepo,
-		permissionGroupRepo:     permissionGroupRepo,
-		menuRepo:                menuRepo,
-		apiRepo:                 apiRepo,
-		roleRepo:                roleRepo,
-		menuPermissionConverter: converter.NewMenuPermissionConverter(),
-		apiPermissionConverter:  converter.NewApiPermissionConverter(),
+		log:                    ctx.NewLoggerHelper("permission/service/core-service"),
+		permissionRepo:         permissionRepo,
+		permissionGroupRepo:    permissionGroupRepo,
+		menuRepo:               menuRepo,
+		apiRepo:                apiRepo,
+		roleRepo:               roleRepo,
+		apiPermissionConverter: converter.NewApiPermissionConverter(),
 	}
 
 	svc.init()
