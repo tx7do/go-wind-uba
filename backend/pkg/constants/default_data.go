@@ -440,7 +440,7 @@ var DefaultMenus = []*resourceV1.Menu{
 		Type:      resourceV1.Menu_MENU.Enum(),
 		Name:      trans.Ptr("UserManagement"),
 		Path:      trans.Ptr("users"),
-		Component: trans.Ptr("app/opm/position/index.vue"),
+		Component: trans.Ptr("app/opm/user/index.vue"),
 		CreatedAt: timeutil.TimeToTimestamppb(trans.Ptr(time.Now())),
 		Meta: &resourceV1.MenuMeta{
 			Order:     trans.Ptr(int32(3)),
