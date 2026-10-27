@@ -130,6 +130,9 @@ Commands:
              --dry-run                     print the statements, run none
              --loop                        stay up and run at --at every day instead of once now
              --at HH:MM                    with --loop: the local time to run at  (default "02:00")
+             --every 1h                    with --loop: recompute the current day at this interval
+                                           instead of once a day at --at — intraday freshness for
+                                           daytime queries; only the replace sections may run
   render     print a script after template rendering, connecting to nothing
              --script <name>               which script (default: every init script)
              --date / --kafka-brokers      template parameters
@@ -143,6 +146,9 @@ Commands:
              --dry-run                     print the statements, run none
              --loop                        stay up and run at --at every day instead of once now
              --at HH:MM                    with --loop: the local time to run at  (default "02:00")
+             --every 1h                    with --loop: recompute the current day at this interval
+                                           instead of once a day at --at — intraday freshness for
+                                           daytime queries; only the replace sections may run
 
 Exit codes:
   0   the work is done and, for status, every declared job is consuming

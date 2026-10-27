@@ -214,8 +214,10 @@ Admin 前端
   或 `CREATE 新表 + INSERT SELECT FINAL`）；重跑 `ch-apply` 时 05_views.sql 的 DROP 会自动移除
   `mv_sessions_fact`/`mv_users_dim`，派生数据由 `ch-etl` 回算补齐。
 - **按设计保留的口径差异**：
-  - 宽表新鲜度：Doris 与 CH 都靠按天回算（Doris `etl --loop` / CH `ch-etl --loop`），
-    白天查不到当天的会话/用户宽表；
+  - 宽表新鲜度：Doris 与 CH 都靠按天回算（Doris `etl --loop` / CH `ch-etl --loop`）。
+    需要白天可见当天数据时，两引擎都有日内刷新模式：`--loop --every 1h` 每小时重算
+    "今天"的 replace 语义小节（compose 里的 `ingest-etl-intraday` 服务就是 Doris 侧的
+    这条）；不开启时白天查不到当天的会话/用户宽表；
   - Revenue：CH 聚合主路径（pay_agg_daily_view 存在时）只统计付费事件，Doris 统计全部
     `amount>0` 事件；CH 的聚合缺失回退路径与 Doris 同口径；
   - `path_features` 仍由 MV 按插入块生成（近似），未纳入回算。
@@ -228,7 +230,7 @@ Admin 前端
   - **三个写入引擎**：TagEngine / IDMappingEngine / ImportService 原先硬编码 Doris repo，现均定义
     共用签名接口并按引擎路由；CH 侧补齐 `ListUserDevicePairs` / `SelectUsersByPredicate`。
   - **派生机制差异（按设计保留）**：Doris 的 sessions_fact/users_dim 由每晚 `06_etl.sql` 批建
-    （白天查不到当天），CH 由 05_views.sql 的 MV 实时构建；聚合表 Doris 仅 3 张且 05_views 默认不装，
+    （开启 `--every` 日内刷新后白天可见当天），CH 由 05_views.sql 的 MV 实时构建；聚合表 Doris 仅 3 张且 05_views 默认不装，
     CH 11 张 + MV/视图全量装配——同一天的宽表新鲜度两边可能不同。
 - **Doris 侧这条环是闭合的**：分析模型只读 `events_fact` / `users_dim` / `sessions_fact`，
   三者分别由 Routine Load 与 `06_etl.sql` §1/§2 灌数，且 `uba-ingest apply` 会装配到位点可观测。

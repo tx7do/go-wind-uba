@@ -447,6 +447,9 @@ make ingest
 # Daily roll-ups (a cron equivalent; under Docker the long-running ingest-etl container owns this)
 ./bin/uba-ingest -c app/core/service/configs etl --loop --at 02:00
 
+# Intraday freshness so daytime queries see the current day (hourly idempotent recompute of today; replace-semantics sections only, ch-etl supports --every too)
+./bin/uba-ingest -c app/core/service/configs etl --loop --every 1h
+
 # ClickHouse equivalent: ch-apply provisions the schema; ch-etl recomputes the sessions/users
 # wide tables daily and converges deduplication
 ./bin/uba-ingest -c app/core/service/configs ch-apply --wait 5m
@@ -455,8 +458,9 @@ make ingest
 
 The DSN and brokers are read only from `configs` or the environment (`UBA_DORIS_DSN` /
 `UBA_KAFKA_BROKERS`), never from the command line. The provisioning and the daily roll-up above are
-already wired under Docker Compose: `ingest` (one-shot `apply`) and `ingest-etl` (a long-running scheduler whose healthcheck is
-`status`). See section 6 of `backend/AGENTS.md` for details and the rules for changing this pipeline.
+already wired under Docker Compose: `ingest` (one-shot `apply`), `ingest-etl` (a long-running scheduler whose healthcheck is
+`status`) and `ingest-etl-intraday` (intraday freshness, recomputing the current day hourly).
+See section 6 of `backend/AGENTS.md` for details and the rules for changing this pipeline.
 
 ### 5. Start Frontend
 

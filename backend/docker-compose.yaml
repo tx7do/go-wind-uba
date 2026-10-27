@@ -398,3 +398,33 @@ services:
       args:
         SERVICE_NAME: core
         APP_VERSION: 1.0.0
+
+  # 日内新鲜度：每小时重算"今天"的 §1/§2（UNIQUE KEY 表，幂等覆盖），白天查分析
+  # 不再看不到当天数据；02:00 的 ingest-etl 仍负责昨天的最终定格，两者互补。
+  # 只跑 replace 语义小节是硬约束（AGGREGATE 表日内重跑会累加），命令行侧已校验。
+  ingest-etl-intraday:
+    image: go-wind-uba/core-service:1.0.0
+    pull_policy: never
+    restart: always
+    networks:
+      - app-tier
+    depends_on:
+      ingest:
+        condition: service_completed_successfully
+      doris-be:
+        condition: service_started
+    environment:
+      - TZ=Asia/Shanghai
+    entrypoint: [ "/app/bin/uba-ingest", "-c", "/app/configs", "etl", "--loop", "--every", "1h" ]
+    healthcheck:
+      test: [ "CMD", "/app/bin/uba-ingest", "-c", "/app/configs", "status" ]
+      interval: 2m
+      timeout: 30s
+      retries: 3
+      start_period: 3m
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      args:
+        SERVICE_NAME: core
+        APP_VERSION: 1.0.0

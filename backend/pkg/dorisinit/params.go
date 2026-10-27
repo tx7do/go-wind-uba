@@ -37,6 +37,14 @@ func DefaultRunDate(now time.Time) string {
 	return now.AddDate(0, 0, -1).Format(RunDateFormat)
 }
 
+// CurrentRunDate is the day still being written to, in the server's own timezone. It is the
+// run date of the intraday refresh loop (--every): the replace-semantics roll-ups (the UNIQUE
+// KEY tables) overwrite by primary key, so recomputing the partial day is how daytime queries
+// get to see it.
+func CurrentRunDate(now time.Time) string {
+	return now.Format(RunDateFormat)
+}
+
 // BrokerList renders kafka endpoint addresses in the comma-separated form Doris'
 // "kafka_broker_list" property expects.
 func BrokerList(endpoints []string) (string, error) {

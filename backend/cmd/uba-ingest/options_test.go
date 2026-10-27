@@ -5,6 +5,7 @@ import (
 	"slices"
 	"strings"
 	"testing"
+	"time"
 
 	"go-wind-uba/pkg/dorisinit"
 	"go-wind-uba/sql/doris"
@@ -162,6 +163,62 @@ func TestValidateRejectsUnusableFlags(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			err := tt.opts.validate()
+			if err == nil || !strings.Contains(err.Error(), tt.errSub) {
+				t.Fatalf("err=%v, want one containing %q", err, tt.errSub)
+			}
+		})
+	}
+}
+
+// --every is the intraday mode: recomputing a day that is still filling up is only safe for
+// the replace-semantics sections, and it replaces (not combines with) the daily --at schedule.
+func TestValidateLoopCadence(t *testing.T) {
+	tests := []struct {
+		name   string
+		opts   *options
+		wantOK bool
+		errSub string
+	}{
+		{
+			name:   "etl intraday loop with the default sections",
+			opts:   &options{command: "etl", loop: true, every: time.Hour, backfill: 1},
+			wantOK: true,
+		},
+		{
+			name:   "ch-etl intraday loop",
+			opts:   &options{command: "ch-etl", loop: true, every: 30 * time.Minute, backfill: 1},
+			wantOK: true,
+		},
+		{
+			name:   "every without loop is a one-shot misuse",
+			opts:   &options{command: "etl", every: time.Hour},
+			errSub: "--loop",
+		},
+		{
+			name:   "every and at are alternative schedules",
+			opts:   &options{command: "etl", loop: true, every: time.Hour, at: "03:00"},
+			errSub: "alternative",
+		},
+		{
+			name:   "an additive section cannot run intraday",
+			opts:   &options{command: "etl", loop: true, every: time.Hour, sections: stringList{"1", "3"}},
+			errSub: "section 3",
+		},
+		{
+			name:   "an interval under a minute cannot be a cadence",
+			opts:   &options{command: "etl", loop: true, every: time.Second},
+			errSub: "too short",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := tt.opts.validate()
+			if tt.wantOK {
+				if err != nil {
+					t.Fatalf("err=%v, want ok", err)
+				}
+				return
+			}
 			if err == nil || !strings.Contains(err.Error(), tt.errSub) {
 				t.Fatalf("err=%v, want one containing %q", err, tt.errSub)
 			}

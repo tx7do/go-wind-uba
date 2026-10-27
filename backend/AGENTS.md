@@ -159,6 +159,9 @@ compose 已接好:`ingest`(一次性 `apply`)与 `ingest-etl`(`etl --loop`,healt
    `--allow-routine-load-mutations`。
 4. `06_etl.sql` 的 §3~§5 写 AGGREGATE 表,同一天的第二次 INSERT 是**累加**不是覆盖;所以
    `etl` 默认只跑幂等的 §1/§2,要跑聚合小节就得保证一天只算一次。
+   日内新鲜度用 `etl/ch-etl --loop --every 1h`:每小时重算"今天"的 §1/§2(幂等覆盖,白天
+   查询可见当天数据);`--every` 会拒绝 AGGREGATE 小节与 `--at` 组合(命令行侧校验)。
+   compose 的 `ingest-etl-intraday` 服务就是 Doris 侧这条循环。
 
 ## 7. 调试提示
 

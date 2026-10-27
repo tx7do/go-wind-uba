@@ -447,6 +447,10 @@ make ingest
 # 日次集計の再計算（cronの代替；コンテナ構成では ingest-etl が常駐代行）
 ./bin/uba-ingest -c app/core/service/configs etl --loop --at 02:00
 
+# 日中も当日データが見えるように：日中リフレッシュ（毎時間「今日」を冪等再計算；replace 系
+# セクションのみ、ch-etl も --every に対応）
+./bin/uba-ingest -c app/core/service/configs etl --loop --every 1h
+
 # ClickHouse 選択時の同等操作：ch-apply でスキーマ構成、ch-etl で sessions/users 幅表の日次
 # 再計算と重複排除の収束
 ./bin/uba-ingest -c app/core/service/configs ch-apply --wait 5m
@@ -455,7 +459,8 @@ make ingest
 
 DSN とブローカーは `configs` または環境変数（`UBA_DORIS_DSN` / `UBA_KAFKA_BROKERS`）からのみ読み込み、
 コマンドラインには渡しません。上記の構成と日次集計は Docker Compose 構成では既に配線済みです：
-`ingest`（一回限りの `apply`）と `ingest-etl`（常駐スケジューラ、healthcheck は `status`）。
+`ingest`（一回限りの `apply`）、`ingest-etl`（常駐スケジューラ、healthcheck は `status`）、
+`ingest-etl-intraday`（日中リフレッシュ、当日を毎時間再計算）。
 詳細と変更時の規約は `backend/AGENTS.md` 第6節を参照してください。
 
 ### 5. フロントエンドの起動

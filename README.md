@@ -447,14 +447,18 @@ make ingest
 # 每日聚合回算（等价 cron；容器部署时由 ingest-etl 常驻代管）
 ./bin/uba-ingest -c app/core/service/configs etl --loop --at 02:00
 
+# 白天也能查到当天数据：日内刷新（每小时幂等重算"今天"；仅 replace 语义小节，ch-etl 同样支持 --every）
+./bin/uba-ingest -c app/core/service/configs etl --loop --every 1h
+
 # 选 ClickHouse 时的等价操作：ch-apply 装配 schema；ch-etl 每日回算 sessions/users 宽表并收敛去重
 ./bin/uba-ingest -c app/core/service/configs ch-apply --wait 5m
 ./bin/uba-ingest -c app/core/service/configs ch-etl --loop --at 02:00
 ```
 
 DSN 与 broker 只从 `configs` 或环境变量（`UBA_DORIS_DSN` / `UBA_KAFKA_BROKERS`）读取，不走命令行。
-上面的装配与每日回算在 Docker Compose 部署下已接好：`ingest`（一次性 `apply`）与 `ingest-etl`（常驻调度，
-healthcheck 就是 `status`）。细节与改动守则见 `backend/AGENTS.md` 第 6 节。
+上面的装配与每日回算在 Docker Compose 部署下已接好：`ingest`（一次性 `apply`）、`ingest-etl`（常驻调度，
+healthcheck 就是 `status`）与 `ingest-etl-intraday`（日内新鲜度，每小时重算当天）。
+细节与改动守则见 `backend/AGENTS.md` 第 6 节。
 
 ### 5. 启动前端
 

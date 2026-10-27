@@ -408,6 +408,9 @@ const (
 // connects per attempt rather than holding a pool idle for 24 hours, so a Doris restart during
 // the day is not something the loop has to notice.
 func (o *options) runETLLoop(ctx context.Context, st *settings, sections []string) error {
+	if o.every > 0 {
+		return o.runETLIntradayLoop(ctx, st, sections)
+	}
 	at, err := parseAtTime(o.at)
 	if err != nil {
 		return &exitError{exitUsage, err}
@@ -450,6 +453,36 @@ func (o *options) attemptETLDay(ctx context.Context, st *settings, sections []st
 	}
 	defer close()
 	return o.runETLDay(ctx, src, st, sections, date)
+}
+
+// runETLIntradayLoop keeps the current day fresh: every --every it recomputes today with the
+// replace-semantics sections, so daytime queries see the day as it fills instead of waiting
+// for the nightly run. A failed round needs no retry machinery of its own — the next tick is
+// itself a retry, and every tick overwrites the same primary keys.
+func (o *options) runETLIntradayLoop(ctx context.Context, st *settings, sections []string) error {
+	note("etl intraday loop on %s — every %s for the current day, first run now", st.describe(), o.every)
+	timer := time.NewTimer(0)
+	defer timer.Stop()
+	for {
+		select {
+		case <-ctx.Done():
+			note("etl loop stopped")
+			return nil
+		case <-timer.C:
+		}
+		date := dorisinit.CurrentRunDate(time.Now())
+		runErr := o.attemptETLDay(ctx, st, sections, date)
+		if ctx.Err() != nil {
+			note("etl loop stopped during run_date %s", date)
+			return nil
+		}
+		if runErr != nil {
+			note("etl run_date %s failed: %v (retrying next tick)", date, runErr)
+		} else {
+			note("etl run_date %s done", date)
+		}
+		timer.Reset(o.every)
+	}
 }
 
 // sleepUntil waits for the instant, reporting false if the context ended first. The timer is
@@ -722,6 +755,9 @@ func (o *options) runCHEtlDay(ctx context.Context, conn clickhouseinit.Conn, st 
 // `etl --loop` sidecar, each tick computes the day that just ended. Connects per attempt so
 // a ClickHouse restart during the day is not something the loop has to notice.
 func (o *options) runCHEtlLoop(ctx context.Context, st *settings) error {
+	if o.every > 0 {
+		return o.runCHEtlIntradayLoop(ctx, st)
+	}
 	at, err := parseAtTime(o.at)
 	if err != nil {
 		return &exitError{exitUsage, err}
@@ -761,6 +797,34 @@ func (o *options) attemptCHEtlDay(ctx context.Context, st *settings, date string
 	}
 	defer close()
 	return o.runCHEtlDay(ctx, conn, st, date)
+}
+
+// runCHEtlIntradayLoop is the ClickHouse counterpart of runETLIntradayLoop: every --every it
+// recomputes the current day so daytime queries see it as it fills.
+func (o *options) runCHEtlIntradayLoop(ctx context.Context, st *settings) error {
+	note("ch-etl intraday loop on %s — every %s for the current day, first run now", st.clickhouseEndpoint(), o.every)
+	timer := time.NewTimer(0)
+	defer timer.Stop()
+	for {
+		select {
+		case <-ctx.Done():
+			note("ch-etl loop stopped")
+			return nil
+		case <-timer.C:
+		}
+		date := dorisinit.CurrentRunDate(time.Now())
+		runErr := o.attemptCHEtlDay(ctx, st, date)
+		if ctx.Err() != nil {
+			note("ch-etl loop stopped during run_date %s", date)
+			return nil
+		}
+		if runErr != nil {
+			note("ch-etl run_date %s failed: %v (retrying next tick)", date, runErr)
+		} else {
+			note("ch-etl run_date %s done", date)
+		}
+		timer.Reset(o.every)
+	}
 }
 
 // ingestRetryDelay is how long `--wait` sleeps between two attempts to reach Doris.

@@ -12,6 +12,9 @@
 --          默认只跑 §1 sessions_fact 与 §2 users_dim —— 这两张是 UNIQUE KEY 表，重跑同一天
 --          是覆盖，调度重启容器也不会算重；§3~§5 写的是 AGGREGATE 表，同一天算两次会累加，
 --          且分析查询目前只读前两张表，所以 §3~§5 要显式 --sections 3,4,5 才跑。
+--          日内新鲜度：`--loop --every 1h` 每小时重算"今天"的 §1/§2（replace 语义小节，
+--          幂等安全），白天查询即可见当天数据；AGGREGATE 小节禁止日内跑（会累加），
+--          命令行 --every 已做校验。
 -- 调度参数：{{.RunDate}} 待回算日期，形如 '2026-06-28'；不传则取昨天。
 --          手工执行时先用 `uba-ingest render --script 06_etl.sql --date …`
 --          生成可直接粘贴的 SQL。

@@ -84,6 +84,7 @@ type options struct {
 	backfill int
 	loop     bool
 	at       string
+	every    time.Duration // with --loop: intraday recompute cadence for the current day
 
 	// render
 	kafkaBrokers string
@@ -110,6 +111,7 @@ func (o *options) bind(fs *flag.FlagSet) {
 		fs.BoolVar(&o.dryRun, "dry-run", false, "print the statements without running them")
 		fs.BoolVar(&o.loop, "loop", false, "stay up and run once a day at --at instead of once now")
 		fs.StringVar(&o.at, "at", defaultETLAtTime, "with --loop: the local HH:MM to run at")
+		fs.DurationVar(&o.every, "every", 0, "with --loop: recompute the current day at this interval, e.g. 1h, so daytime queries see it (intraday freshness; only the replace sections may run)")
 
 	case "render":
 		fs.Var(&o.scripts, "script", "script to render (repeatable; default: every init script)")
@@ -127,6 +129,7 @@ func (o *options) bind(fs *flag.FlagSet) {
 		fs.BoolVar(&o.dryRun, "dry-run", false, "print the statements without running them")
 		fs.BoolVar(&o.loop, "loop", false, "stay up and run at --at every day instead of once now")
 		fs.StringVar(&o.at, "at", defaultETLAtTime, "with --loop: the local HH:MM to run at")
+		fs.DurationVar(&o.every, "every", 0, "with --loop: recompute the current day at this interval, e.g. 1h, so daytime queries see it (intraday freshness; only the replace sections may run)")
 	}
 }
 
@@ -138,6 +141,9 @@ func (o *options) validate() error {
 			return fmt.Errorf("--dry-run cannot be combined with --allow-routine-load-mutations: a dry run sends nothing, so there is nothing for the flag to allow")
 		}
 	case "etl":
+		if err := o.validateLoopCadence(); err != nil {
+			return err
+		}
 		if o.loop {
 			// The loop takes its run date from the clock on every tick; pinning one would
 			// make it recompute the same day each night, which is a silent double-count for
@@ -159,6 +165,9 @@ func (o *options) validate() error {
 	case "ch-etl":
 		// Same rules as etl: the runs are idempotent full recomputations, but --loop
 		// still takes its date from the clock so a pinned --date would redo one day.
+		if err := o.validateLoopCadence(); err != nil {
+			return err
+		}
 		if o.loop {
 			if o.date != "" {
 				return fmt.Errorf("--loop computes the day that just ended on every tick, so it cannot take --date %q: drop one of them", o.date)
@@ -173,6 +182,36 @@ func (o *options) validate() error {
 		}
 		if o.backfill < 1 {
 			return fmt.Errorf("--backfill must be at least 1 (1 runs only the given date)")
+		}
+	}
+	return nil
+}
+
+// validateLoopCadence checks the --every/--at pair shared by etl and ch-etl. --every is the
+// intraday mode: it recomputes the day that is still being written, so only the replace-
+// semantics sections (the default ones) may run — the additive sections would sum a partial
+// day into what is already there on every tick.
+func (o *options) validateLoopCadence() error {
+	if o.every == 0 {
+		return nil
+	}
+	if !o.loop {
+		return fmt.Errorf("--every is a recompute cadence for --loop, it cannot run as a one-shot: add --loop or drop --every")
+	}
+	if o.at != "" && o.at != defaultETLAtTime {
+		return fmt.Errorf("--every and --at are alternative schedules: --every keeps the current day fresh continuously, --at computes the finished day once; pick one")
+	}
+	if o.every < time.Minute {
+		return fmt.Errorf("--every %s is too short: a roll-up round can take longer than that to run; use minutes, e.g. 30m or 1h", o.every)
+	}
+	sections := []string(o.sections)
+	if len(sections) == 0 {
+		sections = defaultETLSections
+	}
+	for _, s := range sections {
+		if additiveETLSections[s] {
+			return fmt.Errorf("--every recomputes the current day as it fills up, and section %s sums into what is already there: intraday runs must stick to the replace sections (%s)",
+				s, strings.Join(defaultETLSections, ","))
 		}
 	}
 	return nil

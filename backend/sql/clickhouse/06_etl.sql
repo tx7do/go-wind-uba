@@ -3,6 +3,8 @@
 -- 执行方式：由 `uba-ingest ch-etl` 渲染并执行（见 backend/cmd/uba-ingest），
 --          占位符 {{.RunDate}} 为待回算日期（形如 '2026-06-28'）。
 --          本地手工执行前先用 `uba-ingest ch-etl --dry-run` 输出渲染后的 SQL。
+--          日内新鲜度：`ch-etl --loop --every 1h` 每小时重算"今天"（本文件全为
+--          replace 语义，幂等安全），白天查询即可见当天数据。
 --
 -- 口径说明（与 Doris 侧一致）：
 --   1) sessions_fact / users_dim 的写入是【全历史回算】而非块内增量：
