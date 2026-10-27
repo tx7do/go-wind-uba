@@ -20,6 +20,7 @@ import {
   successStatusList,
   successToColor,
   successToNameWithStatusCode,
+  serverExportFile,
 } from '#/api';
 import { type auditservicev1_OperationAuditLog as OperationAuditLog } from '#/generated/api/admin/service/v1';
 import { $t } from '#/locales';
@@ -203,6 +204,22 @@ const gridOptions: VxeGridProps<OperationAuditLog> = {
 // 当前搜索条件（服务端导出透传用，与 Grid proxy 查询同源——"导出的就是当前搜索看到的"）
 const latestFormValuesRef = ref<Record<string, unknown>>({});
 
+// 服务端全量导出（后端 :export 手动锚点；权限/租户隔离与列表接口同语义）。
+async function handleServerExport() {
+  try {
+    await serverExportFile(
+      'admin/v1/operation-audit-logs:export',
+      new PaginationQuery({ formValues: latestFormValuesRef.value }),
+    );
+    message.success($t('page.auditExport.serverSuccess'));
+  } catch (error: any) {
+    // 原始错误必须留在控制台：用户可见的那句翻译不包含服务端的原因
+    console.error('[export] server-side export failed', error);
+    message.error(error?.message || $t('page.auditExport.serverFailed'));
+  }
+}
+
+
 const exporting = ref(false);
 
 const [Grid] = useVbenVxeGrid({ gridOptions, formOptions });
@@ -218,6 +235,10 @@ function handleView(row: OperationAuditLog) {
 
 async function handleExportAll(info: { key: string | number }) {
   const format = String(info.key);
+  if (format === 'server-xlsx') {
+    await handleServerExport();
+    return;
+  }
   if (format !== 'csv' && format !== 'xlsx') return;
   exporting.value = true;
   try {
@@ -276,6 +297,8 @@ function buildRowActions(): TableAction[] {
             <a-menu @click="handleExportAll">
               <a-menu-item key="csv">{{ $t('ui.button.exportFormatCsv') }}</a-menu-item>
               <a-menu-item key="xlsx">{{ $t('ui.button.exportFormatXlsx') }}</a-menu-item>
+              <a-menu-divider />
+              <a-menu-item key="server-xlsx">{{ $t('page.auditExport.serverFull') }}</a-menu-item>
             </a-menu>
           </template>
         </a-dropdown>

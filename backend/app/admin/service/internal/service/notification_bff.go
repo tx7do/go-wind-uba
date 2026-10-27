@@ -9,10 +9,11 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 
 	paginationV1 "github.com/tx7do/go-crud/api/gen/go/pagination/v1"
+	"github.com/tx7do/go-utils/trans"
 	"github.com/tx7do/kratos-bootstrap/bootstrap"
 
-	notificationChannelV1 "go-wind-uba/api/gen/go/notification_channel/service/v1"
 	notificationV1 "go-wind-uba/api/gen/go/notification/service/v1"
+	notificationChannelV1 "go-wind-uba/api/gen/go/notification_channel/service/v1"
 )
 
 // ── NotificationService（投递台账只读 + SendDirect 不开放 HTTP） ──
@@ -47,6 +48,58 @@ func (s *NotificationService) GetNotificationDelivery(ctx context.Context, req *
 		return nil, err
 	}
 	return s.notificationServiceClient.GetDelivery(ctx, req)
+}
+
+// 投递台账导出列：标题与页面列（zh-CN）一致，值与客户端聚合导出同口径（枚举导出原名）。
+// target 已是服务端脱敏值，导出不二次遮蔽（与页面一致，见 NotificationDelivery.target 注释）。
+var notificationDeliveryExportColumns = []ExportColumn[*notificationV1.NotificationDelivery]{
+	{"投递时间", func(d *notificationV1.NotificationDelivery) string { return exportTimestamp(d.CreatedAt) }},
+	{"业务事件", func(d *notificationV1.NotificationDelivery) string { return exportEnumText(d.EventType) }},
+	{"渠道", func(d *notificationV1.NotificationDelivery) string { return exportEnumText(d.Channel) }},
+	{"投递目标", func(d *notificationV1.NotificationDelivery) string { return exportStr(d.Target) }},
+	{"结果", func(d *notificationV1.NotificationDelivery) string { return exportEnumText(d.Status) }},
+	{"尝试次数", func(d *notificationV1.NotificationDelivery) string { return exportUint32(d.Attempts) }},
+	{"收件用户", func(d *notificationV1.NotificationDelivery) string { return exportUint32(d.RecipientUserId) }},
+	{"渠道配置", func(d *notificationV1.NotificationDelivery) string { return exportUint32(d.ChannelId) }},
+	{"关联对象", func(d *notificationV1.NotificationDelivery) string { return exportUint32(d.RelatedId) }},
+	{"派发请求", func(d *notificationV1.NotificationDelivery) string { return exportStr(d.RequestId) }},
+	{"完成时间", func(d *notificationV1.NotificationDelivery) string { return exportTimestamp(d.SentAt) }},
+	{"失败原因", func(d *notificationV1.NotificationDelivery) string { return exportStr(d.LastError) }},
+}
+
+// ExportNotificationDelivery 投递台账服务端全量导出（:export 手动锚点，路由装配见
+// server/export_http.go）。与 List 同权限语义（平台管理员）、同 query 透传——导出的即
+// 当前搜索看到的；行序锚在创建时间倒序（前端导出锚点只透传 query），页内拉满直到取完
+// 或行数上限（截断以 X-Export-Truncated 响应头标记）。
+func (s *NotificationService) ExportNotificationDelivery(ctx context.Context, req *paginationV1.PagingRequest, format string) (*ExportPayload, error) {
+	if err := requirePlatformAdmin(ctx, s.log, "notification delivery ledger"); err != nil {
+		return nil, err
+	}
+	if req == nil {
+		req = &paginationV1.PagingRequest{}
+	}
+	orderBy := req.OrderBy
+	if orderBy == nil || *orderBy == "" {
+		orderBy = trans.Ptr("-created_at")
+	}
+	return BuildExport(ctx, ExportOptions[*notificationV1.NotificationDelivery]{
+		FilenameBase: "notification-deliveries",
+		SheetName:    "投递台账",
+		Format:       format,
+		Columns:      notificationDeliveryExportColumns,
+		FetchPage: func(ctx context.Context, page, pageSize uint32) ([]*notificationV1.NotificationDelivery, error) {
+			resp, err := s.notificationServiceClient.ListDelivery(ctx, &paginationV1.PagingRequest{
+				Page:          trans.Ptr(page),
+				PageSize:      trans.Ptr(pageSize),
+				OrderBy:       orderBy,
+				FilteringType: req.FilteringType,
+			})
+			if err != nil {
+				return nil, err
+			}
+			return resp.GetItems(), nil
+		},
+	})
 }
 
 // ── NotificationRuleService ──
@@ -281,8 +334,8 @@ func NewNotificationPreferenceService(
 	notificationPreferenceServiceClient notificationV1.NotificationPreferenceServiceClient,
 ) *NotificationPreferenceService {
 	return &NotificationPreferenceService{
-		log:                                  ctx.NewLoggerHelper("notification-preference/service/admin-service"),
-		notificationPreferenceServiceClient:  notificationPreferenceServiceClient,
+		log:                                 ctx.NewLoggerHelper("notification-preference/service/admin-service"),
+		notificationPreferenceServiceClient: notificationPreferenceServiceClient,
 	}
 }
 

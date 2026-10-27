@@ -8,6 +8,7 @@ import type {
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 
 import { Page } from '@vben/common-ui';
+import { useAccessStore } from '@vben/stores';
 import {
   EchartsUI,
   type EchartsUIType,
@@ -25,11 +26,18 @@ import {
   PaginationQuery,
 } from '#/api';
 import { $t } from '#/locales';
+import { globalSSEClient } from '#/transport/sse';
 
-// 大屏采用 5 秒轮询（列表/KPI），图表数据 30 秒刷新一次（避免高频聚合查询）。
-// TODO: 后端 SSE 推送 risk_event / behavior_event 就绪后切换为订阅。
+// 列表/KPI 走后端 SSE 推送（服务端按订阅者权限轮询搬运，快照语义），
+// REST 轮询降级为兜底：连续 10 秒没收到推送（SSE 未连通/断流）时本计时器接管。
+// 图表数据仍 30 秒刷新一次（高频聚合查询不进推送）。
 const POLL_INTERVAL = 5000;
 const CHART_INTERVAL = 30_000;
+const SSE_STALE_MS = 10_000;
+const SUBSCRIBE_HEARTBEAT_MS = 4 * 60 * 1000; // 订阅心跳续期（服务端 10 分钟无续期即回收）
+
+// 与后端 service/realtime_screen_service.go 的 realtimeScreenEventName 对应
+const REALTIME_EVENT = 'realtime_lists';
 
 const riskLevelToColor: Record<string, string> = {
   HIGH: '#F53F3F',
@@ -61,9 +69,54 @@ const { renderEcharts: renderChannel } = useEcharts(channelRef);
 
 let pollTimer: null | ReturnType<typeof setInterval> = null;
 let chartTimer: null | ReturnType<typeof setInterval> = null;
+let heartbeatTimer: null | ReturnType<typeof setInterval> = null;
+// 最近一次 SSE 推送到达时间（0 = 尚未收到过，走 REST 兜底）
+let lastPushAt = 0;
 
-// ============ 列表 + KPI 刷新（高频）============
+// ============ SSE 订阅（列表 + KPI 的主通道）============
+type RealtimeListsPayload = {
+  events?: { items?: ubaservicev1_BehaviorEvent[]; total?: number | string };
+  risks?: { items?: ubaservicev1_RiskEvent[]; total?: number | string };
+};
+
+function handleRealtimeLists(payload: RealtimeListsPayload | unknown) {
+  const data = payload as RealtimeListsPayload;
+  if (!data || typeof data !== 'object') return;
+  lastPushAt = Date.now();
+  if (data.events) {
+    recentEvents.value = (data.events.items ?? []).slice(0, 30);
+    todayEventCount.value = Number(data.events.total ?? 0);
+  }
+  if (data.risks) {
+    recentRisks.value = (data.risks.items ?? []).slice(0, 20);
+    riskAlerts.value = Number(data.risks.total ?? 0);
+    highRiskCount.value = recentRisks.value.filter(
+      (r) => r.riskLevel === 'HIGH',
+    ).length;
+  }
+}
+
+async function callRealtimeScreen(
+  action: 'subscribe' | 'unsubscribe',
+): Promise<void> {
+  const accessStore = useAccessStore();
+  const token = accessStore.accessToken;
+  const apiBase = (import.meta.env.VITE_GLOB_API_URL ?? '').replace(/\/$/, '');
+  try {
+    await fetch(`${apiBase}/admin/v1/realtime-screen/${action}`, {
+      method: 'POST',
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    });
+  } catch (error) {
+    // 订阅控制面失败不致命：SSE 不来推送时 REST 兜底计时器自动接管
+    console.warn(`[realtime-screen] ${action} failed`, error);
+  }
+}
+
+// ============ 列表 + KPI 刷新（SSE 不可用时的兜底，原本是主通道）============
 async function refreshLists() {
+  // SSE 推送健康时跳过 REST 兜底（计时器保持运行，断流自动接管）
+  if (lastPushAt > 0 && Date.now() - lastPushAt < SSE_STALE_MS) return;
   try {
     const evResp = await fetchListBehaviorEvents(
       new PaginationQuery({
@@ -234,6 +287,9 @@ watch(channelOption, (opt) => renderChannel(opt as any));
 onMounted(() => {
   refreshLists();
   refreshCharts();
+  globalSSEClient.on(REALTIME_EVENT, handleRealtimeLists);
+  callRealtimeScreen('subscribe');
+  heartbeatTimer = setInterval(() => callRealtimeScreen('subscribe'), SUBSCRIBE_HEARTBEAT_MS);
   pollTimer = setInterval(refreshLists, POLL_INTERVAL);
   chartTimer = setInterval(refreshCharts, CHART_INTERVAL);
 });
@@ -241,6 +297,9 @@ onMounted(() => {
 onBeforeUnmount(() => {
   if (pollTimer) clearInterval(pollTimer);
   if (chartTimer) clearInterval(chartTimer);
+  if (heartbeatTimer) clearInterval(heartbeatTimer);
+  globalSSEClient.off(REALTIME_EVENT, handleRealtimeLists);
+  callRealtimeScreen('unsubscribe');
 });
 
 function formatTime(ts?: number | string) {

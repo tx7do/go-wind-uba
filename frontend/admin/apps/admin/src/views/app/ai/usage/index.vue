@@ -21,12 +21,29 @@ import {
   useAiUsageSummary,
   useGetTenantQuota,
   useSetTenantQuota,
+  serverExportFile,
 } from '#/api';
 import { $t } from '#/locales';
 import { downloadTableFile } from '#/utils/csv';
 
 // 当前搜索条件（导出透传用，与 Grid proxy 查询同源——"导出的就是当前搜索看到的"）
 const latestFormValuesRef = ref<Record<string, unknown>>({});
+
+// 服务端全量导出（后端 :export 手动锚点；租户口径与列表接口同语义）。
+async function handleServerExport() {
+  try {
+    await serverExportFile(
+      'admin/v1/ai/usage-logs:export',
+      new PaginationQuery({ formValues: latestFormValuesRef.value }),
+    );
+    message.success($t('page.auditExport.serverSuccess'));
+  } catch (error: any) {
+    // 原始错误必须留在控制台：用户可见的那句翻译不包含服务端的原因
+    console.error('[export] server-side export failed', error);
+    message.error(error?.message || $t('page.auditExport.serverFailed'));
+  }
+}
+
 
 defineOptions({ name: 'AiUsage' });
 
@@ -96,6 +113,10 @@ const exporting = ref(false);
 // 导出全部（CSV/Excel 客户端聚合，上限 1 万行）：透传当前搜索条件——导出的即当前搜索看到的
 async function handleExportAll(info: { key: string | number }) {
   const format = String(info.key);
+  if (format === 'server-xlsx') {
+    await handleServerExport();
+    return;
+  }
   if (format !== 'csv' && format !== 'xlsx') return;
   exporting.value = true;
   try {
@@ -308,6 +329,8 @@ const [Grid] = useVbenVxeGrid({ gridOptions, formOptions });
             <a-menu @click="handleExportAll">
               <a-menu-item key="csv">{{ $t('ui.button.exportFormatCsv') }}</a-menu-item>
               <a-menu-item key="xlsx">{{ $t('ui.button.exportFormatXlsx') }}</a-menu-item>
+              <a-menu-divider />
+              <a-menu-item key="server-xlsx">{{ $t('page.auditExport.serverFull') }}</a-menu-item>
             </a-menu>
           </template>
         </a-dropdown>

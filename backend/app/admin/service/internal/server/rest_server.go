@@ -154,6 +154,8 @@ func NewRestServer(
 	aiUsageLogBffService *service.AiUsageLogService,
 	aiQueryBffService *service.AiQueryService,
 
+	realtimeScreenService *service.RealtimeScreenService,
+
 	// register:rest-param ── 新模块服务形参在此行后追加(make register 工具锚点,勿删)
 ) *http.Server {
 	cfg := ctx.GetConfig()
@@ -213,6 +215,18 @@ func NewRestServer(
 	adminV1.RegisterFeatureFlagServiceHTTPServer(srv, featureFlagService)
 	adminV1.RegisterSqlQueryServiceHTTPServer(srv, sqlQueryService)
 	adminV1.RegisterNotificationServiceHTTPServer(srv, notificationBffService)
+	// 服务端全量导出（:export 手动锚点）：生成 Handler 走 JSON 编码器无法输出文件
+	// 字节流，与文件下载同因同解，手动注册，鉴权/审计照走中间件链（见 export_http.go）。
+	registerExportRoutes(srv, notificationBffService,
+		apiAuditLogService,
+		loginAuditLogService,
+		operationAuditLogService,
+		dataAccessAuditLogService,
+		permissionAuditLogService,
+		aiUsageLogBffService,
+	)
+	// 实时大屏 SSE 订阅控制面（数据面走 SSE 服务器）。
+	registerRealtimeScreenRoutes(srv, realtimeScreenService)
 	adminV1.RegisterNotificationRuleServiceHTTPServer(srv, notificationRuleBffService)
 	adminV1.RegisterNotificationTemplateServiceHTTPServer(srv, notificationTemplateBffService)
 	adminV1.RegisterNotificationPreferenceServiceHTTPServer(srv, notificationPreferenceBffService)

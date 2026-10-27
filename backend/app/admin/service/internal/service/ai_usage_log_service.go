@@ -5,11 +5,12 @@ import (
 
 	"github.com/go-kratos/kratos/v2/log"
 	paginationV1 "github.com/tx7do/go-crud/api/gen/go/pagination/v1"
+	"github.com/tx7do/go-utils/trans"
 	"github.com/tx7do/kratos-bootstrap/bootstrap"
 	"google.golang.org/protobuf/types/known/emptypb"
 
-	aiV1 "go-wind-uba/api/gen/go/ai/service/v1"
 	adminV1 "go-wind-uba/api/gen/go/admin/service/v1"
+	aiV1 "go-wind-uba/api/gen/go/ai/service/v1"
 )
 
 // AiUsageLogService AI 用量流水查询（BFF 直通转发；
@@ -30,6 +31,43 @@ func NewAiUsageLogService(ctx *bootstrap.Context, aiUsageLogServiceClient aiV1.A
 
 func (s *AiUsageLogService) List(ctx context.Context, req *paginationV1.PagingRequest) (*aiV1.ListAiUsageLogResponse, error) {
 	return s.aiUsageLogServiceClient.List(ctx, req)
+}
+
+// 用量流水导出列：标题与用量页列（zh-CN）一致。
+var aiUsageLogExportColumns = []ExportColumn[*aiV1.AiUsageLog]{
+	{"模型名称", func(l *aiV1.AiUsageLog) string { return exportStr(l.ModelName) }},
+	{"输入 tokens", func(l *aiV1.AiUsageLog) string { return exportUint32(l.PromptTokens) }},
+	{"输出 tokens", func(l *aiV1.AiUsageLog) string { return exportUint32(l.CompletionTokens) }},
+	{"总 tokens", func(l *aiV1.AiUsageLog) string { return exportUint32(l.TotalTokens) }},
+	{"耗时（毫秒）", func(l *aiV1.AiUsageLog) string { return exportUint32(l.DurationMs) }},
+	{"会话ID", func(l *aiV1.AiUsageLog) string { return exportUint32(l.ConversationId) }},
+	{"调用时间", func(l *aiV1.AiUsageLog) string { return exportTimestamp(l.CreatedAt) }},
+}
+
+// ExportAiUsageLog 用量流水服务端全量导出（:export 手动锚点，路由装配见
+// server/export_http.go）。租户口径与 List 同语义（core 侧行级过滤），导出的即当前搜索看到的。
+func (s *AiUsageLogService) ExportAiUsageLog(ctx context.Context, req *paginationV1.PagingRequest, format string) (*ExportPayload, error) {
+	if req == nil {
+		req = &paginationV1.PagingRequest{}
+	}
+	return BuildExport(ctx, ExportOptions[*aiV1.AiUsageLog]{
+		FilenameBase: "ai-usage-logs",
+		SheetName:    "AI用量流水",
+		Format:       format,
+		Columns:      aiUsageLogExportColumns,
+		FetchPage: func(ctx context.Context, page, pageSize uint32) ([]*aiV1.AiUsageLog, error) {
+			resp, err := s.aiUsageLogServiceClient.List(ctx, &paginationV1.PagingRequest{
+				Page:          trans.Ptr(page),
+				PageSize:      trans.Ptr(pageSize),
+				OrderBy:       trans.Ptr(exportOrderBy(req)),
+				FilteringType: req.FilteringType,
+			})
+			if err != nil {
+				return nil, err
+			}
+			return resp.GetItems(), nil
+		},
+	})
 }
 
 func (s *AiUsageLogService) Count(ctx context.Context, req *paginationV1.PagingRequest) (*aiV1.CountAiUsageLogResponse, error) {

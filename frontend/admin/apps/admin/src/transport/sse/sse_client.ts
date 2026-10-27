@@ -112,6 +112,14 @@ export class SSEClient {
       this.triggerHandler('message', data, event);
     });
 
+    // 重连会替换 EventSource 实例：把已注册的自定义事件监听重新挂到新实例上，
+    // 否则断线重连后（on 先于 connect 注册的场景）自定义事件永远收不到
+    for (const eventName of this.handlers.keys()) {
+      if (![ 'error', 'message', 'open' ].includes(eventName)) {
+        this.attachCustomEvent(eventName);
+      }
+    }
+
     // 监听错误事件（连接断开、网络异常等）
     this.eventSource.addEventListener('error', (event: Event) => {
       this.status = 'error';
@@ -164,8 +172,8 @@ export class SSEClient {
 
   /**
    * 注册事件监听器（支持泛型指定数据类型）
-   * @param eventName
-   * @param handler
+   * @param eventName - 事件名
+   * @param handler - 回调
    */
   on<T = unknown>(eventName: SSEEventName, handler: SSEEventHandler<T>): void {
     if (!this.handlers.has(eventName)) {
@@ -176,10 +184,19 @@ export class SSEClient {
 
     // 对自定义事件（非 open/error/message），需要额外注册到 EventSource
     if (!['error', 'message', 'open'].includes(eventName) && this.eventSource) {
-      this.eventSource.addEventListener(eventName, (event) => {
-        const data = this.parseData((event as MessageEvent).data);
-        this.triggerHandler(eventName, data, event as MessageEvent);
-      });
+      this.attachCustomEvent(eventName);
     }
+  }
+
+  /**
+   * 把自定义事件挂到当前 EventSource 实例（on 与重连共用）
+   * @param eventName - 事件名
+   * @private
+   */
+  private attachCustomEvent(eventName: SSEEventName): void {
+    this.eventSource?.addEventListener(eventName, (event) => {
+      const data = this.parseData((event as MessageEvent).data);
+      this.triggerHandler(eventName, data, event as MessageEvent);
+    });
   }
 }

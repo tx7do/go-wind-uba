@@ -200,6 +200,9 @@ func initApp(ctx *bootstrap.Context) (*kratos.App, func(), error) {
 	aiUsageLogBffService := service.NewAiUsageLogService(ctx, aiUsageLogServiceClient)
 	aiQueryBffService := service.NewAiQueryService(ctx, aiQueryServiceClient)
 
+	// 实时大屏 SSE 订阅（复用既有 SSE 服务器,推送循环在 service 层,见 realtime_screen_service.go）
+	realtimeScreenService := service.NewRealtimeScreenService(ctx, behaviorEventService, riskEventService, sseServer)
+
 	// ── register:service ── 新模块服务在此行后注册(make register 工具锚点,勿删)
 
 	// ═══════════════════════ 四、传输层(internal/server) ═══════════════════════
@@ -271,6 +274,7 @@ func initApp(ctx *bootstrap.Context) (*kratos.App, func(), error) {
 		aiKnowledgeBffService,
 		aiUsageLogBffService,
 		aiQueryBffService,
+		realtimeScreenService,
 		// register:rest-arg ── 新模块服务实参在此行后追加(make register 工具锚点,勿删)
 	)
 
