@@ -195,7 +195,7 @@ function handleExport() {
   for (const s of series) {
     for (const p of s.points || []) {
       rows.push([
-        p.timestamp ? new Date(p.timestamp).toISOString() : '',
+        p.timestamp ? new Date(Number(p.timestamp)).toISOString() : '',
         s.name,
         p.value,
       ]);
@@ -224,12 +224,12 @@ void load();
 const chartRef = ref<EchartsUIType>();
 const { renderEcharts } = useEcharts(chartRef);
 
-// 所有时间桶（横轴并集，按时间排序）
+// 所有时间桶（横轴并集，按时间排序）。protojson 将 int64 时间戳序列化为字符串，统一转数字
 const allTimestamps = computed(() => {
   const set = new Set<number>();
   for (const s of data.value?.series ?? []) {
     for (const p of s.points ?? []) {
-      if (p.timestamp) set.add(p.timestamp);
+      if (p.timestamp) set.add(Number(p.timestamp));
     }
   }
   return [...set].sort((a, b) => a - b);
@@ -240,7 +240,7 @@ const seriesData = computed(() => {
   return series.map((s: ubaservicev1_EventSeries) => {
     const m = new Map<number, number>();
     for (const p of s.points ?? []) {
-      if (p.timestamp) m.set(p.timestamp, Number(p.value ?? 0));
+      if (p.timestamp) m.set(Number(p.timestamp), Number(p.value ?? 0));
     }
     return {
       data: allTimestamps.value.map((ts) => m.get(ts) ?? 0),

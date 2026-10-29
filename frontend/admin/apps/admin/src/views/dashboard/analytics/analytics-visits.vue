@@ -24,7 +24,8 @@ const { renderEcharts } = useEcharts(chartRef);
 const points = computed(() => props.data?.points ?? []);
 
 function render() {
-  const xData = points.value.map((p) => dayjs(p.timestamp ?? 0).format('MM-DD'));
+  // protojson 将 int64 序列化为字符串，须转数字后才能按毫秒解析
+  const xData = points.value.map((p) => dayjs(Number(p.timestamp ?? 0)).format('MM-DD'));
   const dau = points.value.map((p) => Number(p.dau ?? 0));
   const wau = points.value.map((p) => Number(p.wau ?? 0));
   const mau = points.value.map((p) => Number(p.mau ?? 0));

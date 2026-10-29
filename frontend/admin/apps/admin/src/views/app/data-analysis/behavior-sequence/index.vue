@@ -103,7 +103,7 @@ function rowKey(record: any, index?: number) {
           <template #default="{ record }">
             {{
               record.timestamp
-                ? dayjs(record.timestamp).format('YYYY-MM-DD HH:mm:ss')
+                ? dayjs(Number(record.timestamp)).format('YYYY-MM-DD HH:mm:ss')
                 : '-'
             }}
           </template>

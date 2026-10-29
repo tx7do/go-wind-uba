@@ -23,7 +23,8 @@ const { renderEcharts } = useEcharts(chartRef);
 function render() {
   const points = props.data?.points ?? [];
   const xData = points.map((p) =>
-    dayjs(p.timestamp ?? 0).format('MM-DD HH:mm'),
+    // protojson 将 int64 序列化为字符串，须转数字后才能按毫秒解析
+    dayjs(Number(p.timestamp ?? 0)).format('MM-DD HH:mm'),
   );
   const yData = points.map((p) => Number(p.value ?? 0));
 
