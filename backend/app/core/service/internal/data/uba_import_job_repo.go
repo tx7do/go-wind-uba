@@ -43,6 +43,7 @@ func NewImportJobRepo(ctx *bootstrap.Context, entClient *entCrud.EntClient[*ent.
 	repo := &ImportJobRepo{
 		log:             ctx.NewLoggerHelper("import-job/repo/core-service"),
 		entClient:       entClient,
+		mapper:          mapper.NewCopierMapper[ubaV1.ImportJob, ent.ImportJob](),
 		statusConverter: mapper.NewEnumTypeConverter[ubaV1.ImportJobStatus, string](ubaV1.ImportJobStatus_name, ubaV1.ImportJobStatus_value),
 	}
 

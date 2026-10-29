@@ -498,10 +498,17 @@ GROUP BY stat_date ORDER BY stat_date`, tenantCond)
 	}
 
 	// ② WAU/MAU：取最近一天的滚动 7/30 天去重（dashboard 只需最新值做 KPI）。
-	wauArgs := []any{time.UnixMilli(endMs), time.UnixMilli(endMs)}
+	// 每个子查询占位符为 [tenant?] 起始? 截止?，两个子查询都要各自绑定一遍参数。
+	end := time.UnixMilli(endMs)
+	wauArgs := []any{}
 	if v := req.GetAppId(); v != 0 {
-		wauArgs = append([]any{v}, wauArgs...)
+		wauArgs = append(wauArgs, v)
 	}
+	wauArgs = append(wauArgs, end, end)
+	if v := req.GetAppId(); v != 0 {
+		wauArgs = append(wauArgs, v)
+	}
+	wauArgs = append(wauArgs, end, end)
 	wauQ := fmt.Sprintf(`
 SELECT
   (SELECT COUNT(DISTINCT user_id) FROM events_fact WHERE %sevent_time >= DATE_SUB(?, INTERVAL 6 DAY) AND event_time < ? AND user_id > 0) AS wau,

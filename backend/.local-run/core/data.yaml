@@ -54,7 +54,7 @@ data:
   doris:
     # 与上面的 postgres/redis 一样走 compose 的容器网络（FE 的 MySQL 协议端口 9030、
     # BE 的 HTTP 端口 8040）。在宿主机上直接跑 core 时改回 localhost。
-    dsn: "root:@tcp(localhost:9030)/gw_uba?charset=utf8mb4&parseTime=True&loc=Local"
+    dsn: "root:@tcp(127.0.0.1:9030)/gw_uba?charset=utf8mb4&parseTime=True&loc=Local"
     max_idle_connections: 25
     max_open_connections: 25
     connection_max_lifetime: 300s
