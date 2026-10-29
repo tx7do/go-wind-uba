@@ -31,6 +31,16 @@
 
 ---
 
+## Preview
+
+**Analytics dashboard** — real-time KPIs, traffic trend, platform and channel distribution:
+
+![Analytics dashboard](docs/images/dashboard-analytics.png)
+
+**Event analysis** — one of the 25 analysis models, freely combining metrics, dimension splits and filters:
+
+![Event analysis](docs/images/event-analysis.png)
+
 ## What is UBA?
 
 **UBA** (User Behavior Analytics) is a data analysis technique for collecting, analyzing, and reporting user behavior on websites, apps, and other digital products. It helps businesses understand user preferences, habits, and behavioral patterns to optimize product experiences, increase conversion rates, and achieve precision marketing.
