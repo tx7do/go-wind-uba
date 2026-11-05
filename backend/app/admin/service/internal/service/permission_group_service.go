@@ -65,6 +65,11 @@ func (s *PermissionGroupService) Create(ctx context.Context, req *permissionV1.C
 
 	req.Data.CreatedBy = trans.Ptr(operator.UserId)
 
+	// 权限组是全局定义，租户操作者不可增删改（角色抽屉按需读树即可）。
+	if err = requirePlatformAdmin(ctx, s.log, "permission group management"); err != nil {
+		return nil, err
+	}
+
 	if _, err = s.permissionGroupServiceClient.Create(ctx, req); err != nil {
 		return nil, err
 	}
@@ -90,11 +95,19 @@ func (s *PermissionGroupService) Update(ctx context.Context, req *permissionV1.U
 		req.UpdateMask.Paths = append(req.UpdateMask.Paths, "updated_by")
 	}
 
+	if err = requirePlatformAdmin(ctx, s.log, "permission group management"); err != nil {
+		return nil, err
+	}
+
 	return s.permissionGroupServiceClient.Update(ctx, req)
 }
 
 func (s *PermissionGroupService) Delete(ctx context.Context, req *permissionV1.DeletePermissionGroupRequest) (*emptypb.Empty, error) {
 	var err error
+
+	if err = requirePlatformAdmin(ctx, s.log, "permission group management"); err != nil {
+		return nil, err
+	}
 
 	if _, err = s.permissionGroupServiceClient.Delete(ctx, req); err != nil {
 		return nil, err

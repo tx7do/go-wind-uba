@@ -63,6 +63,11 @@ func (s *MenuService) Create(ctx context.Context, req *resourceV1.CreateMenuRequ
 
 	req.Data.CreatedBy = trans.Ptr(operator.UserId)
 
+	// 菜单是全局定义（影响全平台前端展示），租户操作者不可增删改。
+	if err = requirePlatformAdmin(ctx, s.log, "menu management"); err != nil {
+		return nil, err
+	}
+
 	return s.menuServiceClient.Create(ctx, req)
 }
 
@@ -84,6 +89,11 @@ func (s *MenuService) Update(ctx context.Context, req *resourceV1.UpdateMenuRequ
 		req.UpdateMask.Paths = append(req.UpdateMask.Paths, "updated_by")
 	}
 
+	// 与 Create 同口径：全局菜单仅平台管理员可改。
+	if err = requirePlatformAdmin(ctx, s.log, "menu management"); err != nil {
+		return nil, err
+	}
+
 	return s.menuServiceClient.Update(ctx, req)
 }
 
@@ -95,6 +105,10 @@ func (s *MenuService) Delete(ctx context.Context, req *resourceV1.DeleteMenuRequ
 	}
 
 	req.OperatorId = trans.Ptr(operator.UserId)
+
+	if err := requirePlatformAdmin(ctx, s.log, "menu management"); err != nil {
+		return nil, err
+	}
 
 	return s.menuServiceClient.Delete(ctx, req)
 }

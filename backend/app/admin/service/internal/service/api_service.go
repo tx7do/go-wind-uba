@@ -52,7 +52,11 @@ func NewApiService(
 func (s *ApiService) init() {
 	ctx := appViewer.NewSystemViewerContext(context.Background())
 	if resp, _ := s.apiServiceClient.Count(ctx, nil); resp != nil && resp.Count == 0 {
-		_, _ = s.SyncApis(ctx, &emptypb.Empty{})
+		// 启动期播种走内部函数而非 HTTP 方法 SyncApis：后者已加平台管理员闸门，
+		// 系统上下文没有操作者，会被自家闸门挡掉。
+		if err := s.syncWithOpenAPI(ctx); err != nil {
+			s.log.Errorf("启动期接口同步失败: %v", err)
+		}
 	}
 }
 
@@ -81,6 +85,12 @@ func (s *ApiService) Create(ctx context.Context, req *resourceV1.CreateApiReques
 
 	req.Data.CreatedBy = trans.Ptr(operator.UserId)
 
+	// Api 表是租户闸门（套餐模块白名单）的数据源，增删改等于改闸门本身，
+	// 仅平台管理员可操作。
+	if err = requirePlatformAdmin(ctx, s.log, "api management"); err != nil {
+		return nil, err
+	}
+
 	if _, err = s.apiServiceClient.Create(ctx, req); err != nil {
 		return nil, err
 	}
@@ -106,6 +116,11 @@ func (s *ApiService) Update(ctx context.Context, req *resourceV1.UpdateApiReques
 		req.UpdateMask.Paths = append(req.UpdateMask.Paths, "updated_by")
 	}
 
+	// 与 Create 同口径：改 Api 行可把任意端点归入已白名单模块，仅平台管理员。
+	if err = requirePlatformAdmin(ctx, s.log, "api management"); err != nil {
+		return nil, err
+	}
+
 	if _, err = s.apiServiceClient.Update(ctx, req); err != nil {
 		return nil, err
 	}
@@ -114,6 +129,10 @@ func (s *ApiService) Update(ctx context.Context, req *resourceV1.UpdateApiReques
 }
 
 func (s *ApiService) Delete(ctx context.Context, req *resourceV1.DeleteApiRequest) (*emptypb.Empty, error) {
+	if err := requirePlatformAdmin(ctx, s.log, "api management"); err != nil {
+		return nil, err
+	}
+
 	if _, err := s.apiServiceClient.Delete(ctx, req); err != nil {
 		return nil, err
 	}
@@ -122,6 +141,12 @@ func (s *ApiService) Delete(ctx context.Context, req *resourceV1.DeleteApiReques
 }
 
 func (s *ApiService) SyncApis(ctx context.Context, _ *emptypb.Empty) (*emptypb.Empty, error) {
+	// 全量重建会重写 Api 表（租户闸门的数据源，改行可把任意端点归入已白名单
+	// 模块绕过 fail-closed），是平台级运维操作，仅平台管理员可触发。
+	if err := requirePlatformAdmin(ctx, s.log, "api management"); err != nil {
+		return nil, err
+	}
+
 	if err := s.syncWithOpenAPI(ctx); err != nil {
 		return nil, err
 	}

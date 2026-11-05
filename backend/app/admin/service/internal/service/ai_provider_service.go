@@ -57,6 +57,13 @@ func (s *AiProviderService) Create(ctx context.Context, req *aiV1.CreateAiProvid
 	req.Data.CreatedBy = trans.Ptr(operator.UserId)
 	req.Data.UpdatedBy = trans.Ptr(operator.UserId)
 
+	// Provider 是全局表（无 tenant_id 列），存的平台级 LLM API key；AI 模块
+	// 对租户套餐常态白名单，缺闸门时租户可改全局供应商（把端点指到自己服务
+	// 器即可吸走全平台 AI 流量）。仅平台管理员可增删改。
+	if err = requirePlatformAdmin(ctx, s.log, "ai provider management"); err != nil {
+		return nil, err
+	}
+
 	if err = s.sealApiKey(req.Data); err != nil {
 		return nil, err
 	}
@@ -78,10 +85,19 @@ func (s *AiProviderService) Update(ctx context.Context, req *aiV1.UpdateAiProvid
 		return nil, err
 	}
 
+	// 与 Create 同口径：全局供应商仅平台管理员可改。
+	if err = requirePlatformAdmin(ctx, s.log, "ai provider management"); err != nil {
+		return nil, err
+	}
+
 	return s.aiProviderServiceClient.Update(ctx, req)
 }
 
 func (s *AiProviderService) Delete(ctx context.Context, req *aiV1.DeleteAiProviderRequest) (*emptypb.Empty, error) {
+	if err := requirePlatformAdmin(ctx, s.log, "ai provider management"); err != nil {
+		return nil, err
+	}
+
 	return s.aiProviderServiceClient.Delete(ctx, req)
 }
 
