@@ -7,7 +7,7 @@ import { $t } from '@vben/locales';
 
 import { Modal, notification } from 'ant-design-vue';
 
-import { useVbenForm } from '#/adapter/form';
+import { useVbenForm, z } from '#/adapter/form';
 import { type permissionservicev1_PermissionGroup as PermissionGroup } from '#/generated/api/admin/service/v1';
 import { buildPermissionTree, fetchGetRole, fetchListPermissionGroups, fetchListPermissions, fetchListRoles, PaginationQuery, statusList, useCreateRole, useUpdateRole } from '#/api';
 import { filterNumbers } from '#/utils';
@@ -234,7 +234,16 @@ const [BaseForm, baseFormApi] = useVbenForm({
         placeholder: $t('ui.placeholder.input'),
         allowClear: true,
       },
-      rules: 'required',
+      // 保留角色码：platform: / template: 命名空间与内置租户管理员码承载登录态
+      // 身份判定语义（后端按码值精确匹配填管理员标志），禁止用户自建角色占用。
+      // 前端拦截只是即时反馈，后端 Create/Update 仍有一道校验兜底。
+      rules: z
+        .string()
+        .min(1, { message: $t('ui.formRules.required') })
+        .refine(
+          (v) => !/^(platform:|template:)/.test(v) && v !== 'tenant:manager',
+          { message: $t('page.role.reservedCode') },
+        ),
     },
     {
       component: 'InputNumber',
