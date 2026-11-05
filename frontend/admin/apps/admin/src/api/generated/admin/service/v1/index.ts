@@ -15138,6 +15138,8 @@ export type permissionservicev1_Role = {
   id?: number;
   isProtected?: boolean;
   name?: string;
+  parentId?: number;
+  parentName?: string;
   permissions: number[] | undefined;
   sortOrder?: number;
   status?: permissionservicev1_Role_Status;

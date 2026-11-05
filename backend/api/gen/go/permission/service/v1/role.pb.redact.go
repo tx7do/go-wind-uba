@@ -268,6 +268,10 @@ func (x *Role) Redact() string {
 
 	// Safe field: Permissions
 
+	// Safe field: ParentId
+
+	// Safe field: ParentName
+
 	// Safe field: TenantId
 
 	// Safe field: TenantName
