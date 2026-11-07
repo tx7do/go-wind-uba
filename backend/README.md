@@ -19,7 +19,7 @@ GoWind 是一套面向多租户、可扩展的用户行为分析系统，支持�
 - 标签管理与画像分析
 - 实时与离线数据分析
 - 多租户隔离与权限管理
-- 支持 Kafka、Redis、MinIO 等组件集成
+- 支持 Kafka、Redis、SeaweedFS（S3 兼容对象存储）等组件集成
 
 ## 目录结构
 
@@ -40,7 +40,7 @@ backend/
 - PostgreSQL 12+
 - Redis 7+
 - Kafka 2.8+
-- MinIO 2022+
+- SeaweedFS 4.51+（S3 兼容对象存储，MinIO 社区版停维护后的替代，容器服务名沿用 minio）
 - Consul/Etcd/Jaeger（可选）
 
 ## 部署流程
@@ -65,14 +65,14 @@ backend/
 - [Kafka](https://kafka.apache.org/)
 - [Consul](https://www.consul.io/) / [Etcd](https://etcd.io/)
 - [Jaeger](https://www.jaegertracing.io/)
-- [MinIO](https://min.io/)
+- [SeaweedFS](https://github.com/chrislusf/seaweedfs)
 
 ## 常见问题
 
 - 数据库建表脚本需与 entity/schema 保持一致
 - DTO/entity 字段类型需严格匹配，建议用 copier/mapper 自动转换
 - 多租户环境下需配置租户隔离参数
-- Kafka/MinIO 等组件需提前初始化并配置权限
+- Kafka/SeaweedFS 等组件需提前初始化并配置权限
 
 ## 参考资料
 

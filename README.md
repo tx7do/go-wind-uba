@@ -112,7 +112,7 @@
 | OLAP 引擎 | ClickHouse / Apache Doris | 列式存储，极致分析性能         |
 | 消息队列    | Kafka                     | 高吞吐事件流处理            |
 | 缓存      | Redis                     | 内存数据库               |
-| 对象存储    | MinIO                     | S3 兼容对象存储           |
+| 对象存储    | SeaweedFS                 | S3 兼容对象存储（MinIO 社区版停维护后的替代，容器服务名沿用 minio） |
 | 服务注册    | Etcd / Consul             | 服务发现与配置             |
 | 链路追踪    | Jaeger + OpenTelemetry    | 分布式可观测              |
 | API 定义  | Protobuf + buf.build      | 接口契约优先              |
@@ -297,7 +297,7 @@ go-wind-uba/
 │   │   ├── jwt/                        # JWT 工具
 │   │   ├── metadata/                   # 元数据管理
 │   │   ├── middleware/                 # 中间件（鉴权/日志/Ent/元数据）
-│   │   ├── oss/                        # 对象存储（MinIO）
+│   │   ├── oss/                        # 对象存储（S3 兼容：SeaweedFS）
 │   │   ├── serviceid/                  # 服务标识
 │   │   ├── task/                       # 异步任务
 │   │   ├── topic/                      # Kafka Topic 管理

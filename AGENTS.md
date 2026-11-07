@@ -30,7 +30,7 @@ go-wind-uba/
 
 | 模块 | 技术栈 | 详细指南 |
 |---|---|---|
-| 后端 | Go 1.25 · Kratos v2 · Ent · PostgreSQL · Doris · ClickHouse · Redis · Asynq · MinIO · Kratos authn(JWT)/ authz(Casbin/OPA) | `backend/AGENTS.md` |
+| 后端 | Go 1.25 · Kratos v2 · Ent · PostgreSQL · Doris · ClickHouse · Redis · Asynq · SeaweedFS(S3 兼容，服务名沿用 minio) · Kratos authn(JWT)/ authz(Casbin/OPA) | `backend/AGENTS.md` |
 | 管理后台 | Vue 3 · TypeScript · Vite · Ant Design Vue · vue-vben-admin v5 · pnpm monorepo + turbo + changeset | `frontend/AGENTS.md` |
 | Web SDK | 纯 TypeScript,`tsc` 构建,上报到 collector | `frontend/AGENTS.md` |
 | C# SDK | C#(`sdk/csharp/`) | `sdk/csharp/README.md` |

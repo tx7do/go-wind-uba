@@ -32,7 +32,7 @@ Compose 文件路径 (默认: docker-compose.yml)
   - ingest / ingest-etl（入仓装配与每日回算调度，见 backend/AGENTS.md 第 6 节）
   - PostgreSQL 数据库
   - Redis 缓存
-  - MinIO 对象存储
+  - SeaweedFS 对象存储（S3 兼容，服务名沿用 minio）
   - Jaeger 分布式追踪
 
 使用 Compose 文件：

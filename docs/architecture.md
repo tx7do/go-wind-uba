@@ -165,7 +165,7 @@ Admin 前端
 | **OLAP（ClickHouse 或 Doris）** | 分析数据（events_fact / sessions_fact / risk_events 等事实表） | 原生 SQL + `go-crud` repo 封装 |
 | **Redis** | 缓存、异步任务队列（Asynq） | kratos cache + asynq |
 | **Kafka** | 事件流缓冲（collector → Doris 的解耦管道；消费端是 Doris Routine Load，不是 Go 服务） | kratos broker 生产 / Doris FE 拉取 |
-| **MinIO** | 对象存储（文件上传） | S3 兼容 |
+| **SeaweedFS** | 对象存储（文件上传） | S3 兼容（MinIO 社区版停维护后的替代，容器服务名沿用 minio） |
 
 ### OLAP 引擎二选一（现状：两引擎读数逻辑已对齐，默认仍走 Doris）
 

@@ -110,7 +110,7 @@ The platform provides 25 analysis models across three categories: general behavi
 | OLAP Engine | ClickHouse / Apache Doris | Columnar storage for extreme analytical performance |
 | Message Queue | Kafka | High-throughput event stream processing |
 | Cache | Redis | In-memory database |
-| Object Storage | MinIO | S3-compatible object storage |
+| Object Storage | SeaweedFS | S3-compatible object storage — the replacement after MinIO Community went unmaintained; the container service name stays minio |
 | Service Registry | Etcd / Consul | Service discovery & configuration |
 | Tracing | Jaeger + OpenTelemetry | Distributed observability |
 | API Definition | Protobuf + buf.build | Contract-first API design |
@@ -295,7 +295,7 @@ go-wind-uba/
 │   │   ├── jwt/                        # JWT utilities
 │   │   ├── metadata/                   # Metadata management
 │   │   ├── middleware/                 # Middleware (auth/logging/ent/metadata)
-│   │   ├── oss/                        # Object storage (MinIO)
+│   │   ├── oss/                        # Object storage (S3-compatible: SeaweedFS)
 │   │   ├── serviceid/                  # Service identity
 │   │   ├── task/                       # Async tasks
 │   │   ├── topic/                      # Kafka topic management

@@ -18,7 +18,7 @@
 
 2. **搭建开发环境**
 
-   - 中间件依赖：Docker Compose 启动 PostgreSQL / Redis / Kafka / etcd / Doris / MinIO（见 `backend/docker-compose.libs.yaml`）
+   - 中间件依赖：Docker Compose 启动 PostgreSQL / Redis / Kafka / etcd / Doris / SeaweedFS（S3 兼容对象存储，容器服务名沿用 minio；见 `backend/docker-compose.libs.yaml`）
    - 后端：Go 1.25+，参考 [backend/AGENTS.md](./backend/AGENTS.md) 了解服务结构与代码生成
    - 前端：Node 18+ / pnpm，参考 [frontend/AGENTS.md](./frontend/AGENTS.md)
    - 根目录 [AGENTS.md](./AGENTS.md) 有全局数据流与模块速记

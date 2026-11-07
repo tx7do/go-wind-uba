@@ -15,7 +15,7 @@
 | 分析库(OLAP) | Apache Doris(`tx7do/go-crud/doris`) |
 | 分析库(编译期停用) | ClickHouse(`tx7do/go-crud/clickhouse`) —— `data.UseClickHouse` 是 `internal/data/data.go:35` 的常量 `false`,代码在但不会被执行;要启用须改常量重编。读数逻辑已与 Doris 对齐(事件去重/FINAL 读/派生表回算),口径差异与迁移注意见 `docs/architecture.md`「OLAP 引擎二选一」 |
 | 缓存/队列 | Redis(`redis/go-redis/v9`)、[Asynq](https://github.com/hibiken/asynq) 任务队列 |
-| 对象存储 | MinIO(`minio/minio-go`) |
+| 对象存储 | SeaweedFS（S3 兼容，服务名沿用 minio；SDK 仍为 `minio/minio-go`） |
 | 鉴权 | JWT(`golang-jwt/jwt/v5`、`tx7do/kratos-authn`)、Casbin/OPA(`tx7do/kratos-authz`) |
 | API 协议 | Protocol Buffers(`api/protos/`)→ 生成 Go HTTP/gRPC + OpenAPI + TypeScript |
 | 构建/工具链 | Makefile + [buf](https://buf.build/) + 一系列 `protoc-gen-*` 插件 |

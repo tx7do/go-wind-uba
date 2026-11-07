@@ -116,25 +116,23 @@ services:
       options:
         max-size: '500m'
 
+  # 对象存储：SeaweedFS（S3 兼容网关；MinIO 社区版已于 2026-04 停止维护、仓库归档）。
+  # 服务名沿用 minio：oss.yaml 的 endpoint 与 hosts 映射零改动。
+  # 桶由应用侧 EnsureBucketExists 自动创建，无需预建。
   minio:
-    image: docker.io/minio/minio:latest
+    image: docker.io/chrislusf/seaweedfs:4.51
     container_name: minio
     hostname: minio
     restart: always
     ports:
-      - "9001:9000"
-      - "9002:9001"
+      - "9001:9000"   # S3 兼容 API（宿主侧 9001 不变，oss.yaml 127.0.0.1:9001 保持有效）
+      - "9002:9333"   # Master Web UI（原 MinIO Console :9002 的替代入口）
     networks:
       - app-tier
-    environment:
-      - MINIO_ROOT_USER=root
-      - MINIO_ROOT_PASSWORD=*Abcd123456
-      - MINIO_DEFAULT_BUCKETS=images
-      - MINIO_FORCE_NEW_KEYS=yes
-      - BITNAMI_DEBUG=true
-    #    volumes:
-    #      - ${APP_ROOT:-/root/app}/minio/data:/data
-    command: server /data --console-address ':9001'
+    volumes:
+      - ./scripts/docker/seaweedfs/s3.json:/etc/seaweedfs/s3.json:ro
+#      - ${APP_ROOT:-/root/app}/seaweedfs/data:/data
+    command: server -dir=/data -filer -s3 -s3.port=9000 -s3.config=/etc/seaweedfs/s3.json
 
   postgres:
     image: docker.io/bitnami/postgresql:latest

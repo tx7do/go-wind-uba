@@ -112,7 +112,7 @@
 | OLAPエンジン | ClickHouse / Apache Doris | カラムナストレージ、極致の分析パフォーマンス |
 | メッセージキュー | Kafka | 高スループットイベントストリーム処理 |
 | キャッシュ | Redis | インメモリデータベース |
-| オブジェクトストレージ | MinIO | S3互換オブジェクトストレージ |
+| オブジェクトストレージ | SeaweedFS | S3互換オブジェクトストレージ。MinIO コミュニティ版の保守終了後の代替で、コンテナサービス名は minio を継続使用 |
 | サービスレジストリ | Etcd / Consul | サービスディスカバリと設定 |
 | トレーシング | Jaeger + OpenTelemetry | 分散オブザーバビリティ |
 | API定義 | Protobuf + buf.build | コントラクトファーストAPI設計 |
@@ -297,7 +297,7 @@ go-wind-uba/
 │   │   ├── jwt/                        # JWTユーティリティ
 │   │   ├── metadata/                   # メタデータ管理
 │   │   ├── middleware/                 # ミドルウェア（認可/ログ/ent/メタデータ）
-│   │   ├── oss/                        # オブジェクトストレージ（MinIO）
+│   │   ├── oss/                        # オブジェクトストレージ（S3 互換：SeaweedFS）
 │   │   ├── serviceid/                  # サービス識別
 │   │   ├── task/                       # 非同期タスク
 │   │   ├── topic/                      # Kafkaトピック管理
