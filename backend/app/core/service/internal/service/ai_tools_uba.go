@@ -146,8 +146,8 @@ func clampToolDays(days int32) int32 {
 
 func (s *AiChatService) toolActiveUsers(ctx context.Context, argsJson string) (string, error) {
 	args := struct {
-		Days  int32  `json:"days"`
-		AppID uint32 `json:"app_id"`
+		Days  int32 `json:"days"`
+		AppID int64 `json:"app_id"`
 	}{Days: 7}
 	if argsJson != "" {
 		if err := json.Unmarshal([]byte(argsJson), &args); err != nil {
@@ -185,7 +185,7 @@ func (s *AiChatService) toolTopEvents(ctx context.Context, argsJson string) (str
 		Days   int32  `json:"days"`
 		Limit  int32  `json:"limit"`
 		Metric string `json:"metric"`
-		AppID  uint32 `json:"app_id"`
+		AppID  int64  `json:"app_id"`
 	}{Days: 7, Limit: 10}
 	if argsJson != "" {
 		if err := json.Unmarshal([]byte(argsJson), &args); err != nil {
@@ -301,7 +301,7 @@ func (s *AiChatService) toolEventTrend(ctx context.Context, argsJson string) (st
 	args := struct {
 		EventName string `json:"event_name"`
 		Days      int32  `json:"days"`
-		AppID     uint32 `json:"app_id"`
+		AppID     int64  `json:"app_id"`
 	}{Days: 7}
 	if argsJson != "" {
 		if err := json.Unmarshal([]byte(argsJson), &args); err != nil {
@@ -338,7 +338,7 @@ func (s *AiChatService) toolEventTrend(ctx context.Context, argsJson string) (st
 }
 
 // toolAppIdPtr appId=0 视为未指定（全部应用），转 nil。
-func toolAppIdPtr(appId uint32) *uint32 {
+func toolAppIdPtr(appId int64) *int64 {
 	if appId == 0 {
 		return nil
 	}

@@ -104,7 +104,7 @@ func (s *SqlQueryService) writeAudit(ctx context.Context, query string, resp *ub
 	}
 
 	if claims, ok := authnEngine.AuthClaimsFromContext(ctx); ok {
-		if uid, err := claims.GetUint32("uid"); err == nil {
+		if uid, err := claims.GetInt64("uid"); err == nil {
 			entry.UserId = &uid
 		}
 		if name, err := claims.GetString(authnEngine.ClaimFieldSubject); err == nil && name != "" {

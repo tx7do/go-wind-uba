@@ -10,47 +10,47 @@ import (
 )
 
 // ID filters vertices based on their ID field.
-func ID(id uint32) predicate.RiskRuleCondition {
+func ID(id int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldEQ(FieldID, id))
 }
 
 // IDEQ applies the EQ predicate on the ID field.
-func IDEQ(id uint32) predicate.RiskRuleCondition {
+func IDEQ(id int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldEQ(FieldID, id))
 }
 
 // IDNEQ applies the NEQ predicate on the ID field.
-func IDNEQ(id uint32) predicate.RiskRuleCondition {
+func IDNEQ(id int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldNEQ(FieldID, id))
 }
 
 // IDIn applies the In predicate on the ID field.
-func IDIn(ids ...uint32) predicate.RiskRuleCondition {
+func IDIn(ids ...int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldIn(FieldID, ids...))
 }
 
 // IDNotIn applies the NotIn predicate on the ID field.
-func IDNotIn(ids ...uint32) predicate.RiskRuleCondition {
+func IDNotIn(ids ...int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldNotIn(FieldID, ids...))
 }
 
 // IDGT applies the GT predicate on the ID field.
-func IDGT(id uint32) predicate.RiskRuleCondition {
+func IDGT(id int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldGT(FieldID, id))
 }
 
 // IDGTE applies the GTE predicate on the ID field.
-func IDGTE(id uint32) predicate.RiskRuleCondition {
+func IDGTE(id int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldGTE(FieldID, id))
 }
 
 // IDLT applies the LT predicate on the ID field.
-func IDLT(id uint32) predicate.RiskRuleCondition {
+func IDLT(id int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldLT(FieldID, id))
 }
 
 // IDLTE applies the LTE predicate on the ID field.
-func IDLTE(id uint32) predicate.RiskRuleCondition {
+func IDLTE(id int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldLTE(FieldID, id))
 }
 
@@ -70,17 +70,17 @@ func DeletedAt(v time.Time) predicate.RiskRuleCondition {
 }
 
 // CreatedBy applies equality check predicate on the "created_by" field. It's identical to CreatedByEQ.
-func CreatedBy(v uint32) predicate.RiskRuleCondition {
+func CreatedBy(v int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldEQ(FieldCreatedBy, v))
 }
 
 // UpdatedBy applies equality check predicate on the "updated_by" field. It's identical to UpdatedByEQ.
-func UpdatedBy(v uint32) predicate.RiskRuleCondition {
+func UpdatedBy(v int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldEQ(FieldUpdatedBy, v))
 }
 
 // DeletedBy applies equality check predicate on the "deleted_by" field. It's identical to DeletedByEQ.
-func DeletedBy(v uint32) predicate.RiskRuleCondition {
+func DeletedBy(v int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldEQ(FieldDeletedBy, v))
 }
 
@@ -90,12 +90,12 @@ func SortOrder(v uint32) predicate.RiskRuleCondition {
 }
 
 // TenantID applies equality check predicate on the "tenant_id" field. It's identical to TenantIDEQ.
-func TenantID(v uint32) predicate.RiskRuleCondition {
+func TenantID(v int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldEQ(FieldTenantID, v))
 }
 
 // RuleID applies equality check predicate on the "rule_id" field. It's identical to RuleIDEQ.
-func RuleID(v uint32) predicate.RiskRuleCondition {
+func RuleID(v int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldEQ(FieldRuleID, v))
 }
 
@@ -120,7 +120,7 @@ func LogicOperator(v string) predicate.RiskRuleCondition {
 }
 
 // GroupID applies equality check predicate on the "group_id" field. It's identical to GroupIDEQ.
-func GroupID(v uint32) predicate.RiskRuleCondition {
+func GroupID(v int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldEQ(FieldGroupID, v))
 }
 
@@ -275,42 +275,42 @@ func DeletedAtNotNil() predicate.RiskRuleCondition {
 }
 
 // CreatedByEQ applies the EQ predicate on the "created_by" field.
-func CreatedByEQ(v uint32) predicate.RiskRuleCondition {
+func CreatedByEQ(v int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldEQ(FieldCreatedBy, v))
 }
 
 // CreatedByNEQ applies the NEQ predicate on the "created_by" field.
-func CreatedByNEQ(v uint32) predicate.RiskRuleCondition {
+func CreatedByNEQ(v int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldNEQ(FieldCreatedBy, v))
 }
 
 // CreatedByIn applies the In predicate on the "created_by" field.
-func CreatedByIn(vs ...uint32) predicate.RiskRuleCondition {
+func CreatedByIn(vs ...int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldIn(FieldCreatedBy, vs...))
 }
 
 // CreatedByNotIn applies the NotIn predicate on the "created_by" field.
-func CreatedByNotIn(vs ...uint32) predicate.RiskRuleCondition {
+func CreatedByNotIn(vs ...int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldNotIn(FieldCreatedBy, vs...))
 }
 
 // CreatedByGT applies the GT predicate on the "created_by" field.
-func CreatedByGT(v uint32) predicate.RiskRuleCondition {
+func CreatedByGT(v int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldGT(FieldCreatedBy, v))
 }
 
 // CreatedByGTE applies the GTE predicate on the "created_by" field.
-func CreatedByGTE(v uint32) predicate.RiskRuleCondition {
+func CreatedByGTE(v int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldGTE(FieldCreatedBy, v))
 }
 
 // CreatedByLT applies the LT predicate on the "created_by" field.
-func CreatedByLT(v uint32) predicate.RiskRuleCondition {
+func CreatedByLT(v int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldLT(FieldCreatedBy, v))
 }
 
 // CreatedByLTE applies the LTE predicate on the "created_by" field.
-func CreatedByLTE(v uint32) predicate.RiskRuleCondition {
+func CreatedByLTE(v int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldLTE(FieldCreatedBy, v))
 }
 
@@ -325,42 +325,42 @@ func CreatedByNotNil() predicate.RiskRuleCondition {
 }
 
 // UpdatedByEQ applies the EQ predicate on the "updated_by" field.
-func UpdatedByEQ(v uint32) predicate.RiskRuleCondition {
+func UpdatedByEQ(v int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldEQ(FieldUpdatedBy, v))
 }
 
 // UpdatedByNEQ applies the NEQ predicate on the "updated_by" field.
-func UpdatedByNEQ(v uint32) predicate.RiskRuleCondition {
+func UpdatedByNEQ(v int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldNEQ(FieldUpdatedBy, v))
 }
 
 // UpdatedByIn applies the In predicate on the "updated_by" field.
-func UpdatedByIn(vs ...uint32) predicate.RiskRuleCondition {
+func UpdatedByIn(vs ...int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldIn(FieldUpdatedBy, vs...))
 }
 
 // UpdatedByNotIn applies the NotIn predicate on the "updated_by" field.
-func UpdatedByNotIn(vs ...uint32) predicate.RiskRuleCondition {
+func UpdatedByNotIn(vs ...int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldNotIn(FieldUpdatedBy, vs...))
 }
 
 // UpdatedByGT applies the GT predicate on the "updated_by" field.
-func UpdatedByGT(v uint32) predicate.RiskRuleCondition {
+func UpdatedByGT(v int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldGT(FieldUpdatedBy, v))
 }
 
 // UpdatedByGTE applies the GTE predicate on the "updated_by" field.
-func UpdatedByGTE(v uint32) predicate.RiskRuleCondition {
+func UpdatedByGTE(v int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldGTE(FieldUpdatedBy, v))
 }
 
 // UpdatedByLT applies the LT predicate on the "updated_by" field.
-func UpdatedByLT(v uint32) predicate.RiskRuleCondition {
+func UpdatedByLT(v int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldLT(FieldUpdatedBy, v))
 }
 
 // UpdatedByLTE applies the LTE predicate on the "updated_by" field.
-func UpdatedByLTE(v uint32) predicate.RiskRuleCondition {
+func UpdatedByLTE(v int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldLTE(FieldUpdatedBy, v))
 }
 
@@ -375,42 +375,42 @@ func UpdatedByNotNil() predicate.RiskRuleCondition {
 }
 
 // DeletedByEQ applies the EQ predicate on the "deleted_by" field.
-func DeletedByEQ(v uint32) predicate.RiskRuleCondition {
+func DeletedByEQ(v int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldEQ(FieldDeletedBy, v))
 }
 
 // DeletedByNEQ applies the NEQ predicate on the "deleted_by" field.
-func DeletedByNEQ(v uint32) predicate.RiskRuleCondition {
+func DeletedByNEQ(v int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldNEQ(FieldDeletedBy, v))
 }
 
 // DeletedByIn applies the In predicate on the "deleted_by" field.
-func DeletedByIn(vs ...uint32) predicate.RiskRuleCondition {
+func DeletedByIn(vs ...int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldIn(FieldDeletedBy, vs...))
 }
 
 // DeletedByNotIn applies the NotIn predicate on the "deleted_by" field.
-func DeletedByNotIn(vs ...uint32) predicate.RiskRuleCondition {
+func DeletedByNotIn(vs ...int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldNotIn(FieldDeletedBy, vs...))
 }
 
 // DeletedByGT applies the GT predicate on the "deleted_by" field.
-func DeletedByGT(v uint32) predicate.RiskRuleCondition {
+func DeletedByGT(v int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldGT(FieldDeletedBy, v))
 }
 
 // DeletedByGTE applies the GTE predicate on the "deleted_by" field.
-func DeletedByGTE(v uint32) predicate.RiskRuleCondition {
+func DeletedByGTE(v int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldGTE(FieldDeletedBy, v))
 }
 
 // DeletedByLT applies the LT predicate on the "deleted_by" field.
-func DeletedByLT(v uint32) predicate.RiskRuleCondition {
+func DeletedByLT(v int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldLT(FieldDeletedBy, v))
 }
 
 // DeletedByLTE applies the LTE predicate on the "deleted_by" field.
-func DeletedByLTE(v uint32) predicate.RiskRuleCondition {
+func DeletedByLTE(v int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldLTE(FieldDeletedBy, v))
 }
 
@@ -475,42 +475,42 @@ func SortOrderNotNil() predicate.RiskRuleCondition {
 }
 
 // TenantIDEQ applies the EQ predicate on the "tenant_id" field.
-func TenantIDEQ(v uint32) predicate.RiskRuleCondition {
+func TenantIDEQ(v int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldEQ(FieldTenantID, v))
 }
 
 // TenantIDNEQ applies the NEQ predicate on the "tenant_id" field.
-func TenantIDNEQ(v uint32) predicate.RiskRuleCondition {
+func TenantIDNEQ(v int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldNEQ(FieldTenantID, v))
 }
 
 // TenantIDIn applies the In predicate on the "tenant_id" field.
-func TenantIDIn(vs ...uint32) predicate.RiskRuleCondition {
+func TenantIDIn(vs ...int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldIn(FieldTenantID, vs...))
 }
 
 // TenantIDNotIn applies the NotIn predicate on the "tenant_id" field.
-func TenantIDNotIn(vs ...uint32) predicate.RiskRuleCondition {
+func TenantIDNotIn(vs ...int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldNotIn(FieldTenantID, vs...))
 }
 
 // TenantIDGT applies the GT predicate on the "tenant_id" field.
-func TenantIDGT(v uint32) predicate.RiskRuleCondition {
+func TenantIDGT(v int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldGT(FieldTenantID, v))
 }
 
 // TenantIDGTE applies the GTE predicate on the "tenant_id" field.
-func TenantIDGTE(v uint32) predicate.RiskRuleCondition {
+func TenantIDGTE(v int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldGTE(FieldTenantID, v))
 }
 
 // TenantIDLT applies the LT predicate on the "tenant_id" field.
-func TenantIDLT(v uint32) predicate.RiskRuleCondition {
+func TenantIDLT(v int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldLT(FieldTenantID, v))
 }
 
 // TenantIDLTE applies the LTE predicate on the "tenant_id" field.
-func TenantIDLTE(v uint32) predicate.RiskRuleCondition {
+func TenantIDLTE(v int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldLTE(FieldTenantID, v))
 }
 
@@ -525,42 +525,42 @@ func TenantIDNotNil() predicate.RiskRuleCondition {
 }
 
 // RuleIDEQ applies the EQ predicate on the "rule_id" field.
-func RuleIDEQ(v uint32) predicate.RiskRuleCondition {
+func RuleIDEQ(v int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldEQ(FieldRuleID, v))
 }
 
 // RuleIDNEQ applies the NEQ predicate on the "rule_id" field.
-func RuleIDNEQ(v uint32) predicate.RiskRuleCondition {
+func RuleIDNEQ(v int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldNEQ(FieldRuleID, v))
 }
 
 // RuleIDIn applies the In predicate on the "rule_id" field.
-func RuleIDIn(vs ...uint32) predicate.RiskRuleCondition {
+func RuleIDIn(vs ...int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldIn(FieldRuleID, vs...))
 }
 
 // RuleIDNotIn applies the NotIn predicate on the "rule_id" field.
-func RuleIDNotIn(vs ...uint32) predicate.RiskRuleCondition {
+func RuleIDNotIn(vs ...int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldNotIn(FieldRuleID, vs...))
 }
 
 // RuleIDGT applies the GT predicate on the "rule_id" field.
-func RuleIDGT(v uint32) predicate.RiskRuleCondition {
+func RuleIDGT(v int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldGT(FieldRuleID, v))
 }
 
 // RuleIDGTE applies the GTE predicate on the "rule_id" field.
-func RuleIDGTE(v uint32) predicate.RiskRuleCondition {
+func RuleIDGTE(v int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldGTE(FieldRuleID, v))
 }
 
 // RuleIDLT applies the LT predicate on the "rule_id" field.
-func RuleIDLT(v uint32) predicate.RiskRuleCondition {
+func RuleIDLT(v int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldLT(FieldRuleID, v))
 }
 
 // RuleIDLTE applies the LTE predicate on the "rule_id" field.
-func RuleIDLTE(v uint32) predicate.RiskRuleCondition {
+func RuleIDLTE(v int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldLTE(FieldRuleID, v))
 }
 
@@ -845,42 +845,42 @@ func LogicOperatorContainsFold(v string) predicate.RiskRuleCondition {
 }
 
 // GroupIDEQ applies the EQ predicate on the "group_id" field.
-func GroupIDEQ(v uint32) predicate.RiskRuleCondition {
+func GroupIDEQ(v int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldEQ(FieldGroupID, v))
 }
 
 // GroupIDNEQ applies the NEQ predicate on the "group_id" field.
-func GroupIDNEQ(v uint32) predicate.RiskRuleCondition {
+func GroupIDNEQ(v int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldNEQ(FieldGroupID, v))
 }
 
 // GroupIDIn applies the In predicate on the "group_id" field.
-func GroupIDIn(vs ...uint32) predicate.RiskRuleCondition {
+func GroupIDIn(vs ...int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldIn(FieldGroupID, vs...))
 }
 
 // GroupIDNotIn applies the NotIn predicate on the "group_id" field.
-func GroupIDNotIn(vs ...uint32) predicate.RiskRuleCondition {
+func GroupIDNotIn(vs ...int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldNotIn(FieldGroupID, vs...))
 }
 
 // GroupIDGT applies the GT predicate on the "group_id" field.
-func GroupIDGT(v uint32) predicate.RiskRuleCondition {
+func GroupIDGT(v int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldGT(FieldGroupID, v))
 }
 
 // GroupIDGTE applies the GTE predicate on the "group_id" field.
-func GroupIDGTE(v uint32) predicate.RiskRuleCondition {
+func GroupIDGTE(v int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldGTE(FieldGroupID, v))
 }
 
 // GroupIDLT applies the LT predicate on the "group_id" field.
-func GroupIDLT(v uint32) predicate.RiskRuleCondition {
+func GroupIDLT(v int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldLT(FieldGroupID, v))
 }
 
 // GroupIDLTE applies the LTE predicate on the "group_id" field.
-func GroupIDLTE(v uint32) predicate.RiskRuleCondition {
+func GroupIDLTE(v int64) predicate.RiskRuleCondition {
 	return predicate.RiskRuleCondition(sql.FieldLTE(FieldGroupID, v))
 }
 

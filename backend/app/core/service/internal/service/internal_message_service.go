@@ -47,7 +47,7 @@ func NewInternalMessageService(
 
 func (s *InternalMessageService) extractRelationIDs(
 	messages []*internalMessageV1.InternalMessage,
-	categorySet aggregator.ResourceMap[uint32, *internalMessageV1.InternalMessageCategory],
+	categorySet aggregator.ResourceMap[int64, *internalMessageV1.InternalMessageCategory],
 ) {
 	for _, p := range messages {
 		if p.GetCategoryId() > 0 {
@@ -58,10 +58,10 @@ func (s *InternalMessageService) extractRelationIDs(
 
 func (s *InternalMessageService) fetchRelationInfo(
 	ctx context.Context,
-	categorySet aggregator.ResourceMap[uint32, *internalMessageV1.InternalMessageCategory],
+	categorySet aggregator.ResourceMap[int64, *internalMessageV1.InternalMessageCategory],
 ) error {
 	if len(categorySet) > 0 {
-		categoryIds := make([]uint32, 0, len(categorySet))
+		categoryIds := make([]int64, 0, len(categorySet))
 		for id := range categorySet {
 			categoryIds = append(categoryIds, id)
 		}
@@ -82,12 +82,12 @@ func (s *InternalMessageService) fetchRelationInfo(
 
 func (s *InternalMessageService) bindRelations(
 	messages []*internalMessageV1.InternalMessage,
-	categorySet aggregator.ResourceMap[uint32, *internalMessageV1.InternalMessageCategory],
+	categorySet aggregator.ResourceMap[int64, *internalMessageV1.InternalMessageCategory],
 ) {
 	aggregator.Populate(
 		messages,
 		categorySet,
-		func(ou *internalMessageV1.InternalMessage) uint32 { return ou.GetCategoryId() },
+		func(ou *internalMessageV1.InternalMessage) int64 { return ou.GetCategoryId() },
 		func(ou *internalMessageV1.InternalMessage, c *internalMessageV1.InternalMessageCategory) {
 			ou.CategoryName = c.Name
 		},
@@ -95,7 +95,7 @@ func (s *InternalMessageService) bindRelations(
 }
 
 func (s *InternalMessageService) enrichRelations(ctx context.Context, messages []*internalMessageV1.InternalMessage) error {
-	var categorySet = make(aggregator.ResourceMap[uint32, *internalMessageV1.InternalMessageCategory])
+	var categorySet = make(aggregator.ResourceMap[int64, *internalMessageV1.InternalMessageCategory])
 	s.extractRelationIDs(messages, categorySet)
 	if err := s.fetchRelationInfo(ctx, categorySet); err != nil {
 		return err
@@ -223,7 +223,7 @@ func (s *InternalMessageService) SendMessage(ctx context.Context, req *internalM
 }
 
 // sendNotification 向客户端发送通知消息
-func (s *InternalMessageService) sendNotification(ctx context.Context, messageId uint32, recipientUserId uint32, senderUserId uint32, now *time.Time, title, content string) error {
+func (s *InternalMessageService) sendNotification(ctx context.Context, messageId int64, recipientUserId int64, senderUserId int64, now *time.Time, title, content string) error {
 	recipient := &internalMessageV1.InternalMessageRecipient{
 		MessageId:       trans.Ptr(messageId),
 		RecipientUserId: trans.Ptr(recipientUserId),

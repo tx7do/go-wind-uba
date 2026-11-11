@@ -65,13 +65,13 @@ func (_c *DashboardCreate) SetNillableDeletedAt(v *time.Time) *DashboardCreate {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (_c *DashboardCreate) SetCreatedBy(v uint32) *DashboardCreate {
+func (_c *DashboardCreate) SetCreatedBy(v int64) *DashboardCreate {
 	_c.mutation.SetCreatedBy(v)
 	return _c
 }
 
 // SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
-func (_c *DashboardCreate) SetNillableCreatedBy(v *uint32) *DashboardCreate {
+func (_c *DashboardCreate) SetNillableCreatedBy(v *int64) *DashboardCreate {
 	if v != nil {
 		_c.SetCreatedBy(*v)
 	}
@@ -79,13 +79,13 @@ func (_c *DashboardCreate) SetNillableCreatedBy(v *uint32) *DashboardCreate {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (_c *DashboardCreate) SetUpdatedBy(v uint32) *DashboardCreate {
+func (_c *DashboardCreate) SetUpdatedBy(v int64) *DashboardCreate {
 	_c.mutation.SetUpdatedBy(v)
 	return _c
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (_c *DashboardCreate) SetNillableUpdatedBy(v *uint32) *DashboardCreate {
+func (_c *DashboardCreate) SetNillableUpdatedBy(v *int64) *DashboardCreate {
 	if v != nil {
 		_c.SetUpdatedBy(*v)
 	}
@@ -93,13 +93,13 @@ func (_c *DashboardCreate) SetNillableUpdatedBy(v *uint32) *DashboardCreate {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (_c *DashboardCreate) SetDeletedBy(v uint32) *DashboardCreate {
+func (_c *DashboardCreate) SetDeletedBy(v int64) *DashboardCreate {
 	_c.mutation.SetDeletedBy(v)
 	return _c
 }
 
 // SetNillableDeletedBy sets the "deleted_by" field if the given value is not nil.
-func (_c *DashboardCreate) SetNillableDeletedBy(v *uint32) *DashboardCreate {
+func (_c *DashboardCreate) SetNillableDeletedBy(v *int64) *DashboardCreate {
 	if v != nil {
 		_c.SetDeletedBy(*v)
 	}
@@ -107,13 +107,13 @@ func (_c *DashboardCreate) SetNillableDeletedBy(v *uint32) *DashboardCreate {
 }
 
 // SetTenantID sets the "tenant_id" field.
-func (_c *DashboardCreate) SetTenantID(v uint32) *DashboardCreate {
+func (_c *DashboardCreate) SetTenantID(v int64) *DashboardCreate {
 	_c.mutation.SetTenantID(v)
 	return _c
 }
 
 // SetNillableTenantID sets the "tenant_id" field if the given value is not nil.
-func (_c *DashboardCreate) SetNillableTenantID(v *uint32) *DashboardCreate {
+func (_c *DashboardCreate) SetNillableTenantID(v *int64) *DashboardCreate {
 	if v != nil {
 		_c.SetTenantID(*v)
 	}
@@ -149,13 +149,13 @@ func (_c *DashboardCreate) SetNillableDescription(v *string) *DashboardCreate {
 }
 
 // SetAppID sets the "app_id" field.
-func (_c *DashboardCreate) SetAppID(v uint32) *DashboardCreate {
+func (_c *DashboardCreate) SetAppID(v int64) *DashboardCreate {
 	_c.mutation.SetAppID(v)
 	return _c
 }
 
 // SetNillableAppID sets the "app_id" field if the given value is not nil.
-func (_c *DashboardCreate) SetNillableAppID(v *uint32) *DashboardCreate {
+func (_c *DashboardCreate) SetNillableAppID(v *int64) *DashboardCreate {
 	if v != nil {
 		_c.SetAppID(*v)
 	}
@@ -183,7 +183,7 @@ func (_c *DashboardCreate) SetNillableEnabled(v *bool) *DashboardCreate {
 }
 
 // SetID sets the "id" field.
-func (_c *DashboardCreate) SetID(v uint32) *DashboardCreate {
+func (_c *DashboardCreate) SetID(v int64) *DashboardCreate {
 	_c.mutation.SetID(v)
 	return _c
 }
@@ -270,7 +270,7 @@ func (_c *DashboardCreate) sqlSave(ctx context.Context) (*Dashboard, error) {
 	}
 	if _spec.ID.Value != _node.ID {
 		id := _spec.ID.Value.(int64)
-		_node.ID = uint32(id)
+		_node.ID = int64(id)
 	}
 	_c.mutation.id = &_node.ID
 	_c.mutation.done = true
@@ -280,7 +280,7 @@ func (_c *DashboardCreate) sqlSave(ctx context.Context) (*Dashboard, error) {
 func (_c *DashboardCreate) createSpec() (*Dashboard, *sqlgraph.CreateSpec) {
 	var (
 		_node = &Dashboard{config: _c.config}
-		_spec = sqlgraph.NewCreateSpec(dashboard.Table, sqlgraph.NewFieldSpec(dashboard.FieldID, field.TypeUint32))
+		_spec = sqlgraph.NewCreateSpec(dashboard.Table, sqlgraph.NewFieldSpec(dashboard.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = _c.conflict
 	if id, ok := _c.mutation.ID(); ok {
@@ -300,19 +300,19 @@ func (_c *DashboardCreate) createSpec() (*Dashboard, *sqlgraph.CreateSpec) {
 		_node.DeletedAt = &value
 	}
 	if value, ok := _c.mutation.CreatedBy(); ok {
-		_spec.SetField(dashboard.FieldCreatedBy, field.TypeUint32, value)
+		_spec.SetField(dashboard.FieldCreatedBy, field.TypeInt64, value)
 		_node.CreatedBy = &value
 	}
 	if value, ok := _c.mutation.UpdatedBy(); ok {
-		_spec.SetField(dashboard.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.SetField(dashboard.FieldUpdatedBy, field.TypeInt64, value)
 		_node.UpdatedBy = &value
 	}
 	if value, ok := _c.mutation.DeletedBy(); ok {
-		_spec.SetField(dashboard.FieldDeletedBy, field.TypeUint32, value)
+		_spec.SetField(dashboard.FieldDeletedBy, field.TypeInt64, value)
 		_node.DeletedBy = &value
 	}
 	if value, ok := _c.mutation.TenantID(); ok {
-		_spec.SetField(dashboard.FieldTenantID, field.TypeUint32, value)
+		_spec.SetField(dashboard.FieldTenantID, field.TypeInt64, value)
 		_node.TenantID = &value
 	}
 	if value, ok := _c.mutation.Name(); ok {
@@ -324,7 +324,7 @@ func (_c *DashboardCreate) createSpec() (*Dashboard, *sqlgraph.CreateSpec) {
 		_node.Description = &value
 	}
 	if value, ok := _c.mutation.AppID(); ok {
-		_spec.SetField(dashboard.FieldAppID, field.TypeUint32, value)
+		_spec.SetField(dashboard.FieldAppID, field.TypeInt64, value)
 		_node.AppID = &value
 	}
 	if value, ok := _c.mutation.Widgets(); ok {
@@ -424,7 +424,7 @@ func (u *DashboardUpsert) ClearDeletedAt() *DashboardUpsert {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (u *DashboardUpsert) SetCreatedBy(v uint32) *DashboardUpsert {
+func (u *DashboardUpsert) SetCreatedBy(v int64) *DashboardUpsert {
 	u.Set(dashboard.FieldCreatedBy, v)
 	return u
 }
@@ -436,7 +436,7 @@ func (u *DashboardUpsert) UpdateCreatedBy() *DashboardUpsert {
 }
 
 // AddCreatedBy adds v to the "created_by" field.
-func (u *DashboardUpsert) AddCreatedBy(v uint32) *DashboardUpsert {
+func (u *DashboardUpsert) AddCreatedBy(v int64) *DashboardUpsert {
 	u.Add(dashboard.FieldCreatedBy, v)
 	return u
 }
@@ -448,7 +448,7 @@ func (u *DashboardUpsert) ClearCreatedBy() *DashboardUpsert {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (u *DashboardUpsert) SetUpdatedBy(v uint32) *DashboardUpsert {
+func (u *DashboardUpsert) SetUpdatedBy(v int64) *DashboardUpsert {
 	u.Set(dashboard.FieldUpdatedBy, v)
 	return u
 }
@@ -460,7 +460,7 @@ func (u *DashboardUpsert) UpdateUpdatedBy() *DashboardUpsert {
 }
 
 // AddUpdatedBy adds v to the "updated_by" field.
-func (u *DashboardUpsert) AddUpdatedBy(v uint32) *DashboardUpsert {
+func (u *DashboardUpsert) AddUpdatedBy(v int64) *DashboardUpsert {
 	u.Add(dashboard.FieldUpdatedBy, v)
 	return u
 }
@@ -472,7 +472,7 @@ func (u *DashboardUpsert) ClearUpdatedBy() *DashboardUpsert {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (u *DashboardUpsert) SetDeletedBy(v uint32) *DashboardUpsert {
+func (u *DashboardUpsert) SetDeletedBy(v int64) *DashboardUpsert {
 	u.Set(dashboard.FieldDeletedBy, v)
 	return u
 }
@@ -484,7 +484,7 @@ func (u *DashboardUpsert) UpdateDeletedBy() *DashboardUpsert {
 }
 
 // AddDeletedBy adds v to the "deleted_by" field.
-func (u *DashboardUpsert) AddDeletedBy(v uint32) *DashboardUpsert {
+func (u *DashboardUpsert) AddDeletedBy(v int64) *DashboardUpsert {
 	u.Add(dashboard.FieldDeletedBy, v)
 	return u
 }
@@ -532,7 +532,7 @@ func (u *DashboardUpsert) ClearDescription() *DashboardUpsert {
 }
 
 // SetAppID sets the "app_id" field.
-func (u *DashboardUpsert) SetAppID(v uint32) *DashboardUpsert {
+func (u *DashboardUpsert) SetAppID(v int64) *DashboardUpsert {
 	u.Set(dashboard.FieldAppID, v)
 	return u
 }
@@ -544,7 +544,7 @@ func (u *DashboardUpsert) UpdateAppID() *DashboardUpsert {
 }
 
 // AddAppID adds v to the "app_id" field.
-func (u *DashboardUpsert) AddAppID(v uint32) *DashboardUpsert {
+func (u *DashboardUpsert) AddAppID(v int64) *DashboardUpsert {
 	u.Add(dashboard.FieldAppID, v)
 	return u
 }
@@ -676,14 +676,14 @@ func (u *DashboardUpsertOne) ClearDeletedAt() *DashboardUpsertOne {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (u *DashboardUpsertOne) SetCreatedBy(v uint32) *DashboardUpsertOne {
+func (u *DashboardUpsertOne) SetCreatedBy(v int64) *DashboardUpsertOne {
 	return u.Update(func(s *DashboardUpsert) {
 		s.SetCreatedBy(v)
 	})
 }
 
 // AddCreatedBy adds v to the "created_by" field.
-func (u *DashboardUpsertOne) AddCreatedBy(v uint32) *DashboardUpsertOne {
+func (u *DashboardUpsertOne) AddCreatedBy(v int64) *DashboardUpsertOne {
 	return u.Update(func(s *DashboardUpsert) {
 		s.AddCreatedBy(v)
 	})
@@ -704,14 +704,14 @@ func (u *DashboardUpsertOne) ClearCreatedBy() *DashboardUpsertOne {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (u *DashboardUpsertOne) SetUpdatedBy(v uint32) *DashboardUpsertOne {
+func (u *DashboardUpsertOne) SetUpdatedBy(v int64) *DashboardUpsertOne {
 	return u.Update(func(s *DashboardUpsert) {
 		s.SetUpdatedBy(v)
 	})
 }
 
 // AddUpdatedBy adds v to the "updated_by" field.
-func (u *DashboardUpsertOne) AddUpdatedBy(v uint32) *DashboardUpsertOne {
+func (u *DashboardUpsertOne) AddUpdatedBy(v int64) *DashboardUpsertOne {
 	return u.Update(func(s *DashboardUpsert) {
 		s.AddUpdatedBy(v)
 	})
@@ -732,14 +732,14 @@ func (u *DashboardUpsertOne) ClearUpdatedBy() *DashboardUpsertOne {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (u *DashboardUpsertOne) SetDeletedBy(v uint32) *DashboardUpsertOne {
+func (u *DashboardUpsertOne) SetDeletedBy(v int64) *DashboardUpsertOne {
 	return u.Update(func(s *DashboardUpsert) {
 		s.SetDeletedBy(v)
 	})
 }
 
 // AddDeletedBy adds v to the "deleted_by" field.
-func (u *DashboardUpsertOne) AddDeletedBy(v uint32) *DashboardUpsertOne {
+func (u *DashboardUpsertOne) AddDeletedBy(v int64) *DashboardUpsertOne {
 	return u.Update(func(s *DashboardUpsert) {
 		s.AddDeletedBy(v)
 	})
@@ -802,14 +802,14 @@ func (u *DashboardUpsertOne) ClearDescription() *DashboardUpsertOne {
 }
 
 // SetAppID sets the "app_id" field.
-func (u *DashboardUpsertOne) SetAppID(v uint32) *DashboardUpsertOne {
+func (u *DashboardUpsertOne) SetAppID(v int64) *DashboardUpsertOne {
 	return u.Update(func(s *DashboardUpsert) {
 		s.SetAppID(v)
 	})
 }
 
 // AddAppID adds v to the "app_id" field.
-func (u *DashboardUpsertOne) AddAppID(v uint32) *DashboardUpsertOne {
+func (u *DashboardUpsertOne) AddAppID(v int64) *DashboardUpsertOne {
 	return u.Update(func(s *DashboardUpsert) {
 		s.AddAppID(v)
 	})
@@ -873,7 +873,7 @@ func (u *DashboardUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *DashboardUpsertOne) ID(ctx context.Context) (id uint32, err error) {
+func (u *DashboardUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -882,7 +882,7 @@ func (u *DashboardUpsertOne) ID(ctx context.Context) (id uint32, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *DashboardUpsertOne) IDX(ctx context.Context) uint32 {
+func (u *DashboardUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -939,7 +939,7 @@ func (_c *DashboardCreateBulk) Save(ctx context.Context) ([]*Dashboard, error) {
 				mutation.id = &nodes[i].ID
 				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = uint32(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -1120,14 +1120,14 @@ func (u *DashboardUpsertBulk) ClearDeletedAt() *DashboardUpsertBulk {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (u *DashboardUpsertBulk) SetCreatedBy(v uint32) *DashboardUpsertBulk {
+func (u *DashboardUpsertBulk) SetCreatedBy(v int64) *DashboardUpsertBulk {
 	return u.Update(func(s *DashboardUpsert) {
 		s.SetCreatedBy(v)
 	})
 }
 
 // AddCreatedBy adds v to the "created_by" field.
-func (u *DashboardUpsertBulk) AddCreatedBy(v uint32) *DashboardUpsertBulk {
+func (u *DashboardUpsertBulk) AddCreatedBy(v int64) *DashboardUpsertBulk {
 	return u.Update(func(s *DashboardUpsert) {
 		s.AddCreatedBy(v)
 	})
@@ -1148,14 +1148,14 @@ func (u *DashboardUpsertBulk) ClearCreatedBy() *DashboardUpsertBulk {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (u *DashboardUpsertBulk) SetUpdatedBy(v uint32) *DashboardUpsertBulk {
+func (u *DashboardUpsertBulk) SetUpdatedBy(v int64) *DashboardUpsertBulk {
 	return u.Update(func(s *DashboardUpsert) {
 		s.SetUpdatedBy(v)
 	})
 }
 
 // AddUpdatedBy adds v to the "updated_by" field.
-func (u *DashboardUpsertBulk) AddUpdatedBy(v uint32) *DashboardUpsertBulk {
+func (u *DashboardUpsertBulk) AddUpdatedBy(v int64) *DashboardUpsertBulk {
 	return u.Update(func(s *DashboardUpsert) {
 		s.AddUpdatedBy(v)
 	})
@@ -1176,14 +1176,14 @@ func (u *DashboardUpsertBulk) ClearUpdatedBy() *DashboardUpsertBulk {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (u *DashboardUpsertBulk) SetDeletedBy(v uint32) *DashboardUpsertBulk {
+func (u *DashboardUpsertBulk) SetDeletedBy(v int64) *DashboardUpsertBulk {
 	return u.Update(func(s *DashboardUpsert) {
 		s.SetDeletedBy(v)
 	})
 }
 
 // AddDeletedBy adds v to the "deleted_by" field.
-func (u *DashboardUpsertBulk) AddDeletedBy(v uint32) *DashboardUpsertBulk {
+func (u *DashboardUpsertBulk) AddDeletedBy(v int64) *DashboardUpsertBulk {
 	return u.Update(func(s *DashboardUpsert) {
 		s.AddDeletedBy(v)
 	})
@@ -1246,14 +1246,14 @@ func (u *DashboardUpsertBulk) ClearDescription() *DashboardUpsertBulk {
 }
 
 // SetAppID sets the "app_id" field.
-func (u *DashboardUpsertBulk) SetAppID(v uint32) *DashboardUpsertBulk {
+func (u *DashboardUpsertBulk) SetAppID(v int64) *DashboardUpsertBulk {
 	return u.Update(func(s *DashboardUpsert) {
 		s.SetAppID(v)
 	})
 }
 
 // AddAppID adds v to the "app_id" field.
-func (u *DashboardUpsertBulk) AddAppID(v uint32) *DashboardUpsertBulk {
+func (u *DashboardUpsertBulk) AddAppID(v int64) *DashboardUpsertBulk {
 	return u.Update(func(s *DashboardUpsert) {
 		s.AddAppID(v)
 	})

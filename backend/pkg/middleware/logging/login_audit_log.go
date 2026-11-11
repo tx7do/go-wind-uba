@@ -96,7 +96,7 @@ func (l *LoginAuditLogMiddleware) Handle(ctx context.Context, htr *http.Transpor
 
 	// 计算风险分数和风险等级
 	riskScore := l.computeRiskScore(loginAuditLog)
-	loginAuditLog.RiskScore = trans.Ptr(riskScore)
+	loginAuditLog.RiskScore = trans.Ptr(uint32(riskScore))
 	loginAuditLog.RiskLevel = trans.Ptr(l.levelFromScore(riskScore))
 
 	// 计算风险因素
@@ -148,8 +148,8 @@ func (l *LoginAuditLogMiddleware) signature(loginAuditLog *auditV1.LoginAuditLog
 	createdAt := loginAuditLog.GetCreatedAt()
 
 	type signContent struct {
-		TenantID uint32 `json:"tenant_id"`
-		UserID   uint32 `json:"user_id"`
+		TenantID int64  `json:"tenant_id"`
+		UserID   int64  `json:"user_id"`
 		Username string `json:"username"`
 		Sec      int64  `json:"sec"`   // createdAt 秒数
 		Nanos    int32  `json:"nanos"` // createdAt 纳秒数
@@ -190,7 +190,7 @@ func (l *LoginAuditLogMiddleware) signature(loginAuditLog *auditV1.LoginAuditLog
 }
 
 // computeRiskScore 计算登录审计日志的风险分数（0-100）
-func (l *LoginAuditLogMiddleware) computeRiskScore(loginAuditLog *auditV1.LoginAuditLog) uint32 {
+func (l *LoginAuditLogMiddleware) computeRiskScore(loginAuditLog *auditV1.LoginAuditLog) int64 {
 	if loginAuditLog == nil {
 		return 0
 	}
@@ -234,11 +234,11 @@ func (l *LoginAuditLogMiddleware) computeRiskScore(loginAuditLog *auditV1.LoginA
 		score = 100
 	}
 
-	return uint32(score)
+	return int64(score)
 }
 
 // levelFromScore 根据 risk_score 映射到 risk_level，阈值可按需调整。
-func (l *LoginAuditLogMiddleware) levelFromScore(score uint32) auditV1.LoginAuditLog_RiskLevel {
+func (l *LoginAuditLogMiddleware) levelFromScore(score int64) auditV1.LoginAuditLog_RiskLevel {
 	// 常见阈值：0-30 -> LOW；31-70 -> MEDIUM；71-100 -> HIGH
 	switch {
 	case score <= 30:

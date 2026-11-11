@@ -79,7 +79,7 @@ var (
 	Hooks  [1]ent.Hook
 	Policy ent.Policy
 	// DefaultTenantID holds the default value on creation for the "tenant_id" field.
-	DefaultTenantID uint32
+	DefaultTenantID int64
 	// DefaultStatusCode holds the default value on creation for the "status_code" field.
 	DefaultStatusCode int32
 	// DefaultRetryCount holds the default value on creation for the "retry_count" field.
@@ -87,7 +87,7 @@ var (
 	// DefaultSuccess holds the default value on creation for the "success" field.
 	DefaultSuccess bool
 	// IDValidator is a validator for the "id" field. It is called by the builders before save.
-	IDValidator func(uint32) error
+	IDValidator func(int64) error
 )
 
 // OrderOption defines the ordering options for the WebhookDeliveryLog queries.

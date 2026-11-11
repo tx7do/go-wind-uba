@@ -95,12 +95,12 @@ GROUP BY tenant_id, user_id, device_id
 LIMIT ?`
 
 	type pairRow struct {
-		TenantID uint32 `ch:"tenant_id"`
-		UserID   uint32 `ch:"user_id"`
+		TenantID int64  `ch:"tenant_id"`
+		UserID   int64  `ch:"user_id"`
 		DeviceID string `ch:"device_id"`
 	}
 	var rows []pairRow
-	if err := r.db.Select(ctx, &rows, query, time.UnixMilli(startMs), time.UnixMilli(endMs), uint64(limit)); err != nil {
+	if err := r.db.Select(ctx, &rows, query, time.UnixMilli(startMs), time.UnixMilli(endMs), int64(limit)); err != nil {
 		r.log.Errorf("failed to query user device pairs: %v", err)
 		return nil, ubaV1.ErrorInternalServerError("failed to query user device pairs")
 	}
@@ -124,6 +124,6 @@ func (r *IDMappingRepo) List(ctx context.Context, req *paginationV1.PagingReques
 	}
 	return &ubaV1.ListIDMappingResponse{
 		Items: result.Items,
-		Total: result.Total,
+		Total: int64(result.Total),
 	}, nil
 }

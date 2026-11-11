@@ -71,14 +71,14 @@ func (_u *AlertRuleUpdate) ClearDeletedAt() *AlertRuleUpdate {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (_u *AlertRuleUpdate) SetCreatedBy(v uint32) *AlertRuleUpdate {
+func (_u *AlertRuleUpdate) SetCreatedBy(v int64) *AlertRuleUpdate {
 	_u.mutation.ResetCreatedBy()
 	_u.mutation.SetCreatedBy(v)
 	return _u
 }
 
 // SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
-func (_u *AlertRuleUpdate) SetNillableCreatedBy(v *uint32) *AlertRuleUpdate {
+func (_u *AlertRuleUpdate) SetNillableCreatedBy(v *int64) *AlertRuleUpdate {
 	if v != nil {
 		_u.SetCreatedBy(*v)
 	}
@@ -86,7 +86,7 @@ func (_u *AlertRuleUpdate) SetNillableCreatedBy(v *uint32) *AlertRuleUpdate {
 }
 
 // AddCreatedBy adds value to the "created_by" field.
-func (_u *AlertRuleUpdate) AddCreatedBy(v int32) *AlertRuleUpdate {
+func (_u *AlertRuleUpdate) AddCreatedBy(v int64) *AlertRuleUpdate {
 	_u.mutation.AddCreatedBy(v)
 	return _u
 }
@@ -98,14 +98,14 @@ func (_u *AlertRuleUpdate) ClearCreatedBy() *AlertRuleUpdate {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (_u *AlertRuleUpdate) SetUpdatedBy(v uint32) *AlertRuleUpdate {
+func (_u *AlertRuleUpdate) SetUpdatedBy(v int64) *AlertRuleUpdate {
 	_u.mutation.ResetUpdatedBy()
 	_u.mutation.SetUpdatedBy(v)
 	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (_u *AlertRuleUpdate) SetNillableUpdatedBy(v *uint32) *AlertRuleUpdate {
+func (_u *AlertRuleUpdate) SetNillableUpdatedBy(v *int64) *AlertRuleUpdate {
 	if v != nil {
 		_u.SetUpdatedBy(*v)
 	}
@@ -113,7 +113,7 @@ func (_u *AlertRuleUpdate) SetNillableUpdatedBy(v *uint32) *AlertRuleUpdate {
 }
 
 // AddUpdatedBy adds value to the "updated_by" field.
-func (_u *AlertRuleUpdate) AddUpdatedBy(v int32) *AlertRuleUpdate {
+func (_u *AlertRuleUpdate) AddUpdatedBy(v int64) *AlertRuleUpdate {
 	_u.mutation.AddUpdatedBy(v)
 	return _u
 }
@@ -125,14 +125,14 @@ func (_u *AlertRuleUpdate) ClearUpdatedBy() *AlertRuleUpdate {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (_u *AlertRuleUpdate) SetDeletedBy(v uint32) *AlertRuleUpdate {
+func (_u *AlertRuleUpdate) SetDeletedBy(v int64) *AlertRuleUpdate {
 	_u.mutation.ResetDeletedBy()
 	_u.mutation.SetDeletedBy(v)
 	return _u
 }
 
 // SetNillableDeletedBy sets the "deleted_by" field if the given value is not nil.
-func (_u *AlertRuleUpdate) SetNillableDeletedBy(v *uint32) *AlertRuleUpdate {
+func (_u *AlertRuleUpdate) SetNillableDeletedBy(v *int64) *AlertRuleUpdate {
 	if v != nil {
 		_u.SetDeletedBy(*v)
 	}
@@ -140,7 +140,7 @@ func (_u *AlertRuleUpdate) SetNillableDeletedBy(v *uint32) *AlertRuleUpdate {
 }
 
 // AddDeletedBy adds value to the "deleted_by" field.
-func (_u *AlertRuleUpdate) AddDeletedBy(v int32) *AlertRuleUpdate {
+func (_u *AlertRuleUpdate) AddDeletedBy(v int64) *AlertRuleUpdate {
 	_u.mutation.AddDeletedBy(v)
 	return _u
 }
@@ -192,14 +192,14 @@ func (_u *AlertRuleUpdate) ClearDescription() *AlertRuleUpdate {
 }
 
 // SetAppID sets the "app_id" field.
-func (_u *AlertRuleUpdate) SetAppID(v uint32) *AlertRuleUpdate {
+func (_u *AlertRuleUpdate) SetAppID(v int64) *AlertRuleUpdate {
 	_u.mutation.ResetAppID()
 	_u.mutation.SetAppID(v)
 	return _u
 }
 
 // SetNillableAppID sets the "app_id" field if the given value is not nil.
-func (_u *AlertRuleUpdate) SetNillableAppID(v *uint32) *AlertRuleUpdate {
+func (_u *AlertRuleUpdate) SetNillableAppID(v *int64) *AlertRuleUpdate {
 	if v != nil {
 		_u.SetAppID(*v)
 	}
@@ -207,7 +207,7 @@ func (_u *AlertRuleUpdate) SetNillableAppID(v *uint32) *AlertRuleUpdate {
 }
 
 // AddAppID adds value to the "app_id" field.
-func (_u *AlertRuleUpdate) AddAppID(v int32) *AlertRuleUpdate {
+func (_u *AlertRuleUpdate) AddAppID(v int64) *AlertRuleUpdate {
 	_u.mutation.AddAppID(v)
 	return _u
 }
@@ -433,7 +433,7 @@ func (_u *AlertRuleUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if err := _u.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(alertrule.Table, alertrule.Columns, sqlgraph.NewFieldSpec(alertrule.FieldID, field.TypeUint32))
+	_spec := sqlgraph.NewUpdateSpec(alertrule.Table, alertrule.Columns, sqlgraph.NewFieldSpec(alertrule.FieldID, field.TypeInt64))
 	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -457,34 +457,34 @@ func (_u *AlertRuleUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		_spec.ClearField(alertrule.FieldDeletedAt, field.TypeTime)
 	}
 	if value, ok := _u.mutation.CreatedBy(); ok {
-		_spec.SetField(alertrule.FieldCreatedBy, field.TypeUint32, value)
+		_spec.SetField(alertrule.FieldCreatedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedCreatedBy(); ok {
-		_spec.AddField(alertrule.FieldCreatedBy, field.TypeUint32, value)
+		_spec.AddField(alertrule.FieldCreatedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.CreatedByCleared() {
-		_spec.ClearField(alertrule.FieldCreatedBy, field.TypeUint32)
+		_spec.ClearField(alertrule.FieldCreatedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.UpdatedBy(); ok {
-		_spec.SetField(alertrule.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.SetField(alertrule.FieldUpdatedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
-		_spec.AddField(alertrule.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.AddField(alertrule.FieldUpdatedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.UpdatedByCleared() {
-		_spec.ClearField(alertrule.FieldUpdatedBy, field.TypeUint32)
+		_spec.ClearField(alertrule.FieldUpdatedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.DeletedBy(); ok {
-		_spec.SetField(alertrule.FieldDeletedBy, field.TypeUint32, value)
+		_spec.SetField(alertrule.FieldDeletedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedDeletedBy(); ok {
-		_spec.AddField(alertrule.FieldDeletedBy, field.TypeUint32, value)
+		_spec.AddField(alertrule.FieldDeletedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.DeletedByCleared() {
-		_spec.ClearField(alertrule.FieldDeletedBy, field.TypeUint32)
+		_spec.ClearField(alertrule.FieldDeletedBy, field.TypeInt64)
 	}
 	if _u.mutation.TenantIDCleared() {
-		_spec.ClearField(alertrule.FieldTenantID, field.TypeUint32)
+		_spec.ClearField(alertrule.FieldTenantID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(alertrule.FieldName, field.TypeString, value)
@@ -499,13 +499,13 @@ func (_u *AlertRuleUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		_spec.ClearField(alertrule.FieldDescription, field.TypeString)
 	}
 	if value, ok := _u.mutation.AppID(); ok {
-		_spec.SetField(alertrule.FieldAppID, field.TypeUint32, value)
+		_spec.SetField(alertrule.FieldAppID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedAppID(); ok {
-		_spec.AddField(alertrule.FieldAppID, field.TypeUint32, value)
+		_spec.AddField(alertrule.FieldAppID, field.TypeInt64, value)
 	}
 	if _u.mutation.AppIDCleared() {
-		_spec.ClearField(alertrule.FieldAppID, field.TypeUint32)
+		_spec.ClearField(alertrule.FieldAppID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.EventName(); ok {
 		_spec.SetField(alertrule.FieldEventName, field.TypeString, value)
@@ -620,14 +620,14 @@ func (_u *AlertRuleUpdateOne) ClearDeletedAt() *AlertRuleUpdateOne {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (_u *AlertRuleUpdateOne) SetCreatedBy(v uint32) *AlertRuleUpdateOne {
+func (_u *AlertRuleUpdateOne) SetCreatedBy(v int64) *AlertRuleUpdateOne {
 	_u.mutation.ResetCreatedBy()
 	_u.mutation.SetCreatedBy(v)
 	return _u
 }
 
 // SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
-func (_u *AlertRuleUpdateOne) SetNillableCreatedBy(v *uint32) *AlertRuleUpdateOne {
+func (_u *AlertRuleUpdateOne) SetNillableCreatedBy(v *int64) *AlertRuleUpdateOne {
 	if v != nil {
 		_u.SetCreatedBy(*v)
 	}
@@ -635,7 +635,7 @@ func (_u *AlertRuleUpdateOne) SetNillableCreatedBy(v *uint32) *AlertRuleUpdateOn
 }
 
 // AddCreatedBy adds value to the "created_by" field.
-func (_u *AlertRuleUpdateOne) AddCreatedBy(v int32) *AlertRuleUpdateOne {
+func (_u *AlertRuleUpdateOne) AddCreatedBy(v int64) *AlertRuleUpdateOne {
 	_u.mutation.AddCreatedBy(v)
 	return _u
 }
@@ -647,14 +647,14 @@ func (_u *AlertRuleUpdateOne) ClearCreatedBy() *AlertRuleUpdateOne {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (_u *AlertRuleUpdateOne) SetUpdatedBy(v uint32) *AlertRuleUpdateOne {
+func (_u *AlertRuleUpdateOne) SetUpdatedBy(v int64) *AlertRuleUpdateOne {
 	_u.mutation.ResetUpdatedBy()
 	_u.mutation.SetUpdatedBy(v)
 	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (_u *AlertRuleUpdateOne) SetNillableUpdatedBy(v *uint32) *AlertRuleUpdateOne {
+func (_u *AlertRuleUpdateOne) SetNillableUpdatedBy(v *int64) *AlertRuleUpdateOne {
 	if v != nil {
 		_u.SetUpdatedBy(*v)
 	}
@@ -662,7 +662,7 @@ func (_u *AlertRuleUpdateOne) SetNillableUpdatedBy(v *uint32) *AlertRuleUpdateOn
 }
 
 // AddUpdatedBy adds value to the "updated_by" field.
-func (_u *AlertRuleUpdateOne) AddUpdatedBy(v int32) *AlertRuleUpdateOne {
+func (_u *AlertRuleUpdateOne) AddUpdatedBy(v int64) *AlertRuleUpdateOne {
 	_u.mutation.AddUpdatedBy(v)
 	return _u
 }
@@ -674,14 +674,14 @@ func (_u *AlertRuleUpdateOne) ClearUpdatedBy() *AlertRuleUpdateOne {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (_u *AlertRuleUpdateOne) SetDeletedBy(v uint32) *AlertRuleUpdateOne {
+func (_u *AlertRuleUpdateOne) SetDeletedBy(v int64) *AlertRuleUpdateOne {
 	_u.mutation.ResetDeletedBy()
 	_u.mutation.SetDeletedBy(v)
 	return _u
 }
 
 // SetNillableDeletedBy sets the "deleted_by" field if the given value is not nil.
-func (_u *AlertRuleUpdateOne) SetNillableDeletedBy(v *uint32) *AlertRuleUpdateOne {
+func (_u *AlertRuleUpdateOne) SetNillableDeletedBy(v *int64) *AlertRuleUpdateOne {
 	if v != nil {
 		_u.SetDeletedBy(*v)
 	}
@@ -689,7 +689,7 @@ func (_u *AlertRuleUpdateOne) SetNillableDeletedBy(v *uint32) *AlertRuleUpdateOn
 }
 
 // AddDeletedBy adds value to the "deleted_by" field.
-func (_u *AlertRuleUpdateOne) AddDeletedBy(v int32) *AlertRuleUpdateOne {
+func (_u *AlertRuleUpdateOne) AddDeletedBy(v int64) *AlertRuleUpdateOne {
 	_u.mutation.AddDeletedBy(v)
 	return _u
 }
@@ -741,14 +741,14 @@ func (_u *AlertRuleUpdateOne) ClearDescription() *AlertRuleUpdateOne {
 }
 
 // SetAppID sets the "app_id" field.
-func (_u *AlertRuleUpdateOne) SetAppID(v uint32) *AlertRuleUpdateOne {
+func (_u *AlertRuleUpdateOne) SetAppID(v int64) *AlertRuleUpdateOne {
 	_u.mutation.ResetAppID()
 	_u.mutation.SetAppID(v)
 	return _u
 }
 
 // SetNillableAppID sets the "app_id" field if the given value is not nil.
-func (_u *AlertRuleUpdateOne) SetNillableAppID(v *uint32) *AlertRuleUpdateOne {
+func (_u *AlertRuleUpdateOne) SetNillableAppID(v *int64) *AlertRuleUpdateOne {
 	if v != nil {
 		_u.SetAppID(*v)
 	}
@@ -756,7 +756,7 @@ func (_u *AlertRuleUpdateOne) SetNillableAppID(v *uint32) *AlertRuleUpdateOne {
 }
 
 // AddAppID adds value to the "app_id" field.
-func (_u *AlertRuleUpdateOne) AddAppID(v int32) *AlertRuleUpdateOne {
+func (_u *AlertRuleUpdateOne) AddAppID(v int64) *AlertRuleUpdateOne {
 	_u.mutation.AddAppID(v)
 	return _u
 }
@@ -995,7 +995,7 @@ func (_u *AlertRuleUpdateOne) sqlSave(ctx context.Context) (_node *AlertRule, er
 	if err := _u.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(alertrule.Table, alertrule.Columns, sqlgraph.NewFieldSpec(alertrule.FieldID, field.TypeUint32))
+	_spec := sqlgraph.NewUpdateSpec(alertrule.Table, alertrule.Columns, sqlgraph.NewFieldSpec(alertrule.FieldID, field.TypeInt64))
 	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "AlertRule.id" for update`)}
@@ -1036,34 +1036,34 @@ func (_u *AlertRuleUpdateOne) sqlSave(ctx context.Context) (_node *AlertRule, er
 		_spec.ClearField(alertrule.FieldDeletedAt, field.TypeTime)
 	}
 	if value, ok := _u.mutation.CreatedBy(); ok {
-		_spec.SetField(alertrule.FieldCreatedBy, field.TypeUint32, value)
+		_spec.SetField(alertrule.FieldCreatedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedCreatedBy(); ok {
-		_spec.AddField(alertrule.FieldCreatedBy, field.TypeUint32, value)
+		_spec.AddField(alertrule.FieldCreatedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.CreatedByCleared() {
-		_spec.ClearField(alertrule.FieldCreatedBy, field.TypeUint32)
+		_spec.ClearField(alertrule.FieldCreatedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.UpdatedBy(); ok {
-		_spec.SetField(alertrule.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.SetField(alertrule.FieldUpdatedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
-		_spec.AddField(alertrule.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.AddField(alertrule.FieldUpdatedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.UpdatedByCleared() {
-		_spec.ClearField(alertrule.FieldUpdatedBy, field.TypeUint32)
+		_spec.ClearField(alertrule.FieldUpdatedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.DeletedBy(); ok {
-		_spec.SetField(alertrule.FieldDeletedBy, field.TypeUint32, value)
+		_spec.SetField(alertrule.FieldDeletedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedDeletedBy(); ok {
-		_spec.AddField(alertrule.FieldDeletedBy, field.TypeUint32, value)
+		_spec.AddField(alertrule.FieldDeletedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.DeletedByCleared() {
-		_spec.ClearField(alertrule.FieldDeletedBy, field.TypeUint32)
+		_spec.ClearField(alertrule.FieldDeletedBy, field.TypeInt64)
 	}
 	if _u.mutation.TenantIDCleared() {
-		_spec.ClearField(alertrule.FieldTenantID, field.TypeUint32)
+		_spec.ClearField(alertrule.FieldTenantID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(alertrule.FieldName, field.TypeString, value)
@@ -1078,13 +1078,13 @@ func (_u *AlertRuleUpdateOne) sqlSave(ctx context.Context) (_node *AlertRule, er
 		_spec.ClearField(alertrule.FieldDescription, field.TypeString)
 	}
 	if value, ok := _u.mutation.AppID(); ok {
-		_spec.SetField(alertrule.FieldAppID, field.TypeUint32, value)
+		_spec.SetField(alertrule.FieldAppID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedAppID(); ok {
-		_spec.AddField(alertrule.FieldAppID, field.TypeUint32, value)
+		_spec.AddField(alertrule.FieldAppID, field.TypeInt64, value)
 	}
 	if _u.mutation.AppIDCleared() {
-		_spec.ClearField(alertrule.FieldAppID, field.TypeUint32)
+		_spec.ClearField(alertrule.FieldAppID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.EventName(); ok {
 		_spec.SetField(alertrule.FieldEventName, field.TypeString, value)

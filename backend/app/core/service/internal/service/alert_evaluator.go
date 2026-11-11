@@ -17,8 +17,8 @@ import (
 	"go-wind-uba/app/core/service/internal/data/ent"
 
 	internalMessageV1 "go-wind-uba/api/gen/go/internal_message/service/v1"
-	appViewer "go-wind-uba/pkg/entgo/viewer"
 	ubaV1 "go-wind-uba/api/gen/go/uba/service/v1"
+	appViewer "go-wind-uba/pkg/entgo/viewer"
 )
 
 const (
@@ -32,7 +32,7 @@ const (
 
 // alertInternalMessageCategory 站内信分类 ID；0 表示未分类。
 // 用变量而非常量：消息创建需要可取地址的分类指针。
-var alertInternalMessageCategory uint32 = 0
+var alertInternalMessageCategory int64 = 0
 
 // trendAnalytics 告警评估所需的 OLAP 查询能力（Doris/ClickHouse 双实现共用签名）。
 type trendAnalytics interface {
@@ -44,18 +44,18 @@ type trendAnalytics interface {
 type AlertEvaluator struct {
 	log *log.Helper
 
-	alertRepo        *data.AlertRuleRepo
-	internalMsgRepo  *data.InternalMessageRepo
-	recipientRepo    *data.InternalMessageRecipientRepo
-	segmentService   *SegmentService
-	webhookSender    *WebhookSender
-	redis            *redis.Client
+	alertRepo       *data.AlertRuleRepo
+	internalMsgRepo *data.InternalMessageRepo
+	recipientRepo   *data.InternalMessageRecipientRepo
+	segmentService  *SegmentService
+	webhookSender   *WebhookSender
+	redis           *redis.Client
 
-	trend    trendAnalytics
-	chTrend  trendAnalytics
+	trend   trendAnalytics
+	chTrend trendAnalytics
 
-	cancel  context.CancelFunc
-	wg      sync.WaitGroup
+	cancel context.CancelFunc
+	wg     sync.WaitGroup
 }
 
 func NewAlertEvaluator(
@@ -246,15 +246,15 @@ func (s *AlertEvaluator) notifyTriggered(ctx context.Context, rule *ent.AlertRul
 				AppID:     "",
 				EventType: alertEventType,
 				Data: map[string]any{
-					"ruleId":       rule.ID,
-					"ruleName":     derefStr(rule.Name),
-					"eventName":    derefStr(rule.EventName),
-					"aggregator":   rule.Aggregator,
-					"comparison":   rule.Comparison,
-					"threshold":    rule.Threshold,
-					"value":        value,
+					"ruleId":        rule.ID,
+					"ruleName":      derefStr(rule.Name),
+					"eventName":     derefStr(rule.EventName),
+					"aggregator":    rule.Aggregator,
+					"comparison":    rule.Comparison,
+					"threshold":     rule.Threshold,
+					"value":         value,
 					"windowMinutes": rule.WindowMinutes,
-					"triggeredAt":  now.Format(time.RFC3339),
+					"triggeredAt":   now.Format(time.RFC3339),
 				},
 			})
 		}
@@ -317,8 +317,8 @@ func derefStr(v *string) string {
 	return *v
 }
 
-// derefU32 安全解引用 uint32 指针。
-func derefU32(v *uint32) uint32 {
+// derefU32 安全解引用 int64 指针。
+func derefU32(v *int64) int64 {
 	if v == nil {
 		return 0
 	}

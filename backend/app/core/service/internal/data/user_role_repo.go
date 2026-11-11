@@ -34,7 +34,7 @@ func NewUserRoleRepo(ctx *bootstrap.Context, entClient *entCrud.EntClient[*ent.C
 }
 
 // CleanRelationsByUserID 删除会员的所有角色关联
-func (r *UserRoleRepo) CleanRelationsByUserID(ctx context.Context, tx *ent.Tx, userID uint32) error {
+func (r *UserRoleRepo) CleanRelationsByUserID(ctx context.Context, tx *ent.Tx, userID int64) error {
 	if userID == 0 {
 		return nil
 	}
@@ -51,7 +51,7 @@ func (r *UserRoleRepo) CleanRelationsByUserID(ctx context.Context, tx *ent.Tx, u
 }
 
 // CleanRelationsByUserIDs 删除多个会员的所有角色关联
-func (r *UserRoleRepo) CleanRelationsByUserIDs(ctx context.Context, tx *ent.Tx, userIDs []uint32) error {
+func (r *UserRoleRepo) CleanRelationsByUserIDs(ctx context.Context, tx *ent.Tx, userIDs []int64) error {
 	if len(userIDs) == 0 {
 		return nil
 	}
@@ -68,7 +68,7 @@ func (r *UserRoleRepo) CleanRelationsByUserIDs(ctx context.Context, tx *ent.Tx, 
 }
 
 // CleanRelationsByRoleID 删除角色的所有用户关联
-func (r *UserRoleRepo) CleanRelationsByRoleID(ctx context.Context, tx *ent.Tx, roleID uint32) error {
+func (r *UserRoleRepo) CleanRelationsByRoleID(ctx context.Context, tx *ent.Tx, roleID int64) error {
 	if roleID == 0 {
 		return nil
 	}
@@ -85,7 +85,7 @@ func (r *UserRoleRepo) CleanRelationsByRoleID(ctx context.Context, tx *ent.Tx, r
 }
 
 // CleanRelationsByRoleIDs 删除多个角色的所有用户关联
-func (r *UserRoleRepo) CleanRelationsByRoleIDs(ctx context.Context, tx *ent.Tx, roleIDs []uint32) error {
+func (r *UserRoleRepo) CleanRelationsByRoleIDs(ctx context.Context, tx *ent.Tx, roleIDs []int64) error {
 	if len(roleIDs) == 0 {
 		return nil
 	}
@@ -102,7 +102,7 @@ func (r *UserRoleRepo) CleanRelationsByRoleIDs(ctx context.Context, tx *ent.Tx, 
 }
 
 // RemoveRolesFromUser 从用户移除角色
-func (r *UserRoleRepo) RemoveRolesFromUser(ctx context.Context, userID uint32, roleIDs []uint32) error {
+func (r *UserRoleRepo) RemoveRolesFromUser(ctx context.Context, userID int64, roleIDs []int64) error {
 	if len(roleIDs) == 0 || userID == 0 {
 		return nil
 	}
@@ -152,7 +152,7 @@ func (r *UserRoleRepo) AssignUserRole(ctx context.Context, tx *ent.Tx, data *per
 }
 
 // AssignUserRoles 分配角色
-func (r *UserRoleRepo) AssignUserRoles(ctx context.Context, tx *ent.Tx, userID uint32, datas []*permissionV1.UserRole) error {
+func (r *UserRoleRepo) AssignUserRoles(ctx context.Context, tx *ent.Tx, userID int64, datas []*permissionV1.UserRole) error {
 	if len(datas) == 0 || userID == 0 {
 		return nil
 	}
@@ -198,9 +198,9 @@ func (r *UserRoleRepo) AssignUserRoles(ctx context.Context, tx *ent.Tx, userID u
 }
 
 // ListRoleIDs 获取用户关联的角色ID列表
-func (r *UserRoleRepo) ListRoleIDs(ctx context.Context, userID uint32, excludeExpired bool) ([]uint32, error) {
+func (r *UserRoleRepo) ListRoleIDs(ctx context.Context, userID int64, excludeExpired bool) ([]int64, error) {
 	if userID == 0 {
-		return []uint32{}, nil
+		return []int64{}, nil
 	}
 
 	q := r.entClient.Client().UserRole.Query().
@@ -225,17 +225,17 @@ func (r *UserRoleRepo) ListRoleIDs(ctx context.Context, userID uint32, excludeEx
 		r.log.Errorf("query role ids by user id failed: %s", err.Error())
 		return nil, permissionV1.ErrorInternalServerError("query role ids by user id failed")
 	}
-	ids := make([]uint32, len(intIDs))
+	ids := make([]int64, len(intIDs))
 	for i, v := range intIDs {
-		ids[i] = uint32(v)
+		ids[i] = int64(v)
 	}
 	return ids, nil
 }
 
 // ListUserIDs 获取角色关联的用户ID列表
-func (r *UserRoleRepo) ListUserIDs(ctx context.Context, roleID uint32, excludeExpired bool) ([]uint32, error) {
+func (r *UserRoleRepo) ListUserIDs(ctx context.Context, roleID int64, excludeExpired bool) ([]int64, error) {
 	if roleID == 0 {
-		return []uint32{}, nil
+		return []int64{}, nil
 	}
 
 	q := r.entClient.Client().UserRole.Query().
@@ -260,15 +260,15 @@ func (r *UserRoleRepo) ListUserIDs(ctx context.Context, roleID uint32, excludeEx
 		r.log.Errorf("query user ids by role id failed: %s", err.Error())
 		return nil, permissionV1.ErrorInternalServerError("query user ids by role id failed")
 	}
-	ids := make([]uint32, len(intIDs))
+	ids := make([]int64, len(intIDs))
 	for i, v := range intIDs {
-		ids[i] = uint32(v)
+		ids[i] = int64(v)
 	}
 	return ids, nil
 }
 
 // ListUserIDsByRoleIDs 获取多个角色关联的用户ID列表
-func (r *UserRoleRepo) ListUserIDsByRoleIDs(ctx context.Context, roleIDs []uint32, excludeExpired bool) ([]uint32, error) {
+func (r *UserRoleRepo) ListUserIDsByRoleIDs(ctx context.Context, roleIDs []int64, excludeExpired bool) ([]int64, error) {
 	if len(roleIDs) == 0 {
 		return nil, nil
 	}
@@ -295,9 +295,9 @@ func (r *UserRoleRepo) ListUserIDsByRoleIDs(ctx context.Context, roleIDs []uint3
 		r.log.Errorf("query user ids by role ids failed: %s", err.Error())
 		return nil, permissionV1.ErrorInternalServerError("query user ids by role ids failed")
 	}
-	ids := make([]uint32, len(intIDs))
+	ids := make([]int64, len(intIDs))
 	for i, v := range intIDs {
-		ids[i] = uint32(v)
+		ids[i] = int64(v)
 	}
 	return ids, nil
 }

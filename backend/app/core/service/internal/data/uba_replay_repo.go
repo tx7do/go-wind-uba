@@ -27,19 +27,18 @@ func NewReplayRepo(ctx *bootstrap.Context, entClient *entCrud.EntClient[*ent.Cli
 	}
 }
 
-
 // UpsertChunk 写入一个分块：同会话同序号重复上传按最新覆盖（幂等）。
 func (r *ReplayRepo) UpsertChunk(
 	ctx context.Context,
-	tenantID uint32,
+	tenantID int64,
 	appID, sessionID string,
 	deviceID *string,
-	userID uint32,
+	userID int64,
 	pageURL *string,
-	chunkSeq uint32,
+	chunkSeq int64,
 	eventsJSON string,
-	eventCount, durationMs uint32,
-) (uint32, error) {
+	eventCount, durationMs int64,
+) (int64, error) {
 	now := time.Now()
 
 	builder := r.entClient.Client().ReplayChunk.Create().
@@ -49,18 +48,18 @@ func (r *ReplayRepo) UpsertChunk(
 		SetNillableDeviceID(deviceID).
 		SetUserID(userID).
 		SetNillablePageURL(pageURL).
-		SetChunkSeq(chunkSeq).
+		SetChunkSeq(uint32(chunkSeq)).
 		SetEventsJSON(eventsJSON).
-		SetEventCount(eventCount).
-		SetDurationMs(durationMs).
+		SetEventCount(uint32(eventCount)).
+		SetDurationMs(uint32(durationMs)).
 		SetCreatedAt(now)
 
 	err := builder.
 		OnConflictColumns(replaychunk.FieldSessionID, replaychunk.FieldChunkSeq).
 		Update(func(u *ent.ReplayChunkUpsert) {
 			u.SetEventsJSON(eventsJSON).
-				SetEventCount(eventCount).
-				SetDurationMs(durationMs).
+				SetEventCount(uint32(eventCount)).
+				SetDurationMs(uint32(durationMs)).
 				SetUpdatedAt(now)
 		}).
 		Exec(ctx)
@@ -73,7 +72,7 @@ func (r *ReplayRepo) UpsertChunk(
 	entity, err := r.entClient.Client().ReplayChunk.Query().
 		Where(
 			replaychunk.SessionIDEQ(sessionID),
-			replaychunk.ChunkSeqEQ(chunkSeq),
+			replaychunk.ChunkSeqEQ(uint32(chunkSeq)),
 		).
 		Only(ctx)
 	if err != nil {
@@ -85,10 +84,10 @@ func (r *ReplayRepo) UpsertChunk(
 // ReplaySessionSummaryRow 会话聚合扫描行。
 type ReplaySessionSummaryRow struct {
 	SessionID   string     `json:"sessionId"`
-	TenantID    *uint32    `json:"tenantId,omitempty"`
+	TenantID    *int64     `json:"tenantId,omitempty"`
 	AppID       *string    `json:"appId,omitempty"`
 	DeviceID    *string    `json:"deviceId,omitempty"`
-	UserID      uint32     `json:"userId"`
+	UserID      int64      `json:"userId"`
 	PageURL     *string    `json:"pageUrl,omitempty"`
 	ChunkCount  int        `json:"chunkCount"`
 	EventCount  int64      `json:"eventCount"`
@@ -97,7 +96,7 @@ type ReplaySessionSummaryRow struct {
 }
 
 // ListSessions 按会话聚合（最近优先）；sessionFilter 包含匹配、userFilter 可选。
-func (r *ReplayRepo) ListSessions(ctx context.Context, sessionFilter string, userFilter uint32) ([]ReplaySessionSummaryRow, error) {
+func (r *ReplayRepo) ListSessions(ctx context.Context, sessionFilter string, userFilter int64) ([]ReplaySessionSummaryRow, error) {
 	q := `
 SELECT session_id,
        MAX(tenant_id) AS tenant_id,

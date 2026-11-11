@@ -65,13 +65,13 @@ func (_c *SegmentUserCreate) SetNillableDeletedAt(v *time.Time) *SegmentUserCrea
 }
 
 // SetTenantID sets the "tenant_id" field.
-func (_c *SegmentUserCreate) SetTenantID(v uint32) *SegmentUserCreate {
+func (_c *SegmentUserCreate) SetTenantID(v int64) *SegmentUserCreate {
 	_c.mutation.SetTenantID(v)
 	return _c
 }
 
 // SetNillableTenantID sets the "tenant_id" field if the given value is not nil.
-func (_c *SegmentUserCreate) SetNillableTenantID(v *uint32) *SegmentUserCreate {
+func (_c *SegmentUserCreate) SetNillableTenantID(v *int64) *SegmentUserCreate {
 	if v != nil {
 		_c.SetTenantID(*v)
 	}
@@ -79,19 +79,19 @@ func (_c *SegmentUserCreate) SetNillableTenantID(v *uint32) *SegmentUserCreate {
 }
 
 // SetSegmentID sets the "segment_id" field.
-func (_c *SegmentUserCreate) SetSegmentID(v uint32) *SegmentUserCreate {
+func (_c *SegmentUserCreate) SetSegmentID(v int64) *SegmentUserCreate {
 	_c.mutation.SetSegmentID(v)
 	return _c
 }
 
 // SetUserID sets the "user_id" field.
-func (_c *SegmentUserCreate) SetUserID(v uint32) *SegmentUserCreate {
+func (_c *SegmentUserCreate) SetUserID(v int64) *SegmentUserCreate {
 	_c.mutation.SetUserID(v)
 	return _c
 }
 
 // SetID sets the "id" field.
-func (_c *SegmentUserCreate) SetID(v uint32) *SegmentUserCreate {
+func (_c *SegmentUserCreate) SetID(v int64) *SegmentUserCreate {
 	_c.mutation.SetID(v)
 	return _c
 }
@@ -169,7 +169,7 @@ func (_c *SegmentUserCreate) sqlSave(ctx context.Context) (*SegmentUser, error) 
 	}
 	if _spec.ID.Value != _node.ID {
 		id := _spec.ID.Value.(int64)
-		_node.ID = uint32(id)
+		_node.ID = int64(id)
 	}
 	_c.mutation.id = &_node.ID
 	_c.mutation.done = true
@@ -179,7 +179,7 @@ func (_c *SegmentUserCreate) sqlSave(ctx context.Context) (*SegmentUser, error) 
 func (_c *SegmentUserCreate) createSpec() (*SegmentUser, *sqlgraph.CreateSpec) {
 	var (
 		_node = &SegmentUser{config: _c.config}
-		_spec = sqlgraph.NewCreateSpec(segmentuser.Table, sqlgraph.NewFieldSpec(segmentuser.FieldID, field.TypeUint32))
+		_spec = sqlgraph.NewCreateSpec(segmentuser.Table, sqlgraph.NewFieldSpec(segmentuser.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = _c.conflict
 	if id, ok := _c.mutation.ID(); ok {
@@ -199,15 +199,15 @@ func (_c *SegmentUserCreate) createSpec() (*SegmentUser, *sqlgraph.CreateSpec) {
 		_node.DeletedAt = &value
 	}
 	if value, ok := _c.mutation.TenantID(); ok {
-		_spec.SetField(segmentuser.FieldTenantID, field.TypeUint32, value)
+		_spec.SetField(segmentuser.FieldTenantID, field.TypeInt64, value)
 		_node.TenantID = &value
 	}
 	if value, ok := _c.mutation.SegmentID(); ok {
-		_spec.SetField(segmentuser.FieldSegmentID, field.TypeUint32, value)
+		_spec.SetField(segmentuser.FieldSegmentID, field.TypeInt64, value)
 		_node.SegmentID = value
 	}
 	if value, ok := _c.mutation.UserID(); ok {
-		_spec.SetField(segmentuser.FieldUserID, field.TypeUint32, value)
+		_spec.SetField(segmentuser.FieldUserID, field.TypeInt64, value)
 		_node.UserID = value
 	}
 	return _node, _spec
@@ -299,7 +299,7 @@ func (u *SegmentUserUpsert) ClearDeletedAt() *SegmentUserUpsert {
 }
 
 // SetSegmentID sets the "segment_id" field.
-func (u *SegmentUserUpsert) SetSegmentID(v uint32) *SegmentUserUpsert {
+func (u *SegmentUserUpsert) SetSegmentID(v int64) *SegmentUserUpsert {
 	u.Set(segmentuser.FieldSegmentID, v)
 	return u
 }
@@ -311,13 +311,13 @@ func (u *SegmentUserUpsert) UpdateSegmentID() *SegmentUserUpsert {
 }
 
 // AddSegmentID adds v to the "segment_id" field.
-func (u *SegmentUserUpsert) AddSegmentID(v uint32) *SegmentUserUpsert {
+func (u *SegmentUserUpsert) AddSegmentID(v int64) *SegmentUserUpsert {
 	u.Add(segmentuser.FieldSegmentID, v)
 	return u
 }
 
 // SetUserID sets the "user_id" field.
-func (u *SegmentUserUpsert) SetUserID(v uint32) *SegmentUserUpsert {
+func (u *SegmentUserUpsert) SetUserID(v int64) *SegmentUserUpsert {
 	u.Set(segmentuser.FieldUserID, v)
 	return u
 }
@@ -329,7 +329,7 @@ func (u *SegmentUserUpsert) UpdateUserID() *SegmentUserUpsert {
 }
 
 // AddUserID adds v to the "user_id" field.
-func (u *SegmentUserUpsert) AddUserID(v uint32) *SegmentUserUpsert {
+func (u *SegmentUserUpsert) AddUserID(v int64) *SegmentUserUpsert {
 	u.Add(segmentuser.FieldUserID, v)
 	return u
 }
@@ -431,14 +431,14 @@ func (u *SegmentUserUpsertOne) ClearDeletedAt() *SegmentUserUpsertOne {
 }
 
 // SetSegmentID sets the "segment_id" field.
-func (u *SegmentUserUpsertOne) SetSegmentID(v uint32) *SegmentUserUpsertOne {
+func (u *SegmentUserUpsertOne) SetSegmentID(v int64) *SegmentUserUpsertOne {
 	return u.Update(func(s *SegmentUserUpsert) {
 		s.SetSegmentID(v)
 	})
 }
 
 // AddSegmentID adds v to the "segment_id" field.
-func (u *SegmentUserUpsertOne) AddSegmentID(v uint32) *SegmentUserUpsertOne {
+func (u *SegmentUserUpsertOne) AddSegmentID(v int64) *SegmentUserUpsertOne {
 	return u.Update(func(s *SegmentUserUpsert) {
 		s.AddSegmentID(v)
 	})
@@ -452,14 +452,14 @@ func (u *SegmentUserUpsertOne) UpdateSegmentID() *SegmentUserUpsertOne {
 }
 
 // SetUserID sets the "user_id" field.
-func (u *SegmentUserUpsertOne) SetUserID(v uint32) *SegmentUserUpsertOne {
+func (u *SegmentUserUpsertOne) SetUserID(v int64) *SegmentUserUpsertOne {
 	return u.Update(func(s *SegmentUserUpsert) {
 		s.SetUserID(v)
 	})
 }
 
 // AddUserID adds v to the "user_id" field.
-func (u *SegmentUserUpsertOne) AddUserID(v uint32) *SegmentUserUpsertOne {
+func (u *SegmentUserUpsertOne) AddUserID(v int64) *SegmentUserUpsertOne {
 	return u.Update(func(s *SegmentUserUpsert) {
 		s.AddUserID(v)
 	})
@@ -488,7 +488,7 @@ func (u *SegmentUserUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *SegmentUserUpsertOne) ID(ctx context.Context) (id uint32, err error) {
+func (u *SegmentUserUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -497,7 +497,7 @@ func (u *SegmentUserUpsertOne) ID(ctx context.Context) (id uint32, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *SegmentUserUpsertOne) IDX(ctx context.Context) uint32 {
+func (u *SegmentUserUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -554,7 +554,7 @@ func (_c *SegmentUserCreateBulk) Save(ctx context.Context) ([]*SegmentUser, erro
 				mutation.id = &nodes[i].ID
 				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = uint32(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -735,14 +735,14 @@ func (u *SegmentUserUpsertBulk) ClearDeletedAt() *SegmentUserUpsertBulk {
 }
 
 // SetSegmentID sets the "segment_id" field.
-func (u *SegmentUserUpsertBulk) SetSegmentID(v uint32) *SegmentUserUpsertBulk {
+func (u *SegmentUserUpsertBulk) SetSegmentID(v int64) *SegmentUserUpsertBulk {
 	return u.Update(func(s *SegmentUserUpsert) {
 		s.SetSegmentID(v)
 	})
 }
 
 // AddSegmentID adds v to the "segment_id" field.
-func (u *SegmentUserUpsertBulk) AddSegmentID(v uint32) *SegmentUserUpsertBulk {
+func (u *SegmentUserUpsertBulk) AddSegmentID(v int64) *SegmentUserUpsertBulk {
 	return u.Update(func(s *SegmentUserUpsert) {
 		s.AddSegmentID(v)
 	})
@@ -756,14 +756,14 @@ func (u *SegmentUserUpsertBulk) UpdateSegmentID() *SegmentUserUpsertBulk {
 }
 
 // SetUserID sets the "user_id" field.
-func (u *SegmentUserUpsertBulk) SetUserID(v uint32) *SegmentUserUpsertBulk {
+func (u *SegmentUserUpsertBulk) SetUserID(v int64) *SegmentUserUpsertBulk {
 	return u.Update(func(s *SegmentUserUpsert) {
 		s.SetUserID(v)
 	})
 }
 
 // AddUserID adds v to the "user_id" field.
-func (u *SegmentUserUpsertBulk) AddUserID(v uint32) *SegmentUserUpsertBulk {
+func (u *SegmentUserUpsertBulk) AddUserID(v int64) *SegmentUserUpsertBulk {
 	return u.Update(func(s *SegmentUserUpsert) {
 		s.AddUserID(v)
 	})

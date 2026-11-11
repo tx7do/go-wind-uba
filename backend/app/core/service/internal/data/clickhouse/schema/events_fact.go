@@ -11,8 +11,8 @@ import (
 
 type EventsFact struct {
 	EventID       *string            `ch:"event_id"`
-	TenantID      *uint32            `ch:"tenant_id"`
-	UserID        *uint32            `ch:"user_id"`
+	TenantID      *int64             `ch:"tenant_id"`
+	UserID        *int64             `ch:"user_id"`
 	DeviceID      *string            `ch:"device_id"`
 	AccountID     *string            `ch:"account_id"`
 	GlobalUserID  *string            `ch:"global_user_id"`
@@ -27,7 +27,7 @@ type EventsFact struct {
 	ObjectID      *string            `ch:"object_id"`
 	ObjectName    *string            `ch:"object_name"`
 	SessionID     *string            `ch:"session_id"`
-	SessionSeq    *uint32            `ch:"session_seq"`
+	SessionSeq    *int64             `ch:"session_seq"`
 	Platform      *string            `ch:"platform"`
 	Os            *string            `ch:"os"`
 	AppVersion    *string            `ch:"app_version"`
@@ -46,16 +46,16 @@ type EventsFact struct {
 	RiskLevel     *string            `ch:"risk_level"`
 	ErrorCode     *string            `ch:"error_code"`
 	Score         *int32             `ch:"score"`
-	Quantity      *uint32            `ch:"quantity"`
+	Quantity      *int64             `ch:"quantity"`
 	Amount        *decimal.Decimal   `ch:"amount"`
-	DurationMs    *uint32            `ch:"duration_ms"`
+	DurationMs    *int64             `ch:"duration_ms"`
 	// 点击热力图字段
-	ClickX        *uint32 `ch:"click_x"`
-	ClickY        *uint32 `ch:"click_y"`
+	ClickX        *int64  `ch:"click_x"`
+	ClickY        *int64  `ch:"click_y"`
 	ElementXpath  *string `ch:"element_xpath"`
 	PageUrl       *string `ch:"page_url"`
-	ViewportWidth *uint32 `ch:"viewport_width"`
+	ViewportWidth *int64  `ch:"viewport_width"`
 	// 游戏专属维度
 	ServerID *string `ch:"server_id"`
-	Level    *uint32 `ch:"level"`
+	Level    *int64  `ch:"level"`
 }

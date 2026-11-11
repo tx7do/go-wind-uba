@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	kratosHttp "github.com/go-kratos/kratos/v2/transport/http"
 	"github.com/go-kratos/kratos/v2/log"
+	kratosHttp "github.com/go-kratos/kratos/v2/transport/http"
 	"github.com/tx7do/go-utils/timeutil"
 	"github.com/tx7do/go-utils/trans"
 	"github.com/tx7do/kratos-bootstrap/bootstrap"
@@ -74,7 +74,7 @@ func (s *AuthenticationService) Login(ctx context.Context, req *authenticationV1
 }
 
 // recordUserLastLogin 记录用户最后登录时间与 IP。
-func (s *AuthenticationService) recordUserLastLogin(ctx context.Context, userID uint32, resp *authenticationV1.LoginResponse) {
+func (s *AuthenticationService) recordUserLastLogin(ctx context.Context, userID int64, resp *authenticationV1.LoginResponse) {
 	if userID == 0 || s.userServiceClient == nil {
 		return
 	}

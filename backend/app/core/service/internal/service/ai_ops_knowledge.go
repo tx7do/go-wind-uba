@@ -74,7 +74,7 @@ func (s *AiKnowledgeService) SyncOpsKnowledge(ctx context.Context, req *aiV1.Syn
 		{opsEventDictDocName, eventDict},
 	}
 
-	totalChunks := uint32(0)
+	totalChunks := int64(0)
 	for _, doc := range docs {
 		// 幂等：同名文档先删后建（删除级联清掉旧切片，向量随重建刷新）
 		existing, findErr := s.repo.FindDocByName(ctx, base.ID, doc.name)
@@ -91,14 +91,14 @@ func (s *AiKnowledgeService) SyncOpsKnowledge(ctx context.Context, req *aiV1.Syn
 		if ingestErr != nil {
 			return nil, ingestErr
 		}
-		totalChunks += ingested.GetChunkCount()
+		totalChunks += int64(ingested.GetChunkCount())
 	}
 
 	s.log.Infof("sync ops knowledge done: base=%d docs=%d chunks=%d", base.ID, len(docs), totalChunks)
 	return &aiV1.SyncOpsKnowledgeResponse{
 		BaseId:     base.ID,
 		DocCount:   uint32(len(docs)),
-		ChunkCount: totalChunks,
+		ChunkCount: uint32(totalChunks),
 	}, nil
 }
 

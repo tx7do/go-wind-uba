@@ -28,19 +28,19 @@ func (SegmentUser) Annotations() []schema.Annotation {
 
 func (SegmentUser) Fields() []ent.Field {
 	return []ent.Field{
-		field.Uint32("segment_id").
+		field.Int64("segment_id").
 			Comment("分群ID"),
 
-		field.Uint32("user_id").
+		field.Int64("user_id").
 			Comment("用户ID（events_fact.user_id）"),
 	}
 }
 
 func (SegmentUser) Mixin() []ent.Mixin {
 	return []ent.Mixin{
-		mixin.AutoIncrementId{},
+		mixin.AutoIncrementId64{},
 		mixin.TimeAt{},
-		mixin.TenantID[uint32]{},
+		mixin.TenantID[int64]{},
 	}
 }
 

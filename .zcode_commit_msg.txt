@@ -1,0 +1,11 @@
+feat!: ID 类型定版 int64——全链从 uint32 收敛到有符号 int64
+
+跟随上游 go-wind-admin 的 int64 定版：proto 字段/ent schema/手写代码/生成代码全链切换。
+- 上游 pin 同步：go-crud/entgo v0.2.6、viewer v0.0.9、pagination v0.1.0、audit v0.0.4
+- ID 形态字段全 int64；非 ID 保留原语义（quota/monthly_token_limit/campaign 统计族 uint64，
+  tokens/latency/status_code/seq/grid 类 uint32，聚合 total/count int64）
+- doris/clickhouse 双后端 repo 同步适配（Rank/OffsetDays/SessionSeq uint32 语义、
+  result.Total uint64→int64 边界、sql_query RowCount uint64）
+- collector 服务与前端生成 TS 一并重生成
+- 门禁：build/gofmt/vet 全绿；test 失败集与 HEAD 基线等价
+  （doris client 未连/CK 环境性/minio 环境性均既有失败，零新增）

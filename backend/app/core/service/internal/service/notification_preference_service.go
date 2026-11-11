@@ -1,8 +1,8 @@
 package service
 
 import (
-	"github.com/go-kratos/kratos/v2/log"
 	"context"
+	"github.com/go-kratos/kratos/v2/log"
 	"time"
 
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -30,7 +30,7 @@ const (
 // NotificationPreferenceService 用户通知偏好（自助服务）：
 // 读写的都是当前操作人自己的偏好，无管理面、无平台守卫。
 type NotificationPreferenceService struct {
-		notificationV1.UnimplementedNotificationPreferenceServiceServer
+	notificationV1.UnimplementedNotificationPreferenceServiceServer
 
 	prefRepo     *data.NotificationPreferenceRepo
 	categoryRepo *data.InternalMessageCategoryRepo

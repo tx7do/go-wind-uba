@@ -122,7 +122,7 @@ func (r *SegmentRepo) Count(ctx context.Context, req *paginationV1.PagingRequest
 	}
 
 	return &ubaV1.CountSegmentResponse{
-		Count: uint64(count),
+		Count: int64(count),
 	}, nil
 }
 
@@ -147,7 +147,7 @@ func (r *SegmentRepo) List(ctx context.Context, req *paginationV1.PagingRequest)
 	}, nil
 }
 
-func (r *SegmentRepo) IsExist(ctx context.Context, id uint32) (bool, error) {
+func (r *SegmentRepo) IsExist(ctx context.Context, id int64) (bool, error) {
 	exist, err := r.entClient.Client().Segment.Query().
 		Where(segment.IDEQ(id)).
 		Exist(ctx)
@@ -181,7 +181,7 @@ func (r *SegmentRepo) Get(ctx context.Context, req *ubaV1.GetSegmentRequest) (*u
 }
 
 // GetEntity 读取原始实体（刷新流程需要租户/应用/定义等完整字段）。
-func (r *SegmentRepo) GetEntity(ctx context.Context, id uint32) (*ent.Segment, error) {
+func (r *SegmentRepo) GetEntity(ctx context.Context, id int64) (*ent.Segment, error) {
 	entity, err := r.entClient.Client().Segment.Query().
 		Where(segment.IDEQ(id)).
 		Only(ctx)
@@ -218,7 +218,7 @@ func (r *SegmentRepo) newSegmentCreate(w *ubaV1.Segment) *ent.SegmentCreate {
 		SetDefinition(SegmentDefinitionToEntity(w.Definition)).
 		SetRefreshIntervalMinutes(w.GetRefreshIntervalMinutes()).
 		SetMaxUsers(w.GetMaxUsers()).
-		SetUserCount(w.GetUserCount()).
+		SetUserCount(uint64(w.GetUserCount())).
 		SetNillableLastRefreshedAt(timeutil.TimestamppbToTime(w.LastRefreshedAt)).
 		SetNillableEnabled(w.Enabled).
 		SetNillableCreatedBy(w.CreatedBy).
@@ -254,7 +254,7 @@ func (r *SegmentRepo) Update(ctx context.Context, req *ubaV1.UpdateSegmentReques
 				SetNillableDescription(req.Data.Description).
 				SetNillableRefreshIntervalMinutes(req.Data.RefreshIntervalMinutes).
 				SetNillableMaxUsers(req.Data.MaxUsers).
-				SetNillableUserCount(req.Data.UserCount).
+				SetNillableUserCount(u64p(req.Data.UserCount)).
 				SetNillableLastRefreshedAt(timeutil.TimestamppbToTime(req.Data.LastRefreshedAt)).
 				SetNillableEnabled(req.Data.Enabled).
 				SetNillableUpdatedBy(req.Data.UpdatedBy).
@@ -273,9 +273,9 @@ func (r *SegmentRepo) Update(ctx context.Context, req *ubaV1.UpdateSegmentReques
 }
 
 // UpdateRefreshState 刷新完成后回写人数与刷新时间。
-func (r *SegmentRepo) UpdateRefreshState(ctx context.Context, id uint32, userCount uint64, refreshedAt time.Time) error {
+func (r *SegmentRepo) UpdateRefreshState(ctx context.Context, id int64, userCount int64, refreshedAt time.Time) error {
 	err := r.entClient.Client().Segment.UpdateOneID(id).
-		SetUserCount(userCount).
+		SetUserCount(uint64(userCount)).
 		SetLastRefreshedAt(refreshedAt).
 		SetUpdatedAt(refreshedAt).
 		Exec(ctx)
@@ -336,4 +336,12 @@ func (r *SegmentRepo) Truncate(ctx context.Context) error {
 		return ubaV1.ErrorInternalServerError("truncate failed")
 	}
 	return nil
+}
+
+func u64p(v *int64) *uint64 {
+	if v == nil {
+		return nil
+	}
+	x := uint64(*v)
+	return &x
 }

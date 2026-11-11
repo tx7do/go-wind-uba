@@ -70,14 +70,14 @@ func (_u *PermissionMenuUpdate) ClearDeletedAt() *PermissionMenuUpdate {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (_u *PermissionMenuUpdate) SetCreatedBy(v uint32) *PermissionMenuUpdate {
+func (_u *PermissionMenuUpdate) SetCreatedBy(v int64) *PermissionMenuUpdate {
 	_u.mutation.ResetCreatedBy()
 	_u.mutation.SetCreatedBy(v)
 	return _u
 }
 
 // SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
-func (_u *PermissionMenuUpdate) SetNillableCreatedBy(v *uint32) *PermissionMenuUpdate {
+func (_u *PermissionMenuUpdate) SetNillableCreatedBy(v *int64) *PermissionMenuUpdate {
 	if v != nil {
 		_u.SetCreatedBy(*v)
 	}
@@ -85,7 +85,7 @@ func (_u *PermissionMenuUpdate) SetNillableCreatedBy(v *uint32) *PermissionMenuU
 }
 
 // AddCreatedBy adds value to the "created_by" field.
-func (_u *PermissionMenuUpdate) AddCreatedBy(v int32) *PermissionMenuUpdate {
+func (_u *PermissionMenuUpdate) AddCreatedBy(v int64) *PermissionMenuUpdate {
 	_u.mutation.AddCreatedBy(v)
 	return _u
 }
@@ -97,14 +97,14 @@ func (_u *PermissionMenuUpdate) ClearCreatedBy() *PermissionMenuUpdate {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (_u *PermissionMenuUpdate) SetUpdatedBy(v uint32) *PermissionMenuUpdate {
+func (_u *PermissionMenuUpdate) SetUpdatedBy(v int64) *PermissionMenuUpdate {
 	_u.mutation.ResetUpdatedBy()
 	_u.mutation.SetUpdatedBy(v)
 	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (_u *PermissionMenuUpdate) SetNillableUpdatedBy(v *uint32) *PermissionMenuUpdate {
+func (_u *PermissionMenuUpdate) SetNillableUpdatedBy(v *int64) *PermissionMenuUpdate {
 	if v != nil {
 		_u.SetUpdatedBy(*v)
 	}
@@ -112,7 +112,7 @@ func (_u *PermissionMenuUpdate) SetNillableUpdatedBy(v *uint32) *PermissionMenuU
 }
 
 // AddUpdatedBy adds value to the "updated_by" field.
-func (_u *PermissionMenuUpdate) AddUpdatedBy(v int32) *PermissionMenuUpdate {
+func (_u *PermissionMenuUpdate) AddUpdatedBy(v int64) *PermissionMenuUpdate {
 	_u.mutation.AddUpdatedBy(v)
 	return _u
 }
@@ -124,14 +124,14 @@ func (_u *PermissionMenuUpdate) ClearUpdatedBy() *PermissionMenuUpdate {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (_u *PermissionMenuUpdate) SetDeletedBy(v uint32) *PermissionMenuUpdate {
+func (_u *PermissionMenuUpdate) SetDeletedBy(v int64) *PermissionMenuUpdate {
 	_u.mutation.ResetDeletedBy()
 	_u.mutation.SetDeletedBy(v)
 	return _u
 }
 
 // SetNillableDeletedBy sets the "deleted_by" field if the given value is not nil.
-func (_u *PermissionMenuUpdate) SetNillableDeletedBy(v *uint32) *PermissionMenuUpdate {
+func (_u *PermissionMenuUpdate) SetNillableDeletedBy(v *int64) *PermissionMenuUpdate {
 	if v != nil {
 		_u.SetDeletedBy(*v)
 	}
@@ -139,7 +139,7 @@ func (_u *PermissionMenuUpdate) SetNillableDeletedBy(v *uint32) *PermissionMenuU
 }
 
 // AddDeletedBy adds value to the "deleted_by" field.
-func (_u *PermissionMenuUpdate) AddDeletedBy(v int32) *PermissionMenuUpdate {
+func (_u *PermissionMenuUpdate) AddDeletedBy(v int64) *PermissionMenuUpdate {
 	_u.mutation.AddDeletedBy(v)
 	return _u
 }
@@ -151,14 +151,14 @@ func (_u *PermissionMenuUpdate) ClearDeletedBy() *PermissionMenuUpdate {
 }
 
 // SetPermissionID sets the "permission_id" field.
-func (_u *PermissionMenuUpdate) SetPermissionID(v uint32) *PermissionMenuUpdate {
+func (_u *PermissionMenuUpdate) SetPermissionID(v int64) *PermissionMenuUpdate {
 	_u.mutation.ResetPermissionID()
 	_u.mutation.SetPermissionID(v)
 	return _u
 }
 
 // SetNillablePermissionID sets the "permission_id" field if the given value is not nil.
-func (_u *PermissionMenuUpdate) SetNillablePermissionID(v *uint32) *PermissionMenuUpdate {
+func (_u *PermissionMenuUpdate) SetNillablePermissionID(v *int64) *PermissionMenuUpdate {
 	if v != nil {
 		_u.SetPermissionID(*v)
 	}
@@ -166,20 +166,20 @@ func (_u *PermissionMenuUpdate) SetNillablePermissionID(v *uint32) *PermissionMe
 }
 
 // AddPermissionID adds value to the "permission_id" field.
-func (_u *PermissionMenuUpdate) AddPermissionID(v int32) *PermissionMenuUpdate {
+func (_u *PermissionMenuUpdate) AddPermissionID(v int64) *PermissionMenuUpdate {
 	_u.mutation.AddPermissionID(v)
 	return _u
 }
 
 // SetMenuID sets the "menu_id" field.
-func (_u *PermissionMenuUpdate) SetMenuID(v uint32) *PermissionMenuUpdate {
+func (_u *PermissionMenuUpdate) SetMenuID(v int64) *PermissionMenuUpdate {
 	_u.mutation.ResetMenuID()
 	_u.mutation.SetMenuID(v)
 	return _u
 }
 
 // SetNillableMenuID sets the "menu_id" field if the given value is not nil.
-func (_u *PermissionMenuUpdate) SetNillableMenuID(v *uint32) *PermissionMenuUpdate {
+func (_u *PermissionMenuUpdate) SetNillableMenuID(v *int64) *PermissionMenuUpdate {
 	if v != nil {
 		_u.SetMenuID(*v)
 	}
@@ -187,7 +187,7 @@ func (_u *PermissionMenuUpdate) SetNillableMenuID(v *uint32) *PermissionMenuUpda
 }
 
 // AddMenuID adds value to the "menu_id" field.
-func (_u *PermissionMenuUpdate) AddMenuID(v int32) *PermissionMenuUpdate {
+func (_u *PermissionMenuUpdate) AddMenuID(v int64) *PermissionMenuUpdate {
 	_u.mutation.AddMenuID(v)
 	return _u
 }
@@ -231,7 +231,7 @@ func (_u *PermissionMenuUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) 
 }
 
 func (_u *PermissionMenuUpdate) sqlSave(ctx context.Context) (_node int, err error) {
-	_spec := sqlgraph.NewUpdateSpec(permissionmenu.Table, permissionmenu.Columns, sqlgraph.NewFieldSpec(permissionmenu.FieldID, field.TypeUint32))
+	_spec := sqlgraph.NewUpdateSpec(permissionmenu.Table, permissionmenu.Columns, sqlgraph.NewFieldSpec(permissionmenu.FieldID, field.TypeInt64))
 	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -255,43 +255,43 @@ func (_u *PermissionMenuUpdate) sqlSave(ctx context.Context) (_node int, err err
 		_spec.ClearField(permissionmenu.FieldDeletedAt, field.TypeTime)
 	}
 	if value, ok := _u.mutation.CreatedBy(); ok {
-		_spec.SetField(permissionmenu.FieldCreatedBy, field.TypeUint32, value)
+		_spec.SetField(permissionmenu.FieldCreatedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedCreatedBy(); ok {
-		_spec.AddField(permissionmenu.FieldCreatedBy, field.TypeUint32, value)
+		_spec.AddField(permissionmenu.FieldCreatedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.CreatedByCleared() {
-		_spec.ClearField(permissionmenu.FieldCreatedBy, field.TypeUint32)
+		_spec.ClearField(permissionmenu.FieldCreatedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.UpdatedBy(); ok {
-		_spec.SetField(permissionmenu.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.SetField(permissionmenu.FieldUpdatedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
-		_spec.AddField(permissionmenu.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.AddField(permissionmenu.FieldUpdatedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.UpdatedByCleared() {
-		_spec.ClearField(permissionmenu.FieldUpdatedBy, field.TypeUint32)
+		_spec.ClearField(permissionmenu.FieldUpdatedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.DeletedBy(); ok {
-		_spec.SetField(permissionmenu.FieldDeletedBy, field.TypeUint32, value)
+		_spec.SetField(permissionmenu.FieldDeletedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedDeletedBy(); ok {
-		_spec.AddField(permissionmenu.FieldDeletedBy, field.TypeUint32, value)
+		_spec.AddField(permissionmenu.FieldDeletedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.DeletedByCleared() {
-		_spec.ClearField(permissionmenu.FieldDeletedBy, field.TypeUint32)
+		_spec.ClearField(permissionmenu.FieldDeletedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.PermissionID(); ok {
-		_spec.SetField(permissionmenu.FieldPermissionID, field.TypeUint32, value)
+		_spec.SetField(permissionmenu.FieldPermissionID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedPermissionID(); ok {
-		_spec.AddField(permissionmenu.FieldPermissionID, field.TypeUint32, value)
+		_spec.AddField(permissionmenu.FieldPermissionID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.MenuID(); ok {
-		_spec.SetField(permissionmenu.FieldMenuID, field.TypeUint32, value)
+		_spec.SetField(permissionmenu.FieldMenuID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedMenuID(); ok {
-		_spec.AddField(permissionmenu.FieldMenuID, field.TypeUint32, value)
+		_spec.AddField(permissionmenu.FieldMenuID, field.TypeInt64, value)
 	}
 	_spec.AddModifiers(_u.modifiers...)
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
@@ -356,14 +356,14 @@ func (_u *PermissionMenuUpdateOne) ClearDeletedAt() *PermissionMenuUpdateOne {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (_u *PermissionMenuUpdateOne) SetCreatedBy(v uint32) *PermissionMenuUpdateOne {
+func (_u *PermissionMenuUpdateOne) SetCreatedBy(v int64) *PermissionMenuUpdateOne {
 	_u.mutation.ResetCreatedBy()
 	_u.mutation.SetCreatedBy(v)
 	return _u
 }
 
 // SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
-func (_u *PermissionMenuUpdateOne) SetNillableCreatedBy(v *uint32) *PermissionMenuUpdateOne {
+func (_u *PermissionMenuUpdateOne) SetNillableCreatedBy(v *int64) *PermissionMenuUpdateOne {
 	if v != nil {
 		_u.SetCreatedBy(*v)
 	}
@@ -371,7 +371,7 @@ func (_u *PermissionMenuUpdateOne) SetNillableCreatedBy(v *uint32) *PermissionMe
 }
 
 // AddCreatedBy adds value to the "created_by" field.
-func (_u *PermissionMenuUpdateOne) AddCreatedBy(v int32) *PermissionMenuUpdateOne {
+func (_u *PermissionMenuUpdateOne) AddCreatedBy(v int64) *PermissionMenuUpdateOne {
 	_u.mutation.AddCreatedBy(v)
 	return _u
 }
@@ -383,14 +383,14 @@ func (_u *PermissionMenuUpdateOne) ClearCreatedBy() *PermissionMenuUpdateOne {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (_u *PermissionMenuUpdateOne) SetUpdatedBy(v uint32) *PermissionMenuUpdateOne {
+func (_u *PermissionMenuUpdateOne) SetUpdatedBy(v int64) *PermissionMenuUpdateOne {
 	_u.mutation.ResetUpdatedBy()
 	_u.mutation.SetUpdatedBy(v)
 	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (_u *PermissionMenuUpdateOne) SetNillableUpdatedBy(v *uint32) *PermissionMenuUpdateOne {
+func (_u *PermissionMenuUpdateOne) SetNillableUpdatedBy(v *int64) *PermissionMenuUpdateOne {
 	if v != nil {
 		_u.SetUpdatedBy(*v)
 	}
@@ -398,7 +398,7 @@ func (_u *PermissionMenuUpdateOne) SetNillableUpdatedBy(v *uint32) *PermissionMe
 }
 
 // AddUpdatedBy adds value to the "updated_by" field.
-func (_u *PermissionMenuUpdateOne) AddUpdatedBy(v int32) *PermissionMenuUpdateOne {
+func (_u *PermissionMenuUpdateOne) AddUpdatedBy(v int64) *PermissionMenuUpdateOne {
 	_u.mutation.AddUpdatedBy(v)
 	return _u
 }
@@ -410,14 +410,14 @@ func (_u *PermissionMenuUpdateOne) ClearUpdatedBy() *PermissionMenuUpdateOne {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (_u *PermissionMenuUpdateOne) SetDeletedBy(v uint32) *PermissionMenuUpdateOne {
+func (_u *PermissionMenuUpdateOne) SetDeletedBy(v int64) *PermissionMenuUpdateOne {
 	_u.mutation.ResetDeletedBy()
 	_u.mutation.SetDeletedBy(v)
 	return _u
 }
 
 // SetNillableDeletedBy sets the "deleted_by" field if the given value is not nil.
-func (_u *PermissionMenuUpdateOne) SetNillableDeletedBy(v *uint32) *PermissionMenuUpdateOne {
+func (_u *PermissionMenuUpdateOne) SetNillableDeletedBy(v *int64) *PermissionMenuUpdateOne {
 	if v != nil {
 		_u.SetDeletedBy(*v)
 	}
@@ -425,7 +425,7 @@ func (_u *PermissionMenuUpdateOne) SetNillableDeletedBy(v *uint32) *PermissionMe
 }
 
 // AddDeletedBy adds value to the "deleted_by" field.
-func (_u *PermissionMenuUpdateOne) AddDeletedBy(v int32) *PermissionMenuUpdateOne {
+func (_u *PermissionMenuUpdateOne) AddDeletedBy(v int64) *PermissionMenuUpdateOne {
 	_u.mutation.AddDeletedBy(v)
 	return _u
 }
@@ -437,14 +437,14 @@ func (_u *PermissionMenuUpdateOne) ClearDeletedBy() *PermissionMenuUpdateOne {
 }
 
 // SetPermissionID sets the "permission_id" field.
-func (_u *PermissionMenuUpdateOne) SetPermissionID(v uint32) *PermissionMenuUpdateOne {
+func (_u *PermissionMenuUpdateOne) SetPermissionID(v int64) *PermissionMenuUpdateOne {
 	_u.mutation.ResetPermissionID()
 	_u.mutation.SetPermissionID(v)
 	return _u
 }
 
 // SetNillablePermissionID sets the "permission_id" field if the given value is not nil.
-func (_u *PermissionMenuUpdateOne) SetNillablePermissionID(v *uint32) *PermissionMenuUpdateOne {
+func (_u *PermissionMenuUpdateOne) SetNillablePermissionID(v *int64) *PermissionMenuUpdateOne {
 	if v != nil {
 		_u.SetPermissionID(*v)
 	}
@@ -452,20 +452,20 @@ func (_u *PermissionMenuUpdateOne) SetNillablePermissionID(v *uint32) *Permissio
 }
 
 // AddPermissionID adds value to the "permission_id" field.
-func (_u *PermissionMenuUpdateOne) AddPermissionID(v int32) *PermissionMenuUpdateOne {
+func (_u *PermissionMenuUpdateOne) AddPermissionID(v int64) *PermissionMenuUpdateOne {
 	_u.mutation.AddPermissionID(v)
 	return _u
 }
 
 // SetMenuID sets the "menu_id" field.
-func (_u *PermissionMenuUpdateOne) SetMenuID(v uint32) *PermissionMenuUpdateOne {
+func (_u *PermissionMenuUpdateOne) SetMenuID(v int64) *PermissionMenuUpdateOne {
 	_u.mutation.ResetMenuID()
 	_u.mutation.SetMenuID(v)
 	return _u
 }
 
 // SetNillableMenuID sets the "menu_id" field if the given value is not nil.
-func (_u *PermissionMenuUpdateOne) SetNillableMenuID(v *uint32) *PermissionMenuUpdateOne {
+func (_u *PermissionMenuUpdateOne) SetNillableMenuID(v *int64) *PermissionMenuUpdateOne {
 	if v != nil {
 		_u.SetMenuID(*v)
 	}
@@ -473,7 +473,7 @@ func (_u *PermissionMenuUpdateOne) SetNillableMenuID(v *uint32) *PermissionMenuU
 }
 
 // AddMenuID adds value to the "menu_id" field.
-func (_u *PermissionMenuUpdateOne) AddMenuID(v int32) *PermissionMenuUpdateOne {
+func (_u *PermissionMenuUpdateOne) AddMenuID(v int64) *PermissionMenuUpdateOne {
 	_u.mutation.AddMenuID(v)
 	return _u
 }
@@ -530,7 +530,7 @@ func (_u *PermissionMenuUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder
 }
 
 func (_u *PermissionMenuUpdateOne) sqlSave(ctx context.Context) (_node *PermissionMenu, err error) {
-	_spec := sqlgraph.NewUpdateSpec(permissionmenu.Table, permissionmenu.Columns, sqlgraph.NewFieldSpec(permissionmenu.FieldID, field.TypeUint32))
+	_spec := sqlgraph.NewUpdateSpec(permissionmenu.Table, permissionmenu.Columns, sqlgraph.NewFieldSpec(permissionmenu.FieldID, field.TypeInt64))
 	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "PermissionMenu.id" for update`)}
@@ -571,43 +571,43 @@ func (_u *PermissionMenuUpdateOne) sqlSave(ctx context.Context) (_node *Permissi
 		_spec.ClearField(permissionmenu.FieldDeletedAt, field.TypeTime)
 	}
 	if value, ok := _u.mutation.CreatedBy(); ok {
-		_spec.SetField(permissionmenu.FieldCreatedBy, field.TypeUint32, value)
+		_spec.SetField(permissionmenu.FieldCreatedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedCreatedBy(); ok {
-		_spec.AddField(permissionmenu.FieldCreatedBy, field.TypeUint32, value)
+		_spec.AddField(permissionmenu.FieldCreatedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.CreatedByCleared() {
-		_spec.ClearField(permissionmenu.FieldCreatedBy, field.TypeUint32)
+		_spec.ClearField(permissionmenu.FieldCreatedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.UpdatedBy(); ok {
-		_spec.SetField(permissionmenu.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.SetField(permissionmenu.FieldUpdatedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
-		_spec.AddField(permissionmenu.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.AddField(permissionmenu.FieldUpdatedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.UpdatedByCleared() {
-		_spec.ClearField(permissionmenu.FieldUpdatedBy, field.TypeUint32)
+		_spec.ClearField(permissionmenu.FieldUpdatedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.DeletedBy(); ok {
-		_spec.SetField(permissionmenu.FieldDeletedBy, field.TypeUint32, value)
+		_spec.SetField(permissionmenu.FieldDeletedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedDeletedBy(); ok {
-		_spec.AddField(permissionmenu.FieldDeletedBy, field.TypeUint32, value)
+		_spec.AddField(permissionmenu.FieldDeletedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.DeletedByCleared() {
-		_spec.ClearField(permissionmenu.FieldDeletedBy, field.TypeUint32)
+		_spec.ClearField(permissionmenu.FieldDeletedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.PermissionID(); ok {
-		_spec.SetField(permissionmenu.FieldPermissionID, field.TypeUint32, value)
+		_spec.SetField(permissionmenu.FieldPermissionID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedPermissionID(); ok {
-		_spec.AddField(permissionmenu.FieldPermissionID, field.TypeUint32, value)
+		_spec.AddField(permissionmenu.FieldPermissionID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.MenuID(); ok {
-		_spec.SetField(permissionmenu.FieldMenuID, field.TypeUint32, value)
+		_spec.SetField(permissionmenu.FieldMenuID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedMenuID(); ok {
-		_spec.AddField(permissionmenu.FieldMenuID, field.TypeUint32, value)
+		_spec.AddField(permissionmenu.FieldMenuID, field.TypeInt64, value)
 	}
 	_spec.AddModifiers(_u.modifiers...)
 	_node = &PermissionMenu{config: _u.config}

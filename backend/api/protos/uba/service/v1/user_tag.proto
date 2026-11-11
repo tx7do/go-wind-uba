@@ -48,22 +48,22 @@ enum TagSource {
 // 用户标签记录（对应 user_tag 表）
 message UserTag {
   // 主键ID（自增长，唯一标识一条用户标签记录）
-  optional uint32 id = 1 [
+  optional int64 id = 1 [
     json_name = "id",
     (gnostic.openapi.v3.property) = {description: "主键ID，自增长，唯一标识一条用户标签记录"}
   ];
   // 租户ID（多租户隔离，支持 SaaS 场景）
-  optional uint32 tenant_id = 2 [
+  optional int64 tenant_id = 2 [
     json_name = "tenantId",
     (gnostic.openapi.v3.property) = {description: "租户ID，多租户隔离，支持 SaaS 场景"}
   ];
   // 用户ID（唯一标识一个用户）
-  optional uint32 user_id = 3 [
+  optional int64 user_id = 3 [
     json_name = "userId",
     (gnostic.openapi.v3.property) = {description: "用户ID，唯一标识一个用户"}
   ];
   // 标签ID（唯一标识一个标签）
-  optional uint32 tag_id = 4 [
+  optional int64 tag_id = 4 [
     json_name = "tagId",
     (gnostic.openapi.v3.property) = {description: "标签ID，唯一标识一个标签"}
   ];
@@ -91,7 +91,7 @@ message UserTag {
     (gnostic.openapi.v3.property) = {description: "标签来源，如人工打标、规则引擎、算法模型、批量导入等"}
   ];
   // 来源规则ID（如果是规则计算，记录规则ID）
-  optional uint32 source_rule_id = 9 [
+  optional int64 source_rule_id = 9 [
     json_name = "sourceRuleId",
     (gnostic.openapi.v3.property) = {description: "来源规则ID，如果是规则计算，记录规则ID"}
   ];
@@ -107,9 +107,9 @@ message UserTag {
     (gnostic.openapi.v3.property) = {description: "过期时间，标签失效时间"}
   ];
 
-  optional uint32 created_by = 100 [json_name = "createdBy", (gnostic.openapi.v3.property) = {description: "创建者用户ID"}]; // 创建者用户ID
-  optional uint32 updated_by = 101 [json_name = "updatedBy", (gnostic.openapi.v3.property) = {description: "更新者用户ID"}]; // 更新者用户ID
-  optional uint32 deleted_by = 102 [json_name = "deletedBy", (gnostic.openapi.v3.property) = {description: "删除者用户ID"}]; // 删除者用户ID
+  optional int64 created_by = 100 [json_name = "createdBy", (gnostic.openapi.v3.property) = {description: "创建者用户ID"}]; // 创建者用户ID
+  optional int64 updated_by = 101 [json_name = "updatedBy", (gnostic.openapi.v3.property) = {description: "更新者用户ID"}]; // 更新者用户ID
+  optional int64 deleted_by = 102 [json_name = "deletedBy", (gnostic.openapi.v3.property) = {description: "删除者用户ID"}]; // 删除者用户ID
 
   optional google.protobuf.Timestamp created_at = 200 [json_name = "createdAt", (gnostic.openapi.v3.property) = {description: "创建时间"}];// 创建时间
   optional google.protobuf.Timestamp updated_at = 201 [json_name = "updatedAt", (gnostic.openapi.v3.property) = {description: "更新时间"}];// 更新时间
@@ -119,13 +119,13 @@ message UserTag {
 // 获取用户标签列表 - 答复
 message ListUserTagResponse {
   repeated UserTag items = 1;
-  uint64 total = 2;
+  int64 total = 2;
 }
 
 // 获取用户标签数据 - 请求
 message GetUserTagRequest {
   oneof query_by {
-    uint32 id = 1 [
+    int64 id = 1 [
       (gnostic.openapi.v3.property) = {description: "ID", read_only: true},
       json_name = "id"
     ]; // ID
@@ -146,7 +146,7 @@ message CreateUserTagRequest {
 
 // 更新用户标签 - 请求
 message UpdateUserTagRequest {
-  uint32 id = 1;
+  int64 id = 1;
 
   UserTag data = 2 [
     json_name = "data",
@@ -170,18 +170,18 @@ message UpdateUserTagRequest {
 // 删除用户标签 - 请求
 message DeleteUserTagRequest {
   oneof query_by {
-    uint32 id = 1 [
+    int64 id = 1 [
       (gnostic.openapi.v3.property) = {description: "ID", read_only: true},
       json_name = "id"
     ]; // ID
   }
 
-  optional uint32 deleted_by = 100 [
+  optional int64 deleted_by = 100 [
     json_name = "deletedBy",
     (gnostic.openapi.v3.property) = {description: "删除者用户ID"}
   ]; // 删除者用户ID
 }
 
 message CountUserTagResponse {
-  uint64 count = 1;
+  int64 count = 1;
 }

@@ -7,7 +7,7 @@ import (
 )
 
 type ObjectsDim struct {
-	TenantID     *uint32          `db:"tenant_id"`
+	TenantID     *int64           `db:"tenant_id"`
 	ObjectID     *string          `db:"object_id"`
 	ObjectType   *string          `db:"object_type"`
 	ObjectName   *string          `db:"object_name"`

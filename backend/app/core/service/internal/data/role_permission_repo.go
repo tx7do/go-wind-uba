@@ -59,7 +59,7 @@ func (r *RolePermissionRepo) init() {
 func (r *RolePermissionRepo) CleanPermissions(
 	ctx context.Context,
 	tx *ent.Tx,
-	roleID uint32,
+	roleID int64,
 ) error {
 	if _, err := tx.RolePermission.Delete().
 		Where(
@@ -105,7 +105,7 @@ func (r *RolePermissionRepo) BatchCreate(ctx context.Context, tx *ent.Tx, datas 
 
 // Upsert 创建或更新角色权限关联
 func (r *RolePermissionRepo) Upsert(ctx context.Context, tx *ent.Tx, data *permissionV1.RolePermission) error {
-	var operatorID *uint32
+	var operatorID *int64
 	if data.UpdatedBy != nil {
 		operatorID = data.UpdatedBy
 	} else {
@@ -168,8 +168,8 @@ func (r *RolePermissionRepo) Upsert(ctx context.Context, tx *ent.Tx, data *permi
 // ReplacePermissions 整体替换角色的权限：先清空该角色现有权限，再插入新的权限集合。
 // 与 AssignPermissions（仅 upsert，不删除）不同，此方法用于更新场景，确保取消勾选的权限被正确移除。
 func (r *RolePermissionRepo) ReplacePermissions(ctx context.Context, tx *ent.Tx,
-	tenantID, operatorID uint32,
-	roleID uint32, permissionIDs []uint32,
+	tenantID, operatorID int64,
+	roleID int64, permissionIDs []int64,
 ) error {
 	if err := r.CleanPermissions(ctx, tx, roleID); err != nil {
 		return err
@@ -184,8 +184,8 @@ func (r *RolePermissionRepo) ReplacePermissions(ctx context.Context, tx *ent.Tx,
 
 // AssignPermissions 给角色分配权限
 func (r *RolePermissionRepo) AssignPermissions(ctx context.Context, tx *ent.Tx,
-	tenantID, operatorID uint32,
-	roleID uint32, permissionIDs []uint32,
+	tenantID, operatorID int64,
+	roleID int64, permissionIDs []int64,
 ) error {
 	if len(permissionIDs) == 0 {
 		return nil
@@ -220,7 +220,7 @@ func (r *RolePermissionRepo) AssignPermissions(ctx context.Context, tx *ent.Tx,
 }
 
 // ListPermissionIDs 列出角色的权限ID列表
-func (r *RolePermissionRepo) ListPermissionIDs(ctx context.Context, roleID uint32) ([]uint32, error) {
+func (r *RolePermissionRepo) ListPermissionIDs(ctx context.Context, roleID int64) ([]int64, error) {
 	q := r.entClient.Client().RolePermission.Query().
 		Where(
 			rolepermission.RoleIDEQ(roleID),
@@ -233,15 +233,15 @@ func (r *RolePermissionRepo) ListPermissionIDs(ctx context.Context, roleID uint3
 		r.log.Errorf("query permission ids by role id failed: %s", err.Error())
 		return nil, permissionV1.ErrorInternalServerError("query permission ids by role id failed")
 	}
-	ids := make([]uint32, len(intIDs))
+	ids := make([]int64, len(intIDs))
 	for i, v := range intIDs {
-		ids[i] = uint32(v)
+		ids[i] = int64(v)
 	}
 	return ids, nil
 }
 
 // ListPermissionIDsByRoleIDs 根据角色ID列表获取权限ID列表
-func (r *RolePermissionRepo) ListPermissionIDsByRoleIDs(ctx context.Context, roleIDs []uint32) ([]uint32, error) {
+func (r *RolePermissionRepo) ListPermissionIDsByRoleIDs(ctx context.Context, roleIDs []int64) ([]int64, error) {
 	q := r.entClient.Client().RolePermission.Query().
 		Where(
 			rolepermission.RoleIDIn(roleIDs...),
@@ -254,15 +254,15 @@ func (r *RolePermissionRepo) ListPermissionIDsByRoleIDs(ctx context.Context, rol
 		r.log.Errorf("query permission ids by role ids failed: %s", err.Error())
 		return nil, permissionV1.ErrorInternalServerError("query permission ids by role ids failed")
 	}
-	ids := make([]uint32, len(intIDs))
+	ids := make([]int64, len(intIDs))
 	for i, v := range intIDs {
-		ids[i] = uint32(v)
+		ids[i] = int64(v)
 	}
 	return ids, nil
 }
 
 // RemovePermissions 移除角色的部分权限
-func (r *RolePermissionRepo) RemovePermissions(ctx context.Context, tenantID, roleID uint32, permissionIDs []uint32) error {
+func (r *RolePermissionRepo) RemovePermissions(ctx context.Context, tenantID, roleID int64, permissionIDs []int64) error {
 	_, err := r.entClient.Client().RolePermission.Delete().
 		Where(
 			rolepermission.And(
@@ -279,7 +279,7 @@ func (r *RolePermissionRepo) RemovePermissions(ctx context.Context, tenantID, ro
 	return nil
 }
 
-func (r *RolePermissionRepo) ListPermissionsByRoleID(ctx context.Context, roleID uint32) ([]*permissionV1.RolePermission, error) {
+func (r *RolePermissionRepo) ListPermissionsByRoleID(ctx context.Context, roleID int64) ([]*permissionV1.RolePermission, error) {
 	entities, err := r.entClient.Client().RolePermission.Query().
 		Where(
 			rolepermission.RoleIDEQ(roleID),

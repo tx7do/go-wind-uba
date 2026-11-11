@@ -72,14 +72,14 @@ func (_u *FeatureFlagUpdate) ClearDeletedAt() *FeatureFlagUpdate {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (_u *FeatureFlagUpdate) SetCreatedBy(v uint32) *FeatureFlagUpdate {
+func (_u *FeatureFlagUpdate) SetCreatedBy(v int64) *FeatureFlagUpdate {
 	_u.mutation.ResetCreatedBy()
 	_u.mutation.SetCreatedBy(v)
 	return _u
 }
 
 // SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
-func (_u *FeatureFlagUpdate) SetNillableCreatedBy(v *uint32) *FeatureFlagUpdate {
+func (_u *FeatureFlagUpdate) SetNillableCreatedBy(v *int64) *FeatureFlagUpdate {
 	if v != nil {
 		_u.SetCreatedBy(*v)
 	}
@@ -87,7 +87,7 @@ func (_u *FeatureFlagUpdate) SetNillableCreatedBy(v *uint32) *FeatureFlagUpdate 
 }
 
 // AddCreatedBy adds value to the "created_by" field.
-func (_u *FeatureFlagUpdate) AddCreatedBy(v int32) *FeatureFlagUpdate {
+func (_u *FeatureFlagUpdate) AddCreatedBy(v int64) *FeatureFlagUpdate {
 	_u.mutation.AddCreatedBy(v)
 	return _u
 }
@@ -99,14 +99,14 @@ func (_u *FeatureFlagUpdate) ClearCreatedBy() *FeatureFlagUpdate {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (_u *FeatureFlagUpdate) SetUpdatedBy(v uint32) *FeatureFlagUpdate {
+func (_u *FeatureFlagUpdate) SetUpdatedBy(v int64) *FeatureFlagUpdate {
 	_u.mutation.ResetUpdatedBy()
 	_u.mutation.SetUpdatedBy(v)
 	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (_u *FeatureFlagUpdate) SetNillableUpdatedBy(v *uint32) *FeatureFlagUpdate {
+func (_u *FeatureFlagUpdate) SetNillableUpdatedBy(v *int64) *FeatureFlagUpdate {
 	if v != nil {
 		_u.SetUpdatedBy(*v)
 	}
@@ -114,7 +114,7 @@ func (_u *FeatureFlagUpdate) SetNillableUpdatedBy(v *uint32) *FeatureFlagUpdate 
 }
 
 // AddUpdatedBy adds value to the "updated_by" field.
-func (_u *FeatureFlagUpdate) AddUpdatedBy(v int32) *FeatureFlagUpdate {
+func (_u *FeatureFlagUpdate) AddUpdatedBy(v int64) *FeatureFlagUpdate {
 	_u.mutation.AddUpdatedBy(v)
 	return _u
 }
@@ -126,14 +126,14 @@ func (_u *FeatureFlagUpdate) ClearUpdatedBy() *FeatureFlagUpdate {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (_u *FeatureFlagUpdate) SetDeletedBy(v uint32) *FeatureFlagUpdate {
+func (_u *FeatureFlagUpdate) SetDeletedBy(v int64) *FeatureFlagUpdate {
 	_u.mutation.ResetDeletedBy()
 	_u.mutation.SetDeletedBy(v)
 	return _u
 }
 
 // SetNillableDeletedBy sets the "deleted_by" field if the given value is not nil.
-func (_u *FeatureFlagUpdate) SetNillableDeletedBy(v *uint32) *FeatureFlagUpdate {
+func (_u *FeatureFlagUpdate) SetNillableDeletedBy(v *int64) *FeatureFlagUpdate {
 	if v != nil {
 		_u.SetDeletedBy(*v)
 	}
@@ -141,7 +141,7 @@ func (_u *FeatureFlagUpdate) SetNillableDeletedBy(v *uint32) *FeatureFlagUpdate 
 }
 
 // AddDeletedBy adds value to the "deleted_by" field.
-func (_u *FeatureFlagUpdate) AddDeletedBy(v int32) *FeatureFlagUpdate {
+func (_u *FeatureFlagUpdate) AddDeletedBy(v int64) *FeatureFlagUpdate {
 	_u.mutation.AddDeletedBy(v)
 	return _u
 }
@@ -213,14 +213,14 @@ func (_u *FeatureFlagUpdate) ClearDescription() *FeatureFlagUpdate {
 }
 
 // SetAppID sets the "app_id" field.
-func (_u *FeatureFlagUpdate) SetAppID(v uint32) *FeatureFlagUpdate {
+func (_u *FeatureFlagUpdate) SetAppID(v int64) *FeatureFlagUpdate {
 	_u.mutation.ResetAppID()
 	_u.mutation.SetAppID(v)
 	return _u
 }
 
 // SetNillableAppID sets the "app_id" field if the given value is not nil.
-func (_u *FeatureFlagUpdate) SetNillableAppID(v *uint32) *FeatureFlagUpdate {
+func (_u *FeatureFlagUpdate) SetNillableAppID(v *int64) *FeatureFlagUpdate {
 	if v != nil {
 		_u.SetAppID(*v)
 	}
@@ -228,7 +228,7 @@ func (_u *FeatureFlagUpdate) SetNillableAppID(v *uint32) *FeatureFlagUpdate {
 }
 
 // AddAppID adds value to the "app_id" field.
-func (_u *FeatureFlagUpdate) AddAppID(v int32) *FeatureFlagUpdate {
+func (_u *FeatureFlagUpdate) AddAppID(v int64) *FeatureFlagUpdate {
 	_u.mutation.AddAppID(v)
 	return _u
 }
@@ -398,7 +398,7 @@ func (_u *FeatureFlagUpdate) sqlSave(ctx context.Context) (_node int, err error)
 	if err := _u.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(featureflag.Table, featureflag.Columns, sqlgraph.NewFieldSpec(featureflag.FieldID, field.TypeUint32))
+	_spec := sqlgraph.NewUpdateSpec(featureflag.Table, featureflag.Columns, sqlgraph.NewFieldSpec(featureflag.FieldID, field.TypeInt64))
 	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -422,34 +422,34 @@ func (_u *FeatureFlagUpdate) sqlSave(ctx context.Context) (_node int, err error)
 		_spec.ClearField(featureflag.FieldDeletedAt, field.TypeTime)
 	}
 	if value, ok := _u.mutation.CreatedBy(); ok {
-		_spec.SetField(featureflag.FieldCreatedBy, field.TypeUint32, value)
+		_spec.SetField(featureflag.FieldCreatedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedCreatedBy(); ok {
-		_spec.AddField(featureflag.FieldCreatedBy, field.TypeUint32, value)
+		_spec.AddField(featureflag.FieldCreatedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.CreatedByCleared() {
-		_spec.ClearField(featureflag.FieldCreatedBy, field.TypeUint32)
+		_spec.ClearField(featureflag.FieldCreatedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.UpdatedBy(); ok {
-		_spec.SetField(featureflag.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.SetField(featureflag.FieldUpdatedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
-		_spec.AddField(featureflag.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.AddField(featureflag.FieldUpdatedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.UpdatedByCleared() {
-		_spec.ClearField(featureflag.FieldUpdatedBy, field.TypeUint32)
+		_spec.ClearField(featureflag.FieldUpdatedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.DeletedBy(); ok {
-		_spec.SetField(featureflag.FieldDeletedBy, field.TypeUint32, value)
+		_spec.SetField(featureflag.FieldDeletedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedDeletedBy(); ok {
-		_spec.AddField(featureflag.FieldDeletedBy, field.TypeUint32, value)
+		_spec.AddField(featureflag.FieldDeletedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.DeletedByCleared() {
-		_spec.ClearField(featureflag.FieldDeletedBy, field.TypeUint32)
+		_spec.ClearField(featureflag.FieldDeletedBy, field.TypeInt64)
 	}
 	if _u.mutation.TenantIDCleared() {
-		_spec.ClearField(featureflag.FieldTenantID, field.TypeUint32)
+		_spec.ClearField(featureflag.FieldTenantID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.Key(); ok {
 		_spec.SetField(featureflag.FieldKey, field.TypeString, value)
@@ -470,13 +470,13 @@ func (_u *FeatureFlagUpdate) sqlSave(ctx context.Context) (_node int, err error)
 		_spec.ClearField(featureflag.FieldDescription, field.TypeString)
 	}
 	if value, ok := _u.mutation.AppID(); ok {
-		_spec.SetField(featureflag.FieldAppID, field.TypeUint32, value)
+		_spec.SetField(featureflag.FieldAppID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedAppID(); ok {
-		_spec.AddField(featureflag.FieldAppID, field.TypeUint32, value)
+		_spec.AddField(featureflag.FieldAppID, field.TypeInt64, value)
 	}
 	if _u.mutation.AppIDCleared() {
-		_spec.ClearField(featureflag.FieldAppID, field.TypeUint32)
+		_spec.ClearField(featureflag.FieldAppID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.Variants(); ok {
 		_spec.SetField(featureflag.FieldVariants, field.TypeJSON, value)
@@ -576,14 +576,14 @@ func (_u *FeatureFlagUpdateOne) ClearDeletedAt() *FeatureFlagUpdateOne {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (_u *FeatureFlagUpdateOne) SetCreatedBy(v uint32) *FeatureFlagUpdateOne {
+func (_u *FeatureFlagUpdateOne) SetCreatedBy(v int64) *FeatureFlagUpdateOne {
 	_u.mutation.ResetCreatedBy()
 	_u.mutation.SetCreatedBy(v)
 	return _u
 }
 
 // SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
-func (_u *FeatureFlagUpdateOne) SetNillableCreatedBy(v *uint32) *FeatureFlagUpdateOne {
+func (_u *FeatureFlagUpdateOne) SetNillableCreatedBy(v *int64) *FeatureFlagUpdateOne {
 	if v != nil {
 		_u.SetCreatedBy(*v)
 	}
@@ -591,7 +591,7 @@ func (_u *FeatureFlagUpdateOne) SetNillableCreatedBy(v *uint32) *FeatureFlagUpda
 }
 
 // AddCreatedBy adds value to the "created_by" field.
-func (_u *FeatureFlagUpdateOne) AddCreatedBy(v int32) *FeatureFlagUpdateOne {
+func (_u *FeatureFlagUpdateOne) AddCreatedBy(v int64) *FeatureFlagUpdateOne {
 	_u.mutation.AddCreatedBy(v)
 	return _u
 }
@@ -603,14 +603,14 @@ func (_u *FeatureFlagUpdateOne) ClearCreatedBy() *FeatureFlagUpdateOne {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (_u *FeatureFlagUpdateOne) SetUpdatedBy(v uint32) *FeatureFlagUpdateOne {
+func (_u *FeatureFlagUpdateOne) SetUpdatedBy(v int64) *FeatureFlagUpdateOne {
 	_u.mutation.ResetUpdatedBy()
 	_u.mutation.SetUpdatedBy(v)
 	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (_u *FeatureFlagUpdateOne) SetNillableUpdatedBy(v *uint32) *FeatureFlagUpdateOne {
+func (_u *FeatureFlagUpdateOne) SetNillableUpdatedBy(v *int64) *FeatureFlagUpdateOne {
 	if v != nil {
 		_u.SetUpdatedBy(*v)
 	}
@@ -618,7 +618,7 @@ func (_u *FeatureFlagUpdateOne) SetNillableUpdatedBy(v *uint32) *FeatureFlagUpda
 }
 
 // AddUpdatedBy adds value to the "updated_by" field.
-func (_u *FeatureFlagUpdateOne) AddUpdatedBy(v int32) *FeatureFlagUpdateOne {
+func (_u *FeatureFlagUpdateOne) AddUpdatedBy(v int64) *FeatureFlagUpdateOne {
 	_u.mutation.AddUpdatedBy(v)
 	return _u
 }
@@ -630,14 +630,14 @@ func (_u *FeatureFlagUpdateOne) ClearUpdatedBy() *FeatureFlagUpdateOne {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (_u *FeatureFlagUpdateOne) SetDeletedBy(v uint32) *FeatureFlagUpdateOne {
+func (_u *FeatureFlagUpdateOne) SetDeletedBy(v int64) *FeatureFlagUpdateOne {
 	_u.mutation.ResetDeletedBy()
 	_u.mutation.SetDeletedBy(v)
 	return _u
 }
 
 // SetNillableDeletedBy sets the "deleted_by" field if the given value is not nil.
-func (_u *FeatureFlagUpdateOne) SetNillableDeletedBy(v *uint32) *FeatureFlagUpdateOne {
+func (_u *FeatureFlagUpdateOne) SetNillableDeletedBy(v *int64) *FeatureFlagUpdateOne {
 	if v != nil {
 		_u.SetDeletedBy(*v)
 	}
@@ -645,7 +645,7 @@ func (_u *FeatureFlagUpdateOne) SetNillableDeletedBy(v *uint32) *FeatureFlagUpda
 }
 
 // AddDeletedBy adds value to the "deleted_by" field.
-func (_u *FeatureFlagUpdateOne) AddDeletedBy(v int32) *FeatureFlagUpdateOne {
+func (_u *FeatureFlagUpdateOne) AddDeletedBy(v int64) *FeatureFlagUpdateOne {
 	_u.mutation.AddDeletedBy(v)
 	return _u
 }
@@ -717,14 +717,14 @@ func (_u *FeatureFlagUpdateOne) ClearDescription() *FeatureFlagUpdateOne {
 }
 
 // SetAppID sets the "app_id" field.
-func (_u *FeatureFlagUpdateOne) SetAppID(v uint32) *FeatureFlagUpdateOne {
+func (_u *FeatureFlagUpdateOne) SetAppID(v int64) *FeatureFlagUpdateOne {
 	_u.mutation.ResetAppID()
 	_u.mutation.SetAppID(v)
 	return _u
 }
 
 // SetNillableAppID sets the "app_id" field if the given value is not nil.
-func (_u *FeatureFlagUpdateOne) SetNillableAppID(v *uint32) *FeatureFlagUpdateOne {
+func (_u *FeatureFlagUpdateOne) SetNillableAppID(v *int64) *FeatureFlagUpdateOne {
 	if v != nil {
 		_u.SetAppID(*v)
 	}
@@ -732,7 +732,7 @@ func (_u *FeatureFlagUpdateOne) SetNillableAppID(v *uint32) *FeatureFlagUpdateOn
 }
 
 // AddAppID adds value to the "app_id" field.
-func (_u *FeatureFlagUpdateOne) AddAppID(v int32) *FeatureFlagUpdateOne {
+func (_u *FeatureFlagUpdateOne) AddAppID(v int64) *FeatureFlagUpdateOne {
 	_u.mutation.AddAppID(v)
 	return _u
 }
@@ -915,7 +915,7 @@ func (_u *FeatureFlagUpdateOne) sqlSave(ctx context.Context) (_node *FeatureFlag
 	if err := _u.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(featureflag.Table, featureflag.Columns, sqlgraph.NewFieldSpec(featureflag.FieldID, field.TypeUint32))
+	_spec := sqlgraph.NewUpdateSpec(featureflag.Table, featureflag.Columns, sqlgraph.NewFieldSpec(featureflag.FieldID, field.TypeInt64))
 	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "FeatureFlag.id" for update`)}
@@ -956,34 +956,34 @@ func (_u *FeatureFlagUpdateOne) sqlSave(ctx context.Context) (_node *FeatureFlag
 		_spec.ClearField(featureflag.FieldDeletedAt, field.TypeTime)
 	}
 	if value, ok := _u.mutation.CreatedBy(); ok {
-		_spec.SetField(featureflag.FieldCreatedBy, field.TypeUint32, value)
+		_spec.SetField(featureflag.FieldCreatedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedCreatedBy(); ok {
-		_spec.AddField(featureflag.FieldCreatedBy, field.TypeUint32, value)
+		_spec.AddField(featureflag.FieldCreatedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.CreatedByCleared() {
-		_spec.ClearField(featureflag.FieldCreatedBy, field.TypeUint32)
+		_spec.ClearField(featureflag.FieldCreatedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.UpdatedBy(); ok {
-		_spec.SetField(featureflag.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.SetField(featureflag.FieldUpdatedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
-		_spec.AddField(featureflag.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.AddField(featureflag.FieldUpdatedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.UpdatedByCleared() {
-		_spec.ClearField(featureflag.FieldUpdatedBy, field.TypeUint32)
+		_spec.ClearField(featureflag.FieldUpdatedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.DeletedBy(); ok {
-		_spec.SetField(featureflag.FieldDeletedBy, field.TypeUint32, value)
+		_spec.SetField(featureflag.FieldDeletedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedDeletedBy(); ok {
-		_spec.AddField(featureflag.FieldDeletedBy, field.TypeUint32, value)
+		_spec.AddField(featureflag.FieldDeletedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.DeletedByCleared() {
-		_spec.ClearField(featureflag.FieldDeletedBy, field.TypeUint32)
+		_spec.ClearField(featureflag.FieldDeletedBy, field.TypeInt64)
 	}
 	if _u.mutation.TenantIDCleared() {
-		_spec.ClearField(featureflag.FieldTenantID, field.TypeUint32)
+		_spec.ClearField(featureflag.FieldTenantID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.Key(); ok {
 		_spec.SetField(featureflag.FieldKey, field.TypeString, value)
@@ -1004,13 +1004,13 @@ func (_u *FeatureFlagUpdateOne) sqlSave(ctx context.Context) (_node *FeatureFlag
 		_spec.ClearField(featureflag.FieldDescription, field.TypeString)
 	}
 	if value, ok := _u.mutation.AppID(); ok {
-		_spec.SetField(featureflag.FieldAppID, field.TypeUint32, value)
+		_spec.SetField(featureflag.FieldAppID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedAppID(); ok {
-		_spec.AddField(featureflag.FieldAppID, field.TypeUint32, value)
+		_spec.AddField(featureflag.FieldAppID, field.TypeInt64, value)
 	}
 	if _u.mutation.AppIDCleared() {
-		_spec.ClearField(featureflag.FieldAppID, field.TypeUint32)
+		_spec.ClearField(featureflag.FieldAppID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.Variants(); ok {
 		_spec.SetField(featureflag.FieldVariants, field.TypeJSON, value)

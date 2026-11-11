@@ -10,47 +10,47 @@ import (
 )
 
 // ID filters vertices based on their ID field.
-func ID(id uint32) predicate.Campaign {
+func ID(id int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldEQ(FieldID, id))
 }
 
 // IDEQ applies the EQ predicate on the ID field.
-func IDEQ(id uint32) predicate.Campaign {
+func IDEQ(id int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldEQ(FieldID, id))
 }
 
 // IDNEQ applies the NEQ predicate on the ID field.
-func IDNEQ(id uint32) predicate.Campaign {
+func IDNEQ(id int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldNEQ(FieldID, id))
 }
 
 // IDIn applies the In predicate on the ID field.
-func IDIn(ids ...uint32) predicate.Campaign {
+func IDIn(ids ...int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldIn(FieldID, ids...))
 }
 
 // IDNotIn applies the NotIn predicate on the ID field.
-func IDNotIn(ids ...uint32) predicate.Campaign {
+func IDNotIn(ids ...int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldNotIn(FieldID, ids...))
 }
 
 // IDGT applies the GT predicate on the ID field.
-func IDGT(id uint32) predicate.Campaign {
+func IDGT(id int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldGT(FieldID, id))
 }
 
 // IDGTE applies the GTE predicate on the ID field.
-func IDGTE(id uint32) predicate.Campaign {
+func IDGTE(id int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldGTE(FieldID, id))
 }
 
 // IDLT applies the LT predicate on the ID field.
-func IDLT(id uint32) predicate.Campaign {
+func IDLT(id int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldLT(FieldID, id))
 }
 
 // IDLTE applies the LTE predicate on the ID field.
-func IDLTE(id uint32) predicate.Campaign {
+func IDLTE(id int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldLTE(FieldID, id))
 }
 
@@ -70,22 +70,22 @@ func DeletedAt(v time.Time) predicate.Campaign {
 }
 
 // CreatedBy applies equality check predicate on the "created_by" field. It's identical to CreatedByEQ.
-func CreatedBy(v uint32) predicate.Campaign {
+func CreatedBy(v int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldEQ(FieldCreatedBy, v))
 }
 
 // UpdatedBy applies equality check predicate on the "updated_by" field. It's identical to UpdatedByEQ.
-func UpdatedBy(v uint32) predicate.Campaign {
+func UpdatedBy(v int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldEQ(FieldUpdatedBy, v))
 }
 
 // DeletedBy applies equality check predicate on the "deleted_by" field. It's identical to DeletedByEQ.
-func DeletedBy(v uint32) predicate.Campaign {
+func DeletedBy(v int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldEQ(FieldDeletedBy, v))
 }
 
 // TenantID applies equality check predicate on the "tenant_id" field. It's identical to TenantIDEQ.
-func TenantID(v uint32) predicate.Campaign {
+func TenantID(v int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldEQ(FieldTenantID, v))
 }
 
@@ -100,12 +100,12 @@ func Description(v string) predicate.Campaign {
 }
 
 // AppID applies equality check predicate on the "app_id" field. It's identical to AppIDEQ.
-func AppID(v uint32) predicate.Campaign {
+func AppID(v int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldEQ(FieldAppID, v))
 }
 
 // SegmentID applies equality check predicate on the "segment_id" field. It's identical to SegmentIDEQ.
-func SegmentID(v uint32) predicate.Campaign {
+func SegmentID(v int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldEQ(FieldSegmentID, v))
 }
 
@@ -310,42 +310,42 @@ func DeletedAtNotNil() predicate.Campaign {
 }
 
 // CreatedByEQ applies the EQ predicate on the "created_by" field.
-func CreatedByEQ(v uint32) predicate.Campaign {
+func CreatedByEQ(v int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldEQ(FieldCreatedBy, v))
 }
 
 // CreatedByNEQ applies the NEQ predicate on the "created_by" field.
-func CreatedByNEQ(v uint32) predicate.Campaign {
+func CreatedByNEQ(v int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldNEQ(FieldCreatedBy, v))
 }
 
 // CreatedByIn applies the In predicate on the "created_by" field.
-func CreatedByIn(vs ...uint32) predicate.Campaign {
+func CreatedByIn(vs ...int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldIn(FieldCreatedBy, vs...))
 }
 
 // CreatedByNotIn applies the NotIn predicate on the "created_by" field.
-func CreatedByNotIn(vs ...uint32) predicate.Campaign {
+func CreatedByNotIn(vs ...int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldNotIn(FieldCreatedBy, vs...))
 }
 
 // CreatedByGT applies the GT predicate on the "created_by" field.
-func CreatedByGT(v uint32) predicate.Campaign {
+func CreatedByGT(v int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldGT(FieldCreatedBy, v))
 }
 
 // CreatedByGTE applies the GTE predicate on the "created_by" field.
-func CreatedByGTE(v uint32) predicate.Campaign {
+func CreatedByGTE(v int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldGTE(FieldCreatedBy, v))
 }
 
 // CreatedByLT applies the LT predicate on the "created_by" field.
-func CreatedByLT(v uint32) predicate.Campaign {
+func CreatedByLT(v int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldLT(FieldCreatedBy, v))
 }
 
 // CreatedByLTE applies the LTE predicate on the "created_by" field.
-func CreatedByLTE(v uint32) predicate.Campaign {
+func CreatedByLTE(v int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldLTE(FieldCreatedBy, v))
 }
 
@@ -360,42 +360,42 @@ func CreatedByNotNil() predicate.Campaign {
 }
 
 // UpdatedByEQ applies the EQ predicate on the "updated_by" field.
-func UpdatedByEQ(v uint32) predicate.Campaign {
+func UpdatedByEQ(v int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldEQ(FieldUpdatedBy, v))
 }
 
 // UpdatedByNEQ applies the NEQ predicate on the "updated_by" field.
-func UpdatedByNEQ(v uint32) predicate.Campaign {
+func UpdatedByNEQ(v int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldNEQ(FieldUpdatedBy, v))
 }
 
 // UpdatedByIn applies the In predicate on the "updated_by" field.
-func UpdatedByIn(vs ...uint32) predicate.Campaign {
+func UpdatedByIn(vs ...int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldIn(FieldUpdatedBy, vs...))
 }
 
 // UpdatedByNotIn applies the NotIn predicate on the "updated_by" field.
-func UpdatedByNotIn(vs ...uint32) predicate.Campaign {
+func UpdatedByNotIn(vs ...int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldNotIn(FieldUpdatedBy, vs...))
 }
 
 // UpdatedByGT applies the GT predicate on the "updated_by" field.
-func UpdatedByGT(v uint32) predicate.Campaign {
+func UpdatedByGT(v int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldGT(FieldUpdatedBy, v))
 }
 
 // UpdatedByGTE applies the GTE predicate on the "updated_by" field.
-func UpdatedByGTE(v uint32) predicate.Campaign {
+func UpdatedByGTE(v int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldGTE(FieldUpdatedBy, v))
 }
 
 // UpdatedByLT applies the LT predicate on the "updated_by" field.
-func UpdatedByLT(v uint32) predicate.Campaign {
+func UpdatedByLT(v int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldLT(FieldUpdatedBy, v))
 }
 
 // UpdatedByLTE applies the LTE predicate on the "updated_by" field.
-func UpdatedByLTE(v uint32) predicate.Campaign {
+func UpdatedByLTE(v int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldLTE(FieldUpdatedBy, v))
 }
 
@@ -410,42 +410,42 @@ func UpdatedByNotNil() predicate.Campaign {
 }
 
 // DeletedByEQ applies the EQ predicate on the "deleted_by" field.
-func DeletedByEQ(v uint32) predicate.Campaign {
+func DeletedByEQ(v int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldEQ(FieldDeletedBy, v))
 }
 
 // DeletedByNEQ applies the NEQ predicate on the "deleted_by" field.
-func DeletedByNEQ(v uint32) predicate.Campaign {
+func DeletedByNEQ(v int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldNEQ(FieldDeletedBy, v))
 }
 
 // DeletedByIn applies the In predicate on the "deleted_by" field.
-func DeletedByIn(vs ...uint32) predicate.Campaign {
+func DeletedByIn(vs ...int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldIn(FieldDeletedBy, vs...))
 }
 
 // DeletedByNotIn applies the NotIn predicate on the "deleted_by" field.
-func DeletedByNotIn(vs ...uint32) predicate.Campaign {
+func DeletedByNotIn(vs ...int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldNotIn(FieldDeletedBy, vs...))
 }
 
 // DeletedByGT applies the GT predicate on the "deleted_by" field.
-func DeletedByGT(v uint32) predicate.Campaign {
+func DeletedByGT(v int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldGT(FieldDeletedBy, v))
 }
 
 // DeletedByGTE applies the GTE predicate on the "deleted_by" field.
-func DeletedByGTE(v uint32) predicate.Campaign {
+func DeletedByGTE(v int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldGTE(FieldDeletedBy, v))
 }
 
 // DeletedByLT applies the LT predicate on the "deleted_by" field.
-func DeletedByLT(v uint32) predicate.Campaign {
+func DeletedByLT(v int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldLT(FieldDeletedBy, v))
 }
 
 // DeletedByLTE applies the LTE predicate on the "deleted_by" field.
-func DeletedByLTE(v uint32) predicate.Campaign {
+func DeletedByLTE(v int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldLTE(FieldDeletedBy, v))
 }
 
@@ -460,42 +460,42 @@ func DeletedByNotNil() predicate.Campaign {
 }
 
 // TenantIDEQ applies the EQ predicate on the "tenant_id" field.
-func TenantIDEQ(v uint32) predicate.Campaign {
+func TenantIDEQ(v int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldEQ(FieldTenantID, v))
 }
 
 // TenantIDNEQ applies the NEQ predicate on the "tenant_id" field.
-func TenantIDNEQ(v uint32) predicate.Campaign {
+func TenantIDNEQ(v int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldNEQ(FieldTenantID, v))
 }
 
 // TenantIDIn applies the In predicate on the "tenant_id" field.
-func TenantIDIn(vs ...uint32) predicate.Campaign {
+func TenantIDIn(vs ...int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldIn(FieldTenantID, vs...))
 }
 
 // TenantIDNotIn applies the NotIn predicate on the "tenant_id" field.
-func TenantIDNotIn(vs ...uint32) predicate.Campaign {
+func TenantIDNotIn(vs ...int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldNotIn(FieldTenantID, vs...))
 }
 
 // TenantIDGT applies the GT predicate on the "tenant_id" field.
-func TenantIDGT(v uint32) predicate.Campaign {
+func TenantIDGT(v int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldGT(FieldTenantID, v))
 }
 
 // TenantIDGTE applies the GTE predicate on the "tenant_id" field.
-func TenantIDGTE(v uint32) predicate.Campaign {
+func TenantIDGTE(v int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldGTE(FieldTenantID, v))
 }
 
 // TenantIDLT applies the LT predicate on the "tenant_id" field.
-func TenantIDLT(v uint32) predicate.Campaign {
+func TenantIDLT(v int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldLT(FieldTenantID, v))
 }
 
 // TenantIDLTE applies the LTE predicate on the "tenant_id" field.
-func TenantIDLTE(v uint32) predicate.Campaign {
+func TenantIDLTE(v int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldLTE(FieldTenantID, v))
 }
 
@@ -660,42 +660,42 @@ func DescriptionContainsFold(v string) predicate.Campaign {
 }
 
 // AppIDEQ applies the EQ predicate on the "app_id" field.
-func AppIDEQ(v uint32) predicate.Campaign {
+func AppIDEQ(v int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldEQ(FieldAppID, v))
 }
 
 // AppIDNEQ applies the NEQ predicate on the "app_id" field.
-func AppIDNEQ(v uint32) predicate.Campaign {
+func AppIDNEQ(v int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldNEQ(FieldAppID, v))
 }
 
 // AppIDIn applies the In predicate on the "app_id" field.
-func AppIDIn(vs ...uint32) predicate.Campaign {
+func AppIDIn(vs ...int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldIn(FieldAppID, vs...))
 }
 
 // AppIDNotIn applies the NotIn predicate on the "app_id" field.
-func AppIDNotIn(vs ...uint32) predicate.Campaign {
+func AppIDNotIn(vs ...int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldNotIn(FieldAppID, vs...))
 }
 
 // AppIDGT applies the GT predicate on the "app_id" field.
-func AppIDGT(v uint32) predicate.Campaign {
+func AppIDGT(v int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldGT(FieldAppID, v))
 }
 
 // AppIDGTE applies the GTE predicate on the "app_id" field.
-func AppIDGTE(v uint32) predicate.Campaign {
+func AppIDGTE(v int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldGTE(FieldAppID, v))
 }
 
 // AppIDLT applies the LT predicate on the "app_id" field.
-func AppIDLT(v uint32) predicate.Campaign {
+func AppIDLT(v int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldLT(FieldAppID, v))
 }
 
 // AppIDLTE applies the LTE predicate on the "app_id" field.
-func AppIDLTE(v uint32) predicate.Campaign {
+func AppIDLTE(v int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldLTE(FieldAppID, v))
 }
 
@@ -710,42 +710,42 @@ func AppIDNotNil() predicate.Campaign {
 }
 
 // SegmentIDEQ applies the EQ predicate on the "segment_id" field.
-func SegmentIDEQ(v uint32) predicate.Campaign {
+func SegmentIDEQ(v int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldEQ(FieldSegmentID, v))
 }
 
 // SegmentIDNEQ applies the NEQ predicate on the "segment_id" field.
-func SegmentIDNEQ(v uint32) predicate.Campaign {
+func SegmentIDNEQ(v int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldNEQ(FieldSegmentID, v))
 }
 
 // SegmentIDIn applies the In predicate on the "segment_id" field.
-func SegmentIDIn(vs ...uint32) predicate.Campaign {
+func SegmentIDIn(vs ...int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldIn(FieldSegmentID, vs...))
 }
 
 // SegmentIDNotIn applies the NotIn predicate on the "segment_id" field.
-func SegmentIDNotIn(vs ...uint32) predicate.Campaign {
+func SegmentIDNotIn(vs ...int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldNotIn(FieldSegmentID, vs...))
 }
 
 // SegmentIDGT applies the GT predicate on the "segment_id" field.
-func SegmentIDGT(v uint32) predicate.Campaign {
+func SegmentIDGT(v int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldGT(FieldSegmentID, v))
 }
 
 // SegmentIDGTE applies the GTE predicate on the "segment_id" field.
-func SegmentIDGTE(v uint32) predicate.Campaign {
+func SegmentIDGTE(v int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldGTE(FieldSegmentID, v))
 }
 
 // SegmentIDLT applies the LT predicate on the "segment_id" field.
-func SegmentIDLT(v uint32) predicate.Campaign {
+func SegmentIDLT(v int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldLT(FieldSegmentID, v))
 }
 
 // SegmentIDLTE applies the LTE predicate on the "segment_id" field.
-func SegmentIDLTE(v uint32) predicate.Campaign {
+func SegmentIDLTE(v int64) predicate.Campaign {
 	return predicate.Campaign(sql.FieldLTE(FieldSegmentID, v))
 }
 

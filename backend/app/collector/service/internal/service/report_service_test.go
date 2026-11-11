@@ -11,8 +11,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/tx7do/go-utils/trans"
-	"github.com/tx7do/kratos-bootstrap/bootstrap"
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
+	"github.com/tx7do/kratos-bootstrap/bootstrap"
 	broker "github.com/tx7do/kratos-transport/broker"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -66,7 +66,7 @@ func validBehaviorEvent() *ubaV1.ReportEvent {
 		EventName: "page_view",
 		EventTime: timestamppb.New(testFixedTime()),
 		EventType: ubaV1.ReportEvent_BEHAVIOR,
-		Payload: &ubaV1.ReportEvent_Behavior{Behavior: &ubaV1.BehaviorEvent{}},
+		Payload:   &ubaV1.ReportEvent_Behavior{Behavior: &ubaV1.BehaviorEvent{}},
 	}
 }
 
@@ -168,7 +168,7 @@ func TestReportService_PostReport_SuccessOverridesTenant(t *testing.T) {
 	// 投递到 raw 主题，且租户被覆盖。
 	require.Len(t, fb.topics, 1)
 	behavior := fb.bodies[0].(*ubaV1.BehaviorEvent)
-	assert.Equal(t, uint32(42), behavior.GetTenantId())
+	assert.Equal(t, int64(42), behavior.GetTenantId())
 	assert.Equal(t, "evt-1", behavior.GetEventId())
 }
 
@@ -220,11 +220,11 @@ func TestReportService_HandleBehavior_MapsTopLevelFields(t *testing.T) {
 		OpResult:      trans.Ptr("success"),
 		Platform:      "web",
 		EventCategory: "TRADE",
-		UserId:        trans.Ptr(uint32(7)),
+		UserId:        trans.Ptr(int64(7)),
 		DeviceId:      "dev-1",
 		SessionId:     "sess-1",
 		TraceId:       "trace-1",
-		Ip:             "10.0.0.2",
+		Ip:            "10.0.0.2",
 		Properties: map[string]string{
 			"color": "red",
 			"geo":   "39.9,116.4",
@@ -247,7 +247,7 @@ func TestReportService_HandleBehavior_MapsTopLevelFields(t *testing.T) {
 	assert.Equal(t, "o-1", b.GetObjectId())
 	assert.Equal(t, "订单", b.GetObjectName())
 	assert.Equal(t, "9.90", b.GetAmount())
-	assert.Equal(t, uint32(7), b.GetUserId())
+	assert.Equal(t, int64(7), b.GetUserId())
 	assert.Equal(t, "dev-1", b.GetDeviceId())
 	assert.Equal(t, "sess-1", b.GetSessionId())
 	assert.Equal(t, "trace-1", b.GetTraceId())
@@ -275,7 +275,7 @@ func TestReportService_HandleBehavior_OneofTakesPrecedence(t *testing.T) {
 		EventName: "pay_success",
 		EventType: ubaV1.ReportEvent_BEHAVIOR,
 		Os:        trans.Ptr("Android"),
-		UserId:    trans.Ptr(uint32(7)),
+		UserId:    trans.Ptr(int64(7)),
 		EventTime: timestamppb.New(testFixedTime()),
 		Payload: &ubaV1.ReportEvent_Behavior{Behavior: &ubaV1.BehaviorEvent{
 			Os: trans.Ptr("iOS"),
@@ -316,7 +316,7 @@ func TestReportService_HandleRisk_FillsDefaultsAndFallbacks(t *testing.T) {
 		EventId:   "evt-r1",
 		EventName: "risk_hit",
 		EventTime: timestamppb.New(testFixedTime()),
-		UserId:    trans.Ptr(uint32(11)),
+		UserId:    trans.Ptr(int64(11)),
 		DeviceId:  "dev-r1",
 		EventType: ubaV1.ReportEvent_RISK,
 		Payload: &ubaV1.ReportEvent_Risk{Risk: &ubaV1.RiskEvent{
@@ -335,7 +335,7 @@ func TestReportService_HandleRisk_FillsDefaultsAndFallbacks(t *testing.T) {
 	// report_time 补全。
 	assert.NotNil(t, r.GetReportTime())
 	// 顶层回退：user_id / device_id。
-	assert.Equal(t, uint32(11), r.GetUserId())
+	assert.Equal(t, int64(11), r.GetUserId())
 	assert.Equal(t, "dev-r1", r.GetDeviceId())
 	// oneof 内自带的字段保留。
 	assert.Equal(t, "frequent_login", r.GetRiskType())

@@ -71,16 +71,16 @@ enum AlertChannel {
 
 // 指标阈值告警规则
 message AlertRule {
-  uint32 id = 1 [
+  int64 id = 1 [
     json_name = "id",
     (gnostic.openapi.v3.property) = {description: "主键ID，唯一标识告警规则"}
   ]; // 主键ID
 
-  optional uint32 tenant_id = 2 [
+  optional int64 tenant_id = 2 [
     json_name = "tenantId",
     (gnostic.openapi.v3.property) = {description: "租户ID，多租户隔离，支持SaaS场景"}
   ]; // 租户ID
-  optional uint32 app_id = 3 [
+  optional int64 app_id = 3 [
     json_name = "appId",
     (gnostic.openapi.v3.property) = {description: "关联应用ID（分析域数字ID），0/不传为全部应用"}
   ]; // 关联应用ID
@@ -102,9 +102,9 @@ message AlertRule {
   optional bool enabled = 13 [json_name = "enabled", (gnostic.openapi.v3.property) = {description: "是否启用"}]; // 是否启用
   optional google.protobuf.Timestamp last_triggered_at = 14 [json_name = "lastTriggeredAt", (gnostic.openapi.v3.property) = {description: "最后触发时间"}]; // 最后触发时间
 
-  optional uint32 created_by = 100 [json_name = "createdBy", (gnostic.openapi.v3.property) = {description: "创建者用户ID"}]; // 创建者用户ID
-  optional uint32 updated_by = 101 [json_name = "updatedBy", (gnostic.openapi.v3.property) = {description: "更新者用户ID"}]; // 更新者用户ID
-  optional uint32 deleted_by = 102 [json_name = "deletedBy", (gnostic.openapi.v3.property) = {description: "删除者用户ID"}]; // 删除者用户ID
+  optional int64 created_by = 100 [json_name = "createdBy", (gnostic.openapi.v3.property) = {description: "创建者用户ID"}]; // 创建者用户ID
+  optional int64 updated_by = 101 [json_name = "updatedBy", (gnostic.openapi.v3.property) = {description: "更新者用户ID"}]; // 更新者用户ID
+  optional int64 deleted_by = 102 [json_name = "deletedBy", (gnostic.openapi.v3.property) = {description: "删除者用户ID"}]; // 删除者用户ID
 
   optional google.protobuf.Timestamp created_at = 200 [json_name = "createdAt", (gnostic.openapi.v3.property) = {description: "创建时间"}]; // 创建时间
   optional google.protobuf.Timestamp updated_at = 201 [json_name = "updatedAt", (gnostic.openapi.v3.property) = {description: "更新时间"}]; // 更新时间
@@ -114,13 +114,13 @@ message AlertRule {
 // 获取告警规则列表 - 答复
 message ListAlertRuleResponse {
   repeated AlertRule items = 1 [json_name = "items", (gnostic.openapi.v3.property) = {description: "告警规则列表"}]; // 告警规则列表
-  uint64 total = 2 [json_name = "total", (gnostic.openapi.v3.property) = {description: "总数"}]; // 总数
+  int64 total = 2 [json_name = "total", (gnostic.openapi.v3.property) = {description: "总数"}]; // 总数
 }
 
 // 获取告警规则数据 - 请求
 message GetAlertRuleRequest {
   oneof query_by {
-    uint32 id = 1 [json_name = "id", (gnostic.openapi.v3.property) = {description: "ID", read_only: true}]; // ID
+    int64 id = 1 [json_name = "id", (gnostic.openapi.v3.property) = {description: "ID", read_only: true}]; // ID
   }
 
   optional google.protobuf.FieldMask view_mask = 100 [json_name = "viewMask", (gnostic.openapi.v3.property) = {description: "视图字段过滤器，用于控制返回的字段"}]; // 视图字段过滤器
@@ -133,7 +133,7 @@ message CreateAlertRuleRequest {
 
 // 更新告警规则 - 请求
 message UpdateAlertRuleRequest {
-  uint32 id = 1 [json_name = "id", (gnostic.openapi.v3.property) = {description: "告警规则ID"}]; // 告警规则ID
+  int64 id = 1 [json_name = "id", (gnostic.openapi.v3.property) = {description: "告警规则ID"}]; // 告警规则ID
 
   AlertRule data = 2 [json_name = "data", (gnostic.openapi.v3.property) = {description: "告警规则数据"}]; // 告警规则数据
 
@@ -145,13 +145,13 @@ message UpdateAlertRuleRequest {
 // 删除告警规则 - 请求
 message DeleteAlertRuleRequest {
   oneof query_by {
-    uint32 id = 1 [json_name = "id", (gnostic.openapi.v3.property) = {description: "ID", read_only: true}]; // ID
+    int64 id = 1 [json_name = "id", (gnostic.openapi.v3.property) = {description: "ID", read_only: true}]; // ID
   }
 
-  optional uint32 deleted_by = 100 [json_name = "deletedBy", (gnostic.openapi.v3.property) = {description: "删除者用户ID"}]; // 删除者用户ID
+  optional int64 deleted_by = 100 [json_name = "deletedBy", (gnostic.openapi.v3.property) = {description: "删除者用户ID"}]; // 删除者用户ID
 }
 
 // 告警规则数量 - 答复
 message CountAlertRuleResponse {
-  uint64 count = 1 [json_name = "count", (gnostic.openapi.v3.property) = {description: "数量"}]; // 数量
+  int64 count = 1 [json_name = "count", (gnostic.openapi.v3.property) = {description: "数量"}]; // 数量
 }

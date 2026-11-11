@@ -96,6 +96,6 @@ func (r *EventsFactRepo) List(ctx context.Context, req *paginationV1.PagingReque
 
 	return &ubaV1.ListBehaviorEventResponse{
 		Items: result.Items,
-		Total: result.Total,
+		Total: int64(result.Total),
 	}, nil
 }

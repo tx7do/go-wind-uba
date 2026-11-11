@@ -71,14 +71,14 @@ func (_u *ImportJobUpdate) ClearDeletedAt() *ImportJobUpdate {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (_u *ImportJobUpdate) SetCreatedBy(v uint32) *ImportJobUpdate {
+func (_u *ImportJobUpdate) SetCreatedBy(v int64) *ImportJobUpdate {
 	_u.mutation.ResetCreatedBy()
 	_u.mutation.SetCreatedBy(v)
 	return _u
 }
 
 // SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
-func (_u *ImportJobUpdate) SetNillableCreatedBy(v *uint32) *ImportJobUpdate {
+func (_u *ImportJobUpdate) SetNillableCreatedBy(v *int64) *ImportJobUpdate {
 	if v != nil {
 		_u.SetCreatedBy(*v)
 	}
@@ -86,7 +86,7 @@ func (_u *ImportJobUpdate) SetNillableCreatedBy(v *uint32) *ImportJobUpdate {
 }
 
 // AddCreatedBy adds value to the "created_by" field.
-func (_u *ImportJobUpdate) AddCreatedBy(v int32) *ImportJobUpdate {
+func (_u *ImportJobUpdate) AddCreatedBy(v int64) *ImportJobUpdate {
 	_u.mutation.AddCreatedBy(v)
 	return _u
 }
@@ -98,14 +98,14 @@ func (_u *ImportJobUpdate) ClearCreatedBy() *ImportJobUpdate {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (_u *ImportJobUpdate) SetUpdatedBy(v uint32) *ImportJobUpdate {
+func (_u *ImportJobUpdate) SetUpdatedBy(v int64) *ImportJobUpdate {
 	_u.mutation.ResetUpdatedBy()
 	_u.mutation.SetUpdatedBy(v)
 	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (_u *ImportJobUpdate) SetNillableUpdatedBy(v *uint32) *ImportJobUpdate {
+func (_u *ImportJobUpdate) SetNillableUpdatedBy(v *int64) *ImportJobUpdate {
 	if v != nil {
 		_u.SetUpdatedBy(*v)
 	}
@@ -113,7 +113,7 @@ func (_u *ImportJobUpdate) SetNillableUpdatedBy(v *uint32) *ImportJobUpdate {
 }
 
 // AddUpdatedBy adds value to the "updated_by" field.
-func (_u *ImportJobUpdate) AddUpdatedBy(v int32) *ImportJobUpdate {
+func (_u *ImportJobUpdate) AddUpdatedBy(v int64) *ImportJobUpdate {
 	_u.mutation.AddUpdatedBy(v)
 	return _u
 }
@@ -125,14 +125,14 @@ func (_u *ImportJobUpdate) ClearUpdatedBy() *ImportJobUpdate {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (_u *ImportJobUpdate) SetDeletedBy(v uint32) *ImportJobUpdate {
+func (_u *ImportJobUpdate) SetDeletedBy(v int64) *ImportJobUpdate {
 	_u.mutation.ResetDeletedBy()
 	_u.mutation.SetDeletedBy(v)
 	return _u
 }
 
 // SetNillableDeletedBy sets the "deleted_by" field if the given value is not nil.
-func (_u *ImportJobUpdate) SetNillableDeletedBy(v *uint32) *ImportJobUpdate {
+func (_u *ImportJobUpdate) SetNillableDeletedBy(v *int64) *ImportJobUpdate {
 	if v != nil {
 		_u.SetDeletedBy(*v)
 	}
@@ -140,7 +140,7 @@ func (_u *ImportJobUpdate) SetNillableDeletedBy(v *uint32) *ImportJobUpdate {
 }
 
 // AddDeletedBy adds value to the "deleted_by" field.
-func (_u *ImportJobUpdate) AddDeletedBy(v int32) *ImportJobUpdate {
+func (_u *ImportJobUpdate) AddDeletedBy(v int64) *ImportJobUpdate {
 	_u.mutation.AddDeletedBy(v)
 	return _u
 }
@@ -419,7 +419,7 @@ func (_u *ImportJobUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if err := _u.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(importjob.Table, importjob.Columns, sqlgraph.NewFieldSpec(importjob.FieldID, field.TypeUint32))
+	_spec := sqlgraph.NewUpdateSpec(importjob.Table, importjob.Columns, sqlgraph.NewFieldSpec(importjob.FieldID, field.TypeInt64))
 	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -443,34 +443,34 @@ func (_u *ImportJobUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		_spec.ClearField(importjob.FieldDeletedAt, field.TypeTime)
 	}
 	if value, ok := _u.mutation.CreatedBy(); ok {
-		_spec.SetField(importjob.FieldCreatedBy, field.TypeUint32, value)
+		_spec.SetField(importjob.FieldCreatedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedCreatedBy(); ok {
-		_spec.AddField(importjob.FieldCreatedBy, field.TypeUint32, value)
+		_spec.AddField(importjob.FieldCreatedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.CreatedByCleared() {
-		_spec.ClearField(importjob.FieldCreatedBy, field.TypeUint32)
+		_spec.ClearField(importjob.FieldCreatedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.UpdatedBy(); ok {
-		_spec.SetField(importjob.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.SetField(importjob.FieldUpdatedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
-		_spec.AddField(importjob.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.AddField(importjob.FieldUpdatedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.UpdatedByCleared() {
-		_spec.ClearField(importjob.FieldUpdatedBy, field.TypeUint32)
+		_spec.ClearField(importjob.FieldUpdatedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.DeletedBy(); ok {
-		_spec.SetField(importjob.FieldDeletedBy, field.TypeUint32, value)
+		_spec.SetField(importjob.FieldDeletedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedDeletedBy(); ok {
-		_spec.AddField(importjob.FieldDeletedBy, field.TypeUint32, value)
+		_spec.AddField(importjob.FieldDeletedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.DeletedByCleared() {
-		_spec.ClearField(importjob.FieldDeletedBy, field.TypeUint32)
+		_spec.ClearField(importjob.FieldDeletedBy, field.TypeInt64)
 	}
 	if _u.mutation.TenantIDCleared() {
-		_spec.ClearField(importjob.FieldTenantID, field.TypeUint32)
+		_spec.ClearField(importjob.FieldTenantID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(importjob.FieldName, field.TypeString, value)
@@ -603,14 +603,14 @@ func (_u *ImportJobUpdateOne) ClearDeletedAt() *ImportJobUpdateOne {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (_u *ImportJobUpdateOne) SetCreatedBy(v uint32) *ImportJobUpdateOne {
+func (_u *ImportJobUpdateOne) SetCreatedBy(v int64) *ImportJobUpdateOne {
 	_u.mutation.ResetCreatedBy()
 	_u.mutation.SetCreatedBy(v)
 	return _u
 }
 
 // SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
-func (_u *ImportJobUpdateOne) SetNillableCreatedBy(v *uint32) *ImportJobUpdateOne {
+func (_u *ImportJobUpdateOne) SetNillableCreatedBy(v *int64) *ImportJobUpdateOne {
 	if v != nil {
 		_u.SetCreatedBy(*v)
 	}
@@ -618,7 +618,7 @@ func (_u *ImportJobUpdateOne) SetNillableCreatedBy(v *uint32) *ImportJobUpdateOn
 }
 
 // AddCreatedBy adds value to the "created_by" field.
-func (_u *ImportJobUpdateOne) AddCreatedBy(v int32) *ImportJobUpdateOne {
+func (_u *ImportJobUpdateOne) AddCreatedBy(v int64) *ImportJobUpdateOne {
 	_u.mutation.AddCreatedBy(v)
 	return _u
 }
@@ -630,14 +630,14 @@ func (_u *ImportJobUpdateOne) ClearCreatedBy() *ImportJobUpdateOne {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (_u *ImportJobUpdateOne) SetUpdatedBy(v uint32) *ImportJobUpdateOne {
+func (_u *ImportJobUpdateOne) SetUpdatedBy(v int64) *ImportJobUpdateOne {
 	_u.mutation.ResetUpdatedBy()
 	_u.mutation.SetUpdatedBy(v)
 	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (_u *ImportJobUpdateOne) SetNillableUpdatedBy(v *uint32) *ImportJobUpdateOne {
+func (_u *ImportJobUpdateOne) SetNillableUpdatedBy(v *int64) *ImportJobUpdateOne {
 	if v != nil {
 		_u.SetUpdatedBy(*v)
 	}
@@ -645,7 +645,7 @@ func (_u *ImportJobUpdateOne) SetNillableUpdatedBy(v *uint32) *ImportJobUpdateOn
 }
 
 // AddUpdatedBy adds value to the "updated_by" field.
-func (_u *ImportJobUpdateOne) AddUpdatedBy(v int32) *ImportJobUpdateOne {
+func (_u *ImportJobUpdateOne) AddUpdatedBy(v int64) *ImportJobUpdateOne {
 	_u.mutation.AddUpdatedBy(v)
 	return _u
 }
@@ -657,14 +657,14 @@ func (_u *ImportJobUpdateOne) ClearUpdatedBy() *ImportJobUpdateOne {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (_u *ImportJobUpdateOne) SetDeletedBy(v uint32) *ImportJobUpdateOne {
+func (_u *ImportJobUpdateOne) SetDeletedBy(v int64) *ImportJobUpdateOne {
 	_u.mutation.ResetDeletedBy()
 	_u.mutation.SetDeletedBy(v)
 	return _u
 }
 
 // SetNillableDeletedBy sets the "deleted_by" field if the given value is not nil.
-func (_u *ImportJobUpdateOne) SetNillableDeletedBy(v *uint32) *ImportJobUpdateOne {
+func (_u *ImportJobUpdateOne) SetNillableDeletedBy(v *int64) *ImportJobUpdateOne {
 	if v != nil {
 		_u.SetDeletedBy(*v)
 	}
@@ -672,7 +672,7 @@ func (_u *ImportJobUpdateOne) SetNillableDeletedBy(v *uint32) *ImportJobUpdateOn
 }
 
 // AddDeletedBy adds value to the "deleted_by" field.
-func (_u *ImportJobUpdateOne) AddDeletedBy(v int32) *ImportJobUpdateOne {
+func (_u *ImportJobUpdateOne) AddDeletedBy(v int64) *ImportJobUpdateOne {
 	_u.mutation.AddDeletedBy(v)
 	return _u
 }
@@ -964,7 +964,7 @@ func (_u *ImportJobUpdateOne) sqlSave(ctx context.Context) (_node *ImportJob, er
 	if err := _u.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(importjob.Table, importjob.Columns, sqlgraph.NewFieldSpec(importjob.FieldID, field.TypeUint32))
+	_spec := sqlgraph.NewUpdateSpec(importjob.Table, importjob.Columns, sqlgraph.NewFieldSpec(importjob.FieldID, field.TypeInt64))
 	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "ImportJob.id" for update`)}
@@ -1005,34 +1005,34 @@ func (_u *ImportJobUpdateOne) sqlSave(ctx context.Context) (_node *ImportJob, er
 		_spec.ClearField(importjob.FieldDeletedAt, field.TypeTime)
 	}
 	if value, ok := _u.mutation.CreatedBy(); ok {
-		_spec.SetField(importjob.FieldCreatedBy, field.TypeUint32, value)
+		_spec.SetField(importjob.FieldCreatedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedCreatedBy(); ok {
-		_spec.AddField(importjob.FieldCreatedBy, field.TypeUint32, value)
+		_spec.AddField(importjob.FieldCreatedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.CreatedByCleared() {
-		_spec.ClearField(importjob.FieldCreatedBy, field.TypeUint32)
+		_spec.ClearField(importjob.FieldCreatedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.UpdatedBy(); ok {
-		_spec.SetField(importjob.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.SetField(importjob.FieldUpdatedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
-		_spec.AddField(importjob.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.AddField(importjob.FieldUpdatedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.UpdatedByCleared() {
-		_spec.ClearField(importjob.FieldUpdatedBy, field.TypeUint32)
+		_spec.ClearField(importjob.FieldUpdatedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.DeletedBy(); ok {
-		_spec.SetField(importjob.FieldDeletedBy, field.TypeUint32, value)
+		_spec.SetField(importjob.FieldDeletedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedDeletedBy(); ok {
-		_spec.AddField(importjob.FieldDeletedBy, field.TypeUint32, value)
+		_spec.AddField(importjob.FieldDeletedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.DeletedByCleared() {
-		_spec.ClearField(importjob.FieldDeletedBy, field.TypeUint32)
+		_spec.ClearField(importjob.FieldDeletedBy, field.TypeInt64)
 	}
 	if _u.mutation.TenantIDCleared() {
-		_spec.ClearField(importjob.FieldTenantID, field.TypeUint32)
+		_spec.ClearField(importjob.FieldTenantID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(importjob.FieldName, field.TypeString, value)

@@ -78,14 +78,14 @@ func (r *IDMappingRepo) Count(ctx context.Context, req *paginationV1.PagingReque
 	}
 
 	return &ubaV1.CountIDMappingResponse{
-		Count: uint64(count),
+		Count: int64(count),
 	}, nil
 }
 
 // List ID映射列表
 // UpsertDeviceMapping 按 (租户, id_type, id_value) 唯一键 upsert 一条
 // 算法关联的 设备↔全局用户 映射：已存在则推进 last_seen 并重新激活。
-func (r *IDMappingRepo) UpsertDeviceMapping(ctx context.Context, tenantID uint32, globalUserID, deviceID string, seenAt time.Time) error {
+func (r *IDMappingRepo) UpsertDeviceMapping(ctx context.Context, tenantID int64, globalUserID, deviceID string, seenAt time.Time) error {
 	confidence := float32(0.9)
 
 	builder := r.entClient.Client().IDMapping.Create().
@@ -136,7 +136,7 @@ func (r *IDMappingRepo) List(ctx context.Context, req *paginationV1.PagingReques
 }
 
 // IsExist 判断ID映射是否存在
-func (r *IDMappingRepo) IsExist(ctx context.Context, id uint32) (bool, error) {
+func (r *IDMappingRepo) IsExist(ctx context.Context, id int64) (bool, error) {
 	exist, err := r.entClient.Client().IDMapping.Query().
 		Where(idmapping.IDEQ(id)).
 		Exist(ctx)

@@ -13,8 +13,8 @@ import (
 // flagVariantStatRow 实验结果扫描行。
 type flagVariantStatRow struct {
 	Variant        string `db:"variant"`
-	ExposedUsers   uint64 `db:"exposed_users"`
-	ConvertedUsers uint64 `db:"converted_users"`
+	ExposedUsers   int64  `db:"exposed_users"`
+	ConvertedUsers int64  `db:"converted_users"`
 }
 
 // FlagExperimentResult 聚合 A/B 实验结果：以 $feature_flag 曝光事件圈定各变体的
@@ -24,7 +24,7 @@ type flagVariantStatRow struct {
 func (r *AnalyticsRepo) FlagExperimentResult(
 	ctx context.Context,
 	flagKey, goalEvent string,
-	appFilter uint32,
+	appFilter int64,
 	startMs, endMs int64,
 ) ([]data.FlagVariantStat, error) {
 	goal := goalEvent

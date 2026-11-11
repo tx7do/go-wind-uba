@@ -28,12 +28,12 @@ func (UserTag) Annotations() []schema.Annotation {
 
 func (UserTag) Fields() []ent.Field {
 	return []ent.Field{
-		field.Uint32("user_id").
+		field.Int64("user_id").
 			Comment("业务用户ID").
 			Optional().
 			Nillable(),
 
-		field.Uint32("tag_id").
+		field.Int64("tag_id").
 			Comment("标签定义ID，关联 uba_tag_definitions.id").
 			Optional().
 			Nillable(),
@@ -60,7 +60,7 @@ func (UserTag) Fields() []ent.Field {
 			Optional().
 			Nillable(),
 
-		field.Uint32("source_rule_id").
+		field.Int64("source_rule_id").
 			Comment("来源规则ID，关联规则表").
 			Optional().
 			Nillable(),
@@ -85,10 +85,10 @@ func (UserTag) Fields() []ent.Field {
 
 func (UserTag) Mixin() []ent.Mixin {
 	return []ent.Mixin{
-		mixin.AutoIncrementId{},
-		mixin.TenantID[uint32]{},
+		mixin.AutoIncrementId64{},
+		mixin.TenantID[int64]{},
 		mixin.TimeAt{},
-		mixin.OperatorID{},
+		mixin.OperatorID64{},
 	}
 }
 

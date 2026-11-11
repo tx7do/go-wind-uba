@@ -71,7 +71,7 @@ func NewUserTokenCache(ctx *bootstrap.Context, rdb *redis.Client) *UserTokenCach
 func (r *UserTokenCache) AddTokenPair(
 	ctx context.Context,
 	clientType authenticationV1.ClientType,
-	userId uint32,
+	userId int64,
 	jti string,
 	accessToken string,
 	refreshToken string,
@@ -96,7 +96,7 @@ func (r *UserTokenCache) AddTokenPair(
 func (r *UserTokenCache) AddAccessToken(
 	ctx context.Context,
 	clientType authenticationV1.ClientType,
-	userId uint32,
+	userId int64,
 	jti string,
 	accessToken string,
 	expires time.Duration,
@@ -109,7 +109,7 @@ func (r *UserTokenCache) AddAccessToken(
 func (r *UserTokenCache) AddRefreshToken(
 	ctx context.Context,
 	clientType authenticationV1.ClientType,
-	userId uint32,
+	userId int64,
 	jti string,
 	refreshToken string,
 	expires time.Duration,
@@ -125,19 +125,19 @@ func (r *UserTokenCache) AddBlockedAccessToken(ctx context.Context, jti string, 
 }
 
 // GetAccessTokens 获取访问令牌
-func (r *UserTokenCache) GetAccessTokens(ctx context.Context, clientType authenticationV1.ClientType, userId uint32) []string {
+func (r *UserTokenCache) GetAccessTokens(ctx context.Context, clientType authenticationV1.ClientType, userId int64) []string {
 	pattern := r.makeAccessTokenKey(clientType, userId) + ":*"
 	return r.scanValues(ctx, pattern)
 }
 
 // GetRefreshTokens 获取刷新令牌
-func (r *UserTokenCache) GetRefreshTokens(ctx context.Context, clientType authenticationV1.ClientType, userId uint32) []string {
+func (r *UserTokenCache) GetRefreshTokens(ctx context.Context, clientType authenticationV1.ClientType, userId int64) []string {
 	pattern := r.makeRefreshTokenKey(clientType, userId) + ":*"
 	return r.scanValues(ctx, pattern)
 }
 
 // RevokeToken 移除所有令牌
-func (r *UserTokenCache) RevokeToken(ctx context.Context, clientType authenticationV1.ClientType, userId uint32) error {
+func (r *UserTokenCache) RevokeToken(ctx context.Context, clientType authenticationV1.ClientType, userId int64) error {
 	var err error
 	if err = r.RevokeUserAllAccessToken(ctx, clientType, userId); err != nil {
 		r.log.Errorf("remove user access token failed: [%v]", err)
@@ -150,7 +150,7 @@ func (r *UserTokenCache) RevokeToken(ctx context.Context, clientType authenticat
 	return err
 }
 
-func (r *UserTokenCache) RevokeTokenByJti(ctx context.Context, clientType authenticationV1.ClientType, userId uint32, jti string) error {
+func (r *UserTokenCache) RevokeTokenByJti(ctx context.Context, clientType authenticationV1.ClientType, userId int64, jti string) error {
 	var err error
 	if err = r.RevokeAccessToken(ctx, clientType, userId, jti); err != nil {
 		r.log.Errorf("remove user access token failed: [%v]", err)
@@ -167,7 +167,7 @@ func (r *UserTokenCache) RevokeTokenByJti(ctx context.Context, clientType authen
 func (r *UserTokenCache) RevokeAccessToken(
 	ctx context.Context,
 	clientType authenticationV1.ClientType,
-	userId uint32,
+	userId int64,
 	jti string,
 ) error {
 	key := r.makeAccessTokenFieldKey(clientType, userId, jti)
@@ -178,7 +178,7 @@ func (r *UserTokenCache) RevokeAccessToken(
 func (r *UserTokenCache) RevokeRefreshToken(
 	ctx context.Context,
 	clientType authenticationV1.ClientType,
-	userId uint32,
+	userId int64,
 	jti string,
 ) error {
 	key := r.makeRefreshTokenFieldKey(clientType, userId, jti)
@@ -195,7 +195,7 @@ func (r *UserTokenCache) RevokeBlockedAccessToken(ctx context.Context, jti strin
 func (r *UserTokenCache) IsValidAccessToken(
 	ctx context.Context,
 	clientType authenticationV1.ClientType,
-	userId uint32,
+	userId int64,
 	jti string,
 	uploadedToken string,
 ) (bool, error) {
@@ -216,7 +216,7 @@ func (r *UserTokenCache) IsValidAccessToken(
 func (r *UserTokenCache) IsExistAccessTokenByJti(
 	ctx context.Context,
 	clientType authenticationV1.ClientType,
-	userId uint32,
+	userId int64,
 	jti string,
 ) (bool, error) {
 	key := r.makeAccessTokenFieldKey(clientType, userId, jti)
@@ -233,7 +233,7 @@ func (r *UserTokenCache) IsExistAccessTokenByJti(
 func (r *UserTokenCache) IsExistAccessToken(
 	ctx context.Context,
 	clientType authenticationV1.ClientType,
-	userId uint32,
+	userId int64,
 	uploadedToken string,
 ) (exist bool, jti string, err error) {
 	pattern := r.makeAccessTokenKey(clientType, userId) + ":*"
@@ -244,7 +244,7 @@ func (r *UserTokenCache) IsExistAccessToken(
 func (r *UserTokenCache) IsExistRefreshToken(
 	ctx context.Context,
 	clientType authenticationV1.ClientType,
-	userId uint32,
+	userId int64,
 	uploadedToken string,
 ) (exist bool, jti string, err error) {
 	pattern := r.makeRefreshTokenKey(clientType, userId) + ":*"
@@ -255,7 +255,7 @@ func (r *UserTokenCache) IsExistRefreshToken(
 func (r *UserTokenCache) IsValidRefreshToken(
 	ctx context.Context,
 	clientType authenticationV1.ClientType,
-	userId uint32,
+	userId int64,
 	jti string,
 	uploadedToken string,
 ) (bool, error) {
@@ -283,7 +283,7 @@ func (r *UserTokenCache) IsBlockedAccessToken(ctx context.Context, jti string) b
 func (r *UserTokenCache) RevokeUserAllAccessToken(
 	ctx context.Context,
 	clientType authenticationV1.ClientType,
-	userId uint32,
+	userId int64,
 ) error {
 	pattern := r.makeAccessTokenKey(clientType, userId) + ":*"
 	return r.delByPattern(ctx, pattern)
@@ -293,7 +293,7 @@ func (r *UserTokenCache) RevokeUserAllAccessToken(
 func (r *UserTokenCache) RevokeUserAllRefreshToken(
 	ctx context.Context,
 	clientType authenticationV1.ClientType,
-	userId uint32,
+	userId int64,
 ) error {
 	pattern := r.makeRefreshTokenKey(clientType, userId) + ":*"
 	return r.delByPattern(ctx, pattern)
@@ -305,7 +305,7 @@ func (r *UserTokenCache) RevokeUserAllRefreshToken(
 func (r *UserTokenCache) VerifyAndRevokeTokenPair(
 	ctx context.Context,
 	clientType authenticationV1.ClientType,
-	userId uint32,
+	userId int64,
 	jti string,
 	refreshToken string,
 ) (bool, error) {
@@ -326,22 +326,22 @@ func (r *UserTokenCache) VerifyAndRevokeTokenPair(
 // ==============================
 
 // makeAccessTokenKey 生成访问令牌键前缀 at:{ct}:{uid}（用于 SCAN 匹配）
-func (r *UserTokenCache) makeAccessTokenKey(clientType authenticationV1.ClientType, userId uint32) string {
+func (r *UserTokenCache) makeAccessTokenKey(clientType authenticationV1.ClientType, userId int64) string {
 	return fmt.Sprintf(AccessTokenKeyFormat, clientType.Number(), userId)
 }
 
 // makeAccessTokenFieldKey 生成访问令牌键（含 jti）at:{ct}:{uid}:{jti}
-func (r *UserTokenCache) makeAccessTokenFieldKey(clientType authenticationV1.ClientType, userId uint32, jti string) string {
+func (r *UserTokenCache) makeAccessTokenFieldKey(clientType authenticationV1.ClientType, userId int64, jti string) string {
 	return fmt.Sprintf(AccessTokenFieldKeyFormat, clientType.Number(), userId, jti)
 }
 
 // makeRefreshTokenKey 生成刷新令牌键前缀 rt:{ct}:{uid}（用于 SCAN 匹配）
-func (r *UserTokenCache) makeRefreshTokenKey(clientType authenticationV1.ClientType, userId uint32) string {
+func (r *UserTokenCache) makeRefreshTokenKey(clientType authenticationV1.ClientType, userId int64) string {
 	return fmt.Sprintf(RefreshTokenKeyFormat, clientType.Number(), userId)
 }
 
 // makeRefreshTokenFieldKey 生成刷新令牌键（含 jti）rt:{ct}:{uid}:{jti}
-func (r *UserTokenCache) makeRefreshTokenFieldKey(clientType authenticationV1.ClientType, userId uint32, jti string) string {
+func (r *UserTokenCache) makeRefreshTokenFieldKey(clientType authenticationV1.ClientType, userId int64, jti string) string {
 	return fmt.Sprintf(RefreshTokenFieldKeyFormat, clientType.Number(), userId, jti)
 }
 

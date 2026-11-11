@@ -65,13 +65,13 @@ func (_c *RiskRuleVersionCreate) SetNillableDeletedAt(v *time.Time) *RiskRuleVer
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (_c *RiskRuleVersionCreate) SetCreatedBy(v uint32) *RiskRuleVersionCreate {
+func (_c *RiskRuleVersionCreate) SetCreatedBy(v int64) *RiskRuleVersionCreate {
 	_c.mutation.SetCreatedBy(v)
 	return _c
 }
 
 // SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
-func (_c *RiskRuleVersionCreate) SetNillableCreatedBy(v *uint32) *RiskRuleVersionCreate {
+func (_c *RiskRuleVersionCreate) SetNillableCreatedBy(v *int64) *RiskRuleVersionCreate {
 	if v != nil {
 		_c.SetCreatedBy(*v)
 	}
@@ -79,13 +79,13 @@ func (_c *RiskRuleVersionCreate) SetNillableCreatedBy(v *uint32) *RiskRuleVersio
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (_c *RiskRuleVersionCreate) SetUpdatedBy(v uint32) *RiskRuleVersionCreate {
+func (_c *RiskRuleVersionCreate) SetUpdatedBy(v int64) *RiskRuleVersionCreate {
 	_c.mutation.SetUpdatedBy(v)
 	return _c
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (_c *RiskRuleVersionCreate) SetNillableUpdatedBy(v *uint32) *RiskRuleVersionCreate {
+func (_c *RiskRuleVersionCreate) SetNillableUpdatedBy(v *int64) *RiskRuleVersionCreate {
 	if v != nil {
 		_c.SetUpdatedBy(*v)
 	}
@@ -93,13 +93,13 @@ func (_c *RiskRuleVersionCreate) SetNillableUpdatedBy(v *uint32) *RiskRuleVersio
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (_c *RiskRuleVersionCreate) SetDeletedBy(v uint32) *RiskRuleVersionCreate {
+func (_c *RiskRuleVersionCreate) SetDeletedBy(v int64) *RiskRuleVersionCreate {
 	_c.mutation.SetDeletedBy(v)
 	return _c
 }
 
 // SetNillableDeletedBy sets the "deleted_by" field if the given value is not nil.
-func (_c *RiskRuleVersionCreate) SetNillableDeletedBy(v *uint32) *RiskRuleVersionCreate {
+func (_c *RiskRuleVersionCreate) SetNillableDeletedBy(v *int64) *RiskRuleVersionCreate {
 	if v != nil {
 		_c.SetDeletedBy(*v)
 	}
@@ -121,13 +121,13 @@ func (_c *RiskRuleVersionCreate) SetNillableVersion(v *uint32) *RiskRuleVersionC
 }
 
 // SetTenantID sets the "tenant_id" field.
-func (_c *RiskRuleVersionCreate) SetTenantID(v uint32) *RiskRuleVersionCreate {
+func (_c *RiskRuleVersionCreate) SetTenantID(v int64) *RiskRuleVersionCreate {
 	_c.mutation.SetTenantID(v)
 	return _c
 }
 
 // SetNillableTenantID sets the "tenant_id" field if the given value is not nil.
-func (_c *RiskRuleVersionCreate) SetNillableTenantID(v *uint32) *RiskRuleVersionCreate {
+func (_c *RiskRuleVersionCreate) SetNillableTenantID(v *int64) *RiskRuleVersionCreate {
 	if v != nil {
 		_c.SetTenantID(*v)
 	}
@@ -135,13 +135,13 @@ func (_c *RiskRuleVersionCreate) SetNillableTenantID(v *uint32) *RiskRuleVersion
 }
 
 // SetRuleID sets the "rule_id" field.
-func (_c *RiskRuleVersionCreate) SetRuleID(v uint32) *RiskRuleVersionCreate {
+func (_c *RiskRuleVersionCreate) SetRuleID(v int64) *RiskRuleVersionCreate {
 	_c.mutation.SetRuleID(v)
 	return _c
 }
 
 // SetNillableRuleID sets the "rule_id" field if the given value is not nil.
-func (_c *RiskRuleVersionCreate) SetNillableRuleID(v *uint32) *RiskRuleVersionCreate {
+func (_c *RiskRuleVersionCreate) SetNillableRuleID(v *int64) *RiskRuleVersionCreate {
 	if v != nil {
 		_c.SetRuleID(*v)
 	}
@@ -243,13 +243,13 @@ func (_c *RiskRuleVersionCreate) SetNillablePublishedAt(v *time.Time) *RiskRuleV
 }
 
 // SetPublishedBy sets the "published_by" field.
-func (_c *RiskRuleVersionCreate) SetPublishedBy(v uint32) *RiskRuleVersionCreate {
+func (_c *RiskRuleVersionCreate) SetPublishedBy(v int64) *RiskRuleVersionCreate {
 	_c.mutation.SetPublishedBy(v)
 	return _c
 }
 
 // SetNillablePublishedBy sets the "published_by" field if the given value is not nil.
-func (_c *RiskRuleVersionCreate) SetNillablePublishedBy(v *uint32) *RiskRuleVersionCreate {
+func (_c *RiskRuleVersionCreate) SetNillablePublishedBy(v *int64) *RiskRuleVersionCreate {
 	if v != nil {
 		_c.SetPublishedBy(*v)
 	}
@@ -257,7 +257,7 @@ func (_c *RiskRuleVersionCreate) SetNillablePublishedBy(v *uint32) *RiskRuleVers
 }
 
 // SetID sets the "id" field.
-func (_c *RiskRuleVersionCreate) SetID(v uint32) *RiskRuleVersionCreate {
+func (_c *RiskRuleVersionCreate) SetID(v int64) *RiskRuleVersionCreate {
 	_c.mutation.SetID(v)
 	return _c
 }
@@ -365,7 +365,7 @@ func (_c *RiskRuleVersionCreate) sqlSave(ctx context.Context) (*RiskRuleVersion,
 	}
 	if _spec.ID.Value != _node.ID {
 		id := _spec.ID.Value.(int64)
-		_node.ID = uint32(id)
+		_node.ID = int64(id)
 	}
 	_c.mutation.id = &_node.ID
 	_c.mutation.done = true
@@ -375,7 +375,7 @@ func (_c *RiskRuleVersionCreate) sqlSave(ctx context.Context) (*RiskRuleVersion,
 func (_c *RiskRuleVersionCreate) createSpec() (*RiskRuleVersion, *sqlgraph.CreateSpec) {
 	var (
 		_node = &RiskRuleVersion{config: _c.config}
-		_spec = sqlgraph.NewCreateSpec(riskruleversion.Table, sqlgraph.NewFieldSpec(riskruleversion.FieldID, field.TypeUint32))
+		_spec = sqlgraph.NewCreateSpec(riskruleversion.Table, sqlgraph.NewFieldSpec(riskruleversion.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = _c.conflict
 	if id, ok := _c.mutation.ID(); ok {
@@ -395,15 +395,15 @@ func (_c *RiskRuleVersionCreate) createSpec() (*RiskRuleVersion, *sqlgraph.Creat
 		_node.DeletedAt = &value
 	}
 	if value, ok := _c.mutation.CreatedBy(); ok {
-		_spec.SetField(riskruleversion.FieldCreatedBy, field.TypeUint32, value)
+		_spec.SetField(riskruleversion.FieldCreatedBy, field.TypeInt64, value)
 		_node.CreatedBy = &value
 	}
 	if value, ok := _c.mutation.UpdatedBy(); ok {
-		_spec.SetField(riskruleversion.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.SetField(riskruleversion.FieldUpdatedBy, field.TypeInt64, value)
 		_node.UpdatedBy = &value
 	}
 	if value, ok := _c.mutation.DeletedBy(); ok {
-		_spec.SetField(riskruleversion.FieldDeletedBy, field.TypeUint32, value)
+		_spec.SetField(riskruleversion.FieldDeletedBy, field.TypeInt64, value)
 		_node.DeletedBy = &value
 	}
 	if value, ok := _c.mutation.Version(); ok {
@@ -411,11 +411,11 @@ func (_c *RiskRuleVersionCreate) createSpec() (*RiskRuleVersion, *sqlgraph.Creat
 		_node.Version = value
 	}
 	if value, ok := _c.mutation.TenantID(); ok {
-		_spec.SetField(riskruleversion.FieldTenantID, field.TypeUint32, value)
+		_spec.SetField(riskruleversion.FieldTenantID, field.TypeInt64, value)
 		_node.TenantID = &value
 	}
 	if value, ok := _c.mutation.RuleID(); ok {
-		_spec.SetField(riskruleversion.FieldRuleID, field.TypeUint32, value)
+		_spec.SetField(riskruleversion.FieldRuleID, field.TypeInt64, value)
 		_node.RuleID = &value
 	}
 	if value, ok := _c.mutation.Name(); ok {
@@ -455,7 +455,7 @@ func (_c *RiskRuleVersionCreate) createSpec() (*RiskRuleVersion, *sqlgraph.Creat
 		_node.PublishedAt = &value
 	}
 	if value, ok := _c.mutation.PublishedBy(); ok {
-		_spec.SetField(riskruleversion.FieldPublishedBy, field.TypeUint32, value)
+		_spec.SetField(riskruleversion.FieldPublishedBy, field.TypeInt64, value)
 		_node.PublishedBy = &value
 	}
 	return _node, _spec
@@ -547,7 +547,7 @@ func (u *RiskRuleVersionUpsert) ClearDeletedAt() *RiskRuleVersionUpsert {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (u *RiskRuleVersionUpsert) SetCreatedBy(v uint32) *RiskRuleVersionUpsert {
+func (u *RiskRuleVersionUpsert) SetCreatedBy(v int64) *RiskRuleVersionUpsert {
 	u.Set(riskruleversion.FieldCreatedBy, v)
 	return u
 }
@@ -559,7 +559,7 @@ func (u *RiskRuleVersionUpsert) UpdateCreatedBy() *RiskRuleVersionUpsert {
 }
 
 // AddCreatedBy adds v to the "created_by" field.
-func (u *RiskRuleVersionUpsert) AddCreatedBy(v uint32) *RiskRuleVersionUpsert {
+func (u *RiskRuleVersionUpsert) AddCreatedBy(v int64) *RiskRuleVersionUpsert {
 	u.Add(riskruleversion.FieldCreatedBy, v)
 	return u
 }
@@ -571,7 +571,7 @@ func (u *RiskRuleVersionUpsert) ClearCreatedBy() *RiskRuleVersionUpsert {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (u *RiskRuleVersionUpsert) SetUpdatedBy(v uint32) *RiskRuleVersionUpsert {
+func (u *RiskRuleVersionUpsert) SetUpdatedBy(v int64) *RiskRuleVersionUpsert {
 	u.Set(riskruleversion.FieldUpdatedBy, v)
 	return u
 }
@@ -583,7 +583,7 @@ func (u *RiskRuleVersionUpsert) UpdateUpdatedBy() *RiskRuleVersionUpsert {
 }
 
 // AddUpdatedBy adds v to the "updated_by" field.
-func (u *RiskRuleVersionUpsert) AddUpdatedBy(v uint32) *RiskRuleVersionUpsert {
+func (u *RiskRuleVersionUpsert) AddUpdatedBy(v int64) *RiskRuleVersionUpsert {
 	u.Add(riskruleversion.FieldUpdatedBy, v)
 	return u
 }
@@ -595,7 +595,7 @@ func (u *RiskRuleVersionUpsert) ClearUpdatedBy() *RiskRuleVersionUpsert {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (u *RiskRuleVersionUpsert) SetDeletedBy(v uint32) *RiskRuleVersionUpsert {
+func (u *RiskRuleVersionUpsert) SetDeletedBy(v int64) *RiskRuleVersionUpsert {
 	u.Set(riskruleversion.FieldDeletedBy, v)
 	return u
 }
@@ -607,7 +607,7 @@ func (u *RiskRuleVersionUpsert) UpdateDeletedBy() *RiskRuleVersionUpsert {
 }
 
 // AddDeletedBy adds v to the "deleted_by" field.
-func (u *RiskRuleVersionUpsert) AddDeletedBy(v uint32) *RiskRuleVersionUpsert {
+func (u *RiskRuleVersionUpsert) AddDeletedBy(v int64) *RiskRuleVersionUpsert {
 	u.Add(riskruleversion.FieldDeletedBy, v)
 	return u
 }
@@ -637,7 +637,7 @@ func (u *RiskRuleVersionUpsert) AddVersion(v uint32) *RiskRuleVersionUpsert {
 }
 
 // SetRuleID sets the "rule_id" field.
-func (u *RiskRuleVersionUpsert) SetRuleID(v uint32) *RiskRuleVersionUpsert {
+func (u *RiskRuleVersionUpsert) SetRuleID(v int64) *RiskRuleVersionUpsert {
 	u.Set(riskruleversion.FieldRuleID, v)
 	return u
 }
@@ -649,7 +649,7 @@ func (u *RiskRuleVersionUpsert) UpdateRuleID() *RiskRuleVersionUpsert {
 }
 
 // AddRuleID adds v to the "rule_id" field.
-func (u *RiskRuleVersionUpsert) AddRuleID(v uint32) *RiskRuleVersionUpsert {
+func (u *RiskRuleVersionUpsert) AddRuleID(v int64) *RiskRuleVersionUpsert {
 	u.Add(riskruleversion.FieldRuleID, v)
 	return u
 }
@@ -793,7 +793,7 @@ func (u *RiskRuleVersionUpsert) ClearPublishedAt() *RiskRuleVersionUpsert {
 }
 
 // SetPublishedBy sets the "published_by" field.
-func (u *RiskRuleVersionUpsert) SetPublishedBy(v uint32) *RiskRuleVersionUpsert {
+func (u *RiskRuleVersionUpsert) SetPublishedBy(v int64) *RiskRuleVersionUpsert {
 	u.Set(riskruleversion.FieldPublishedBy, v)
 	return u
 }
@@ -805,7 +805,7 @@ func (u *RiskRuleVersionUpsert) UpdatePublishedBy() *RiskRuleVersionUpsert {
 }
 
 // AddPublishedBy adds v to the "published_by" field.
-func (u *RiskRuleVersionUpsert) AddPublishedBy(v uint32) *RiskRuleVersionUpsert {
+func (u *RiskRuleVersionUpsert) AddPublishedBy(v int64) *RiskRuleVersionUpsert {
 	u.Add(riskruleversion.FieldPublishedBy, v)
 	return u
 }
@@ -913,14 +913,14 @@ func (u *RiskRuleVersionUpsertOne) ClearDeletedAt() *RiskRuleVersionUpsertOne {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (u *RiskRuleVersionUpsertOne) SetCreatedBy(v uint32) *RiskRuleVersionUpsertOne {
+func (u *RiskRuleVersionUpsertOne) SetCreatedBy(v int64) *RiskRuleVersionUpsertOne {
 	return u.Update(func(s *RiskRuleVersionUpsert) {
 		s.SetCreatedBy(v)
 	})
 }
 
 // AddCreatedBy adds v to the "created_by" field.
-func (u *RiskRuleVersionUpsertOne) AddCreatedBy(v uint32) *RiskRuleVersionUpsertOne {
+func (u *RiskRuleVersionUpsertOne) AddCreatedBy(v int64) *RiskRuleVersionUpsertOne {
 	return u.Update(func(s *RiskRuleVersionUpsert) {
 		s.AddCreatedBy(v)
 	})
@@ -941,14 +941,14 @@ func (u *RiskRuleVersionUpsertOne) ClearCreatedBy() *RiskRuleVersionUpsertOne {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (u *RiskRuleVersionUpsertOne) SetUpdatedBy(v uint32) *RiskRuleVersionUpsertOne {
+func (u *RiskRuleVersionUpsertOne) SetUpdatedBy(v int64) *RiskRuleVersionUpsertOne {
 	return u.Update(func(s *RiskRuleVersionUpsert) {
 		s.SetUpdatedBy(v)
 	})
 }
 
 // AddUpdatedBy adds v to the "updated_by" field.
-func (u *RiskRuleVersionUpsertOne) AddUpdatedBy(v uint32) *RiskRuleVersionUpsertOne {
+func (u *RiskRuleVersionUpsertOne) AddUpdatedBy(v int64) *RiskRuleVersionUpsertOne {
 	return u.Update(func(s *RiskRuleVersionUpsert) {
 		s.AddUpdatedBy(v)
 	})
@@ -969,14 +969,14 @@ func (u *RiskRuleVersionUpsertOne) ClearUpdatedBy() *RiskRuleVersionUpsertOne {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (u *RiskRuleVersionUpsertOne) SetDeletedBy(v uint32) *RiskRuleVersionUpsertOne {
+func (u *RiskRuleVersionUpsertOne) SetDeletedBy(v int64) *RiskRuleVersionUpsertOne {
 	return u.Update(func(s *RiskRuleVersionUpsert) {
 		s.SetDeletedBy(v)
 	})
 }
 
 // AddDeletedBy adds v to the "deleted_by" field.
-func (u *RiskRuleVersionUpsertOne) AddDeletedBy(v uint32) *RiskRuleVersionUpsertOne {
+func (u *RiskRuleVersionUpsertOne) AddDeletedBy(v int64) *RiskRuleVersionUpsertOne {
 	return u.Update(func(s *RiskRuleVersionUpsert) {
 		s.AddDeletedBy(v)
 	})
@@ -1018,14 +1018,14 @@ func (u *RiskRuleVersionUpsertOne) UpdateVersion() *RiskRuleVersionUpsertOne {
 }
 
 // SetRuleID sets the "rule_id" field.
-func (u *RiskRuleVersionUpsertOne) SetRuleID(v uint32) *RiskRuleVersionUpsertOne {
+func (u *RiskRuleVersionUpsertOne) SetRuleID(v int64) *RiskRuleVersionUpsertOne {
 	return u.Update(func(s *RiskRuleVersionUpsert) {
 		s.SetRuleID(v)
 	})
 }
 
 // AddRuleID adds v to the "rule_id" field.
-func (u *RiskRuleVersionUpsertOne) AddRuleID(v uint32) *RiskRuleVersionUpsertOne {
+func (u *RiskRuleVersionUpsertOne) AddRuleID(v int64) *RiskRuleVersionUpsertOne {
 	return u.Update(func(s *RiskRuleVersionUpsert) {
 		s.AddRuleID(v)
 	})
@@ -1200,14 +1200,14 @@ func (u *RiskRuleVersionUpsertOne) ClearPublishedAt() *RiskRuleVersionUpsertOne 
 }
 
 // SetPublishedBy sets the "published_by" field.
-func (u *RiskRuleVersionUpsertOne) SetPublishedBy(v uint32) *RiskRuleVersionUpsertOne {
+func (u *RiskRuleVersionUpsertOne) SetPublishedBy(v int64) *RiskRuleVersionUpsertOne {
 	return u.Update(func(s *RiskRuleVersionUpsert) {
 		s.SetPublishedBy(v)
 	})
 }
 
 // AddPublishedBy adds v to the "published_by" field.
-func (u *RiskRuleVersionUpsertOne) AddPublishedBy(v uint32) *RiskRuleVersionUpsertOne {
+func (u *RiskRuleVersionUpsertOne) AddPublishedBy(v int64) *RiskRuleVersionUpsertOne {
 	return u.Update(func(s *RiskRuleVersionUpsert) {
 		s.AddPublishedBy(v)
 	})
@@ -1243,7 +1243,7 @@ func (u *RiskRuleVersionUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *RiskRuleVersionUpsertOne) ID(ctx context.Context) (id uint32, err error) {
+func (u *RiskRuleVersionUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -1252,7 +1252,7 @@ func (u *RiskRuleVersionUpsertOne) ID(ctx context.Context) (id uint32, err error
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *RiskRuleVersionUpsertOne) IDX(ctx context.Context) uint32 {
+func (u *RiskRuleVersionUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -1309,7 +1309,7 @@ func (_c *RiskRuleVersionCreateBulk) Save(ctx context.Context) ([]*RiskRuleVersi
 				mutation.id = &nodes[i].ID
 				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = uint32(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -1490,14 +1490,14 @@ func (u *RiskRuleVersionUpsertBulk) ClearDeletedAt() *RiskRuleVersionUpsertBulk 
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (u *RiskRuleVersionUpsertBulk) SetCreatedBy(v uint32) *RiskRuleVersionUpsertBulk {
+func (u *RiskRuleVersionUpsertBulk) SetCreatedBy(v int64) *RiskRuleVersionUpsertBulk {
 	return u.Update(func(s *RiskRuleVersionUpsert) {
 		s.SetCreatedBy(v)
 	})
 }
 
 // AddCreatedBy adds v to the "created_by" field.
-func (u *RiskRuleVersionUpsertBulk) AddCreatedBy(v uint32) *RiskRuleVersionUpsertBulk {
+func (u *RiskRuleVersionUpsertBulk) AddCreatedBy(v int64) *RiskRuleVersionUpsertBulk {
 	return u.Update(func(s *RiskRuleVersionUpsert) {
 		s.AddCreatedBy(v)
 	})
@@ -1518,14 +1518,14 @@ func (u *RiskRuleVersionUpsertBulk) ClearCreatedBy() *RiskRuleVersionUpsertBulk 
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (u *RiskRuleVersionUpsertBulk) SetUpdatedBy(v uint32) *RiskRuleVersionUpsertBulk {
+func (u *RiskRuleVersionUpsertBulk) SetUpdatedBy(v int64) *RiskRuleVersionUpsertBulk {
 	return u.Update(func(s *RiskRuleVersionUpsert) {
 		s.SetUpdatedBy(v)
 	})
 }
 
 // AddUpdatedBy adds v to the "updated_by" field.
-func (u *RiskRuleVersionUpsertBulk) AddUpdatedBy(v uint32) *RiskRuleVersionUpsertBulk {
+func (u *RiskRuleVersionUpsertBulk) AddUpdatedBy(v int64) *RiskRuleVersionUpsertBulk {
 	return u.Update(func(s *RiskRuleVersionUpsert) {
 		s.AddUpdatedBy(v)
 	})
@@ -1546,14 +1546,14 @@ func (u *RiskRuleVersionUpsertBulk) ClearUpdatedBy() *RiskRuleVersionUpsertBulk 
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (u *RiskRuleVersionUpsertBulk) SetDeletedBy(v uint32) *RiskRuleVersionUpsertBulk {
+func (u *RiskRuleVersionUpsertBulk) SetDeletedBy(v int64) *RiskRuleVersionUpsertBulk {
 	return u.Update(func(s *RiskRuleVersionUpsert) {
 		s.SetDeletedBy(v)
 	})
 }
 
 // AddDeletedBy adds v to the "deleted_by" field.
-func (u *RiskRuleVersionUpsertBulk) AddDeletedBy(v uint32) *RiskRuleVersionUpsertBulk {
+func (u *RiskRuleVersionUpsertBulk) AddDeletedBy(v int64) *RiskRuleVersionUpsertBulk {
 	return u.Update(func(s *RiskRuleVersionUpsert) {
 		s.AddDeletedBy(v)
 	})
@@ -1595,14 +1595,14 @@ func (u *RiskRuleVersionUpsertBulk) UpdateVersion() *RiskRuleVersionUpsertBulk {
 }
 
 // SetRuleID sets the "rule_id" field.
-func (u *RiskRuleVersionUpsertBulk) SetRuleID(v uint32) *RiskRuleVersionUpsertBulk {
+func (u *RiskRuleVersionUpsertBulk) SetRuleID(v int64) *RiskRuleVersionUpsertBulk {
 	return u.Update(func(s *RiskRuleVersionUpsert) {
 		s.SetRuleID(v)
 	})
 }
 
 // AddRuleID adds v to the "rule_id" field.
-func (u *RiskRuleVersionUpsertBulk) AddRuleID(v uint32) *RiskRuleVersionUpsertBulk {
+func (u *RiskRuleVersionUpsertBulk) AddRuleID(v int64) *RiskRuleVersionUpsertBulk {
 	return u.Update(func(s *RiskRuleVersionUpsert) {
 		s.AddRuleID(v)
 	})
@@ -1777,14 +1777,14 @@ func (u *RiskRuleVersionUpsertBulk) ClearPublishedAt() *RiskRuleVersionUpsertBul
 }
 
 // SetPublishedBy sets the "published_by" field.
-func (u *RiskRuleVersionUpsertBulk) SetPublishedBy(v uint32) *RiskRuleVersionUpsertBulk {
+func (u *RiskRuleVersionUpsertBulk) SetPublishedBy(v int64) *RiskRuleVersionUpsertBulk {
 	return u.Update(func(s *RiskRuleVersionUpsert) {
 		s.SetPublishedBy(v)
 	})
 }
 
 // AddPublishedBy adds v to the "published_by" field.
-func (u *RiskRuleVersionUpsertBulk) AddPublishedBy(v uint32) *RiskRuleVersionUpsertBulk {
+func (u *RiskRuleVersionUpsertBulk) AddPublishedBy(v int64) *RiskRuleVersionUpsertBulk {
 	return u.Update(func(s *RiskRuleVersionUpsert) {
 		s.AddPublishedBy(v)
 	})

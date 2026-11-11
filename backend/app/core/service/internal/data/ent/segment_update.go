@@ -70,14 +70,14 @@ func (_u *SegmentUpdate) ClearDeletedAt() *SegmentUpdate {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (_u *SegmentUpdate) SetCreatedBy(v uint32) *SegmentUpdate {
+func (_u *SegmentUpdate) SetCreatedBy(v int64) *SegmentUpdate {
 	_u.mutation.ResetCreatedBy()
 	_u.mutation.SetCreatedBy(v)
 	return _u
 }
 
 // SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
-func (_u *SegmentUpdate) SetNillableCreatedBy(v *uint32) *SegmentUpdate {
+func (_u *SegmentUpdate) SetNillableCreatedBy(v *int64) *SegmentUpdate {
 	if v != nil {
 		_u.SetCreatedBy(*v)
 	}
@@ -85,7 +85,7 @@ func (_u *SegmentUpdate) SetNillableCreatedBy(v *uint32) *SegmentUpdate {
 }
 
 // AddCreatedBy adds value to the "created_by" field.
-func (_u *SegmentUpdate) AddCreatedBy(v int32) *SegmentUpdate {
+func (_u *SegmentUpdate) AddCreatedBy(v int64) *SegmentUpdate {
 	_u.mutation.AddCreatedBy(v)
 	return _u
 }
@@ -97,14 +97,14 @@ func (_u *SegmentUpdate) ClearCreatedBy() *SegmentUpdate {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (_u *SegmentUpdate) SetUpdatedBy(v uint32) *SegmentUpdate {
+func (_u *SegmentUpdate) SetUpdatedBy(v int64) *SegmentUpdate {
 	_u.mutation.ResetUpdatedBy()
 	_u.mutation.SetUpdatedBy(v)
 	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (_u *SegmentUpdate) SetNillableUpdatedBy(v *uint32) *SegmentUpdate {
+func (_u *SegmentUpdate) SetNillableUpdatedBy(v *int64) *SegmentUpdate {
 	if v != nil {
 		_u.SetUpdatedBy(*v)
 	}
@@ -112,7 +112,7 @@ func (_u *SegmentUpdate) SetNillableUpdatedBy(v *uint32) *SegmentUpdate {
 }
 
 // AddUpdatedBy adds value to the "updated_by" field.
-func (_u *SegmentUpdate) AddUpdatedBy(v int32) *SegmentUpdate {
+func (_u *SegmentUpdate) AddUpdatedBy(v int64) *SegmentUpdate {
 	_u.mutation.AddUpdatedBy(v)
 	return _u
 }
@@ -124,14 +124,14 @@ func (_u *SegmentUpdate) ClearUpdatedBy() *SegmentUpdate {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (_u *SegmentUpdate) SetDeletedBy(v uint32) *SegmentUpdate {
+func (_u *SegmentUpdate) SetDeletedBy(v int64) *SegmentUpdate {
 	_u.mutation.ResetDeletedBy()
 	_u.mutation.SetDeletedBy(v)
 	return _u
 }
 
 // SetNillableDeletedBy sets the "deleted_by" field if the given value is not nil.
-func (_u *SegmentUpdate) SetNillableDeletedBy(v *uint32) *SegmentUpdate {
+func (_u *SegmentUpdate) SetNillableDeletedBy(v *int64) *SegmentUpdate {
 	if v != nil {
 		_u.SetDeletedBy(*v)
 	}
@@ -139,7 +139,7 @@ func (_u *SegmentUpdate) SetNillableDeletedBy(v *uint32) *SegmentUpdate {
 }
 
 // AddDeletedBy adds value to the "deleted_by" field.
-func (_u *SegmentUpdate) AddDeletedBy(v int32) *SegmentUpdate {
+func (_u *SegmentUpdate) AddDeletedBy(v int64) *SegmentUpdate {
 	_u.mutation.AddDeletedBy(v)
 	return _u
 }
@@ -191,14 +191,14 @@ func (_u *SegmentUpdate) ClearDescription() *SegmentUpdate {
 }
 
 // SetAppID sets the "app_id" field.
-func (_u *SegmentUpdate) SetAppID(v uint32) *SegmentUpdate {
+func (_u *SegmentUpdate) SetAppID(v int64) *SegmentUpdate {
 	_u.mutation.ResetAppID()
 	_u.mutation.SetAppID(v)
 	return _u
 }
 
 // SetNillableAppID sets the "app_id" field if the given value is not nil.
-func (_u *SegmentUpdate) SetNillableAppID(v *uint32) *SegmentUpdate {
+func (_u *SegmentUpdate) SetNillableAppID(v *int64) *SegmentUpdate {
 	if v != nil {
 		_u.SetAppID(*v)
 	}
@@ -206,7 +206,7 @@ func (_u *SegmentUpdate) SetNillableAppID(v *uint32) *SegmentUpdate {
 }
 
 // AddAppID adds value to the "app_id" field.
-func (_u *SegmentUpdate) AddAppID(v int32) *SegmentUpdate {
+func (_u *SegmentUpdate) AddAppID(v int64) *SegmentUpdate {
 	_u.mutation.AddAppID(v)
 	return _u
 }
@@ -372,7 +372,7 @@ func (_u *SegmentUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if err := _u.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(segment.Table, segment.Columns, sqlgraph.NewFieldSpec(segment.FieldID, field.TypeUint32))
+	_spec := sqlgraph.NewUpdateSpec(segment.Table, segment.Columns, sqlgraph.NewFieldSpec(segment.FieldID, field.TypeInt64))
 	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -396,34 +396,34 @@ func (_u *SegmentUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		_spec.ClearField(segment.FieldDeletedAt, field.TypeTime)
 	}
 	if value, ok := _u.mutation.CreatedBy(); ok {
-		_spec.SetField(segment.FieldCreatedBy, field.TypeUint32, value)
+		_spec.SetField(segment.FieldCreatedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedCreatedBy(); ok {
-		_spec.AddField(segment.FieldCreatedBy, field.TypeUint32, value)
+		_spec.AddField(segment.FieldCreatedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.CreatedByCleared() {
-		_spec.ClearField(segment.FieldCreatedBy, field.TypeUint32)
+		_spec.ClearField(segment.FieldCreatedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.UpdatedBy(); ok {
-		_spec.SetField(segment.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.SetField(segment.FieldUpdatedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
-		_spec.AddField(segment.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.AddField(segment.FieldUpdatedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.UpdatedByCleared() {
-		_spec.ClearField(segment.FieldUpdatedBy, field.TypeUint32)
+		_spec.ClearField(segment.FieldUpdatedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.DeletedBy(); ok {
-		_spec.SetField(segment.FieldDeletedBy, field.TypeUint32, value)
+		_spec.SetField(segment.FieldDeletedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedDeletedBy(); ok {
-		_spec.AddField(segment.FieldDeletedBy, field.TypeUint32, value)
+		_spec.AddField(segment.FieldDeletedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.DeletedByCleared() {
-		_spec.ClearField(segment.FieldDeletedBy, field.TypeUint32)
+		_spec.ClearField(segment.FieldDeletedBy, field.TypeInt64)
 	}
 	if _u.mutation.TenantIDCleared() {
-		_spec.ClearField(segment.FieldTenantID, field.TypeUint32)
+		_spec.ClearField(segment.FieldTenantID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(segment.FieldName, field.TypeString, value)
@@ -438,13 +438,13 @@ func (_u *SegmentUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		_spec.ClearField(segment.FieldDescription, field.TypeString)
 	}
 	if value, ok := _u.mutation.AppID(); ok {
-		_spec.SetField(segment.FieldAppID, field.TypeUint32, value)
+		_spec.SetField(segment.FieldAppID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedAppID(); ok {
-		_spec.AddField(segment.FieldAppID, field.TypeUint32, value)
+		_spec.AddField(segment.FieldAppID, field.TypeInt64, value)
 	}
 	if _u.mutation.AppIDCleared() {
-		_spec.ClearField(segment.FieldAppID, field.TypeUint32)
+		_spec.ClearField(segment.FieldAppID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.Definition(); ok {
 		_spec.SetField(segment.FieldDefinition, field.TypeJSON, value)
@@ -539,14 +539,14 @@ func (_u *SegmentUpdateOne) ClearDeletedAt() *SegmentUpdateOne {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (_u *SegmentUpdateOne) SetCreatedBy(v uint32) *SegmentUpdateOne {
+func (_u *SegmentUpdateOne) SetCreatedBy(v int64) *SegmentUpdateOne {
 	_u.mutation.ResetCreatedBy()
 	_u.mutation.SetCreatedBy(v)
 	return _u
 }
 
 // SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
-func (_u *SegmentUpdateOne) SetNillableCreatedBy(v *uint32) *SegmentUpdateOne {
+func (_u *SegmentUpdateOne) SetNillableCreatedBy(v *int64) *SegmentUpdateOne {
 	if v != nil {
 		_u.SetCreatedBy(*v)
 	}
@@ -554,7 +554,7 @@ func (_u *SegmentUpdateOne) SetNillableCreatedBy(v *uint32) *SegmentUpdateOne {
 }
 
 // AddCreatedBy adds value to the "created_by" field.
-func (_u *SegmentUpdateOne) AddCreatedBy(v int32) *SegmentUpdateOne {
+func (_u *SegmentUpdateOne) AddCreatedBy(v int64) *SegmentUpdateOne {
 	_u.mutation.AddCreatedBy(v)
 	return _u
 }
@@ -566,14 +566,14 @@ func (_u *SegmentUpdateOne) ClearCreatedBy() *SegmentUpdateOne {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (_u *SegmentUpdateOne) SetUpdatedBy(v uint32) *SegmentUpdateOne {
+func (_u *SegmentUpdateOne) SetUpdatedBy(v int64) *SegmentUpdateOne {
 	_u.mutation.ResetUpdatedBy()
 	_u.mutation.SetUpdatedBy(v)
 	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (_u *SegmentUpdateOne) SetNillableUpdatedBy(v *uint32) *SegmentUpdateOne {
+func (_u *SegmentUpdateOne) SetNillableUpdatedBy(v *int64) *SegmentUpdateOne {
 	if v != nil {
 		_u.SetUpdatedBy(*v)
 	}
@@ -581,7 +581,7 @@ func (_u *SegmentUpdateOne) SetNillableUpdatedBy(v *uint32) *SegmentUpdateOne {
 }
 
 // AddUpdatedBy adds value to the "updated_by" field.
-func (_u *SegmentUpdateOne) AddUpdatedBy(v int32) *SegmentUpdateOne {
+func (_u *SegmentUpdateOne) AddUpdatedBy(v int64) *SegmentUpdateOne {
 	_u.mutation.AddUpdatedBy(v)
 	return _u
 }
@@ -593,14 +593,14 @@ func (_u *SegmentUpdateOne) ClearUpdatedBy() *SegmentUpdateOne {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (_u *SegmentUpdateOne) SetDeletedBy(v uint32) *SegmentUpdateOne {
+func (_u *SegmentUpdateOne) SetDeletedBy(v int64) *SegmentUpdateOne {
 	_u.mutation.ResetDeletedBy()
 	_u.mutation.SetDeletedBy(v)
 	return _u
 }
 
 // SetNillableDeletedBy sets the "deleted_by" field if the given value is not nil.
-func (_u *SegmentUpdateOne) SetNillableDeletedBy(v *uint32) *SegmentUpdateOne {
+func (_u *SegmentUpdateOne) SetNillableDeletedBy(v *int64) *SegmentUpdateOne {
 	if v != nil {
 		_u.SetDeletedBy(*v)
 	}
@@ -608,7 +608,7 @@ func (_u *SegmentUpdateOne) SetNillableDeletedBy(v *uint32) *SegmentUpdateOne {
 }
 
 // AddDeletedBy adds value to the "deleted_by" field.
-func (_u *SegmentUpdateOne) AddDeletedBy(v int32) *SegmentUpdateOne {
+func (_u *SegmentUpdateOne) AddDeletedBy(v int64) *SegmentUpdateOne {
 	_u.mutation.AddDeletedBy(v)
 	return _u
 }
@@ -660,14 +660,14 @@ func (_u *SegmentUpdateOne) ClearDescription() *SegmentUpdateOne {
 }
 
 // SetAppID sets the "app_id" field.
-func (_u *SegmentUpdateOne) SetAppID(v uint32) *SegmentUpdateOne {
+func (_u *SegmentUpdateOne) SetAppID(v int64) *SegmentUpdateOne {
 	_u.mutation.ResetAppID()
 	_u.mutation.SetAppID(v)
 	return _u
 }
 
 // SetNillableAppID sets the "app_id" field if the given value is not nil.
-func (_u *SegmentUpdateOne) SetNillableAppID(v *uint32) *SegmentUpdateOne {
+func (_u *SegmentUpdateOne) SetNillableAppID(v *int64) *SegmentUpdateOne {
 	if v != nil {
 		_u.SetAppID(*v)
 	}
@@ -675,7 +675,7 @@ func (_u *SegmentUpdateOne) SetNillableAppID(v *uint32) *SegmentUpdateOne {
 }
 
 // AddAppID adds value to the "app_id" field.
-func (_u *SegmentUpdateOne) AddAppID(v int32) *SegmentUpdateOne {
+func (_u *SegmentUpdateOne) AddAppID(v int64) *SegmentUpdateOne {
 	_u.mutation.AddAppID(v)
 	return _u
 }
@@ -854,7 +854,7 @@ func (_u *SegmentUpdateOne) sqlSave(ctx context.Context) (_node *Segment, err er
 	if err := _u.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(segment.Table, segment.Columns, sqlgraph.NewFieldSpec(segment.FieldID, field.TypeUint32))
+	_spec := sqlgraph.NewUpdateSpec(segment.Table, segment.Columns, sqlgraph.NewFieldSpec(segment.FieldID, field.TypeInt64))
 	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Segment.id" for update`)}
@@ -895,34 +895,34 @@ func (_u *SegmentUpdateOne) sqlSave(ctx context.Context) (_node *Segment, err er
 		_spec.ClearField(segment.FieldDeletedAt, field.TypeTime)
 	}
 	if value, ok := _u.mutation.CreatedBy(); ok {
-		_spec.SetField(segment.FieldCreatedBy, field.TypeUint32, value)
+		_spec.SetField(segment.FieldCreatedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedCreatedBy(); ok {
-		_spec.AddField(segment.FieldCreatedBy, field.TypeUint32, value)
+		_spec.AddField(segment.FieldCreatedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.CreatedByCleared() {
-		_spec.ClearField(segment.FieldCreatedBy, field.TypeUint32)
+		_spec.ClearField(segment.FieldCreatedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.UpdatedBy(); ok {
-		_spec.SetField(segment.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.SetField(segment.FieldUpdatedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
-		_spec.AddField(segment.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.AddField(segment.FieldUpdatedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.UpdatedByCleared() {
-		_spec.ClearField(segment.FieldUpdatedBy, field.TypeUint32)
+		_spec.ClearField(segment.FieldUpdatedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.DeletedBy(); ok {
-		_spec.SetField(segment.FieldDeletedBy, field.TypeUint32, value)
+		_spec.SetField(segment.FieldDeletedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedDeletedBy(); ok {
-		_spec.AddField(segment.FieldDeletedBy, field.TypeUint32, value)
+		_spec.AddField(segment.FieldDeletedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.DeletedByCleared() {
-		_spec.ClearField(segment.FieldDeletedBy, field.TypeUint32)
+		_spec.ClearField(segment.FieldDeletedBy, field.TypeInt64)
 	}
 	if _u.mutation.TenantIDCleared() {
-		_spec.ClearField(segment.FieldTenantID, field.TypeUint32)
+		_spec.ClearField(segment.FieldTenantID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(segment.FieldName, field.TypeString, value)
@@ -937,13 +937,13 @@ func (_u *SegmentUpdateOne) sqlSave(ctx context.Context) (_node *Segment, err er
 		_spec.ClearField(segment.FieldDescription, field.TypeString)
 	}
 	if value, ok := _u.mutation.AppID(); ok {
-		_spec.SetField(segment.FieldAppID, field.TypeUint32, value)
+		_spec.SetField(segment.FieldAppID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedAppID(); ok {
-		_spec.AddField(segment.FieldAppID, field.TypeUint32, value)
+		_spec.AddField(segment.FieldAppID, field.TypeInt64, value)
 	}
 	if _u.mutation.AppIDCleared() {
-		_spec.ClearField(segment.FieldAppID, field.TypeUint32)
+		_spec.ClearField(segment.FieldAppID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.Definition(); ok {
 		_spec.SetField(segment.FieldDefinition, field.TypeJSON, value)

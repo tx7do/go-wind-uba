@@ -124,14 +124,14 @@ func (_u *ReplayChunkUpdate) ClearDeviceID() *ReplayChunkUpdate {
 }
 
 // SetUserID sets the "user_id" field.
-func (_u *ReplayChunkUpdate) SetUserID(v uint32) *ReplayChunkUpdate {
+func (_u *ReplayChunkUpdate) SetUserID(v int64) *ReplayChunkUpdate {
 	_u.mutation.ResetUserID()
 	_u.mutation.SetUserID(v)
 	return _u
 }
 
 // SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (_u *ReplayChunkUpdate) SetNillableUserID(v *uint32) *ReplayChunkUpdate {
+func (_u *ReplayChunkUpdate) SetNillableUserID(v *int64) *ReplayChunkUpdate {
 	if v != nil {
 		_u.SetUserID(*v)
 	}
@@ -139,7 +139,7 @@ func (_u *ReplayChunkUpdate) SetNillableUserID(v *uint32) *ReplayChunkUpdate {
 }
 
 // AddUserID adds value to the "user_id" field.
-func (_u *ReplayChunkUpdate) AddUserID(v int32) *ReplayChunkUpdate {
+func (_u *ReplayChunkUpdate) AddUserID(v int64) *ReplayChunkUpdate {
 	_u.mutation.AddUserID(v)
 	return _u
 }
@@ -293,7 +293,7 @@ func (_u *ReplayChunkUpdate) sqlSave(ctx context.Context) (_node int, err error)
 	if err := _u.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(replaychunk.Table, replaychunk.Columns, sqlgraph.NewFieldSpec(replaychunk.FieldID, field.TypeUint32))
+	_spec := sqlgraph.NewUpdateSpec(replaychunk.Table, replaychunk.Columns, sqlgraph.NewFieldSpec(replaychunk.FieldID, field.TypeInt64))
 	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -317,7 +317,7 @@ func (_u *ReplayChunkUpdate) sqlSave(ctx context.Context) (_node int, err error)
 		_spec.ClearField(replaychunk.FieldDeletedAt, field.TypeTime)
 	}
 	if _u.mutation.TenantIDCleared() {
-		_spec.ClearField(replaychunk.FieldTenantID, field.TypeUint32)
+		_spec.ClearField(replaychunk.FieldTenantID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.AppID(); ok {
 		_spec.SetField(replaychunk.FieldAppID, field.TypeString, value)
@@ -335,10 +335,10 @@ func (_u *ReplayChunkUpdate) sqlSave(ctx context.Context) (_node int, err error)
 		_spec.ClearField(replaychunk.FieldDeviceID, field.TypeString)
 	}
 	if value, ok := _u.mutation.UserID(); ok {
-		_spec.SetField(replaychunk.FieldUserID, field.TypeUint32, value)
+		_spec.SetField(replaychunk.FieldUserID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedUserID(); ok {
-		_spec.AddField(replaychunk.FieldUserID, field.TypeUint32, value)
+		_spec.AddField(replaychunk.FieldUserID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.PageURL(); ok {
 		_spec.SetField(replaychunk.FieldPageURL, field.TypeString, value)
@@ -484,14 +484,14 @@ func (_u *ReplayChunkUpdateOne) ClearDeviceID() *ReplayChunkUpdateOne {
 }
 
 // SetUserID sets the "user_id" field.
-func (_u *ReplayChunkUpdateOne) SetUserID(v uint32) *ReplayChunkUpdateOne {
+func (_u *ReplayChunkUpdateOne) SetUserID(v int64) *ReplayChunkUpdateOne {
 	_u.mutation.ResetUserID()
 	_u.mutation.SetUserID(v)
 	return _u
 }
 
 // SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (_u *ReplayChunkUpdateOne) SetNillableUserID(v *uint32) *ReplayChunkUpdateOne {
+func (_u *ReplayChunkUpdateOne) SetNillableUserID(v *int64) *ReplayChunkUpdateOne {
 	if v != nil {
 		_u.SetUserID(*v)
 	}
@@ -499,7 +499,7 @@ func (_u *ReplayChunkUpdateOne) SetNillableUserID(v *uint32) *ReplayChunkUpdateO
 }
 
 // AddUserID adds value to the "user_id" field.
-func (_u *ReplayChunkUpdateOne) AddUserID(v int32) *ReplayChunkUpdateOne {
+func (_u *ReplayChunkUpdateOne) AddUserID(v int64) *ReplayChunkUpdateOne {
 	_u.mutation.AddUserID(v)
 	return _u
 }
@@ -666,7 +666,7 @@ func (_u *ReplayChunkUpdateOne) sqlSave(ctx context.Context) (_node *ReplayChunk
 	if err := _u.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(replaychunk.Table, replaychunk.Columns, sqlgraph.NewFieldSpec(replaychunk.FieldID, field.TypeUint32))
+	_spec := sqlgraph.NewUpdateSpec(replaychunk.Table, replaychunk.Columns, sqlgraph.NewFieldSpec(replaychunk.FieldID, field.TypeInt64))
 	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "ReplayChunk.id" for update`)}
@@ -707,7 +707,7 @@ func (_u *ReplayChunkUpdateOne) sqlSave(ctx context.Context) (_node *ReplayChunk
 		_spec.ClearField(replaychunk.FieldDeletedAt, field.TypeTime)
 	}
 	if _u.mutation.TenantIDCleared() {
-		_spec.ClearField(replaychunk.FieldTenantID, field.TypeUint32)
+		_spec.ClearField(replaychunk.FieldTenantID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.AppID(); ok {
 		_spec.SetField(replaychunk.FieldAppID, field.TypeString, value)
@@ -725,10 +725,10 @@ func (_u *ReplayChunkUpdateOne) sqlSave(ctx context.Context) (_node *ReplayChunk
 		_spec.ClearField(replaychunk.FieldDeviceID, field.TypeString)
 	}
 	if value, ok := _u.mutation.UserID(); ok {
-		_spec.SetField(replaychunk.FieldUserID, field.TypeUint32, value)
+		_spec.SetField(replaychunk.FieldUserID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedUserID(); ok {
-		_spec.AddField(replaychunk.FieldUserID, field.TypeUint32, value)
+		_spec.AddField(replaychunk.FieldUserID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.PageURL(); ok {
 		_spec.SetField(replaychunk.FieldPageURL, field.TypeString, value)

@@ -71,14 +71,14 @@ func (_u *RiskRuleVersionUpdate) ClearDeletedAt() *RiskRuleVersionUpdate {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (_u *RiskRuleVersionUpdate) SetCreatedBy(v uint32) *RiskRuleVersionUpdate {
+func (_u *RiskRuleVersionUpdate) SetCreatedBy(v int64) *RiskRuleVersionUpdate {
 	_u.mutation.ResetCreatedBy()
 	_u.mutation.SetCreatedBy(v)
 	return _u
 }
 
 // SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
-func (_u *RiskRuleVersionUpdate) SetNillableCreatedBy(v *uint32) *RiskRuleVersionUpdate {
+func (_u *RiskRuleVersionUpdate) SetNillableCreatedBy(v *int64) *RiskRuleVersionUpdate {
 	if v != nil {
 		_u.SetCreatedBy(*v)
 	}
@@ -86,7 +86,7 @@ func (_u *RiskRuleVersionUpdate) SetNillableCreatedBy(v *uint32) *RiskRuleVersio
 }
 
 // AddCreatedBy adds value to the "created_by" field.
-func (_u *RiskRuleVersionUpdate) AddCreatedBy(v int32) *RiskRuleVersionUpdate {
+func (_u *RiskRuleVersionUpdate) AddCreatedBy(v int64) *RiskRuleVersionUpdate {
 	_u.mutation.AddCreatedBy(v)
 	return _u
 }
@@ -98,14 +98,14 @@ func (_u *RiskRuleVersionUpdate) ClearCreatedBy() *RiskRuleVersionUpdate {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (_u *RiskRuleVersionUpdate) SetUpdatedBy(v uint32) *RiskRuleVersionUpdate {
+func (_u *RiskRuleVersionUpdate) SetUpdatedBy(v int64) *RiskRuleVersionUpdate {
 	_u.mutation.ResetUpdatedBy()
 	_u.mutation.SetUpdatedBy(v)
 	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (_u *RiskRuleVersionUpdate) SetNillableUpdatedBy(v *uint32) *RiskRuleVersionUpdate {
+func (_u *RiskRuleVersionUpdate) SetNillableUpdatedBy(v *int64) *RiskRuleVersionUpdate {
 	if v != nil {
 		_u.SetUpdatedBy(*v)
 	}
@@ -113,7 +113,7 @@ func (_u *RiskRuleVersionUpdate) SetNillableUpdatedBy(v *uint32) *RiskRuleVersio
 }
 
 // AddUpdatedBy adds value to the "updated_by" field.
-func (_u *RiskRuleVersionUpdate) AddUpdatedBy(v int32) *RiskRuleVersionUpdate {
+func (_u *RiskRuleVersionUpdate) AddUpdatedBy(v int64) *RiskRuleVersionUpdate {
 	_u.mutation.AddUpdatedBy(v)
 	return _u
 }
@@ -125,14 +125,14 @@ func (_u *RiskRuleVersionUpdate) ClearUpdatedBy() *RiskRuleVersionUpdate {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (_u *RiskRuleVersionUpdate) SetDeletedBy(v uint32) *RiskRuleVersionUpdate {
+func (_u *RiskRuleVersionUpdate) SetDeletedBy(v int64) *RiskRuleVersionUpdate {
 	_u.mutation.ResetDeletedBy()
 	_u.mutation.SetDeletedBy(v)
 	return _u
 }
 
 // SetNillableDeletedBy sets the "deleted_by" field if the given value is not nil.
-func (_u *RiskRuleVersionUpdate) SetNillableDeletedBy(v *uint32) *RiskRuleVersionUpdate {
+func (_u *RiskRuleVersionUpdate) SetNillableDeletedBy(v *int64) *RiskRuleVersionUpdate {
 	if v != nil {
 		_u.SetDeletedBy(*v)
 	}
@@ -140,7 +140,7 @@ func (_u *RiskRuleVersionUpdate) SetNillableDeletedBy(v *uint32) *RiskRuleVersio
 }
 
 // AddDeletedBy adds value to the "deleted_by" field.
-func (_u *RiskRuleVersionUpdate) AddDeletedBy(v int32) *RiskRuleVersionUpdate {
+func (_u *RiskRuleVersionUpdate) AddDeletedBy(v int64) *RiskRuleVersionUpdate {
 	_u.mutation.AddDeletedBy(v)
 	return _u
 }
@@ -173,14 +173,14 @@ func (_u *RiskRuleVersionUpdate) AddVersion(v int32) *RiskRuleVersionUpdate {
 }
 
 // SetRuleID sets the "rule_id" field.
-func (_u *RiskRuleVersionUpdate) SetRuleID(v uint32) *RiskRuleVersionUpdate {
+func (_u *RiskRuleVersionUpdate) SetRuleID(v int64) *RiskRuleVersionUpdate {
 	_u.mutation.ResetRuleID()
 	_u.mutation.SetRuleID(v)
 	return _u
 }
 
 // SetNillableRuleID sets the "rule_id" field if the given value is not nil.
-func (_u *RiskRuleVersionUpdate) SetNillableRuleID(v *uint32) *RiskRuleVersionUpdate {
+func (_u *RiskRuleVersionUpdate) SetNillableRuleID(v *int64) *RiskRuleVersionUpdate {
 	if v != nil {
 		_u.SetRuleID(*v)
 	}
@@ -188,7 +188,7 @@ func (_u *RiskRuleVersionUpdate) SetNillableRuleID(v *uint32) *RiskRuleVersionUp
 }
 
 // AddRuleID adds value to the "rule_id" field.
-func (_u *RiskRuleVersionUpdate) AddRuleID(v int32) *RiskRuleVersionUpdate {
+func (_u *RiskRuleVersionUpdate) AddRuleID(v int64) *RiskRuleVersionUpdate {
 	_u.mutation.AddRuleID(v)
 	return _u
 }
@@ -340,14 +340,14 @@ func (_u *RiskRuleVersionUpdate) ClearPublishedAt() *RiskRuleVersionUpdate {
 }
 
 // SetPublishedBy sets the "published_by" field.
-func (_u *RiskRuleVersionUpdate) SetPublishedBy(v uint32) *RiskRuleVersionUpdate {
+func (_u *RiskRuleVersionUpdate) SetPublishedBy(v int64) *RiskRuleVersionUpdate {
 	_u.mutation.ResetPublishedBy()
 	_u.mutation.SetPublishedBy(v)
 	return _u
 }
 
 // SetNillablePublishedBy sets the "published_by" field if the given value is not nil.
-func (_u *RiskRuleVersionUpdate) SetNillablePublishedBy(v *uint32) *RiskRuleVersionUpdate {
+func (_u *RiskRuleVersionUpdate) SetNillablePublishedBy(v *int64) *RiskRuleVersionUpdate {
 	if v != nil {
 		_u.SetPublishedBy(*v)
 	}
@@ -355,7 +355,7 @@ func (_u *RiskRuleVersionUpdate) SetNillablePublishedBy(v *uint32) *RiskRuleVers
 }
 
 // AddPublishedBy adds value to the "published_by" field.
-func (_u *RiskRuleVersionUpdate) AddPublishedBy(v int32) *RiskRuleVersionUpdate {
+func (_u *RiskRuleVersionUpdate) AddPublishedBy(v int64) *RiskRuleVersionUpdate {
 	_u.mutation.AddPublishedBy(v)
 	return _u
 }
@@ -423,7 +423,7 @@ func (_u *RiskRuleVersionUpdate) sqlSave(ctx context.Context) (_node int, err er
 	if err := _u.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(riskruleversion.Table, riskruleversion.Columns, sqlgraph.NewFieldSpec(riskruleversion.FieldID, field.TypeUint32))
+	_spec := sqlgraph.NewUpdateSpec(riskruleversion.Table, riskruleversion.Columns, sqlgraph.NewFieldSpec(riskruleversion.FieldID, field.TypeInt64))
 	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -447,31 +447,31 @@ func (_u *RiskRuleVersionUpdate) sqlSave(ctx context.Context) (_node int, err er
 		_spec.ClearField(riskruleversion.FieldDeletedAt, field.TypeTime)
 	}
 	if value, ok := _u.mutation.CreatedBy(); ok {
-		_spec.SetField(riskruleversion.FieldCreatedBy, field.TypeUint32, value)
+		_spec.SetField(riskruleversion.FieldCreatedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedCreatedBy(); ok {
-		_spec.AddField(riskruleversion.FieldCreatedBy, field.TypeUint32, value)
+		_spec.AddField(riskruleversion.FieldCreatedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.CreatedByCleared() {
-		_spec.ClearField(riskruleversion.FieldCreatedBy, field.TypeUint32)
+		_spec.ClearField(riskruleversion.FieldCreatedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.UpdatedBy(); ok {
-		_spec.SetField(riskruleversion.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.SetField(riskruleversion.FieldUpdatedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
-		_spec.AddField(riskruleversion.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.AddField(riskruleversion.FieldUpdatedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.UpdatedByCleared() {
-		_spec.ClearField(riskruleversion.FieldUpdatedBy, field.TypeUint32)
+		_spec.ClearField(riskruleversion.FieldUpdatedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.DeletedBy(); ok {
-		_spec.SetField(riskruleversion.FieldDeletedBy, field.TypeUint32, value)
+		_spec.SetField(riskruleversion.FieldDeletedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedDeletedBy(); ok {
-		_spec.AddField(riskruleversion.FieldDeletedBy, field.TypeUint32, value)
+		_spec.AddField(riskruleversion.FieldDeletedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.DeletedByCleared() {
-		_spec.ClearField(riskruleversion.FieldDeletedBy, field.TypeUint32)
+		_spec.ClearField(riskruleversion.FieldDeletedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.Version(); ok {
 		_spec.SetField(riskruleversion.FieldVersion, field.TypeUint32, value)
@@ -480,16 +480,16 @@ func (_u *RiskRuleVersionUpdate) sqlSave(ctx context.Context) (_node int, err er
 		_spec.AddField(riskruleversion.FieldVersion, field.TypeUint32, value)
 	}
 	if _u.mutation.TenantIDCleared() {
-		_spec.ClearField(riskruleversion.FieldTenantID, field.TypeUint32)
+		_spec.ClearField(riskruleversion.FieldTenantID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.RuleID(); ok {
-		_spec.SetField(riskruleversion.FieldRuleID, field.TypeUint32, value)
+		_spec.SetField(riskruleversion.FieldRuleID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedRuleID(); ok {
-		_spec.AddField(riskruleversion.FieldRuleID, field.TypeUint32, value)
+		_spec.AddField(riskruleversion.FieldRuleID, field.TypeInt64, value)
 	}
 	if _u.mutation.RuleIDCleared() {
-		_spec.ClearField(riskruleversion.FieldRuleID, field.TypeUint32)
+		_spec.ClearField(riskruleversion.FieldRuleID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(riskruleversion.FieldName, field.TypeString, value)
@@ -536,13 +536,13 @@ func (_u *RiskRuleVersionUpdate) sqlSave(ctx context.Context) (_node int, err er
 		_spec.ClearField(riskruleversion.FieldPublishedAt, field.TypeTime)
 	}
 	if value, ok := _u.mutation.PublishedBy(); ok {
-		_spec.SetField(riskruleversion.FieldPublishedBy, field.TypeUint32, value)
+		_spec.SetField(riskruleversion.FieldPublishedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedPublishedBy(); ok {
-		_spec.AddField(riskruleversion.FieldPublishedBy, field.TypeUint32, value)
+		_spec.AddField(riskruleversion.FieldPublishedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.PublishedByCleared() {
-		_spec.ClearField(riskruleversion.FieldPublishedBy, field.TypeUint32)
+		_spec.ClearField(riskruleversion.FieldPublishedBy, field.TypeInt64)
 	}
 	_spec.AddModifiers(_u.modifiers...)
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
@@ -607,14 +607,14 @@ func (_u *RiskRuleVersionUpdateOne) ClearDeletedAt() *RiskRuleVersionUpdateOne {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (_u *RiskRuleVersionUpdateOne) SetCreatedBy(v uint32) *RiskRuleVersionUpdateOne {
+func (_u *RiskRuleVersionUpdateOne) SetCreatedBy(v int64) *RiskRuleVersionUpdateOne {
 	_u.mutation.ResetCreatedBy()
 	_u.mutation.SetCreatedBy(v)
 	return _u
 }
 
 // SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
-func (_u *RiskRuleVersionUpdateOne) SetNillableCreatedBy(v *uint32) *RiskRuleVersionUpdateOne {
+func (_u *RiskRuleVersionUpdateOne) SetNillableCreatedBy(v *int64) *RiskRuleVersionUpdateOne {
 	if v != nil {
 		_u.SetCreatedBy(*v)
 	}
@@ -622,7 +622,7 @@ func (_u *RiskRuleVersionUpdateOne) SetNillableCreatedBy(v *uint32) *RiskRuleVer
 }
 
 // AddCreatedBy adds value to the "created_by" field.
-func (_u *RiskRuleVersionUpdateOne) AddCreatedBy(v int32) *RiskRuleVersionUpdateOne {
+func (_u *RiskRuleVersionUpdateOne) AddCreatedBy(v int64) *RiskRuleVersionUpdateOne {
 	_u.mutation.AddCreatedBy(v)
 	return _u
 }
@@ -634,14 +634,14 @@ func (_u *RiskRuleVersionUpdateOne) ClearCreatedBy() *RiskRuleVersionUpdateOne {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (_u *RiskRuleVersionUpdateOne) SetUpdatedBy(v uint32) *RiskRuleVersionUpdateOne {
+func (_u *RiskRuleVersionUpdateOne) SetUpdatedBy(v int64) *RiskRuleVersionUpdateOne {
 	_u.mutation.ResetUpdatedBy()
 	_u.mutation.SetUpdatedBy(v)
 	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (_u *RiskRuleVersionUpdateOne) SetNillableUpdatedBy(v *uint32) *RiskRuleVersionUpdateOne {
+func (_u *RiskRuleVersionUpdateOne) SetNillableUpdatedBy(v *int64) *RiskRuleVersionUpdateOne {
 	if v != nil {
 		_u.SetUpdatedBy(*v)
 	}
@@ -649,7 +649,7 @@ func (_u *RiskRuleVersionUpdateOne) SetNillableUpdatedBy(v *uint32) *RiskRuleVer
 }
 
 // AddUpdatedBy adds value to the "updated_by" field.
-func (_u *RiskRuleVersionUpdateOne) AddUpdatedBy(v int32) *RiskRuleVersionUpdateOne {
+func (_u *RiskRuleVersionUpdateOne) AddUpdatedBy(v int64) *RiskRuleVersionUpdateOne {
 	_u.mutation.AddUpdatedBy(v)
 	return _u
 }
@@ -661,14 +661,14 @@ func (_u *RiskRuleVersionUpdateOne) ClearUpdatedBy() *RiskRuleVersionUpdateOne {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (_u *RiskRuleVersionUpdateOne) SetDeletedBy(v uint32) *RiskRuleVersionUpdateOne {
+func (_u *RiskRuleVersionUpdateOne) SetDeletedBy(v int64) *RiskRuleVersionUpdateOne {
 	_u.mutation.ResetDeletedBy()
 	_u.mutation.SetDeletedBy(v)
 	return _u
 }
 
 // SetNillableDeletedBy sets the "deleted_by" field if the given value is not nil.
-func (_u *RiskRuleVersionUpdateOne) SetNillableDeletedBy(v *uint32) *RiskRuleVersionUpdateOne {
+func (_u *RiskRuleVersionUpdateOne) SetNillableDeletedBy(v *int64) *RiskRuleVersionUpdateOne {
 	if v != nil {
 		_u.SetDeletedBy(*v)
 	}
@@ -676,7 +676,7 @@ func (_u *RiskRuleVersionUpdateOne) SetNillableDeletedBy(v *uint32) *RiskRuleVer
 }
 
 // AddDeletedBy adds value to the "deleted_by" field.
-func (_u *RiskRuleVersionUpdateOne) AddDeletedBy(v int32) *RiskRuleVersionUpdateOne {
+func (_u *RiskRuleVersionUpdateOne) AddDeletedBy(v int64) *RiskRuleVersionUpdateOne {
 	_u.mutation.AddDeletedBy(v)
 	return _u
 }
@@ -709,14 +709,14 @@ func (_u *RiskRuleVersionUpdateOne) AddVersion(v int32) *RiskRuleVersionUpdateOn
 }
 
 // SetRuleID sets the "rule_id" field.
-func (_u *RiskRuleVersionUpdateOne) SetRuleID(v uint32) *RiskRuleVersionUpdateOne {
+func (_u *RiskRuleVersionUpdateOne) SetRuleID(v int64) *RiskRuleVersionUpdateOne {
 	_u.mutation.ResetRuleID()
 	_u.mutation.SetRuleID(v)
 	return _u
 }
 
 // SetNillableRuleID sets the "rule_id" field if the given value is not nil.
-func (_u *RiskRuleVersionUpdateOne) SetNillableRuleID(v *uint32) *RiskRuleVersionUpdateOne {
+func (_u *RiskRuleVersionUpdateOne) SetNillableRuleID(v *int64) *RiskRuleVersionUpdateOne {
 	if v != nil {
 		_u.SetRuleID(*v)
 	}
@@ -724,7 +724,7 @@ func (_u *RiskRuleVersionUpdateOne) SetNillableRuleID(v *uint32) *RiskRuleVersio
 }
 
 // AddRuleID adds value to the "rule_id" field.
-func (_u *RiskRuleVersionUpdateOne) AddRuleID(v int32) *RiskRuleVersionUpdateOne {
+func (_u *RiskRuleVersionUpdateOne) AddRuleID(v int64) *RiskRuleVersionUpdateOne {
 	_u.mutation.AddRuleID(v)
 	return _u
 }
@@ -876,14 +876,14 @@ func (_u *RiskRuleVersionUpdateOne) ClearPublishedAt() *RiskRuleVersionUpdateOne
 }
 
 // SetPublishedBy sets the "published_by" field.
-func (_u *RiskRuleVersionUpdateOne) SetPublishedBy(v uint32) *RiskRuleVersionUpdateOne {
+func (_u *RiskRuleVersionUpdateOne) SetPublishedBy(v int64) *RiskRuleVersionUpdateOne {
 	_u.mutation.ResetPublishedBy()
 	_u.mutation.SetPublishedBy(v)
 	return _u
 }
 
 // SetNillablePublishedBy sets the "published_by" field if the given value is not nil.
-func (_u *RiskRuleVersionUpdateOne) SetNillablePublishedBy(v *uint32) *RiskRuleVersionUpdateOne {
+func (_u *RiskRuleVersionUpdateOne) SetNillablePublishedBy(v *int64) *RiskRuleVersionUpdateOne {
 	if v != nil {
 		_u.SetPublishedBy(*v)
 	}
@@ -891,7 +891,7 @@ func (_u *RiskRuleVersionUpdateOne) SetNillablePublishedBy(v *uint32) *RiskRuleV
 }
 
 // AddPublishedBy adds value to the "published_by" field.
-func (_u *RiskRuleVersionUpdateOne) AddPublishedBy(v int32) *RiskRuleVersionUpdateOne {
+func (_u *RiskRuleVersionUpdateOne) AddPublishedBy(v int64) *RiskRuleVersionUpdateOne {
 	_u.mutation.AddPublishedBy(v)
 	return _u
 }
@@ -972,7 +972,7 @@ func (_u *RiskRuleVersionUpdateOne) sqlSave(ctx context.Context) (_node *RiskRul
 	if err := _u.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(riskruleversion.Table, riskruleversion.Columns, sqlgraph.NewFieldSpec(riskruleversion.FieldID, field.TypeUint32))
+	_spec := sqlgraph.NewUpdateSpec(riskruleversion.Table, riskruleversion.Columns, sqlgraph.NewFieldSpec(riskruleversion.FieldID, field.TypeInt64))
 	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "RiskRuleVersion.id" for update`)}
@@ -1013,31 +1013,31 @@ func (_u *RiskRuleVersionUpdateOne) sqlSave(ctx context.Context) (_node *RiskRul
 		_spec.ClearField(riskruleversion.FieldDeletedAt, field.TypeTime)
 	}
 	if value, ok := _u.mutation.CreatedBy(); ok {
-		_spec.SetField(riskruleversion.FieldCreatedBy, field.TypeUint32, value)
+		_spec.SetField(riskruleversion.FieldCreatedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedCreatedBy(); ok {
-		_spec.AddField(riskruleversion.FieldCreatedBy, field.TypeUint32, value)
+		_spec.AddField(riskruleversion.FieldCreatedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.CreatedByCleared() {
-		_spec.ClearField(riskruleversion.FieldCreatedBy, field.TypeUint32)
+		_spec.ClearField(riskruleversion.FieldCreatedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.UpdatedBy(); ok {
-		_spec.SetField(riskruleversion.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.SetField(riskruleversion.FieldUpdatedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
-		_spec.AddField(riskruleversion.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.AddField(riskruleversion.FieldUpdatedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.UpdatedByCleared() {
-		_spec.ClearField(riskruleversion.FieldUpdatedBy, field.TypeUint32)
+		_spec.ClearField(riskruleversion.FieldUpdatedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.DeletedBy(); ok {
-		_spec.SetField(riskruleversion.FieldDeletedBy, field.TypeUint32, value)
+		_spec.SetField(riskruleversion.FieldDeletedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedDeletedBy(); ok {
-		_spec.AddField(riskruleversion.FieldDeletedBy, field.TypeUint32, value)
+		_spec.AddField(riskruleversion.FieldDeletedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.DeletedByCleared() {
-		_spec.ClearField(riskruleversion.FieldDeletedBy, field.TypeUint32)
+		_spec.ClearField(riskruleversion.FieldDeletedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.Version(); ok {
 		_spec.SetField(riskruleversion.FieldVersion, field.TypeUint32, value)
@@ -1046,16 +1046,16 @@ func (_u *RiskRuleVersionUpdateOne) sqlSave(ctx context.Context) (_node *RiskRul
 		_spec.AddField(riskruleversion.FieldVersion, field.TypeUint32, value)
 	}
 	if _u.mutation.TenantIDCleared() {
-		_spec.ClearField(riskruleversion.FieldTenantID, field.TypeUint32)
+		_spec.ClearField(riskruleversion.FieldTenantID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.RuleID(); ok {
-		_spec.SetField(riskruleversion.FieldRuleID, field.TypeUint32, value)
+		_spec.SetField(riskruleversion.FieldRuleID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedRuleID(); ok {
-		_spec.AddField(riskruleversion.FieldRuleID, field.TypeUint32, value)
+		_spec.AddField(riskruleversion.FieldRuleID, field.TypeInt64, value)
 	}
 	if _u.mutation.RuleIDCleared() {
-		_spec.ClearField(riskruleversion.FieldRuleID, field.TypeUint32)
+		_spec.ClearField(riskruleversion.FieldRuleID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(riskruleversion.FieldName, field.TypeString, value)
@@ -1102,13 +1102,13 @@ func (_u *RiskRuleVersionUpdateOne) sqlSave(ctx context.Context) (_node *RiskRul
 		_spec.ClearField(riskruleversion.FieldPublishedAt, field.TypeTime)
 	}
 	if value, ok := _u.mutation.PublishedBy(); ok {
-		_spec.SetField(riskruleversion.FieldPublishedBy, field.TypeUint32, value)
+		_spec.SetField(riskruleversion.FieldPublishedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedPublishedBy(); ok {
-		_spec.AddField(riskruleversion.FieldPublishedBy, field.TypeUint32, value)
+		_spec.AddField(riskruleversion.FieldPublishedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.PublishedByCleared() {
-		_spec.ClearField(riskruleversion.FieldPublishedBy, field.TypeUint32)
+		_spec.ClearField(riskruleversion.FieldPublishedBy, field.TypeInt64)
 	}
 	_spec.AddModifiers(_u.modifiers...)
 	_node = &RiskRuleVersion{config: _u.config}

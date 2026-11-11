@@ -93,13 +93,13 @@ func (s *AiChatService) Chat(req *aiV1.ChatRequest, stream grpc.ServerStreamingS
 
 	// BFF 注入的 operator 字段优先（流式 RPC 的元数据转发不可靠，见 proto 注释）；
 	// 缺失时回落 viewer 上下文。
-	var userId, tenantId uint32
+	var userId, tenantId int64
 	if uid := req.GetOperatorUserId(); uid > 0 {
 		userId = uid
 		tenantId = req.GetOperatorTenantId()
 	} else {
 		if vc, exist := viewer.FromContext(ctx); exist && vc != nil {
-			tenantId = uint32(vc.TenantID())
+			tenantId = int64(vc.TenantID())
 		}
 		if uid, hasUser := viewerUserIDFromContext(ctx); hasUser {
 			userId = uid
@@ -238,23 +238,23 @@ func (s *AiChatService) Chat(req *aiV1.ChatRequest, stream grpc.ServerStreamingS
 		s.log.Errorf("ai chat stream failed: conversation=%d: %v", conversation.ID, toolErr)
 		return aiV1.ErrorInternalServerError("ai chat failed: %v", toolErr)
 	}
-	durationMs := uint32(time.Since(start).Milliseconds())
+	durationMs := int64(time.Since(start).Milliseconds())
 
 	// 6. 落 assistant 消息与用量流水
 	assistantContent := fullText
 	modelName := ptrStrOr(provider.ModelName, "")
-	promptTokens := uint32(usage.PromptTokens)
-	completionTokens := uint32(usage.CompletionTokens)
-	totalTokens := uint32(usage.TotalTokens)
+	promptTokens := int64(usage.PromptTokens)
+	completionTokens := int64(usage.CompletionTokens)
+	totalTokens := int64(usage.TotalTokens)
 
 	assistantEntity, err := s.messageRepo.Create(ctx, &aiV1.AiMessage{
 		ConversationId:   &conversation.ID,
 		Role:             aiV1.AiRole_ASSISTANT.Enum(),
 		Content:          &assistantContent,
 		ModelName:        &modelName,
-		PromptTokens:     &promptTokens,
-		CompletionTokens: &completionTokens,
-		DurationMs:       &durationMs,
+		PromptTokens:     trans.Ptr(uint32(promptTokens)),
+		CompletionTokens: trans.Ptr(uint32(completionTokens)),
+		DurationMs:       trans.Ptr(uint32(durationMs)),
 		UserId:           &userId,
 		TenantId:         trans.Ptr(tenantId),
 		CreatedBy:        &userId,
@@ -308,11 +308,11 @@ func (s *AiChatService) buildCitations(ctx context.Context, hits []*data.ChunkHi
 		return nil
 	}
 
-	docIds := make([]uint32, 0, len(hits))
+	docIds := make([]int64, 0, len(hits))
 	for _, hit := range hits {
 		docIds = append(docIds, hit.DocID)
 	}
-	docNames := make(map[uint32]string, len(docIds))
+	docNames := make(map[int64]string, len(docIds))
 	if docs, err := s.knowledgeRepo.ListDocsByIDs(ctx, docIds); err != nil {
 		s.log.Warnf("load citation doc names failed: %v", err)
 	} else {
@@ -329,7 +329,7 @@ func (s *AiChatService) buildCitations(ctx context.Context, hits []*data.ChunkHi
 	for _, hit := range hits {
 		citations = append(citations, &aiV1.ChatCitation{
 			DocName:    docNames[hit.DocID],
-			ChunkIndex: hit.ChunkIndex,
+			ChunkIndex: uint32(hit.ChunkIndex),
 			Snippet:    truncateRunes(hit.Content, chatCitationSnippetRunes),
 			Score:      hit.Score,
 		})
@@ -338,7 +338,7 @@ func (s *AiChatService) buildCitations(ctx context.Context, hits []*data.ChunkHi
 }
 
 // resolveProvider 解析本次对话使用的提供商。
-func (s *AiChatService) resolveProvider(ctx context.Context, providerId uint32) (*ent.AiProvider, error) {
+func (s *AiChatService) resolveProvider(ctx context.Context, providerId int64) (*ent.AiProvider, error) {
 	if providerId > 0 {
 		entity, err := s.providerRepo.GetEntityByID(ctx, providerId)
 		if err != nil {
@@ -353,7 +353,7 @@ func (s *AiChatService) resolveProvider(ctx context.Context, providerId uint32) 
 }
 
 // resolveConversation 会话复用或新建（新建时标题取首条消息摘要）。
-func (s *AiChatService) resolveConversation(ctx context.Context, userId, tenantId, conversationId uint32, provider *ent.AiProvider, content string) (*ent.AiConversation, error) {
+func (s *AiChatService) resolveConversation(ctx context.Context, userId, tenantId, conversationId int64, provider *ent.AiProvider, content string) (*ent.AiConversation, error) {
 	if conversationId > 0 {
 		entity, err := s.conversationRepo.GetEntityByID(ctx, conversationId)
 		if err != nil {

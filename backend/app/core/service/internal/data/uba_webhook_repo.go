@@ -80,7 +80,7 @@ func (r *WebhookRepo) Count(ctx context.Context, req *paginationV1.PagingRequest
 	}
 
 	return &ubaV1.CountWebhookResponse{
-		Count: uint64(count),
+		Count: int64(count),
 	}, nil
 }
 
@@ -105,7 +105,7 @@ func (r *WebhookRepo) List(ctx context.Context, req *paginationV1.PagingRequest)
 	}, nil
 }
 
-func (r *WebhookRepo) IsExist(ctx context.Context, id uint32) (bool, error) {
+func (r *WebhookRepo) IsExist(ctx context.Context, id int64) (bool, error) {
 	exist, err := r.entClient.Client().Webhook.Query().
 		Where(webhook.IDEQ(id)).
 		Exist(ctx)
@@ -118,7 +118,7 @@ func (r *WebhookRepo) IsExist(ctx context.Context, id uint32) (bool, error) {
 
 // ListEnabledByTenantApp 列出租户下启用的 Webhook；appID 为空表示不限应用。
 // 应用匹配规则：webhook 未绑定应用，或绑定的应用与事件一致。
-func (r *WebhookRepo) ListEnabledByTenantApp(ctx context.Context, tenantID uint32, appID string) ([]*ent.Webhook, error) {
+func (r *WebhookRepo) ListEnabledByTenantApp(ctx context.Context, tenantID int64, appID string) ([]*ent.Webhook, error) {
 	entities, err := r.entClient.Client().Webhook.Query().
 		Where(
 			webhook.EnabledEQ(true),
@@ -144,14 +144,14 @@ func (r *WebhookRepo) ListEnabledByTenantApp(ctx context.Context, tenantID uint3
 }
 
 // UpdateDeliveryState 投递完成后回写状态：成功更新最后触发时间并清零失败计数，失败累加计数。
-func (r *WebhookRepo) UpdateDeliveryState(ctx context.Context, id uint32, triggeredAt *time.Time, failureCount *uint32) error {
+func (r *WebhookRepo) UpdateDeliveryState(ctx context.Context, id int64, triggeredAt *time.Time, failureCount *int64) error {
 	builder := r.entClient.Client().Webhook.UpdateOneID(id).SetUpdatedAt(time.Now())
 	if triggeredAt != nil {
 		builder.SetLastTriggeredAt(*triggeredAt)
 		builder.SetFailureCount(0)
 	}
 	if failureCount != nil {
-		builder.SetFailureCount(*failureCount)
+		builder.SetFailureCount(uint32(*failureCount))
 	}
 
 	if err := builder.Exec(ctx); err != nil {

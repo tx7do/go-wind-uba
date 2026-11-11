@@ -31,14 +31,14 @@ func (AiTenantQuota) Annotations() []schema.Annotation {
 
 func (AiTenantQuota) Fields() []ent.Field {
 	return []ent.Field{
-		field.Uint32("tenant_id").Comment("租户ID（租户维度唯一）"),
+		field.Int64("tenant_id").Comment("租户ID（租户维度唯一）"),
 		field.Uint64("monthly_token_limit").Comment("月度 token 上限（自然月，0=取消配额）"),
 	}
 }
 
 func (AiTenantQuota) Mixin() []ent.Mixin {
 	return []ent.Mixin{
-		mixin.AutoIncrementId{},
+		mixin.AutoIncrementId64{},
 		mixin.TimeAt{},
 	}
 }

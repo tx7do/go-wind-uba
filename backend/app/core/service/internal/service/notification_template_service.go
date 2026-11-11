@@ -1,9 +1,9 @@
 package service
 
 import (
-	"github.com/go-kratos/kratos/v2/log"
 	"context"
 	"fmt"
+	"github.com/go-kratos/kratos/v2/log"
 	"strings"
 
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -22,7 +22,7 @@ import (
 // CRUD + 试渲染。渲染内核 renderTemplate 同时被 SendDirect 的 template_code
 // 路径复用，两处共享同一套占位符语义。
 type NotificationTemplateService struct {
-		notificationV1.UnimplementedNotificationTemplateServiceServer
+	notificationV1.UnimplementedNotificationTemplateServiceServer
 
 	templateRepo *data.NotificationTemplateRepo
 	log          *log.Helper
@@ -118,7 +118,7 @@ func (s *NotificationTemplateService) RenderNotificationTemplate(ctx context.Con
 }
 
 // currentUserId 取操作人 ID；系统上下文（无操作人）返回 0，repo 侧据此留空 created_by。
-func currentUserId(ctx context.Context) uint32 {
+func currentUserId(ctx context.Context) int64 {
 	operator, err := auth.FromContext(ctx)
 	if err != nil {
 		return 0

@@ -85,8 +85,8 @@ func (_q *TagValueQuery) FirstX(ctx context.Context) *TagValue {
 
 // FirstID returns the first TagValue ID from the query.
 // Returns a *NotFoundError when no TagValue ID was found.
-func (_q *TagValueQuery) FirstID(ctx context.Context) (id uint32, err error) {
-	var ids []uint32
+func (_q *TagValueQuery) FirstID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -98,7 +98,7 @@ func (_q *TagValueQuery) FirstID(ctx context.Context) (id uint32, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (_q *TagValueQuery) FirstIDX(ctx context.Context) uint32 {
+func (_q *TagValueQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -136,8 +136,8 @@ func (_q *TagValueQuery) OnlyX(ctx context.Context) *TagValue {
 // OnlyID is like Only, but returns the only TagValue ID in the query.
 // Returns a *NotSingularError when more than one TagValue ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (_q *TagValueQuery) OnlyID(ctx context.Context) (id uint32, err error) {
-	var ids []uint32
+func (_q *TagValueQuery) OnlyID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -153,7 +153,7 @@ func (_q *TagValueQuery) OnlyID(ctx context.Context) (id uint32, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (_q *TagValueQuery) OnlyIDX(ctx context.Context) uint32 {
+func (_q *TagValueQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -181,7 +181,7 @@ func (_q *TagValueQuery) AllX(ctx context.Context) []*TagValue {
 }
 
 // IDs executes the query and returns a list of TagValue IDs.
-func (_q *TagValueQuery) IDs(ctx context.Context) (ids []uint32, err error) {
+func (_q *TagValueQuery) IDs(ctx context.Context) (ids []int64, err error) {
 	if _q.ctx.Unique == nil && _q.path != nil {
 		_q.Unique(true)
 	}
@@ -193,7 +193,7 @@ func (_q *TagValueQuery) IDs(ctx context.Context) (ids []uint32, err error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (_q *TagValueQuery) IDsX(ctx context.Context) []uint32 {
+func (_q *TagValueQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -266,7 +266,7 @@ func (_q *TagValueQuery) Clone() *TagValueQuery {
 // Example:
 //
 //	var v []struct {
-//		TenantID uint32 `json:"tenant_id,omitempty"`
+//		TenantID int64 `json:"tenant_id,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
@@ -289,7 +289,7 @@ func (_q *TagValueQuery) GroupBy(field string, fields ...string) *TagValueGroupB
 // Example:
 //
 //	var v []struct {
-//		TenantID uint32 `json:"tenant_id,omitempty"`
+//		TenantID int64 `json:"tenant_id,omitempty"`
 //	}
 //
 //	client.TagValue.Query().
@@ -381,7 +381,7 @@ func (_q *TagValueQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (_q *TagValueQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(tagvalue.Table, tagvalue.Columns, sqlgraph.NewFieldSpec(tagvalue.FieldID, field.TypeUint32))
+	_spec := sqlgraph.NewQuerySpec(tagvalue.Table, tagvalue.Columns, sqlgraph.NewFieldSpec(tagvalue.FieldID, field.TypeInt64))
 	_spec.From = _q.sql
 	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

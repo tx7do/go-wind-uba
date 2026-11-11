@@ -5,7 +5,7 @@ const CampaignSendTaskType = "campaign_send"
 
 // CampaignSendTaskData 是营销触达群发任务的载荷。
 type CampaignSendTaskData struct {
-	CampaignID uint32 `json:"campaignId"`
+	CampaignID int64 `json:"campaignId"`
 }
 
 // ReplayRetentionSweepTaskType 是会话回放保留期清扫任务的类型常量。

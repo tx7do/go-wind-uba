@@ -76,7 +76,7 @@ func (r *EventSchemaRepo) Count(ctx context.Context, req *paginationV1.PagingReq
 		return nil, ubaV1.ErrorInternalServerError("query event-schema count failed")
 	}
 
-	return &ubaV1.CountEventSchemaResponse{Count: uint64(count)}, nil
+	return &ubaV1.CountEventSchemaResponse{Count: int64(count)}, nil
 }
 
 func (r *EventSchemaRepo) List(ctx context.Context, req *paginationV1.PagingRequest) (*ubaV1.ListEventSchemaResponse, error) {
@@ -94,7 +94,7 @@ func (r *EventSchemaRepo) List(ctx context.Context, req *paginationV1.PagingRequ
 	return &ubaV1.ListEventSchemaResponse{Total: ret.Total, Items: ret.Items}, nil
 }
 
-func (r *EventSchemaRepo) IsExist(ctx context.Context, id uint32) (bool, error) {
+func (r *EventSchemaRepo) IsExist(ctx context.Context, id int64) (bool, error) {
 	exist, err := r.entClient.Client().EventSchema.Query().
 		Where(eventschema.IDEQ(id)).
 		Exist(ctx)
@@ -114,7 +114,7 @@ func (r *EventSchemaRepo) Get(ctx context.Context, req *ubaV1.GetEventSchemaRequ
 	switch req.QueryBy.(type) {
 	default:
 	case *ubaV1.GetEventSchemaRequest_Id:
-		whereCond = append(whereCond, eventschema.IDEQ(uint32(req.GetId())))
+		whereCond = append(whereCond, eventschema.IDEQ(int64(req.GetId())))
 	}
 	dto, err := r.repository.Get(ctx, builder, req.GetViewMask(), whereCond...)
 	return dto, err
@@ -152,7 +152,7 @@ func (r *EventSchemaRepo) Update(ctx context.Context, req *ubaV1.UpdateEventSche
 		return nil, ubaV1.ErrorBadRequest("invalid parameter")
 	}
 	if req.GetAllowMissing() {
-		exist, err := r.IsExist(ctx, uint32(req.GetId()))
+		exist, err := r.IsExist(ctx, int64(req.GetId()))
 		if err != nil {
 			return nil, err
 		}
@@ -163,7 +163,7 @@ func (r *EventSchemaRepo) Update(ctx context.Context, req *ubaV1.UpdateEventSche
 			return r.Create(ctx, createReq)
 		}
 	}
-	builder := r.entClient.Client().EventSchema.UpdateOneID(uint32(req.GetId()))
+	builder := r.entClient.Client().EventSchema.UpdateOneID(int64(req.GetId()))
 	status := ""
 	if req.Data.Status != nil {
 		status = req.Data.Status.String()
@@ -189,7 +189,7 @@ func (r *EventSchemaRepo) Update(ctx context.Context, req *ubaV1.UpdateEventSche
 			}
 		},
 		func(s *sql.Selector) {
-			s.Where(sql.EQ(eventschema.FieldID, uint32(req.GetId())))
+			s.Where(sql.EQ(eventschema.FieldID, int64(req.GetId())))
 		},
 	)
 
@@ -200,7 +200,7 @@ func (r *EventSchemaRepo) Delete(ctx context.Context, req *ubaV1.DeleteEventSche
 	if req == nil {
 		return ubaV1.ErrorBadRequest("invalid parameter")
 	}
-	if err := r.entClient.Client().EventSchema.DeleteOneID(uint32(req.GetId())).Exec(ctx); err != nil {
+	if err := r.entClient.Client().EventSchema.DeleteOneID(int64(req.GetId())).Exec(ctx); err != nil {
 		if ent.IsNotFound(err) {
 			return ubaV1.ErrorNotFound("event-schema not found")
 		}

@@ -77,9 +77,9 @@ func (s *ReportEngine) appendAiReportSummary(ctx context.Context, sub *ent.Repor
 	if s.aiUsageLogRepo != nil {
 		_ = s.aiUsageLogRepo.Create(ctx, &data.UsageRecord{
 			ProviderID:  provider.ID,
-			TenantID:    derefUint32(sub.TenantID),
+			TenantID:    derefInt64Local(sub.TenantID),
 			ModelName:   ptrStrOr(provider.ModelName, ""),
-			TotalTokens: uint32(resp.Usage.TotalTokens),
+			TotalTokens: int64(resp.Usage.TotalTokens),
 		})
 	}
 

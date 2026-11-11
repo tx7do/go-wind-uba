@@ -7,8 +7,8 @@ import "time"
 
 type PathFeatures struct {
 	PathID          *string    `ch:"path_id"`
-	TenantID        *uint32    `ch:"tenant_id"`
-	UserID          *uint32    `ch:"user_id"`
+	TenantID        *int64     `ch:"tenant_id"`
+	UserID          *int64     `ch:"user_id"`
 	SessionID       *string    `ch:"session_id"`
 	PathHash        *string    `ch:"path_hash"`
 	FirstEvent      *string    `ch:"first_event"`
@@ -22,6 +22,6 @@ type PathFeatures struct {
 	StartTime       *time.Time `ch:"start_time"`
 	EndTime         *time.Time `ch:"end_time"`
 	EventDate       *time.Time `ch:"event_date"`
-	TotalDurationMs *uint64    `ch:"total_duration_ms"`
+	TotalDurationMs *int64     `ch:"total_duration_ms"`
 	StepCount       *uint8     `ch:"step_count"`
 }

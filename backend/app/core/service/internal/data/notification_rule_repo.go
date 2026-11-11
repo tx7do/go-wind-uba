@@ -1,9 +1,9 @@
 package data
 
 import (
-	"io"
-	"github.com/go-kratos/kratos/v2/log"
 	"context"
+	"github.com/go-kratos/kratos/v2/log"
+	"io"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
@@ -110,7 +110,7 @@ func (r *NotificationRuleRepo) List(ctx context.Context, req *paginationV1.Pagin
 	}, nil
 }
 
-func (r *NotificationRuleRepo) Get(ctx context.Context, id uint32) (*notificationV1.NotificationRule, error) {
+func (r *NotificationRuleRepo) Get(ctx context.Context, id int64) (*notificationV1.NotificationRule, error) {
 	if id == 0 {
 		return nil, adminV1.ErrorBadRequest("id is required")
 	}
@@ -167,7 +167,7 @@ func (r *NotificationRuleRepo) Count(ctx context.Context) (int, error) {
 //
 // 与渠道/台账两张表一样，created_at 显式写入：mixin 的列没有 DB 默认值，
 // 留给 NULL 会让"按创建时间排序"的列表页出现一排空行。
-func (r *NotificationRuleRepo) Create(ctx context.Context, req *notificationV1.NotificationRule, operatorID uint32) (uint32, error) {
+func (r *NotificationRuleRepo) Create(ctx context.Context, req *notificationV1.NotificationRule, operatorID int64) (int64, error) {
 	if req == nil {
 		return 0, adminV1.ErrorBadRequest("invalid request")
 	}
@@ -210,7 +210,7 @@ func (r *NotificationRuleRepo) Create(ctx context.Context, req *notificationV1.N
 	return created.ID, nil
 }
 
-func (r *NotificationRuleRepo) Update(ctx context.Context, req *notificationV1.UpdateNotificationRuleRequest, operatorID uint32) error {
+func (r *NotificationRuleRepo) Update(ctx context.Context, req *notificationV1.UpdateNotificationRuleRequest, operatorID int64) error {
 	if req == nil || req.Data == nil {
 		return adminV1.ErrorBadRequest("invalid request")
 	}
@@ -236,7 +236,7 @@ func (r *NotificationRuleRepo) Update(ctx context.Context, req *notificationV1.U
 	)
 }
 
-func (r *NotificationRuleRepo) Delete(ctx context.Context, id uint32) error {
+func (r *NotificationRuleRepo) Delete(ctx context.Context, id int64) error {
 	if id == 0 {
 		return adminV1.ErrorBadRequest("id is required")
 	}

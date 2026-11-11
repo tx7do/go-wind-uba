@@ -381,9 +381,9 @@ func (r *AnalyticsRepo) Retention(ctx context.Context, req *ubaV1.RetentionReque
 		return nil, ubaV1.ErrorInternalServerError("retention query failed")
 	}
 
-	offsets := make([]uint32, 0, maxOffset+1)
+	offsets := make([]int64, 0, maxOffset+1)
 	for i := 0; i <= maxOffset; i++ {
-		offsets = append(offsets, uint32(i))
+		offsets = append(offsets, int64(i))
 	}
 
 	cohorts := make([]*ubaV1.RetentionCohort, 0, len(crows))
@@ -409,7 +409,7 @@ func (r *AnalyticsRepo) Retention(ctx context.Context, req *ubaV1.RetentionReque
 			if err := r.db.QueryRow(ctx, &cnt, q, args...); err != nil {
 				continue
 			}
-			cell := &ubaV1.RetentionCell{OffsetDays: off, Count: cnt}
+			cell := &ubaV1.RetentionCell{OffsetDays: uint32(off), Count: cnt}
 			if c.Size > 0 {
 				cell.Rate = float64(cnt) / float64(c.Size)
 			}
@@ -418,7 +418,7 @@ func (r *AnalyticsRepo) Retention(ctx context.Context, req *ubaV1.RetentionReque
 		cohorts = append(cohorts, c)
 	}
 
-	return &ubaV1.RetentionResponse{Cohorts: cohorts, OffsetDays: offsets}, nil
+	return &ubaV1.RetentionResponse{Cohorts: cohorts, OffsetDays: toU32s(offsets)}, nil
 }
 
 func (r *AnalyticsRepo) GroupBy(ctx context.Context, req *ubaV1.GroupByRequest) (*ubaV1.GroupByResponse, error) {
@@ -873,7 +873,7 @@ LIMIT ?`, strings.Join(where, " AND "))
 		EventTime  *time.Time `db:"event_time" ch:"event_time"`
 		EventName  *string    `db:"event_name" ch:"event_name"`
 		SessionID  *string    `db:"session_id" ch:"session_id"`
-		SessionSeq *uint32    `db:"session_seq" ch:"session_seq"`
+		SessionSeq *int64     `db:"session_seq" ch:"session_seq"`
 		Referer    *string    `db:"referer" ch:"referer"`
 		Platform   *string    `db:"platform" ch:"platform"`
 		Channel    *string    `db:"channel" ch:"channel"`
@@ -894,7 +894,7 @@ LIMIT ?`, strings.Join(where, " AND "))
 			ev.SessionId = rw.SessionID
 		}
 		if rw.SessionSeq != nil {
-			ev.SessionSeq = rw.SessionSeq
+			ev.SessionSeq = u32p(rw.SessionSeq)
 		}
 		if rw.Referer != nil {
 			ev.Referer = rw.Referer
@@ -969,7 +969,7 @@ LIMIT ?`, innerQ, tenantCond)
 		args = append(args, limit)
 	}
 
-	var userIDs []uint32
+	var userIDs []int64
 	if err := r.db.Select(ctx, &userIDs, q, args...); err != nil {
 		r.log.Errorf("Segmentation query failed: %v", err)
 		return nil, ubaV1.ErrorInternalServerError("segmentation query failed")
@@ -2075,7 +2075,7 @@ GROUP BY tier`, tenantCond)
 
 func (r *AnalyticsRepo) LTV(ctx context.Context, req *ubaV1.LTVRequest) (*ubaV1.LTVResponse, error) {
 	startMs, endMs := normTimeRange(req.GetTimeRange())
-	maxDays := []uint32{0, 1, 3, 7, 14, 30, 60, 90}
+	maxDays := []int64{0, 1, 3, 7, 14, 30, 60, 90}
 
 	tenantCond := ""
 	args := []any{time.UnixMilli(startMs), time.UnixMilli(endMs)}
@@ -2161,7 +2161,7 @@ GROUP BY label, day_n`, dimSelect, tenantCond)
 				ltv = cumulative / float64(size)
 			}
 			points = append(points, &ubaV1.LTVPoint{
-				Label: label, DayN: dn, Ltv: ltv,
+				Label: label, DayN: uint32(dn), Ltv: ltv,
 				CohortSize: size, TotalAmount: cumulative,
 			})
 		}
@@ -2180,9 +2180,9 @@ func (r *AnalyticsRepo) ServerRetention(ctx context.Context, req *ubaV1.ServerRe
 	if maxOffset <= 0 {
 		maxOffset = 7
 	}
-	offsetDays := make([]uint32, 0, maxOffset+1)
+	offsetDays := make([]int64, 0, maxOffset+1)
 	for d := int64(0); d <= maxOffset; d++ {
-		offsetDays = append(offsetDays, uint32(d))
+		offsetDays = append(offsetDays, int64(d))
 	}
 
 	var whereParts []string
@@ -2250,7 +2250,7 @@ WHERE e.server_id = ? AND dateDiff('day', f.first_day, toDate(e.event_time)) = ?
 			ServerId: cr.ServerID, CohortSize: cr.CohortSize, RetentionRates: rates,
 		})
 	}
-	return &ubaV1.ServerRetentionResponse{Rows: rows, OffsetDays: offsetDays}, nil
+	return &ubaV1.ServerRetentionResponse{Rows: rows, OffsetDays: toU32s(offsetDays)}, nil
 }
 
 // ============================================================================
@@ -2366,4 +2366,20 @@ ORDER BY source DESC`, whereCond)
 		})
 	}
 	return &ubaV1.EconomyResponse{Currencies: currencies}, nil
+}
+
+func toU32s(in []int64) []uint32 {
+	out := make([]uint32, 0, len(in))
+	for _, v := range in {
+		out = append(out, uint32(v))
+	}
+	return out
+}
+
+func u32p(v *int64) *uint32 {
+	if v == nil {
+		return nil
+	}
+	x := uint32(*v)
+	return &x
 }

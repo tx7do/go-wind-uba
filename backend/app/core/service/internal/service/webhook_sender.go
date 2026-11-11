@@ -36,7 +36,7 @@ const (
 type WebhookSender struct {
 	log *log.Helper
 
-	webhookRepo *data.WebhookRepo
+	webhookRepo  *data.WebhookRepo
 	deliveryRepo *data.WebhookDeliveryLogRepo
 
 	httpClient *http.Client
@@ -59,7 +59,7 @@ func NewWebhookSender(
 
 // SendPayload 投递的事件负载（data 字段内容由调用方组装）。
 type SendPayload struct {
-	TenantID uint32
+	TenantID int64
 	AppID    string
 	// EventType 触发事件类型，如 alert.triggered / risk.high。
 	EventType string
@@ -175,7 +175,7 @@ func (s *WebhookSender) sign(secret string, body []byte) string {
 	return hex.EncodeToString(mac.Sum(nil))
 }
 
-func (s *WebhookSender) recordDelivery(hook *ent.Webhook, p SendPayload, body []byte, success bool, retryCount uint32, statusCode int, responseBody, errMsg string) {
+func (s *WebhookSender) recordDelivery(hook *ent.Webhook, p SendPayload, body []byte, success bool, retryCount int64, statusCode int, responseBody, errMsg string) {
 	err := s.deliveryRepo.Create(context.Background(), &ubaV1.WebhookDeliveryLog{
 		WebhookId:    hook.ID,
 		TenantId:     p.TenantID,
@@ -183,7 +183,7 @@ func (s *WebhookSender) recordDelivery(hook *ent.Webhook, p SendPayload, body []
 		Payload:      string(body),
 		StatusCode:   int32(statusCode),
 		ResponseBody: responseBody,
-		RetryCount:   retryCount,
+		RetryCount:   uint32(retryCount),
 		Success:      success,
 		ErrorMessage: errMsg,
 	})
@@ -202,7 +202,7 @@ func (s *WebhookSender) markTriggered(hook *ent.Webhook) {
 
 // markFailed 投递失败后累加失败计数。
 func (s *WebhookSender) markFailed(hook *ent.Webhook, _ string) {
-	count := hook.FailureCount + 1
+	count := int64(hook.FailureCount) + 1
 	if err := s.webhookRepo.UpdateDeliveryState(context.Background(), hook.ID, nil, &count); err != nil {
 		s.log.Errorf("update webhook failure count failed: %s", err.Error())
 	}

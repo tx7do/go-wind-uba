@@ -28,7 +28,7 @@ func (RiskRuleCondition) Annotations() []schema.Annotation {
 
 func (RiskRuleCondition) Fields() []ent.Field {
 	return []ent.Field{
-		field.Uint32("rule_id").
+		field.Int64("rule_id").
 			Comment("风险规则ID，关联 uba_risk_rules.id").
 			Optional().
 			Nillable(),
@@ -50,7 +50,7 @@ func (RiskRuleCondition) Fields() []ent.Field {
 			Comment("逻辑关系：AND/OR").
 			Default("AND"),
 
-		field.Uint32("group_id").
+		field.Int64("group_id").
 			Comment("条件组ID，逻辑分组").
 			Optional().
 			Nillable(),
@@ -59,11 +59,11 @@ func (RiskRuleCondition) Fields() []ent.Field {
 
 func (RiskRuleCondition) Mixin() []ent.Mixin {
 	return []ent.Mixin{
-		mixin.AutoIncrementId{},
+		mixin.AutoIncrementId64{},
 		mixin.TimeAt{},
-		mixin.OperatorID{},
+		mixin.OperatorID64{},
 		mixin.SortOrder{},
-		mixin.TenantID[uint32]{},
+		mixin.TenantID[int64]{},
 	}
 }
 

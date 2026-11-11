@@ -4,8 +4,8 @@ import "time"
 
 type PathFeatures struct {
 	PathID          *string     `db:"path_id"`
-	TenantID        *uint32     `db:"tenant_id"`
-	UserID          *uint32     `db:"user_id"`
+	TenantID        *int64      `db:"tenant_id"`
+	UserID          *int64      `db:"user_id"`
 	SessionID       *string     `db:"session_id"`
 	PathHash        *string     `db:"path_hash"`
 	FirstEvent      *string     `db:"first_event"`
@@ -19,6 +19,6 @@ type PathFeatures struct {
 	StartTime       *time.Time  `db:"start_time"`
 	EndTime         *time.Time  `db:"end_time"`
 	EventDate       *time.Time  `db:"event_date"`
-	TotalDurationMs *uint64     `db:"total_duration_ms"`
+	TotalDurationMs *int64      `db:"total_duration_ms"`
 	StepCount       *uint8      `db:"step_count"`
 }

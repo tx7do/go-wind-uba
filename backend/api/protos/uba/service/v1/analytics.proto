@@ -132,7 +132,7 @@ message EventTrendRequest {
   // 时间粒度
   AnalyticsGranularity granularity = 2 [json_name = "granularity"];
   // 应用 ID 过滤（可选，0 表示全部）
-  optional uint32 app_id = 3 [json_name = "appId"];
+  optional int64 app_id = 3 [json_name = "appId"];
   // 事件名过滤（可选，空表示全部事件）——向后兼容字段，queries 为空时使用
   optional string event_name = 4 [json_name = "eventName"];
   // 平台过滤（可选）——向后兼容字段
@@ -251,7 +251,7 @@ message FunnelRequest {
   // 漏斗步骤事件名（有序，至少 2 步）
   repeated string steps = 2 [json_name = "steps"];
   // 应用 ID 过滤（可选）
-  optional uint32 app_id = 3 [json_name = "appId"];
+  optional int64 app_id = 3 [json_name = "appId"];
   // 转化窗口（毫秒，用户必须在窗口内完成全部步骤，默认 30 分钟）
   optional int64 window_ms = 4 [json_name = "windowMs"];
 }
@@ -290,7 +290,7 @@ message RetentionRequest {
   // 时间范围（按 cohort_date 过滤）
   TimeRange time_range = 1 [json_name = "timeRange"];
   // 应用 ID 过滤（可选）
-  optional uint32 app_id = 2 [json_name = "appId"];
+  optional int64 app_id = 2 [json_name = "appId"];
   // 留存类型：ACTIVE=活跃留存（默认），EVENT=指定事件留存
   optional string retention_type = 3 [json_name = "retentionType"];
   // 当 retention_type=EVENT 时指定事件名
@@ -315,7 +315,7 @@ message GroupByRequest {
   // 聚合指标：COUNT=事件数(默认)，UNIQUE_USER=去重用户数，SUM_AMOUNT=金额求和
   optional string metric = 3 [json_name = "metric"];
   // 应用 ID 过滤（可选）
-  optional uint32 app_id = 4 [json_name = "appId"];
+  optional int64 app_id = 4 [json_name = "appId"];
   // 事件名过滤（可选）
   optional string event_name = 5 [json_name = "eventName"];
   // 返回前 N 个分组（默认 20）
@@ -347,7 +347,7 @@ message ActiveUsersRequest {
   // 时间粒度（DAU 按粒度分桶，同时给出 WAU/MAU 累计）
   AnalyticsGranularity granularity = 2 [json_name = "granularity"];
   // 应用 ID 过滤（可选）
-  optional uint32 app_id = 3 [json_name = "appId"];
+  optional int64 app_id = 3 [json_name = "appId"];
 }
 
 message ActiveUsersPoint {
@@ -379,7 +379,7 @@ message AttributionRequest {
   // 归因模型：last_touch 末次触达（默认）/ first_touch 首次触达
   optional string model = 4 [json_name = "model"];
   // 应用 ID 过滤（可选）
-  optional uint32 app_id = 5 [json_name = "appId"];
+  optional int64 app_id = 5 [json_name = "appId"];
 }
 
 message AttributionBucket {
@@ -409,7 +409,7 @@ message DistributionRequest {
   // 目标事件名（如 page_view）
   string event_name = 2 [json_name = "eventName"];
   // 应用 ID 过滤（可选）
-  optional uint32 app_id = 3 [json_name = "appId"];
+  optional int64 app_id = 3 [json_name = "appId"];
 }
 
 // 分布分析分桶
@@ -448,9 +448,9 @@ message BehaviorSequenceRequest {
   // 时间范围
   TimeRange time_range = 1 [json_name = "timeRange"];
   // 用户 ID
-  uint32 user_id = 2 [json_name = "userId"];
+  int64 user_id = 2 [json_name = "userId"];
   // 应用 ID 过滤（可选）
-  optional uint32 app_id = 3 [json_name = "appId"];
+  optional int64 app_id = 3 [json_name = "appId"];
   // 事件名过滤（可选，空表示全部事件）
   optional string event_name = 4 [json_name = "eventName"];
   // 最多返回事件数（默认 100）
@@ -477,7 +477,7 @@ message SequenceEvent {
 
 message BehaviorSequenceResponse {
   // 用户 ID
-  uint32 user_id = 1 [json_name = "userId"];
+  int64 user_id = 1 [json_name = "userId"];
   // 按时间升序排列的行为事件
   repeated SequenceEvent events = 2 [json_name = "events"];
 }
@@ -499,14 +499,14 @@ message SegmentationRequest {
   // 必须未做过的事件（做过任一即排除）
   repeated SegmentCondition exclude = 3 [json_name = "exclude"];
   // 应用 ID 过滤（可选）
-  optional uint32 app_id = 4 [json_name = "appId"];
+  optional int64 app_id = 4 [json_name = "appId"];
   // 最多返回用户数（默认 5000）
   optional uint32 limit = 5 [json_name = "limit"];
 }
 
 message SegmentationResponse {
   // 命中的用户 ID 列表
-  repeated uint32 user_ids = 1 [json_name = "userIds"];
+  repeated int64 user_ids = 1 [json_name = "userIds"];
   // 命中用户总数
   int64 total = 2 [json_name = "total"];
 }
@@ -520,7 +520,7 @@ message ClickRequest {
   // 网格大小（像素，默认 20）
   optional uint32 grid_size = 3 [json_name = "gridSize"];
   // 应用 ID 过滤（可选）
-  optional uint32 app_id = 4 [json_name = "appId"];
+  optional int64 app_id = 4 [json_name = "appId"];
 }
 
 // 热力图网格点
@@ -561,7 +561,7 @@ message LifecycleRequest {
   // 时间范围（基准日，end_ms 视为"今天"）
   TimeRange time_range = 1 [json_name = "timeRange"];
   // 应用 ID 过滤（可选）
-  optional uint32 app_id = 2 [json_name = "appId"];
+  optional int64 app_id = 2 [json_name = "appId"];
   // 新用户判定天数（注册距今 N 天内算新用户，默认 7）
   optional uint32 new_user_days = 3 [json_name = "newUserDays"];
   // 流失判定天数（最后活跃距今 > N 天算流失，默认 30）
@@ -592,7 +592,7 @@ message ChurnRequest {
   // 时间范围（回流窗口，end_ms 视为"今天"）
   TimeRange time_range = 1 [json_name = "timeRange"];
   // 应用 ID 过滤（可选）
-  optional uint32 app_id = 2 [json_name = "appId"];
+  optional int64 app_id = 2 [json_name = "appId"];
   // 流失判定天数（最后活跃距今 > N 天算流失，默认 30）
   optional uint32 churn_days = 3 [json_name = "churnDays"];
   // 回流窗口（近 N 天内重新活跃算回流，默认 7）
@@ -639,7 +639,7 @@ message IntervalRequest {
   // 结束事件名（如 pay_success）
   string event_to = 3 [json_name = "eventTo"];
   // 应用 ID 过滤（可选）
-  optional uint32 app_id = 4 [json_name = "appId"];
+  optional int64 app_id = 4 [json_name = "appId"];
 }
 
 // 间隔分桶
@@ -670,7 +670,7 @@ message MatrixRequest {
   // 分析维度（默认 event_name）
   optional string dimension = 2 [json_name = "dimension"];
   // 应用 ID 过滤（可选）
-  optional uint32 app_id = 3 [json_name = "appId"];
+  optional int64 app_id = 3 [json_name = "appId"];
   // X/Y 的象限划分阈值类型：median 中位数（默认）/ avg 均值
   optional string split = 4 [json_name = "split"];
 }
@@ -703,7 +703,7 @@ message RevenueRequest {
   // 时间范围
   TimeRange time_range = 1 [json_name = "timeRange"];
   // 应用 ID 过滤（可选）
-  optional uint32 app_id = 2 [json_name = "appId"];
+  optional int64 app_id = 2 [json_name = "appId"];
   // 时间粒度（默认 DAY）
   AnalyticsGranularity granularity = 3 [json_name = "granularity"];
 }
@@ -744,7 +744,7 @@ message SessionAnalysisRequest {
   // 时间范围
   TimeRange time_range = 1 [json_name = "timeRange"];
   // 应用 ID 过滤（可选）
-  optional uint32 app_id = 2 [json_name = "appId"];
+  optional int64 app_id = 2 [json_name = "appId"];
   // 平台过滤（可选，空表示全部）
   optional string platform = 3 [json_name = "platform"];
 }
@@ -771,7 +771,7 @@ message AnomalyRequest {
   // 时间范围（通常取近 8+ 天以算 7 日基线）
   TimeRange time_range = 1 [json_name = "timeRange"];
   // 应用 ID 过滤（可选）
-  optional uint32 app_id = 2 [json_name = "appId"];
+  optional int64 app_id = 2 [json_name = "appId"];
   // 事件名过滤（可选，空表示全部事件聚合）
   optional string event_name = 3 [json_name = "eventName"];
 }
@@ -806,7 +806,7 @@ message NewVsOldRequest {
   // 时间范围
   TimeRange time_range = 1 [json_name = "timeRange"];
   // 应用 ID 过滤（可选）
-  optional uint32 app_id = 2 [json_name = "appId"];
+  optional int64 app_id = 2 [json_name = "appId"];
   // 新用户判定天数（注册距今 N 天内算新用户，默认 7）
   optional uint32 new_user_days = 3 [json_name = "newUserDays"];
 }
@@ -834,7 +834,7 @@ message PathSankeyRequest {
   // 时间范围
   TimeRange time_range = 1 [json_name = "timeRange"];
   // 应用 ID 过滤（可选）
-  optional uint32 app_id = 2 [json_name = "appId"];
+  optional int64 app_id = 2 [json_name = "appId"];
   // 返回前 N 条热门路径（默认 20）
   optional uint32 top_n = 3 [json_name = "topN"];
 }
@@ -860,7 +860,7 @@ message LevelAnalysisRequest {
   // 时间范围
   TimeRange time_range = 1 [json_name = "timeRange"];
   // 应用 ID 过滤（可选）
-  optional uint32 app_id = 2 [json_name = "appId"];
+  optional int64 app_id = 2 [json_name = "appId"];
   // 指定关卡 ID（可选，空表示全部关卡）
   optional string level_id = 3 [json_name = "levelId"];
 }
@@ -897,7 +897,7 @@ message LevelAnalysisResponse {
 // ============== 鲸鱼用户/付费分层 ==============
 message WhaleTierRequest {
   // 应用 ID 过滤（可选）
-  optional uint32 app_id = 1 [json_name = "appId"];
+  optional int64 app_id = 1 [json_name = "appId"];
 }
 
 // 付费分层
@@ -932,7 +932,7 @@ message LTVRequest {
   // 注册时间范围（按 register_time 过滤同期群）
   TimeRange time_range = 1 [json_name = "timeRange"];
   // 应用 ID 过滤（可选）
-  optional uint32 app_id = 2 [json_name = "appId"];
+  optional int64 app_id = 2 [json_name = "appId"];
   // 归因维度（可选，按渠道分组 LTV）：channel（默认，配合归因模型）
   optional string dimension = 3 [json_name = "dimension"];
 }
@@ -963,7 +963,7 @@ message ServerRetentionRequest {
   // 时间范围（按首次活跃日过滤）
   TimeRange time_range = 1 [json_name = "timeRange"];
   // 应用 ID 过滤（可选）
-  optional uint32 app_id = 2 [json_name = "appId"];
+  optional int64 app_id = 2 [json_name = "appId"];
   // 区服 ID 过滤（可选，空表示全部区服对比）
   optional string server_id = 3 [json_name = "serverId"];
   // 最大偏移天数（默认 7）
@@ -992,7 +992,7 @@ message OnlineStatsRequest {
   // 时间范围
   TimeRange time_range = 1 [json_name = "timeRange"];
   // 应用 ID 过滤（可选）
-  optional uint32 app_id = 2 [json_name = "appId"];
+  optional int64 app_id = 2 [json_name = "appId"];
   // 区服过滤（可选）
   optional string server_id = 3 [json_name = "serverId"];
 }
@@ -1013,7 +1013,7 @@ message EconomyRequest {
   // 时间范围
   TimeRange time_range = 1 [json_name = "timeRange"];
   // 应用 ID 过滤（可选）
-  optional uint32 app_id = 2 [json_name = "appId"];
+  optional int64 app_id = 2 [json_name = "appId"];
   // 代币类型过滤（可选，如 GOLD/DIAMOND，空表示全部）
   optional string currency = 3 [json_name = "currency"];
 }

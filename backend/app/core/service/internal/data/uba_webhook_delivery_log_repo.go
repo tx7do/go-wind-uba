@@ -60,7 +60,7 @@ func (r *WebhookDeliveryLogRepo) Create(ctx context.Context, dto *ubaV1.WebhookD
 }
 
 // ListByWebhook 按 Webhook 配置查询最近的投递日志（最新在前）。
-func (r *WebhookDeliveryLogRepo) ListByWebhook(ctx context.Context, webhookID uint32, success *bool, limit int) ([]*ubaV1.WebhookDeliveryLog, uint64, error) {
+func (r *WebhookDeliveryLogRepo) ListByWebhook(ctx context.Context, webhookID int64, success *bool, limit int) ([]*ubaV1.WebhookDeliveryLog, int64, error) {
 	if limit <= 0 || limit > 500 {
 		limit = 50
 	}
@@ -92,5 +92,5 @@ func (r *WebhookDeliveryLogRepo) ListByWebhook(ctx context.Context, webhookID ui
 		items = append(items, r.mapper.ToDTO(entity))
 	}
 
-	return items, uint64(total), nil
+	return items, int64(total), nil
 }

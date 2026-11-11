@@ -142,7 +142,7 @@ func (s *IDMappingEngine) tick(ctx context.Context) {
 	olap := s.olapImpl()
 	var built int
 	for _, pair := range pairs {
-		globalUserID := strconv.FormatUint(uint64(pair.UserID), 10)
+		globalUserID := strconv.FormatInt(int64(pair.UserID), 10)
 
 		if err = s.pgRepo.UpsertDeviceMapping(ctx, pair.TenantID, globalUserID, pair.DeviceID, now); err != nil {
 			s.log.Errorf("upsert id mapping failed (tenant=%d user=%d device=%s): %s",

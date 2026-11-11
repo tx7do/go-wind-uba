@@ -105,13 +105,11 @@ components:
                     type: string
                     description: 事件ID，建议使用 UUID，作为事件的唯一标识，同时也可用于路由和去重
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID，事件所属的租户，用于多租户隔离
-                    format: uint32
                 userId:
-                    type: integer
+                    type: string
                     description: 用户ID，事件的主体，可以是用户、设备、账号等，具体含义由业务定义
-                    format: uint32
                 deviceId:
                     type: string
                 accountId:
@@ -330,9 +328,8 @@ components:
                     type: string
                     description: 应用标识
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID（服务端可覆盖）
-                    format: uint32
             description: 按应用下发启用规则 - 请求（collector 转发）
         ListVisualEventsForAppResponse:
             type: object
@@ -356,9 +353,8 @@ components:
                     type: string
                     description: 设备 ID
                 userId:
-                    type: integer
+                    type: string
                     description: 用户 ID
-                    format: uint32
             description: SDK 获取开关取值请求（collector 转发到 core 评估）
         PostFlagsResponse:
             type: object
@@ -431,9 +427,8 @@ components:
                     type: string
                     description: 事件ID，全局唯一标识一条事件记录，建议使用ULID或Snowflake生成
                 userId:
-                    type: integer
+                    type: string
                     description: 登录用户ID，唯一标识一个用户，未登录可不填或填0
-                    format: uint32
                 deviceId:
                     type: string
                     description: 设备指纹，标识用户使用的设备，未登录用户可通过设备ID进行关联分析
@@ -462,9 +457,8 @@ components:
                         type: string
                     description: 事件属性，键值对形式的扩展字段，用于记录事件的业务上下文信息
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户 ID，SaaS 多租户隔离关键字段
-                    format: uint32
                 traceId:
                     type: string
                     description: 链路追踪 ID，关联微服务调用链
@@ -561,13 +555,11 @@ components:
                     type: string
                     description: 风险事件ID
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID，多租户隔离，支持 SaaS 场景
-                    format: uint32
                 userId:
-                    type: integer
+                    type: string
                     description: 用户ID，关联主体，风险事件涉及的用户
-                    format: uint32
                 deviceId:
                     type: string
                     description: 设备ID，关联主体，风险事件涉及的设备
@@ -585,9 +577,8 @@ components:
                     description: 风险评分，0-100，风险事件的评分
                     format: float
                 ruleId:
-                    type: integer
+                    type: string
                     description: 触发规则ID，标识触发风险事件的规则
-                    format: uint32
                 ruleName:
                     type: string
                     description: 规则名称，触发风险事件的规则名称
@@ -623,9 +614,8 @@ components:
                     description: 处置状态，风险事件的处理状态
                     format: enum
                 handlerId:
-                    type: integer
+                    type: string
                     description: 处理人ID，风险事件的处理人
-                    format: uint32
                 handledTime:
                     type: string
                     description: 处理时间，风险事件被处理的时间
@@ -642,17 +632,14 @@ components:
                     description: 风险事件上报时间
                     format: date-time
                 createdBy:
-                    type: integer
+                    type: string
                     description: 创建者用户ID
-                    format: uint32
                 updatedBy:
-                    type: integer
+                    type: string
                     description: 更新者用户ID
-                    format: uint32
                 deletedBy:
-                    type: integer
+                    type: string
                     description: 删除者用户ID
-                    format: uint32
                 createdAt:
                     type: string
                     description: 创建时间
@@ -684,14 +671,12 @@ components:
                 sessionId:
                     type: string
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户 ID：collector 按应用权威值覆盖，SDK 传啥都会被覆盖
-                    format: uint32
                 deviceId:
                     type: string
                 userId:
-                    type: integer
-                    format: uint32
+                    type: string
                 pageUrl:
                     type: string
                 chunkSeq:
@@ -711,20 +696,17 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
-                    format: uint32
+                    type: string
             description: 上传分块 - 答复
         VisualEvent:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 主键ID
-                    format: uint32
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID
-                    format: uint32
                 appId:
                     type: string
                     description: 关联应用标识
@@ -760,17 +742,14 @@ components:
                     type: string
                     description: 备注
                 createdBy:
-                    type: integer
+                    type: string
                     description: 创建者用户ID
-                    format: uint32
                 updatedBy:
-                    type: integer
+                    type: string
                     description: 更新者用户ID
-                    format: uint32
                 deletedBy:
-                    type: integer
+                    type: string
                     description: 删除者用户ID
-                    format: uint32
                 createdAt:
                     type: string
                     description: 创建时间

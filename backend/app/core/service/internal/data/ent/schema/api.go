@@ -74,9 +74,9 @@ func (Api) Fields() []ent.Field {
 // Mixin of the Api.
 func (Api) Mixin() []ent.Mixin {
 	return []ent.Mixin{
-		mixin.AutoIncrementId{},
+		mixin.AutoIncrementId64{},
 		mixin.TimeAt{},
-		mixin.OperatorID{},
+		mixin.OperatorID64{},
 		mixin.SwitchStatus{},
 	}
 }

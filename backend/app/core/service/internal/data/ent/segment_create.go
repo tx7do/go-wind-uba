@@ -65,13 +65,13 @@ func (_c *SegmentCreate) SetNillableDeletedAt(v *time.Time) *SegmentCreate {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (_c *SegmentCreate) SetCreatedBy(v uint32) *SegmentCreate {
+func (_c *SegmentCreate) SetCreatedBy(v int64) *SegmentCreate {
 	_c.mutation.SetCreatedBy(v)
 	return _c
 }
 
 // SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
-func (_c *SegmentCreate) SetNillableCreatedBy(v *uint32) *SegmentCreate {
+func (_c *SegmentCreate) SetNillableCreatedBy(v *int64) *SegmentCreate {
 	if v != nil {
 		_c.SetCreatedBy(*v)
 	}
@@ -79,13 +79,13 @@ func (_c *SegmentCreate) SetNillableCreatedBy(v *uint32) *SegmentCreate {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (_c *SegmentCreate) SetUpdatedBy(v uint32) *SegmentCreate {
+func (_c *SegmentCreate) SetUpdatedBy(v int64) *SegmentCreate {
 	_c.mutation.SetUpdatedBy(v)
 	return _c
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (_c *SegmentCreate) SetNillableUpdatedBy(v *uint32) *SegmentCreate {
+func (_c *SegmentCreate) SetNillableUpdatedBy(v *int64) *SegmentCreate {
 	if v != nil {
 		_c.SetUpdatedBy(*v)
 	}
@@ -93,13 +93,13 @@ func (_c *SegmentCreate) SetNillableUpdatedBy(v *uint32) *SegmentCreate {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (_c *SegmentCreate) SetDeletedBy(v uint32) *SegmentCreate {
+func (_c *SegmentCreate) SetDeletedBy(v int64) *SegmentCreate {
 	_c.mutation.SetDeletedBy(v)
 	return _c
 }
 
 // SetNillableDeletedBy sets the "deleted_by" field if the given value is not nil.
-func (_c *SegmentCreate) SetNillableDeletedBy(v *uint32) *SegmentCreate {
+func (_c *SegmentCreate) SetNillableDeletedBy(v *int64) *SegmentCreate {
 	if v != nil {
 		_c.SetDeletedBy(*v)
 	}
@@ -107,13 +107,13 @@ func (_c *SegmentCreate) SetNillableDeletedBy(v *uint32) *SegmentCreate {
 }
 
 // SetTenantID sets the "tenant_id" field.
-func (_c *SegmentCreate) SetTenantID(v uint32) *SegmentCreate {
+func (_c *SegmentCreate) SetTenantID(v int64) *SegmentCreate {
 	_c.mutation.SetTenantID(v)
 	return _c
 }
 
 // SetNillableTenantID sets the "tenant_id" field if the given value is not nil.
-func (_c *SegmentCreate) SetNillableTenantID(v *uint32) *SegmentCreate {
+func (_c *SegmentCreate) SetNillableTenantID(v *int64) *SegmentCreate {
 	if v != nil {
 		_c.SetTenantID(*v)
 	}
@@ -149,13 +149,13 @@ func (_c *SegmentCreate) SetNillableDescription(v *string) *SegmentCreate {
 }
 
 // SetAppID sets the "app_id" field.
-func (_c *SegmentCreate) SetAppID(v uint32) *SegmentCreate {
+func (_c *SegmentCreate) SetAppID(v int64) *SegmentCreate {
 	_c.mutation.SetAppID(v)
 	return _c
 }
 
 // SetNillableAppID sets the "app_id" field if the given value is not nil.
-func (_c *SegmentCreate) SetNillableAppID(v *uint32) *SegmentCreate {
+func (_c *SegmentCreate) SetNillableAppID(v *int64) *SegmentCreate {
 	if v != nil {
 		_c.SetAppID(*v)
 	}
@@ -239,7 +239,7 @@ func (_c *SegmentCreate) SetNillableEnabled(v *bool) *SegmentCreate {
 }
 
 // SetID sets the "id" field.
-func (_c *SegmentCreate) SetID(v uint32) *SegmentCreate {
+func (_c *SegmentCreate) SetID(v int64) *SegmentCreate {
 	_c.mutation.SetID(v)
 	return _c
 }
@@ -347,7 +347,7 @@ func (_c *SegmentCreate) sqlSave(ctx context.Context) (*Segment, error) {
 	}
 	if _spec.ID.Value != _node.ID {
 		id := _spec.ID.Value.(int64)
-		_node.ID = uint32(id)
+		_node.ID = int64(id)
 	}
 	_c.mutation.id = &_node.ID
 	_c.mutation.done = true
@@ -357,7 +357,7 @@ func (_c *SegmentCreate) sqlSave(ctx context.Context) (*Segment, error) {
 func (_c *SegmentCreate) createSpec() (*Segment, *sqlgraph.CreateSpec) {
 	var (
 		_node = &Segment{config: _c.config}
-		_spec = sqlgraph.NewCreateSpec(segment.Table, sqlgraph.NewFieldSpec(segment.FieldID, field.TypeUint32))
+		_spec = sqlgraph.NewCreateSpec(segment.Table, sqlgraph.NewFieldSpec(segment.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = _c.conflict
 	if id, ok := _c.mutation.ID(); ok {
@@ -377,19 +377,19 @@ func (_c *SegmentCreate) createSpec() (*Segment, *sqlgraph.CreateSpec) {
 		_node.DeletedAt = &value
 	}
 	if value, ok := _c.mutation.CreatedBy(); ok {
-		_spec.SetField(segment.FieldCreatedBy, field.TypeUint32, value)
+		_spec.SetField(segment.FieldCreatedBy, field.TypeInt64, value)
 		_node.CreatedBy = &value
 	}
 	if value, ok := _c.mutation.UpdatedBy(); ok {
-		_spec.SetField(segment.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.SetField(segment.FieldUpdatedBy, field.TypeInt64, value)
 		_node.UpdatedBy = &value
 	}
 	if value, ok := _c.mutation.DeletedBy(); ok {
-		_spec.SetField(segment.FieldDeletedBy, field.TypeUint32, value)
+		_spec.SetField(segment.FieldDeletedBy, field.TypeInt64, value)
 		_node.DeletedBy = &value
 	}
 	if value, ok := _c.mutation.TenantID(); ok {
-		_spec.SetField(segment.FieldTenantID, field.TypeUint32, value)
+		_spec.SetField(segment.FieldTenantID, field.TypeInt64, value)
 		_node.TenantID = &value
 	}
 	if value, ok := _c.mutation.Name(); ok {
@@ -401,7 +401,7 @@ func (_c *SegmentCreate) createSpec() (*Segment, *sqlgraph.CreateSpec) {
 		_node.Description = &value
 	}
 	if value, ok := _c.mutation.AppID(); ok {
-		_spec.SetField(segment.FieldAppID, field.TypeUint32, value)
+		_spec.SetField(segment.FieldAppID, field.TypeInt64, value)
 		_node.AppID = &value
 	}
 	if value, ok := _c.mutation.Definition(); ok {
@@ -517,7 +517,7 @@ func (u *SegmentUpsert) ClearDeletedAt() *SegmentUpsert {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (u *SegmentUpsert) SetCreatedBy(v uint32) *SegmentUpsert {
+func (u *SegmentUpsert) SetCreatedBy(v int64) *SegmentUpsert {
 	u.Set(segment.FieldCreatedBy, v)
 	return u
 }
@@ -529,7 +529,7 @@ func (u *SegmentUpsert) UpdateCreatedBy() *SegmentUpsert {
 }
 
 // AddCreatedBy adds v to the "created_by" field.
-func (u *SegmentUpsert) AddCreatedBy(v uint32) *SegmentUpsert {
+func (u *SegmentUpsert) AddCreatedBy(v int64) *SegmentUpsert {
 	u.Add(segment.FieldCreatedBy, v)
 	return u
 }
@@ -541,7 +541,7 @@ func (u *SegmentUpsert) ClearCreatedBy() *SegmentUpsert {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (u *SegmentUpsert) SetUpdatedBy(v uint32) *SegmentUpsert {
+func (u *SegmentUpsert) SetUpdatedBy(v int64) *SegmentUpsert {
 	u.Set(segment.FieldUpdatedBy, v)
 	return u
 }
@@ -553,7 +553,7 @@ func (u *SegmentUpsert) UpdateUpdatedBy() *SegmentUpsert {
 }
 
 // AddUpdatedBy adds v to the "updated_by" field.
-func (u *SegmentUpsert) AddUpdatedBy(v uint32) *SegmentUpsert {
+func (u *SegmentUpsert) AddUpdatedBy(v int64) *SegmentUpsert {
 	u.Add(segment.FieldUpdatedBy, v)
 	return u
 }
@@ -565,7 +565,7 @@ func (u *SegmentUpsert) ClearUpdatedBy() *SegmentUpsert {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (u *SegmentUpsert) SetDeletedBy(v uint32) *SegmentUpsert {
+func (u *SegmentUpsert) SetDeletedBy(v int64) *SegmentUpsert {
 	u.Set(segment.FieldDeletedBy, v)
 	return u
 }
@@ -577,7 +577,7 @@ func (u *SegmentUpsert) UpdateDeletedBy() *SegmentUpsert {
 }
 
 // AddDeletedBy adds v to the "deleted_by" field.
-func (u *SegmentUpsert) AddDeletedBy(v uint32) *SegmentUpsert {
+func (u *SegmentUpsert) AddDeletedBy(v int64) *SegmentUpsert {
 	u.Add(segment.FieldDeletedBy, v)
 	return u
 }
@@ -625,7 +625,7 @@ func (u *SegmentUpsert) ClearDescription() *SegmentUpsert {
 }
 
 // SetAppID sets the "app_id" field.
-func (u *SegmentUpsert) SetAppID(v uint32) *SegmentUpsert {
+func (u *SegmentUpsert) SetAppID(v int64) *SegmentUpsert {
 	u.Set(segment.FieldAppID, v)
 	return u
 }
@@ -637,7 +637,7 @@ func (u *SegmentUpsert) UpdateAppID() *SegmentUpsert {
 }
 
 // AddAppID adds v to the "app_id" field.
-func (u *SegmentUpsert) AddAppID(v uint32) *SegmentUpsert {
+func (u *SegmentUpsert) AddAppID(v int64) *SegmentUpsert {
 	u.Add(segment.FieldAppID, v)
 	return u
 }
@@ -841,14 +841,14 @@ func (u *SegmentUpsertOne) ClearDeletedAt() *SegmentUpsertOne {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (u *SegmentUpsertOne) SetCreatedBy(v uint32) *SegmentUpsertOne {
+func (u *SegmentUpsertOne) SetCreatedBy(v int64) *SegmentUpsertOne {
 	return u.Update(func(s *SegmentUpsert) {
 		s.SetCreatedBy(v)
 	})
 }
 
 // AddCreatedBy adds v to the "created_by" field.
-func (u *SegmentUpsertOne) AddCreatedBy(v uint32) *SegmentUpsertOne {
+func (u *SegmentUpsertOne) AddCreatedBy(v int64) *SegmentUpsertOne {
 	return u.Update(func(s *SegmentUpsert) {
 		s.AddCreatedBy(v)
 	})
@@ -869,14 +869,14 @@ func (u *SegmentUpsertOne) ClearCreatedBy() *SegmentUpsertOne {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (u *SegmentUpsertOne) SetUpdatedBy(v uint32) *SegmentUpsertOne {
+func (u *SegmentUpsertOne) SetUpdatedBy(v int64) *SegmentUpsertOne {
 	return u.Update(func(s *SegmentUpsert) {
 		s.SetUpdatedBy(v)
 	})
 }
 
 // AddUpdatedBy adds v to the "updated_by" field.
-func (u *SegmentUpsertOne) AddUpdatedBy(v uint32) *SegmentUpsertOne {
+func (u *SegmentUpsertOne) AddUpdatedBy(v int64) *SegmentUpsertOne {
 	return u.Update(func(s *SegmentUpsert) {
 		s.AddUpdatedBy(v)
 	})
@@ -897,14 +897,14 @@ func (u *SegmentUpsertOne) ClearUpdatedBy() *SegmentUpsertOne {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (u *SegmentUpsertOne) SetDeletedBy(v uint32) *SegmentUpsertOne {
+func (u *SegmentUpsertOne) SetDeletedBy(v int64) *SegmentUpsertOne {
 	return u.Update(func(s *SegmentUpsert) {
 		s.SetDeletedBy(v)
 	})
 }
 
 // AddDeletedBy adds v to the "deleted_by" field.
-func (u *SegmentUpsertOne) AddDeletedBy(v uint32) *SegmentUpsertOne {
+func (u *SegmentUpsertOne) AddDeletedBy(v int64) *SegmentUpsertOne {
 	return u.Update(func(s *SegmentUpsert) {
 		s.AddDeletedBy(v)
 	})
@@ -967,14 +967,14 @@ func (u *SegmentUpsertOne) ClearDescription() *SegmentUpsertOne {
 }
 
 // SetAppID sets the "app_id" field.
-func (u *SegmentUpsertOne) SetAppID(v uint32) *SegmentUpsertOne {
+func (u *SegmentUpsertOne) SetAppID(v int64) *SegmentUpsertOne {
 	return u.Update(func(s *SegmentUpsert) {
 		s.SetAppID(v)
 	})
 }
 
 // AddAppID adds v to the "app_id" field.
-func (u *SegmentUpsertOne) AddAppID(v uint32) *SegmentUpsertOne {
+func (u *SegmentUpsertOne) AddAppID(v int64) *SegmentUpsertOne {
 	return u.Update(func(s *SegmentUpsert) {
 		s.AddAppID(v)
 	})
@@ -1122,7 +1122,7 @@ func (u *SegmentUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *SegmentUpsertOne) ID(ctx context.Context) (id uint32, err error) {
+func (u *SegmentUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -1131,7 +1131,7 @@ func (u *SegmentUpsertOne) ID(ctx context.Context) (id uint32, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *SegmentUpsertOne) IDX(ctx context.Context) uint32 {
+func (u *SegmentUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -1188,7 +1188,7 @@ func (_c *SegmentCreateBulk) Save(ctx context.Context) ([]*Segment, error) {
 				mutation.id = &nodes[i].ID
 				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = uint32(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -1369,14 +1369,14 @@ func (u *SegmentUpsertBulk) ClearDeletedAt() *SegmentUpsertBulk {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (u *SegmentUpsertBulk) SetCreatedBy(v uint32) *SegmentUpsertBulk {
+func (u *SegmentUpsertBulk) SetCreatedBy(v int64) *SegmentUpsertBulk {
 	return u.Update(func(s *SegmentUpsert) {
 		s.SetCreatedBy(v)
 	})
 }
 
 // AddCreatedBy adds v to the "created_by" field.
-func (u *SegmentUpsertBulk) AddCreatedBy(v uint32) *SegmentUpsertBulk {
+func (u *SegmentUpsertBulk) AddCreatedBy(v int64) *SegmentUpsertBulk {
 	return u.Update(func(s *SegmentUpsert) {
 		s.AddCreatedBy(v)
 	})
@@ -1397,14 +1397,14 @@ func (u *SegmentUpsertBulk) ClearCreatedBy() *SegmentUpsertBulk {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (u *SegmentUpsertBulk) SetUpdatedBy(v uint32) *SegmentUpsertBulk {
+func (u *SegmentUpsertBulk) SetUpdatedBy(v int64) *SegmentUpsertBulk {
 	return u.Update(func(s *SegmentUpsert) {
 		s.SetUpdatedBy(v)
 	})
 }
 
 // AddUpdatedBy adds v to the "updated_by" field.
-func (u *SegmentUpsertBulk) AddUpdatedBy(v uint32) *SegmentUpsertBulk {
+func (u *SegmentUpsertBulk) AddUpdatedBy(v int64) *SegmentUpsertBulk {
 	return u.Update(func(s *SegmentUpsert) {
 		s.AddUpdatedBy(v)
 	})
@@ -1425,14 +1425,14 @@ func (u *SegmentUpsertBulk) ClearUpdatedBy() *SegmentUpsertBulk {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (u *SegmentUpsertBulk) SetDeletedBy(v uint32) *SegmentUpsertBulk {
+func (u *SegmentUpsertBulk) SetDeletedBy(v int64) *SegmentUpsertBulk {
 	return u.Update(func(s *SegmentUpsert) {
 		s.SetDeletedBy(v)
 	})
 }
 
 // AddDeletedBy adds v to the "deleted_by" field.
-func (u *SegmentUpsertBulk) AddDeletedBy(v uint32) *SegmentUpsertBulk {
+func (u *SegmentUpsertBulk) AddDeletedBy(v int64) *SegmentUpsertBulk {
 	return u.Update(func(s *SegmentUpsert) {
 		s.AddDeletedBy(v)
 	})
@@ -1495,14 +1495,14 @@ func (u *SegmentUpsertBulk) ClearDescription() *SegmentUpsertBulk {
 }
 
 // SetAppID sets the "app_id" field.
-func (u *SegmentUpsertBulk) SetAppID(v uint32) *SegmentUpsertBulk {
+func (u *SegmentUpsertBulk) SetAppID(v int64) *SegmentUpsertBulk {
 	return u.Update(func(s *SegmentUpsert) {
 		s.SetAppID(v)
 	})
 }
 
 // AddAppID adds v to the "app_id" field.
-func (u *SegmentUpsertBulk) AddAppID(v uint32) *SegmentUpsertBulk {
+func (u *SegmentUpsertBulk) AddAppID(v int64) *SegmentUpsertBulk {
 	return u.Update(func(s *SegmentUpsert) {
 		s.AddAppID(v)
 	})

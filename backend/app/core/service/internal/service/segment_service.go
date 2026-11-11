@@ -158,7 +158,7 @@ func (s *SegmentService) RefreshEntity(ctx context.Context, entity *ent.Segment)
 	}
 
 	now := time.Now()
-	if err = s.segmentRepo.UpdateRefreshState(ctx, entity.ID, uint64(resp.GetTotal()), now); err != nil {
+	if err = s.segmentRepo.UpdateRefreshState(ctx, entity.ID, int64(resp.GetTotal()), now); err != nil {
 		return nil, err
 	}
 
@@ -194,6 +194,6 @@ func (s *SegmentService) ListUsers(ctx context.Context, req *ubaV1.ListSegmentUs
 
 	return &ubaV1.ListSegmentUsersResponse{
 		Items: items,
-		Total: uint64(total),
+		Total: int64(total),
 	}, nil
 }

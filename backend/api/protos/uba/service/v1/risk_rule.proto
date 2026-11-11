@@ -35,12 +35,12 @@ service RiskRuleService {
 // 风险规则定义，描述一条风险规则的所有属性
 message RiskRule {
   // 规则ID（唯一标识一条风险规则）
-  uint32 id = 1 [
+  int64 id = 1 [
     json_name = "id",
     (gnostic.openapi.v3.property) = {description: "规则ID，唯一标识一条风险规则"}
   ];
   // 租户ID（多租户隔离，支持 SaaS 场景）
-  optional uint32 tenant_id = 2 [
+  optional int64 tenant_id = 2 [
     json_name = "tenantId",
     (gnostic.openapi.v3.property) = {description: "租户ID，多租户隔离，支持 SaaS 场景"}
   ];
@@ -95,11 +95,11 @@ message RiskRule {
   ];
 
   // 创建者用户ID
-  optional uint32 created_by = 100 [json_name = "createdBy", (gnostic.openapi.v3.property) = {description: "创建者用户ID"}];
+  optional int64 created_by = 100 [json_name = "createdBy", (gnostic.openapi.v3.property) = {description: "创建者用户ID"}];
   // 更新者用户ID
-  optional uint32 updated_by = 101 [json_name = "updatedBy", (gnostic.openapi.v3.property) = {description: "更新者用户ID"}];
+  optional int64 updated_by = 101 [json_name = "updatedBy", (gnostic.openapi.v3.property) = {description: "更新者用户ID"}];
   // 删除者用户ID
-  optional uint32 deleted_by = 102 [json_name = "deletedBy", (gnostic.openapi.v3.property) = {description: "删除者用户ID"}];
+  optional int64 deleted_by = 102 [json_name = "deletedBy", (gnostic.openapi.v3.property) = {description: "删除者用户ID"}];
 
   // 创建时间
   optional google.protobuf.Timestamp created_at = 200 [json_name = "createdAt", (gnostic.openapi.v3.property) = {description: "创建时间"}];
@@ -161,7 +161,7 @@ message RuleAction {
 // 规则条件，描述风险规则的条件表达式
 message RuleCondition {
   // 条件ID，对应数据库 id
-  uint32 id = 1 [
+  int64 id = 1 [
     json_name = "id",
     (gnostic.openapi.v3.property) = {description: "条件ID，对应数据库 id"}
   ];
@@ -187,7 +187,7 @@ message RuleCondition {
     (gnostic.openapi.v3.property) = {description: "逻辑操作符，如 AND/OR"}
   ];
   // 条件组 ID（用于条件分组）
-  optional uint32 group_id = 6 [
+  optional int64 group_id = 6 [
     json_name = "groupId",
     (gnostic.openapi.v3.property) = {description: "条件组 ID，用于条件分组"}
   ];
@@ -201,18 +201,18 @@ message RuleCondition {
 // 风险规则版本，描述风险规则的历史版本信息及变更记录
 message RiskRuleVersion {
   // 版本表 id（唯一标识版本）
-  uint32 id = 1 [
+  int64 id = 1 [
     json_name = "id",
     (gnostic.openapi.v3.property) = {description: "版本表 id，唯一标识版本"}
   ];
 
   // 所属规则ID（→ RiskRule.id）
-  optional uint32 rule_id = 2 [
+  optional int64 rule_id = 2 [
     json_name = "ruleId",
     (gnostic.openapi.v3.property) = {description: "所属规则ID，关联 RiskRule.id"}
   ];
   // 租户ID
-  optional uint32 tenant_id = 3 [
+  optional int64 tenant_id = 3 [
     json_name = "tenantId",
     (gnostic.openapi.v3.property) = {description: "租户ID"}
   ];
@@ -264,12 +264,12 @@ message RiskRuleVersion {
     json_name = "publishedAt",
     (gnostic.openapi.v3.property) = {description: "发布时间"}
   ];
-  optional uint32 published_by = 14 [
+  optional int64 published_by = 14 [
     json_name = "publishedBy",
     (gnostic.openapi.v3.property) = {description: "发布者用户ID"}
   ];
 
-  optional uint32 created_by = 15 [
+  optional int64 created_by = 15 [
     json_name = "createdBy",
     (gnostic.openapi.v3.property) = {description: "创建者用户ID"}
   ];
@@ -291,13 +291,13 @@ enum RuleVersionStatus {
 // 获取风险规则列表 - 答复
 message ListRiskRuleResponse {
   repeated RiskRule items = 1; // 风险规则列表
-  uint64 total = 2;            // 总数
+  int64 total = 2;            // 总数
 }
 
 // 获取风险规则数据 - 请求
 message GetRiskRuleRequest {
   oneof query_by {
-    uint32 id = 1 [
+    int64 id = 1 [
       (gnostic.openapi.v3.property) = {description: "ID", read_only: true},
       json_name = "id"
     ]; // 规则ID
@@ -318,7 +318,7 @@ message CreateRiskRuleRequest {
 
 // 更新风险规则 - 请求
 message UpdateRiskRuleRequest {
-  uint32 id = 1; // 规则ID
+  int64 id = 1; // 规则ID
 
   RiskRule data = 2 [
     json_name = "data",
@@ -342,13 +342,13 @@ message UpdateRiskRuleRequest {
 // 删除风险规则 - 请求
 message DeleteRiskRuleRequest {
   oneof query_by {
-    uint32 id = 1 [
+    int64 id = 1 [
       (gnostic.openapi.v3.property) = {description: "ID", read_only: true},
       json_name = "id"
     ]; // 规则ID
   }
 
-  optional uint32 deleted_by = 100 [
+  optional int64 deleted_by = 100 [
     json_name = "deletedBy",
     (gnostic.openapi.v3.property) = {description: "删除者用户ID"}
   ]; // 删除者用户ID
@@ -356,5 +356,5 @@ message DeleteRiskRuleRequest {
 
 // 获取风险规则数量 - 答复
 message CountRiskRuleResponse {
-  uint64 count = 1; // 风险规则总数
+  int64 count = 1; // 风险规则总数
 }

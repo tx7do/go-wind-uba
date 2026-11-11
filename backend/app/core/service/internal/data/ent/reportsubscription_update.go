@@ -71,14 +71,14 @@ func (_u *ReportSubscriptionUpdate) ClearDeletedAt() *ReportSubscriptionUpdate {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (_u *ReportSubscriptionUpdate) SetCreatedBy(v uint32) *ReportSubscriptionUpdate {
+func (_u *ReportSubscriptionUpdate) SetCreatedBy(v int64) *ReportSubscriptionUpdate {
 	_u.mutation.ResetCreatedBy()
 	_u.mutation.SetCreatedBy(v)
 	return _u
 }
 
 // SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
-func (_u *ReportSubscriptionUpdate) SetNillableCreatedBy(v *uint32) *ReportSubscriptionUpdate {
+func (_u *ReportSubscriptionUpdate) SetNillableCreatedBy(v *int64) *ReportSubscriptionUpdate {
 	if v != nil {
 		_u.SetCreatedBy(*v)
 	}
@@ -86,7 +86,7 @@ func (_u *ReportSubscriptionUpdate) SetNillableCreatedBy(v *uint32) *ReportSubsc
 }
 
 // AddCreatedBy adds value to the "created_by" field.
-func (_u *ReportSubscriptionUpdate) AddCreatedBy(v int32) *ReportSubscriptionUpdate {
+func (_u *ReportSubscriptionUpdate) AddCreatedBy(v int64) *ReportSubscriptionUpdate {
 	_u.mutation.AddCreatedBy(v)
 	return _u
 }
@@ -98,14 +98,14 @@ func (_u *ReportSubscriptionUpdate) ClearCreatedBy() *ReportSubscriptionUpdate {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (_u *ReportSubscriptionUpdate) SetUpdatedBy(v uint32) *ReportSubscriptionUpdate {
+func (_u *ReportSubscriptionUpdate) SetUpdatedBy(v int64) *ReportSubscriptionUpdate {
 	_u.mutation.ResetUpdatedBy()
 	_u.mutation.SetUpdatedBy(v)
 	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (_u *ReportSubscriptionUpdate) SetNillableUpdatedBy(v *uint32) *ReportSubscriptionUpdate {
+func (_u *ReportSubscriptionUpdate) SetNillableUpdatedBy(v *int64) *ReportSubscriptionUpdate {
 	if v != nil {
 		_u.SetUpdatedBy(*v)
 	}
@@ -113,7 +113,7 @@ func (_u *ReportSubscriptionUpdate) SetNillableUpdatedBy(v *uint32) *ReportSubsc
 }
 
 // AddUpdatedBy adds value to the "updated_by" field.
-func (_u *ReportSubscriptionUpdate) AddUpdatedBy(v int32) *ReportSubscriptionUpdate {
+func (_u *ReportSubscriptionUpdate) AddUpdatedBy(v int64) *ReportSubscriptionUpdate {
 	_u.mutation.AddUpdatedBy(v)
 	return _u
 }
@@ -125,14 +125,14 @@ func (_u *ReportSubscriptionUpdate) ClearUpdatedBy() *ReportSubscriptionUpdate {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (_u *ReportSubscriptionUpdate) SetDeletedBy(v uint32) *ReportSubscriptionUpdate {
+func (_u *ReportSubscriptionUpdate) SetDeletedBy(v int64) *ReportSubscriptionUpdate {
 	_u.mutation.ResetDeletedBy()
 	_u.mutation.SetDeletedBy(v)
 	return _u
 }
 
 // SetNillableDeletedBy sets the "deleted_by" field if the given value is not nil.
-func (_u *ReportSubscriptionUpdate) SetNillableDeletedBy(v *uint32) *ReportSubscriptionUpdate {
+func (_u *ReportSubscriptionUpdate) SetNillableDeletedBy(v *int64) *ReportSubscriptionUpdate {
 	if v != nil {
 		_u.SetDeletedBy(*v)
 	}
@@ -140,7 +140,7 @@ func (_u *ReportSubscriptionUpdate) SetNillableDeletedBy(v *uint32) *ReportSubsc
 }
 
 // AddDeletedBy adds value to the "deleted_by" field.
-func (_u *ReportSubscriptionUpdate) AddDeletedBy(v int32) *ReportSubscriptionUpdate {
+func (_u *ReportSubscriptionUpdate) AddDeletedBy(v int64) *ReportSubscriptionUpdate {
 	_u.mutation.AddDeletedBy(v)
 	return _u
 }
@@ -192,14 +192,14 @@ func (_u *ReportSubscriptionUpdate) ClearDescription() *ReportSubscriptionUpdate
 }
 
 // SetAppID sets the "app_id" field.
-func (_u *ReportSubscriptionUpdate) SetAppID(v uint32) *ReportSubscriptionUpdate {
+func (_u *ReportSubscriptionUpdate) SetAppID(v int64) *ReportSubscriptionUpdate {
 	_u.mutation.ResetAppID()
 	_u.mutation.SetAppID(v)
 	return _u
 }
 
 // SetNillableAppID sets the "app_id" field if the given value is not nil.
-func (_u *ReportSubscriptionUpdate) SetNillableAppID(v *uint32) *ReportSubscriptionUpdate {
+func (_u *ReportSubscriptionUpdate) SetNillableAppID(v *int64) *ReportSubscriptionUpdate {
 	if v != nil {
 		_u.SetAppID(*v)
 	}
@@ -207,7 +207,7 @@ func (_u *ReportSubscriptionUpdate) SetNillableAppID(v *uint32) *ReportSubscript
 }
 
 // AddAppID adds value to the "app_id" field.
-func (_u *ReportSubscriptionUpdate) AddAppID(v int32) *ReportSubscriptionUpdate {
+func (_u *ReportSubscriptionUpdate) AddAppID(v int64) *ReportSubscriptionUpdate {
 	_u.mutation.AddAppID(v)
 	return _u
 }
@@ -388,7 +388,7 @@ func (_u *ReportSubscriptionUpdate) sqlSave(ctx context.Context) (_node int, err
 	if err := _u.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(reportsubscription.Table, reportsubscription.Columns, sqlgraph.NewFieldSpec(reportsubscription.FieldID, field.TypeUint32))
+	_spec := sqlgraph.NewUpdateSpec(reportsubscription.Table, reportsubscription.Columns, sqlgraph.NewFieldSpec(reportsubscription.FieldID, field.TypeInt64))
 	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -412,34 +412,34 @@ func (_u *ReportSubscriptionUpdate) sqlSave(ctx context.Context) (_node int, err
 		_spec.ClearField(reportsubscription.FieldDeletedAt, field.TypeTime)
 	}
 	if value, ok := _u.mutation.CreatedBy(); ok {
-		_spec.SetField(reportsubscription.FieldCreatedBy, field.TypeUint32, value)
+		_spec.SetField(reportsubscription.FieldCreatedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedCreatedBy(); ok {
-		_spec.AddField(reportsubscription.FieldCreatedBy, field.TypeUint32, value)
+		_spec.AddField(reportsubscription.FieldCreatedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.CreatedByCleared() {
-		_spec.ClearField(reportsubscription.FieldCreatedBy, field.TypeUint32)
+		_spec.ClearField(reportsubscription.FieldCreatedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.UpdatedBy(); ok {
-		_spec.SetField(reportsubscription.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.SetField(reportsubscription.FieldUpdatedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
-		_spec.AddField(reportsubscription.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.AddField(reportsubscription.FieldUpdatedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.UpdatedByCleared() {
-		_spec.ClearField(reportsubscription.FieldUpdatedBy, field.TypeUint32)
+		_spec.ClearField(reportsubscription.FieldUpdatedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.DeletedBy(); ok {
-		_spec.SetField(reportsubscription.FieldDeletedBy, field.TypeUint32, value)
+		_spec.SetField(reportsubscription.FieldDeletedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedDeletedBy(); ok {
-		_spec.AddField(reportsubscription.FieldDeletedBy, field.TypeUint32, value)
+		_spec.AddField(reportsubscription.FieldDeletedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.DeletedByCleared() {
-		_spec.ClearField(reportsubscription.FieldDeletedBy, field.TypeUint32)
+		_spec.ClearField(reportsubscription.FieldDeletedBy, field.TypeInt64)
 	}
 	if _u.mutation.TenantIDCleared() {
-		_spec.ClearField(reportsubscription.FieldTenantID, field.TypeUint32)
+		_spec.ClearField(reportsubscription.FieldTenantID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(reportsubscription.FieldName, field.TypeString, value)
@@ -454,13 +454,13 @@ func (_u *ReportSubscriptionUpdate) sqlSave(ctx context.Context) (_node int, err
 		_spec.ClearField(reportsubscription.FieldDescription, field.TypeString)
 	}
 	if value, ok := _u.mutation.AppID(); ok {
-		_spec.SetField(reportsubscription.FieldAppID, field.TypeUint32, value)
+		_spec.SetField(reportsubscription.FieldAppID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedAppID(); ok {
-		_spec.AddField(reportsubscription.FieldAppID, field.TypeUint32, value)
+		_spec.AddField(reportsubscription.FieldAppID, field.TypeInt64, value)
 	}
 	if _u.mutation.AppIDCleared() {
-		_spec.ClearField(reportsubscription.FieldAppID, field.TypeUint32)
+		_spec.ClearField(reportsubscription.FieldAppID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.Model(); ok {
 		_spec.SetField(reportsubscription.FieldModel, field.TypeString, value)
@@ -563,14 +563,14 @@ func (_u *ReportSubscriptionUpdateOne) ClearDeletedAt() *ReportSubscriptionUpdat
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (_u *ReportSubscriptionUpdateOne) SetCreatedBy(v uint32) *ReportSubscriptionUpdateOne {
+func (_u *ReportSubscriptionUpdateOne) SetCreatedBy(v int64) *ReportSubscriptionUpdateOne {
 	_u.mutation.ResetCreatedBy()
 	_u.mutation.SetCreatedBy(v)
 	return _u
 }
 
 // SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
-func (_u *ReportSubscriptionUpdateOne) SetNillableCreatedBy(v *uint32) *ReportSubscriptionUpdateOne {
+func (_u *ReportSubscriptionUpdateOne) SetNillableCreatedBy(v *int64) *ReportSubscriptionUpdateOne {
 	if v != nil {
 		_u.SetCreatedBy(*v)
 	}
@@ -578,7 +578,7 @@ func (_u *ReportSubscriptionUpdateOne) SetNillableCreatedBy(v *uint32) *ReportSu
 }
 
 // AddCreatedBy adds value to the "created_by" field.
-func (_u *ReportSubscriptionUpdateOne) AddCreatedBy(v int32) *ReportSubscriptionUpdateOne {
+func (_u *ReportSubscriptionUpdateOne) AddCreatedBy(v int64) *ReportSubscriptionUpdateOne {
 	_u.mutation.AddCreatedBy(v)
 	return _u
 }
@@ -590,14 +590,14 @@ func (_u *ReportSubscriptionUpdateOne) ClearCreatedBy() *ReportSubscriptionUpdat
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (_u *ReportSubscriptionUpdateOne) SetUpdatedBy(v uint32) *ReportSubscriptionUpdateOne {
+func (_u *ReportSubscriptionUpdateOne) SetUpdatedBy(v int64) *ReportSubscriptionUpdateOne {
 	_u.mutation.ResetUpdatedBy()
 	_u.mutation.SetUpdatedBy(v)
 	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (_u *ReportSubscriptionUpdateOne) SetNillableUpdatedBy(v *uint32) *ReportSubscriptionUpdateOne {
+func (_u *ReportSubscriptionUpdateOne) SetNillableUpdatedBy(v *int64) *ReportSubscriptionUpdateOne {
 	if v != nil {
 		_u.SetUpdatedBy(*v)
 	}
@@ -605,7 +605,7 @@ func (_u *ReportSubscriptionUpdateOne) SetNillableUpdatedBy(v *uint32) *ReportSu
 }
 
 // AddUpdatedBy adds value to the "updated_by" field.
-func (_u *ReportSubscriptionUpdateOne) AddUpdatedBy(v int32) *ReportSubscriptionUpdateOne {
+func (_u *ReportSubscriptionUpdateOne) AddUpdatedBy(v int64) *ReportSubscriptionUpdateOne {
 	_u.mutation.AddUpdatedBy(v)
 	return _u
 }
@@ -617,14 +617,14 @@ func (_u *ReportSubscriptionUpdateOne) ClearUpdatedBy() *ReportSubscriptionUpdat
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (_u *ReportSubscriptionUpdateOne) SetDeletedBy(v uint32) *ReportSubscriptionUpdateOne {
+func (_u *ReportSubscriptionUpdateOne) SetDeletedBy(v int64) *ReportSubscriptionUpdateOne {
 	_u.mutation.ResetDeletedBy()
 	_u.mutation.SetDeletedBy(v)
 	return _u
 }
 
 // SetNillableDeletedBy sets the "deleted_by" field if the given value is not nil.
-func (_u *ReportSubscriptionUpdateOne) SetNillableDeletedBy(v *uint32) *ReportSubscriptionUpdateOne {
+func (_u *ReportSubscriptionUpdateOne) SetNillableDeletedBy(v *int64) *ReportSubscriptionUpdateOne {
 	if v != nil {
 		_u.SetDeletedBy(*v)
 	}
@@ -632,7 +632,7 @@ func (_u *ReportSubscriptionUpdateOne) SetNillableDeletedBy(v *uint32) *ReportSu
 }
 
 // AddDeletedBy adds value to the "deleted_by" field.
-func (_u *ReportSubscriptionUpdateOne) AddDeletedBy(v int32) *ReportSubscriptionUpdateOne {
+func (_u *ReportSubscriptionUpdateOne) AddDeletedBy(v int64) *ReportSubscriptionUpdateOne {
 	_u.mutation.AddDeletedBy(v)
 	return _u
 }
@@ -684,14 +684,14 @@ func (_u *ReportSubscriptionUpdateOne) ClearDescription() *ReportSubscriptionUpd
 }
 
 // SetAppID sets the "app_id" field.
-func (_u *ReportSubscriptionUpdateOne) SetAppID(v uint32) *ReportSubscriptionUpdateOne {
+func (_u *ReportSubscriptionUpdateOne) SetAppID(v int64) *ReportSubscriptionUpdateOne {
 	_u.mutation.ResetAppID()
 	_u.mutation.SetAppID(v)
 	return _u
 }
 
 // SetNillableAppID sets the "app_id" field if the given value is not nil.
-func (_u *ReportSubscriptionUpdateOne) SetNillableAppID(v *uint32) *ReportSubscriptionUpdateOne {
+func (_u *ReportSubscriptionUpdateOne) SetNillableAppID(v *int64) *ReportSubscriptionUpdateOne {
 	if v != nil {
 		_u.SetAppID(*v)
 	}
@@ -699,7 +699,7 @@ func (_u *ReportSubscriptionUpdateOne) SetNillableAppID(v *uint32) *ReportSubscr
 }
 
 // AddAppID adds value to the "app_id" field.
-func (_u *ReportSubscriptionUpdateOne) AddAppID(v int32) *ReportSubscriptionUpdateOne {
+func (_u *ReportSubscriptionUpdateOne) AddAppID(v int64) *ReportSubscriptionUpdateOne {
 	_u.mutation.AddAppID(v)
 	return _u
 }
@@ -893,7 +893,7 @@ func (_u *ReportSubscriptionUpdateOne) sqlSave(ctx context.Context) (_node *Repo
 	if err := _u.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(reportsubscription.Table, reportsubscription.Columns, sqlgraph.NewFieldSpec(reportsubscription.FieldID, field.TypeUint32))
+	_spec := sqlgraph.NewUpdateSpec(reportsubscription.Table, reportsubscription.Columns, sqlgraph.NewFieldSpec(reportsubscription.FieldID, field.TypeInt64))
 	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "ReportSubscription.id" for update`)}
@@ -934,34 +934,34 @@ func (_u *ReportSubscriptionUpdateOne) sqlSave(ctx context.Context) (_node *Repo
 		_spec.ClearField(reportsubscription.FieldDeletedAt, field.TypeTime)
 	}
 	if value, ok := _u.mutation.CreatedBy(); ok {
-		_spec.SetField(reportsubscription.FieldCreatedBy, field.TypeUint32, value)
+		_spec.SetField(reportsubscription.FieldCreatedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedCreatedBy(); ok {
-		_spec.AddField(reportsubscription.FieldCreatedBy, field.TypeUint32, value)
+		_spec.AddField(reportsubscription.FieldCreatedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.CreatedByCleared() {
-		_spec.ClearField(reportsubscription.FieldCreatedBy, field.TypeUint32)
+		_spec.ClearField(reportsubscription.FieldCreatedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.UpdatedBy(); ok {
-		_spec.SetField(reportsubscription.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.SetField(reportsubscription.FieldUpdatedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
-		_spec.AddField(reportsubscription.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.AddField(reportsubscription.FieldUpdatedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.UpdatedByCleared() {
-		_spec.ClearField(reportsubscription.FieldUpdatedBy, field.TypeUint32)
+		_spec.ClearField(reportsubscription.FieldUpdatedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.DeletedBy(); ok {
-		_spec.SetField(reportsubscription.FieldDeletedBy, field.TypeUint32, value)
+		_spec.SetField(reportsubscription.FieldDeletedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedDeletedBy(); ok {
-		_spec.AddField(reportsubscription.FieldDeletedBy, field.TypeUint32, value)
+		_spec.AddField(reportsubscription.FieldDeletedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.DeletedByCleared() {
-		_spec.ClearField(reportsubscription.FieldDeletedBy, field.TypeUint32)
+		_spec.ClearField(reportsubscription.FieldDeletedBy, field.TypeInt64)
 	}
 	if _u.mutation.TenantIDCleared() {
-		_spec.ClearField(reportsubscription.FieldTenantID, field.TypeUint32)
+		_spec.ClearField(reportsubscription.FieldTenantID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(reportsubscription.FieldName, field.TypeString, value)
@@ -976,13 +976,13 @@ func (_u *ReportSubscriptionUpdateOne) sqlSave(ctx context.Context) (_node *Repo
 		_spec.ClearField(reportsubscription.FieldDescription, field.TypeString)
 	}
 	if value, ok := _u.mutation.AppID(); ok {
-		_spec.SetField(reportsubscription.FieldAppID, field.TypeUint32, value)
+		_spec.SetField(reportsubscription.FieldAppID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedAppID(); ok {
-		_spec.AddField(reportsubscription.FieldAppID, field.TypeUint32, value)
+		_spec.AddField(reportsubscription.FieldAppID, field.TypeInt64, value)
 	}
 	if _u.mutation.AppIDCleared() {
-		_spec.ClearField(reportsubscription.FieldAppID, field.TypeUint32)
+		_spec.ClearField(reportsubscription.FieldAppID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.Model(); ok {
 		_spec.SetField(reportsubscription.FieldModel, field.TypeString, value)

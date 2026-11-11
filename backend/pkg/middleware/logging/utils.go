@@ -177,14 +177,14 @@ func getClientID(request *http.Request, userToken *authenticationV1.UserTokenPay
 }
 
 // getStatusCode 状态码
-func getStatusCode(err error) (uint32, string, bool) {
+func getStatusCode(err error) (int64, string, bool) {
 	// 1. 信息响应 (100–199)
 	// 2. 成功响应 (200–299)
 	// 3. 重定向消息 (300–399)
 	// 4. 客户端错误响应 (400–499)
 	// 5. 服務端错误响应 (500–599)
 	if se := errors.FromError(err); se != nil {
-		return uint32(se.Code), se.Reason, se.Code < 400
+		return int64(se.Code), se.Reason, se.Code < 400
 	} else {
 		return 200, "", true
 	}

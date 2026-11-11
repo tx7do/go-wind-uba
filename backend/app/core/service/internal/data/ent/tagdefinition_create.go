@@ -66,13 +66,13 @@ func (_c *TagDefinitionCreate) SetNillableDeletedAt(v *time.Time) *TagDefinition
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (_c *TagDefinitionCreate) SetCreatedBy(v uint32) *TagDefinitionCreate {
+func (_c *TagDefinitionCreate) SetCreatedBy(v int64) *TagDefinitionCreate {
 	_c.mutation.SetCreatedBy(v)
 	return _c
 }
 
 // SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
-func (_c *TagDefinitionCreate) SetNillableCreatedBy(v *uint32) *TagDefinitionCreate {
+func (_c *TagDefinitionCreate) SetNillableCreatedBy(v *int64) *TagDefinitionCreate {
 	if v != nil {
 		_c.SetCreatedBy(*v)
 	}
@@ -80,13 +80,13 @@ func (_c *TagDefinitionCreate) SetNillableCreatedBy(v *uint32) *TagDefinitionCre
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (_c *TagDefinitionCreate) SetUpdatedBy(v uint32) *TagDefinitionCreate {
+func (_c *TagDefinitionCreate) SetUpdatedBy(v int64) *TagDefinitionCreate {
 	_c.mutation.SetUpdatedBy(v)
 	return _c
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (_c *TagDefinitionCreate) SetNillableUpdatedBy(v *uint32) *TagDefinitionCreate {
+func (_c *TagDefinitionCreate) SetNillableUpdatedBy(v *int64) *TagDefinitionCreate {
 	if v != nil {
 		_c.SetUpdatedBy(*v)
 	}
@@ -94,13 +94,13 @@ func (_c *TagDefinitionCreate) SetNillableUpdatedBy(v *uint32) *TagDefinitionCre
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (_c *TagDefinitionCreate) SetDeletedBy(v uint32) *TagDefinitionCreate {
+func (_c *TagDefinitionCreate) SetDeletedBy(v int64) *TagDefinitionCreate {
 	_c.mutation.SetDeletedBy(v)
 	return _c
 }
 
 // SetNillableDeletedBy sets the "deleted_by" field if the given value is not nil.
-func (_c *TagDefinitionCreate) SetNillableDeletedBy(v *uint32) *TagDefinitionCreate {
+func (_c *TagDefinitionCreate) SetNillableDeletedBy(v *int64) *TagDefinitionCreate {
 	if v != nil {
 		_c.SetDeletedBy(*v)
 	}
@@ -108,13 +108,13 @@ func (_c *TagDefinitionCreate) SetNillableDeletedBy(v *uint32) *TagDefinitionCre
 }
 
 // SetTenantID sets the "tenant_id" field.
-func (_c *TagDefinitionCreate) SetTenantID(v uint32) *TagDefinitionCreate {
+func (_c *TagDefinitionCreate) SetTenantID(v int64) *TagDefinitionCreate {
 	_c.mutation.SetTenantID(v)
 	return _c
 }
 
 // SetNillableTenantID sets the "tenant_id" field if the given value is not nil.
-func (_c *TagDefinitionCreate) SetNillableTenantID(v *uint32) *TagDefinitionCreate {
+func (_c *TagDefinitionCreate) SetNillableTenantID(v *int64) *TagDefinitionCreate {
 	if v != nil {
 		_c.SetTenantID(*v)
 	}
@@ -260,7 +260,7 @@ func (_c *TagDefinitionCreate) SetNillableCode(v *string) *TagDefinitionCreate {
 }
 
 // SetID sets the "id" field.
-func (_c *TagDefinitionCreate) SetID(v uint32) *TagDefinitionCreate {
+func (_c *TagDefinitionCreate) SetID(v int64) *TagDefinitionCreate {
 	_c.mutation.SetID(v)
 	return _c
 }
@@ -359,7 +359,7 @@ func (_c *TagDefinitionCreate) sqlSave(ctx context.Context) (*TagDefinition, err
 	}
 	if _spec.ID.Value != _node.ID {
 		id := _spec.ID.Value.(int64)
-		_node.ID = uint32(id)
+		_node.ID = int64(id)
 	}
 	_c.mutation.id = &_node.ID
 	_c.mutation.done = true
@@ -369,7 +369,7 @@ func (_c *TagDefinitionCreate) sqlSave(ctx context.Context) (*TagDefinition, err
 func (_c *TagDefinitionCreate) createSpec() (*TagDefinition, *sqlgraph.CreateSpec) {
 	var (
 		_node = &TagDefinition{config: _c.config}
-		_spec = sqlgraph.NewCreateSpec(tagdefinition.Table, sqlgraph.NewFieldSpec(tagdefinition.FieldID, field.TypeUint32))
+		_spec = sqlgraph.NewCreateSpec(tagdefinition.Table, sqlgraph.NewFieldSpec(tagdefinition.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = _c.conflict
 	if id, ok := _c.mutation.ID(); ok {
@@ -389,19 +389,19 @@ func (_c *TagDefinitionCreate) createSpec() (*TagDefinition, *sqlgraph.CreateSpe
 		_node.DeletedAt = &value
 	}
 	if value, ok := _c.mutation.CreatedBy(); ok {
-		_spec.SetField(tagdefinition.FieldCreatedBy, field.TypeUint32, value)
+		_spec.SetField(tagdefinition.FieldCreatedBy, field.TypeInt64, value)
 		_node.CreatedBy = &value
 	}
 	if value, ok := _c.mutation.UpdatedBy(); ok {
-		_spec.SetField(tagdefinition.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.SetField(tagdefinition.FieldUpdatedBy, field.TypeInt64, value)
 		_node.UpdatedBy = &value
 	}
 	if value, ok := _c.mutation.DeletedBy(); ok {
-		_spec.SetField(tagdefinition.FieldDeletedBy, field.TypeUint32, value)
+		_spec.SetField(tagdefinition.FieldDeletedBy, field.TypeInt64, value)
 		_node.DeletedBy = &value
 	}
 	if value, ok := _c.mutation.TenantID(); ok {
-		_spec.SetField(tagdefinition.FieldTenantID, field.TypeUint32, value)
+		_spec.SetField(tagdefinition.FieldTenantID, field.TypeInt64, value)
 		_node.TenantID = &value
 	}
 	if value, ok := _c.mutation.Name(); ok {
@@ -537,7 +537,7 @@ func (u *TagDefinitionUpsert) ClearDeletedAt() *TagDefinitionUpsert {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (u *TagDefinitionUpsert) SetCreatedBy(v uint32) *TagDefinitionUpsert {
+func (u *TagDefinitionUpsert) SetCreatedBy(v int64) *TagDefinitionUpsert {
 	u.Set(tagdefinition.FieldCreatedBy, v)
 	return u
 }
@@ -549,7 +549,7 @@ func (u *TagDefinitionUpsert) UpdateCreatedBy() *TagDefinitionUpsert {
 }
 
 // AddCreatedBy adds v to the "created_by" field.
-func (u *TagDefinitionUpsert) AddCreatedBy(v uint32) *TagDefinitionUpsert {
+func (u *TagDefinitionUpsert) AddCreatedBy(v int64) *TagDefinitionUpsert {
 	u.Add(tagdefinition.FieldCreatedBy, v)
 	return u
 }
@@ -561,7 +561,7 @@ func (u *TagDefinitionUpsert) ClearCreatedBy() *TagDefinitionUpsert {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (u *TagDefinitionUpsert) SetUpdatedBy(v uint32) *TagDefinitionUpsert {
+func (u *TagDefinitionUpsert) SetUpdatedBy(v int64) *TagDefinitionUpsert {
 	u.Set(tagdefinition.FieldUpdatedBy, v)
 	return u
 }
@@ -573,7 +573,7 @@ func (u *TagDefinitionUpsert) UpdateUpdatedBy() *TagDefinitionUpsert {
 }
 
 // AddUpdatedBy adds v to the "updated_by" field.
-func (u *TagDefinitionUpsert) AddUpdatedBy(v uint32) *TagDefinitionUpsert {
+func (u *TagDefinitionUpsert) AddUpdatedBy(v int64) *TagDefinitionUpsert {
 	u.Add(tagdefinition.FieldUpdatedBy, v)
 	return u
 }
@@ -585,7 +585,7 @@ func (u *TagDefinitionUpsert) ClearUpdatedBy() *TagDefinitionUpsert {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (u *TagDefinitionUpsert) SetDeletedBy(v uint32) *TagDefinitionUpsert {
+func (u *TagDefinitionUpsert) SetDeletedBy(v int64) *TagDefinitionUpsert {
 	u.Set(tagdefinition.FieldDeletedBy, v)
 	return u
 }
@@ -597,7 +597,7 @@ func (u *TagDefinitionUpsert) UpdateDeletedBy() *TagDefinitionUpsert {
 }
 
 // AddDeletedBy adds v to the "deleted_by" field.
-func (u *TagDefinitionUpsert) AddDeletedBy(v uint32) *TagDefinitionUpsert {
+func (u *TagDefinitionUpsert) AddDeletedBy(v int64) *TagDefinitionUpsert {
 	u.Add(tagdefinition.FieldDeletedBy, v)
 	return u
 }
@@ -909,14 +909,14 @@ func (u *TagDefinitionUpsertOne) ClearDeletedAt() *TagDefinitionUpsertOne {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (u *TagDefinitionUpsertOne) SetCreatedBy(v uint32) *TagDefinitionUpsertOne {
+func (u *TagDefinitionUpsertOne) SetCreatedBy(v int64) *TagDefinitionUpsertOne {
 	return u.Update(func(s *TagDefinitionUpsert) {
 		s.SetCreatedBy(v)
 	})
 }
 
 // AddCreatedBy adds v to the "created_by" field.
-func (u *TagDefinitionUpsertOne) AddCreatedBy(v uint32) *TagDefinitionUpsertOne {
+func (u *TagDefinitionUpsertOne) AddCreatedBy(v int64) *TagDefinitionUpsertOne {
 	return u.Update(func(s *TagDefinitionUpsert) {
 		s.AddCreatedBy(v)
 	})
@@ -937,14 +937,14 @@ func (u *TagDefinitionUpsertOne) ClearCreatedBy() *TagDefinitionUpsertOne {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (u *TagDefinitionUpsertOne) SetUpdatedBy(v uint32) *TagDefinitionUpsertOne {
+func (u *TagDefinitionUpsertOne) SetUpdatedBy(v int64) *TagDefinitionUpsertOne {
 	return u.Update(func(s *TagDefinitionUpsert) {
 		s.SetUpdatedBy(v)
 	})
 }
 
 // AddUpdatedBy adds v to the "updated_by" field.
-func (u *TagDefinitionUpsertOne) AddUpdatedBy(v uint32) *TagDefinitionUpsertOne {
+func (u *TagDefinitionUpsertOne) AddUpdatedBy(v int64) *TagDefinitionUpsertOne {
 	return u.Update(func(s *TagDefinitionUpsert) {
 		s.AddUpdatedBy(v)
 	})
@@ -965,14 +965,14 @@ func (u *TagDefinitionUpsertOne) ClearUpdatedBy() *TagDefinitionUpsertOne {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (u *TagDefinitionUpsertOne) SetDeletedBy(v uint32) *TagDefinitionUpsertOne {
+func (u *TagDefinitionUpsertOne) SetDeletedBy(v int64) *TagDefinitionUpsertOne {
 	return u.Update(func(s *TagDefinitionUpsert) {
 		s.SetDeletedBy(v)
 	})
 }
 
 // AddDeletedBy adds v to the "deleted_by" field.
-func (u *TagDefinitionUpsertOne) AddDeletedBy(v uint32) *TagDefinitionUpsertOne {
+func (u *TagDefinitionUpsertOne) AddDeletedBy(v int64) *TagDefinitionUpsertOne {
 	return u.Update(func(s *TagDefinitionUpsert) {
 		s.AddDeletedBy(v)
 	})
@@ -1246,7 +1246,7 @@ func (u *TagDefinitionUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *TagDefinitionUpsertOne) ID(ctx context.Context) (id uint32, err error) {
+func (u *TagDefinitionUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -1255,7 +1255,7 @@ func (u *TagDefinitionUpsertOne) ID(ctx context.Context) (id uint32, err error) 
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *TagDefinitionUpsertOne) IDX(ctx context.Context) uint32 {
+func (u *TagDefinitionUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -1312,7 +1312,7 @@ func (_c *TagDefinitionCreateBulk) Save(ctx context.Context) ([]*TagDefinition, 
 				mutation.id = &nodes[i].ID
 				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = uint32(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -1493,14 +1493,14 @@ func (u *TagDefinitionUpsertBulk) ClearDeletedAt() *TagDefinitionUpsertBulk {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (u *TagDefinitionUpsertBulk) SetCreatedBy(v uint32) *TagDefinitionUpsertBulk {
+func (u *TagDefinitionUpsertBulk) SetCreatedBy(v int64) *TagDefinitionUpsertBulk {
 	return u.Update(func(s *TagDefinitionUpsert) {
 		s.SetCreatedBy(v)
 	})
 }
 
 // AddCreatedBy adds v to the "created_by" field.
-func (u *TagDefinitionUpsertBulk) AddCreatedBy(v uint32) *TagDefinitionUpsertBulk {
+func (u *TagDefinitionUpsertBulk) AddCreatedBy(v int64) *TagDefinitionUpsertBulk {
 	return u.Update(func(s *TagDefinitionUpsert) {
 		s.AddCreatedBy(v)
 	})
@@ -1521,14 +1521,14 @@ func (u *TagDefinitionUpsertBulk) ClearCreatedBy() *TagDefinitionUpsertBulk {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (u *TagDefinitionUpsertBulk) SetUpdatedBy(v uint32) *TagDefinitionUpsertBulk {
+func (u *TagDefinitionUpsertBulk) SetUpdatedBy(v int64) *TagDefinitionUpsertBulk {
 	return u.Update(func(s *TagDefinitionUpsert) {
 		s.SetUpdatedBy(v)
 	})
 }
 
 // AddUpdatedBy adds v to the "updated_by" field.
-func (u *TagDefinitionUpsertBulk) AddUpdatedBy(v uint32) *TagDefinitionUpsertBulk {
+func (u *TagDefinitionUpsertBulk) AddUpdatedBy(v int64) *TagDefinitionUpsertBulk {
 	return u.Update(func(s *TagDefinitionUpsert) {
 		s.AddUpdatedBy(v)
 	})
@@ -1549,14 +1549,14 @@ func (u *TagDefinitionUpsertBulk) ClearUpdatedBy() *TagDefinitionUpsertBulk {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (u *TagDefinitionUpsertBulk) SetDeletedBy(v uint32) *TagDefinitionUpsertBulk {
+func (u *TagDefinitionUpsertBulk) SetDeletedBy(v int64) *TagDefinitionUpsertBulk {
 	return u.Update(func(s *TagDefinitionUpsert) {
 		s.SetDeletedBy(v)
 	})
 }
 
 // AddDeletedBy adds v to the "deleted_by" field.
-func (u *TagDefinitionUpsertBulk) AddDeletedBy(v uint32) *TagDefinitionUpsertBulk {
+func (u *TagDefinitionUpsertBulk) AddDeletedBy(v int64) *TagDefinitionUpsertBulk {
 	return u.Update(func(s *TagDefinitionUpsert) {
 		s.AddDeletedBy(v)
 	})

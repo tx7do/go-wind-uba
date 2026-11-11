@@ -204,6 +204,6 @@ func (s *TagEngine) refreshTag(ctx context.Context, def *ent.TagDefinition, now 
 	return s.markRefreshed(ctx, def.ID, now)
 }
 
-func (s *TagEngine) markRefreshed(ctx context.Context, id uint32, now time.Time) error {
+func (s *TagEngine) markRefreshed(ctx context.Context, id int64, now time.Time) error {
 	return s.tagDefRepo.UpdateRefreshState(ctx, id, now)
 }

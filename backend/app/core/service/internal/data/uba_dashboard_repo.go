@@ -130,7 +130,7 @@ func (r *DashboardRepo) Count(ctx context.Context, req *paginationV1.PagingReque
 	}
 
 	return &ubaV1.CountDashboardResponse{
-		Count: uint64(count),
+		Count: int64(count),
 	}, nil
 }
 
@@ -155,7 +155,7 @@ func (r *DashboardRepo) List(ctx context.Context, req *paginationV1.PagingReques
 	}, nil
 }
 
-func (r *DashboardRepo) IsExist(ctx context.Context, id uint32) (bool, error) {
+func (r *DashboardRepo) IsExist(ctx context.Context, id int64) (bool, error) {
 	exist, err := r.entClient.Client().Dashboard.Query().
 		Where(dashboard.IDEQ(id)).
 		Exist(ctx)

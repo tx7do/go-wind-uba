@@ -60,7 +60,7 @@ message ReportEvent {
     json_name = "eventId",
     (gnostic.openapi.v3.property) = {description: "事件ID，全局唯一标识一条事件记录，建议使用ULID或Snowflake生成"}
   ];
-  optional uint32 user_id = 3 [
+  optional int64 user_id = 3 [
     json_name = "userId",
     (gnostic.openapi.v3.property) = {description: "登录用户ID，唯一标识一个用户，未登录可不填或填0"}
   ];
@@ -98,7 +98,7 @@ message ReportEvent {
     json_name = "properties",
     (gnostic.openapi.v3.property) = {description: "事件属性，键值对形式的扩展字段，用于记录事件的业务上下文信息"}
   ];
-  uint32 tenant_id = 12 [
+  int64 tenant_id = 12 [
     json_name = "tenantId",
     (gnostic.openapi.v3.property) = {description: "租户 ID，SaaS 多租户隔离关键字段"}
   ];

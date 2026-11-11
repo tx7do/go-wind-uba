@@ -84,7 +84,7 @@ var (
 	// DefaultSortOrder holds the default value on creation for the "sort_order" field.
 	DefaultSortOrder uint32
 	// DefaultTenantID holds the default value on creation for the "tenant_id" field.
-	DefaultTenantID uint32
+	DefaultTenantID int64
 	// FieldNameValidator is a validator for the "field_name" field. It is called by the builders before save.
 	FieldNameValidator func(string) error
 	// OperatorValidator is a validator for the "operator" field. It is called by the builders before save.
@@ -92,7 +92,7 @@ var (
 	// DefaultLogicOperator holds the default value on creation for the "logic_operator" field.
 	DefaultLogicOperator string
 	// IDValidator is a validator for the "id" field. It is called by the builders before save.
-	IDValidator func(uint32) error
+	IDValidator func(int64) error
 )
 
 // OrderOption defines the ordering options for the RiskRuleCondition queries.

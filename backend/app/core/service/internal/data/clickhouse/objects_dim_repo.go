@@ -84,6 +84,6 @@ func (r *ObjectsDimRepo) List(ctx context.Context, req *paginationV1.PagingReque
 	}
 	return &ubaV1.ListObjectDimResponse{
 		Items: result.Items,
-		Total: result.Total,
+		Total: int64(result.Total),
 	}, nil
 }

@@ -107,7 +107,7 @@ func (r *ReportSubscriptionRepo) Count(ctx context.Context, req *paginationV1.Pa
 	}
 
 	return &ubaV1.CountReportSubscriptionResponse{
-		Count: uint64(count),
+		Count: int64(count),
 	}, nil
 }
 
@@ -132,7 +132,7 @@ func (r *ReportSubscriptionRepo) List(ctx context.Context, req *paginationV1.Pag
 	}, nil
 }
 
-func (r *ReportSubscriptionRepo) IsExist(ctx context.Context, id uint32) (bool, error) {
+func (r *ReportSubscriptionRepo) IsExist(ctx context.Context, id int64) (bool, error) {
 	exist, err := r.entClient.Client().ReportSubscription.Query().
 		Where(reportsubscription.IDEQ(id)).
 		Exist(ctx)
@@ -268,7 +268,7 @@ func (r *ReportSubscriptionRepo) ListDueSubscriptions(ctx context.Context, now t
 }
 
 // UpdateRunState 执行完成后回写时间。
-func (r *ReportSubscriptionRepo) UpdateRunState(ctx context.Context, id uint32, runAt time.Time) error {
+func (r *ReportSubscriptionRepo) UpdateRunState(ctx context.Context, id int64, runAt time.Time) error {
 	err := r.entClient.Client().ReportSubscription.UpdateOneID(id).
 		SetLastRunAt(runAt).
 		SetUpdatedAt(runAt).

@@ -10,47 +10,47 @@ import (
 )
 
 // ID filters vertices based on their ID field.
-func ID(id uint32) predicate.RiskRuleVersion {
+func ID(id int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldEQ(FieldID, id))
 }
 
 // IDEQ applies the EQ predicate on the ID field.
-func IDEQ(id uint32) predicate.RiskRuleVersion {
+func IDEQ(id int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldEQ(FieldID, id))
 }
 
 // IDNEQ applies the NEQ predicate on the ID field.
-func IDNEQ(id uint32) predicate.RiskRuleVersion {
+func IDNEQ(id int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldNEQ(FieldID, id))
 }
 
 // IDIn applies the In predicate on the ID field.
-func IDIn(ids ...uint32) predicate.RiskRuleVersion {
+func IDIn(ids ...int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldIn(FieldID, ids...))
 }
 
 // IDNotIn applies the NotIn predicate on the ID field.
-func IDNotIn(ids ...uint32) predicate.RiskRuleVersion {
+func IDNotIn(ids ...int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldNotIn(FieldID, ids...))
 }
 
 // IDGT applies the GT predicate on the ID field.
-func IDGT(id uint32) predicate.RiskRuleVersion {
+func IDGT(id int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldGT(FieldID, id))
 }
 
 // IDGTE applies the GTE predicate on the ID field.
-func IDGTE(id uint32) predicate.RiskRuleVersion {
+func IDGTE(id int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldGTE(FieldID, id))
 }
 
 // IDLT applies the LT predicate on the ID field.
-func IDLT(id uint32) predicate.RiskRuleVersion {
+func IDLT(id int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldLT(FieldID, id))
 }
 
 // IDLTE applies the LTE predicate on the ID field.
-func IDLTE(id uint32) predicate.RiskRuleVersion {
+func IDLTE(id int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldLTE(FieldID, id))
 }
 
@@ -70,17 +70,17 @@ func DeletedAt(v time.Time) predicate.RiskRuleVersion {
 }
 
 // CreatedBy applies equality check predicate on the "created_by" field. It's identical to CreatedByEQ.
-func CreatedBy(v uint32) predicate.RiskRuleVersion {
+func CreatedBy(v int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldEQ(FieldCreatedBy, v))
 }
 
 // UpdatedBy applies equality check predicate on the "updated_by" field. It's identical to UpdatedByEQ.
-func UpdatedBy(v uint32) predicate.RiskRuleVersion {
+func UpdatedBy(v int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldEQ(FieldUpdatedBy, v))
 }
 
 // DeletedBy applies equality check predicate on the "deleted_by" field. It's identical to DeletedByEQ.
-func DeletedBy(v uint32) predicate.RiskRuleVersion {
+func DeletedBy(v int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldEQ(FieldDeletedBy, v))
 }
 
@@ -90,12 +90,12 @@ func Version(v uint32) predicate.RiskRuleVersion {
 }
 
 // TenantID applies equality check predicate on the "tenant_id" field. It's identical to TenantIDEQ.
-func TenantID(v uint32) predicate.RiskRuleVersion {
+func TenantID(v int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldEQ(FieldTenantID, v))
 }
 
 // RuleID applies equality check predicate on the "rule_id" field. It's identical to RuleIDEQ.
-func RuleID(v uint32) predicate.RiskRuleVersion {
+func RuleID(v int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldEQ(FieldRuleID, v))
 }
 
@@ -130,7 +130,7 @@ func PublishedAt(v time.Time) predicate.RiskRuleVersion {
 }
 
 // PublishedBy applies equality check predicate on the "published_by" field. It's identical to PublishedByEQ.
-func PublishedBy(v uint32) predicate.RiskRuleVersion {
+func PublishedBy(v int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldEQ(FieldPublishedBy, v))
 }
 
@@ -285,42 +285,42 @@ func DeletedAtNotNil() predicate.RiskRuleVersion {
 }
 
 // CreatedByEQ applies the EQ predicate on the "created_by" field.
-func CreatedByEQ(v uint32) predicate.RiskRuleVersion {
+func CreatedByEQ(v int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldEQ(FieldCreatedBy, v))
 }
 
 // CreatedByNEQ applies the NEQ predicate on the "created_by" field.
-func CreatedByNEQ(v uint32) predicate.RiskRuleVersion {
+func CreatedByNEQ(v int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldNEQ(FieldCreatedBy, v))
 }
 
 // CreatedByIn applies the In predicate on the "created_by" field.
-func CreatedByIn(vs ...uint32) predicate.RiskRuleVersion {
+func CreatedByIn(vs ...int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldIn(FieldCreatedBy, vs...))
 }
 
 // CreatedByNotIn applies the NotIn predicate on the "created_by" field.
-func CreatedByNotIn(vs ...uint32) predicate.RiskRuleVersion {
+func CreatedByNotIn(vs ...int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldNotIn(FieldCreatedBy, vs...))
 }
 
 // CreatedByGT applies the GT predicate on the "created_by" field.
-func CreatedByGT(v uint32) predicate.RiskRuleVersion {
+func CreatedByGT(v int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldGT(FieldCreatedBy, v))
 }
 
 // CreatedByGTE applies the GTE predicate on the "created_by" field.
-func CreatedByGTE(v uint32) predicate.RiskRuleVersion {
+func CreatedByGTE(v int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldGTE(FieldCreatedBy, v))
 }
 
 // CreatedByLT applies the LT predicate on the "created_by" field.
-func CreatedByLT(v uint32) predicate.RiskRuleVersion {
+func CreatedByLT(v int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldLT(FieldCreatedBy, v))
 }
 
 // CreatedByLTE applies the LTE predicate on the "created_by" field.
-func CreatedByLTE(v uint32) predicate.RiskRuleVersion {
+func CreatedByLTE(v int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldLTE(FieldCreatedBy, v))
 }
 
@@ -335,42 +335,42 @@ func CreatedByNotNil() predicate.RiskRuleVersion {
 }
 
 // UpdatedByEQ applies the EQ predicate on the "updated_by" field.
-func UpdatedByEQ(v uint32) predicate.RiskRuleVersion {
+func UpdatedByEQ(v int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldEQ(FieldUpdatedBy, v))
 }
 
 // UpdatedByNEQ applies the NEQ predicate on the "updated_by" field.
-func UpdatedByNEQ(v uint32) predicate.RiskRuleVersion {
+func UpdatedByNEQ(v int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldNEQ(FieldUpdatedBy, v))
 }
 
 // UpdatedByIn applies the In predicate on the "updated_by" field.
-func UpdatedByIn(vs ...uint32) predicate.RiskRuleVersion {
+func UpdatedByIn(vs ...int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldIn(FieldUpdatedBy, vs...))
 }
 
 // UpdatedByNotIn applies the NotIn predicate on the "updated_by" field.
-func UpdatedByNotIn(vs ...uint32) predicate.RiskRuleVersion {
+func UpdatedByNotIn(vs ...int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldNotIn(FieldUpdatedBy, vs...))
 }
 
 // UpdatedByGT applies the GT predicate on the "updated_by" field.
-func UpdatedByGT(v uint32) predicate.RiskRuleVersion {
+func UpdatedByGT(v int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldGT(FieldUpdatedBy, v))
 }
 
 // UpdatedByGTE applies the GTE predicate on the "updated_by" field.
-func UpdatedByGTE(v uint32) predicate.RiskRuleVersion {
+func UpdatedByGTE(v int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldGTE(FieldUpdatedBy, v))
 }
 
 // UpdatedByLT applies the LT predicate on the "updated_by" field.
-func UpdatedByLT(v uint32) predicate.RiskRuleVersion {
+func UpdatedByLT(v int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldLT(FieldUpdatedBy, v))
 }
 
 // UpdatedByLTE applies the LTE predicate on the "updated_by" field.
-func UpdatedByLTE(v uint32) predicate.RiskRuleVersion {
+func UpdatedByLTE(v int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldLTE(FieldUpdatedBy, v))
 }
 
@@ -385,42 +385,42 @@ func UpdatedByNotNil() predicate.RiskRuleVersion {
 }
 
 // DeletedByEQ applies the EQ predicate on the "deleted_by" field.
-func DeletedByEQ(v uint32) predicate.RiskRuleVersion {
+func DeletedByEQ(v int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldEQ(FieldDeletedBy, v))
 }
 
 // DeletedByNEQ applies the NEQ predicate on the "deleted_by" field.
-func DeletedByNEQ(v uint32) predicate.RiskRuleVersion {
+func DeletedByNEQ(v int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldNEQ(FieldDeletedBy, v))
 }
 
 // DeletedByIn applies the In predicate on the "deleted_by" field.
-func DeletedByIn(vs ...uint32) predicate.RiskRuleVersion {
+func DeletedByIn(vs ...int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldIn(FieldDeletedBy, vs...))
 }
 
 // DeletedByNotIn applies the NotIn predicate on the "deleted_by" field.
-func DeletedByNotIn(vs ...uint32) predicate.RiskRuleVersion {
+func DeletedByNotIn(vs ...int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldNotIn(FieldDeletedBy, vs...))
 }
 
 // DeletedByGT applies the GT predicate on the "deleted_by" field.
-func DeletedByGT(v uint32) predicate.RiskRuleVersion {
+func DeletedByGT(v int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldGT(FieldDeletedBy, v))
 }
 
 // DeletedByGTE applies the GTE predicate on the "deleted_by" field.
-func DeletedByGTE(v uint32) predicate.RiskRuleVersion {
+func DeletedByGTE(v int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldGTE(FieldDeletedBy, v))
 }
 
 // DeletedByLT applies the LT predicate on the "deleted_by" field.
-func DeletedByLT(v uint32) predicate.RiskRuleVersion {
+func DeletedByLT(v int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldLT(FieldDeletedBy, v))
 }
 
 // DeletedByLTE applies the LTE predicate on the "deleted_by" field.
-func DeletedByLTE(v uint32) predicate.RiskRuleVersion {
+func DeletedByLTE(v int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldLTE(FieldDeletedBy, v))
 }
 
@@ -475,42 +475,42 @@ func VersionLTE(v uint32) predicate.RiskRuleVersion {
 }
 
 // TenantIDEQ applies the EQ predicate on the "tenant_id" field.
-func TenantIDEQ(v uint32) predicate.RiskRuleVersion {
+func TenantIDEQ(v int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldEQ(FieldTenantID, v))
 }
 
 // TenantIDNEQ applies the NEQ predicate on the "tenant_id" field.
-func TenantIDNEQ(v uint32) predicate.RiskRuleVersion {
+func TenantIDNEQ(v int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldNEQ(FieldTenantID, v))
 }
 
 // TenantIDIn applies the In predicate on the "tenant_id" field.
-func TenantIDIn(vs ...uint32) predicate.RiskRuleVersion {
+func TenantIDIn(vs ...int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldIn(FieldTenantID, vs...))
 }
 
 // TenantIDNotIn applies the NotIn predicate on the "tenant_id" field.
-func TenantIDNotIn(vs ...uint32) predicate.RiskRuleVersion {
+func TenantIDNotIn(vs ...int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldNotIn(FieldTenantID, vs...))
 }
 
 // TenantIDGT applies the GT predicate on the "tenant_id" field.
-func TenantIDGT(v uint32) predicate.RiskRuleVersion {
+func TenantIDGT(v int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldGT(FieldTenantID, v))
 }
 
 // TenantIDGTE applies the GTE predicate on the "tenant_id" field.
-func TenantIDGTE(v uint32) predicate.RiskRuleVersion {
+func TenantIDGTE(v int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldGTE(FieldTenantID, v))
 }
 
 // TenantIDLT applies the LT predicate on the "tenant_id" field.
-func TenantIDLT(v uint32) predicate.RiskRuleVersion {
+func TenantIDLT(v int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldLT(FieldTenantID, v))
 }
 
 // TenantIDLTE applies the LTE predicate on the "tenant_id" field.
-func TenantIDLTE(v uint32) predicate.RiskRuleVersion {
+func TenantIDLTE(v int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldLTE(FieldTenantID, v))
 }
 
@@ -525,42 +525,42 @@ func TenantIDNotNil() predicate.RiskRuleVersion {
 }
 
 // RuleIDEQ applies the EQ predicate on the "rule_id" field.
-func RuleIDEQ(v uint32) predicate.RiskRuleVersion {
+func RuleIDEQ(v int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldEQ(FieldRuleID, v))
 }
 
 // RuleIDNEQ applies the NEQ predicate on the "rule_id" field.
-func RuleIDNEQ(v uint32) predicate.RiskRuleVersion {
+func RuleIDNEQ(v int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldNEQ(FieldRuleID, v))
 }
 
 // RuleIDIn applies the In predicate on the "rule_id" field.
-func RuleIDIn(vs ...uint32) predicate.RiskRuleVersion {
+func RuleIDIn(vs ...int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldIn(FieldRuleID, vs...))
 }
 
 // RuleIDNotIn applies the NotIn predicate on the "rule_id" field.
-func RuleIDNotIn(vs ...uint32) predicate.RiskRuleVersion {
+func RuleIDNotIn(vs ...int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldNotIn(FieldRuleID, vs...))
 }
 
 // RuleIDGT applies the GT predicate on the "rule_id" field.
-func RuleIDGT(v uint32) predicate.RiskRuleVersion {
+func RuleIDGT(v int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldGT(FieldRuleID, v))
 }
 
 // RuleIDGTE applies the GTE predicate on the "rule_id" field.
-func RuleIDGTE(v uint32) predicate.RiskRuleVersion {
+func RuleIDGTE(v int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldGTE(FieldRuleID, v))
 }
 
 // RuleIDLT applies the LT predicate on the "rule_id" field.
-func RuleIDLT(v uint32) predicate.RiskRuleVersion {
+func RuleIDLT(v int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldLT(FieldRuleID, v))
 }
 
 // RuleIDLTE applies the LTE predicate on the "rule_id" field.
-func RuleIDLTE(v uint32) predicate.RiskRuleVersion {
+func RuleIDLTE(v int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldLTE(FieldRuleID, v))
 }
 
@@ -1000,42 +1000,42 @@ func PublishedAtNotNil() predicate.RiskRuleVersion {
 }
 
 // PublishedByEQ applies the EQ predicate on the "published_by" field.
-func PublishedByEQ(v uint32) predicate.RiskRuleVersion {
+func PublishedByEQ(v int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldEQ(FieldPublishedBy, v))
 }
 
 // PublishedByNEQ applies the NEQ predicate on the "published_by" field.
-func PublishedByNEQ(v uint32) predicate.RiskRuleVersion {
+func PublishedByNEQ(v int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldNEQ(FieldPublishedBy, v))
 }
 
 // PublishedByIn applies the In predicate on the "published_by" field.
-func PublishedByIn(vs ...uint32) predicate.RiskRuleVersion {
+func PublishedByIn(vs ...int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldIn(FieldPublishedBy, vs...))
 }
 
 // PublishedByNotIn applies the NotIn predicate on the "published_by" field.
-func PublishedByNotIn(vs ...uint32) predicate.RiskRuleVersion {
+func PublishedByNotIn(vs ...int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldNotIn(FieldPublishedBy, vs...))
 }
 
 // PublishedByGT applies the GT predicate on the "published_by" field.
-func PublishedByGT(v uint32) predicate.RiskRuleVersion {
+func PublishedByGT(v int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldGT(FieldPublishedBy, v))
 }
 
 // PublishedByGTE applies the GTE predicate on the "published_by" field.
-func PublishedByGTE(v uint32) predicate.RiskRuleVersion {
+func PublishedByGTE(v int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldGTE(FieldPublishedBy, v))
 }
 
 // PublishedByLT applies the LT predicate on the "published_by" field.
-func PublishedByLT(v uint32) predicate.RiskRuleVersion {
+func PublishedByLT(v int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldLT(FieldPublishedBy, v))
 }
 
 // PublishedByLTE applies the LTE predicate on the "published_by" field.
-func PublishedByLTE(v uint32) predicate.RiskRuleVersion {
+func PublishedByLTE(v int64) predicate.RiskRuleVersion {
 	return predicate.RiskRuleVersion(sql.FieldLTE(FieldPublishedBy, v))
 }
 

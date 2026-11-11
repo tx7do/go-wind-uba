@@ -76,7 +76,7 @@ func (r *TagValueRepo) Count(ctx context.Context, whereCond []func(s *sql.Select
 }
 
 // IsExist 判断标签值是否存在
-func (r *TagValueRepo) IsExist(ctx context.Context, id uint32) (bool, error) {
+func (r *TagValueRepo) IsExist(ctx context.Context, id int64) (bool, error) {
 	exist, err := r.entClient.Client().TagValue.Query().
 		Where(tagvalue.IDEQ(id)).
 		Exist(ctx)

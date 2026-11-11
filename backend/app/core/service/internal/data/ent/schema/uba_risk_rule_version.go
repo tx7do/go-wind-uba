@@ -28,7 +28,7 @@ func (RiskRuleVersion) Annotations() []schema.Annotation {
 
 func (RiskRuleVersion) Fields() []ent.Field {
 	return []ent.Field{
-		field.Uint32("rule_id").
+		field.Int64("rule_id").
 			Comment("风险规则ID，关联 uba_risk_rules.id").
 			Optional().
 			Nillable(),
@@ -75,7 +75,7 @@ func (RiskRuleVersion) Fields() []ent.Field {
 			Optional().
 			Nillable(),
 
-		field.Uint32("published_by").
+		field.Int64("published_by").
 			Comment("发布者用户ID").
 			Optional().
 			Nillable(),
@@ -84,11 +84,11 @@ func (RiskRuleVersion) Fields() []ent.Field {
 
 func (RiskRuleVersion) Mixin() []ent.Mixin {
 	return []ent.Mixin{
-		mixin.AutoIncrementId{},
+		mixin.AutoIncrementId64{},
 		mixin.TimeAt{},
-		mixin.OperatorID{},
+		mixin.OperatorID64{},
 		mixin.Version{},
-		mixin.TenantID[uint32]{},
+		mixin.TenantID[int64]{},
 	}
 }
 

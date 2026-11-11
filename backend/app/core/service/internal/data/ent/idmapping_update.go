@@ -30,14 +30,14 @@ func (_u *IDMappingUpdate) Where(ps ...predicate.IDMapping) *IDMappingUpdate {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (_u *IDMappingUpdate) SetCreatedBy(v uint32) *IDMappingUpdate {
+func (_u *IDMappingUpdate) SetCreatedBy(v int64) *IDMappingUpdate {
 	_u.mutation.ResetCreatedBy()
 	_u.mutation.SetCreatedBy(v)
 	return _u
 }
 
 // SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
-func (_u *IDMappingUpdate) SetNillableCreatedBy(v *uint32) *IDMappingUpdate {
+func (_u *IDMappingUpdate) SetNillableCreatedBy(v *int64) *IDMappingUpdate {
 	if v != nil {
 		_u.SetCreatedBy(*v)
 	}
@@ -45,7 +45,7 @@ func (_u *IDMappingUpdate) SetNillableCreatedBy(v *uint32) *IDMappingUpdate {
 }
 
 // AddCreatedBy adds value to the "created_by" field.
-func (_u *IDMappingUpdate) AddCreatedBy(v int32) *IDMappingUpdate {
+func (_u *IDMappingUpdate) AddCreatedBy(v int64) *IDMappingUpdate {
 	_u.mutation.AddCreatedBy(v)
 	return _u
 }
@@ -57,14 +57,14 @@ func (_u *IDMappingUpdate) ClearCreatedBy() *IDMappingUpdate {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (_u *IDMappingUpdate) SetUpdatedBy(v uint32) *IDMappingUpdate {
+func (_u *IDMappingUpdate) SetUpdatedBy(v int64) *IDMappingUpdate {
 	_u.mutation.ResetUpdatedBy()
 	_u.mutation.SetUpdatedBy(v)
 	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (_u *IDMappingUpdate) SetNillableUpdatedBy(v *uint32) *IDMappingUpdate {
+func (_u *IDMappingUpdate) SetNillableUpdatedBy(v *int64) *IDMappingUpdate {
 	if v != nil {
 		_u.SetUpdatedBy(*v)
 	}
@@ -72,7 +72,7 @@ func (_u *IDMappingUpdate) SetNillableUpdatedBy(v *uint32) *IDMappingUpdate {
 }
 
 // AddUpdatedBy adds value to the "updated_by" field.
-func (_u *IDMappingUpdate) AddUpdatedBy(v int32) *IDMappingUpdate {
+func (_u *IDMappingUpdate) AddUpdatedBy(v int64) *IDMappingUpdate {
 	_u.mutation.AddUpdatedBy(v)
 	return _u
 }
@@ -84,14 +84,14 @@ func (_u *IDMappingUpdate) ClearUpdatedBy() *IDMappingUpdate {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (_u *IDMappingUpdate) SetDeletedBy(v uint32) *IDMappingUpdate {
+func (_u *IDMappingUpdate) SetDeletedBy(v int64) *IDMappingUpdate {
 	_u.mutation.ResetDeletedBy()
 	_u.mutation.SetDeletedBy(v)
 	return _u
 }
 
 // SetNillableDeletedBy sets the "deleted_by" field if the given value is not nil.
-func (_u *IDMappingUpdate) SetNillableDeletedBy(v *uint32) *IDMappingUpdate {
+func (_u *IDMappingUpdate) SetNillableDeletedBy(v *int64) *IDMappingUpdate {
 	if v != nil {
 		_u.SetDeletedBy(*v)
 	}
@@ -99,7 +99,7 @@ func (_u *IDMappingUpdate) SetNillableDeletedBy(v *uint32) *IDMappingUpdate {
 }
 
 // AddDeletedBy adds value to the "deleted_by" field.
-func (_u *IDMappingUpdate) AddDeletedBy(v int32) *IDMappingUpdate {
+func (_u *IDMappingUpdate) AddDeletedBy(v int64) *IDMappingUpdate {
 	_u.mutation.AddDeletedBy(v)
 	return _u
 }
@@ -386,7 +386,7 @@ func (_u *IDMappingUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if err := _u.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(idmapping.Table, idmapping.Columns, sqlgraph.NewFieldSpec(idmapping.FieldID, field.TypeUint32))
+	_spec := sqlgraph.NewUpdateSpec(idmapping.Table, idmapping.Columns, sqlgraph.NewFieldSpec(idmapping.FieldID, field.TypeInt64))
 	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -395,34 +395,34 @@ func (_u *IDMappingUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		}
 	}
 	if _u.mutation.TenantIDCleared() {
-		_spec.ClearField(idmapping.FieldTenantID, field.TypeUint32)
+		_spec.ClearField(idmapping.FieldTenantID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.CreatedBy(); ok {
-		_spec.SetField(idmapping.FieldCreatedBy, field.TypeUint32, value)
+		_spec.SetField(idmapping.FieldCreatedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedCreatedBy(); ok {
-		_spec.AddField(idmapping.FieldCreatedBy, field.TypeUint32, value)
+		_spec.AddField(idmapping.FieldCreatedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.CreatedByCleared() {
-		_spec.ClearField(idmapping.FieldCreatedBy, field.TypeUint32)
+		_spec.ClearField(idmapping.FieldCreatedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.UpdatedBy(); ok {
-		_spec.SetField(idmapping.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.SetField(idmapping.FieldUpdatedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
-		_spec.AddField(idmapping.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.AddField(idmapping.FieldUpdatedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.UpdatedByCleared() {
-		_spec.ClearField(idmapping.FieldUpdatedBy, field.TypeUint32)
+		_spec.ClearField(idmapping.FieldUpdatedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.DeletedBy(); ok {
-		_spec.SetField(idmapping.FieldDeletedBy, field.TypeUint32, value)
+		_spec.SetField(idmapping.FieldDeletedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedDeletedBy(); ok {
-		_spec.AddField(idmapping.FieldDeletedBy, field.TypeUint32, value)
+		_spec.AddField(idmapping.FieldDeletedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.DeletedByCleared() {
-		_spec.ClearField(idmapping.FieldDeletedBy, field.TypeUint32)
+		_spec.ClearField(idmapping.FieldDeletedBy, field.TypeInt64)
 	}
 	if _u.mutation.CreatedAtCleared() {
 		_spec.ClearField(idmapping.FieldCreatedAt, field.TypeTime)
@@ -519,14 +519,14 @@ type IDMappingUpdateOne struct {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (_u *IDMappingUpdateOne) SetCreatedBy(v uint32) *IDMappingUpdateOne {
+func (_u *IDMappingUpdateOne) SetCreatedBy(v int64) *IDMappingUpdateOne {
 	_u.mutation.ResetCreatedBy()
 	_u.mutation.SetCreatedBy(v)
 	return _u
 }
 
 // SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
-func (_u *IDMappingUpdateOne) SetNillableCreatedBy(v *uint32) *IDMappingUpdateOne {
+func (_u *IDMappingUpdateOne) SetNillableCreatedBy(v *int64) *IDMappingUpdateOne {
 	if v != nil {
 		_u.SetCreatedBy(*v)
 	}
@@ -534,7 +534,7 @@ func (_u *IDMappingUpdateOne) SetNillableCreatedBy(v *uint32) *IDMappingUpdateOn
 }
 
 // AddCreatedBy adds value to the "created_by" field.
-func (_u *IDMappingUpdateOne) AddCreatedBy(v int32) *IDMappingUpdateOne {
+func (_u *IDMappingUpdateOne) AddCreatedBy(v int64) *IDMappingUpdateOne {
 	_u.mutation.AddCreatedBy(v)
 	return _u
 }
@@ -546,14 +546,14 @@ func (_u *IDMappingUpdateOne) ClearCreatedBy() *IDMappingUpdateOne {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (_u *IDMappingUpdateOne) SetUpdatedBy(v uint32) *IDMappingUpdateOne {
+func (_u *IDMappingUpdateOne) SetUpdatedBy(v int64) *IDMappingUpdateOne {
 	_u.mutation.ResetUpdatedBy()
 	_u.mutation.SetUpdatedBy(v)
 	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (_u *IDMappingUpdateOne) SetNillableUpdatedBy(v *uint32) *IDMappingUpdateOne {
+func (_u *IDMappingUpdateOne) SetNillableUpdatedBy(v *int64) *IDMappingUpdateOne {
 	if v != nil {
 		_u.SetUpdatedBy(*v)
 	}
@@ -561,7 +561,7 @@ func (_u *IDMappingUpdateOne) SetNillableUpdatedBy(v *uint32) *IDMappingUpdateOn
 }
 
 // AddUpdatedBy adds value to the "updated_by" field.
-func (_u *IDMappingUpdateOne) AddUpdatedBy(v int32) *IDMappingUpdateOne {
+func (_u *IDMappingUpdateOne) AddUpdatedBy(v int64) *IDMappingUpdateOne {
 	_u.mutation.AddUpdatedBy(v)
 	return _u
 }
@@ -573,14 +573,14 @@ func (_u *IDMappingUpdateOne) ClearUpdatedBy() *IDMappingUpdateOne {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (_u *IDMappingUpdateOne) SetDeletedBy(v uint32) *IDMappingUpdateOne {
+func (_u *IDMappingUpdateOne) SetDeletedBy(v int64) *IDMappingUpdateOne {
 	_u.mutation.ResetDeletedBy()
 	_u.mutation.SetDeletedBy(v)
 	return _u
 }
 
 // SetNillableDeletedBy sets the "deleted_by" field if the given value is not nil.
-func (_u *IDMappingUpdateOne) SetNillableDeletedBy(v *uint32) *IDMappingUpdateOne {
+func (_u *IDMappingUpdateOne) SetNillableDeletedBy(v *int64) *IDMappingUpdateOne {
 	if v != nil {
 		_u.SetDeletedBy(*v)
 	}
@@ -588,7 +588,7 @@ func (_u *IDMappingUpdateOne) SetNillableDeletedBy(v *uint32) *IDMappingUpdateOn
 }
 
 // AddDeletedBy adds value to the "deleted_by" field.
-func (_u *IDMappingUpdateOne) AddDeletedBy(v int32) *IDMappingUpdateOne {
+func (_u *IDMappingUpdateOne) AddDeletedBy(v int64) *IDMappingUpdateOne {
 	_u.mutation.AddDeletedBy(v)
 	return _u
 }
@@ -888,7 +888,7 @@ func (_u *IDMappingUpdateOne) sqlSave(ctx context.Context) (_node *IDMapping, er
 	if err := _u.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(idmapping.Table, idmapping.Columns, sqlgraph.NewFieldSpec(idmapping.FieldID, field.TypeUint32))
+	_spec := sqlgraph.NewUpdateSpec(idmapping.Table, idmapping.Columns, sqlgraph.NewFieldSpec(idmapping.FieldID, field.TypeInt64))
 	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "IDMapping.id" for update`)}
@@ -914,34 +914,34 @@ func (_u *IDMappingUpdateOne) sqlSave(ctx context.Context) (_node *IDMapping, er
 		}
 	}
 	if _u.mutation.TenantIDCleared() {
-		_spec.ClearField(idmapping.FieldTenantID, field.TypeUint32)
+		_spec.ClearField(idmapping.FieldTenantID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.CreatedBy(); ok {
-		_spec.SetField(idmapping.FieldCreatedBy, field.TypeUint32, value)
+		_spec.SetField(idmapping.FieldCreatedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedCreatedBy(); ok {
-		_spec.AddField(idmapping.FieldCreatedBy, field.TypeUint32, value)
+		_spec.AddField(idmapping.FieldCreatedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.CreatedByCleared() {
-		_spec.ClearField(idmapping.FieldCreatedBy, field.TypeUint32)
+		_spec.ClearField(idmapping.FieldCreatedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.UpdatedBy(); ok {
-		_spec.SetField(idmapping.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.SetField(idmapping.FieldUpdatedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
-		_spec.AddField(idmapping.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.AddField(idmapping.FieldUpdatedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.UpdatedByCleared() {
-		_spec.ClearField(idmapping.FieldUpdatedBy, field.TypeUint32)
+		_spec.ClearField(idmapping.FieldUpdatedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.DeletedBy(); ok {
-		_spec.SetField(idmapping.FieldDeletedBy, field.TypeUint32, value)
+		_spec.SetField(idmapping.FieldDeletedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedDeletedBy(); ok {
-		_spec.AddField(idmapping.FieldDeletedBy, field.TypeUint32, value)
+		_spec.AddField(idmapping.FieldDeletedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.DeletedByCleared() {
-		_spec.ClearField(idmapping.FieldDeletedBy, field.TypeUint32)
+		_spec.ClearField(idmapping.FieldDeletedBy, field.TypeInt64)
 	}
 	if _u.mutation.CreatedAtCleared() {
 		_spec.ClearField(idmapping.FieldCreatedAt, field.TypeTime)

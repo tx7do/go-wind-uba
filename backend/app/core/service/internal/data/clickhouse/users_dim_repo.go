@@ -85,6 +85,6 @@ func (r *UsersDimRepo) List(ctx context.Context, req *paginationV1.PagingRequest
 	}
 	return &ubaV1.ListUserBehaviorProfileResponse{
 		Items: result.Items,
-		Total: result.Total,
+		Total: int64(result.Total),
 	}, nil
 }

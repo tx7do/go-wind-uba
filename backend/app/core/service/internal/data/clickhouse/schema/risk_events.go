@@ -9,14 +9,14 @@ import (
 
 type RiskEvents struct {
 	RiskEventID     *string           `ch:"risk_event_id"`
-	TenantID        *uint32           `ch:"tenant_id"`
-	UserID          *uint32           `ch:"user_id"`
+	TenantID        *int64            `ch:"tenant_id"`
+	UserID          *int64            `ch:"user_id"`
 	DeviceID        *string           `ch:"device_id"`
 	GlobalUserID    *string           `ch:"global_user_id"`
 	RiskType        *string           `ch:"risk_type"`
 	RiskLevel       *string           `ch:"risk_level"`
 	RiskScore       *float32          `ch:"risk_score"`
-	RuleID          *uint32           `ch:"rule_id"`
+	RuleID          *int64            `ch:"rule_id"`
 	RuleName        *string           `ch:"rule_name"`
 	RuleContext     map[string]string `ch:"rule_context"`
 	RelatedEventIDs []string          `ch:"related_event_ids"`

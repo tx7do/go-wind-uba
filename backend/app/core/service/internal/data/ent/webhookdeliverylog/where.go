@@ -10,47 +10,47 @@ import (
 )
 
 // ID filters vertices based on their ID field.
-func ID(id uint32) predicate.WebhookDeliveryLog {
+func ID(id int64) predicate.WebhookDeliveryLog {
 	return predicate.WebhookDeliveryLog(sql.FieldEQ(FieldID, id))
 }
 
 // IDEQ applies the EQ predicate on the ID field.
-func IDEQ(id uint32) predicate.WebhookDeliveryLog {
+func IDEQ(id int64) predicate.WebhookDeliveryLog {
 	return predicate.WebhookDeliveryLog(sql.FieldEQ(FieldID, id))
 }
 
 // IDNEQ applies the NEQ predicate on the ID field.
-func IDNEQ(id uint32) predicate.WebhookDeliveryLog {
+func IDNEQ(id int64) predicate.WebhookDeliveryLog {
 	return predicate.WebhookDeliveryLog(sql.FieldNEQ(FieldID, id))
 }
 
 // IDIn applies the In predicate on the ID field.
-func IDIn(ids ...uint32) predicate.WebhookDeliveryLog {
+func IDIn(ids ...int64) predicate.WebhookDeliveryLog {
 	return predicate.WebhookDeliveryLog(sql.FieldIn(FieldID, ids...))
 }
 
 // IDNotIn applies the NotIn predicate on the ID field.
-func IDNotIn(ids ...uint32) predicate.WebhookDeliveryLog {
+func IDNotIn(ids ...int64) predicate.WebhookDeliveryLog {
 	return predicate.WebhookDeliveryLog(sql.FieldNotIn(FieldID, ids...))
 }
 
 // IDGT applies the GT predicate on the ID field.
-func IDGT(id uint32) predicate.WebhookDeliveryLog {
+func IDGT(id int64) predicate.WebhookDeliveryLog {
 	return predicate.WebhookDeliveryLog(sql.FieldGT(FieldID, id))
 }
 
 // IDGTE applies the GTE predicate on the ID field.
-func IDGTE(id uint32) predicate.WebhookDeliveryLog {
+func IDGTE(id int64) predicate.WebhookDeliveryLog {
 	return predicate.WebhookDeliveryLog(sql.FieldGTE(FieldID, id))
 }
 
 // IDLT applies the LT predicate on the ID field.
-func IDLT(id uint32) predicate.WebhookDeliveryLog {
+func IDLT(id int64) predicate.WebhookDeliveryLog {
 	return predicate.WebhookDeliveryLog(sql.FieldLT(FieldID, id))
 }
 
 // IDLTE applies the LTE predicate on the ID field.
-func IDLTE(id uint32) predicate.WebhookDeliveryLog {
+func IDLTE(id int64) predicate.WebhookDeliveryLog {
 	return predicate.WebhookDeliveryLog(sql.FieldLTE(FieldID, id))
 }
 
@@ -70,12 +70,12 @@ func DeletedAt(v time.Time) predicate.WebhookDeliveryLog {
 }
 
 // TenantID applies equality check predicate on the "tenant_id" field. It's identical to TenantIDEQ.
-func TenantID(v uint32) predicate.WebhookDeliveryLog {
+func TenantID(v int64) predicate.WebhookDeliveryLog {
 	return predicate.WebhookDeliveryLog(sql.FieldEQ(FieldTenantID, v))
 }
 
 // WebhookID applies equality check predicate on the "webhook_id" field. It's identical to WebhookIDEQ.
-func WebhookID(v uint32) predicate.WebhookDeliveryLog {
+func WebhookID(v int64) predicate.WebhookDeliveryLog {
 	return predicate.WebhookDeliveryLog(sql.FieldEQ(FieldWebhookID, v))
 }
 
@@ -270,42 +270,42 @@ func DeletedAtNotNil() predicate.WebhookDeliveryLog {
 }
 
 // TenantIDEQ applies the EQ predicate on the "tenant_id" field.
-func TenantIDEQ(v uint32) predicate.WebhookDeliveryLog {
+func TenantIDEQ(v int64) predicate.WebhookDeliveryLog {
 	return predicate.WebhookDeliveryLog(sql.FieldEQ(FieldTenantID, v))
 }
 
 // TenantIDNEQ applies the NEQ predicate on the "tenant_id" field.
-func TenantIDNEQ(v uint32) predicate.WebhookDeliveryLog {
+func TenantIDNEQ(v int64) predicate.WebhookDeliveryLog {
 	return predicate.WebhookDeliveryLog(sql.FieldNEQ(FieldTenantID, v))
 }
 
 // TenantIDIn applies the In predicate on the "tenant_id" field.
-func TenantIDIn(vs ...uint32) predicate.WebhookDeliveryLog {
+func TenantIDIn(vs ...int64) predicate.WebhookDeliveryLog {
 	return predicate.WebhookDeliveryLog(sql.FieldIn(FieldTenantID, vs...))
 }
 
 // TenantIDNotIn applies the NotIn predicate on the "tenant_id" field.
-func TenantIDNotIn(vs ...uint32) predicate.WebhookDeliveryLog {
+func TenantIDNotIn(vs ...int64) predicate.WebhookDeliveryLog {
 	return predicate.WebhookDeliveryLog(sql.FieldNotIn(FieldTenantID, vs...))
 }
 
 // TenantIDGT applies the GT predicate on the "tenant_id" field.
-func TenantIDGT(v uint32) predicate.WebhookDeliveryLog {
+func TenantIDGT(v int64) predicate.WebhookDeliveryLog {
 	return predicate.WebhookDeliveryLog(sql.FieldGT(FieldTenantID, v))
 }
 
 // TenantIDGTE applies the GTE predicate on the "tenant_id" field.
-func TenantIDGTE(v uint32) predicate.WebhookDeliveryLog {
+func TenantIDGTE(v int64) predicate.WebhookDeliveryLog {
 	return predicate.WebhookDeliveryLog(sql.FieldGTE(FieldTenantID, v))
 }
 
 // TenantIDLT applies the LT predicate on the "tenant_id" field.
-func TenantIDLT(v uint32) predicate.WebhookDeliveryLog {
+func TenantIDLT(v int64) predicate.WebhookDeliveryLog {
 	return predicate.WebhookDeliveryLog(sql.FieldLT(FieldTenantID, v))
 }
 
 // TenantIDLTE applies the LTE predicate on the "tenant_id" field.
-func TenantIDLTE(v uint32) predicate.WebhookDeliveryLog {
+func TenantIDLTE(v int64) predicate.WebhookDeliveryLog {
 	return predicate.WebhookDeliveryLog(sql.FieldLTE(FieldTenantID, v))
 }
 
@@ -320,42 +320,42 @@ func TenantIDNotNil() predicate.WebhookDeliveryLog {
 }
 
 // WebhookIDEQ applies the EQ predicate on the "webhook_id" field.
-func WebhookIDEQ(v uint32) predicate.WebhookDeliveryLog {
+func WebhookIDEQ(v int64) predicate.WebhookDeliveryLog {
 	return predicate.WebhookDeliveryLog(sql.FieldEQ(FieldWebhookID, v))
 }
 
 // WebhookIDNEQ applies the NEQ predicate on the "webhook_id" field.
-func WebhookIDNEQ(v uint32) predicate.WebhookDeliveryLog {
+func WebhookIDNEQ(v int64) predicate.WebhookDeliveryLog {
 	return predicate.WebhookDeliveryLog(sql.FieldNEQ(FieldWebhookID, v))
 }
 
 // WebhookIDIn applies the In predicate on the "webhook_id" field.
-func WebhookIDIn(vs ...uint32) predicate.WebhookDeliveryLog {
+func WebhookIDIn(vs ...int64) predicate.WebhookDeliveryLog {
 	return predicate.WebhookDeliveryLog(sql.FieldIn(FieldWebhookID, vs...))
 }
 
 // WebhookIDNotIn applies the NotIn predicate on the "webhook_id" field.
-func WebhookIDNotIn(vs ...uint32) predicate.WebhookDeliveryLog {
+func WebhookIDNotIn(vs ...int64) predicate.WebhookDeliveryLog {
 	return predicate.WebhookDeliveryLog(sql.FieldNotIn(FieldWebhookID, vs...))
 }
 
 // WebhookIDGT applies the GT predicate on the "webhook_id" field.
-func WebhookIDGT(v uint32) predicate.WebhookDeliveryLog {
+func WebhookIDGT(v int64) predicate.WebhookDeliveryLog {
 	return predicate.WebhookDeliveryLog(sql.FieldGT(FieldWebhookID, v))
 }
 
 // WebhookIDGTE applies the GTE predicate on the "webhook_id" field.
-func WebhookIDGTE(v uint32) predicate.WebhookDeliveryLog {
+func WebhookIDGTE(v int64) predicate.WebhookDeliveryLog {
 	return predicate.WebhookDeliveryLog(sql.FieldGTE(FieldWebhookID, v))
 }
 
 // WebhookIDLT applies the LT predicate on the "webhook_id" field.
-func WebhookIDLT(v uint32) predicate.WebhookDeliveryLog {
+func WebhookIDLT(v int64) predicate.WebhookDeliveryLog {
 	return predicate.WebhookDeliveryLog(sql.FieldLT(FieldWebhookID, v))
 }
 
 // WebhookIDLTE applies the LTE predicate on the "webhook_id" field.
-func WebhookIDLTE(v uint32) predicate.WebhookDeliveryLog {
+func WebhookIDLTE(v int64) predicate.WebhookDeliveryLog {
 	return predicate.WebhookDeliveryLog(sql.FieldLTE(FieldWebhookID, v))
 }
 

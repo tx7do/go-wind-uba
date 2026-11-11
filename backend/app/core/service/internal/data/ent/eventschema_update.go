@@ -72,14 +72,14 @@ func (_u *EventSchemaUpdate) ClearDeletedAt() *EventSchemaUpdate {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (_u *EventSchemaUpdate) SetCreatedBy(v uint32) *EventSchemaUpdate {
+func (_u *EventSchemaUpdate) SetCreatedBy(v int64) *EventSchemaUpdate {
 	_u.mutation.ResetCreatedBy()
 	_u.mutation.SetCreatedBy(v)
 	return _u
 }
 
 // SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
-func (_u *EventSchemaUpdate) SetNillableCreatedBy(v *uint32) *EventSchemaUpdate {
+func (_u *EventSchemaUpdate) SetNillableCreatedBy(v *int64) *EventSchemaUpdate {
 	if v != nil {
 		_u.SetCreatedBy(*v)
 	}
@@ -87,7 +87,7 @@ func (_u *EventSchemaUpdate) SetNillableCreatedBy(v *uint32) *EventSchemaUpdate 
 }
 
 // AddCreatedBy adds value to the "created_by" field.
-func (_u *EventSchemaUpdate) AddCreatedBy(v int32) *EventSchemaUpdate {
+func (_u *EventSchemaUpdate) AddCreatedBy(v int64) *EventSchemaUpdate {
 	_u.mutation.AddCreatedBy(v)
 	return _u
 }
@@ -99,14 +99,14 @@ func (_u *EventSchemaUpdate) ClearCreatedBy() *EventSchemaUpdate {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (_u *EventSchemaUpdate) SetUpdatedBy(v uint32) *EventSchemaUpdate {
+func (_u *EventSchemaUpdate) SetUpdatedBy(v int64) *EventSchemaUpdate {
 	_u.mutation.ResetUpdatedBy()
 	_u.mutation.SetUpdatedBy(v)
 	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (_u *EventSchemaUpdate) SetNillableUpdatedBy(v *uint32) *EventSchemaUpdate {
+func (_u *EventSchemaUpdate) SetNillableUpdatedBy(v *int64) *EventSchemaUpdate {
 	if v != nil {
 		_u.SetUpdatedBy(*v)
 	}
@@ -114,7 +114,7 @@ func (_u *EventSchemaUpdate) SetNillableUpdatedBy(v *uint32) *EventSchemaUpdate 
 }
 
 // AddUpdatedBy adds value to the "updated_by" field.
-func (_u *EventSchemaUpdate) AddUpdatedBy(v int32) *EventSchemaUpdate {
+func (_u *EventSchemaUpdate) AddUpdatedBy(v int64) *EventSchemaUpdate {
 	_u.mutation.AddUpdatedBy(v)
 	return _u
 }
@@ -126,14 +126,14 @@ func (_u *EventSchemaUpdate) ClearUpdatedBy() *EventSchemaUpdate {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (_u *EventSchemaUpdate) SetDeletedBy(v uint32) *EventSchemaUpdate {
+func (_u *EventSchemaUpdate) SetDeletedBy(v int64) *EventSchemaUpdate {
 	_u.mutation.ResetDeletedBy()
 	_u.mutation.SetDeletedBy(v)
 	return _u
 }
 
 // SetNillableDeletedBy sets the "deleted_by" field if the given value is not nil.
-func (_u *EventSchemaUpdate) SetNillableDeletedBy(v *uint32) *EventSchemaUpdate {
+func (_u *EventSchemaUpdate) SetNillableDeletedBy(v *int64) *EventSchemaUpdate {
 	if v != nil {
 		_u.SetDeletedBy(*v)
 	}
@@ -141,7 +141,7 @@ func (_u *EventSchemaUpdate) SetNillableDeletedBy(v *uint32) *EventSchemaUpdate 
 }
 
 // AddDeletedBy adds value to the "deleted_by" field.
-func (_u *EventSchemaUpdate) AddDeletedBy(v int32) *EventSchemaUpdate {
+func (_u *EventSchemaUpdate) AddDeletedBy(v int64) *EventSchemaUpdate {
 	_u.mutation.AddDeletedBy(v)
 	return _u
 }
@@ -327,7 +327,7 @@ func (_u *EventSchemaUpdate) sqlSave(ctx context.Context) (_node int, err error)
 	if err := _u.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(eventschema.Table, eventschema.Columns, sqlgraph.NewFieldSpec(eventschema.FieldID, field.TypeUint32))
+	_spec := sqlgraph.NewUpdateSpec(eventschema.Table, eventschema.Columns, sqlgraph.NewFieldSpec(eventschema.FieldID, field.TypeInt64))
 	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -351,34 +351,34 @@ func (_u *EventSchemaUpdate) sqlSave(ctx context.Context) (_node int, err error)
 		_spec.ClearField(eventschema.FieldDeletedAt, field.TypeTime)
 	}
 	if value, ok := _u.mutation.CreatedBy(); ok {
-		_spec.SetField(eventschema.FieldCreatedBy, field.TypeUint32, value)
+		_spec.SetField(eventschema.FieldCreatedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedCreatedBy(); ok {
-		_spec.AddField(eventschema.FieldCreatedBy, field.TypeUint32, value)
+		_spec.AddField(eventschema.FieldCreatedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.CreatedByCleared() {
-		_spec.ClearField(eventschema.FieldCreatedBy, field.TypeUint32)
+		_spec.ClearField(eventschema.FieldCreatedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.UpdatedBy(); ok {
-		_spec.SetField(eventschema.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.SetField(eventschema.FieldUpdatedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
-		_spec.AddField(eventschema.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.AddField(eventschema.FieldUpdatedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.UpdatedByCleared() {
-		_spec.ClearField(eventschema.FieldUpdatedBy, field.TypeUint32)
+		_spec.ClearField(eventschema.FieldUpdatedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.DeletedBy(); ok {
-		_spec.SetField(eventschema.FieldDeletedBy, field.TypeUint32, value)
+		_spec.SetField(eventschema.FieldDeletedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedDeletedBy(); ok {
-		_spec.AddField(eventschema.FieldDeletedBy, field.TypeUint32, value)
+		_spec.AddField(eventschema.FieldDeletedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.DeletedByCleared() {
-		_spec.ClearField(eventschema.FieldDeletedBy, field.TypeUint32)
+		_spec.ClearField(eventschema.FieldDeletedBy, field.TypeInt64)
 	}
 	if _u.mutation.TenantIDCleared() {
-		_spec.ClearField(eventschema.FieldTenantID, field.TypeUint32)
+		_spec.ClearField(eventschema.FieldTenantID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.EventName(); ok {
 		_spec.SetField(eventschema.FieldEventName, field.TypeString, value)
@@ -484,14 +484,14 @@ func (_u *EventSchemaUpdateOne) ClearDeletedAt() *EventSchemaUpdateOne {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (_u *EventSchemaUpdateOne) SetCreatedBy(v uint32) *EventSchemaUpdateOne {
+func (_u *EventSchemaUpdateOne) SetCreatedBy(v int64) *EventSchemaUpdateOne {
 	_u.mutation.ResetCreatedBy()
 	_u.mutation.SetCreatedBy(v)
 	return _u
 }
 
 // SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
-func (_u *EventSchemaUpdateOne) SetNillableCreatedBy(v *uint32) *EventSchemaUpdateOne {
+func (_u *EventSchemaUpdateOne) SetNillableCreatedBy(v *int64) *EventSchemaUpdateOne {
 	if v != nil {
 		_u.SetCreatedBy(*v)
 	}
@@ -499,7 +499,7 @@ func (_u *EventSchemaUpdateOne) SetNillableCreatedBy(v *uint32) *EventSchemaUpda
 }
 
 // AddCreatedBy adds value to the "created_by" field.
-func (_u *EventSchemaUpdateOne) AddCreatedBy(v int32) *EventSchemaUpdateOne {
+func (_u *EventSchemaUpdateOne) AddCreatedBy(v int64) *EventSchemaUpdateOne {
 	_u.mutation.AddCreatedBy(v)
 	return _u
 }
@@ -511,14 +511,14 @@ func (_u *EventSchemaUpdateOne) ClearCreatedBy() *EventSchemaUpdateOne {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (_u *EventSchemaUpdateOne) SetUpdatedBy(v uint32) *EventSchemaUpdateOne {
+func (_u *EventSchemaUpdateOne) SetUpdatedBy(v int64) *EventSchemaUpdateOne {
 	_u.mutation.ResetUpdatedBy()
 	_u.mutation.SetUpdatedBy(v)
 	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (_u *EventSchemaUpdateOne) SetNillableUpdatedBy(v *uint32) *EventSchemaUpdateOne {
+func (_u *EventSchemaUpdateOne) SetNillableUpdatedBy(v *int64) *EventSchemaUpdateOne {
 	if v != nil {
 		_u.SetUpdatedBy(*v)
 	}
@@ -526,7 +526,7 @@ func (_u *EventSchemaUpdateOne) SetNillableUpdatedBy(v *uint32) *EventSchemaUpda
 }
 
 // AddUpdatedBy adds value to the "updated_by" field.
-func (_u *EventSchemaUpdateOne) AddUpdatedBy(v int32) *EventSchemaUpdateOne {
+func (_u *EventSchemaUpdateOne) AddUpdatedBy(v int64) *EventSchemaUpdateOne {
 	_u.mutation.AddUpdatedBy(v)
 	return _u
 }
@@ -538,14 +538,14 @@ func (_u *EventSchemaUpdateOne) ClearUpdatedBy() *EventSchemaUpdateOne {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (_u *EventSchemaUpdateOne) SetDeletedBy(v uint32) *EventSchemaUpdateOne {
+func (_u *EventSchemaUpdateOne) SetDeletedBy(v int64) *EventSchemaUpdateOne {
 	_u.mutation.ResetDeletedBy()
 	_u.mutation.SetDeletedBy(v)
 	return _u
 }
 
 // SetNillableDeletedBy sets the "deleted_by" field if the given value is not nil.
-func (_u *EventSchemaUpdateOne) SetNillableDeletedBy(v *uint32) *EventSchemaUpdateOne {
+func (_u *EventSchemaUpdateOne) SetNillableDeletedBy(v *int64) *EventSchemaUpdateOne {
 	if v != nil {
 		_u.SetDeletedBy(*v)
 	}
@@ -553,7 +553,7 @@ func (_u *EventSchemaUpdateOne) SetNillableDeletedBy(v *uint32) *EventSchemaUpda
 }
 
 // AddDeletedBy adds value to the "deleted_by" field.
-func (_u *EventSchemaUpdateOne) AddDeletedBy(v int32) *EventSchemaUpdateOne {
+func (_u *EventSchemaUpdateOne) AddDeletedBy(v int64) *EventSchemaUpdateOne {
 	_u.mutation.AddDeletedBy(v)
 	return _u
 }
@@ -752,7 +752,7 @@ func (_u *EventSchemaUpdateOne) sqlSave(ctx context.Context) (_node *EventSchema
 	if err := _u.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(eventschema.Table, eventschema.Columns, sqlgraph.NewFieldSpec(eventschema.FieldID, field.TypeUint32))
+	_spec := sqlgraph.NewUpdateSpec(eventschema.Table, eventschema.Columns, sqlgraph.NewFieldSpec(eventschema.FieldID, field.TypeInt64))
 	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "EventSchema.id" for update`)}
@@ -793,34 +793,34 @@ func (_u *EventSchemaUpdateOne) sqlSave(ctx context.Context) (_node *EventSchema
 		_spec.ClearField(eventschema.FieldDeletedAt, field.TypeTime)
 	}
 	if value, ok := _u.mutation.CreatedBy(); ok {
-		_spec.SetField(eventschema.FieldCreatedBy, field.TypeUint32, value)
+		_spec.SetField(eventschema.FieldCreatedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedCreatedBy(); ok {
-		_spec.AddField(eventschema.FieldCreatedBy, field.TypeUint32, value)
+		_spec.AddField(eventschema.FieldCreatedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.CreatedByCleared() {
-		_spec.ClearField(eventschema.FieldCreatedBy, field.TypeUint32)
+		_spec.ClearField(eventschema.FieldCreatedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.UpdatedBy(); ok {
-		_spec.SetField(eventschema.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.SetField(eventschema.FieldUpdatedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
-		_spec.AddField(eventschema.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.AddField(eventschema.FieldUpdatedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.UpdatedByCleared() {
-		_spec.ClearField(eventschema.FieldUpdatedBy, field.TypeUint32)
+		_spec.ClearField(eventschema.FieldUpdatedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.DeletedBy(); ok {
-		_spec.SetField(eventschema.FieldDeletedBy, field.TypeUint32, value)
+		_spec.SetField(eventschema.FieldDeletedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedDeletedBy(); ok {
-		_spec.AddField(eventschema.FieldDeletedBy, field.TypeUint32, value)
+		_spec.AddField(eventschema.FieldDeletedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.DeletedByCleared() {
-		_spec.ClearField(eventschema.FieldDeletedBy, field.TypeUint32)
+		_spec.ClearField(eventschema.FieldDeletedBy, field.TypeInt64)
 	}
 	if _u.mutation.TenantIDCleared() {
-		_spec.ClearField(eventschema.FieldTenantID, field.TypeUint32)
+		_spec.ClearField(eventschema.FieldTenantID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.EventName(); ok {
 		_spec.SetField(eventschema.FieldEventName, field.TypeString, value)

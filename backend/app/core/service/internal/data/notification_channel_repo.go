@@ -1,8 +1,8 @@
 package data
 
 import (
-	"github.com/go-kratos/kratos/v2/log"
 	"context"
+	"github.com/go-kratos/kratos/v2/log"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
@@ -142,9 +142,9 @@ func (r *NotificationChannelRepo) querySecretFlagsByIDs(ctx context.Context, ite
 		r.log.Errorf("query credential flags failed: %s", err.Error())
 		return
 	}
-	hasSmtpPwd := make(map[uint32]bool, len(entities))
-	hasWebhookSecret := make(map[uint32]bool, len(entities))
-	hasSmsSecret := make(map[uint32]bool, len(entities))
+	hasSmtpPwd := make(map[int64]bool, len(entities))
+	hasWebhookSecret := make(map[int64]bool, len(entities))
+	hasSmsSecret := make(map[int64]bool, len(entities))
 	for _, e := range entities {
 		hasSmtpPwd[e.ID] = e.SMTPPassword != nil
 		hasWebhookSecret[e.ID] = e.WebhookSecret != nil
@@ -177,7 +177,7 @@ func (r *NotificationChannelRepo) queryTypeByIDs(ctx context.Context, items []*n
 		r.log.Errorf("query channel types failed: %s", err.Error())
 		return
 	}
-	types := make(map[uint32]notificationchannel.Type, len(entities))
+	types := make(map[int64]notificationchannel.Type, len(entities))
 	for _, e := range entities {
 		if e.Type != "" {
 			types[e.ID] = e.Type
@@ -206,7 +206,7 @@ func (r *NotificationChannelRepo) queryEnabledByIDs(ctx context.Context, items [
 		r.log.Errorf("query channel statuses failed: %s", err.Error())
 		return
 	}
-	statuses := make(map[uint32]notificationchannel.Status, len(entities))
+	statuses := make(map[int64]notificationchannel.Status, len(entities))
 	for _, e := range entities {
 		if e.Status != nil {
 			statuses[e.ID] = *e.Status
@@ -218,7 +218,7 @@ func (r *NotificationChannelRepo) queryEnabledByIDs(ctx context.Context, items [
 	}
 }
 
-func (r *NotificationChannelRepo) IsExist(ctx context.Context, id uint32) (bool, error) {
+func (r *NotificationChannelRepo) IsExist(ctx context.Context, id int64) (bool, error) {
 	exist, err := r.entClient.Client().NotificationChannel.Query().
 		Where(notificationchannel.IDEQ(id)).
 		Exist(ctx)
@@ -230,7 +230,7 @@ func (r *NotificationChannelRepo) IsExist(ctx context.Context, id uint32) (bool,
 }
 
 // Get 按 ID 查询渠道（脱敏：DTO 不含密码，仅 HasPassword 标识）。
-func (r *NotificationChannelRepo) Get(ctx context.Context, id uint32) (*notificationChannelV1.NotificationChannel, error) {
+func (r *NotificationChannelRepo) Get(ctx context.Context, id int64) (*notificationChannelV1.NotificationChannel, error) {
 	entity, err := r.entClient.Client().NotificationChannel.Get(ctx, id)
 	if err != nil {
 		r.log.Errorf("get notification channel [%d] failed: %s", id, err.Error())
@@ -257,7 +257,7 @@ func (r *NotificationChannelRepo) Get(ctx context.Context, id uint32) (*notifica
 }
 
 // Create 创建渠道；password 明文经 EncryptIfNeeded 加密后落库。
-func (r *NotificationChannelRepo) Create(ctx context.Context, req *notificationChannelV1.CreateNotificationChannelRequest, operatorID uint32) (uint32, error) {
+func (r *NotificationChannelRepo) Create(ctx context.Context, req *notificationChannelV1.CreateNotificationChannelRequest, operatorID int64) (int64, error) {
 	if req == nil || req.Data == nil {
 		return 0, adminV1.ErrorBadRequest("invalid request")
 	}
@@ -328,7 +328,7 @@ func (r *NotificationChannelRepo) Create(ctx context.Context, req *notificationC
 }
 
 // Update 更新渠道；password 留空表示不修改已存密码。
-func (r *NotificationChannelRepo) Update(ctx context.Context, req *notificationChannelV1.UpdateNotificationChannelRequest, operatorID uint32) error {
+func (r *NotificationChannelRepo) Update(ctx context.Context, req *notificationChannelV1.UpdateNotificationChannelRequest, operatorID int64) error {
 	if req == nil || req.Data == nil {
 		return adminV1.ErrorBadRequest("invalid request")
 	}
@@ -393,7 +393,7 @@ func (r *NotificationChannelRepo) Update(ctx context.Context, req *notificationC
 	return err
 }
 
-func (r *NotificationChannelRepo) Delete(ctx context.Context, id uint32) error {
+func (r *NotificationChannelRepo) Delete(ctx context.Context, id int64) error {
 	if id == 0 {
 		return adminV1.ErrorBadRequest("id is required")
 	}
@@ -411,7 +411,7 @@ func (r *NotificationChannelRepo) Delete(ctx context.Context, id uint32) error {
 // ID 是这条配置在 sys_notification_channels 里的主键：渠道自选后还要靠它把
 // "实际用了哪个账号"写回投递台账。
 type SmtpAccount struct {
-	ID       uint32
+	ID       int64
 	Host     string
 	Port     uint32
 	Username string
@@ -467,7 +467,7 @@ func (r *NotificationChannelRepo) GetFirstEnabledEmailChannel(ctx context.Contex
 }
 
 // GetDecryptedSmtpAccount 取渠道的解密 SMTP 配置。
-func (r *NotificationChannelRepo) GetDecryptedSmtpAccount(ctx context.Context, id uint32) (*SmtpAccount, error) {
+func (r *NotificationChannelRepo) GetDecryptedSmtpAccount(ctx context.Context, id int64) (*SmtpAccount, error) {
 	entity, err := r.entClient.Client().NotificationChannel.Query().
 		Where(notificationchannel.IDEQ(id)).
 		Only(ctx)
@@ -504,7 +504,7 @@ func (r *NotificationChannelRepo) GetDecryptedSmtpAccount(ctx context.Context, i
 // 与 SmtpAccount 同形：ID 是"实际用了哪条渠道配置"这条事实的来源，
 // URL 是回调地址，Secret 为空表示不签名（签名头不下发）。
 type WebhookAccount struct {
-	ID     uint32
+	ID     int64
 	URL    string
 	Secret string
 
@@ -539,7 +539,7 @@ func (r *NotificationChannelRepo) GetFirstEnabledWebhookChannel(ctx context.Cont
 
 // GetDecryptedWebhookAccount 取指定渠道的解密 WEBHOOK 配置；类型不符即报错，
 // 免得一条 SMTP 行被当 webhook 目标使（反过来由 EmailSender.resolveAccount 挡）。
-func (r *NotificationChannelRepo) GetDecryptedWebhookAccount(ctx context.Context, id uint32) (*WebhookAccount, error) {
+func (r *NotificationChannelRepo) GetDecryptedWebhookAccount(ctx context.Context, id int64) (*WebhookAccount, error) {
 	entity, err := r.entClient.Client().NotificationChannel.Query().
 		Where(notificationchannel.IDEQ(id)).
 		Only(ctx)
@@ -594,7 +594,7 @@ func statusFromEnabled(enabled bool) notificationchannel.Status {
 // 与 SmtpAccount/WebhookAccount 同形：ID 是"实际用了哪条渠道配置"的台账锚。
 // Provider 保持字符串原值（ALIYUN/TENCENT），认不出的值由 sender 报错而非悄悄换厂商。
 type SmsAccount struct {
-	ID       uint32
+	ID       int64
 	Provider string
 	// AccessKeyID / AccessSecret 服务商访问密钥对；Secret 为空即配置不全，sender 拦下。
 	AccessKeyID  string
@@ -632,7 +632,7 @@ func (r *NotificationChannelRepo) GetFirstEnabledSmsChannel(ctx context.Context)
 
 // GetDecryptedSmsAccount 取指定渠道的解密 SMS 配置；类型不符即报错，
 // 免得一条 EMAIL/WEBHOOK 行被当短信账号使（反向守卫在 SmsSender.resolveAccount）。
-func (r *NotificationChannelRepo) GetDecryptedSmsAccount(ctx context.Context, id uint32) (*SmsAccount, error) {
+func (r *NotificationChannelRepo) GetDecryptedSmsAccount(ctx context.Context, id int64) (*SmsAccount, error) {
 	entity, err := r.entClient.Client().NotificationChannel.Query().
 		Where(notificationchannel.IDEQ(id)).
 		Only(ctx)
@@ -688,7 +688,7 @@ func derefStr(v *string) string {
 	return *v
 }
 
-// derefUint32 安全解引用 uint32 指针。
+// derefUint32 安全解引用 int64 指针。
 func derefUint32(v *uint32) uint32 {
 	if v == nil {
 		return 0

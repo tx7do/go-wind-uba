@@ -11,18 +11,18 @@ import (
 
 	"go-wind-uba/app/core/service/internal/service"
 
+	aiV1 "go-wind-uba/api/gen/go/ai/service/v1"
 	auditV1 "go-wind-uba/api/gen/go/audit/service/v1"
 	authenticationV1 "go-wind-uba/api/gen/go/authentication/service/v1"
 	dictV1 "go-wind-uba/api/gen/go/dict/service/v1"
 	identityV1 "go-wind-uba/api/gen/go/identity/service/v1"
 	internalMessageV1 "go-wind-uba/api/gen/go/internal_message/service/v1"
+	notificationV1 "go-wind-uba/api/gen/go/notification/service/v1"
+	notificationChannelV1 "go-wind-uba/api/gen/go/notification_channel/service/v1"
 	permissionV1 "go-wind-uba/api/gen/go/permission/service/v1"
 	resourceV1 "go-wind-uba/api/gen/go/resource/service/v1"
 	storageV1 "go-wind-uba/api/gen/go/storage/service/v1"
 	taskV1 "go-wind-uba/api/gen/go/task/service/v1"
-	notificationChannelV1 "go-wind-uba/api/gen/go/notification_channel/service/v1"
-	notificationV1 "go-wind-uba/api/gen/go/notification/service/v1"
-	aiV1 "go-wind-uba/api/gen/go/ai/service/v1"
 	ubaV1 "go-wind-uba/api/gen/go/uba/service/v1"
 
 	"go-wind-uba/pkg/middleware/ent"

@@ -78,7 +78,7 @@ func (r *TagDefinitionRepo) Count(ctx context.Context, req *paginationV1.PagingR
 	}
 
 	return &ubaV1.CountTagDefinitionResponse{
-		Count: uint64(count),
+		Count: int64(count),
 	}, nil
 }
 
@@ -129,7 +129,7 @@ func (r *TagDefinitionRepo) ListDueDynamicTags(ctx context.Context, now time.Tim
 }
 
 // UpdateRefreshState 刷新完成后回写时间。
-func (r *TagDefinitionRepo) UpdateRefreshState(ctx context.Context, id uint32, refreshedAt time.Time) error {
+func (r *TagDefinitionRepo) UpdateRefreshState(ctx context.Context, id int64, refreshedAt time.Time) error {
 	err := r.entClient.Client().TagDefinition.UpdateOneID(id).
 		SetLastRefreshedAt(refreshedAt).
 		SetUpdatedAt(refreshedAt).
@@ -140,7 +140,7 @@ func (r *TagDefinitionRepo) UpdateRefreshState(ctx context.Context, id uint32, r
 	}
 	return nil
 }
-func (r *TagDefinitionRepo) IsExist(ctx context.Context, id uint32) (bool, error) {
+func (r *TagDefinitionRepo) IsExist(ctx context.Context, id int64) (bool, error) {
 	exist, err := r.entClient.Client().TagDefinition.Query().
 		Where(tagdefinition.IDEQ(id)).
 		Exist(ctx)

@@ -39,12 +39,12 @@ func (Campaign) Fields() []ent.Field {
 			Optional().
 			Nillable(),
 
-		field.Uint32("app_id").
+		field.Int64("app_id").
 			Comment("关联应用ID").
 			Optional().
 			Nillable(),
 
-		field.Uint32("segment_id").
+		field.Int64("segment_id").
 			Comment("目标分群ID（uba_segments.id）"),
 
 		field.String("title").
@@ -96,10 +96,10 @@ func (Campaign) Fields() []ent.Field {
 
 func (Campaign) Mixin() []ent.Mixin {
 	return []ent.Mixin{
-		mixin.AutoIncrementId{},
+		mixin.AutoIncrementId64{},
 		mixin.TimeAt{},
-		mixin.OperatorID{},
-		mixin.TenantID[uint32]{},
+		mixin.OperatorID64{},
+		mixin.TenantID[int64]{},
 	}
 }
 

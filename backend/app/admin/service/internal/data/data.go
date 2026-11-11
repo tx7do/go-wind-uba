@@ -1,8 +1,8 @@
 package data
 
 import (
-	notificationChannelV1 "go-wind-uba/api/gen/go/notification_channel/service/v1"
 	notificationV1 "go-wind-uba/api/gen/go/notification/service/v1"
+	notificationChannelV1 "go-wind-uba/api/gen/go/notification_channel/service/v1"
 	ubaV1 "go-wind-uba/api/gen/go/uba/service/v1"
 
 	"github.com/redis/go-redis/v9"

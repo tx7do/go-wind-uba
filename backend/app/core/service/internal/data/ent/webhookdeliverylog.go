@@ -17,7 +17,7 @@ type WebhookDeliveryLog struct {
 	config `json:"-"`
 	// ID of the ent.
 	// id
-	ID uint32 `json:"id,omitempty"`
+	ID int64 `json:"id,omitempty"`
 	// 创建时间
 	CreatedAt *time.Time `json:"created_at,omitempty"`
 	// 更新时间
@@ -25,9 +25,9 @@ type WebhookDeliveryLog struct {
 	// 删除时间
 	DeletedAt *time.Time `json:"deleted_at,omitempty"`
 	// 租户ID
-	TenantID *uint32 `json:"tenant_id,omitempty"`
+	TenantID *int64 `json:"tenant_id,omitempty"`
 	// Webhook配置ID
-	WebhookID uint32 `json:"webhook_id,omitempty"`
+	WebhookID int64 `json:"webhook_id,omitempty"`
 	// 触发事件类型，如 risk.high / alert.triggered
 	EventType *string `json:"event_type,omitempty"`
 	// 发送的payload内容
@@ -80,7 +80,7 @@ func (_m *WebhookDeliveryLog) assignValues(columns []string, values []any) error
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			_m.ID = uint32(value.Int64)
+			_m.ID = int64(value.Int64)
 		case webhookdeliverylog.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
@@ -106,14 +106,14 @@ func (_m *WebhookDeliveryLog) assignValues(columns []string, values []any) error
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field tenant_id", values[i])
 			} else if value.Valid {
-				_m.TenantID = new(uint32)
-				*_m.TenantID = uint32(value.Int64)
+				_m.TenantID = new(int64)
+				*_m.TenantID = value.Int64
 			}
 		case webhookdeliverylog.FieldWebhookID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field webhook_id", values[i])
 			} else if value.Valid {
-				_m.WebhookID = uint32(value.Int64)
+				_m.WebhookID = value.Int64
 			}
 		case webhookdeliverylog.FieldEventType:
 			if value, ok := values[i].(*sql.NullString); !ok {

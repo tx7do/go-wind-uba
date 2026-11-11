@@ -31,13 +31,13 @@ message BehaviorEvent {
     json_name = "eventId",
     (gnostic.openapi.v3.property) = {description: "事件ID，建议使用 UUID，作为事件的唯一标识，同时也可用于路由和去重"}
   ]; // 事件ID，建议使用 UUID，作为事件的唯一标识，同时也可用于路由和去重
-  uint32 tenant_id = 2 [
+  int64 tenant_id = 2 [
     json_name = "tenantId",
     (gnostic.openapi.v3.property) = {description: "租户ID，事件所属的租户，用于多租户隔离"}
   ]; // 租户ID，事件所属的租户，用于多租户隔离
 
   // 主体：Who
-  uint32 user_id = 3 [
+  int64 user_id = 3 [
     json_name = "userId",
     (gnostic.openapi.v3.property) = {description: "用户ID，事件的主体，可以是用户、设备、账号等，具体含义由业务定义"}
   ]; // 用户ID，事件的主体，可以是用户、设备、账号等，具体含义由业务定义
@@ -256,7 +256,7 @@ message BehaviorEvent {
 
 message ListBehaviorEventResponse {
   repeated BehaviorEvent items = 1;
-  uint64 total = 2;
+  int64 total = 2;
 }
 
 // 查询行为事件详情请求

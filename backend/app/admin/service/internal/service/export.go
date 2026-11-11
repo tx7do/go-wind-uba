@@ -49,7 +49,7 @@ type ExportOptions[T any] struct {
 	Columns      []ExportColumn[T]
 	// FetchPage 拉第 page 页（1 起）。实现方必须复用列表接口的同一查询语义
 	// （query 过滤、orderBy 排序），"导出的即当前搜索看到的"才成立，行序也有稳定含义。
-	FetchPage func(ctx context.Context, page, pageSize uint32) ([]T, error)
+	FetchPage func(ctx context.Context, page, pageSize int64) ([]T, error)
 }
 
 // BuildExport 按页拉满全部数据并编码为 xlsx/csv。
@@ -71,7 +71,7 @@ func BuildExport[T any](ctx context.Context, opt ExportOptions[T]) (*ExportPaylo
 
 	rows := make([][]string, 0, ExportPageSize)
 	truncated := false
-	for page := uint32(1); ; page++ {
+	for page := int64(1); ; page++ {
 		if err := ctx.Err(); err != nil {
 			return nil, err
 		}
@@ -92,7 +92,7 @@ func BuildExport[T any](ctx context.Context, opt ExportOptions[T]) (*ExportPaylo
 			}
 			rows = append(rows, row)
 		}
-		if truncated || uint32(len(items)) < ExportPageSize {
+		if truncated || int64(len(items)) < ExportPageSize {
 			break
 		}
 	}
@@ -221,6 +221,13 @@ func exportStr(p *string) string {
 }
 
 func exportUint32(p *uint32) string {
+	if p == nil {
+		return ""
+	}
+	return fmt.Sprintf("%d", *p)
+}
+
+func exportInt64(p *int64) string {
 	if p == nil {
 		return ""
 	}

@@ -5,6 +5,6 @@ package data
 // FlagVariantStat A/B 实验的单变体曝光/转化统计。
 type FlagVariantStat struct {
 	Variant        string
-	ExposedUsers   uint64
-	ConvertedUsers uint64
+	ExposedUsers   int64
+	ConvertedUsers int64
 }

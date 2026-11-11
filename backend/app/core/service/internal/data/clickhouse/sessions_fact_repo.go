@@ -86,6 +86,6 @@ func (r *SessionsFactRepo) List(ctx context.Context, req *paginationV1.PagingReq
 	}
 	return &ubaV1.ListSessionResponse{
 		Items: result.Items,
-		Total: result.Total,
+		Total: int64(result.Total),
 	}, nil
 }

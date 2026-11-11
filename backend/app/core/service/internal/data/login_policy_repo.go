@@ -110,7 +110,7 @@ func (r *LoginPolicyRepo) List(ctx context.Context, req *paginationV1.PagingRequ
 	}, nil
 }
 
-func (r *LoginPolicyRepo) IsExist(ctx context.Context, id uint32) (bool, error) {
+func (r *LoginPolicyRepo) IsExist(ctx context.Context, id int64) (bool, error) {
 	exist, err := r.entClient.Client().LoginPolicy.Query().
 		Where(loginpolicy.IDEQ(id)).
 		Exist(ctx)

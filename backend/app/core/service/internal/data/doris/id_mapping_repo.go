@@ -106,8 +106,8 @@ LIMIT ?`
 	pairs := make([]data.IdentityPair, 0, 1024)
 	for rows.Next() {
 		var (
-			tenantID uint32
-			userID   uint32
+			tenantID int64
+			userID   int64
 			deviceID string
 		)
 		if err := rows.Scan(&tenantID, &userID, &deviceID); err != nil {
@@ -136,6 +136,6 @@ func (r *IDMappingRepo) List(ctx context.Context, req *paginationV1.PagingReques
 	}
 	return &ubaV1.ListIDMappingResponse{
 		Items: result.Items,
-		Total: result.Total,
+		Total: int64(result.Total),
 	}, nil
 }

@@ -23,13 +23,13 @@ type IDMappingCreate struct {
 }
 
 // SetTenantID sets the "tenant_id" field.
-func (_c *IDMappingCreate) SetTenantID(v uint32) *IDMappingCreate {
+func (_c *IDMappingCreate) SetTenantID(v int64) *IDMappingCreate {
 	_c.mutation.SetTenantID(v)
 	return _c
 }
 
 // SetNillableTenantID sets the "tenant_id" field if the given value is not nil.
-func (_c *IDMappingCreate) SetNillableTenantID(v *uint32) *IDMappingCreate {
+func (_c *IDMappingCreate) SetNillableTenantID(v *int64) *IDMappingCreate {
 	if v != nil {
 		_c.SetTenantID(*v)
 	}
@@ -37,13 +37,13 @@ func (_c *IDMappingCreate) SetNillableTenantID(v *uint32) *IDMappingCreate {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (_c *IDMappingCreate) SetCreatedBy(v uint32) *IDMappingCreate {
+func (_c *IDMappingCreate) SetCreatedBy(v int64) *IDMappingCreate {
 	_c.mutation.SetCreatedBy(v)
 	return _c
 }
 
 // SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
-func (_c *IDMappingCreate) SetNillableCreatedBy(v *uint32) *IDMappingCreate {
+func (_c *IDMappingCreate) SetNillableCreatedBy(v *int64) *IDMappingCreate {
 	if v != nil {
 		_c.SetCreatedBy(*v)
 	}
@@ -51,13 +51,13 @@ func (_c *IDMappingCreate) SetNillableCreatedBy(v *uint32) *IDMappingCreate {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (_c *IDMappingCreate) SetUpdatedBy(v uint32) *IDMappingCreate {
+func (_c *IDMappingCreate) SetUpdatedBy(v int64) *IDMappingCreate {
 	_c.mutation.SetUpdatedBy(v)
 	return _c
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (_c *IDMappingCreate) SetNillableUpdatedBy(v *uint32) *IDMappingCreate {
+func (_c *IDMappingCreate) SetNillableUpdatedBy(v *int64) *IDMappingCreate {
 	if v != nil {
 		_c.SetUpdatedBy(*v)
 	}
@@ -65,13 +65,13 @@ func (_c *IDMappingCreate) SetNillableUpdatedBy(v *uint32) *IDMappingCreate {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (_c *IDMappingCreate) SetDeletedBy(v uint32) *IDMappingCreate {
+func (_c *IDMappingCreate) SetDeletedBy(v int64) *IDMappingCreate {
 	_c.mutation.SetDeletedBy(v)
 	return _c
 }
 
 // SetNillableDeletedBy sets the "deleted_by" field if the given value is not nil.
-func (_c *IDMappingCreate) SetNillableDeletedBy(v *uint32) *IDMappingCreate {
+func (_c *IDMappingCreate) SetNillableDeletedBy(v *int64) *IDMappingCreate {
 	if v != nil {
 		_c.SetDeletedBy(*v)
 	}
@@ -239,7 +239,7 @@ func (_c *IDMappingCreate) SetProperties(v map[string]string) *IDMappingCreate {
 }
 
 // SetID sets the "id" field.
-func (_c *IDMappingCreate) SetID(v uint32) *IDMappingCreate {
+func (_c *IDMappingCreate) SetID(v int64) *IDMappingCreate {
 	_c.mutation.SetID(v)
 	return _c
 }
@@ -333,7 +333,7 @@ func (_c *IDMappingCreate) sqlSave(ctx context.Context) (*IDMapping, error) {
 	}
 	if _spec.ID.Value != _node.ID {
 		id := _spec.ID.Value.(int64)
-		_node.ID = uint32(id)
+		_node.ID = int64(id)
 	}
 	_c.mutation.id = &_node.ID
 	_c.mutation.done = true
@@ -343,7 +343,7 @@ func (_c *IDMappingCreate) sqlSave(ctx context.Context) (*IDMapping, error) {
 func (_c *IDMappingCreate) createSpec() (*IDMapping, *sqlgraph.CreateSpec) {
 	var (
 		_node = &IDMapping{config: _c.config}
-		_spec = sqlgraph.NewCreateSpec(idmapping.Table, sqlgraph.NewFieldSpec(idmapping.FieldID, field.TypeUint32))
+		_spec = sqlgraph.NewCreateSpec(idmapping.Table, sqlgraph.NewFieldSpec(idmapping.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = _c.conflict
 	if id, ok := _c.mutation.ID(); ok {
@@ -351,19 +351,19 @@ func (_c *IDMappingCreate) createSpec() (*IDMapping, *sqlgraph.CreateSpec) {
 		_spec.ID.Value = id
 	}
 	if value, ok := _c.mutation.TenantID(); ok {
-		_spec.SetField(idmapping.FieldTenantID, field.TypeUint32, value)
+		_spec.SetField(idmapping.FieldTenantID, field.TypeInt64, value)
 		_node.TenantID = &value
 	}
 	if value, ok := _c.mutation.CreatedBy(); ok {
-		_spec.SetField(idmapping.FieldCreatedBy, field.TypeUint32, value)
+		_spec.SetField(idmapping.FieldCreatedBy, field.TypeInt64, value)
 		_node.CreatedBy = &value
 	}
 	if value, ok := _c.mutation.UpdatedBy(); ok {
-		_spec.SetField(idmapping.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.SetField(idmapping.FieldUpdatedBy, field.TypeInt64, value)
 		_node.UpdatedBy = &value
 	}
 	if value, ok := _c.mutation.DeletedBy(); ok {
-		_spec.SetField(idmapping.FieldDeletedBy, field.TypeUint32, value)
+		_spec.SetField(idmapping.FieldDeletedBy, field.TypeInt64, value)
 		_node.DeletedBy = &value
 	}
 	if value, ok := _c.mutation.CreatedAt(); ok {
@@ -467,7 +467,7 @@ type (
 )
 
 // SetCreatedBy sets the "created_by" field.
-func (u *IDMappingUpsert) SetCreatedBy(v uint32) *IDMappingUpsert {
+func (u *IDMappingUpsert) SetCreatedBy(v int64) *IDMappingUpsert {
 	u.Set(idmapping.FieldCreatedBy, v)
 	return u
 }
@@ -479,7 +479,7 @@ func (u *IDMappingUpsert) UpdateCreatedBy() *IDMappingUpsert {
 }
 
 // AddCreatedBy adds v to the "created_by" field.
-func (u *IDMappingUpsert) AddCreatedBy(v uint32) *IDMappingUpsert {
+func (u *IDMappingUpsert) AddCreatedBy(v int64) *IDMappingUpsert {
 	u.Add(idmapping.FieldCreatedBy, v)
 	return u
 }
@@ -491,7 +491,7 @@ func (u *IDMappingUpsert) ClearCreatedBy() *IDMappingUpsert {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (u *IDMappingUpsert) SetUpdatedBy(v uint32) *IDMappingUpsert {
+func (u *IDMappingUpsert) SetUpdatedBy(v int64) *IDMappingUpsert {
 	u.Set(idmapping.FieldUpdatedBy, v)
 	return u
 }
@@ -503,7 +503,7 @@ func (u *IDMappingUpsert) UpdateUpdatedBy() *IDMappingUpsert {
 }
 
 // AddUpdatedBy adds v to the "updated_by" field.
-func (u *IDMappingUpsert) AddUpdatedBy(v uint32) *IDMappingUpsert {
+func (u *IDMappingUpsert) AddUpdatedBy(v int64) *IDMappingUpsert {
 	u.Add(idmapping.FieldUpdatedBy, v)
 	return u
 }
@@ -515,7 +515,7 @@ func (u *IDMappingUpsert) ClearUpdatedBy() *IDMappingUpsert {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (u *IDMappingUpsert) SetDeletedBy(v uint32) *IDMappingUpsert {
+func (u *IDMappingUpsert) SetDeletedBy(v int64) *IDMappingUpsert {
 	u.Set(idmapping.FieldDeletedBy, v)
 	return u
 }
@@ -527,7 +527,7 @@ func (u *IDMappingUpsert) UpdateDeletedBy() *IDMappingUpsert {
 }
 
 // AddDeletedBy adds v to the "deleted_by" field.
-func (u *IDMappingUpsert) AddDeletedBy(v uint32) *IDMappingUpsert {
+func (u *IDMappingUpsert) AddDeletedBy(v int64) *IDMappingUpsert {
 	u.Add(idmapping.FieldDeletedBy, v)
 	return u
 }
@@ -797,14 +797,14 @@ func (u *IDMappingUpsertOne) Update(set func(*IDMappingUpsert)) *IDMappingUpsert
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (u *IDMappingUpsertOne) SetCreatedBy(v uint32) *IDMappingUpsertOne {
+func (u *IDMappingUpsertOne) SetCreatedBy(v int64) *IDMappingUpsertOne {
 	return u.Update(func(s *IDMappingUpsert) {
 		s.SetCreatedBy(v)
 	})
 }
 
 // AddCreatedBy adds v to the "created_by" field.
-func (u *IDMappingUpsertOne) AddCreatedBy(v uint32) *IDMappingUpsertOne {
+func (u *IDMappingUpsertOne) AddCreatedBy(v int64) *IDMappingUpsertOne {
 	return u.Update(func(s *IDMappingUpsert) {
 		s.AddCreatedBy(v)
 	})
@@ -825,14 +825,14 @@ func (u *IDMappingUpsertOne) ClearCreatedBy() *IDMappingUpsertOne {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (u *IDMappingUpsertOne) SetUpdatedBy(v uint32) *IDMappingUpsertOne {
+func (u *IDMappingUpsertOne) SetUpdatedBy(v int64) *IDMappingUpsertOne {
 	return u.Update(func(s *IDMappingUpsert) {
 		s.SetUpdatedBy(v)
 	})
 }
 
 // AddUpdatedBy adds v to the "updated_by" field.
-func (u *IDMappingUpsertOne) AddUpdatedBy(v uint32) *IDMappingUpsertOne {
+func (u *IDMappingUpsertOne) AddUpdatedBy(v int64) *IDMappingUpsertOne {
 	return u.Update(func(s *IDMappingUpsert) {
 		s.AddUpdatedBy(v)
 	})
@@ -853,14 +853,14 @@ func (u *IDMappingUpsertOne) ClearUpdatedBy() *IDMappingUpsertOne {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (u *IDMappingUpsertOne) SetDeletedBy(v uint32) *IDMappingUpsertOne {
+func (u *IDMappingUpsertOne) SetDeletedBy(v int64) *IDMappingUpsertOne {
 	return u.Update(func(s *IDMappingUpsert) {
 		s.SetDeletedBy(v)
 	})
 }
 
 // AddDeletedBy adds v to the "deleted_by" field.
-func (u *IDMappingUpsertOne) AddDeletedBy(v uint32) *IDMappingUpsertOne {
+func (u *IDMappingUpsertOne) AddDeletedBy(v int64) *IDMappingUpsertOne {
 	return u.Update(func(s *IDMappingUpsert) {
 		s.AddDeletedBy(v)
 	})
@@ -1134,7 +1134,7 @@ func (u *IDMappingUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *IDMappingUpsertOne) ID(ctx context.Context) (id uint32, err error) {
+func (u *IDMappingUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -1143,7 +1143,7 @@ func (u *IDMappingUpsertOne) ID(ctx context.Context) (id uint32, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *IDMappingUpsertOne) IDX(ctx context.Context) uint32 {
+func (u *IDMappingUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -1200,7 +1200,7 @@ func (_c *IDMappingCreateBulk) Save(ctx context.Context) ([]*IDMapping, error) {
 				mutation.id = &nodes[i].ID
 				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = uint32(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -1339,14 +1339,14 @@ func (u *IDMappingUpsertBulk) Update(set func(*IDMappingUpsert)) *IDMappingUpser
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (u *IDMappingUpsertBulk) SetCreatedBy(v uint32) *IDMappingUpsertBulk {
+func (u *IDMappingUpsertBulk) SetCreatedBy(v int64) *IDMappingUpsertBulk {
 	return u.Update(func(s *IDMappingUpsert) {
 		s.SetCreatedBy(v)
 	})
 }
 
 // AddCreatedBy adds v to the "created_by" field.
-func (u *IDMappingUpsertBulk) AddCreatedBy(v uint32) *IDMappingUpsertBulk {
+func (u *IDMappingUpsertBulk) AddCreatedBy(v int64) *IDMappingUpsertBulk {
 	return u.Update(func(s *IDMappingUpsert) {
 		s.AddCreatedBy(v)
 	})
@@ -1367,14 +1367,14 @@ func (u *IDMappingUpsertBulk) ClearCreatedBy() *IDMappingUpsertBulk {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (u *IDMappingUpsertBulk) SetUpdatedBy(v uint32) *IDMappingUpsertBulk {
+func (u *IDMappingUpsertBulk) SetUpdatedBy(v int64) *IDMappingUpsertBulk {
 	return u.Update(func(s *IDMappingUpsert) {
 		s.SetUpdatedBy(v)
 	})
 }
 
 // AddUpdatedBy adds v to the "updated_by" field.
-func (u *IDMappingUpsertBulk) AddUpdatedBy(v uint32) *IDMappingUpsertBulk {
+func (u *IDMappingUpsertBulk) AddUpdatedBy(v int64) *IDMappingUpsertBulk {
 	return u.Update(func(s *IDMappingUpsert) {
 		s.AddUpdatedBy(v)
 	})
@@ -1395,14 +1395,14 @@ func (u *IDMappingUpsertBulk) ClearUpdatedBy() *IDMappingUpsertBulk {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (u *IDMappingUpsertBulk) SetDeletedBy(v uint32) *IDMappingUpsertBulk {
+func (u *IDMappingUpsertBulk) SetDeletedBy(v int64) *IDMappingUpsertBulk {
 	return u.Update(func(s *IDMappingUpsert) {
 		s.SetDeletedBy(v)
 	})
 }
 
 // AddDeletedBy adds v to the "deleted_by" field.
-func (u *IDMappingUpsertBulk) AddDeletedBy(v uint32) *IDMappingUpsertBulk {
+func (u *IDMappingUpsertBulk) AddDeletedBy(v int64) *IDMappingUpsertBulk {
 	return u.Update(func(s *IDMappingUpsert) {
 		s.AddDeletedBy(v)
 	})

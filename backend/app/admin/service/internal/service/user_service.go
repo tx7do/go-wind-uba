@@ -103,7 +103,7 @@ func (s *UserService) Create(ctx context.Context, req *identityV1.CreateUserRequ
 		return nil, err
 	}
 
-	var roleIds []uint32
+	var roleIds []int64
 	if len(req.Data.GetRoleIds()) > 0 {
 		roleIds = req.Data.GetRoleIds()
 	}
@@ -188,7 +188,7 @@ func (s *UserService) Update(ctx context.Context, req *identityV1.UpdateUserRequ
 
 	// 密码不在此处重置：core 的 UserService.Update 已按顶层 req.password 调
 	// userCredentialRepo.ResetCredential，这里再走一次是重复写同一份凭据。
-	var roleIds []uint32
+	var roleIds []int64
 	if len(req.Data.GetRoleIds()) > 0 {
 		roleIds = req.Data.GetRoleIds()
 	}
@@ -302,7 +302,7 @@ func (s *UserService) Delete(ctx context.Context, req *identityV1.DeleteUserRequ
 	if err != nil {
 		return nil, err
 	}
-	var roleIds []uint32
+	var roleIds []int64
 	for _, role := range userRoles.GetBindings() {
 		roleIds = append(roleIds, role.GetRoleId())
 	}

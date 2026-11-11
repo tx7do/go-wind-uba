@@ -40,7 +40,7 @@ func (_d *RiskRuleVersionDelete) ExecX(ctx context.Context) int {
 }
 
 func (_d *RiskRuleVersionDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := sqlgraph.NewDeleteSpec(riskruleversion.Table, sqlgraph.NewFieldSpec(riskruleversion.FieldID, field.TypeUint32))
+	_spec := sqlgraph.NewDeleteSpec(riskruleversion.Table, sqlgraph.NewFieldSpec(riskruleversion.FieldID, field.TypeInt64))
 	if ps := _d.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {

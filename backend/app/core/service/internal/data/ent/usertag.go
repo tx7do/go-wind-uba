@@ -17,9 +17,9 @@ type UserTag struct {
 	config `json:"-"`
 	// ID of the ent.
 	// id
-	ID uint32 `json:"id,omitempty"`
+	ID int64 `json:"id,omitempty"`
 	// 租户ID
-	TenantID *uint32 `json:"tenant_id,omitempty"`
+	TenantID *int64 `json:"tenant_id,omitempty"`
 	// 创建时间
 	CreatedAt *time.Time `json:"created_at,omitempty"`
 	// 更新时间
@@ -27,15 +27,15 @@ type UserTag struct {
 	// 删除时间
 	DeletedAt *time.Time `json:"deleted_at,omitempty"`
 	// 创建者ID
-	CreatedBy *uint32 `json:"created_by,omitempty"`
+	CreatedBy *int64 `json:"created_by,omitempty"`
 	// 更新者ID
-	UpdatedBy *uint32 `json:"updated_by,omitempty"`
+	UpdatedBy *int64 `json:"updated_by,omitempty"`
 	// 删除者ID
-	DeletedBy *uint32 `json:"deleted_by,omitempty"`
+	DeletedBy *int64 `json:"deleted_by,omitempty"`
 	// 业务用户ID
-	UserID *uint32 `json:"user_id,omitempty"`
+	UserID *int64 `json:"user_id,omitempty"`
 	// 标签定义ID，关联 uba_tag_definitions.id
-	TagID *uint32 `json:"tag_id,omitempty"`
+	TagID *int64 `json:"tag_id,omitempty"`
 	// 标签值，实际存储值
 	Value *string `json:"value,omitempty"`
 	// 显示名称
@@ -45,7 +45,7 @@ type UserTag struct {
 	// 标签来源
 	Source *string `json:"source,omitempty"`
 	// 来源规则ID，关联规则表
-	SourceRuleID *uint32 `json:"source_rule_id,omitempty"`
+	SourceRuleID *int64 `json:"source_rule_id,omitempty"`
 	// 生效时间
 	EffectiveTime *time.Time `json:"effective_time,omitempty"`
 	// 过期时间，NULL表示永久
@@ -90,13 +90,13 @@ func (_m *UserTag) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			_m.ID = uint32(value.Int64)
+			_m.ID = int64(value.Int64)
 		case usertag.FieldTenantID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field tenant_id", values[i])
 			} else if value.Valid {
-				_m.TenantID = new(uint32)
-				*_m.TenantID = uint32(value.Int64)
+				_m.TenantID = new(int64)
+				*_m.TenantID = value.Int64
 			}
 		case usertag.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -123,36 +123,36 @@ func (_m *UserTag) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field created_by", values[i])
 			} else if value.Valid {
-				_m.CreatedBy = new(uint32)
-				*_m.CreatedBy = uint32(value.Int64)
+				_m.CreatedBy = new(int64)
+				*_m.CreatedBy = value.Int64
 			}
 		case usertag.FieldUpdatedBy:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_by", values[i])
 			} else if value.Valid {
-				_m.UpdatedBy = new(uint32)
-				*_m.UpdatedBy = uint32(value.Int64)
+				_m.UpdatedBy = new(int64)
+				*_m.UpdatedBy = value.Int64
 			}
 		case usertag.FieldDeletedBy:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field deleted_by", values[i])
 			} else if value.Valid {
-				_m.DeletedBy = new(uint32)
-				*_m.DeletedBy = uint32(value.Int64)
+				_m.DeletedBy = new(int64)
+				*_m.DeletedBy = value.Int64
 			}
 		case usertag.FieldUserID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field user_id", values[i])
 			} else if value.Valid {
-				_m.UserID = new(uint32)
-				*_m.UserID = uint32(value.Int64)
+				_m.UserID = new(int64)
+				*_m.UserID = value.Int64
 			}
 		case usertag.FieldTagID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field tag_id", values[i])
 			} else if value.Valid {
-				_m.TagID = new(uint32)
-				*_m.TagID = uint32(value.Int64)
+				_m.TagID = new(int64)
+				*_m.TagID = value.Int64
 			}
 		case usertag.FieldValue:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -186,8 +186,8 @@ func (_m *UserTag) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field source_rule_id", values[i])
 			} else if value.Valid {
-				_m.SourceRuleID = new(uint32)
-				*_m.SourceRuleID = uint32(value.Int64)
+				_m.SourceRuleID = new(int64)
+				*_m.SourceRuleID = value.Int64
 			}
 		case usertag.FieldEffectiveTime:
 			if value, ok := values[i].(*sql.NullTime); !ok {

@@ -82,7 +82,7 @@ func (r *VisualEventRepo) Count(ctx context.Context, req *paginationV1.PagingReq
 	}
 
 	return &ubaV1.CountVisualEventResponse{
-		Count: uint64(count),
+		Count: int64(count),
 	}, nil
 }
 
@@ -108,7 +108,7 @@ func (r *VisualEventRepo) List(ctx context.Context, req *paginationV1.PagingRequ
 }
 
 // ListEnabledByTenantApp 列出租户下启用的规则（SDK 下发用）；appID 空/0 不过滤。
-func (r *VisualEventRepo) ListEnabledByTenantApp(ctx context.Context, tenantID uint32, appID string) ([]*ent.VisualEvent, error) {
+func (r *VisualEventRepo) ListEnabledByTenantApp(ctx context.Context, tenantID int64, appID string) ([]*ent.VisualEvent, error) {
 	entities, err := r.entClient.Client().VisualEvent.Query().
 		Where(
 			visualevent.EnabledEQ(true),
@@ -133,7 +133,7 @@ func (r *VisualEventRepo) ListEnabledByTenantApp(ctx context.Context, tenantID u
 	return matched, nil
 }
 
-func (r *VisualEventRepo) IsExist(ctx context.Context, id uint32) (bool, error) {
+func (r *VisualEventRepo) IsExist(ctx context.Context, id int64) (bool, error) {
 	exist, err := r.entClient.Client().VisualEvent.Query().
 		Where(visualevent.IDEQ(id)).
 		Exist(ctx)

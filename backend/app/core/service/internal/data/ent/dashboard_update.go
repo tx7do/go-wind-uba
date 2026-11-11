@@ -71,14 +71,14 @@ func (_u *DashboardUpdate) ClearDeletedAt() *DashboardUpdate {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (_u *DashboardUpdate) SetCreatedBy(v uint32) *DashboardUpdate {
+func (_u *DashboardUpdate) SetCreatedBy(v int64) *DashboardUpdate {
 	_u.mutation.ResetCreatedBy()
 	_u.mutation.SetCreatedBy(v)
 	return _u
 }
 
 // SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
-func (_u *DashboardUpdate) SetNillableCreatedBy(v *uint32) *DashboardUpdate {
+func (_u *DashboardUpdate) SetNillableCreatedBy(v *int64) *DashboardUpdate {
 	if v != nil {
 		_u.SetCreatedBy(*v)
 	}
@@ -86,7 +86,7 @@ func (_u *DashboardUpdate) SetNillableCreatedBy(v *uint32) *DashboardUpdate {
 }
 
 // AddCreatedBy adds value to the "created_by" field.
-func (_u *DashboardUpdate) AddCreatedBy(v int32) *DashboardUpdate {
+func (_u *DashboardUpdate) AddCreatedBy(v int64) *DashboardUpdate {
 	_u.mutation.AddCreatedBy(v)
 	return _u
 }
@@ -98,14 +98,14 @@ func (_u *DashboardUpdate) ClearCreatedBy() *DashboardUpdate {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (_u *DashboardUpdate) SetUpdatedBy(v uint32) *DashboardUpdate {
+func (_u *DashboardUpdate) SetUpdatedBy(v int64) *DashboardUpdate {
 	_u.mutation.ResetUpdatedBy()
 	_u.mutation.SetUpdatedBy(v)
 	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (_u *DashboardUpdate) SetNillableUpdatedBy(v *uint32) *DashboardUpdate {
+func (_u *DashboardUpdate) SetNillableUpdatedBy(v *int64) *DashboardUpdate {
 	if v != nil {
 		_u.SetUpdatedBy(*v)
 	}
@@ -113,7 +113,7 @@ func (_u *DashboardUpdate) SetNillableUpdatedBy(v *uint32) *DashboardUpdate {
 }
 
 // AddUpdatedBy adds value to the "updated_by" field.
-func (_u *DashboardUpdate) AddUpdatedBy(v int32) *DashboardUpdate {
+func (_u *DashboardUpdate) AddUpdatedBy(v int64) *DashboardUpdate {
 	_u.mutation.AddUpdatedBy(v)
 	return _u
 }
@@ -125,14 +125,14 @@ func (_u *DashboardUpdate) ClearUpdatedBy() *DashboardUpdate {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (_u *DashboardUpdate) SetDeletedBy(v uint32) *DashboardUpdate {
+func (_u *DashboardUpdate) SetDeletedBy(v int64) *DashboardUpdate {
 	_u.mutation.ResetDeletedBy()
 	_u.mutation.SetDeletedBy(v)
 	return _u
 }
 
 // SetNillableDeletedBy sets the "deleted_by" field if the given value is not nil.
-func (_u *DashboardUpdate) SetNillableDeletedBy(v *uint32) *DashboardUpdate {
+func (_u *DashboardUpdate) SetNillableDeletedBy(v *int64) *DashboardUpdate {
 	if v != nil {
 		_u.SetDeletedBy(*v)
 	}
@@ -140,7 +140,7 @@ func (_u *DashboardUpdate) SetNillableDeletedBy(v *uint32) *DashboardUpdate {
 }
 
 // AddDeletedBy adds value to the "deleted_by" field.
-func (_u *DashboardUpdate) AddDeletedBy(v int32) *DashboardUpdate {
+func (_u *DashboardUpdate) AddDeletedBy(v int64) *DashboardUpdate {
 	_u.mutation.AddDeletedBy(v)
 	return _u
 }
@@ -192,14 +192,14 @@ func (_u *DashboardUpdate) ClearDescription() *DashboardUpdate {
 }
 
 // SetAppID sets the "app_id" field.
-func (_u *DashboardUpdate) SetAppID(v uint32) *DashboardUpdate {
+func (_u *DashboardUpdate) SetAppID(v int64) *DashboardUpdate {
 	_u.mutation.ResetAppID()
 	_u.mutation.SetAppID(v)
 	return _u
 }
 
 // SetNillableAppID sets the "app_id" field if the given value is not nil.
-func (_u *DashboardUpdate) SetNillableAppID(v *uint32) *DashboardUpdate {
+func (_u *DashboardUpdate) SetNillableAppID(v *int64) *DashboardUpdate {
 	if v != nil {
 		_u.SetAppID(*v)
 	}
@@ -207,7 +207,7 @@ func (_u *DashboardUpdate) SetNillableAppID(v *uint32) *DashboardUpdate {
 }
 
 // AddAppID adds value to the "app_id" field.
-func (_u *DashboardUpdate) AddAppID(v int32) *DashboardUpdate {
+func (_u *DashboardUpdate) AddAppID(v int64) *DashboardUpdate {
 	_u.mutation.AddAppID(v)
 	return _u
 }
@@ -296,7 +296,7 @@ func (_u *DashboardUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if err := _u.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(dashboard.Table, dashboard.Columns, sqlgraph.NewFieldSpec(dashboard.FieldID, field.TypeUint32))
+	_spec := sqlgraph.NewUpdateSpec(dashboard.Table, dashboard.Columns, sqlgraph.NewFieldSpec(dashboard.FieldID, field.TypeInt64))
 	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -320,34 +320,34 @@ func (_u *DashboardUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		_spec.ClearField(dashboard.FieldDeletedAt, field.TypeTime)
 	}
 	if value, ok := _u.mutation.CreatedBy(); ok {
-		_spec.SetField(dashboard.FieldCreatedBy, field.TypeUint32, value)
+		_spec.SetField(dashboard.FieldCreatedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedCreatedBy(); ok {
-		_spec.AddField(dashboard.FieldCreatedBy, field.TypeUint32, value)
+		_spec.AddField(dashboard.FieldCreatedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.CreatedByCleared() {
-		_spec.ClearField(dashboard.FieldCreatedBy, field.TypeUint32)
+		_spec.ClearField(dashboard.FieldCreatedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.UpdatedBy(); ok {
-		_spec.SetField(dashboard.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.SetField(dashboard.FieldUpdatedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
-		_spec.AddField(dashboard.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.AddField(dashboard.FieldUpdatedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.UpdatedByCleared() {
-		_spec.ClearField(dashboard.FieldUpdatedBy, field.TypeUint32)
+		_spec.ClearField(dashboard.FieldUpdatedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.DeletedBy(); ok {
-		_spec.SetField(dashboard.FieldDeletedBy, field.TypeUint32, value)
+		_spec.SetField(dashboard.FieldDeletedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedDeletedBy(); ok {
-		_spec.AddField(dashboard.FieldDeletedBy, field.TypeUint32, value)
+		_spec.AddField(dashboard.FieldDeletedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.DeletedByCleared() {
-		_spec.ClearField(dashboard.FieldDeletedBy, field.TypeUint32)
+		_spec.ClearField(dashboard.FieldDeletedBy, field.TypeInt64)
 	}
 	if _u.mutation.TenantIDCleared() {
-		_spec.ClearField(dashboard.FieldTenantID, field.TypeUint32)
+		_spec.ClearField(dashboard.FieldTenantID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(dashboard.FieldName, field.TypeString, value)
@@ -362,13 +362,13 @@ func (_u *DashboardUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		_spec.ClearField(dashboard.FieldDescription, field.TypeString)
 	}
 	if value, ok := _u.mutation.AppID(); ok {
-		_spec.SetField(dashboard.FieldAppID, field.TypeUint32, value)
+		_spec.SetField(dashboard.FieldAppID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedAppID(); ok {
-		_spec.AddField(dashboard.FieldAppID, field.TypeUint32, value)
+		_spec.AddField(dashboard.FieldAppID, field.TypeInt64, value)
 	}
 	if _u.mutation.AppIDCleared() {
-		_spec.ClearField(dashboard.FieldAppID, field.TypeUint32)
+		_spec.ClearField(dashboard.FieldAppID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.Widgets(); ok {
 		_spec.SetField(dashboard.FieldWidgets, field.TypeJSON, value)
@@ -444,14 +444,14 @@ func (_u *DashboardUpdateOne) ClearDeletedAt() *DashboardUpdateOne {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (_u *DashboardUpdateOne) SetCreatedBy(v uint32) *DashboardUpdateOne {
+func (_u *DashboardUpdateOne) SetCreatedBy(v int64) *DashboardUpdateOne {
 	_u.mutation.ResetCreatedBy()
 	_u.mutation.SetCreatedBy(v)
 	return _u
 }
 
 // SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
-func (_u *DashboardUpdateOne) SetNillableCreatedBy(v *uint32) *DashboardUpdateOne {
+func (_u *DashboardUpdateOne) SetNillableCreatedBy(v *int64) *DashboardUpdateOne {
 	if v != nil {
 		_u.SetCreatedBy(*v)
 	}
@@ -459,7 +459,7 @@ func (_u *DashboardUpdateOne) SetNillableCreatedBy(v *uint32) *DashboardUpdateOn
 }
 
 // AddCreatedBy adds value to the "created_by" field.
-func (_u *DashboardUpdateOne) AddCreatedBy(v int32) *DashboardUpdateOne {
+func (_u *DashboardUpdateOne) AddCreatedBy(v int64) *DashboardUpdateOne {
 	_u.mutation.AddCreatedBy(v)
 	return _u
 }
@@ -471,14 +471,14 @@ func (_u *DashboardUpdateOne) ClearCreatedBy() *DashboardUpdateOne {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (_u *DashboardUpdateOne) SetUpdatedBy(v uint32) *DashboardUpdateOne {
+func (_u *DashboardUpdateOne) SetUpdatedBy(v int64) *DashboardUpdateOne {
 	_u.mutation.ResetUpdatedBy()
 	_u.mutation.SetUpdatedBy(v)
 	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (_u *DashboardUpdateOne) SetNillableUpdatedBy(v *uint32) *DashboardUpdateOne {
+func (_u *DashboardUpdateOne) SetNillableUpdatedBy(v *int64) *DashboardUpdateOne {
 	if v != nil {
 		_u.SetUpdatedBy(*v)
 	}
@@ -486,7 +486,7 @@ func (_u *DashboardUpdateOne) SetNillableUpdatedBy(v *uint32) *DashboardUpdateOn
 }
 
 // AddUpdatedBy adds value to the "updated_by" field.
-func (_u *DashboardUpdateOne) AddUpdatedBy(v int32) *DashboardUpdateOne {
+func (_u *DashboardUpdateOne) AddUpdatedBy(v int64) *DashboardUpdateOne {
 	_u.mutation.AddUpdatedBy(v)
 	return _u
 }
@@ -498,14 +498,14 @@ func (_u *DashboardUpdateOne) ClearUpdatedBy() *DashboardUpdateOne {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (_u *DashboardUpdateOne) SetDeletedBy(v uint32) *DashboardUpdateOne {
+func (_u *DashboardUpdateOne) SetDeletedBy(v int64) *DashboardUpdateOne {
 	_u.mutation.ResetDeletedBy()
 	_u.mutation.SetDeletedBy(v)
 	return _u
 }
 
 // SetNillableDeletedBy sets the "deleted_by" field if the given value is not nil.
-func (_u *DashboardUpdateOne) SetNillableDeletedBy(v *uint32) *DashboardUpdateOne {
+func (_u *DashboardUpdateOne) SetNillableDeletedBy(v *int64) *DashboardUpdateOne {
 	if v != nil {
 		_u.SetDeletedBy(*v)
 	}
@@ -513,7 +513,7 @@ func (_u *DashboardUpdateOne) SetNillableDeletedBy(v *uint32) *DashboardUpdateOn
 }
 
 // AddDeletedBy adds value to the "deleted_by" field.
-func (_u *DashboardUpdateOne) AddDeletedBy(v int32) *DashboardUpdateOne {
+func (_u *DashboardUpdateOne) AddDeletedBy(v int64) *DashboardUpdateOne {
 	_u.mutation.AddDeletedBy(v)
 	return _u
 }
@@ -565,14 +565,14 @@ func (_u *DashboardUpdateOne) ClearDescription() *DashboardUpdateOne {
 }
 
 // SetAppID sets the "app_id" field.
-func (_u *DashboardUpdateOne) SetAppID(v uint32) *DashboardUpdateOne {
+func (_u *DashboardUpdateOne) SetAppID(v int64) *DashboardUpdateOne {
 	_u.mutation.ResetAppID()
 	_u.mutation.SetAppID(v)
 	return _u
 }
 
 // SetNillableAppID sets the "app_id" field if the given value is not nil.
-func (_u *DashboardUpdateOne) SetNillableAppID(v *uint32) *DashboardUpdateOne {
+func (_u *DashboardUpdateOne) SetNillableAppID(v *int64) *DashboardUpdateOne {
 	if v != nil {
 		_u.SetAppID(*v)
 	}
@@ -580,7 +580,7 @@ func (_u *DashboardUpdateOne) SetNillableAppID(v *uint32) *DashboardUpdateOne {
 }
 
 // AddAppID adds value to the "app_id" field.
-func (_u *DashboardUpdateOne) AddAppID(v int32) *DashboardUpdateOne {
+func (_u *DashboardUpdateOne) AddAppID(v int64) *DashboardUpdateOne {
 	_u.mutation.AddAppID(v)
 	return _u
 }
@@ -682,7 +682,7 @@ func (_u *DashboardUpdateOne) sqlSave(ctx context.Context) (_node *Dashboard, er
 	if err := _u.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(dashboard.Table, dashboard.Columns, sqlgraph.NewFieldSpec(dashboard.FieldID, field.TypeUint32))
+	_spec := sqlgraph.NewUpdateSpec(dashboard.Table, dashboard.Columns, sqlgraph.NewFieldSpec(dashboard.FieldID, field.TypeInt64))
 	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Dashboard.id" for update`)}
@@ -723,34 +723,34 @@ func (_u *DashboardUpdateOne) sqlSave(ctx context.Context) (_node *Dashboard, er
 		_spec.ClearField(dashboard.FieldDeletedAt, field.TypeTime)
 	}
 	if value, ok := _u.mutation.CreatedBy(); ok {
-		_spec.SetField(dashboard.FieldCreatedBy, field.TypeUint32, value)
+		_spec.SetField(dashboard.FieldCreatedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedCreatedBy(); ok {
-		_spec.AddField(dashboard.FieldCreatedBy, field.TypeUint32, value)
+		_spec.AddField(dashboard.FieldCreatedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.CreatedByCleared() {
-		_spec.ClearField(dashboard.FieldCreatedBy, field.TypeUint32)
+		_spec.ClearField(dashboard.FieldCreatedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.UpdatedBy(); ok {
-		_spec.SetField(dashboard.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.SetField(dashboard.FieldUpdatedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
-		_spec.AddField(dashboard.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.AddField(dashboard.FieldUpdatedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.UpdatedByCleared() {
-		_spec.ClearField(dashboard.FieldUpdatedBy, field.TypeUint32)
+		_spec.ClearField(dashboard.FieldUpdatedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.DeletedBy(); ok {
-		_spec.SetField(dashboard.FieldDeletedBy, field.TypeUint32, value)
+		_spec.SetField(dashboard.FieldDeletedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedDeletedBy(); ok {
-		_spec.AddField(dashboard.FieldDeletedBy, field.TypeUint32, value)
+		_spec.AddField(dashboard.FieldDeletedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.DeletedByCleared() {
-		_spec.ClearField(dashboard.FieldDeletedBy, field.TypeUint32)
+		_spec.ClearField(dashboard.FieldDeletedBy, field.TypeInt64)
 	}
 	if _u.mutation.TenantIDCleared() {
-		_spec.ClearField(dashboard.FieldTenantID, field.TypeUint32)
+		_spec.ClearField(dashboard.FieldTenantID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(dashboard.FieldName, field.TypeString, value)
@@ -765,13 +765,13 @@ func (_u *DashboardUpdateOne) sqlSave(ctx context.Context) (_node *Dashboard, er
 		_spec.ClearField(dashboard.FieldDescription, field.TypeString)
 	}
 	if value, ok := _u.mutation.AppID(); ok {
-		_spec.SetField(dashboard.FieldAppID, field.TypeUint32, value)
+		_spec.SetField(dashboard.FieldAppID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedAppID(); ok {
-		_spec.AddField(dashboard.FieldAppID, field.TypeUint32, value)
+		_spec.AddField(dashboard.FieldAppID, field.TypeInt64, value)
 	}
 	if _u.mutation.AppIDCleared() {
-		_spec.ClearField(dashboard.FieldAppID, field.TypeUint32)
+		_spec.ClearField(dashboard.FieldAppID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.Widgets(); ok {
 		_spec.SetField(dashboard.FieldWidgets, field.TypeJSON, value)

@@ -117,10 +117,10 @@ func (s *AiUsageLogService) SetTenantQuota(ctx context.Context, req *aiV1.SetTen
 }
 
 // operatorTenant 取调用者租户（viewer 上下文；平台用户 tenantId=0 见全量）。
-func (s *AiUsageLogService) operatorTenant(ctx context.Context) (uint32, bool) {
+func (s *AiUsageLogService) operatorTenant(ctx context.Context) (int64, bool) {
 	vc, exist := viewer.FromContext(ctx)
 	if !exist || vc == nil {
 		return 0, false
 	}
-	return uint32(vc.TenantID()), true
+	return int64(vc.TenantID()), true
 }

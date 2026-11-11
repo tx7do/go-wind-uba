@@ -65,13 +65,13 @@ func (_c *CampaignCreate) SetNillableDeletedAt(v *time.Time) *CampaignCreate {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (_c *CampaignCreate) SetCreatedBy(v uint32) *CampaignCreate {
+func (_c *CampaignCreate) SetCreatedBy(v int64) *CampaignCreate {
 	_c.mutation.SetCreatedBy(v)
 	return _c
 }
 
 // SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
-func (_c *CampaignCreate) SetNillableCreatedBy(v *uint32) *CampaignCreate {
+func (_c *CampaignCreate) SetNillableCreatedBy(v *int64) *CampaignCreate {
 	if v != nil {
 		_c.SetCreatedBy(*v)
 	}
@@ -79,13 +79,13 @@ func (_c *CampaignCreate) SetNillableCreatedBy(v *uint32) *CampaignCreate {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (_c *CampaignCreate) SetUpdatedBy(v uint32) *CampaignCreate {
+func (_c *CampaignCreate) SetUpdatedBy(v int64) *CampaignCreate {
 	_c.mutation.SetUpdatedBy(v)
 	return _c
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (_c *CampaignCreate) SetNillableUpdatedBy(v *uint32) *CampaignCreate {
+func (_c *CampaignCreate) SetNillableUpdatedBy(v *int64) *CampaignCreate {
 	if v != nil {
 		_c.SetUpdatedBy(*v)
 	}
@@ -93,13 +93,13 @@ func (_c *CampaignCreate) SetNillableUpdatedBy(v *uint32) *CampaignCreate {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (_c *CampaignCreate) SetDeletedBy(v uint32) *CampaignCreate {
+func (_c *CampaignCreate) SetDeletedBy(v int64) *CampaignCreate {
 	_c.mutation.SetDeletedBy(v)
 	return _c
 }
 
 // SetNillableDeletedBy sets the "deleted_by" field if the given value is not nil.
-func (_c *CampaignCreate) SetNillableDeletedBy(v *uint32) *CampaignCreate {
+func (_c *CampaignCreate) SetNillableDeletedBy(v *int64) *CampaignCreate {
 	if v != nil {
 		_c.SetDeletedBy(*v)
 	}
@@ -107,13 +107,13 @@ func (_c *CampaignCreate) SetNillableDeletedBy(v *uint32) *CampaignCreate {
 }
 
 // SetTenantID sets the "tenant_id" field.
-func (_c *CampaignCreate) SetTenantID(v uint32) *CampaignCreate {
+func (_c *CampaignCreate) SetTenantID(v int64) *CampaignCreate {
 	_c.mutation.SetTenantID(v)
 	return _c
 }
 
 // SetNillableTenantID sets the "tenant_id" field if the given value is not nil.
-func (_c *CampaignCreate) SetNillableTenantID(v *uint32) *CampaignCreate {
+func (_c *CampaignCreate) SetNillableTenantID(v *int64) *CampaignCreate {
 	if v != nil {
 		_c.SetTenantID(*v)
 	}
@@ -149,13 +149,13 @@ func (_c *CampaignCreate) SetNillableDescription(v *string) *CampaignCreate {
 }
 
 // SetAppID sets the "app_id" field.
-func (_c *CampaignCreate) SetAppID(v uint32) *CampaignCreate {
+func (_c *CampaignCreate) SetAppID(v int64) *CampaignCreate {
 	_c.mutation.SetAppID(v)
 	return _c
 }
 
 // SetNillableAppID sets the "app_id" field if the given value is not nil.
-func (_c *CampaignCreate) SetNillableAppID(v *uint32) *CampaignCreate {
+func (_c *CampaignCreate) SetNillableAppID(v *int64) *CampaignCreate {
 	if v != nil {
 		_c.SetAppID(*v)
 	}
@@ -163,7 +163,7 @@ func (_c *CampaignCreate) SetNillableAppID(v *uint32) *CampaignCreate {
 }
 
 // SetSegmentID sets the "segment_id" field.
-func (_c *CampaignCreate) SetSegmentID(v uint32) *CampaignCreate {
+func (_c *CampaignCreate) SetSegmentID(v int64) *CampaignCreate {
 	_c.mutation.SetSegmentID(v)
 	return _c
 }
@@ -309,7 +309,7 @@ func (_c *CampaignCreate) SetNillableLastSentAt(v *time.Time) *CampaignCreate {
 }
 
 // SetID sets the "id" field.
-func (_c *CampaignCreate) SetID(v uint32) *CampaignCreate {
+func (_c *CampaignCreate) SetID(v int64) *CampaignCreate {
 	_c.mutation.SetID(v)
 	return _c
 }
@@ -424,7 +424,7 @@ func (_c *CampaignCreate) sqlSave(ctx context.Context) (*Campaign, error) {
 	}
 	if _spec.ID.Value != _node.ID {
 		id := _spec.ID.Value.(int64)
-		_node.ID = uint32(id)
+		_node.ID = int64(id)
 	}
 	_c.mutation.id = &_node.ID
 	_c.mutation.done = true
@@ -434,7 +434,7 @@ func (_c *CampaignCreate) sqlSave(ctx context.Context) (*Campaign, error) {
 func (_c *CampaignCreate) createSpec() (*Campaign, *sqlgraph.CreateSpec) {
 	var (
 		_node = &Campaign{config: _c.config}
-		_spec = sqlgraph.NewCreateSpec(campaign.Table, sqlgraph.NewFieldSpec(campaign.FieldID, field.TypeUint32))
+		_spec = sqlgraph.NewCreateSpec(campaign.Table, sqlgraph.NewFieldSpec(campaign.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = _c.conflict
 	if id, ok := _c.mutation.ID(); ok {
@@ -454,19 +454,19 @@ func (_c *CampaignCreate) createSpec() (*Campaign, *sqlgraph.CreateSpec) {
 		_node.DeletedAt = &value
 	}
 	if value, ok := _c.mutation.CreatedBy(); ok {
-		_spec.SetField(campaign.FieldCreatedBy, field.TypeUint32, value)
+		_spec.SetField(campaign.FieldCreatedBy, field.TypeInt64, value)
 		_node.CreatedBy = &value
 	}
 	if value, ok := _c.mutation.UpdatedBy(); ok {
-		_spec.SetField(campaign.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.SetField(campaign.FieldUpdatedBy, field.TypeInt64, value)
 		_node.UpdatedBy = &value
 	}
 	if value, ok := _c.mutation.DeletedBy(); ok {
-		_spec.SetField(campaign.FieldDeletedBy, field.TypeUint32, value)
+		_spec.SetField(campaign.FieldDeletedBy, field.TypeInt64, value)
 		_node.DeletedBy = &value
 	}
 	if value, ok := _c.mutation.TenantID(); ok {
-		_spec.SetField(campaign.FieldTenantID, field.TypeUint32, value)
+		_spec.SetField(campaign.FieldTenantID, field.TypeInt64, value)
 		_node.TenantID = &value
 	}
 	if value, ok := _c.mutation.Name(); ok {
@@ -478,11 +478,11 @@ func (_c *CampaignCreate) createSpec() (*Campaign, *sqlgraph.CreateSpec) {
 		_node.Description = &value
 	}
 	if value, ok := _c.mutation.AppID(); ok {
-		_spec.SetField(campaign.FieldAppID, field.TypeUint32, value)
+		_spec.SetField(campaign.FieldAppID, field.TypeInt64, value)
 		_node.AppID = &value
 	}
 	if value, ok := _c.mutation.SegmentID(); ok {
-		_spec.SetField(campaign.FieldSegmentID, field.TypeUint32, value)
+		_spec.SetField(campaign.FieldSegmentID, field.TypeInt64, value)
 		_node.SegmentID = value
 	}
 	if value, ok := _c.mutation.Title(); ok {
@@ -614,7 +614,7 @@ func (u *CampaignUpsert) ClearDeletedAt() *CampaignUpsert {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (u *CampaignUpsert) SetCreatedBy(v uint32) *CampaignUpsert {
+func (u *CampaignUpsert) SetCreatedBy(v int64) *CampaignUpsert {
 	u.Set(campaign.FieldCreatedBy, v)
 	return u
 }
@@ -626,7 +626,7 @@ func (u *CampaignUpsert) UpdateCreatedBy() *CampaignUpsert {
 }
 
 // AddCreatedBy adds v to the "created_by" field.
-func (u *CampaignUpsert) AddCreatedBy(v uint32) *CampaignUpsert {
+func (u *CampaignUpsert) AddCreatedBy(v int64) *CampaignUpsert {
 	u.Add(campaign.FieldCreatedBy, v)
 	return u
 }
@@ -638,7 +638,7 @@ func (u *CampaignUpsert) ClearCreatedBy() *CampaignUpsert {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (u *CampaignUpsert) SetUpdatedBy(v uint32) *CampaignUpsert {
+func (u *CampaignUpsert) SetUpdatedBy(v int64) *CampaignUpsert {
 	u.Set(campaign.FieldUpdatedBy, v)
 	return u
 }
@@ -650,7 +650,7 @@ func (u *CampaignUpsert) UpdateUpdatedBy() *CampaignUpsert {
 }
 
 // AddUpdatedBy adds v to the "updated_by" field.
-func (u *CampaignUpsert) AddUpdatedBy(v uint32) *CampaignUpsert {
+func (u *CampaignUpsert) AddUpdatedBy(v int64) *CampaignUpsert {
 	u.Add(campaign.FieldUpdatedBy, v)
 	return u
 }
@@ -662,7 +662,7 @@ func (u *CampaignUpsert) ClearUpdatedBy() *CampaignUpsert {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (u *CampaignUpsert) SetDeletedBy(v uint32) *CampaignUpsert {
+func (u *CampaignUpsert) SetDeletedBy(v int64) *CampaignUpsert {
 	u.Set(campaign.FieldDeletedBy, v)
 	return u
 }
@@ -674,7 +674,7 @@ func (u *CampaignUpsert) UpdateDeletedBy() *CampaignUpsert {
 }
 
 // AddDeletedBy adds v to the "deleted_by" field.
-func (u *CampaignUpsert) AddDeletedBy(v uint32) *CampaignUpsert {
+func (u *CampaignUpsert) AddDeletedBy(v int64) *CampaignUpsert {
 	u.Add(campaign.FieldDeletedBy, v)
 	return u
 }
@@ -722,7 +722,7 @@ func (u *CampaignUpsert) ClearDescription() *CampaignUpsert {
 }
 
 // SetAppID sets the "app_id" field.
-func (u *CampaignUpsert) SetAppID(v uint32) *CampaignUpsert {
+func (u *CampaignUpsert) SetAppID(v int64) *CampaignUpsert {
 	u.Set(campaign.FieldAppID, v)
 	return u
 }
@@ -734,7 +734,7 @@ func (u *CampaignUpsert) UpdateAppID() *CampaignUpsert {
 }
 
 // AddAppID adds v to the "app_id" field.
-func (u *CampaignUpsert) AddAppID(v uint32) *CampaignUpsert {
+func (u *CampaignUpsert) AddAppID(v int64) *CampaignUpsert {
 	u.Add(campaign.FieldAppID, v)
 	return u
 }
@@ -746,7 +746,7 @@ func (u *CampaignUpsert) ClearAppID() *CampaignUpsert {
 }
 
 // SetSegmentID sets the "segment_id" field.
-func (u *CampaignUpsert) SetSegmentID(v uint32) *CampaignUpsert {
+func (u *CampaignUpsert) SetSegmentID(v int64) *CampaignUpsert {
 	u.Set(campaign.FieldSegmentID, v)
 	return u
 }
@@ -758,7 +758,7 @@ func (u *CampaignUpsert) UpdateSegmentID() *CampaignUpsert {
 }
 
 // AddSegmentID adds v to the "segment_id" field.
-func (u *CampaignUpsert) AddSegmentID(v uint32) *CampaignUpsert {
+func (u *CampaignUpsert) AddSegmentID(v int64) *CampaignUpsert {
 	u.Add(campaign.FieldSegmentID, v)
 	return u
 }
@@ -1028,14 +1028,14 @@ func (u *CampaignUpsertOne) ClearDeletedAt() *CampaignUpsertOne {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (u *CampaignUpsertOne) SetCreatedBy(v uint32) *CampaignUpsertOne {
+func (u *CampaignUpsertOne) SetCreatedBy(v int64) *CampaignUpsertOne {
 	return u.Update(func(s *CampaignUpsert) {
 		s.SetCreatedBy(v)
 	})
 }
 
 // AddCreatedBy adds v to the "created_by" field.
-func (u *CampaignUpsertOne) AddCreatedBy(v uint32) *CampaignUpsertOne {
+func (u *CampaignUpsertOne) AddCreatedBy(v int64) *CampaignUpsertOne {
 	return u.Update(func(s *CampaignUpsert) {
 		s.AddCreatedBy(v)
 	})
@@ -1056,14 +1056,14 @@ func (u *CampaignUpsertOne) ClearCreatedBy() *CampaignUpsertOne {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (u *CampaignUpsertOne) SetUpdatedBy(v uint32) *CampaignUpsertOne {
+func (u *CampaignUpsertOne) SetUpdatedBy(v int64) *CampaignUpsertOne {
 	return u.Update(func(s *CampaignUpsert) {
 		s.SetUpdatedBy(v)
 	})
 }
 
 // AddUpdatedBy adds v to the "updated_by" field.
-func (u *CampaignUpsertOne) AddUpdatedBy(v uint32) *CampaignUpsertOne {
+func (u *CampaignUpsertOne) AddUpdatedBy(v int64) *CampaignUpsertOne {
 	return u.Update(func(s *CampaignUpsert) {
 		s.AddUpdatedBy(v)
 	})
@@ -1084,14 +1084,14 @@ func (u *CampaignUpsertOne) ClearUpdatedBy() *CampaignUpsertOne {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (u *CampaignUpsertOne) SetDeletedBy(v uint32) *CampaignUpsertOne {
+func (u *CampaignUpsertOne) SetDeletedBy(v int64) *CampaignUpsertOne {
 	return u.Update(func(s *CampaignUpsert) {
 		s.SetDeletedBy(v)
 	})
 }
 
 // AddDeletedBy adds v to the "deleted_by" field.
-func (u *CampaignUpsertOne) AddDeletedBy(v uint32) *CampaignUpsertOne {
+func (u *CampaignUpsertOne) AddDeletedBy(v int64) *CampaignUpsertOne {
 	return u.Update(func(s *CampaignUpsert) {
 		s.AddDeletedBy(v)
 	})
@@ -1154,14 +1154,14 @@ func (u *CampaignUpsertOne) ClearDescription() *CampaignUpsertOne {
 }
 
 // SetAppID sets the "app_id" field.
-func (u *CampaignUpsertOne) SetAppID(v uint32) *CampaignUpsertOne {
+func (u *CampaignUpsertOne) SetAppID(v int64) *CampaignUpsertOne {
 	return u.Update(func(s *CampaignUpsert) {
 		s.SetAppID(v)
 	})
 }
 
 // AddAppID adds v to the "app_id" field.
-func (u *CampaignUpsertOne) AddAppID(v uint32) *CampaignUpsertOne {
+func (u *CampaignUpsertOne) AddAppID(v int64) *CampaignUpsertOne {
 	return u.Update(func(s *CampaignUpsert) {
 		s.AddAppID(v)
 	})
@@ -1182,14 +1182,14 @@ func (u *CampaignUpsertOne) ClearAppID() *CampaignUpsertOne {
 }
 
 // SetSegmentID sets the "segment_id" field.
-func (u *CampaignUpsertOne) SetSegmentID(v uint32) *CampaignUpsertOne {
+func (u *CampaignUpsertOne) SetSegmentID(v int64) *CampaignUpsertOne {
 	return u.Update(func(s *CampaignUpsert) {
 		s.SetSegmentID(v)
 	})
 }
 
 // AddSegmentID adds v to the "segment_id" field.
-func (u *CampaignUpsertOne) AddSegmentID(v uint32) *CampaignUpsertOne {
+func (u *CampaignUpsertOne) AddSegmentID(v int64) *CampaignUpsertOne {
 	return u.Update(func(s *CampaignUpsert) {
 		s.AddSegmentID(v)
 	})
@@ -1414,7 +1414,7 @@ func (u *CampaignUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *CampaignUpsertOne) ID(ctx context.Context) (id uint32, err error) {
+func (u *CampaignUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -1423,7 +1423,7 @@ func (u *CampaignUpsertOne) ID(ctx context.Context) (id uint32, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *CampaignUpsertOne) IDX(ctx context.Context) uint32 {
+func (u *CampaignUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -1480,7 +1480,7 @@ func (_c *CampaignCreateBulk) Save(ctx context.Context) ([]*Campaign, error) {
 				mutation.id = &nodes[i].ID
 				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = uint32(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -1661,14 +1661,14 @@ func (u *CampaignUpsertBulk) ClearDeletedAt() *CampaignUpsertBulk {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (u *CampaignUpsertBulk) SetCreatedBy(v uint32) *CampaignUpsertBulk {
+func (u *CampaignUpsertBulk) SetCreatedBy(v int64) *CampaignUpsertBulk {
 	return u.Update(func(s *CampaignUpsert) {
 		s.SetCreatedBy(v)
 	})
 }
 
 // AddCreatedBy adds v to the "created_by" field.
-func (u *CampaignUpsertBulk) AddCreatedBy(v uint32) *CampaignUpsertBulk {
+func (u *CampaignUpsertBulk) AddCreatedBy(v int64) *CampaignUpsertBulk {
 	return u.Update(func(s *CampaignUpsert) {
 		s.AddCreatedBy(v)
 	})
@@ -1689,14 +1689,14 @@ func (u *CampaignUpsertBulk) ClearCreatedBy() *CampaignUpsertBulk {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (u *CampaignUpsertBulk) SetUpdatedBy(v uint32) *CampaignUpsertBulk {
+func (u *CampaignUpsertBulk) SetUpdatedBy(v int64) *CampaignUpsertBulk {
 	return u.Update(func(s *CampaignUpsert) {
 		s.SetUpdatedBy(v)
 	})
 }
 
 // AddUpdatedBy adds v to the "updated_by" field.
-func (u *CampaignUpsertBulk) AddUpdatedBy(v uint32) *CampaignUpsertBulk {
+func (u *CampaignUpsertBulk) AddUpdatedBy(v int64) *CampaignUpsertBulk {
 	return u.Update(func(s *CampaignUpsert) {
 		s.AddUpdatedBy(v)
 	})
@@ -1717,14 +1717,14 @@ func (u *CampaignUpsertBulk) ClearUpdatedBy() *CampaignUpsertBulk {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (u *CampaignUpsertBulk) SetDeletedBy(v uint32) *CampaignUpsertBulk {
+func (u *CampaignUpsertBulk) SetDeletedBy(v int64) *CampaignUpsertBulk {
 	return u.Update(func(s *CampaignUpsert) {
 		s.SetDeletedBy(v)
 	})
 }
 
 // AddDeletedBy adds v to the "deleted_by" field.
-func (u *CampaignUpsertBulk) AddDeletedBy(v uint32) *CampaignUpsertBulk {
+func (u *CampaignUpsertBulk) AddDeletedBy(v int64) *CampaignUpsertBulk {
 	return u.Update(func(s *CampaignUpsert) {
 		s.AddDeletedBy(v)
 	})
@@ -1787,14 +1787,14 @@ func (u *CampaignUpsertBulk) ClearDescription() *CampaignUpsertBulk {
 }
 
 // SetAppID sets the "app_id" field.
-func (u *CampaignUpsertBulk) SetAppID(v uint32) *CampaignUpsertBulk {
+func (u *CampaignUpsertBulk) SetAppID(v int64) *CampaignUpsertBulk {
 	return u.Update(func(s *CampaignUpsert) {
 		s.SetAppID(v)
 	})
 }
 
 // AddAppID adds v to the "app_id" field.
-func (u *CampaignUpsertBulk) AddAppID(v uint32) *CampaignUpsertBulk {
+func (u *CampaignUpsertBulk) AddAppID(v int64) *CampaignUpsertBulk {
 	return u.Update(func(s *CampaignUpsert) {
 		s.AddAppID(v)
 	})
@@ -1815,14 +1815,14 @@ func (u *CampaignUpsertBulk) ClearAppID() *CampaignUpsertBulk {
 }
 
 // SetSegmentID sets the "segment_id" field.
-func (u *CampaignUpsertBulk) SetSegmentID(v uint32) *CampaignUpsertBulk {
+func (u *CampaignUpsertBulk) SetSegmentID(v int64) *CampaignUpsertBulk {
 	return u.Update(func(s *CampaignUpsert) {
 		s.SetSegmentID(v)
 	})
 }
 
 // AddSegmentID adds v to the "segment_id" field.
-func (u *CampaignUpsertBulk) AddSegmentID(v uint32) *CampaignUpsertBulk {
+func (u *CampaignUpsertBulk) AddSegmentID(v int64) *CampaignUpsertBulk {
 	return u.Update(func(s *CampaignUpsert) {
 		s.AddSegmentID(v)
 	})

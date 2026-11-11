@@ -40,7 +40,7 @@ var aiUsageLogExportColumns = []ExportColumn[*aiV1.AiUsageLog]{
 	{"输出 tokens", func(l *aiV1.AiUsageLog) string { return exportUint32(l.CompletionTokens) }},
 	{"总 tokens", func(l *aiV1.AiUsageLog) string { return exportUint32(l.TotalTokens) }},
 	{"耗时（毫秒）", func(l *aiV1.AiUsageLog) string { return exportUint32(l.DurationMs) }},
-	{"会话ID", func(l *aiV1.AiUsageLog) string { return exportUint32(l.ConversationId) }},
+	{"会话ID", func(l *aiV1.AiUsageLog) string { return exportInt64(l.ConversationId) }},
 	{"调用时间", func(l *aiV1.AiUsageLog) string { return exportTimestamp(l.CreatedAt) }},
 }
 
@@ -55,10 +55,10 @@ func (s *AiUsageLogService) ExportAiUsageLog(ctx context.Context, req *paginatio
 		SheetName:    "AI用量流水",
 		Format:       format,
 		Columns:      aiUsageLogExportColumns,
-		FetchPage: func(ctx context.Context, page, pageSize uint32) ([]*aiV1.AiUsageLog, error) {
+		FetchPage: func(ctx context.Context, page, pageSize int64) ([]*aiV1.AiUsageLog, error) {
 			resp, err := s.aiUsageLogServiceClient.List(ctx, &paginationV1.PagingRequest{
-				Page:          trans.Ptr(page),
-				PageSize:      trans.Ptr(pageSize),
+				Page:          trans.Ptr(uint32(page)),
+				PageSize:      trans.Ptr(uint32(pageSize)),
 				OrderBy:       trans.Ptr(exportOrderBy(req)),
 				FilteringType: req.FilteringType,
 			})

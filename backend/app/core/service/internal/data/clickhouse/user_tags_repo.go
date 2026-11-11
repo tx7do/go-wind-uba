@@ -85,8 +85,8 @@ func (r *UserTagsRepo) SelectUsersByPredicate(ctx context.Context, predicate str
 	)
 
 	type hitRow struct {
-		TenantID uint32 `ch:"tenant_id"`
-		UserID   uint32 `ch:"user_id"`
+		TenantID int64 `ch:"tenant_id"`
+		UserID   int64 `ch:"user_id"`
 	}
 	var rows []hitRow
 	if err := r.db.Select(ctx, &rows, query); err != nil {
@@ -137,6 +137,6 @@ func (r *UserTagsRepo) List(ctx context.Context, req *paginationV1.PagingRequest
 	}
 	return &ubaV1.ListUserTagResponse{
 		Items: result.Items,
-		Total: result.Total,
+		Total: int64(result.Total),
 	}, nil
 }

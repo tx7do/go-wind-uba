@@ -6,14 +6,14 @@ import (
 
 type RiskEvents struct {
 	RiskEventID     *string         `db:"risk_event_id"`
-	TenantID        *uint32         `db:"tenant_id"`
-	UserID          *uint32         `db:"user_id"`
+	TenantID        *int64          `db:"tenant_id"`
+	UserID          *int64          `db:"user_id"`
 	DeviceID        *string         `db:"device_id"`
 	GlobalUserID    *string         `db:"global_user_id"`
 	RiskType        *string         `db:"risk_type"`
 	RiskLevel       *string         `db:"risk_level"`
 	RiskScore       *float32        `db:"risk_score"`
-	RuleID          *uint32         `db:"rule_id"`
+	RuleID          *int64          `db:"rule_id"`
 	RuleName        *string         `db:"rule_name"`
 	RuleContext     MapStringString `db:"rule_context"`
 	RelatedEventIDs StringArray     `db:"related_event_ids"`

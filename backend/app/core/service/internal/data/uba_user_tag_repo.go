@@ -79,7 +79,7 @@ func (r *UserTagRepo) Count(ctx context.Context, req *paginationV1.PagingRequest
 	}
 
 	return &ubaV1.CountUserTagResponse{
-		Count: uint64(count),
+		Count: int64(count),
 	}, nil
 }
 
@@ -105,15 +105,15 @@ func (r *UserTagRepo) List(ctx context.Context, req *paginationV1.PagingRequest)
 // IsExist 判断用户标签是否存在
 // TagUserHit 动态标签命中的用户（与 doris 仓库的类型保持字段一致）。
 type TagUserHit struct {
-	TenantID uint32
-	UserID   uint32
+	TenantID int64
+	UserID   int64
 }
 
 // ReplaceTagUsers 全量替换某租户下某标签的人群（动态标签刷新用）：
 // 先删除该 (tenant, tag_id) 的旧标签，再批量写入新命中。
 func (r *UserTagRepo) ReplaceTagUsers(
 	ctx context.Context,
-	tagID uint32,
+	tagID int64,
 	value, valueLabel string,
 	hits []TagUserHit,
 	now time.Time,
@@ -153,8 +153,7 @@ func (r *UserTagRepo) ReplaceTagUsers(
 	return nil
 }
 
-
-func (r *UserTagRepo) IsExist(ctx context.Context, id uint32) (bool, error) {
+func (r *UserTagRepo) IsExist(ctx context.Context, id int64) (bool, error) {
 	exist, err := r.entClient.Client().UserTag.Query().
 		Where(usertag.IDEQ(id)).
 		Exist(ctx)

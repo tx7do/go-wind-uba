@@ -70,14 +70,14 @@ func (_u *CampaignUpdate) ClearDeletedAt() *CampaignUpdate {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (_u *CampaignUpdate) SetCreatedBy(v uint32) *CampaignUpdate {
+func (_u *CampaignUpdate) SetCreatedBy(v int64) *CampaignUpdate {
 	_u.mutation.ResetCreatedBy()
 	_u.mutation.SetCreatedBy(v)
 	return _u
 }
 
 // SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
-func (_u *CampaignUpdate) SetNillableCreatedBy(v *uint32) *CampaignUpdate {
+func (_u *CampaignUpdate) SetNillableCreatedBy(v *int64) *CampaignUpdate {
 	if v != nil {
 		_u.SetCreatedBy(*v)
 	}
@@ -85,7 +85,7 @@ func (_u *CampaignUpdate) SetNillableCreatedBy(v *uint32) *CampaignUpdate {
 }
 
 // AddCreatedBy adds value to the "created_by" field.
-func (_u *CampaignUpdate) AddCreatedBy(v int32) *CampaignUpdate {
+func (_u *CampaignUpdate) AddCreatedBy(v int64) *CampaignUpdate {
 	_u.mutation.AddCreatedBy(v)
 	return _u
 }
@@ -97,14 +97,14 @@ func (_u *CampaignUpdate) ClearCreatedBy() *CampaignUpdate {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (_u *CampaignUpdate) SetUpdatedBy(v uint32) *CampaignUpdate {
+func (_u *CampaignUpdate) SetUpdatedBy(v int64) *CampaignUpdate {
 	_u.mutation.ResetUpdatedBy()
 	_u.mutation.SetUpdatedBy(v)
 	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (_u *CampaignUpdate) SetNillableUpdatedBy(v *uint32) *CampaignUpdate {
+func (_u *CampaignUpdate) SetNillableUpdatedBy(v *int64) *CampaignUpdate {
 	if v != nil {
 		_u.SetUpdatedBy(*v)
 	}
@@ -112,7 +112,7 @@ func (_u *CampaignUpdate) SetNillableUpdatedBy(v *uint32) *CampaignUpdate {
 }
 
 // AddUpdatedBy adds value to the "updated_by" field.
-func (_u *CampaignUpdate) AddUpdatedBy(v int32) *CampaignUpdate {
+func (_u *CampaignUpdate) AddUpdatedBy(v int64) *CampaignUpdate {
 	_u.mutation.AddUpdatedBy(v)
 	return _u
 }
@@ -124,14 +124,14 @@ func (_u *CampaignUpdate) ClearUpdatedBy() *CampaignUpdate {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (_u *CampaignUpdate) SetDeletedBy(v uint32) *CampaignUpdate {
+func (_u *CampaignUpdate) SetDeletedBy(v int64) *CampaignUpdate {
 	_u.mutation.ResetDeletedBy()
 	_u.mutation.SetDeletedBy(v)
 	return _u
 }
 
 // SetNillableDeletedBy sets the "deleted_by" field if the given value is not nil.
-func (_u *CampaignUpdate) SetNillableDeletedBy(v *uint32) *CampaignUpdate {
+func (_u *CampaignUpdate) SetNillableDeletedBy(v *int64) *CampaignUpdate {
 	if v != nil {
 		_u.SetDeletedBy(*v)
 	}
@@ -139,7 +139,7 @@ func (_u *CampaignUpdate) SetNillableDeletedBy(v *uint32) *CampaignUpdate {
 }
 
 // AddDeletedBy adds value to the "deleted_by" field.
-func (_u *CampaignUpdate) AddDeletedBy(v int32) *CampaignUpdate {
+func (_u *CampaignUpdate) AddDeletedBy(v int64) *CampaignUpdate {
 	_u.mutation.AddDeletedBy(v)
 	return _u
 }
@@ -191,14 +191,14 @@ func (_u *CampaignUpdate) ClearDescription() *CampaignUpdate {
 }
 
 // SetAppID sets the "app_id" field.
-func (_u *CampaignUpdate) SetAppID(v uint32) *CampaignUpdate {
+func (_u *CampaignUpdate) SetAppID(v int64) *CampaignUpdate {
 	_u.mutation.ResetAppID()
 	_u.mutation.SetAppID(v)
 	return _u
 }
 
 // SetNillableAppID sets the "app_id" field if the given value is not nil.
-func (_u *CampaignUpdate) SetNillableAppID(v *uint32) *CampaignUpdate {
+func (_u *CampaignUpdate) SetNillableAppID(v *int64) *CampaignUpdate {
 	if v != nil {
 		_u.SetAppID(*v)
 	}
@@ -206,7 +206,7 @@ func (_u *CampaignUpdate) SetNillableAppID(v *uint32) *CampaignUpdate {
 }
 
 // AddAppID adds value to the "app_id" field.
-func (_u *CampaignUpdate) AddAppID(v int32) *CampaignUpdate {
+func (_u *CampaignUpdate) AddAppID(v int64) *CampaignUpdate {
 	_u.mutation.AddAppID(v)
 	return _u
 }
@@ -218,14 +218,14 @@ func (_u *CampaignUpdate) ClearAppID() *CampaignUpdate {
 }
 
 // SetSegmentID sets the "segment_id" field.
-func (_u *CampaignUpdate) SetSegmentID(v uint32) *CampaignUpdate {
+func (_u *CampaignUpdate) SetSegmentID(v int64) *CampaignUpdate {
 	_u.mutation.ResetSegmentID()
 	_u.mutation.SetSegmentID(v)
 	return _u
 }
 
 // SetNillableSegmentID sets the "segment_id" field if the given value is not nil.
-func (_u *CampaignUpdate) SetNillableSegmentID(v *uint32) *CampaignUpdate {
+func (_u *CampaignUpdate) SetNillableSegmentID(v *int64) *CampaignUpdate {
 	if v != nil {
 		_u.SetSegmentID(*v)
 	}
@@ -233,7 +233,7 @@ func (_u *CampaignUpdate) SetNillableSegmentID(v *uint32) *CampaignUpdate {
 }
 
 // AddSegmentID adds value to the "segment_id" field.
-func (_u *CampaignUpdate) AddSegmentID(v int32) *CampaignUpdate {
+func (_u *CampaignUpdate) AddSegmentID(v int64) *CampaignUpdate {
 	_u.mutation.AddSegmentID(v)
 	return _u
 }
@@ -481,7 +481,7 @@ func (_u *CampaignUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if err := _u.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(campaign.Table, campaign.Columns, sqlgraph.NewFieldSpec(campaign.FieldID, field.TypeUint32))
+	_spec := sqlgraph.NewUpdateSpec(campaign.Table, campaign.Columns, sqlgraph.NewFieldSpec(campaign.FieldID, field.TypeInt64))
 	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -505,34 +505,34 @@ func (_u *CampaignUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		_spec.ClearField(campaign.FieldDeletedAt, field.TypeTime)
 	}
 	if value, ok := _u.mutation.CreatedBy(); ok {
-		_spec.SetField(campaign.FieldCreatedBy, field.TypeUint32, value)
+		_spec.SetField(campaign.FieldCreatedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedCreatedBy(); ok {
-		_spec.AddField(campaign.FieldCreatedBy, field.TypeUint32, value)
+		_spec.AddField(campaign.FieldCreatedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.CreatedByCleared() {
-		_spec.ClearField(campaign.FieldCreatedBy, field.TypeUint32)
+		_spec.ClearField(campaign.FieldCreatedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.UpdatedBy(); ok {
-		_spec.SetField(campaign.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.SetField(campaign.FieldUpdatedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
-		_spec.AddField(campaign.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.AddField(campaign.FieldUpdatedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.UpdatedByCleared() {
-		_spec.ClearField(campaign.FieldUpdatedBy, field.TypeUint32)
+		_spec.ClearField(campaign.FieldUpdatedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.DeletedBy(); ok {
-		_spec.SetField(campaign.FieldDeletedBy, field.TypeUint32, value)
+		_spec.SetField(campaign.FieldDeletedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedDeletedBy(); ok {
-		_spec.AddField(campaign.FieldDeletedBy, field.TypeUint32, value)
+		_spec.AddField(campaign.FieldDeletedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.DeletedByCleared() {
-		_spec.ClearField(campaign.FieldDeletedBy, field.TypeUint32)
+		_spec.ClearField(campaign.FieldDeletedBy, field.TypeInt64)
 	}
 	if _u.mutation.TenantIDCleared() {
-		_spec.ClearField(campaign.FieldTenantID, field.TypeUint32)
+		_spec.ClearField(campaign.FieldTenantID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(campaign.FieldName, field.TypeString, value)
@@ -547,19 +547,19 @@ func (_u *CampaignUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		_spec.ClearField(campaign.FieldDescription, field.TypeString)
 	}
 	if value, ok := _u.mutation.AppID(); ok {
-		_spec.SetField(campaign.FieldAppID, field.TypeUint32, value)
+		_spec.SetField(campaign.FieldAppID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedAppID(); ok {
-		_spec.AddField(campaign.FieldAppID, field.TypeUint32, value)
+		_spec.AddField(campaign.FieldAppID, field.TypeInt64, value)
 	}
 	if _u.mutation.AppIDCleared() {
-		_spec.ClearField(campaign.FieldAppID, field.TypeUint32)
+		_spec.ClearField(campaign.FieldAppID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.SegmentID(); ok {
-		_spec.SetField(campaign.FieldSegmentID, field.TypeUint32, value)
+		_spec.SetField(campaign.FieldSegmentID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedSegmentID(); ok {
-		_spec.AddField(campaign.FieldSegmentID, field.TypeUint32, value)
+		_spec.AddField(campaign.FieldSegmentID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.Title(); ok {
 		_spec.SetField(campaign.FieldTitle, field.TypeString, value)
@@ -678,14 +678,14 @@ func (_u *CampaignUpdateOne) ClearDeletedAt() *CampaignUpdateOne {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (_u *CampaignUpdateOne) SetCreatedBy(v uint32) *CampaignUpdateOne {
+func (_u *CampaignUpdateOne) SetCreatedBy(v int64) *CampaignUpdateOne {
 	_u.mutation.ResetCreatedBy()
 	_u.mutation.SetCreatedBy(v)
 	return _u
 }
 
 // SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
-func (_u *CampaignUpdateOne) SetNillableCreatedBy(v *uint32) *CampaignUpdateOne {
+func (_u *CampaignUpdateOne) SetNillableCreatedBy(v *int64) *CampaignUpdateOne {
 	if v != nil {
 		_u.SetCreatedBy(*v)
 	}
@@ -693,7 +693,7 @@ func (_u *CampaignUpdateOne) SetNillableCreatedBy(v *uint32) *CampaignUpdateOne 
 }
 
 // AddCreatedBy adds value to the "created_by" field.
-func (_u *CampaignUpdateOne) AddCreatedBy(v int32) *CampaignUpdateOne {
+func (_u *CampaignUpdateOne) AddCreatedBy(v int64) *CampaignUpdateOne {
 	_u.mutation.AddCreatedBy(v)
 	return _u
 }
@@ -705,14 +705,14 @@ func (_u *CampaignUpdateOne) ClearCreatedBy() *CampaignUpdateOne {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (_u *CampaignUpdateOne) SetUpdatedBy(v uint32) *CampaignUpdateOne {
+func (_u *CampaignUpdateOne) SetUpdatedBy(v int64) *CampaignUpdateOne {
 	_u.mutation.ResetUpdatedBy()
 	_u.mutation.SetUpdatedBy(v)
 	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (_u *CampaignUpdateOne) SetNillableUpdatedBy(v *uint32) *CampaignUpdateOne {
+func (_u *CampaignUpdateOne) SetNillableUpdatedBy(v *int64) *CampaignUpdateOne {
 	if v != nil {
 		_u.SetUpdatedBy(*v)
 	}
@@ -720,7 +720,7 @@ func (_u *CampaignUpdateOne) SetNillableUpdatedBy(v *uint32) *CampaignUpdateOne 
 }
 
 // AddUpdatedBy adds value to the "updated_by" field.
-func (_u *CampaignUpdateOne) AddUpdatedBy(v int32) *CampaignUpdateOne {
+func (_u *CampaignUpdateOne) AddUpdatedBy(v int64) *CampaignUpdateOne {
 	_u.mutation.AddUpdatedBy(v)
 	return _u
 }
@@ -732,14 +732,14 @@ func (_u *CampaignUpdateOne) ClearUpdatedBy() *CampaignUpdateOne {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (_u *CampaignUpdateOne) SetDeletedBy(v uint32) *CampaignUpdateOne {
+func (_u *CampaignUpdateOne) SetDeletedBy(v int64) *CampaignUpdateOne {
 	_u.mutation.ResetDeletedBy()
 	_u.mutation.SetDeletedBy(v)
 	return _u
 }
 
 // SetNillableDeletedBy sets the "deleted_by" field if the given value is not nil.
-func (_u *CampaignUpdateOne) SetNillableDeletedBy(v *uint32) *CampaignUpdateOne {
+func (_u *CampaignUpdateOne) SetNillableDeletedBy(v *int64) *CampaignUpdateOne {
 	if v != nil {
 		_u.SetDeletedBy(*v)
 	}
@@ -747,7 +747,7 @@ func (_u *CampaignUpdateOne) SetNillableDeletedBy(v *uint32) *CampaignUpdateOne 
 }
 
 // AddDeletedBy adds value to the "deleted_by" field.
-func (_u *CampaignUpdateOne) AddDeletedBy(v int32) *CampaignUpdateOne {
+func (_u *CampaignUpdateOne) AddDeletedBy(v int64) *CampaignUpdateOne {
 	_u.mutation.AddDeletedBy(v)
 	return _u
 }
@@ -799,14 +799,14 @@ func (_u *CampaignUpdateOne) ClearDescription() *CampaignUpdateOne {
 }
 
 // SetAppID sets the "app_id" field.
-func (_u *CampaignUpdateOne) SetAppID(v uint32) *CampaignUpdateOne {
+func (_u *CampaignUpdateOne) SetAppID(v int64) *CampaignUpdateOne {
 	_u.mutation.ResetAppID()
 	_u.mutation.SetAppID(v)
 	return _u
 }
 
 // SetNillableAppID sets the "app_id" field if the given value is not nil.
-func (_u *CampaignUpdateOne) SetNillableAppID(v *uint32) *CampaignUpdateOne {
+func (_u *CampaignUpdateOne) SetNillableAppID(v *int64) *CampaignUpdateOne {
 	if v != nil {
 		_u.SetAppID(*v)
 	}
@@ -814,7 +814,7 @@ func (_u *CampaignUpdateOne) SetNillableAppID(v *uint32) *CampaignUpdateOne {
 }
 
 // AddAppID adds value to the "app_id" field.
-func (_u *CampaignUpdateOne) AddAppID(v int32) *CampaignUpdateOne {
+func (_u *CampaignUpdateOne) AddAppID(v int64) *CampaignUpdateOne {
 	_u.mutation.AddAppID(v)
 	return _u
 }
@@ -826,14 +826,14 @@ func (_u *CampaignUpdateOne) ClearAppID() *CampaignUpdateOne {
 }
 
 // SetSegmentID sets the "segment_id" field.
-func (_u *CampaignUpdateOne) SetSegmentID(v uint32) *CampaignUpdateOne {
+func (_u *CampaignUpdateOne) SetSegmentID(v int64) *CampaignUpdateOne {
 	_u.mutation.ResetSegmentID()
 	_u.mutation.SetSegmentID(v)
 	return _u
 }
 
 // SetNillableSegmentID sets the "segment_id" field if the given value is not nil.
-func (_u *CampaignUpdateOne) SetNillableSegmentID(v *uint32) *CampaignUpdateOne {
+func (_u *CampaignUpdateOne) SetNillableSegmentID(v *int64) *CampaignUpdateOne {
 	if v != nil {
 		_u.SetSegmentID(*v)
 	}
@@ -841,7 +841,7 @@ func (_u *CampaignUpdateOne) SetNillableSegmentID(v *uint32) *CampaignUpdateOne 
 }
 
 // AddSegmentID adds value to the "segment_id" field.
-func (_u *CampaignUpdateOne) AddSegmentID(v int32) *CampaignUpdateOne {
+func (_u *CampaignUpdateOne) AddSegmentID(v int64) *CampaignUpdateOne {
 	_u.mutation.AddSegmentID(v)
 	return _u
 }
@@ -1102,7 +1102,7 @@ func (_u *CampaignUpdateOne) sqlSave(ctx context.Context) (_node *Campaign, err 
 	if err := _u.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(campaign.Table, campaign.Columns, sqlgraph.NewFieldSpec(campaign.FieldID, field.TypeUint32))
+	_spec := sqlgraph.NewUpdateSpec(campaign.Table, campaign.Columns, sqlgraph.NewFieldSpec(campaign.FieldID, field.TypeInt64))
 	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Campaign.id" for update`)}
@@ -1143,34 +1143,34 @@ func (_u *CampaignUpdateOne) sqlSave(ctx context.Context) (_node *Campaign, err 
 		_spec.ClearField(campaign.FieldDeletedAt, field.TypeTime)
 	}
 	if value, ok := _u.mutation.CreatedBy(); ok {
-		_spec.SetField(campaign.FieldCreatedBy, field.TypeUint32, value)
+		_spec.SetField(campaign.FieldCreatedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedCreatedBy(); ok {
-		_spec.AddField(campaign.FieldCreatedBy, field.TypeUint32, value)
+		_spec.AddField(campaign.FieldCreatedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.CreatedByCleared() {
-		_spec.ClearField(campaign.FieldCreatedBy, field.TypeUint32)
+		_spec.ClearField(campaign.FieldCreatedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.UpdatedBy(); ok {
-		_spec.SetField(campaign.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.SetField(campaign.FieldUpdatedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
-		_spec.AddField(campaign.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.AddField(campaign.FieldUpdatedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.UpdatedByCleared() {
-		_spec.ClearField(campaign.FieldUpdatedBy, field.TypeUint32)
+		_spec.ClearField(campaign.FieldUpdatedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.DeletedBy(); ok {
-		_spec.SetField(campaign.FieldDeletedBy, field.TypeUint32, value)
+		_spec.SetField(campaign.FieldDeletedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedDeletedBy(); ok {
-		_spec.AddField(campaign.FieldDeletedBy, field.TypeUint32, value)
+		_spec.AddField(campaign.FieldDeletedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.DeletedByCleared() {
-		_spec.ClearField(campaign.FieldDeletedBy, field.TypeUint32)
+		_spec.ClearField(campaign.FieldDeletedBy, field.TypeInt64)
 	}
 	if _u.mutation.TenantIDCleared() {
-		_spec.ClearField(campaign.FieldTenantID, field.TypeUint32)
+		_spec.ClearField(campaign.FieldTenantID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(campaign.FieldName, field.TypeString, value)
@@ -1185,19 +1185,19 @@ func (_u *CampaignUpdateOne) sqlSave(ctx context.Context) (_node *Campaign, err 
 		_spec.ClearField(campaign.FieldDescription, field.TypeString)
 	}
 	if value, ok := _u.mutation.AppID(); ok {
-		_spec.SetField(campaign.FieldAppID, field.TypeUint32, value)
+		_spec.SetField(campaign.FieldAppID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedAppID(); ok {
-		_spec.AddField(campaign.FieldAppID, field.TypeUint32, value)
+		_spec.AddField(campaign.FieldAppID, field.TypeInt64, value)
 	}
 	if _u.mutation.AppIDCleared() {
-		_spec.ClearField(campaign.FieldAppID, field.TypeUint32)
+		_spec.ClearField(campaign.FieldAppID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.SegmentID(); ok {
-		_spec.SetField(campaign.FieldSegmentID, field.TypeUint32, value)
+		_spec.SetField(campaign.FieldSegmentID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedSegmentID(); ok {
-		_spec.AddField(campaign.FieldSegmentID, field.TypeUint32, value)
+		_spec.AddField(campaign.FieldSegmentID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.Title(); ok {
 		_spec.SetField(campaign.FieldTitle, field.TypeString, value)

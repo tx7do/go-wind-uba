@@ -10,47 +10,47 @@ import (
 )
 
 // ID filters vertices based on their ID field.
-func ID(id uint32) predicate.AlertRule {
+func ID(id int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldEQ(FieldID, id))
 }
 
 // IDEQ applies the EQ predicate on the ID field.
-func IDEQ(id uint32) predicate.AlertRule {
+func IDEQ(id int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldEQ(FieldID, id))
 }
 
 // IDNEQ applies the NEQ predicate on the ID field.
-func IDNEQ(id uint32) predicate.AlertRule {
+func IDNEQ(id int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldNEQ(FieldID, id))
 }
 
 // IDIn applies the In predicate on the ID field.
-func IDIn(ids ...uint32) predicate.AlertRule {
+func IDIn(ids ...int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldIn(FieldID, ids...))
 }
 
 // IDNotIn applies the NotIn predicate on the ID field.
-func IDNotIn(ids ...uint32) predicate.AlertRule {
+func IDNotIn(ids ...int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldNotIn(FieldID, ids...))
 }
 
 // IDGT applies the GT predicate on the ID field.
-func IDGT(id uint32) predicate.AlertRule {
+func IDGT(id int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldGT(FieldID, id))
 }
 
 // IDGTE applies the GTE predicate on the ID field.
-func IDGTE(id uint32) predicate.AlertRule {
+func IDGTE(id int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldGTE(FieldID, id))
 }
 
 // IDLT applies the LT predicate on the ID field.
-func IDLT(id uint32) predicate.AlertRule {
+func IDLT(id int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldLT(FieldID, id))
 }
 
 // IDLTE applies the LTE predicate on the ID field.
-func IDLTE(id uint32) predicate.AlertRule {
+func IDLTE(id int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldLTE(FieldID, id))
 }
 
@@ -70,22 +70,22 @@ func DeletedAt(v time.Time) predicate.AlertRule {
 }
 
 // CreatedBy applies equality check predicate on the "created_by" field. It's identical to CreatedByEQ.
-func CreatedBy(v uint32) predicate.AlertRule {
+func CreatedBy(v int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldEQ(FieldCreatedBy, v))
 }
 
 // UpdatedBy applies equality check predicate on the "updated_by" field. It's identical to UpdatedByEQ.
-func UpdatedBy(v uint32) predicate.AlertRule {
+func UpdatedBy(v int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldEQ(FieldUpdatedBy, v))
 }
 
 // DeletedBy applies equality check predicate on the "deleted_by" field. It's identical to DeletedByEQ.
-func DeletedBy(v uint32) predicate.AlertRule {
+func DeletedBy(v int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldEQ(FieldDeletedBy, v))
 }
 
 // TenantID applies equality check predicate on the "tenant_id" field. It's identical to TenantIDEQ.
-func TenantID(v uint32) predicate.AlertRule {
+func TenantID(v int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldEQ(FieldTenantID, v))
 }
 
@@ -100,7 +100,7 @@ func Description(v string) predicate.AlertRule {
 }
 
 // AppID applies equality check predicate on the "app_id" field. It's identical to AppIDEQ.
-func AppID(v uint32) predicate.AlertRule {
+func AppID(v int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldEQ(FieldAppID, v))
 }
 
@@ -295,42 +295,42 @@ func DeletedAtNotNil() predicate.AlertRule {
 }
 
 // CreatedByEQ applies the EQ predicate on the "created_by" field.
-func CreatedByEQ(v uint32) predicate.AlertRule {
+func CreatedByEQ(v int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldEQ(FieldCreatedBy, v))
 }
 
 // CreatedByNEQ applies the NEQ predicate on the "created_by" field.
-func CreatedByNEQ(v uint32) predicate.AlertRule {
+func CreatedByNEQ(v int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldNEQ(FieldCreatedBy, v))
 }
 
 // CreatedByIn applies the In predicate on the "created_by" field.
-func CreatedByIn(vs ...uint32) predicate.AlertRule {
+func CreatedByIn(vs ...int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldIn(FieldCreatedBy, vs...))
 }
 
 // CreatedByNotIn applies the NotIn predicate on the "created_by" field.
-func CreatedByNotIn(vs ...uint32) predicate.AlertRule {
+func CreatedByNotIn(vs ...int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldNotIn(FieldCreatedBy, vs...))
 }
 
 // CreatedByGT applies the GT predicate on the "created_by" field.
-func CreatedByGT(v uint32) predicate.AlertRule {
+func CreatedByGT(v int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldGT(FieldCreatedBy, v))
 }
 
 // CreatedByGTE applies the GTE predicate on the "created_by" field.
-func CreatedByGTE(v uint32) predicate.AlertRule {
+func CreatedByGTE(v int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldGTE(FieldCreatedBy, v))
 }
 
 // CreatedByLT applies the LT predicate on the "created_by" field.
-func CreatedByLT(v uint32) predicate.AlertRule {
+func CreatedByLT(v int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldLT(FieldCreatedBy, v))
 }
 
 // CreatedByLTE applies the LTE predicate on the "created_by" field.
-func CreatedByLTE(v uint32) predicate.AlertRule {
+func CreatedByLTE(v int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldLTE(FieldCreatedBy, v))
 }
 
@@ -345,42 +345,42 @@ func CreatedByNotNil() predicate.AlertRule {
 }
 
 // UpdatedByEQ applies the EQ predicate on the "updated_by" field.
-func UpdatedByEQ(v uint32) predicate.AlertRule {
+func UpdatedByEQ(v int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldEQ(FieldUpdatedBy, v))
 }
 
 // UpdatedByNEQ applies the NEQ predicate on the "updated_by" field.
-func UpdatedByNEQ(v uint32) predicate.AlertRule {
+func UpdatedByNEQ(v int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldNEQ(FieldUpdatedBy, v))
 }
 
 // UpdatedByIn applies the In predicate on the "updated_by" field.
-func UpdatedByIn(vs ...uint32) predicate.AlertRule {
+func UpdatedByIn(vs ...int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldIn(FieldUpdatedBy, vs...))
 }
 
 // UpdatedByNotIn applies the NotIn predicate on the "updated_by" field.
-func UpdatedByNotIn(vs ...uint32) predicate.AlertRule {
+func UpdatedByNotIn(vs ...int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldNotIn(FieldUpdatedBy, vs...))
 }
 
 // UpdatedByGT applies the GT predicate on the "updated_by" field.
-func UpdatedByGT(v uint32) predicate.AlertRule {
+func UpdatedByGT(v int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldGT(FieldUpdatedBy, v))
 }
 
 // UpdatedByGTE applies the GTE predicate on the "updated_by" field.
-func UpdatedByGTE(v uint32) predicate.AlertRule {
+func UpdatedByGTE(v int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldGTE(FieldUpdatedBy, v))
 }
 
 // UpdatedByLT applies the LT predicate on the "updated_by" field.
-func UpdatedByLT(v uint32) predicate.AlertRule {
+func UpdatedByLT(v int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldLT(FieldUpdatedBy, v))
 }
 
 // UpdatedByLTE applies the LTE predicate on the "updated_by" field.
-func UpdatedByLTE(v uint32) predicate.AlertRule {
+func UpdatedByLTE(v int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldLTE(FieldUpdatedBy, v))
 }
 
@@ -395,42 +395,42 @@ func UpdatedByNotNil() predicate.AlertRule {
 }
 
 // DeletedByEQ applies the EQ predicate on the "deleted_by" field.
-func DeletedByEQ(v uint32) predicate.AlertRule {
+func DeletedByEQ(v int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldEQ(FieldDeletedBy, v))
 }
 
 // DeletedByNEQ applies the NEQ predicate on the "deleted_by" field.
-func DeletedByNEQ(v uint32) predicate.AlertRule {
+func DeletedByNEQ(v int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldNEQ(FieldDeletedBy, v))
 }
 
 // DeletedByIn applies the In predicate on the "deleted_by" field.
-func DeletedByIn(vs ...uint32) predicate.AlertRule {
+func DeletedByIn(vs ...int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldIn(FieldDeletedBy, vs...))
 }
 
 // DeletedByNotIn applies the NotIn predicate on the "deleted_by" field.
-func DeletedByNotIn(vs ...uint32) predicate.AlertRule {
+func DeletedByNotIn(vs ...int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldNotIn(FieldDeletedBy, vs...))
 }
 
 // DeletedByGT applies the GT predicate on the "deleted_by" field.
-func DeletedByGT(v uint32) predicate.AlertRule {
+func DeletedByGT(v int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldGT(FieldDeletedBy, v))
 }
 
 // DeletedByGTE applies the GTE predicate on the "deleted_by" field.
-func DeletedByGTE(v uint32) predicate.AlertRule {
+func DeletedByGTE(v int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldGTE(FieldDeletedBy, v))
 }
 
 // DeletedByLT applies the LT predicate on the "deleted_by" field.
-func DeletedByLT(v uint32) predicate.AlertRule {
+func DeletedByLT(v int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldLT(FieldDeletedBy, v))
 }
 
 // DeletedByLTE applies the LTE predicate on the "deleted_by" field.
-func DeletedByLTE(v uint32) predicate.AlertRule {
+func DeletedByLTE(v int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldLTE(FieldDeletedBy, v))
 }
 
@@ -445,42 +445,42 @@ func DeletedByNotNil() predicate.AlertRule {
 }
 
 // TenantIDEQ applies the EQ predicate on the "tenant_id" field.
-func TenantIDEQ(v uint32) predicate.AlertRule {
+func TenantIDEQ(v int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldEQ(FieldTenantID, v))
 }
 
 // TenantIDNEQ applies the NEQ predicate on the "tenant_id" field.
-func TenantIDNEQ(v uint32) predicate.AlertRule {
+func TenantIDNEQ(v int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldNEQ(FieldTenantID, v))
 }
 
 // TenantIDIn applies the In predicate on the "tenant_id" field.
-func TenantIDIn(vs ...uint32) predicate.AlertRule {
+func TenantIDIn(vs ...int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldIn(FieldTenantID, vs...))
 }
 
 // TenantIDNotIn applies the NotIn predicate on the "tenant_id" field.
-func TenantIDNotIn(vs ...uint32) predicate.AlertRule {
+func TenantIDNotIn(vs ...int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldNotIn(FieldTenantID, vs...))
 }
 
 // TenantIDGT applies the GT predicate on the "tenant_id" field.
-func TenantIDGT(v uint32) predicate.AlertRule {
+func TenantIDGT(v int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldGT(FieldTenantID, v))
 }
 
 // TenantIDGTE applies the GTE predicate on the "tenant_id" field.
-func TenantIDGTE(v uint32) predicate.AlertRule {
+func TenantIDGTE(v int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldGTE(FieldTenantID, v))
 }
 
 // TenantIDLT applies the LT predicate on the "tenant_id" field.
-func TenantIDLT(v uint32) predicate.AlertRule {
+func TenantIDLT(v int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldLT(FieldTenantID, v))
 }
 
 // TenantIDLTE applies the LTE predicate on the "tenant_id" field.
-func TenantIDLTE(v uint32) predicate.AlertRule {
+func TenantIDLTE(v int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldLTE(FieldTenantID, v))
 }
 
@@ -645,42 +645,42 @@ func DescriptionContainsFold(v string) predicate.AlertRule {
 }
 
 // AppIDEQ applies the EQ predicate on the "app_id" field.
-func AppIDEQ(v uint32) predicate.AlertRule {
+func AppIDEQ(v int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldEQ(FieldAppID, v))
 }
 
 // AppIDNEQ applies the NEQ predicate on the "app_id" field.
-func AppIDNEQ(v uint32) predicate.AlertRule {
+func AppIDNEQ(v int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldNEQ(FieldAppID, v))
 }
 
 // AppIDIn applies the In predicate on the "app_id" field.
-func AppIDIn(vs ...uint32) predicate.AlertRule {
+func AppIDIn(vs ...int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldIn(FieldAppID, vs...))
 }
 
 // AppIDNotIn applies the NotIn predicate on the "app_id" field.
-func AppIDNotIn(vs ...uint32) predicate.AlertRule {
+func AppIDNotIn(vs ...int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldNotIn(FieldAppID, vs...))
 }
 
 // AppIDGT applies the GT predicate on the "app_id" field.
-func AppIDGT(v uint32) predicate.AlertRule {
+func AppIDGT(v int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldGT(FieldAppID, v))
 }
 
 // AppIDGTE applies the GTE predicate on the "app_id" field.
-func AppIDGTE(v uint32) predicate.AlertRule {
+func AppIDGTE(v int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldGTE(FieldAppID, v))
 }
 
 // AppIDLT applies the LT predicate on the "app_id" field.
-func AppIDLT(v uint32) predicate.AlertRule {
+func AppIDLT(v int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldLT(FieldAppID, v))
 }
 
 // AppIDLTE applies the LTE predicate on the "app_id" field.
-func AppIDLTE(v uint32) predicate.AlertRule {
+func AppIDLTE(v int64) predicate.AlertRule {
 	return predicate.AlertRule(sql.FieldLTE(FieldAppID, v))
 }
 

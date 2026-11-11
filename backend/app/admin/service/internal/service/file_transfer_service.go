@@ -93,7 +93,7 @@ func (s *FileTransferService) hashFileContent(fileData []byte) string {
 // recordFile 记录文件元数据到数据库
 func (s *FileTransferService) recordFile(
 	ctx context.Context,
-	tenantID, userID uint32,
+	tenantID, userID int64,
 	fileData []byte,
 	sourceFileName string,
 	info minio.UploadInfo,

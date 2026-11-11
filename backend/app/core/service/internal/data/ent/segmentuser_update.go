@@ -70,14 +70,14 @@ func (_u *SegmentUserUpdate) ClearDeletedAt() *SegmentUserUpdate {
 }
 
 // SetSegmentID sets the "segment_id" field.
-func (_u *SegmentUserUpdate) SetSegmentID(v uint32) *SegmentUserUpdate {
+func (_u *SegmentUserUpdate) SetSegmentID(v int64) *SegmentUserUpdate {
 	_u.mutation.ResetSegmentID()
 	_u.mutation.SetSegmentID(v)
 	return _u
 }
 
 // SetNillableSegmentID sets the "segment_id" field if the given value is not nil.
-func (_u *SegmentUserUpdate) SetNillableSegmentID(v *uint32) *SegmentUserUpdate {
+func (_u *SegmentUserUpdate) SetNillableSegmentID(v *int64) *SegmentUserUpdate {
 	if v != nil {
 		_u.SetSegmentID(*v)
 	}
@@ -85,20 +85,20 @@ func (_u *SegmentUserUpdate) SetNillableSegmentID(v *uint32) *SegmentUserUpdate 
 }
 
 // AddSegmentID adds value to the "segment_id" field.
-func (_u *SegmentUserUpdate) AddSegmentID(v int32) *SegmentUserUpdate {
+func (_u *SegmentUserUpdate) AddSegmentID(v int64) *SegmentUserUpdate {
 	_u.mutation.AddSegmentID(v)
 	return _u
 }
 
 // SetUserID sets the "user_id" field.
-func (_u *SegmentUserUpdate) SetUserID(v uint32) *SegmentUserUpdate {
+func (_u *SegmentUserUpdate) SetUserID(v int64) *SegmentUserUpdate {
 	_u.mutation.ResetUserID()
 	_u.mutation.SetUserID(v)
 	return _u
 }
 
 // SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (_u *SegmentUserUpdate) SetNillableUserID(v *uint32) *SegmentUserUpdate {
+func (_u *SegmentUserUpdate) SetNillableUserID(v *int64) *SegmentUserUpdate {
 	if v != nil {
 		_u.SetUserID(*v)
 	}
@@ -106,7 +106,7 @@ func (_u *SegmentUserUpdate) SetNillableUserID(v *uint32) *SegmentUserUpdate {
 }
 
 // AddUserID adds value to the "user_id" field.
-func (_u *SegmentUserUpdate) AddUserID(v int32) *SegmentUserUpdate {
+func (_u *SegmentUserUpdate) AddUserID(v int64) *SegmentUserUpdate {
 	_u.mutation.AddUserID(v)
 	return _u
 }
@@ -150,7 +150,7 @@ func (_u *SegmentUserUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *Se
 }
 
 func (_u *SegmentUserUpdate) sqlSave(ctx context.Context) (_node int, err error) {
-	_spec := sqlgraph.NewUpdateSpec(segmentuser.Table, segmentuser.Columns, sqlgraph.NewFieldSpec(segmentuser.FieldID, field.TypeUint32))
+	_spec := sqlgraph.NewUpdateSpec(segmentuser.Table, segmentuser.Columns, sqlgraph.NewFieldSpec(segmentuser.FieldID, field.TypeInt64))
 	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -174,19 +174,19 @@ func (_u *SegmentUserUpdate) sqlSave(ctx context.Context) (_node int, err error)
 		_spec.ClearField(segmentuser.FieldDeletedAt, field.TypeTime)
 	}
 	if _u.mutation.TenantIDCleared() {
-		_spec.ClearField(segmentuser.FieldTenantID, field.TypeUint32)
+		_spec.ClearField(segmentuser.FieldTenantID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.SegmentID(); ok {
-		_spec.SetField(segmentuser.FieldSegmentID, field.TypeUint32, value)
+		_spec.SetField(segmentuser.FieldSegmentID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedSegmentID(); ok {
-		_spec.AddField(segmentuser.FieldSegmentID, field.TypeUint32, value)
+		_spec.AddField(segmentuser.FieldSegmentID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.UserID(); ok {
-		_spec.SetField(segmentuser.FieldUserID, field.TypeUint32, value)
+		_spec.SetField(segmentuser.FieldUserID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedUserID(); ok {
-		_spec.AddField(segmentuser.FieldUserID, field.TypeUint32, value)
+		_spec.AddField(segmentuser.FieldUserID, field.TypeInt64, value)
 	}
 	_spec.AddModifiers(_u.modifiers...)
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
@@ -251,14 +251,14 @@ func (_u *SegmentUserUpdateOne) ClearDeletedAt() *SegmentUserUpdateOne {
 }
 
 // SetSegmentID sets the "segment_id" field.
-func (_u *SegmentUserUpdateOne) SetSegmentID(v uint32) *SegmentUserUpdateOne {
+func (_u *SegmentUserUpdateOne) SetSegmentID(v int64) *SegmentUserUpdateOne {
 	_u.mutation.ResetSegmentID()
 	_u.mutation.SetSegmentID(v)
 	return _u
 }
 
 // SetNillableSegmentID sets the "segment_id" field if the given value is not nil.
-func (_u *SegmentUserUpdateOne) SetNillableSegmentID(v *uint32) *SegmentUserUpdateOne {
+func (_u *SegmentUserUpdateOne) SetNillableSegmentID(v *int64) *SegmentUserUpdateOne {
 	if v != nil {
 		_u.SetSegmentID(*v)
 	}
@@ -266,20 +266,20 @@ func (_u *SegmentUserUpdateOne) SetNillableSegmentID(v *uint32) *SegmentUserUpda
 }
 
 // AddSegmentID adds value to the "segment_id" field.
-func (_u *SegmentUserUpdateOne) AddSegmentID(v int32) *SegmentUserUpdateOne {
+func (_u *SegmentUserUpdateOne) AddSegmentID(v int64) *SegmentUserUpdateOne {
 	_u.mutation.AddSegmentID(v)
 	return _u
 }
 
 // SetUserID sets the "user_id" field.
-func (_u *SegmentUserUpdateOne) SetUserID(v uint32) *SegmentUserUpdateOne {
+func (_u *SegmentUserUpdateOne) SetUserID(v int64) *SegmentUserUpdateOne {
 	_u.mutation.ResetUserID()
 	_u.mutation.SetUserID(v)
 	return _u
 }
 
 // SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (_u *SegmentUserUpdateOne) SetNillableUserID(v *uint32) *SegmentUserUpdateOne {
+func (_u *SegmentUserUpdateOne) SetNillableUserID(v *int64) *SegmentUserUpdateOne {
 	if v != nil {
 		_u.SetUserID(*v)
 	}
@@ -287,7 +287,7 @@ func (_u *SegmentUserUpdateOne) SetNillableUserID(v *uint32) *SegmentUserUpdateO
 }
 
 // AddUserID adds value to the "user_id" field.
-func (_u *SegmentUserUpdateOne) AddUserID(v int32) *SegmentUserUpdateOne {
+func (_u *SegmentUserUpdateOne) AddUserID(v int64) *SegmentUserUpdateOne {
 	_u.mutation.AddUserID(v)
 	return _u
 }
@@ -344,7 +344,7 @@ func (_u *SegmentUserUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) 
 }
 
 func (_u *SegmentUserUpdateOne) sqlSave(ctx context.Context) (_node *SegmentUser, err error) {
-	_spec := sqlgraph.NewUpdateSpec(segmentuser.Table, segmentuser.Columns, sqlgraph.NewFieldSpec(segmentuser.FieldID, field.TypeUint32))
+	_spec := sqlgraph.NewUpdateSpec(segmentuser.Table, segmentuser.Columns, sqlgraph.NewFieldSpec(segmentuser.FieldID, field.TypeInt64))
 	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "SegmentUser.id" for update`)}
@@ -385,19 +385,19 @@ func (_u *SegmentUserUpdateOne) sqlSave(ctx context.Context) (_node *SegmentUser
 		_spec.ClearField(segmentuser.FieldDeletedAt, field.TypeTime)
 	}
 	if _u.mutation.TenantIDCleared() {
-		_spec.ClearField(segmentuser.FieldTenantID, field.TypeUint32)
+		_spec.ClearField(segmentuser.FieldTenantID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.SegmentID(); ok {
-		_spec.SetField(segmentuser.FieldSegmentID, field.TypeUint32, value)
+		_spec.SetField(segmentuser.FieldSegmentID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedSegmentID(); ok {
-		_spec.AddField(segmentuser.FieldSegmentID, field.TypeUint32, value)
+		_spec.AddField(segmentuser.FieldSegmentID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.UserID(); ok {
-		_spec.SetField(segmentuser.FieldUserID, field.TypeUint32, value)
+		_spec.SetField(segmentuser.FieldUserID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedUserID(); ok {
-		_spec.AddField(segmentuser.FieldUserID, field.TypeUint32, value)
+		_spec.AddField(segmentuser.FieldUserID, field.TypeInt64, value)
 	}
 	_spec.AddModifiers(_u.modifiers...)
 	_node = &SegmentUser{config: _u.config}

@@ -1,9 +1,9 @@
 package client
 
 import (
+	"github.com/tx7do/kratos-bootstrap/bootstrap"
 	"github.com/tx7do/kratos-transport/broker"
 	kafkaBroker "github.com/tx7do/kratos-transport/broker/kafka"
-	"github.com/tx7do/kratos-bootstrap/bootstrap"
 
 	"go-wind-uba/pkg/middleware/metadata"
 	"go-wind-uba/pkg/topic"

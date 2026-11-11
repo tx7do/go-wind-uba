@@ -29,7 +29,7 @@ func NewSegmentUserRepo(ctx *bootstrap.Context, entClient *entCrud.EntClient[*en
 }
 
 // ReplaceUsers 全量替换分群成员（刷新时调用：先清空再批量写入）。
-func (r *SegmentUserRepo) ReplaceUsers(ctx context.Context, segmentID uint32, userIDs []uint32) error {
+func (r *SegmentUserRepo) ReplaceUsers(ctx context.Context, segmentID int64, userIDs []int64) error {
 	if _, err := r.entClient.Client().SegmentUser.Delete().
 		Where(segmentuser.SegmentIDEQ(segmentID)).
 		Exec(ctx); err != nil {
@@ -59,7 +59,7 @@ func (r *SegmentUserRepo) ReplaceUsers(ctx context.Context, segmentID uint32, us
 }
 
 // ListBySegment 分页查询分群成员。
-func (r *SegmentUserRepo) ListBySegment(ctx context.Context, segmentID uint32, page, pageSize int) ([]*ent.SegmentUser, int, error) {
+func (r *SegmentUserRepo) ListBySegment(ctx context.Context, segmentID int64, page, pageSize int) ([]*ent.SegmentUser, int, error) {
 	if pageSize <= 0 || pageSize > 200 {
 		pageSize = 50
 	}
@@ -90,7 +90,7 @@ func (r *SegmentUserRepo) ListBySegment(ctx context.Context, segmentID uint32, p
 }
 
 // DeleteBySegment 删除分群时清理成员。
-func (r *SegmentUserRepo) DeleteBySegment(ctx context.Context, segmentID uint32) error {
+func (r *SegmentUserRepo) DeleteBySegment(ctx context.Context, segmentID int64) error {
 	if _, err := r.entClient.Client().SegmentUser.Delete().
 		Where(segmentuser.SegmentIDEQ(segmentID)).
 		Exec(ctx); err != nil {

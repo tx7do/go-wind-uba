@@ -46,7 +46,7 @@ func NewFeatureFlagService(
 	chAnalytics *clickhouse.AnalyticsRepo,
 ) *FeatureFlagService {
 	return &FeatureFlagService{
-		log:         ctx.NewLoggerHelper("feature-flag/service/core-service"),
+		log:       ctx.NewLoggerHelper("feature-flag/service/core-service"),
 		flagRepo:  flagRepo,
 		dorisRepo: analytics,
 		chRepo:    chAnalytics,
@@ -156,9 +156,9 @@ func (s *FeatureFlagService) GetFlagResult(ctx context.Context, req *ubaV1.GetFl
 	for _, stat := range stats {
 		byVariant[stat.Variant] = &ubaV1.FlagVariantResult{
 			Variant:        stat.Variant,
-			ExposedUsers:   stat.ExposedUsers,
-			ConvertedUsers: stat.ConvertedUsers,
-			ConversionRate: conversionRate(stat.ConvertedUsers, stat.ExposedUsers),
+			ExposedUsers:   uint64(stat.ExposedUsers),
+			ConvertedUsers: uint64(stat.ConvertedUsers),
+			ConversionRate: conversionRate(int64(stat.ConvertedUsers), int64(stat.ExposedUsers)),
 		}
 	}
 
@@ -186,7 +186,7 @@ func (s *FeatureFlagService) GetFlagResult(ctx context.Context, req *ubaV1.GetFl
 
 // flagResultAnalytics 实验结果聚合能力（Doris/ClickHouse 双实现共用签名）。
 type flagResultAnalytics interface {
-	FlagExperimentResult(ctx context.Context, flagKey, goalEvent string, appFilter uint32, startMs, endMs int64) ([]data.FlagVariantStat, error)
+	FlagExperimentResult(ctx context.Context, flagKey, goalEvent string, appFilter int64, startMs, endMs int64) ([]data.FlagVariantStat, error)
 }
 
 func (s *FeatureFlagService) resultImpl() flagResultAnalytics {
@@ -251,7 +251,7 @@ func AssignFlagVariant(flag *ent.FeatureFlag, distinctID string) string {
 }
 
 // distinctIDOf 评估身份：登录用户优先，否则设备。
-func distinctIDOf(userID uint32, deviceID string) string {
+func distinctIDOf(userID int64, deviceID string) string {
 	if userID > 0 {
 		return fmt.Sprintf("u:%d", userID)
 	}
@@ -282,7 +282,7 @@ func validateFlagData(data *ubaV1.FeatureFlag) error {
 	return nil
 }
 
-func conversionRate(converted, exposed uint64) float64 {
+func conversionRate(converted, exposed int64) float64 {
 	if exposed == 0 {
 		return 0
 	}

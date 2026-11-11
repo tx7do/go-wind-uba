@@ -91,7 +91,7 @@ func containsPermission(perms []string, target string) bool {
 }
 
 // authorizeAndEnrichUserTokenPayloadUserTenantRelationOneToOne 一对一用户-租户关系的授权与丰富
-func (s *AuthenticationService) authorizeAndEnrichUserTokenPayloadUserTenantRelationOneToOne(ctx context.Context, userID, tenantID uint32, tokenPayload *authenticationV1.UserTokenPayload) error {
+func (s *AuthenticationService) authorizeAndEnrichUserTokenPayloadUserTenantRelationOneToOne(ctx context.Context, userID, tenantID int64, tokenPayload *authenticationV1.UserTokenPayload) error {
 	hasBackendAccess := false
 
 	if tenantID > 0 {
@@ -148,7 +148,7 @@ func (s *AuthenticationService) authorizeAndEnrichUserTokenPayloadUserTenantRela
 }
 
 // authorizeAndEnrichUserTokenPayload 授权并丰富用户令牌载荷
-func (s *AuthenticationService) authorizeAndEnrichUserTokenPayload(ctx context.Context, userID, tenantID uint32, tokenPayload *authenticationV1.UserTokenPayload) error {
+func (s *AuthenticationService) authorizeAndEnrichUserTokenPayload(ctx context.Context, userID, tenantID int64, tokenPayload *authenticationV1.UserTokenPayload) error {
 	switch constants.DefaultUserTenantRelationType {
 	case constants.UserTenantRelationOneToOne:
 		return s.authorizeAndEnrichUserTokenPayloadUserTenantRelationOneToOne(ctx, userID, tenantID, tokenPayload)
@@ -308,7 +308,7 @@ func (s *AuthenticationService) Logout(ctx context.Context, req *authenticationV
 func (s *AuthenticationService) RegisterUser(ctx context.Context, req *authenticationV1.RegisterUserRequest) (*authenticationV1.RegisterUserResponse, error) {
 	var err error
 
-	var tenantId *uint32
+	var tenantId *int64
 	if constants.IsTenantModeEnabled {
 		var tenant *identityV1.Tenant
 		tenant, err = s.tenantRepo.Get(ctx, &identityV1.GetTenantRequest{

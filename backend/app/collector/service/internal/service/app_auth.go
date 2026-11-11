@@ -35,7 +35,7 @@ type cachedApp struct {
 	AppID      string `json:"app_id"`
 	SecretHash string `json:"secret_hash"` // sha256(app_secret) 的十六进制串
 	Status     ubaV1.Application_Status
-	TenantID   uint32 `json:"tenant_id"`
+	TenantID   int64 `json:"tenant_id"`
 }
 
 // AppAuthenticator 应用级鉴权器：用请求体中的 app_id 反查应用、比对 app_secret、

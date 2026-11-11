@@ -41,16 +41,16 @@ service SegmentService {
 
 // 用户分群
 message Segment {
-  uint32 id = 1 [
+  int64 id = 1 [
     json_name = "id",
     (gnostic.openapi.v3.property) = {description: "主键ID，唯一标识分群"}
   ]; // 主键ID
 
-  optional uint32 tenant_id = 2 [
+  optional int64 tenant_id = 2 [
     json_name = "tenantId",
     (gnostic.openapi.v3.property) = {description: "租户ID，多租户隔离，支持SaaS场景"}
   ]; // 租户ID
-  optional uint32 app_id = 3 [
+  optional int64 app_id = 3 [
     json_name = "appId",
     (gnostic.openapi.v3.property) = {description: "关联应用ID"}
   ]; // 关联应用ID
@@ -64,14 +64,14 @@ message Segment {
   optional uint32 refresh_interval_minutes = 7 [json_name = "refreshIntervalMinutes", (gnostic.openapi.v3.property) = {description: "定时刷新间隔（分钟），0 表示仅手动刷新"}]; // 定时刷新间隔（分钟）
   optional uint32 max_users = 8 [json_name = "maxUsers", (gnostic.openapi.v3.property) = {description: "人群规模上限，超出截断"}]; // 人群规模上限
 
-  optional uint64 user_count = 9 [json_name = "userCount", (gnostic.openapi.v3.property) = {description: "最近一次刷新命中的人数"}]; // 命中人数
+  optional int64 user_count = 9 [json_name = "userCount", (gnostic.openapi.v3.property) = {description: "最近一次刷新命中的人数"}]; // 命中人数
   optional google.protobuf.Timestamp last_refreshed_at = 10 [json_name = "lastRefreshedAt", (gnostic.openapi.v3.property) = {description: "最近一次刷新时间"}]; // 最近刷新时间
 
   optional bool enabled = 11 [json_name = "enabled", (gnostic.openapi.v3.property) = {description: "是否启用，停用后不参与定时刷新"}]; // 是否启用
 
-  optional uint32 created_by = 100 [json_name = "createdBy", (gnostic.openapi.v3.property) = {description: "创建者用户ID"}]; // 创建者用户ID
-  optional uint32 updated_by = 101 [json_name = "updatedBy", (gnostic.openapi.v3.property) = {description: "更新者用户ID"}]; // 更新者用户ID
-  optional uint32 deleted_by = 102 [json_name = "deletedBy", (gnostic.openapi.v3.property) = {description: "删除者用户ID"}]; // 删除者用户ID
+  optional int64 created_by = 100 [json_name = "createdBy", (gnostic.openapi.v3.property) = {description: "创建者用户ID"}]; // 创建者用户ID
+  optional int64 updated_by = 101 [json_name = "updatedBy", (gnostic.openapi.v3.property) = {description: "更新者用户ID"}]; // 更新者用户ID
+  optional int64 deleted_by = 102 [json_name = "deletedBy", (gnostic.openapi.v3.property) = {description: "删除者用户ID"}]; // 删除者用户ID
 
   optional google.protobuf.Timestamp created_at = 200 [json_name = "createdAt", (gnostic.openapi.v3.property) = {description: "创建时间"}]; // 创建时间
   optional google.protobuf.Timestamp updated_at = 201 [json_name = "updatedAt", (gnostic.openapi.v3.property) = {description: "更新时间"}]; // 更新时间
@@ -95,20 +95,20 @@ message SegmentationDefinition {
 
 // 分群成员
 message SegmentUser {
-  uint32 user_id = 1 [json_name = "userId", (gnostic.openapi.v3.property) = {description: "用户ID"}]; // 用户ID
+  int64 user_id = 1 [json_name = "userId", (gnostic.openapi.v3.property) = {description: "用户ID"}]; // 用户ID
   google.protobuf.Timestamp joined_at = 2 [json_name = "joinedAt", (gnostic.openapi.v3.property) = {description: "进入分群时间"}]; // 进入分群时间
 }
 
 // 获取分群列表 - 答复
 message ListSegmentResponse {
   repeated Segment items = 1 [json_name = "items", (gnostic.openapi.v3.property) = {description: "分群列表"}]; // 分群列表
-  uint64 total = 2 [json_name = "total", (gnostic.openapi.v3.property) = {description: "总数"}]; // 总数
+  int64 total = 2 [json_name = "total", (gnostic.openapi.v3.property) = {description: "总数"}]; // 总数
 }
 
 // 获取分群数据 - 请求
 message GetSegmentRequest {
   oneof query_by {
-    uint32 id = 1 [json_name = "id", (gnostic.openapi.v3.property) = {description: "ID", read_only: true}]; // ID
+    int64 id = 1 [json_name = "id", (gnostic.openapi.v3.property) = {description: "ID", read_only: true}]; // ID
   }
 
   optional google.protobuf.FieldMask view_mask = 100 [json_name = "viewMask", (gnostic.openapi.v3.property) = {description: "视图字段过滤器，用于控制返回的字段"}]; // 视图字段过滤器
@@ -124,7 +124,7 @@ message CreateSegmentRequest {
 
 // 更新分群 - 请求
 message UpdateSegmentRequest {
-  uint32 id = 1 [json_name = "id", (gnostic.openapi.v3.property) = {description: "分群ID"}]; // 分群ID
+  int64 id = 1 [json_name = "id", (gnostic.openapi.v3.property) = {description: "分群ID"}]; // 分群ID
 
   Segment data = 2 [json_name = "data", (gnostic.openapi.v3.property) = {description: "分群数据"}]; // 分群数据
 
@@ -136,20 +136,20 @@ message UpdateSegmentRequest {
 // 删除分群 - 请求
 message DeleteSegmentRequest {
   oneof query_by {
-    uint32 id = 1 [json_name = "id", (gnostic.openapi.v3.property) = {description: "ID", read_only: true}]; // ID
+    int64 id = 1 [json_name = "id", (gnostic.openapi.v3.property) = {description: "ID", read_only: true}]; // ID
   }
 
-  optional uint32 deleted_by = 100 [json_name = "deletedBy", (gnostic.openapi.v3.property) = {description: "删除者用户ID"}]; // 删除者用户ID
+  optional int64 deleted_by = 100 [json_name = "deletedBy", (gnostic.openapi.v3.property) = {description: "删除者用户ID"}]; // 删除者用户ID
 }
 
 // 刷新分群 - 请求
 message RefreshSegmentRequest {
-  uint32 id = 1 [json_name = "id", (gnostic.openapi.v3.property) = {description: "分群ID"}]; // 分群ID
+  int64 id = 1 [json_name = "id", (gnostic.openapi.v3.property) = {description: "分群ID"}]; // 分群ID
 }
 
 // 查询分群用户 - 请求
 message ListSegmentUsersRequest {
-  uint32 segment_id = 1 [json_name = "segmentId", (gnostic.openapi.v3.property) = {description: "分群ID"}]; // 分群ID
+  int64 segment_id = 1 [json_name = "segmentId", (gnostic.openapi.v3.property) = {description: "分群ID"}]; // 分群ID
 
   optional int32 page = 2 [json_name = "page", (gnostic.openapi.v3.property) = {description: "页码，从 1 开始"}]; // 页码
   optional int32 page_size = 3 [json_name = "pageSize", (gnostic.openapi.v3.property) = {description: "每页数量，默认 50"}]; // 每页数量
@@ -158,10 +158,10 @@ message ListSegmentUsersRequest {
 // 查询分群用户 - 答复
 message ListSegmentUsersResponse {
   repeated SegmentUser items = 1 [json_name = "items", (gnostic.openapi.v3.property) = {description: "用户列表"}]; // 用户列表
-  uint64 total = 2 [json_name = "total", (gnostic.openapi.v3.property) = {description: "总数"}]; // 总数
+  int64 total = 2 [json_name = "total", (gnostic.openapi.v3.property) = {description: "总数"}]; // 总数
 }
 
 // 分群数量 - 答复
 message CountSegmentResponse {
-  uint64 count = 1 [json_name = "count", (gnostic.openapi.v3.property) = {description: "数量"}]; // 数量
+  int64 count = 1 [json_name = "count", (gnostic.openapi.v3.property) = {description: "数量"}]; // 数量
 }

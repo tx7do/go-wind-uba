@@ -18,7 +18,7 @@ import (
 // viewerUserIDFromContext 从 viewer context 提取操作人的用户 ID。
 // core 服务经由 ent middleware 注入 viewer context（来源为 gRPC metadata 中的 OperatorMetadata）。
 // 系统上下文（初始化、定时任务等）不存在 viewer，返回 (0, false)。
-func viewerUserIDFromContext(ctx context.Context) (uint32, bool) {
+func viewerUserIDFromContext(ctx context.Context) (int64, bool) {
 	vc, exist := viewer.FromContext(ctx)
 	if !exist || vc == nil {
 		return 0, false
@@ -27,7 +27,7 @@ func viewerUserIDFromContext(ctx context.Context) (uint32, bool) {
 	if uid == 0 {
 		return 0, false
 	}
-	return uint32(uid), true
+	return int64(uid), true
 }
 
 // newOpenAIClientForProvider 从 provider 表行构造客户端（api_key 密文就地解密，

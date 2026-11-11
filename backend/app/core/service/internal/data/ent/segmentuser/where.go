@@ -10,47 +10,47 @@ import (
 )
 
 // ID filters vertices based on their ID field.
-func ID(id uint32) predicate.SegmentUser {
+func ID(id int64) predicate.SegmentUser {
 	return predicate.SegmentUser(sql.FieldEQ(FieldID, id))
 }
 
 // IDEQ applies the EQ predicate on the ID field.
-func IDEQ(id uint32) predicate.SegmentUser {
+func IDEQ(id int64) predicate.SegmentUser {
 	return predicate.SegmentUser(sql.FieldEQ(FieldID, id))
 }
 
 // IDNEQ applies the NEQ predicate on the ID field.
-func IDNEQ(id uint32) predicate.SegmentUser {
+func IDNEQ(id int64) predicate.SegmentUser {
 	return predicate.SegmentUser(sql.FieldNEQ(FieldID, id))
 }
 
 // IDIn applies the In predicate on the ID field.
-func IDIn(ids ...uint32) predicate.SegmentUser {
+func IDIn(ids ...int64) predicate.SegmentUser {
 	return predicate.SegmentUser(sql.FieldIn(FieldID, ids...))
 }
 
 // IDNotIn applies the NotIn predicate on the ID field.
-func IDNotIn(ids ...uint32) predicate.SegmentUser {
+func IDNotIn(ids ...int64) predicate.SegmentUser {
 	return predicate.SegmentUser(sql.FieldNotIn(FieldID, ids...))
 }
 
 // IDGT applies the GT predicate on the ID field.
-func IDGT(id uint32) predicate.SegmentUser {
+func IDGT(id int64) predicate.SegmentUser {
 	return predicate.SegmentUser(sql.FieldGT(FieldID, id))
 }
 
 // IDGTE applies the GTE predicate on the ID field.
-func IDGTE(id uint32) predicate.SegmentUser {
+func IDGTE(id int64) predicate.SegmentUser {
 	return predicate.SegmentUser(sql.FieldGTE(FieldID, id))
 }
 
 // IDLT applies the LT predicate on the ID field.
-func IDLT(id uint32) predicate.SegmentUser {
+func IDLT(id int64) predicate.SegmentUser {
 	return predicate.SegmentUser(sql.FieldLT(FieldID, id))
 }
 
 // IDLTE applies the LTE predicate on the ID field.
-func IDLTE(id uint32) predicate.SegmentUser {
+func IDLTE(id int64) predicate.SegmentUser {
 	return predicate.SegmentUser(sql.FieldLTE(FieldID, id))
 }
 
@@ -70,17 +70,17 @@ func DeletedAt(v time.Time) predicate.SegmentUser {
 }
 
 // TenantID applies equality check predicate on the "tenant_id" field. It's identical to TenantIDEQ.
-func TenantID(v uint32) predicate.SegmentUser {
+func TenantID(v int64) predicate.SegmentUser {
 	return predicate.SegmentUser(sql.FieldEQ(FieldTenantID, v))
 }
 
 // SegmentID applies equality check predicate on the "segment_id" field. It's identical to SegmentIDEQ.
-func SegmentID(v uint32) predicate.SegmentUser {
+func SegmentID(v int64) predicate.SegmentUser {
 	return predicate.SegmentUser(sql.FieldEQ(FieldSegmentID, v))
 }
 
 // UserID applies equality check predicate on the "user_id" field. It's identical to UserIDEQ.
-func UserID(v uint32) predicate.SegmentUser {
+func UserID(v int64) predicate.SegmentUser {
 	return predicate.SegmentUser(sql.FieldEQ(FieldUserID, v))
 }
 
@@ -235,42 +235,42 @@ func DeletedAtNotNil() predicate.SegmentUser {
 }
 
 // TenantIDEQ applies the EQ predicate on the "tenant_id" field.
-func TenantIDEQ(v uint32) predicate.SegmentUser {
+func TenantIDEQ(v int64) predicate.SegmentUser {
 	return predicate.SegmentUser(sql.FieldEQ(FieldTenantID, v))
 }
 
 // TenantIDNEQ applies the NEQ predicate on the "tenant_id" field.
-func TenantIDNEQ(v uint32) predicate.SegmentUser {
+func TenantIDNEQ(v int64) predicate.SegmentUser {
 	return predicate.SegmentUser(sql.FieldNEQ(FieldTenantID, v))
 }
 
 // TenantIDIn applies the In predicate on the "tenant_id" field.
-func TenantIDIn(vs ...uint32) predicate.SegmentUser {
+func TenantIDIn(vs ...int64) predicate.SegmentUser {
 	return predicate.SegmentUser(sql.FieldIn(FieldTenantID, vs...))
 }
 
 // TenantIDNotIn applies the NotIn predicate on the "tenant_id" field.
-func TenantIDNotIn(vs ...uint32) predicate.SegmentUser {
+func TenantIDNotIn(vs ...int64) predicate.SegmentUser {
 	return predicate.SegmentUser(sql.FieldNotIn(FieldTenantID, vs...))
 }
 
 // TenantIDGT applies the GT predicate on the "tenant_id" field.
-func TenantIDGT(v uint32) predicate.SegmentUser {
+func TenantIDGT(v int64) predicate.SegmentUser {
 	return predicate.SegmentUser(sql.FieldGT(FieldTenantID, v))
 }
 
 // TenantIDGTE applies the GTE predicate on the "tenant_id" field.
-func TenantIDGTE(v uint32) predicate.SegmentUser {
+func TenantIDGTE(v int64) predicate.SegmentUser {
 	return predicate.SegmentUser(sql.FieldGTE(FieldTenantID, v))
 }
 
 // TenantIDLT applies the LT predicate on the "tenant_id" field.
-func TenantIDLT(v uint32) predicate.SegmentUser {
+func TenantIDLT(v int64) predicate.SegmentUser {
 	return predicate.SegmentUser(sql.FieldLT(FieldTenantID, v))
 }
 
 // TenantIDLTE applies the LTE predicate on the "tenant_id" field.
-func TenantIDLTE(v uint32) predicate.SegmentUser {
+func TenantIDLTE(v int64) predicate.SegmentUser {
 	return predicate.SegmentUser(sql.FieldLTE(FieldTenantID, v))
 }
 
@@ -285,82 +285,82 @@ func TenantIDNotNil() predicate.SegmentUser {
 }
 
 // SegmentIDEQ applies the EQ predicate on the "segment_id" field.
-func SegmentIDEQ(v uint32) predicate.SegmentUser {
+func SegmentIDEQ(v int64) predicate.SegmentUser {
 	return predicate.SegmentUser(sql.FieldEQ(FieldSegmentID, v))
 }
 
 // SegmentIDNEQ applies the NEQ predicate on the "segment_id" field.
-func SegmentIDNEQ(v uint32) predicate.SegmentUser {
+func SegmentIDNEQ(v int64) predicate.SegmentUser {
 	return predicate.SegmentUser(sql.FieldNEQ(FieldSegmentID, v))
 }
 
 // SegmentIDIn applies the In predicate on the "segment_id" field.
-func SegmentIDIn(vs ...uint32) predicate.SegmentUser {
+func SegmentIDIn(vs ...int64) predicate.SegmentUser {
 	return predicate.SegmentUser(sql.FieldIn(FieldSegmentID, vs...))
 }
 
 // SegmentIDNotIn applies the NotIn predicate on the "segment_id" field.
-func SegmentIDNotIn(vs ...uint32) predicate.SegmentUser {
+func SegmentIDNotIn(vs ...int64) predicate.SegmentUser {
 	return predicate.SegmentUser(sql.FieldNotIn(FieldSegmentID, vs...))
 }
 
 // SegmentIDGT applies the GT predicate on the "segment_id" field.
-func SegmentIDGT(v uint32) predicate.SegmentUser {
+func SegmentIDGT(v int64) predicate.SegmentUser {
 	return predicate.SegmentUser(sql.FieldGT(FieldSegmentID, v))
 }
 
 // SegmentIDGTE applies the GTE predicate on the "segment_id" field.
-func SegmentIDGTE(v uint32) predicate.SegmentUser {
+func SegmentIDGTE(v int64) predicate.SegmentUser {
 	return predicate.SegmentUser(sql.FieldGTE(FieldSegmentID, v))
 }
 
 // SegmentIDLT applies the LT predicate on the "segment_id" field.
-func SegmentIDLT(v uint32) predicate.SegmentUser {
+func SegmentIDLT(v int64) predicate.SegmentUser {
 	return predicate.SegmentUser(sql.FieldLT(FieldSegmentID, v))
 }
 
 // SegmentIDLTE applies the LTE predicate on the "segment_id" field.
-func SegmentIDLTE(v uint32) predicate.SegmentUser {
+func SegmentIDLTE(v int64) predicate.SegmentUser {
 	return predicate.SegmentUser(sql.FieldLTE(FieldSegmentID, v))
 }
 
 // UserIDEQ applies the EQ predicate on the "user_id" field.
-func UserIDEQ(v uint32) predicate.SegmentUser {
+func UserIDEQ(v int64) predicate.SegmentUser {
 	return predicate.SegmentUser(sql.FieldEQ(FieldUserID, v))
 }
 
 // UserIDNEQ applies the NEQ predicate on the "user_id" field.
-func UserIDNEQ(v uint32) predicate.SegmentUser {
+func UserIDNEQ(v int64) predicate.SegmentUser {
 	return predicate.SegmentUser(sql.FieldNEQ(FieldUserID, v))
 }
 
 // UserIDIn applies the In predicate on the "user_id" field.
-func UserIDIn(vs ...uint32) predicate.SegmentUser {
+func UserIDIn(vs ...int64) predicate.SegmentUser {
 	return predicate.SegmentUser(sql.FieldIn(FieldUserID, vs...))
 }
 
 // UserIDNotIn applies the NotIn predicate on the "user_id" field.
-func UserIDNotIn(vs ...uint32) predicate.SegmentUser {
+func UserIDNotIn(vs ...int64) predicate.SegmentUser {
 	return predicate.SegmentUser(sql.FieldNotIn(FieldUserID, vs...))
 }
 
 // UserIDGT applies the GT predicate on the "user_id" field.
-func UserIDGT(v uint32) predicate.SegmentUser {
+func UserIDGT(v int64) predicate.SegmentUser {
 	return predicate.SegmentUser(sql.FieldGT(FieldUserID, v))
 }
 
 // UserIDGTE applies the GTE predicate on the "user_id" field.
-func UserIDGTE(v uint32) predicate.SegmentUser {
+func UserIDGTE(v int64) predicate.SegmentUser {
 	return predicate.SegmentUser(sql.FieldGTE(FieldUserID, v))
 }
 
 // UserIDLT applies the LT predicate on the "user_id" field.
-func UserIDLT(v uint32) predicate.SegmentUser {
+func UserIDLT(v int64) predicate.SegmentUser {
 	return predicate.SegmentUser(sql.FieldLT(FieldUserID, v))
 }
 
 // UserIDLTE applies the LTE predicate on the "user_id" field.
-func UserIDLTE(v uint32) predicate.SegmentUser {
+func UserIDLTE(v int64) predicate.SegmentUser {
 	return predicate.SegmentUser(sql.FieldLTE(FieldUserID, v))
 }
 

@@ -65,7 +65,7 @@ func (_c *AiTenantQuotaCreate) SetNillableDeletedAt(v *time.Time) *AiTenantQuota
 }
 
 // SetTenantID sets the "tenant_id" field.
-func (_c *AiTenantQuotaCreate) SetTenantID(v uint32) *AiTenantQuotaCreate {
+func (_c *AiTenantQuotaCreate) SetTenantID(v int64) *AiTenantQuotaCreate {
 	_c.mutation.SetTenantID(v)
 	return _c
 }
@@ -77,7 +77,7 @@ func (_c *AiTenantQuotaCreate) SetMonthlyTokenLimit(v uint64) *AiTenantQuotaCrea
 }
 
 // SetID sets the "id" field.
-func (_c *AiTenantQuotaCreate) SetID(v uint32) *AiTenantQuotaCreate {
+func (_c *AiTenantQuotaCreate) SetID(v int64) *AiTenantQuotaCreate {
 	_c.mutation.SetID(v)
 	return _c
 }
@@ -143,7 +143,7 @@ func (_c *AiTenantQuotaCreate) sqlSave(ctx context.Context) (*AiTenantQuota, err
 	}
 	if _spec.ID.Value != _node.ID {
 		id := _spec.ID.Value.(int64)
-		_node.ID = uint32(id)
+		_node.ID = int64(id)
 	}
 	_c.mutation.id = &_node.ID
 	_c.mutation.done = true
@@ -153,7 +153,7 @@ func (_c *AiTenantQuotaCreate) sqlSave(ctx context.Context) (*AiTenantQuota, err
 func (_c *AiTenantQuotaCreate) createSpec() (*AiTenantQuota, *sqlgraph.CreateSpec) {
 	var (
 		_node = &AiTenantQuota{config: _c.config}
-		_spec = sqlgraph.NewCreateSpec(aitenantquota.Table, sqlgraph.NewFieldSpec(aitenantquota.FieldID, field.TypeUint32))
+		_spec = sqlgraph.NewCreateSpec(aitenantquota.Table, sqlgraph.NewFieldSpec(aitenantquota.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = _c.conflict
 	if id, ok := _c.mutation.ID(); ok {
@@ -173,7 +173,7 @@ func (_c *AiTenantQuotaCreate) createSpec() (*AiTenantQuota, *sqlgraph.CreateSpe
 		_node.DeletedAt = &value
 	}
 	if value, ok := _c.mutation.TenantID(); ok {
-		_spec.SetField(aitenantquota.FieldTenantID, field.TypeUint32, value)
+		_spec.SetField(aitenantquota.FieldTenantID, field.TypeInt64, value)
 		_node.TenantID = value
 	}
 	if value, ok := _c.mutation.MonthlyTokenLimit(); ok {
@@ -269,7 +269,7 @@ func (u *AiTenantQuotaUpsert) ClearDeletedAt() *AiTenantQuotaUpsert {
 }
 
 // SetTenantID sets the "tenant_id" field.
-func (u *AiTenantQuotaUpsert) SetTenantID(v uint32) *AiTenantQuotaUpsert {
+func (u *AiTenantQuotaUpsert) SetTenantID(v int64) *AiTenantQuotaUpsert {
 	u.Set(aitenantquota.FieldTenantID, v)
 	return u
 }
@@ -281,7 +281,7 @@ func (u *AiTenantQuotaUpsert) UpdateTenantID() *AiTenantQuotaUpsert {
 }
 
 // AddTenantID adds v to the "tenant_id" field.
-func (u *AiTenantQuotaUpsert) AddTenantID(v uint32) *AiTenantQuotaUpsert {
+func (u *AiTenantQuotaUpsert) AddTenantID(v int64) *AiTenantQuotaUpsert {
 	u.Add(aitenantquota.FieldTenantID, v)
 	return u
 }
@@ -398,14 +398,14 @@ func (u *AiTenantQuotaUpsertOne) ClearDeletedAt() *AiTenantQuotaUpsertOne {
 }
 
 // SetTenantID sets the "tenant_id" field.
-func (u *AiTenantQuotaUpsertOne) SetTenantID(v uint32) *AiTenantQuotaUpsertOne {
+func (u *AiTenantQuotaUpsertOne) SetTenantID(v int64) *AiTenantQuotaUpsertOne {
 	return u.Update(func(s *AiTenantQuotaUpsert) {
 		s.SetTenantID(v)
 	})
 }
 
 // AddTenantID adds v to the "tenant_id" field.
-func (u *AiTenantQuotaUpsertOne) AddTenantID(v uint32) *AiTenantQuotaUpsertOne {
+func (u *AiTenantQuotaUpsertOne) AddTenantID(v int64) *AiTenantQuotaUpsertOne {
 	return u.Update(func(s *AiTenantQuotaUpsert) {
 		s.AddTenantID(v)
 	})
@@ -455,7 +455,7 @@ func (u *AiTenantQuotaUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *AiTenantQuotaUpsertOne) ID(ctx context.Context) (id uint32, err error) {
+func (u *AiTenantQuotaUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -464,7 +464,7 @@ func (u *AiTenantQuotaUpsertOne) ID(ctx context.Context) (id uint32, err error) 
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *AiTenantQuotaUpsertOne) IDX(ctx context.Context) uint32 {
+func (u *AiTenantQuotaUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -520,7 +520,7 @@ func (_c *AiTenantQuotaCreateBulk) Save(ctx context.Context) ([]*AiTenantQuota, 
 				mutation.id = &nodes[i].ID
 				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = uint32(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -698,14 +698,14 @@ func (u *AiTenantQuotaUpsertBulk) ClearDeletedAt() *AiTenantQuotaUpsertBulk {
 }
 
 // SetTenantID sets the "tenant_id" field.
-func (u *AiTenantQuotaUpsertBulk) SetTenantID(v uint32) *AiTenantQuotaUpsertBulk {
+func (u *AiTenantQuotaUpsertBulk) SetTenantID(v int64) *AiTenantQuotaUpsertBulk {
 	return u.Update(func(s *AiTenantQuotaUpsert) {
 		s.SetTenantID(v)
 	})
 }
 
 // AddTenantID adds v to the "tenant_id" field.
-func (u *AiTenantQuotaUpsertBulk) AddTenantID(v uint32) *AiTenantQuotaUpsertBulk {
+func (u *AiTenantQuotaUpsertBulk) AddTenantID(v int64) *AiTenantQuotaUpsertBulk {
 	return u.Update(func(s *AiTenantQuotaUpsert) {
 		s.AddTenantID(v)
 	})

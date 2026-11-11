@@ -79,7 +79,7 @@ var (
 	Hooks  [1]ent.Hook
 	Policy ent.Policy
 	// DefaultTenantID holds the default value on creation for the "tenant_id" field.
-	DefaultTenantID uint32
+	DefaultTenantID int64
 	// EventNameValidator is a validator for the "event_name" field. It is called by the builders before save.
 	EventNameValidator func(string) error
 	// DisplayNameValidator is a validator for the "display_name" field. It is called by the builders before save.
@@ -87,7 +87,7 @@ var (
 	// DefaultStatus holds the default value on creation for the "status" field.
 	DefaultStatus string
 	// IDValidator is a validator for the "id" field. It is called by the builders before save.
-	IDValidator func(uint32) error
+	IDValidator func(int64) error
 )
 
 // OrderOption defines the ordering options for the EventSchema queries.

@@ -22,22 +22,22 @@ func TestValidateAdhocQuery_Allowed(t *testing.T) {
 
 func TestValidateAdhocQuery_Rejected(t *testing.T) {
 	cases := map[string]string{
-		"":                                "empty",
-		"   ":                             "blank",
-		"SELECT 1; DROP TABLE events_fact": "multi statement",
-		"SELECT 1;;SELECT 2":              "double semicolon",
+		"":                                  "empty",
+		"   ":                               "blank",
+		"SELECT 1; DROP TABLE events_fact":  "multi statement",
+		"SELECT 1;;SELECT 2":                "double semicolon",
 		"INSERT INTO events_fact VALUES(1)": "insert",
-		"UPDATE events_fact SET a=1":      "update",
-		"DELETE FROM events_fact":         "delete",
-		"DROP TABLE events_fact":          "drop",
-		"CREATE TABLE t(a int)":           "create",
-		"ALTER TABLE t ADD c int":         "alter",
-		"SET GLOBAL a=1":                  "set",
-		"GRANT ALL ON *.* TO u":           "grant",
-		"USE gw_uba":                      "use",
-		"SELECT 1 -- hidden":              "line comment",
-		"SELECT /*x*/ 1":                  "block comment",
-		"SELECT 1 #hidden":                "hash comment",
+		"UPDATE events_fact SET a=1":        "update",
+		"DELETE FROM events_fact":           "delete",
+		"DROP TABLE events_fact":            "drop",
+		"CREATE TABLE t(a int)":             "create",
+		"ALTER TABLE t ADD c int":           "alter",
+		"SET GLOBAL a=1":                    "set",
+		"GRANT ALL ON *.* TO u":             "grant",
+		"USE gw_uba":                        "use",
+		"SELECT 1 -- hidden":                "line comment",
+		"SELECT /*x*/ 1":                    "block comment",
+		"SELECT 1 #hidden":                  "hash comment",
 	}
 	for q, why := range cases {
 		if err := ValidateAdhocQuery(q); err == nil {

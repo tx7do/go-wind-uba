@@ -10,47 +10,47 @@ import (
 )
 
 // ID filters vertices based on their ID field.
-func ID(id uint32) predicate.AiTenantQuota {
+func ID(id int64) predicate.AiTenantQuota {
 	return predicate.AiTenantQuota(sql.FieldEQ(FieldID, id))
 }
 
 // IDEQ applies the EQ predicate on the ID field.
-func IDEQ(id uint32) predicate.AiTenantQuota {
+func IDEQ(id int64) predicate.AiTenantQuota {
 	return predicate.AiTenantQuota(sql.FieldEQ(FieldID, id))
 }
 
 // IDNEQ applies the NEQ predicate on the ID field.
-func IDNEQ(id uint32) predicate.AiTenantQuota {
+func IDNEQ(id int64) predicate.AiTenantQuota {
 	return predicate.AiTenantQuota(sql.FieldNEQ(FieldID, id))
 }
 
 // IDIn applies the In predicate on the ID field.
-func IDIn(ids ...uint32) predicate.AiTenantQuota {
+func IDIn(ids ...int64) predicate.AiTenantQuota {
 	return predicate.AiTenantQuota(sql.FieldIn(FieldID, ids...))
 }
 
 // IDNotIn applies the NotIn predicate on the ID field.
-func IDNotIn(ids ...uint32) predicate.AiTenantQuota {
+func IDNotIn(ids ...int64) predicate.AiTenantQuota {
 	return predicate.AiTenantQuota(sql.FieldNotIn(FieldID, ids...))
 }
 
 // IDGT applies the GT predicate on the ID field.
-func IDGT(id uint32) predicate.AiTenantQuota {
+func IDGT(id int64) predicate.AiTenantQuota {
 	return predicate.AiTenantQuota(sql.FieldGT(FieldID, id))
 }
 
 // IDGTE applies the GTE predicate on the ID field.
-func IDGTE(id uint32) predicate.AiTenantQuota {
+func IDGTE(id int64) predicate.AiTenantQuota {
 	return predicate.AiTenantQuota(sql.FieldGTE(FieldID, id))
 }
 
 // IDLT applies the LT predicate on the ID field.
-func IDLT(id uint32) predicate.AiTenantQuota {
+func IDLT(id int64) predicate.AiTenantQuota {
 	return predicate.AiTenantQuota(sql.FieldLT(FieldID, id))
 }
 
 // IDLTE applies the LTE predicate on the ID field.
-func IDLTE(id uint32) predicate.AiTenantQuota {
+func IDLTE(id int64) predicate.AiTenantQuota {
 	return predicate.AiTenantQuota(sql.FieldLTE(FieldID, id))
 }
 
@@ -70,7 +70,7 @@ func DeletedAt(v time.Time) predicate.AiTenantQuota {
 }
 
 // TenantID applies equality check predicate on the "tenant_id" field. It's identical to TenantIDEQ.
-func TenantID(v uint32) predicate.AiTenantQuota {
+func TenantID(v int64) predicate.AiTenantQuota {
 	return predicate.AiTenantQuota(sql.FieldEQ(FieldTenantID, v))
 }
 
@@ -230,42 +230,42 @@ func DeletedAtNotNil() predicate.AiTenantQuota {
 }
 
 // TenantIDEQ applies the EQ predicate on the "tenant_id" field.
-func TenantIDEQ(v uint32) predicate.AiTenantQuota {
+func TenantIDEQ(v int64) predicate.AiTenantQuota {
 	return predicate.AiTenantQuota(sql.FieldEQ(FieldTenantID, v))
 }
 
 // TenantIDNEQ applies the NEQ predicate on the "tenant_id" field.
-func TenantIDNEQ(v uint32) predicate.AiTenantQuota {
+func TenantIDNEQ(v int64) predicate.AiTenantQuota {
 	return predicate.AiTenantQuota(sql.FieldNEQ(FieldTenantID, v))
 }
 
 // TenantIDIn applies the In predicate on the "tenant_id" field.
-func TenantIDIn(vs ...uint32) predicate.AiTenantQuota {
+func TenantIDIn(vs ...int64) predicate.AiTenantQuota {
 	return predicate.AiTenantQuota(sql.FieldIn(FieldTenantID, vs...))
 }
 
 // TenantIDNotIn applies the NotIn predicate on the "tenant_id" field.
-func TenantIDNotIn(vs ...uint32) predicate.AiTenantQuota {
+func TenantIDNotIn(vs ...int64) predicate.AiTenantQuota {
 	return predicate.AiTenantQuota(sql.FieldNotIn(FieldTenantID, vs...))
 }
 
 // TenantIDGT applies the GT predicate on the "tenant_id" field.
-func TenantIDGT(v uint32) predicate.AiTenantQuota {
+func TenantIDGT(v int64) predicate.AiTenantQuota {
 	return predicate.AiTenantQuota(sql.FieldGT(FieldTenantID, v))
 }
 
 // TenantIDGTE applies the GTE predicate on the "tenant_id" field.
-func TenantIDGTE(v uint32) predicate.AiTenantQuota {
+func TenantIDGTE(v int64) predicate.AiTenantQuota {
 	return predicate.AiTenantQuota(sql.FieldGTE(FieldTenantID, v))
 }
 
 // TenantIDLT applies the LT predicate on the "tenant_id" field.
-func TenantIDLT(v uint32) predicate.AiTenantQuota {
+func TenantIDLT(v int64) predicate.AiTenantQuota {
 	return predicate.AiTenantQuota(sql.FieldLT(FieldTenantID, v))
 }
 
 // TenantIDLTE applies the LTE predicate on the "tenant_id" field.
-func TenantIDLTE(v uint32) predicate.AiTenantQuota {
+func TenantIDLTE(v int64) predicate.AiTenantQuota {
 	return predicate.AiTenantQuota(sql.FieldLTE(FieldTenantID, v))
 }
 

@@ -65,13 +65,13 @@ func (_c *NotificationDeliveryCreate) SetNillableDeletedAt(v *time.Time) *Notifi
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (_c *NotificationDeliveryCreate) SetCreatedBy(v uint32) *NotificationDeliveryCreate {
+func (_c *NotificationDeliveryCreate) SetCreatedBy(v int64) *NotificationDeliveryCreate {
 	_c.mutation.SetCreatedBy(v)
 	return _c
 }
 
 // SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
-func (_c *NotificationDeliveryCreate) SetNillableCreatedBy(v *uint32) *NotificationDeliveryCreate {
+func (_c *NotificationDeliveryCreate) SetNillableCreatedBy(v *int64) *NotificationDeliveryCreate {
 	if v != nil {
 		_c.SetCreatedBy(*v)
 	}
@@ -79,13 +79,13 @@ func (_c *NotificationDeliveryCreate) SetNillableCreatedBy(v *uint32) *Notificat
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (_c *NotificationDeliveryCreate) SetUpdatedBy(v uint32) *NotificationDeliveryCreate {
+func (_c *NotificationDeliveryCreate) SetUpdatedBy(v int64) *NotificationDeliveryCreate {
 	_c.mutation.SetUpdatedBy(v)
 	return _c
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (_c *NotificationDeliveryCreate) SetNillableUpdatedBy(v *uint32) *NotificationDeliveryCreate {
+func (_c *NotificationDeliveryCreate) SetNillableUpdatedBy(v *int64) *NotificationDeliveryCreate {
 	if v != nil {
 		_c.SetUpdatedBy(*v)
 	}
@@ -93,13 +93,13 @@ func (_c *NotificationDeliveryCreate) SetNillableUpdatedBy(v *uint32) *Notificat
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (_c *NotificationDeliveryCreate) SetDeletedBy(v uint32) *NotificationDeliveryCreate {
+func (_c *NotificationDeliveryCreate) SetDeletedBy(v int64) *NotificationDeliveryCreate {
 	_c.mutation.SetDeletedBy(v)
 	return _c
 }
 
 // SetNillableDeletedBy sets the "deleted_by" field if the given value is not nil.
-func (_c *NotificationDeliveryCreate) SetNillableDeletedBy(v *uint32) *NotificationDeliveryCreate {
+func (_c *NotificationDeliveryCreate) SetNillableDeletedBy(v *int64) *NotificationDeliveryCreate {
 	if v != nil {
 		_c.SetDeletedBy(*v)
 	}
@@ -135,13 +135,13 @@ func (_c *NotificationDeliveryCreate) SetNillableChannel(v *notificationdelivery
 }
 
 // SetChannelID sets the "channel_id" field.
-func (_c *NotificationDeliveryCreate) SetChannelID(v uint32) *NotificationDeliveryCreate {
+func (_c *NotificationDeliveryCreate) SetChannelID(v int64) *NotificationDeliveryCreate {
 	_c.mutation.SetChannelID(v)
 	return _c
 }
 
 // SetNillableChannelID sets the "channel_id" field if the given value is not nil.
-func (_c *NotificationDeliveryCreate) SetNillableChannelID(v *uint32) *NotificationDeliveryCreate {
+func (_c *NotificationDeliveryCreate) SetNillableChannelID(v *int64) *NotificationDeliveryCreate {
 	if v != nil {
 		_c.SetChannelID(*v)
 	}
@@ -149,13 +149,13 @@ func (_c *NotificationDeliveryCreate) SetNillableChannelID(v *uint32) *Notificat
 }
 
 // SetRecipientUserID sets the "recipient_user_id" field.
-func (_c *NotificationDeliveryCreate) SetRecipientUserID(v uint32) *NotificationDeliveryCreate {
+func (_c *NotificationDeliveryCreate) SetRecipientUserID(v int64) *NotificationDeliveryCreate {
 	_c.mutation.SetRecipientUserID(v)
 	return _c
 }
 
 // SetNillableRecipientUserID sets the "recipient_user_id" field if the given value is not nil.
-func (_c *NotificationDeliveryCreate) SetNillableRecipientUserID(v *uint32) *NotificationDeliveryCreate {
+func (_c *NotificationDeliveryCreate) SetNillableRecipientUserID(v *int64) *NotificationDeliveryCreate {
 	if v != nil {
 		_c.SetRecipientUserID(*v)
 	}
@@ -163,13 +163,13 @@ func (_c *NotificationDeliveryCreate) SetNillableRecipientUserID(v *uint32) *Not
 }
 
 // SetRelatedID sets the "related_id" field.
-func (_c *NotificationDeliveryCreate) SetRelatedID(v uint32) *NotificationDeliveryCreate {
+func (_c *NotificationDeliveryCreate) SetRelatedID(v int64) *NotificationDeliveryCreate {
 	_c.mutation.SetRelatedID(v)
 	return _c
 }
 
 // SetNillableRelatedID sets the "related_id" field if the given value is not nil.
-func (_c *NotificationDeliveryCreate) SetNillableRelatedID(v *uint32) *NotificationDeliveryCreate {
+func (_c *NotificationDeliveryCreate) SetNillableRelatedID(v *int64) *NotificationDeliveryCreate {
 	if v != nil {
 		_c.SetRelatedID(*v)
 	}
@@ -261,7 +261,7 @@ func (_c *NotificationDeliveryCreate) SetNillableSentAt(v *time.Time) *Notificat
 }
 
 // SetID sets the "id" field.
-func (_c *NotificationDeliveryCreate) SetID(v uint32) *NotificationDeliveryCreate {
+func (_c *NotificationDeliveryCreate) SetID(v int64) *NotificationDeliveryCreate {
 	_c.mutation.SetID(v)
 	return _c
 }
@@ -354,7 +354,7 @@ func (_c *NotificationDeliveryCreate) sqlSave(ctx context.Context) (*Notificatio
 	}
 	if _spec.ID.Value != _node.ID {
 		id := _spec.ID.Value.(int64)
-		_node.ID = uint32(id)
+		_node.ID = int64(id)
 	}
 	_c.mutation.id = &_node.ID
 	_c.mutation.done = true
@@ -364,7 +364,7 @@ func (_c *NotificationDeliveryCreate) sqlSave(ctx context.Context) (*Notificatio
 func (_c *NotificationDeliveryCreate) createSpec() (*NotificationDelivery, *sqlgraph.CreateSpec) {
 	var (
 		_node = &NotificationDelivery{config: _c.config}
-		_spec = sqlgraph.NewCreateSpec(notificationdelivery.Table, sqlgraph.NewFieldSpec(notificationdelivery.FieldID, field.TypeUint32))
+		_spec = sqlgraph.NewCreateSpec(notificationdelivery.Table, sqlgraph.NewFieldSpec(notificationdelivery.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = _c.conflict
 	if id, ok := _c.mutation.ID(); ok {
@@ -384,15 +384,15 @@ func (_c *NotificationDeliveryCreate) createSpec() (*NotificationDelivery, *sqlg
 		_node.DeletedAt = &value
 	}
 	if value, ok := _c.mutation.CreatedBy(); ok {
-		_spec.SetField(notificationdelivery.FieldCreatedBy, field.TypeUint32, value)
+		_spec.SetField(notificationdelivery.FieldCreatedBy, field.TypeInt64, value)
 		_node.CreatedBy = &value
 	}
 	if value, ok := _c.mutation.UpdatedBy(); ok {
-		_spec.SetField(notificationdelivery.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.SetField(notificationdelivery.FieldUpdatedBy, field.TypeInt64, value)
 		_node.UpdatedBy = &value
 	}
 	if value, ok := _c.mutation.DeletedBy(); ok {
-		_spec.SetField(notificationdelivery.FieldDeletedBy, field.TypeUint32, value)
+		_spec.SetField(notificationdelivery.FieldDeletedBy, field.TypeInt64, value)
 		_node.DeletedBy = &value
 	}
 	if value, ok := _c.mutation.EventType(); ok {
@@ -404,15 +404,15 @@ func (_c *NotificationDeliveryCreate) createSpec() (*NotificationDelivery, *sqlg
 		_node.Channel = &value
 	}
 	if value, ok := _c.mutation.ChannelID(); ok {
-		_spec.SetField(notificationdelivery.FieldChannelID, field.TypeUint32, value)
+		_spec.SetField(notificationdelivery.FieldChannelID, field.TypeInt64, value)
 		_node.ChannelID = &value
 	}
 	if value, ok := _c.mutation.RecipientUserID(); ok {
-		_spec.SetField(notificationdelivery.FieldRecipientUserID, field.TypeUint32, value)
+		_spec.SetField(notificationdelivery.FieldRecipientUserID, field.TypeInt64, value)
 		_node.RecipientUserID = &value
 	}
 	if value, ok := _c.mutation.RelatedID(); ok {
-		_spec.SetField(notificationdelivery.FieldRelatedID, field.TypeUint32, value)
+		_spec.SetField(notificationdelivery.FieldRelatedID, field.TypeInt64, value)
 		_node.RelatedID = &value
 	}
 	if value, ok := _c.mutation.Target(); ok {
@@ -528,7 +528,7 @@ func (u *NotificationDeliveryUpsert) ClearDeletedAt() *NotificationDeliveryUpser
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (u *NotificationDeliveryUpsert) SetCreatedBy(v uint32) *NotificationDeliveryUpsert {
+func (u *NotificationDeliveryUpsert) SetCreatedBy(v int64) *NotificationDeliveryUpsert {
 	u.Set(notificationdelivery.FieldCreatedBy, v)
 	return u
 }
@@ -540,7 +540,7 @@ func (u *NotificationDeliveryUpsert) UpdateCreatedBy() *NotificationDeliveryUpse
 }
 
 // AddCreatedBy adds v to the "created_by" field.
-func (u *NotificationDeliveryUpsert) AddCreatedBy(v uint32) *NotificationDeliveryUpsert {
+func (u *NotificationDeliveryUpsert) AddCreatedBy(v int64) *NotificationDeliveryUpsert {
 	u.Add(notificationdelivery.FieldCreatedBy, v)
 	return u
 }
@@ -552,7 +552,7 @@ func (u *NotificationDeliveryUpsert) ClearCreatedBy() *NotificationDeliveryUpser
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (u *NotificationDeliveryUpsert) SetUpdatedBy(v uint32) *NotificationDeliveryUpsert {
+func (u *NotificationDeliveryUpsert) SetUpdatedBy(v int64) *NotificationDeliveryUpsert {
 	u.Set(notificationdelivery.FieldUpdatedBy, v)
 	return u
 }
@@ -564,7 +564,7 @@ func (u *NotificationDeliveryUpsert) UpdateUpdatedBy() *NotificationDeliveryUpse
 }
 
 // AddUpdatedBy adds v to the "updated_by" field.
-func (u *NotificationDeliveryUpsert) AddUpdatedBy(v uint32) *NotificationDeliveryUpsert {
+func (u *NotificationDeliveryUpsert) AddUpdatedBy(v int64) *NotificationDeliveryUpsert {
 	u.Add(notificationdelivery.FieldUpdatedBy, v)
 	return u
 }
@@ -576,7 +576,7 @@ func (u *NotificationDeliveryUpsert) ClearUpdatedBy() *NotificationDeliveryUpser
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (u *NotificationDeliveryUpsert) SetDeletedBy(v uint32) *NotificationDeliveryUpsert {
+func (u *NotificationDeliveryUpsert) SetDeletedBy(v int64) *NotificationDeliveryUpsert {
 	u.Set(notificationdelivery.FieldDeletedBy, v)
 	return u
 }
@@ -588,7 +588,7 @@ func (u *NotificationDeliveryUpsert) UpdateDeletedBy() *NotificationDeliveryUpse
 }
 
 // AddDeletedBy adds v to the "deleted_by" field.
-func (u *NotificationDeliveryUpsert) AddDeletedBy(v uint32) *NotificationDeliveryUpsert {
+func (u *NotificationDeliveryUpsert) AddDeletedBy(v int64) *NotificationDeliveryUpsert {
 	u.Add(notificationdelivery.FieldDeletedBy, v)
 	return u
 }
@@ -636,7 +636,7 @@ func (u *NotificationDeliveryUpsert) ClearChannel() *NotificationDeliveryUpsert 
 }
 
 // SetChannelID sets the "channel_id" field.
-func (u *NotificationDeliveryUpsert) SetChannelID(v uint32) *NotificationDeliveryUpsert {
+func (u *NotificationDeliveryUpsert) SetChannelID(v int64) *NotificationDeliveryUpsert {
 	u.Set(notificationdelivery.FieldChannelID, v)
 	return u
 }
@@ -648,7 +648,7 @@ func (u *NotificationDeliveryUpsert) UpdateChannelID() *NotificationDeliveryUpse
 }
 
 // AddChannelID adds v to the "channel_id" field.
-func (u *NotificationDeliveryUpsert) AddChannelID(v uint32) *NotificationDeliveryUpsert {
+func (u *NotificationDeliveryUpsert) AddChannelID(v int64) *NotificationDeliveryUpsert {
 	u.Add(notificationdelivery.FieldChannelID, v)
 	return u
 }
@@ -660,7 +660,7 @@ func (u *NotificationDeliveryUpsert) ClearChannelID() *NotificationDeliveryUpser
 }
 
 // SetRecipientUserID sets the "recipient_user_id" field.
-func (u *NotificationDeliveryUpsert) SetRecipientUserID(v uint32) *NotificationDeliveryUpsert {
+func (u *NotificationDeliveryUpsert) SetRecipientUserID(v int64) *NotificationDeliveryUpsert {
 	u.Set(notificationdelivery.FieldRecipientUserID, v)
 	return u
 }
@@ -672,7 +672,7 @@ func (u *NotificationDeliveryUpsert) UpdateRecipientUserID() *NotificationDelive
 }
 
 // AddRecipientUserID adds v to the "recipient_user_id" field.
-func (u *NotificationDeliveryUpsert) AddRecipientUserID(v uint32) *NotificationDeliveryUpsert {
+func (u *NotificationDeliveryUpsert) AddRecipientUserID(v int64) *NotificationDeliveryUpsert {
 	u.Add(notificationdelivery.FieldRecipientUserID, v)
 	return u
 }
@@ -684,7 +684,7 @@ func (u *NotificationDeliveryUpsert) ClearRecipientUserID() *NotificationDeliver
 }
 
 // SetRelatedID sets the "related_id" field.
-func (u *NotificationDeliveryUpsert) SetRelatedID(v uint32) *NotificationDeliveryUpsert {
+func (u *NotificationDeliveryUpsert) SetRelatedID(v int64) *NotificationDeliveryUpsert {
 	u.Set(notificationdelivery.FieldRelatedID, v)
 	return u
 }
@@ -696,7 +696,7 @@ func (u *NotificationDeliveryUpsert) UpdateRelatedID() *NotificationDeliveryUpse
 }
 
 // AddRelatedID adds v to the "related_id" field.
-func (u *NotificationDeliveryUpsert) AddRelatedID(v uint32) *NotificationDeliveryUpsert {
+func (u *NotificationDeliveryUpsert) AddRelatedID(v int64) *NotificationDeliveryUpsert {
 	u.Add(notificationdelivery.FieldRelatedID, v)
 	return u
 }
@@ -915,14 +915,14 @@ func (u *NotificationDeliveryUpsertOne) ClearDeletedAt() *NotificationDeliveryUp
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (u *NotificationDeliveryUpsertOne) SetCreatedBy(v uint32) *NotificationDeliveryUpsertOne {
+func (u *NotificationDeliveryUpsertOne) SetCreatedBy(v int64) *NotificationDeliveryUpsertOne {
 	return u.Update(func(s *NotificationDeliveryUpsert) {
 		s.SetCreatedBy(v)
 	})
 }
 
 // AddCreatedBy adds v to the "created_by" field.
-func (u *NotificationDeliveryUpsertOne) AddCreatedBy(v uint32) *NotificationDeliveryUpsertOne {
+func (u *NotificationDeliveryUpsertOne) AddCreatedBy(v int64) *NotificationDeliveryUpsertOne {
 	return u.Update(func(s *NotificationDeliveryUpsert) {
 		s.AddCreatedBy(v)
 	})
@@ -943,14 +943,14 @@ func (u *NotificationDeliveryUpsertOne) ClearCreatedBy() *NotificationDeliveryUp
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (u *NotificationDeliveryUpsertOne) SetUpdatedBy(v uint32) *NotificationDeliveryUpsertOne {
+func (u *NotificationDeliveryUpsertOne) SetUpdatedBy(v int64) *NotificationDeliveryUpsertOne {
 	return u.Update(func(s *NotificationDeliveryUpsert) {
 		s.SetUpdatedBy(v)
 	})
 }
 
 // AddUpdatedBy adds v to the "updated_by" field.
-func (u *NotificationDeliveryUpsertOne) AddUpdatedBy(v uint32) *NotificationDeliveryUpsertOne {
+func (u *NotificationDeliveryUpsertOne) AddUpdatedBy(v int64) *NotificationDeliveryUpsertOne {
 	return u.Update(func(s *NotificationDeliveryUpsert) {
 		s.AddUpdatedBy(v)
 	})
@@ -971,14 +971,14 @@ func (u *NotificationDeliveryUpsertOne) ClearUpdatedBy() *NotificationDeliveryUp
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (u *NotificationDeliveryUpsertOne) SetDeletedBy(v uint32) *NotificationDeliveryUpsertOne {
+func (u *NotificationDeliveryUpsertOne) SetDeletedBy(v int64) *NotificationDeliveryUpsertOne {
 	return u.Update(func(s *NotificationDeliveryUpsert) {
 		s.SetDeletedBy(v)
 	})
 }
 
 // AddDeletedBy adds v to the "deleted_by" field.
-func (u *NotificationDeliveryUpsertOne) AddDeletedBy(v uint32) *NotificationDeliveryUpsertOne {
+func (u *NotificationDeliveryUpsertOne) AddDeletedBy(v int64) *NotificationDeliveryUpsertOne {
 	return u.Update(func(s *NotificationDeliveryUpsert) {
 		s.AddDeletedBy(v)
 	})
@@ -1041,14 +1041,14 @@ func (u *NotificationDeliveryUpsertOne) ClearChannel() *NotificationDeliveryUpse
 }
 
 // SetChannelID sets the "channel_id" field.
-func (u *NotificationDeliveryUpsertOne) SetChannelID(v uint32) *NotificationDeliveryUpsertOne {
+func (u *NotificationDeliveryUpsertOne) SetChannelID(v int64) *NotificationDeliveryUpsertOne {
 	return u.Update(func(s *NotificationDeliveryUpsert) {
 		s.SetChannelID(v)
 	})
 }
 
 // AddChannelID adds v to the "channel_id" field.
-func (u *NotificationDeliveryUpsertOne) AddChannelID(v uint32) *NotificationDeliveryUpsertOne {
+func (u *NotificationDeliveryUpsertOne) AddChannelID(v int64) *NotificationDeliveryUpsertOne {
 	return u.Update(func(s *NotificationDeliveryUpsert) {
 		s.AddChannelID(v)
 	})
@@ -1069,14 +1069,14 @@ func (u *NotificationDeliveryUpsertOne) ClearChannelID() *NotificationDeliveryUp
 }
 
 // SetRecipientUserID sets the "recipient_user_id" field.
-func (u *NotificationDeliveryUpsertOne) SetRecipientUserID(v uint32) *NotificationDeliveryUpsertOne {
+func (u *NotificationDeliveryUpsertOne) SetRecipientUserID(v int64) *NotificationDeliveryUpsertOne {
 	return u.Update(func(s *NotificationDeliveryUpsert) {
 		s.SetRecipientUserID(v)
 	})
 }
 
 // AddRecipientUserID adds v to the "recipient_user_id" field.
-func (u *NotificationDeliveryUpsertOne) AddRecipientUserID(v uint32) *NotificationDeliveryUpsertOne {
+func (u *NotificationDeliveryUpsertOne) AddRecipientUserID(v int64) *NotificationDeliveryUpsertOne {
 	return u.Update(func(s *NotificationDeliveryUpsert) {
 		s.AddRecipientUserID(v)
 	})
@@ -1097,14 +1097,14 @@ func (u *NotificationDeliveryUpsertOne) ClearRecipientUserID() *NotificationDeli
 }
 
 // SetRelatedID sets the "related_id" field.
-func (u *NotificationDeliveryUpsertOne) SetRelatedID(v uint32) *NotificationDeliveryUpsertOne {
+func (u *NotificationDeliveryUpsertOne) SetRelatedID(v int64) *NotificationDeliveryUpsertOne {
 	return u.Update(func(s *NotificationDeliveryUpsert) {
 		s.SetRelatedID(v)
 	})
 }
 
 // AddRelatedID adds v to the "related_id" field.
-func (u *NotificationDeliveryUpsertOne) AddRelatedID(v uint32) *NotificationDeliveryUpsertOne {
+func (u *NotificationDeliveryUpsertOne) AddRelatedID(v int64) *NotificationDeliveryUpsertOne {
 	return u.Update(func(s *NotificationDeliveryUpsert) {
 		s.AddRelatedID(v)
 	})
@@ -1273,7 +1273,7 @@ func (u *NotificationDeliveryUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *NotificationDeliveryUpsertOne) ID(ctx context.Context) (id uint32, err error) {
+func (u *NotificationDeliveryUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -1282,7 +1282,7 @@ func (u *NotificationDeliveryUpsertOne) ID(ctx context.Context) (id uint32, err 
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *NotificationDeliveryUpsertOne) IDX(ctx context.Context) uint32 {
+func (u *NotificationDeliveryUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -1339,7 +1339,7 @@ func (_c *NotificationDeliveryCreateBulk) Save(ctx context.Context) ([]*Notifica
 				mutation.id = &nodes[i].ID
 				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = uint32(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -1517,14 +1517,14 @@ func (u *NotificationDeliveryUpsertBulk) ClearDeletedAt() *NotificationDeliveryU
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (u *NotificationDeliveryUpsertBulk) SetCreatedBy(v uint32) *NotificationDeliveryUpsertBulk {
+func (u *NotificationDeliveryUpsertBulk) SetCreatedBy(v int64) *NotificationDeliveryUpsertBulk {
 	return u.Update(func(s *NotificationDeliveryUpsert) {
 		s.SetCreatedBy(v)
 	})
 }
 
 // AddCreatedBy adds v to the "created_by" field.
-func (u *NotificationDeliveryUpsertBulk) AddCreatedBy(v uint32) *NotificationDeliveryUpsertBulk {
+func (u *NotificationDeliveryUpsertBulk) AddCreatedBy(v int64) *NotificationDeliveryUpsertBulk {
 	return u.Update(func(s *NotificationDeliveryUpsert) {
 		s.AddCreatedBy(v)
 	})
@@ -1545,14 +1545,14 @@ func (u *NotificationDeliveryUpsertBulk) ClearCreatedBy() *NotificationDeliveryU
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (u *NotificationDeliveryUpsertBulk) SetUpdatedBy(v uint32) *NotificationDeliveryUpsertBulk {
+func (u *NotificationDeliveryUpsertBulk) SetUpdatedBy(v int64) *NotificationDeliveryUpsertBulk {
 	return u.Update(func(s *NotificationDeliveryUpsert) {
 		s.SetUpdatedBy(v)
 	})
 }
 
 // AddUpdatedBy adds v to the "updated_by" field.
-func (u *NotificationDeliveryUpsertBulk) AddUpdatedBy(v uint32) *NotificationDeliveryUpsertBulk {
+func (u *NotificationDeliveryUpsertBulk) AddUpdatedBy(v int64) *NotificationDeliveryUpsertBulk {
 	return u.Update(func(s *NotificationDeliveryUpsert) {
 		s.AddUpdatedBy(v)
 	})
@@ -1573,14 +1573,14 @@ func (u *NotificationDeliveryUpsertBulk) ClearUpdatedBy() *NotificationDeliveryU
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (u *NotificationDeliveryUpsertBulk) SetDeletedBy(v uint32) *NotificationDeliveryUpsertBulk {
+func (u *NotificationDeliveryUpsertBulk) SetDeletedBy(v int64) *NotificationDeliveryUpsertBulk {
 	return u.Update(func(s *NotificationDeliveryUpsert) {
 		s.SetDeletedBy(v)
 	})
 }
 
 // AddDeletedBy adds v to the "deleted_by" field.
-func (u *NotificationDeliveryUpsertBulk) AddDeletedBy(v uint32) *NotificationDeliveryUpsertBulk {
+func (u *NotificationDeliveryUpsertBulk) AddDeletedBy(v int64) *NotificationDeliveryUpsertBulk {
 	return u.Update(func(s *NotificationDeliveryUpsert) {
 		s.AddDeletedBy(v)
 	})
@@ -1643,14 +1643,14 @@ func (u *NotificationDeliveryUpsertBulk) ClearChannel() *NotificationDeliveryUps
 }
 
 // SetChannelID sets the "channel_id" field.
-func (u *NotificationDeliveryUpsertBulk) SetChannelID(v uint32) *NotificationDeliveryUpsertBulk {
+func (u *NotificationDeliveryUpsertBulk) SetChannelID(v int64) *NotificationDeliveryUpsertBulk {
 	return u.Update(func(s *NotificationDeliveryUpsert) {
 		s.SetChannelID(v)
 	})
 }
 
 // AddChannelID adds v to the "channel_id" field.
-func (u *NotificationDeliveryUpsertBulk) AddChannelID(v uint32) *NotificationDeliveryUpsertBulk {
+func (u *NotificationDeliveryUpsertBulk) AddChannelID(v int64) *NotificationDeliveryUpsertBulk {
 	return u.Update(func(s *NotificationDeliveryUpsert) {
 		s.AddChannelID(v)
 	})
@@ -1671,14 +1671,14 @@ func (u *NotificationDeliveryUpsertBulk) ClearChannelID() *NotificationDeliveryU
 }
 
 // SetRecipientUserID sets the "recipient_user_id" field.
-func (u *NotificationDeliveryUpsertBulk) SetRecipientUserID(v uint32) *NotificationDeliveryUpsertBulk {
+func (u *NotificationDeliveryUpsertBulk) SetRecipientUserID(v int64) *NotificationDeliveryUpsertBulk {
 	return u.Update(func(s *NotificationDeliveryUpsert) {
 		s.SetRecipientUserID(v)
 	})
 }
 
 // AddRecipientUserID adds v to the "recipient_user_id" field.
-func (u *NotificationDeliveryUpsertBulk) AddRecipientUserID(v uint32) *NotificationDeliveryUpsertBulk {
+func (u *NotificationDeliveryUpsertBulk) AddRecipientUserID(v int64) *NotificationDeliveryUpsertBulk {
 	return u.Update(func(s *NotificationDeliveryUpsert) {
 		s.AddRecipientUserID(v)
 	})
@@ -1699,14 +1699,14 @@ func (u *NotificationDeliveryUpsertBulk) ClearRecipientUserID() *NotificationDel
 }
 
 // SetRelatedID sets the "related_id" field.
-func (u *NotificationDeliveryUpsertBulk) SetRelatedID(v uint32) *NotificationDeliveryUpsertBulk {
+func (u *NotificationDeliveryUpsertBulk) SetRelatedID(v int64) *NotificationDeliveryUpsertBulk {
 	return u.Update(func(s *NotificationDeliveryUpsert) {
 		s.SetRelatedID(v)
 	})
 }
 
 // AddRelatedID adds v to the "related_id" field.
-func (u *NotificationDeliveryUpsertBulk) AddRelatedID(v uint32) *NotificationDeliveryUpsertBulk {
+func (u *NotificationDeliveryUpsertBulk) AddRelatedID(v int64) *NotificationDeliveryUpsertBulk {
 	return u.Update(func(s *NotificationDeliveryUpsert) {
 		s.AddRelatedID(v)
 	})

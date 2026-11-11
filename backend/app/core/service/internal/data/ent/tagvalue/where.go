@@ -10,52 +10,52 @@ import (
 )
 
 // ID filters vertices based on their ID field.
-func ID(id uint32) predicate.TagValue {
+func ID(id int64) predicate.TagValue {
 	return predicate.TagValue(sql.FieldEQ(FieldID, id))
 }
 
 // IDEQ applies the EQ predicate on the ID field.
-func IDEQ(id uint32) predicate.TagValue {
+func IDEQ(id int64) predicate.TagValue {
 	return predicate.TagValue(sql.FieldEQ(FieldID, id))
 }
 
 // IDNEQ applies the NEQ predicate on the ID field.
-func IDNEQ(id uint32) predicate.TagValue {
+func IDNEQ(id int64) predicate.TagValue {
 	return predicate.TagValue(sql.FieldNEQ(FieldID, id))
 }
 
 // IDIn applies the In predicate on the ID field.
-func IDIn(ids ...uint32) predicate.TagValue {
+func IDIn(ids ...int64) predicate.TagValue {
 	return predicate.TagValue(sql.FieldIn(FieldID, ids...))
 }
 
 // IDNotIn applies the NotIn predicate on the ID field.
-func IDNotIn(ids ...uint32) predicate.TagValue {
+func IDNotIn(ids ...int64) predicate.TagValue {
 	return predicate.TagValue(sql.FieldNotIn(FieldID, ids...))
 }
 
 // IDGT applies the GT predicate on the ID field.
-func IDGT(id uint32) predicate.TagValue {
+func IDGT(id int64) predicate.TagValue {
 	return predicate.TagValue(sql.FieldGT(FieldID, id))
 }
 
 // IDGTE applies the GTE predicate on the ID field.
-func IDGTE(id uint32) predicate.TagValue {
+func IDGTE(id int64) predicate.TagValue {
 	return predicate.TagValue(sql.FieldGTE(FieldID, id))
 }
 
 // IDLT applies the LT predicate on the ID field.
-func IDLT(id uint32) predicate.TagValue {
+func IDLT(id int64) predicate.TagValue {
 	return predicate.TagValue(sql.FieldLT(FieldID, id))
 }
 
 // IDLTE applies the LTE predicate on the ID field.
-func IDLTE(id uint32) predicate.TagValue {
+func IDLTE(id int64) predicate.TagValue {
 	return predicate.TagValue(sql.FieldLTE(FieldID, id))
 }
 
 // TenantID applies equality check predicate on the "tenant_id" field. It's identical to TenantIDEQ.
-func TenantID(v uint32) predicate.TagValue {
+func TenantID(v int64) predicate.TagValue {
 	return predicate.TagValue(sql.FieldEQ(FieldTenantID, v))
 }
 
@@ -80,7 +80,7 @@ func SortOrder(v uint32) predicate.TagValue {
 }
 
 // TagID applies equality check predicate on the "tag_id" field. It's identical to TagIDEQ.
-func TagID(v uint32) predicate.TagValue {
+func TagID(v int64) predicate.TagValue {
 	return predicate.TagValue(sql.FieldEQ(FieldTagID, v))
 }
 
@@ -105,42 +105,42 @@ func Icon(v string) predicate.TagValue {
 }
 
 // TenantIDEQ applies the EQ predicate on the "tenant_id" field.
-func TenantIDEQ(v uint32) predicate.TagValue {
+func TenantIDEQ(v int64) predicate.TagValue {
 	return predicate.TagValue(sql.FieldEQ(FieldTenantID, v))
 }
 
 // TenantIDNEQ applies the NEQ predicate on the "tenant_id" field.
-func TenantIDNEQ(v uint32) predicate.TagValue {
+func TenantIDNEQ(v int64) predicate.TagValue {
 	return predicate.TagValue(sql.FieldNEQ(FieldTenantID, v))
 }
 
 // TenantIDIn applies the In predicate on the "tenant_id" field.
-func TenantIDIn(vs ...uint32) predicate.TagValue {
+func TenantIDIn(vs ...int64) predicate.TagValue {
 	return predicate.TagValue(sql.FieldIn(FieldTenantID, vs...))
 }
 
 // TenantIDNotIn applies the NotIn predicate on the "tenant_id" field.
-func TenantIDNotIn(vs ...uint32) predicate.TagValue {
+func TenantIDNotIn(vs ...int64) predicate.TagValue {
 	return predicate.TagValue(sql.FieldNotIn(FieldTenantID, vs...))
 }
 
 // TenantIDGT applies the GT predicate on the "tenant_id" field.
-func TenantIDGT(v uint32) predicate.TagValue {
+func TenantIDGT(v int64) predicate.TagValue {
 	return predicate.TagValue(sql.FieldGT(FieldTenantID, v))
 }
 
 // TenantIDGTE applies the GTE predicate on the "tenant_id" field.
-func TenantIDGTE(v uint32) predicate.TagValue {
+func TenantIDGTE(v int64) predicate.TagValue {
 	return predicate.TagValue(sql.FieldGTE(FieldTenantID, v))
 }
 
 // TenantIDLT applies the LT predicate on the "tenant_id" field.
-func TenantIDLT(v uint32) predicate.TagValue {
+func TenantIDLT(v int64) predicate.TagValue {
 	return predicate.TagValue(sql.FieldLT(FieldTenantID, v))
 }
 
 // TenantIDLTE applies the LTE predicate on the "tenant_id" field.
-func TenantIDLTE(v uint32) predicate.TagValue {
+func TenantIDLTE(v int64) predicate.TagValue {
 	return predicate.TagValue(sql.FieldLTE(FieldTenantID, v))
 }
 
@@ -355,42 +355,42 @@ func SortOrderNotNil() predicate.TagValue {
 }
 
 // TagIDEQ applies the EQ predicate on the "tag_id" field.
-func TagIDEQ(v uint32) predicate.TagValue {
+func TagIDEQ(v int64) predicate.TagValue {
 	return predicate.TagValue(sql.FieldEQ(FieldTagID, v))
 }
 
 // TagIDNEQ applies the NEQ predicate on the "tag_id" field.
-func TagIDNEQ(v uint32) predicate.TagValue {
+func TagIDNEQ(v int64) predicate.TagValue {
 	return predicate.TagValue(sql.FieldNEQ(FieldTagID, v))
 }
 
 // TagIDIn applies the In predicate on the "tag_id" field.
-func TagIDIn(vs ...uint32) predicate.TagValue {
+func TagIDIn(vs ...int64) predicate.TagValue {
 	return predicate.TagValue(sql.FieldIn(FieldTagID, vs...))
 }
 
 // TagIDNotIn applies the NotIn predicate on the "tag_id" field.
-func TagIDNotIn(vs ...uint32) predicate.TagValue {
+func TagIDNotIn(vs ...int64) predicate.TagValue {
 	return predicate.TagValue(sql.FieldNotIn(FieldTagID, vs...))
 }
 
 // TagIDGT applies the GT predicate on the "tag_id" field.
-func TagIDGT(v uint32) predicate.TagValue {
+func TagIDGT(v int64) predicate.TagValue {
 	return predicate.TagValue(sql.FieldGT(FieldTagID, v))
 }
 
 // TagIDGTE applies the GTE predicate on the "tag_id" field.
-func TagIDGTE(v uint32) predicate.TagValue {
+func TagIDGTE(v int64) predicate.TagValue {
 	return predicate.TagValue(sql.FieldGTE(FieldTagID, v))
 }
 
 // TagIDLT applies the LT predicate on the "tag_id" field.
-func TagIDLT(v uint32) predicate.TagValue {
+func TagIDLT(v int64) predicate.TagValue {
 	return predicate.TagValue(sql.FieldLT(FieldTagID, v))
 }
 
 // TagIDLTE applies the LTE predicate on the "tag_id" field.
-func TagIDLTE(v uint32) predicate.TagValue {
+func TagIDLTE(v int64) predicate.TagValue {
 	return predicate.TagValue(sql.FieldLTE(FieldTagID, v))
 }
 

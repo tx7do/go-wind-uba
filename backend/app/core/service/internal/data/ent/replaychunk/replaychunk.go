@@ -79,11 +79,11 @@ var (
 	Hooks  [1]ent.Hook
 	Policy ent.Policy
 	// DefaultTenantID holds the default value on creation for the "tenant_id" field.
-	DefaultTenantID uint32
+	DefaultTenantID int64
 	// SessionIDValidator is a validator for the "session_id" field. It is called by the builders before save.
 	SessionIDValidator func(string) error
 	// DefaultUserID holds the default value on creation for the "user_id" field.
-	DefaultUserID uint32
+	DefaultUserID int64
 	// DefaultChunkSeq holds the default value on creation for the "chunk_seq" field.
 	DefaultChunkSeq uint32
 	// DefaultEventCount holds the default value on creation for the "event_count" field.
@@ -91,7 +91,7 @@ var (
 	// DefaultDurationMs holds the default value on creation for the "duration_ms" field.
 	DefaultDurationMs uint32
 	// IDValidator is a validator for the "id" field. It is called by the builders before save.
-	IDValidator func(uint32) error
+	IDValidator func(int64) error
 )
 
 // OrderOption defines the ordering options for the ReplayChunk queries.

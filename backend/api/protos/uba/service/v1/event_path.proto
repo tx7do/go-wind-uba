@@ -65,12 +65,12 @@ message EventPath {
     (gnostic.openapi.v3.property) = {description: "路径ID，唯一标识一条事件路径，hash 或 UUID"}
   ];
   // 租户ID（多租户隔离，支持 SaaS 场景）
-  uint32 tenant_id = 2 [
+  int64 tenant_id = 2 [
     json_name = "tenantId",
     (gnostic.openapi.v3.property) = {description: "租户ID，多租户隔离，支持 SaaS 场景"}
   ];
   // 用户ID（路径所属用户）
-  uint32 user_id = 3 [
+  int64 user_id = 3 [
     json_name = "userId",
     (gnostic.openapi.v3.property) = {description: "用户ID，路径所属用户"}
   ];
@@ -154,7 +154,7 @@ message EventPath {
 
 message ListEventPathResponse {
   repeated EventPath items = 1;
-  uint64 total = 2;
+  int64 total = 2;
 }
 
 // 查询事件路径详情请求

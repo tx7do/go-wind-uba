@@ -84,6 +84,6 @@ func (r *PathFeaturesRepo) List(ctx context.Context, req *paginationV1.PagingReq
 	}
 	return &ubaV1.ListEventPathResponse{
 		Items: result.Items,
-		Total: result.Total,
+		Total: int64(result.Total),
 	}, nil
 }

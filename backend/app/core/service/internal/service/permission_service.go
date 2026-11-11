@@ -73,7 +73,7 @@ func (s *PermissionService) init() {
 
 func (s *PermissionService) extractRelationIDs(
 	permissions []*permissionV1.Permission,
-	groupSet aggregator.ResourceMap[uint32, *permissionV1.PermissionGroup],
+	groupSet aggregator.ResourceMap[int64, *permissionV1.PermissionGroup],
 ) {
 	for _, p := range permissions {
 		if p.GetGroupId() > 0 {
@@ -84,10 +84,10 @@ func (s *PermissionService) extractRelationIDs(
 
 func (s *PermissionService) fetchRelationInfo(
 	ctx context.Context,
-	groupSet aggregator.ResourceMap[uint32, *permissionV1.PermissionGroup],
+	groupSet aggregator.ResourceMap[int64, *permissionV1.PermissionGroup],
 ) error {
 	if len(groupSet) > 0 {
-		groupIds := make([]uint32, 0, len(groupSet))
+		groupIds := make([]int64, 0, len(groupSet))
 		for id := range groupSet {
 			groupIds = append(groupIds, id)
 		}
@@ -108,12 +108,12 @@ func (s *PermissionService) fetchRelationInfo(
 
 func (s *PermissionService) bindRelations(
 	permissions []*permissionV1.Permission,
-	groupSet aggregator.ResourceMap[uint32, *permissionV1.PermissionGroup],
+	groupSet aggregator.ResourceMap[int64, *permissionV1.PermissionGroup],
 ) {
 	aggregator.Populate(
 		permissions,
 		groupSet,
-		func(ou *permissionV1.Permission) uint32 { return ou.GetGroupId() },
+		func(ou *permissionV1.Permission) int64 { return ou.GetGroupId() },
 		func(ou *permissionV1.Permission, g *permissionV1.PermissionGroup) {
 			ou.GroupName = g.Name
 		},
@@ -121,7 +121,7 @@ func (s *PermissionService) bindRelations(
 }
 
 func (s *PermissionService) enrichRelations(ctx context.Context, permissions []*permissionV1.Permission) error {
-	var groupSet = make(aggregator.ResourceMap[uint32, *permissionV1.PermissionGroup])
+	var groupSet = make(aggregator.ResourceMap[int64, *permissionV1.PermissionGroup])
 	s.extractRelationIDs(permissions, groupSet)
 	if err := s.fetchRelationInfo(ctx, groupSet); err != nil {
 		return err
@@ -194,7 +194,7 @@ func (s *PermissionService) appendAPis(
 	ctx context.Context,
 	permissions *[]*permissionV1.Permission,
 	mapPermissions *map[string][]*permissionV1.Permission,
-	operatorUserId uint32,
+	operatorUserId int64,
 ) error {
 	// 查询所有启用的 API 资源
 	apis, err := s.apiRepo.List(ctx, &paginationV1.PagingRequest{
@@ -221,7 +221,7 @@ func (s *PermissionService) appendAPis(
 
 	type moduleApis struct {
 		module string
-		apis   []uint32
+		apis   []int64
 	}
 
 	codes := make(map[string]*moduleApis)
@@ -257,7 +257,7 @@ func (s *PermissionService) appendAPis(
 
 			codes[code] = &moduleApis{
 				module: module,
-				apis:   []uint32{api.GetId()},
+				apis:   []int64{api.GetId()},
 			}
 		} else {
 			curCode.apis = append(curCode.apis, api.GetId())
@@ -338,7 +338,7 @@ func (s *PermissionService) ListPermissionResources(ctx context.Context, req *pe
 	}
 
 	if len(req.RoleIds) > 0 {
-		var limitPermissionIDs []uint32
+		var limitPermissionIDs []int64
 		limitPermissionIDs, err := s.roleRepo.ListPermissionIDsByRoleIDs(ctx, req.GetRoleIds())
 		if err != nil {
 			return nil, err

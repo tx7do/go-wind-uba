@@ -40,7 +40,7 @@ func (_d *FeatureFlagDelete) ExecX(ctx context.Context) int {
 }
 
 func (_d *FeatureFlagDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := sqlgraph.NewDeleteSpec(featureflag.Table, sqlgraph.NewFieldSpec(featureflag.FieldID, field.TypeUint32))
+	_spec := sqlgraph.NewDeleteSpec(featureflag.Table, sqlgraph.NewFieldSpec(featureflag.FieldID, field.TypeInt64))
 	if ps := _d.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {

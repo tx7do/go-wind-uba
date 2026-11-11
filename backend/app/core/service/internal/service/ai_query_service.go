@@ -66,7 +66,7 @@ var (
 )
 
 // tenantIDPatternFor 构造"tenant_id = {id}"存在性校验的正则（容忍别名与空白）。
-func tenantIDPatternFor(tenantID uint32) *regexp.Regexp {
+func tenantIDPatternFor(tenantID int64) *regexp.Regexp {
 	return regexp.MustCompile(`(?i)\btenant_id\s*=\s*` + fmt.Sprintf("%d", tenantID) + `\b`)
 }
 
@@ -213,7 +213,7 @@ func (s *AiQueryService) Ask(ctx context.Context, req *aiV1.AskAiQueryRequest) (
 		resp.Answer = trans.Ptr(answer)
 	}
 
-	resp.TotalTokens = genTokens + answerTokens
+	resp.TotalTokens = uint32(genTokens + answerTokens)
 
 	// 记账（两次调用合并总量；失败不阻断）
 	if s.usageRepo != nil {
@@ -222,7 +222,7 @@ func (s *AiQueryService) Ask(ctx context.Context, req *aiV1.AskAiQueryRequest) (
 			UserID:      s.operatorID(ctx),
 			TenantID:    tenantID,
 			ModelName:   modelName,
-			TotalTokens: resp.GetTotalTokens(),
+			TotalTokens: int64(resp.GetTotalTokens()),
 		})
 	}
 
@@ -230,14 +230,14 @@ func (s *AiQueryService) Ask(ctx context.Context, req *aiV1.AskAiQueryRequest) (
 }
 
 // operatorTenant / operatorID：viewer 上下文取操作者（unary 中间件注入）。
-func (s *AiQueryService) operatorTenant(ctx context.Context) (uint32, bool) {
+func (s *AiQueryService) operatorTenant(ctx context.Context) (int64, bool) {
 	if vc, exist := viewer.FromContext(ctx); exist && vc != nil {
-		return uint32(vc.TenantID()), true
+		return int64(vc.TenantID()), true
 	}
 	return 0, false
 }
 
-func (s *AiQueryService) operatorID(ctx context.Context) uint32 {
+func (s *AiQueryService) operatorID(ctx context.Context) int64 {
 	if uid, ok := viewerUserIDFromContext(ctx); ok {
 		return uid
 	}
@@ -245,7 +245,7 @@ func (s *AiQueryService) operatorID(ctx context.Context) uint32 {
 }
 
 // generateSQL 数据字典 + 方言提示 + 对话历史 + 问题 → 只读 SQL。
-func (s *AiQueryService) generateSQL(ctx context.Context, client *openai.Client, provider *ent.AiProvider, question, lang string, history []aiV1.AiQueryHistoryItem, tenantID uint32) (string, uint32, error) {
+func (s *AiQueryService) generateSQL(ctx context.Context, client *openai.Client, provider *ent.AiProvider, question, lang string, history []aiV1.AiQueryHistoryItem, tenantID int64) (string, int64, error) {
 	dialectNotes := aiQueryDorisDialectNotes
 	if data.UseClickHouse {
 		dialectNotes = aiQueryClickHouseDialectNotes
@@ -335,7 +335,7 @@ func (s *AiQueryService) generateSQL(ctx context.Context, client *openai.Client,
 	if err != nil {
 		return "", 0, aiV1.ErrorInternalServerError("ai query generate failed: %v", err)
 	}
-	tokens := uint32(resp.Usage.TotalTokens)
+	tokens := int64(resp.Usage.TotalTokens)
 	if len(resp.Choices) == 0 {
 		return "", tokens, aiV1.ErrorInternalServerError("ai query generate empty")
 	}
@@ -401,7 +401,7 @@ func sanitizeSQLFor(raw string, tenantPattern *regexp.Regexp) (string, error) {
 }
 
 // generateAnswer 结果集 → 自然语言结论（第二次调用）。
-func (s *AiQueryService) generateAnswer(ctx context.Context, client *openai.Client, provider *ent.AiProvider, question, sqlText string, columns []string, rows []*aiV1.AiQueryRow, lang string) (string, uint32, error) {
+func (s *AiQueryService) generateAnswer(ctx context.Context, client *openai.Client, provider *ent.AiProvider, question, sqlText string, columns []string, rows []*aiV1.AiQueryRow, lang string) (string, int64, error) {
 	var sb strings.Builder
 	fmt.Fprintf(&sb, "用户问题：%s\n\n执行的 SQL：%s\n\n查询结果（列：%s）：\n", question, sqlText, strings.Join(columns, ", "))
 	maxRows := len(rows)
@@ -435,7 +435,7 @@ func (s *AiQueryService) generateAnswer(ctx context.Context, client *openai.Clie
 	if err != nil {
 		return "", 0, err
 	}
-	tokens := uint32(resp.Usage.TotalTokens)
+	tokens := int64(resp.Usage.TotalTokens)
 	if len(resp.Choices) == 0 {
 		return "", tokens, fmt.Errorf("empty answer")
 	}

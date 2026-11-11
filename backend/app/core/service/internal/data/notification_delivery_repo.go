@@ -1,9 +1,9 @@
 package data
 
 import (
-	"io"
-	"github.com/go-kratos/kratos/v2/log"
 	"context"
+	"github.com/go-kratos/kratos/v2/log"
+	"io"
 	"time"
 
 	paginationV1 "github.com/tx7do/go-crud/api/gen/go/pagination/v1"
@@ -120,7 +120,7 @@ func (r *NotificationDeliveryRepo) List(ctx context.Context, req *paginationV1.P
 	}, nil
 }
 
-func (r *NotificationDeliveryRepo) Get(ctx context.Context, id uint32) (*notificationV1.NotificationDelivery, error) {
+func (r *NotificationDeliveryRepo) Get(ctx context.Context, id int64) (*notificationV1.NotificationDelivery, error) {
 	if id == 0 {
 		return nil, adminV1.ErrorBadRequest("id is required")
 	}
@@ -170,9 +170,9 @@ type DeliveryOutcome struct {
 	Status    notificationV1.DeliveryStatus
 	LastError string
 	// ChannelID 实际选中的渠道配置；nil 表示不修改（自选渠道时 Create 阶段还不知道）。
-	ChannelID *uint32
+	ChannelID *int64
 	// Attempts 已尝试次数；nil 表示不修改（异步路径在拨号前用 MarkAttempted 写过，回写时就不再碰）。
-	Attempts *uint32
+	Attempts *int64
 	// SentAt 投递完成时间；FAILED/SKIPPED 传 nil，列保持空。
 	SentAt *time.Time
 }
@@ -180,7 +180,7 @@ type DeliveryOutcome struct {
 // MarkResult 回写投递结果。
 //
 // 只按主键定位、只覆盖结果字段：台账其余部分是投递意图的快照，不应被结果回写篡改。
-func (r *NotificationDeliveryRepo) MarkResult(ctx context.Context, id uint32, outcome *DeliveryOutcome) error {
+func (r *NotificationDeliveryRepo) MarkResult(ctx context.Context, id int64, outcome *DeliveryOutcome) error {
 	if id == 0 || outcome == nil {
 		return adminV1.ErrorBadRequest("id and outcome are required")
 	}
@@ -194,7 +194,7 @@ func (r *NotificationDeliveryRepo) MarkResult(ctx context.Context, id uint32, ou
 		update.SetChannelID(*outcome.ChannelID)
 	}
 	if outcome.Attempts != nil {
-		update.SetAttempts(*outcome.Attempts)
+		update.SetAttempts(uint32(*outcome.Attempts))
 	}
 	if outcome.SentAt != nil {
 		update.SetSentAt(*outcome.SentAt)
@@ -213,13 +213,13 @@ func (r *NotificationDeliveryRepo) MarkResult(ctx context.Context, id uint32, ou
 // 为什么不跟结果一起写：进程在 SMTP 握手中途被杀，这一行会永远停在 SENDING，
 // 而 attempts 是那次"发了一半"唯一留得下来的痕迹（没有它，重试到第几次、有没有真的拨过号
 // 全都看不出来，异步派发就成了黑盒）。
-func (r *NotificationDeliveryRepo) MarkAttempted(ctx context.Context, id uint32, attempts uint32) error {
+func (r *NotificationDeliveryRepo) MarkAttempted(ctx context.Context, id int64, attempts int64) error {
 	if id == 0 {
 		return adminV1.ErrorBadRequest("id is required")
 	}
 
 	if err := r.entClient.Client().NotificationDelivery.UpdateOneID(id).
-		SetAttempts(attempts).
+		SetAttempts(uint32(attempts)).
 		Exec(ctx); err != nil {
 		r.log.Errorf("mark notification delivery [%d] attempted failed: %s", id, err.Error())
 		return adminV1.ErrorInternalServerError("mark notification delivery attempt failed")

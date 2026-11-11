@@ -18,8 +18,8 @@ import (
 	"go-wind-uba/pkg/task"
 
 	notificationV1 "go-wind-uba/api/gen/go/notification/service/v1"
-	appViewer "go-wind-uba/pkg/entgo/viewer"
 	ubaV1 "go-wind-uba/api/gen/go/uba/service/v1"
+	appViewer "go-wind-uba/pkg/entgo/viewer"
 )
 
 const (
@@ -236,7 +236,7 @@ func (s *CampaignService) scheduleSend(ctx context.Context, campaign *ubaV1.Camp
 }
 
 // executeSend 群发执行：分页遍历分群成员，逐用户经通知域 SendDirect 投递。
-func (s *CampaignService) executeSend(ctx context.Context, campaignID uint32) error {
+func (s *CampaignService) executeSend(ctx context.Context, campaignID int64) error {
 	entity, err := s.campaignRepo.GetEntity(ctx, campaignID)
 	if err != nil {
 		return err
@@ -252,9 +252,9 @@ func (s *CampaignService) executeSend(ctx context.Context, campaignID uint32) er
 	}
 
 	var (
-		total  uint64
-		sent   uint64
-		failed uint64
+		total  int64
+		sent   int64
+		failed int64
 	)
 
 	page := 1
@@ -294,7 +294,7 @@ func (s *CampaignService) executeSend(ctx context.Context, campaignID uint32) er
 }
 
 // finishSend 回写统计并按结果定案状态。
-func (s *CampaignService) finishSend(ctx context.Context, id uint32, total, sent, failed uint64, now time.Time) error {
+func (s *CampaignService) finishSend(ctx context.Context, id int64, total, sent, failed int64, now time.Time) error {
 	status := "SENT"
 	if sent == 0 && failed > 0 {
 		status = "FAILED"

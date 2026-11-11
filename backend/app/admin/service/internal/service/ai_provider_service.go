@@ -10,8 +10,8 @@ import (
 	"github.com/tx7do/kratos-bootstrap/bootstrap"
 	"google.golang.org/protobuf/types/known/emptypb"
 
-	aiV1 "go-wind-uba/api/gen/go/ai/service/v1"
 	adminV1 "go-wind-uba/api/gen/go/admin/service/v1"
+	aiV1 "go-wind-uba/api/gen/go/ai/service/v1"
 
 	"go-wind-uba/pkg/middleware/auth"
 )

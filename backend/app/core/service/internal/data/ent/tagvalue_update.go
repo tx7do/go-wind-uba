@@ -97,14 +97,14 @@ func (_u *TagValueUpdate) ClearSortOrder() *TagValueUpdate {
 }
 
 // SetTagID sets the "tag_id" field.
-func (_u *TagValueUpdate) SetTagID(v uint32) *TagValueUpdate {
+func (_u *TagValueUpdate) SetTagID(v int64) *TagValueUpdate {
 	_u.mutation.ResetTagID()
 	_u.mutation.SetTagID(v)
 	return _u
 }
 
 // SetNillableTagID sets the "tag_id" field if the given value is not nil.
-func (_u *TagValueUpdate) SetNillableTagID(v *uint32) *TagValueUpdate {
+func (_u *TagValueUpdate) SetNillableTagID(v *int64) *TagValueUpdate {
 	if v != nil {
 		_u.SetTagID(*v)
 	}
@@ -112,7 +112,7 @@ func (_u *TagValueUpdate) SetNillableTagID(v *uint32) *TagValueUpdate {
 }
 
 // AddTagID adds value to the "tag_id" field.
-func (_u *TagValueUpdate) AddTagID(v int32) *TagValueUpdate {
+func (_u *TagValueUpdate) AddTagID(v int64) *TagValueUpdate {
 	_u.mutation.AddTagID(v)
 	return _u
 }
@@ -275,7 +275,7 @@ func (_u *TagValueUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if err := _u.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(tagvalue.Table, tagvalue.Columns, sqlgraph.NewFieldSpec(tagvalue.FieldID, field.TypeUint32))
+	_spec := sqlgraph.NewUpdateSpec(tagvalue.Table, tagvalue.Columns, sqlgraph.NewFieldSpec(tagvalue.FieldID, field.TypeInt64))
 	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -284,7 +284,7 @@ func (_u *TagValueUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		}
 	}
 	if _u.mutation.TenantIDCleared() {
-		_spec.ClearField(tagvalue.FieldTenantID, field.TypeUint32)
+		_spec.ClearField(tagvalue.FieldTenantID, field.TypeInt64)
 	}
 	if _u.mutation.CreatedAtCleared() {
 		_spec.ClearField(tagvalue.FieldCreatedAt, field.TypeTime)
@@ -311,13 +311,13 @@ func (_u *TagValueUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		_spec.ClearField(tagvalue.FieldSortOrder, field.TypeUint32)
 	}
 	if value, ok := _u.mutation.TagID(); ok {
-		_spec.SetField(tagvalue.FieldTagID, field.TypeUint32, value)
+		_spec.SetField(tagvalue.FieldTagID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedTagID(); ok {
-		_spec.AddField(tagvalue.FieldTagID, field.TypeUint32, value)
+		_spec.AddField(tagvalue.FieldTagID, field.TypeInt64, value)
 	}
 	if _u.mutation.TagIDCleared() {
-		_spec.ClearField(tagvalue.FieldTagID, field.TypeUint32)
+		_spec.ClearField(tagvalue.FieldTagID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.Value(); ok {
 		_spec.SetField(tagvalue.FieldValue, field.TypeString, value)
@@ -439,14 +439,14 @@ func (_u *TagValueUpdateOne) ClearSortOrder() *TagValueUpdateOne {
 }
 
 // SetTagID sets the "tag_id" field.
-func (_u *TagValueUpdateOne) SetTagID(v uint32) *TagValueUpdateOne {
+func (_u *TagValueUpdateOne) SetTagID(v int64) *TagValueUpdateOne {
 	_u.mutation.ResetTagID()
 	_u.mutation.SetTagID(v)
 	return _u
 }
 
 // SetNillableTagID sets the "tag_id" field if the given value is not nil.
-func (_u *TagValueUpdateOne) SetNillableTagID(v *uint32) *TagValueUpdateOne {
+func (_u *TagValueUpdateOne) SetNillableTagID(v *int64) *TagValueUpdateOne {
 	if v != nil {
 		_u.SetTagID(*v)
 	}
@@ -454,7 +454,7 @@ func (_u *TagValueUpdateOne) SetNillableTagID(v *uint32) *TagValueUpdateOne {
 }
 
 // AddTagID adds value to the "tag_id" field.
-func (_u *TagValueUpdateOne) AddTagID(v int32) *TagValueUpdateOne {
+func (_u *TagValueUpdateOne) AddTagID(v int64) *TagValueUpdateOne {
 	_u.mutation.AddTagID(v)
 	return _u
 }
@@ -630,7 +630,7 @@ func (_u *TagValueUpdateOne) sqlSave(ctx context.Context) (_node *TagValue, err 
 	if err := _u.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(tagvalue.Table, tagvalue.Columns, sqlgraph.NewFieldSpec(tagvalue.FieldID, field.TypeUint32))
+	_spec := sqlgraph.NewUpdateSpec(tagvalue.Table, tagvalue.Columns, sqlgraph.NewFieldSpec(tagvalue.FieldID, field.TypeInt64))
 	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "TagValue.id" for update`)}
@@ -656,7 +656,7 @@ func (_u *TagValueUpdateOne) sqlSave(ctx context.Context) (_node *TagValue, err 
 		}
 	}
 	if _u.mutation.TenantIDCleared() {
-		_spec.ClearField(tagvalue.FieldTenantID, field.TypeUint32)
+		_spec.ClearField(tagvalue.FieldTenantID, field.TypeInt64)
 	}
 	if _u.mutation.CreatedAtCleared() {
 		_spec.ClearField(tagvalue.FieldCreatedAt, field.TypeTime)
@@ -683,13 +683,13 @@ func (_u *TagValueUpdateOne) sqlSave(ctx context.Context) (_node *TagValue, err 
 		_spec.ClearField(tagvalue.FieldSortOrder, field.TypeUint32)
 	}
 	if value, ok := _u.mutation.TagID(); ok {
-		_spec.SetField(tagvalue.FieldTagID, field.TypeUint32, value)
+		_spec.SetField(tagvalue.FieldTagID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedTagID(); ok {
-		_spec.AddField(tagvalue.FieldTagID, field.TypeUint32, value)
+		_spec.AddField(tagvalue.FieldTagID, field.TypeInt64, value)
 	}
 	if _u.mutation.TagIDCleared() {
-		_spec.ClearField(tagvalue.FieldTagID, field.TypeUint32)
+		_spec.ClearField(tagvalue.FieldTagID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.Value(); ok {
 		_spec.SetField(tagvalue.FieldValue, field.TypeString, value)

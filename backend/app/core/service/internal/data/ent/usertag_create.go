@@ -23,13 +23,13 @@ type UserTagCreate struct {
 }
 
 // SetTenantID sets the "tenant_id" field.
-func (_c *UserTagCreate) SetTenantID(v uint32) *UserTagCreate {
+func (_c *UserTagCreate) SetTenantID(v int64) *UserTagCreate {
 	_c.mutation.SetTenantID(v)
 	return _c
 }
 
 // SetNillableTenantID sets the "tenant_id" field if the given value is not nil.
-func (_c *UserTagCreate) SetNillableTenantID(v *uint32) *UserTagCreate {
+func (_c *UserTagCreate) SetNillableTenantID(v *int64) *UserTagCreate {
 	if v != nil {
 		_c.SetTenantID(*v)
 	}
@@ -79,13 +79,13 @@ func (_c *UserTagCreate) SetNillableDeletedAt(v *time.Time) *UserTagCreate {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (_c *UserTagCreate) SetCreatedBy(v uint32) *UserTagCreate {
+func (_c *UserTagCreate) SetCreatedBy(v int64) *UserTagCreate {
 	_c.mutation.SetCreatedBy(v)
 	return _c
 }
 
 // SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
-func (_c *UserTagCreate) SetNillableCreatedBy(v *uint32) *UserTagCreate {
+func (_c *UserTagCreate) SetNillableCreatedBy(v *int64) *UserTagCreate {
 	if v != nil {
 		_c.SetCreatedBy(*v)
 	}
@@ -93,13 +93,13 @@ func (_c *UserTagCreate) SetNillableCreatedBy(v *uint32) *UserTagCreate {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (_c *UserTagCreate) SetUpdatedBy(v uint32) *UserTagCreate {
+func (_c *UserTagCreate) SetUpdatedBy(v int64) *UserTagCreate {
 	_c.mutation.SetUpdatedBy(v)
 	return _c
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (_c *UserTagCreate) SetNillableUpdatedBy(v *uint32) *UserTagCreate {
+func (_c *UserTagCreate) SetNillableUpdatedBy(v *int64) *UserTagCreate {
 	if v != nil {
 		_c.SetUpdatedBy(*v)
 	}
@@ -107,13 +107,13 @@ func (_c *UserTagCreate) SetNillableUpdatedBy(v *uint32) *UserTagCreate {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (_c *UserTagCreate) SetDeletedBy(v uint32) *UserTagCreate {
+func (_c *UserTagCreate) SetDeletedBy(v int64) *UserTagCreate {
 	_c.mutation.SetDeletedBy(v)
 	return _c
 }
 
 // SetNillableDeletedBy sets the "deleted_by" field if the given value is not nil.
-func (_c *UserTagCreate) SetNillableDeletedBy(v *uint32) *UserTagCreate {
+func (_c *UserTagCreate) SetNillableDeletedBy(v *int64) *UserTagCreate {
 	if v != nil {
 		_c.SetDeletedBy(*v)
 	}
@@ -121,13 +121,13 @@ func (_c *UserTagCreate) SetNillableDeletedBy(v *uint32) *UserTagCreate {
 }
 
 // SetUserID sets the "user_id" field.
-func (_c *UserTagCreate) SetUserID(v uint32) *UserTagCreate {
+func (_c *UserTagCreate) SetUserID(v int64) *UserTagCreate {
 	_c.mutation.SetUserID(v)
 	return _c
 }
 
 // SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (_c *UserTagCreate) SetNillableUserID(v *uint32) *UserTagCreate {
+func (_c *UserTagCreate) SetNillableUserID(v *int64) *UserTagCreate {
 	if v != nil {
 		_c.SetUserID(*v)
 	}
@@ -135,13 +135,13 @@ func (_c *UserTagCreate) SetNillableUserID(v *uint32) *UserTagCreate {
 }
 
 // SetTagID sets the "tag_id" field.
-func (_c *UserTagCreate) SetTagID(v uint32) *UserTagCreate {
+func (_c *UserTagCreate) SetTagID(v int64) *UserTagCreate {
 	_c.mutation.SetTagID(v)
 	return _c
 }
 
 // SetNillableTagID sets the "tag_id" field if the given value is not nil.
-func (_c *UserTagCreate) SetNillableTagID(v *uint32) *UserTagCreate {
+func (_c *UserTagCreate) SetNillableTagID(v *int64) *UserTagCreate {
 	if v != nil {
 		_c.SetTagID(*v)
 	}
@@ -205,13 +205,13 @@ func (_c *UserTagCreate) SetNillableSource(v *string) *UserTagCreate {
 }
 
 // SetSourceRuleID sets the "source_rule_id" field.
-func (_c *UserTagCreate) SetSourceRuleID(v uint32) *UserTagCreate {
+func (_c *UserTagCreate) SetSourceRuleID(v int64) *UserTagCreate {
 	_c.mutation.SetSourceRuleID(v)
 	return _c
 }
 
 // SetNillableSourceRuleID sets the "source_rule_id" field if the given value is not nil.
-func (_c *UserTagCreate) SetNillableSourceRuleID(v *uint32) *UserTagCreate {
+func (_c *UserTagCreate) SetNillableSourceRuleID(v *int64) *UserTagCreate {
 	if v != nil {
 		_c.SetSourceRuleID(*v)
 	}
@@ -261,7 +261,7 @@ func (_c *UserTagCreate) SetNillableIsActive(v *bool) *UserTagCreate {
 }
 
 // SetID sets the "id" field.
-func (_c *UserTagCreate) SetID(v uint32) *UserTagCreate {
+func (_c *UserTagCreate) SetID(v int64) *UserTagCreate {
 	_c.mutation.SetID(v)
 	return _c
 }
@@ -346,7 +346,7 @@ func (_c *UserTagCreate) sqlSave(ctx context.Context) (*UserTag, error) {
 	}
 	if _spec.ID.Value != _node.ID {
 		id := _spec.ID.Value.(int64)
-		_node.ID = uint32(id)
+		_node.ID = int64(id)
 	}
 	_c.mutation.id = &_node.ID
 	_c.mutation.done = true
@@ -356,7 +356,7 @@ func (_c *UserTagCreate) sqlSave(ctx context.Context) (*UserTag, error) {
 func (_c *UserTagCreate) createSpec() (*UserTag, *sqlgraph.CreateSpec) {
 	var (
 		_node = &UserTag{config: _c.config}
-		_spec = sqlgraph.NewCreateSpec(usertag.Table, sqlgraph.NewFieldSpec(usertag.FieldID, field.TypeUint32))
+		_spec = sqlgraph.NewCreateSpec(usertag.Table, sqlgraph.NewFieldSpec(usertag.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = _c.conflict
 	if id, ok := _c.mutation.ID(); ok {
@@ -364,7 +364,7 @@ func (_c *UserTagCreate) createSpec() (*UserTag, *sqlgraph.CreateSpec) {
 		_spec.ID.Value = id
 	}
 	if value, ok := _c.mutation.TenantID(); ok {
-		_spec.SetField(usertag.FieldTenantID, field.TypeUint32, value)
+		_spec.SetField(usertag.FieldTenantID, field.TypeInt64, value)
 		_node.TenantID = &value
 	}
 	if value, ok := _c.mutation.CreatedAt(); ok {
@@ -380,23 +380,23 @@ func (_c *UserTagCreate) createSpec() (*UserTag, *sqlgraph.CreateSpec) {
 		_node.DeletedAt = &value
 	}
 	if value, ok := _c.mutation.CreatedBy(); ok {
-		_spec.SetField(usertag.FieldCreatedBy, field.TypeUint32, value)
+		_spec.SetField(usertag.FieldCreatedBy, field.TypeInt64, value)
 		_node.CreatedBy = &value
 	}
 	if value, ok := _c.mutation.UpdatedBy(); ok {
-		_spec.SetField(usertag.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.SetField(usertag.FieldUpdatedBy, field.TypeInt64, value)
 		_node.UpdatedBy = &value
 	}
 	if value, ok := _c.mutation.DeletedBy(); ok {
-		_spec.SetField(usertag.FieldDeletedBy, field.TypeUint32, value)
+		_spec.SetField(usertag.FieldDeletedBy, field.TypeInt64, value)
 		_node.DeletedBy = &value
 	}
 	if value, ok := _c.mutation.UserID(); ok {
-		_spec.SetField(usertag.FieldUserID, field.TypeUint32, value)
+		_spec.SetField(usertag.FieldUserID, field.TypeInt64, value)
 		_node.UserID = &value
 	}
 	if value, ok := _c.mutation.TagID(); ok {
-		_spec.SetField(usertag.FieldTagID, field.TypeUint32, value)
+		_spec.SetField(usertag.FieldTagID, field.TypeInt64, value)
 		_node.TagID = &value
 	}
 	if value, ok := _c.mutation.Value(); ok {
@@ -416,7 +416,7 @@ func (_c *UserTagCreate) createSpec() (*UserTag, *sqlgraph.CreateSpec) {
 		_node.Source = &value
 	}
 	if value, ok := _c.mutation.SourceRuleID(); ok {
-		_spec.SetField(usertag.FieldSourceRuleID, field.TypeUint32, value)
+		_spec.SetField(usertag.FieldSourceRuleID, field.TypeInt64, value)
 		_node.SourceRuleID = &value
 	}
 	if value, ok := _c.mutation.EffectiveTime(); ok {
@@ -520,7 +520,7 @@ func (u *UserTagUpsert) ClearDeletedAt() *UserTagUpsert {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (u *UserTagUpsert) SetCreatedBy(v uint32) *UserTagUpsert {
+func (u *UserTagUpsert) SetCreatedBy(v int64) *UserTagUpsert {
 	u.Set(usertag.FieldCreatedBy, v)
 	return u
 }
@@ -532,7 +532,7 @@ func (u *UserTagUpsert) UpdateCreatedBy() *UserTagUpsert {
 }
 
 // AddCreatedBy adds v to the "created_by" field.
-func (u *UserTagUpsert) AddCreatedBy(v uint32) *UserTagUpsert {
+func (u *UserTagUpsert) AddCreatedBy(v int64) *UserTagUpsert {
 	u.Add(usertag.FieldCreatedBy, v)
 	return u
 }
@@ -544,7 +544,7 @@ func (u *UserTagUpsert) ClearCreatedBy() *UserTagUpsert {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (u *UserTagUpsert) SetUpdatedBy(v uint32) *UserTagUpsert {
+func (u *UserTagUpsert) SetUpdatedBy(v int64) *UserTagUpsert {
 	u.Set(usertag.FieldUpdatedBy, v)
 	return u
 }
@@ -556,7 +556,7 @@ func (u *UserTagUpsert) UpdateUpdatedBy() *UserTagUpsert {
 }
 
 // AddUpdatedBy adds v to the "updated_by" field.
-func (u *UserTagUpsert) AddUpdatedBy(v uint32) *UserTagUpsert {
+func (u *UserTagUpsert) AddUpdatedBy(v int64) *UserTagUpsert {
 	u.Add(usertag.FieldUpdatedBy, v)
 	return u
 }
@@ -568,7 +568,7 @@ func (u *UserTagUpsert) ClearUpdatedBy() *UserTagUpsert {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (u *UserTagUpsert) SetDeletedBy(v uint32) *UserTagUpsert {
+func (u *UserTagUpsert) SetDeletedBy(v int64) *UserTagUpsert {
 	u.Set(usertag.FieldDeletedBy, v)
 	return u
 }
@@ -580,7 +580,7 @@ func (u *UserTagUpsert) UpdateDeletedBy() *UserTagUpsert {
 }
 
 // AddDeletedBy adds v to the "deleted_by" field.
-func (u *UserTagUpsert) AddDeletedBy(v uint32) *UserTagUpsert {
+func (u *UserTagUpsert) AddDeletedBy(v int64) *UserTagUpsert {
 	u.Add(usertag.FieldDeletedBy, v)
 	return u
 }
@@ -592,7 +592,7 @@ func (u *UserTagUpsert) ClearDeletedBy() *UserTagUpsert {
 }
 
 // SetUserID sets the "user_id" field.
-func (u *UserTagUpsert) SetUserID(v uint32) *UserTagUpsert {
+func (u *UserTagUpsert) SetUserID(v int64) *UserTagUpsert {
 	u.Set(usertag.FieldUserID, v)
 	return u
 }
@@ -604,7 +604,7 @@ func (u *UserTagUpsert) UpdateUserID() *UserTagUpsert {
 }
 
 // AddUserID adds v to the "user_id" field.
-func (u *UserTagUpsert) AddUserID(v uint32) *UserTagUpsert {
+func (u *UserTagUpsert) AddUserID(v int64) *UserTagUpsert {
 	u.Add(usertag.FieldUserID, v)
 	return u
 }
@@ -616,7 +616,7 @@ func (u *UserTagUpsert) ClearUserID() *UserTagUpsert {
 }
 
 // SetTagID sets the "tag_id" field.
-func (u *UserTagUpsert) SetTagID(v uint32) *UserTagUpsert {
+func (u *UserTagUpsert) SetTagID(v int64) *UserTagUpsert {
 	u.Set(usertag.FieldTagID, v)
 	return u
 }
@@ -628,7 +628,7 @@ func (u *UserTagUpsert) UpdateTagID() *UserTagUpsert {
 }
 
 // AddTagID adds v to the "tag_id" field.
-func (u *UserTagUpsert) AddTagID(v uint32) *UserTagUpsert {
+func (u *UserTagUpsert) AddTagID(v int64) *UserTagUpsert {
 	u.Add(usertag.FieldTagID, v)
 	return u
 }
@@ -718,7 +718,7 @@ func (u *UserTagUpsert) ClearSource() *UserTagUpsert {
 }
 
 // SetSourceRuleID sets the "source_rule_id" field.
-func (u *UserTagUpsert) SetSourceRuleID(v uint32) *UserTagUpsert {
+func (u *UserTagUpsert) SetSourceRuleID(v int64) *UserTagUpsert {
 	u.Set(usertag.FieldSourceRuleID, v)
 	return u
 }
@@ -730,7 +730,7 @@ func (u *UserTagUpsert) UpdateSourceRuleID() *UserTagUpsert {
 }
 
 // AddSourceRuleID adds v to the "source_rule_id" field.
-func (u *UserTagUpsert) AddSourceRuleID(v uint32) *UserTagUpsert {
+func (u *UserTagUpsert) AddSourceRuleID(v int64) *UserTagUpsert {
 	u.Add(usertag.FieldSourceRuleID, v)
 	return u
 }
@@ -892,14 +892,14 @@ func (u *UserTagUpsertOne) ClearDeletedAt() *UserTagUpsertOne {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (u *UserTagUpsertOne) SetCreatedBy(v uint32) *UserTagUpsertOne {
+func (u *UserTagUpsertOne) SetCreatedBy(v int64) *UserTagUpsertOne {
 	return u.Update(func(s *UserTagUpsert) {
 		s.SetCreatedBy(v)
 	})
 }
 
 // AddCreatedBy adds v to the "created_by" field.
-func (u *UserTagUpsertOne) AddCreatedBy(v uint32) *UserTagUpsertOne {
+func (u *UserTagUpsertOne) AddCreatedBy(v int64) *UserTagUpsertOne {
 	return u.Update(func(s *UserTagUpsert) {
 		s.AddCreatedBy(v)
 	})
@@ -920,14 +920,14 @@ func (u *UserTagUpsertOne) ClearCreatedBy() *UserTagUpsertOne {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (u *UserTagUpsertOne) SetUpdatedBy(v uint32) *UserTagUpsertOne {
+func (u *UserTagUpsertOne) SetUpdatedBy(v int64) *UserTagUpsertOne {
 	return u.Update(func(s *UserTagUpsert) {
 		s.SetUpdatedBy(v)
 	})
 }
 
 // AddUpdatedBy adds v to the "updated_by" field.
-func (u *UserTagUpsertOne) AddUpdatedBy(v uint32) *UserTagUpsertOne {
+func (u *UserTagUpsertOne) AddUpdatedBy(v int64) *UserTagUpsertOne {
 	return u.Update(func(s *UserTagUpsert) {
 		s.AddUpdatedBy(v)
 	})
@@ -948,14 +948,14 @@ func (u *UserTagUpsertOne) ClearUpdatedBy() *UserTagUpsertOne {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (u *UserTagUpsertOne) SetDeletedBy(v uint32) *UserTagUpsertOne {
+func (u *UserTagUpsertOne) SetDeletedBy(v int64) *UserTagUpsertOne {
 	return u.Update(func(s *UserTagUpsert) {
 		s.SetDeletedBy(v)
 	})
 }
 
 // AddDeletedBy adds v to the "deleted_by" field.
-func (u *UserTagUpsertOne) AddDeletedBy(v uint32) *UserTagUpsertOne {
+func (u *UserTagUpsertOne) AddDeletedBy(v int64) *UserTagUpsertOne {
 	return u.Update(func(s *UserTagUpsert) {
 		s.AddDeletedBy(v)
 	})
@@ -976,14 +976,14 @@ func (u *UserTagUpsertOne) ClearDeletedBy() *UserTagUpsertOne {
 }
 
 // SetUserID sets the "user_id" field.
-func (u *UserTagUpsertOne) SetUserID(v uint32) *UserTagUpsertOne {
+func (u *UserTagUpsertOne) SetUserID(v int64) *UserTagUpsertOne {
 	return u.Update(func(s *UserTagUpsert) {
 		s.SetUserID(v)
 	})
 }
 
 // AddUserID adds v to the "user_id" field.
-func (u *UserTagUpsertOne) AddUserID(v uint32) *UserTagUpsertOne {
+func (u *UserTagUpsertOne) AddUserID(v int64) *UserTagUpsertOne {
 	return u.Update(func(s *UserTagUpsert) {
 		s.AddUserID(v)
 	})
@@ -1004,14 +1004,14 @@ func (u *UserTagUpsertOne) ClearUserID() *UserTagUpsertOne {
 }
 
 // SetTagID sets the "tag_id" field.
-func (u *UserTagUpsertOne) SetTagID(v uint32) *UserTagUpsertOne {
+func (u *UserTagUpsertOne) SetTagID(v int64) *UserTagUpsertOne {
 	return u.Update(func(s *UserTagUpsert) {
 		s.SetTagID(v)
 	})
 }
 
 // AddTagID adds v to the "tag_id" field.
-func (u *UserTagUpsertOne) AddTagID(v uint32) *UserTagUpsertOne {
+func (u *UserTagUpsertOne) AddTagID(v int64) *UserTagUpsertOne {
 	return u.Update(func(s *UserTagUpsert) {
 		s.AddTagID(v)
 	})
@@ -1123,14 +1123,14 @@ func (u *UserTagUpsertOne) ClearSource() *UserTagUpsertOne {
 }
 
 // SetSourceRuleID sets the "source_rule_id" field.
-func (u *UserTagUpsertOne) SetSourceRuleID(v uint32) *UserTagUpsertOne {
+func (u *UserTagUpsertOne) SetSourceRuleID(v int64) *UserTagUpsertOne {
 	return u.Update(func(s *UserTagUpsert) {
 		s.SetSourceRuleID(v)
 	})
 }
 
 // AddSourceRuleID adds v to the "source_rule_id" field.
-func (u *UserTagUpsertOne) AddSourceRuleID(v uint32) *UserTagUpsertOne {
+func (u *UserTagUpsertOne) AddSourceRuleID(v int64) *UserTagUpsertOne {
 	return u.Update(func(s *UserTagUpsert) {
 		s.AddSourceRuleID(v)
 	})
@@ -1229,7 +1229,7 @@ func (u *UserTagUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *UserTagUpsertOne) ID(ctx context.Context) (id uint32, err error) {
+func (u *UserTagUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -1238,7 +1238,7 @@ func (u *UserTagUpsertOne) ID(ctx context.Context) (id uint32, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *UserTagUpsertOne) IDX(ctx context.Context) uint32 {
+func (u *UserTagUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -1295,7 +1295,7 @@ func (_c *UserTagCreateBulk) Save(ctx context.Context) ([]*UserTag, error) {
 				mutation.id = &nodes[i].ID
 				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = uint32(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -1476,14 +1476,14 @@ func (u *UserTagUpsertBulk) ClearDeletedAt() *UserTagUpsertBulk {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (u *UserTagUpsertBulk) SetCreatedBy(v uint32) *UserTagUpsertBulk {
+func (u *UserTagUpsertBulk) SetCreatedBy(v int64) *UserTagUpsertBulk {
 	return u.Update(func(s *UserTagUpsert) {
 		s.SetCreatedBy(v)
 	})
 }
 
 // AddCreatedBy adds v to the "created_by" field.
-func (u *UserTagUpsertBulk) AddCreatedBy(v uint32) *UserTagUpsertBulk {
+func (u *UserTagUpsertBulk) AddCreatedBy(v int64) *UserTagUpsertBulk {
 	return u.Update(func(s *UserTagUpsert) {
 		s.AddCreatedBy(v)
 	})
@@ -1504,14 +1504,14 @@ func (u *UserTagUpsertBulk) ClearCreatedBy() *UserTagUpsertBulk {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (u *UserTagUpsertBulk) SetUpdatedBy(v uint32) *UserTagUpsertBulk {
+func (u *UserTagUpsertBulk) SetUpdatedBy(v int64) *UserTagUpsertBulk {
 	return u.Update(func(s *UserTagUpsert) {
 		s.SetUpdatedBy(v)
 	})
 }
 
 // AddUpdatedBy adds v to the "updated_by" field.
-func (u *UserTagUpsertBulk) AddUpdatedBy(v uint32) *UserTagUpsertBulk {
+func (u *UserTagUpsertBulk) AddUpdatedBy(v int64) *UserTagUpsertBulk {
 	return u.Update(func(s *UserTagUpsert) {
 		s.AddUpdatedBy(v)
 	})
@@ -1532,14 +1532,14 @@ func (u *UserTagUpsertBulk) ClearUpdatedBy() *UserTagUpsertBulk {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (u *UserTagUpsertBulk) SetDeletedBy(v uint32) *UserTagUpsertBulk {
+func (u *UserTagUpsertBulk) SetDeletedBy(v int64) *UserTagUpsertBulk {
 	return u.Update(func(s *UserTagUpsert) {
 		s.SetDeletedBy(v)
 	})
 }
 
 // AddDeletedBy adds v to the "deleted_by" field.
-func (u *UserTagUpsertBulk) AddDeletedBy(v uint32) *UserTagUpsertBulk {
+func (u *UserTagUpsertBulk) AddDeletedBy(v int64) *UserTagUpsertBulk {
 	return u.Update(func(s *UserTagUpsert) {
 		s.AddDeletedBy(v)
 	})
@@ -1560,14 +1560,14 @@ func (u *UserTagUpsertBulk) ClearDeletedBy() *UserTagUpsertBulk {
 }
 
 // SetUserID sets the "user_id" field.
-func (u *UserTagUpsertBulk) SetUserID(v uint32) *UserTagUpsertBulk {
+func (u *UserTagUpsertBulk) SetUserID(v int64) *UserTagUpsertBulk {
 	return u.Update(func(s *UserTagUpsert) {
 		s.SetUserID(v)
 	})
 }
 
 // AddUserID adds v to the "user_id" field.
-func (u *UserTagUpsertBulk) AddUserID(v uint32) *UserTagUpsertBulk {
+func (u *UserTagUpsertBulk) AddUserID(v int64) *UserTagUpsertBulk {
 	return u.Update(func(s *UserTagUpsert) {
 		s.AddUserID(v)
 	})
@@ -1588,14 +1588,14 @@ func (u *UserTagUpsertBulk) ClearUserID() *UserTagUpsertBulk {
 }
 
 // SetTagID sets the "tag_id" field.
-func (u *UserTagUpsertBulk) SetTagID(v uint32) *UserTagUpsertBulk {
+func (u *UserTagUpsertBulk) SetTagID(v int64) *UserTagUpsertBulk {
 	return u.Update(func(s *UserTagUpsert) {
 		s.SetTagID(v)
 	})
 }
 
 // AddTagID adds v to the "tag_id" field.
-func (u *UserTagUpsertBulk) AddTagID(v uint32) *UserTagUpsertBulk {
+func (u *UserTagUpsertBulk) AddTagID(v int64) *UserTagUpsertBulk {
 	return u.Update(func(s *UserTagUpsert) {
 		s.AddTagID(v)
 	})
@@ -1707,14 +1707,14 @@ func (u *UserTagUpsertBulk) ClearSource() *UserTagUpsertBulk {
 }
 
 // SetSourceRuleID sets the "source_rule_id" field.
-func (u *UserTagUpsertBulk) SetSourceRuleID(v uint32) *UserTagUpsertBulk {
+func (u *UserTagUpsertBulk) SetSourceRuleID(v int64) *UserTagUpsertBulk {
 	return u.Update(func(s *UserTagUpsert) {
 		s.SetSourceRuleID(v)
 	})
 }
 
 // AddSourceRuleID adds v to the "source_rule_id" field.
-func (u *UserTagUpsertBulk) AddSourceRuleID(v uint32) *UserTagUpsertBulk {
+func (u *UserTagUpsertBulk) AddSourceRuleID(v int64) *UserTagUpsertBulk {
 	return u.Update(func(s *UserTagUpsert) {
 		s.AddSourceRuleID(v)
 	})

@@ -65,13 +65,13 @@ func (_c *VisualEventCreate) SetNillableDeletedAt(v *time.Time) *VisualEventCrea
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (_c *VisualEventCreate) SetCreatedBy(v uint32) *VisualEventCreate {
+func (_c *VisualEventCreate) SetCreatedBy(v int64) *VisualEventCreate {
 	_c.mutation.SetCreatedBy(v)
 	return _c
 }
 
 // SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
-func (_c *VisualEventCreate) SetNillableCreatedBy(v *uint32) *VisualEventCreate {
+func (_c *VisualEventCreate) SetNillableCreatedBy(v *int64) *VisualEventCreate {
 	if v != nil {
 		_c.SetCreatedBy(*v)
 	}
@@ -79,13 +79,13 @@ func (_c *VisualEventCreate) SetNillableCreatedBy(v *uint32) *VisualEventCreate 
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (_c *VisualEventCreate) SetUpdatedBy(v uint32) *VisualEventCreate {
+func (_c *VisualEventCreate) SetUpdatedBy(v int64) *VisualEventCreate {
 	_c.mutation.SetUpdatedBy(v)
 	return _c
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (_c *VisualEventCreate) SetNillableUpdatedBy(v *uint32) *VisualEventCreate {
+func (_c *VisualEventCreate) SetNillableUpdatedBy(v *int64) *VisualEventCreate {
 	if v != nil {
 		_c.SetUpdatedBy(*v)
 	}
@@ -93,13 +93,13 @@ func (_c *VisualEventCreate) SetNillableUpdatedBy(v *uint32) *VisualEventCreate 
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (_c *VisualEventCreate) SetDeletedBy(v uint32) *VisualEventCreate {
+func (_c *VisualEventCreate) SetDeletedBy(v int64) *VisualEventCreate {
 	_c.mutation.SetDeletedBy(v)
 	return _c
 }
 
 // SetNillableDeletedBy sets the "deleted_by" field if the given value is not nil.
-func (_c *VisualEventCreate) SetNillableDeletedBy(v *uint32) *VisualEventCreate {
+func (_c *VisualEventCreate) SetNillableDeletedBy(v *int64) *VisualEventCreate {
 	if v != nil {
 		_c.SetDeletedBy(*v)
 	}
@@ -107,13 +107,13 @@ func (_c *VisualEventCreate) SetNillableDeletedBy(v *uint32) *VisualEventCreate 
 }
 
 // SetTenantID sets the "tenant_id" field.
-func (_c *VisualEventCreate) SetTenantID(v uint32) *VisualEventCreate {
+func (_c *VisualEventCreate) SetTenantID(v int64) *VisualEventCreate {
 	_c.mutation.SetTenantID(v)
 	return _c
 }
 
 // SetNillableTenantID sets the "tenant_id" field if the given value is not nil.
-func (_c *VisualEventCreate) SetNillableTenantID(v *uint32) *VisualEventCreate {
+func (_c *VisualEventCreate) SetNillableTenantID(v *int64) *VisualEventCreate {
 	if v != nil {
 		_c.SetTenantID(*v)
 	}
@@ -239,7 +239,7 @@ func (_c *VisualEventCreate) SetNillableRemark(v *string) *VisualEventCreate {
 }
 
 // SetID sets the "id" field.
-func (_c *VisualEventCreate) SetID(v uint32) *VisualEventCreate {
+func (_c *VisualEventCreate) SetID(v int64) *VisualEventCreate {
 	_c.mutation.SetID(v)
 	return _c
 }
@@ -335,7 +335,7 @@ func (_c *VisualEventCreate) sqlSave(ctx context.Context) (*VisualEvent, error) 
 	}
 	if _spec.ID.Value != _node.ID {
 		id := _spec.ID.Value.(int64)
-		_node.ID = uint32(id)
+		_node.ID = int64(id)
 	}
 	_c.mutation.id = &_node.ID
 	_c.mutation.done = true
@@ -345,7 +345,7 @@ func (_c *VisualEventCreate) sqlSave(ctx context.Context) (*VisualEvent, error) 
 func (_c *VisualEventCreate) createSpec() (*VisualEvent, *sqlgraph.CreateSpec) {
 	var (
 		_node = &VisualEvent{config: _c.config}
-		_spec = sqlgraph.NewCreateSpec(visualevent.Table, sqlgraph.NewFieldSpec(visualevent.FieldID, field.TypeUint32))
+		_spec = sqlgraph.NewCreateSpec(visualevent.Table, sqlgraph.NewFieldSpec(visualevent.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = _c.conflict
 	if id, ok := _c.mutation.ID(); ok {
@@ -365,19 +365,19 @@ func (_c *VisualEventCreate) createSpec() (*VisualEvent, *sqlgraph.CreateSpec) {
 		_node.DeletedAt = &value
 	}
 	if value, ok := _c.mutation.CreatedBy(); ok {
-		_spec.SetField(visualevent.FieldCreatedBy, field.TypeUint32, value)
+		_spec.SetField(visualevent.FieldCreatedBy, field.TypeInt64, value)
 		_node.CreatedBy = &value
 	}
 	if value, ok := _c.mutation.UpdatedBy(); ok {
-		_spec.SetField(visualevent.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.SetField(visualevent.FieldUpdatedBy, field.TypeInt64, value)
 		_node.UpdatedBy = &value
 	}
 	if value, ok := _c.mutation.DeletedBy(); ok {
-		_spec.SetField(visualevent.FieldDeletedBy, field.TypeUint32, value)
+		_spec.SetField(visualevent.FieldDeletedBy, field.TypeInt64, value)
 		_node.DeletedBy = &value
 	}
 	if value, ok := _c.mutation.TenantID(); ok {
-		_spec.SetField(visualevent.FieldTenantID, field.TypeUint32, value)
+		_spec.SetField(visualevent.FieldTenantID, field.TypeInt64, value)
 		_node.TenantID = &value
 	}
 	if value, ok := _c.mutation.AppID(); ok {
@@ -505,7 +505,7 @@ func (u *VisualEventUpsert) ClearDeletedAt() *VisualEventUpsert {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (u *VisualEventUpsert) SetCreatedBy(v uint32) *VisualEventUpsert {
+func (u *VisualEventUpsert) SetCreatedBy(v int64) *VisualEventUpsert {
 	u.Set(visualevent.FieldCreatedBy, v)
 	return u
 }
@@ -517,7 +517,7 @@ func (u *VisualEventUpsert) UpdateCreatedBy() *VisualEventUpsert {
 }
 
 // AddCreatedBy adds v to the "created_by" field.
-func (u *VisualEventUpsert) AddCreatedBy(v uint32) *VisualEventUpsert {
+func (u *VisualEventUpsert) AddCreatedBy(v int64) *VisualEventUpsert {
 	u.Add(visualevent.FieldCreatedBy, v)
 	return u
 }
@@ -529,7 +529,7 @@ func (u *VisualEventUpsert) ClearCreatedBy() *VisualEventUpsert {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (u *VisualEventUpsert) SetUpdatedBy(v uint32) *VisualEventUpsert {
+func (u *VisualEventUpsert) SetUpdatedBy(v int64) *VisualEventUpsert {
 	u.Set(visualevent.FieldUpdatedBy, v)
 	return u
 }
@@ -541,7 +541,7 @@ func (u *VisualEventUpsert) UpdateUpdatedBy() *VisualEventUpsert {
 }
 
 // AddUpdatedBy adds v to the "updated_by" field.
-func (u *VisualEventUpsert) AddUpdatedBy(v uint32) *VisualEventUpsert {
+func (u *VisualEventUpsert) AddUpdatedBy(v int64) *VisualEventUpsert {
 	u.Add(visualevent.FieldUpdatedBy, v)
 	return u
 }
@@ -553,7 +553,7 @@ func (u *VisualEventUpsert) ClearUpdatedBy() *VisualEventUpsert {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (u *VisualEventUpsert) SetDeletedBy(v uint32) *VisualEventUpsert {
+func (u *VisualEventUpsert) SetDeletedBy(v int64) *VisualEventUpsert {
 	u.Set(visualevent.FieldDeletedBy, v)
 	return u
 }
@@ -565,7 +565,7 @@ func (u *VisualEventUpsert) UpdateDeletedBy() *VisualEventUpsert {
 }
 
 // AddDeletedBy adds v to the "deleted_by" field.
-func (u *VisualEventUpsert) AddDeletedBy(v uint32) *VisualEventUpsert {
+func (u *VisualEventUpsert) AddDeletedBy(v int64) *VisualEventUpsert {
 	u.Add(visualevent.FieldDeletedBy, v)
 	return u
 }
@@ -823,14 +823,14 @@ func (u *VisualEventUpsertOne) ClearDeletedAt() *VisualEventUpsertOne {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (u *VisualEventUpsertOne) SetCreatedBy(v uint32) *VisualEventUpsertOne {
+func (u *VisualEventUpsertOne) SetCreatedBy(v int64) *VisualEventUpsertOne {
 	return u.Update(func(s *VisualEventUpsert) {
 		s.SetCreatedBy(v)
 	})
 }
 
 // AddCreatedBy adds v to the "created_by" field.
-func (u *VisualEventUpsertOne) AddCreatedBy(v uint32) *VisualEventUpsertOne {
+func (u *VisualEventUpsertOne) AddCreatedBy(v int64) *VisualEventUpsertOne {
 	return u.Update(func(s *VisualEventUpsert) {
 		s.AddCreatedBy(v)
 	})
@@ -851,14 +851,14 @@ func (u *VisualEventUpsertOne) ClearCreatedBy() *VisualEventUpsertOne {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (u *VisualEventUpsertOne) SetUpdatedBy(v uint32) *VisualEventUpsertOne {
+func (u *VisualEventUpsertOne) SetUpdatedBy(v int64) *VisualEventUpsertOne {
 	return u.Update(func(s *VisualEventUpsert) {
 		s.SetUpdatedBy(v)
 	})
 }
 
 // AddUpdatedBy adds v to the "updated_by" field.
-func (u *VisualEventUpsertOne) AddUpdatedBy(v uint32) *VisualEventUpsertOne {
+func (u *VisualEventUpsertOne) AddUpdatedBy(v int64) *VisualEventUpsertOne {
 	return u.Update(func(s *VisualEventUpsert) {
 		s.AddUpdatedBy(v)
 	})
@@ -879,14 +879,14 @@ func (u *VisualEventUpsertOne) ClearUpdatedBy() *VisualEventUpsertOne {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (u *VisualEventUpsertOne) SetDeletedBy(v uint32) *VisualEventUpsertOne {
+func (u *VisualEventUpsertOne) SetDeletedBy(v int64) *VisualEventUpsertOne {
 	return u.Update(func(s *VisualEventUpsert) {
 		s.SetDeletedBy(v)
 	})
 }
 
 // AddDeletedBy adds v to the "deleted_by" field.
-func (u *VisualEventUpsertOne) AddDeletedBy(v uint32) *VisualEventUpsertOne {
+func (u *VisualEventUpsertOne) AddDeletedBy(v int64) *VisualEventUpsertOne {
 	return u.Update(func(s *VisualEventUpsert) {
 		s.AddDeletedBy(v)
 	})
@@ -1097,7 +1097,7 @@ func (u *VisualEventUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *VisualEventUpsertOne) ID(ctx context.Context) (id uint32, err error) {
+func (u *VisualEventUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -1106,7 +1106,7 @@ func (u *VisualEventUpsertOne) ID(ctx context.Context) (id uint32, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *VisualEventUpsertOne) IDX(ctx context.Context) uint32 {
+func (u *VisualEventUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -1163,7 +1163,7 @@ func (_c *VisualEventCreateBulk) Save(ctx context.Context) ([]*VisualEvent, erro
 				mutation.id = &nodes[i].ID
 				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = uint32(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -1344,14 +1344,14 @@ func (u *VisualEventUpsertBulk) ClearDeletedAt() *VisualEventUpsertBulk {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (u *VisualEventUpsertBulk) SetCreatedBy(v uint32) *VisualEventUpsertBulk {
+func (u *VisualEventUpsertBulk) SetCreatedBy(v int64) *VisualEventUpsertBulk {
 	return u.Update(func(s *VisualEventUpsert) {
 		s.SetCreatedBy(v)
 	})
 }
 
 // AddCreatedBy adds v to the "created_by" field.
-func (u *VisualEventUpsertBulk) AddCreatedBy(v uint32) *VisualEventUpsertBulk {
+func (u *VisualEventUpsertBulk) AddCreatedBy(v int64) *VisualEventUpsertBulk {
 	return u.Update(func(s *VisualEventUpsert) {
 		s.AddCreatedBy(v)
 	})
@@ -1372,14 +1372,14 @@ func (u *VisualEventUpsertBulk) ClearCreatedBy() *VisualEventUpsertBulk {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (u *VisualEventUpsertBulk) SetUpdatedBy(v uint32) *VisualEventUpsertBulk {
+func (u *VisualEventUpsertBulk) SetUpdatedBy(v int64) *VisualEventUpsertBulk {
 	return u.Update(func(s *VisualEventUpsert) {
 		s.SetUpdatedBy(v)
 	})
 }
 
 // AddUpdatedBy adds v to the "updated_by" field.
-func (u *VisualEventUpsertBulk) AddUpdatedBy(v uint32) *VisualEventUpsertBulk {
+func (u *VisualEventUpsertBulk) AddUpdatedBy(v int64) *VisualEventUpsertBulk {
 	return u.Update(func(s *VisualEventUpsert) {
 		s.AddUpdatedBy(v)
 	})
@@ -1400,14 +1400,14 @@ func (u *VisualEventUpsertBulk) ClearUpdatedBy() *VisualEventUpsertBulk {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (u *VisualEventUpsertBulk) SetDeletedBy(v uint32) *VisualEventUpsertBulk {
+func (u *VisualEventUpsertBulk) SetDeletedBy(v int64) *VisualEventUpsertBulk {
 	return u.Update(func(s *VisualEventUpsert) {
 		s.SetDeletedBy(v)
 	})
 }
 
 // AddDeletedBy adds v to the "deleted_by" field.
-func (u *VisualEventUpsertBulk) AddDeletedBy(v uint32) *VisualEventUpsertBulk {
+func (u *VisualEventUpsertBulk) AddDeletedBy(v int64) *VisualEventUpsertBulk {
 	return u.Update(func(s *VisualEventUpsert) {
 		s.AddDeletedBy(v)
 	})

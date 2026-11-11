@@ -15,6 +15,10 @@ export interface ClientTransport {
     meta: TransportMeta,
   ): Promise<unknown>;
   serverStream<T>(path: string, meta: TransportMeta): ServerStream<T>;
+  // Raw byte chunks for google.api.HttpBody server streams: the first
+  // chunk's content type rides the HTTP response Content-Type header,
+  // every chunk is raw payload bytes (no JSON framing).
+  byteStream(path: string, meta: TransportMeta): ServerStream<Uint8Array>;
   duplexStream<TIn, TOut>(path: string, meta: TransportMeta): DuplexStream<TIn, TOut>;
 }
 
@@ -257,7 +261,7 @@ export function createAdminPortalServiceClient(
 ): AdminPortalService {
   return {
     GetNavigation(_request) {
-      const path = `admin/v1/routes`;
+      const path = `/admin/v1/routes`;
       const body = null;
       return transport.unary(path, 'GET', body, {
         service: 'AdminPortalService',
@@ -265,7 +269,7 @@ export function createAdminPortalServiceClient(
       }) as Promise<ListRouteResponse>;
     },
     GetMyPermissionCode(_request) {
-      const path = `admin/v1/perm-codes`;
+      const path = `/admin/v1/perm-codes`;
       const body = null;
       return transport.unary(path, 'GET', body, {
         service: 'AdminPortalService',
@@ -273,7 +277,7 @@ export function createAdminPortalServiceClient(
       }) as Promise<ListPermissionCodeResponse>;
     },
     GetInitialContext(_request) {
-      const path = `admin/v1/initial-context`;
+      const path = `/admin/v1/initial-context`;
       const body = null;
       return transport.unary(path, 'GET', body, {
         service: 'AdminPortalService',
@@ -322,7 +326,7 @@ export function createAiProviderServiceClient(
 ): AiProviderService {
   return {
     List(request) {
-      const path = `admin/v1/ai/providers`;
+      const path = `/admin/v1/ai/providers`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -370,56 +374,9 @@ export function createAiProviderServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -437,7 +394,7 @@ export function createAiProviderServiceClient(
       }) as Promise<aiservicev1_ListAiProviderResponse>;
     },
     Count(request) {
-      const path = `admin/v1/ai/providers/count`;
+      const path = `/admin/v1/ai/providers/count`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -485,56 +442,9 @@ export function createAiProviderServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -555,7 +465,7 @@ export function createAiProviderServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/ai/providers/${request.id}`;
+      const path = `/admin/v1/ai/providers/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.viewMask) {
@@ -573,7 +483,7 @@ export function createAiProviderServiceClient(
       }) as Promise<aiservicev1_AiProvider>;
     },
     Create(request) {
-      const path = `admin/v1/ai/providers`;
+      const path = `/admin/v1/ai/providers`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'AiProviderService',
@@ -584,8 +494,10 @@ export function createAiProviderServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/ai/providers/${request.id}`;
-      const body = JSON.stringify(request);
+      const path = `/admin/v1/ai/providers/${request.id}`;
+      const bodyMap = { ...request } as Record<string, unknown>;
+      delete bodyMap["id"];
+      const body = JSON.stringify(bodyMap);
       return transport.unary(path, 'PUT', body, {
         service: 'AiProviderService',
         method: 'Update',
@@ -595,7 +507,7 @@ export function createAiProviderServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/ai/providers/${request.id}`;
+      const path = `/admin/v1/ai/providers/${request.id}`;
       const body = null;
       return transport.unary(path, 'DELETE', body, {
         service: 'AiProviderService',
@@ -606,8 +518,10 @@ export function createAiProviderServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/ai/providers/${request.id}/test`;
-      const body = JSON.stringify(request);
+      const path = `/admin/v1/ai/providers/${request.id}/test`;
+      const bodyMap = { ...request } as Record<string, unknown>;
+      delete bodyMap["id"];
+      const body = JSON.stringify(bodyMap);
       return transport.unary(path, 'POST', body, {
         service: 'AiProviderService',
         method: 'TestConnection',
@@ -630,7 +544,7 @@ export type pagination_PagingRequest = {
   // 是否不分页，如果为true，则page和pageSize参数无效。
   noPaging?: boolean;
   // 跳过的记录数（从0开始，默认0）
-  offset?: number;
+  offset?: string;
   // 排序条件
   orderBy?: string;
   // 当前页码（从1开始，默认1）
@@ -781,7 +695,7 @@ type wellKnownFieldMask = string;
 // 查询 AI 提供商列表 - 回应
 export type aiservicev1_ListAiProviderResponse = {
   items: aiservicev1_AiProvider[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // AI 模型提供商（一行 = 一个可调用的模型端点配置）
@@ -790,10 +704,10 @@ export type aiservicev1_AiProvider = {
   apiKeyHint?: string;
   baseUrl?: string;
   createdAt?: wellKnownTimestamp;
-  createdBy?: number;
+  createdBy?: string;
   deletedAt?: wellKnownTimestamp;
-  deletedBy?: number;
-  id?: number;
+  deletedBy?: string;
+  id?: string;
   isDefault?: boolean;
   isEnabled?: boolean;
   localHost?: string;
@@ -806,7 +720,7 @@ export type aiservicev1_AiProvider = {
   systemPrompt?: string;
   timeoutSeconds?: number;
   updatedAt?: wellKnownTimestamp;
-  updatedBy?: number;
+  updatedBy?: string;
 };
 
 // 模型部署形态
@@ -820,12 +734,12 @@ export type aiservicev1_AiProvider_ModelType =
 type wellKnownTimestamp = string;
 
 export type aiservicev1_CountAiProviderResponse = {
-  count: number | undefined;
+  count: string | undefined;
 };
 
 // 查询 AI 提供商详情 - 请求
 export type aiservicev1_GetAiProviderRequest = {
-  id?: number;
+  id?: string;
   viewMask?: wellKnownFieldMask;
 };
 
@@ -838,18 +752,18 @@ export type aiservicev1_CreateAiProviderRequest = {
 export type aiservicev1_UpdateAiProviderRequest = {
   allowMissing?: boolean;
   data: aiservicev1_AiProvider | undefined;
-  id: number | undefined;
+  id: string | undefined;
   updateMask: undefined | wellKnownFieldMask;
 };
 
 // 删除 AI 提供商 - 请求
 export type aiservicev1_DeleteAiProviderRequest = {
-  id?: number;
+  id?: string;
 };
 
 // 测试连通性 - 请求
 export type aiservicev1_TestAiProviderConnectionRequest = {
-  id: number | undefined;
+  id: string | undefined;
 };
 
 // 测试连通性 - 回应（success=false 时 message 为失败原因；成功时为模型摘要）
@@ -888,7 +802,7 @@ export function createAiConversationServiceClient(
 ): AiConversationService {
   return {
     List(request) {
-      const path = `admin/v1/ai/conversations`;
+      const path = `/admin/v1/ai/conversations`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -936,56 +850,9 @@ export function createAiConversationServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -1003,7 +870,7 @@ export function createAiConversationServiceClient(
       }) as Promise<aiservicev1_ListAiConversationResponse>;
     },
     Count(request) {
-      const path = `admin/v1/ai/conversations/count`;
+      const path = `/admin/v1/ai/conversations/count`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -1051,56 +918,9 @@ export function createAiConversationServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -1121,7 +941,7 @@ export function createAiConversationServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/ai/conversations/${request.id}`;
+      const path = `/admin/v1/ai/conversations/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.viewMask) {
@@ -1142,8 +962,10 @@ export function createAiConversationServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/ai/conversations/${request.id}`;
-      const body = JSON.stringify(request);
+      const path = `/admin/v1/ai/conversations/${request.id}`;
+      const bodyMap = { ...request } as Record<string, unknown>;
+      delete bodyMap["id"];
+      const body = JSON.stringify(bodyMap);
       return transport.unary(path, 'PUT', body, {
         service: 'AiConversationService',
         method: 'Update',
@@ -1153,7 +975,7 @@ export function createAiConversationServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/ai/conversations/${request.id}`;
+      const path = `/admin/v1/ai/conversations/${request.id}`;
       const body = null;
       return transport.unary(path, 'DELETE', body, {
         service: 'AiConversationService',
@@ -1165,32 +987,32 @@ export function createAiConversationServiceClient(
 // 查询会话列表 - 回应
 export type aiservicev1_ListAiConversationResponse = {
   items: aiservicev1_AiConversation[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // AI 对话会话
 export type aiservicev1_AiConversation = {
   createdAt?: wellKnownTimestamp;
-  createdBy?: number;
+  createdBy?: string;
   deletedAt?: wellKnownTimestamp;
-  deletedBy?: number;
-  id?: number;
+  deletedBy?: string;
+  id?: string;
   lastMessageAt?: wellKnownTimestamp;
-  providerId?: number;
-  tenantId?: number;
+  providerId?: string;
+  tenantId?: string;
   title?: string;
   updatedAt?: wellKnownTimestamp;
-  updatedBy?: number;
-  userId?: number;
+  updatedBy?: string;
+  userId?: string;
 };
 
 export type aiservicev1_CountAiConversationResponse = {
-  count: number | undefined;
+  count: string | undefined;
 };
 
 // 查询会话详情 - 请求
 export type aiservicev1_GetAiConversationRequest = {
-  id?: number;
+  id?: string;
   viewMask?: wellKnownFieldMask;
 };
 
@@ -1198,13 +1020,13 @@ export type aiservicev1_GetAiConversationRequest = {
 export type aiservicev1_UpdateAiConversationRequest = {
   allowMissing?: boolean;
   data: aiservicev1_AiConversation | undefined;
-  id: number | undefined;
+  id: string | undefined;
   updateMask: undefined | wellKnownFieldMask;
 };
 
 // 删除会话 - 请求
 export type aiservicev1_DeleteAiConversationRequest = {
-  id?: number;
+  id?: string;
 };
 
 // AI 对话消息查询（BFF 透传 core；仅本人会话可见）
@@ -1228,7 +1050,7 @@ export function createAiMessageServiceClient(
 ): AiMessageService {
   return {
     List(request) {
-      const path = `admin/v1/ai/messages`;
+      const path = `/admin/v1/ai/messages`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -1276,56 +1098,9 @@ export function createAiMessageServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -1343,7 +1118,7 @@ export function createAiMessageServiceClient(
       }) as Promise<aiservicev1_ListAiMessageResponse>;
     },
     Count(request) {
-      const path = `admin/v1/ai/messages/count`;
+      const path = `/admin/v1/ai/messages/count`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -1391,56 +1166,9 @@ export function createAiMessageServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -1461,7 +1189,7 @@ export function createAiMessageServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/ai/messages/${request.id}`;
+      const path = `/admin/v1/ai/messages/${request.id}`;
       const body = null;
       return transport.unary(path, 'DELETE', body, {
         service: 'AiMessageService',
@@ -1473,28 +1201,28 @@ export function createAiMessageServiceClient(
 // 查询消息列表 - 回应
 export type aiservicev1_ListAiMessageResponse = {
   items: aiservicev1_AiMessage[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // AI 对话消息
 export type aiservicev1_AiMessage = {
   completionTokens?: number;
   content?: string;
-  conversationId?: number;
+  conversationId?: string;
   createdAt?: wellKnownTimestamp;
-  createdBy?: number;
+  createdBy?: string;
   deletedAt?: wellKnownTimestamp;
-  deletedBy?: number;
+  deletedBy?: string;
   durationMs?: number;
   errorMessage?: string;
-  id?: number;
+  id?: string;
   modelName?: string;
   promptTokens?: number;
   role?: aiservicev1_AiRole;
-  tenantId?: number;
+  tenantId?: string;
   updatedAt?: wellKnownTimestamp;
-  updatedBy?: number;
-  userId?: number;
+  updatedBy?: string;
+  userId?: string;
 };
 
 // 消息角色
@@ -1504,12 +1232,12 @@ export type aiservicev1_AiRole =
   | 'SYSTEM'
   | 'USER';
 export type aiservicev1_CountAiMessageResponse = {
-  count: number | undefined;
+  count: string | undefined;
 };
 
 // 删除消息 - 请求
 export type aiservicev1_DeleteAiMessageRequest = {
-  id?: number;
+  id?: string;
 };
 
 // AI 对话（BFF 编排：消费 core 流式 RPC，chunk/tool 转 SSE 推送，done 作同步响应）
@@ -1525,7 +1253,7 @@ export function createAiChatServiceClient(
 ): AiChatService {
   return {
     Chat(request) {
-      const path = `admin/v1/ai/chat`;
+      const path = `/admin/v1/ai/chat`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'AiChatService',
@@ -1537,11 +1265,11 @@ export function createAiChatServiceClient(
 // 发起对话 - 请求
 export type aiservicev1_ChatRequest = {
   content?: string;
-  conversationId?: number;
-  knowledgeBaseId?: number;
-  operatorTenantId?: number;
-  operatorUserId?: number;
-  providerId?: number;
+  conversationId?: string;
+  knowledgeBaseId?: string;
+  operatorTenantId?: string;
+  operatorUserId?: string;
+  providerId?: string;
 };
 
 // 发起对话 - 回应
@@ -1623,7 +1351,7 @@ export function createAiKnowledgeBaseServiceClient(
 ): AiKnowledgeBaseService {
   return {
     List(request) {
-      const path = `admin/v1/ai/knowledge-bases`;
+      const path = `/admin/v1/ai/knowledge-bases`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -1671,56 +1399,9 @@ export function createAiKnowledgeBaseServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -1741,7 +1422,7 @@ export function createAiKnowledgeBaseServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/ai/knowledge-bases/${request.id}`;
+      const path = `/admin/v1/ai/knowledge-bases/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.viewMask) {
@@ -1759,7 +1440,7 @@ export function createAiKnowledgeBaseServiceClient(
       }) as Promise<aiservicev1_AiKnowledgeBase>;
     },
     Create(request) {
-      const path = `admin/v1/ai/knowledge-bases`;
+      const path = `/admin/v1/ai/knowledge-bases`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'AiKnowledgeBaseService',
@@ -1770,8 +1451,10 @@ export function createAiKnowledgeBaseServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/ai/knowledge-bases/${request.id}`;
-      const body = JSON.stringify(request);
+      const path = `/admin/v1/ai/knowledge-bases/${request.id}`;
+      const bodyMap = { ...request } as Record<string, unknown>;
+      delete bodyMap["id"];
+      const body = JSON.stringify(bodyMap);
       return transport.unary(path, 'PUT', body, {
         service: 'AiKnowledgeBaseService',
         method: 'Update',
@@ -1781,7 +1464,7 @@ export function createAiKnowledgeBaseServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/ai/knowledge-bases/${request.id}`;
+      const path = `/admin/v1/ai/knowledge-bases/${request.id}`;
       const body = null;
       return transport.unary(path, 'DELETE', body, {
         service: 'AiKnowledgeBaseService',
@@ -1792,8 +1475,10 @@ export function createAiKnowledgeBaseServiceClient(
       if (request.baseId === undefined || request.baseId === null) {
         throw new Error('missing required field request.base_id');
       }
-      const path = `admin/v1/ai/knowledge-bases/${request.baseId}/docs`;
-      const body = JSON.stringify(request);
+      const path = `/admin/v1/ai/knowledge-bases/${request.baseId}/docs`;
+      const bodyMap = { ...request } as Record<string, unknown>;
+      delete bodyMap["baseId"];
+      const body = JSON.stringify(bodyMap);
       return transport.unary(path, 'POST', body, {
         service: 'AiKnowledgeBaseService',
         method: 'UploadDoc',
@@ -1803,8 +1488,10 @@ export function createAiKnowledgeBaseServiceClient(
       if (request.baseId === undefined || request.baseId === null) {
         throw new Error('missing required field request.base_id');
       }
-      const path = `admin/v1/ai/knowledge-bases/${request.baseId}/docs/file`;
-      const body = JSON.stringify(request);
+      const path = `/admin/v1/ai/knowledge-bases/${request.baseId}/docs/file`;
+      const bodyMap = { ...request } as Record<string, unknown>;
+      delete bodyMap["baseId"];
+      const body = JSON.stringify(bodyMap);
       return transport.unary(path, 'POST', body, {
         service: 'AiKnowledgeBaseService',
         method: 'UploadDocFile',
@@ -1814,7 +1501,7 @@ export function createAiKnowledgeBaseServiceClient(
       if (request.baseId === undefined || request.baseId === null) {
         throw new Error('missing required field request.base_id');
       }
-      const path = `admin/v1/ai/knowledge-bases/${request.baseId}/docs`;
+      const path = `/admin/v1/ai/knowledge-bases/${request.baseId}/docs`;
       const body = null;
       return transport.unary(path, 'GET', body, {
         service: 'AiKnowledgeBaseService',
@@ -1828,7 +1515,7 @@ export function createAiKnowledgeBaseServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/ai/knowledge-bases/${request.baseId}/docs/${request.id}`;
+      const path = `/admin/v1/ai/knowledge-bases/${request.baseId}/docs/${request.id}`;
       const body = null;
       return transport.unary(path, 'DELETE', body, {
         service: 'AiKnowledgeBaseService',
@@ -1839,15 +1526,17 @@ export function createAiKnowledgeBaseServiceClient(
       if (request.baseId === undefined || request.baseId === null) {
         throw new Error('missing required field request.base_id');
       }
-      const path = `admin/v1/ai/knowledge-bases/${request.baseId}/search`;
-      const body = JSON.stringify(request);
+      const path = `/admin/v1/ai/knowledge-bases/${request.baseId}/search`;
+      const bodyMap = { ...request } as Record<string, unknown>;
+      delete bodyMap["baseId"];
+      const body = JSON.stringify(bodyMap);
       return transport.unary(path, 'POST', body, {
         service: 'AiKnowledgeBaseService',
         method: 'Search',
       }) as Promise<aiservicev1_SearchAiKnowledgeResponse>;
     },
     ReindexDocs(request) {
-      const path = `admin/v1/ai/knowledge-bases/reindex`;
+      const path = `/admin/v1/ai/knowledge-bases/reindex`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'AiKnowledgeBaseService',
@@ -1855,7 +1544,7 @@ export function createAiKnowledgeBaseServiceClient(
       }) as Promise<wellKnownEmpty>;
     },
     SyncOpsKnowledge(request) {
-      const path = `admin/v1/ai/knowledge-bases/sync-ops`;
+      const path = `/admin/v1/ai/knowledge-bases/sync-ops`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'AiKnowledgeBaseService',
@@ -1867,30 +1556,30 @@ export function createAiKnowledgeBaseServiceClient(
 // 查询知识库列表 - 回应
 export type aiservicev1_ListAiKnowledgeBaseResponse = {
   items: aiservicev1_AiKnowledgeBase[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // AI 知识库
 export type aiservicev1_AiKnowledgeBase = {
   createdAt?: wellKnownTimestamp;
-  createdBy?: number;
+  createdBy?: string;
   deletedAt?: wellKnownTimestamp;
-  deletedBy?: number;
+  deletedBy?: string;
   description?: string;
   docCount?: number;
   embeddingModel?: string;
-  id?: number;
+  id?: string;
   name?: string;
-  providerId?: number;
-  tenantId?: number;
+  providerId?: string;
+  tenantId?: string;
   updatedAt?: wellKnownTimestamp;
-  updatedBy?: number;
-  userId?: number;
+  updatedBy?: string;
+  userId?: string;
 };
 
 // 查询知识库详情 - 请求
 export type aiservicev1_GetAiKnowledgeBaseRequest = {
-  id?: number;
+  id?: string;
   viewMask?: wellKnownFieldMask;
 };
 
@@ -1903,18 +1592,18 @@ export type aiservicev1_CreateAiKnowledgeBaseRequest = {
 export type aiservicev1_UpdateAiKnowledgeBaseRequest = {
   allowMissing?: boolean;
   data: aiservicev1_AiKnowledgeBase | undefined;
-  id: number | undefined;
+  id: string | undefined;
   updateMask: undefined | wellKnownFieldMask;
 };
 
 // 删除知识库 - 请求
 export type aiservicev1_DeleteAiKnowledgeBaseRequest = {
-  id?: number;
+  id?: string;
 };
 
 // 上传文档 - 请求（纯文本；内容直接随请求体传输）
 export type aiservicev1_UploadAiDocRequest = {
-  baseId: number | undefined;
+  baseId: string | undefined;
   content: string | undefined;
   name: string | undefined;
 };
@@ -1927,20 +1616,20 @@ export type aiservicev1_UploadAiDocResponse = {
 
 // AI 文档
 export type aiservicev1_AiDoc = {
-  baseId?: number;
+  baseId?: string;
   chunkCount?: number;
   createdAt?: wellKnownTimestamp;
   errorMessage?: string;
-  id?: number;
+  id?: string;
   name?: string;
   status?: string;
-  tenantId?: number;
-  userId?: number;
+  tenantId?: string;
+  userId?: string;
 };
 
 // 上传文档文件 - 请求（文件字节经 protojson 即 base64 字符串传输）
 export type aiservicev1_UploadAiDocFileRequest = {
-  baseId: number | undefined;
+  baseId: string | undefined;
   contentBase64: string | undefined;
   docName?: string;
   fileName: string | undefined;
@@ -1948,24 +1637,24 @@ export type aiservicev1_UploadAiDocFileRequest = {
 
 // 查询文档列表 - 请求
 export type aiservicev1_ListAiDocsRequest = {
-  baseId: number | undefined;
+  baseId: string | undefined;
 };
 
 // 查询文档列表 - 回应
 export type aiservicev1_ListAiDocsResponse = {
   items: aiservicev1_AiDoc[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // 删除文档 - 请求
 export type aiservicev1_DeleteAiDocRequest = {
-  baseId: number | undefined;
-  id: number | undefined;
+  baseId: string | undefined;
+  id: string | undefined;
 };
 
 // 检索 - 请求
 export type aiservicev1_SearchAiKnowledgeRequest = {
-  baseId: number | undefined;
+  baseId: string | undefined;
   query: string | undefined;
   topK?: number;
 };
@@ -1986,7 +1675,7 @@ export type aiservicev1_KnowledgeHit = {
 // 重索引 - 请求
 export type aiservicev1_ReindexDocsRequest = {
   // 知识库ID；0 表示全部知识库
-  baseId?: number;
+  baseId?: string;
 };
 
 // 同步平台运维知识 - 请求
@@ -1996,7 +1685,7 @@ export type aiservicev1_SyncOpsKnowledgeRequest = {
 // 同步平台运维知识 - 回应
 export type aiservicev1_SyncOpsKnowledgeResponse = {
   // 知识库ID（自动创建/复用）
-  baseId: number | undefined;
+  baseId: string | undefined;
   // 全部切片数
   chunkCount: number | undefined;
   // 本次同步的文档数
@@ -2032,7 +1721,7 @@ export function createAiUsageLogServiceClient(
 ): AiUsageLogService {
   return {
     List(request) {
-      const path = `admin/v1/ai/usage-logs`;
+      const path = `/admin/v1/ai/usage-logs`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -2080,56 +1769,9 @@ export function createAiUsageLogServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -2147,7 +1789,7 @@ export function createAiUsageLogServiceClient(
       }) as Promise<aiservicev1_ListAiUsageLogResponse>;
     },
     Count(request) {
-      const path = `admin/v1/ai/usage-logs/count`;
+      const path = `/admin/v1/ai/usage-logs/count`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -2195,56 +1837,9 @@ export function createAiUsageLogServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -2262,7 +1857,7 @@ export function createAiUsageLogServiceClient(
       }) as Promise<aiservicev1_CountAiUsageLogResponse>;
     },
     GetUsageSummary(_request) {
-      const path = `admin/v1/ai/usage-summary`;
+      const path = `/admin/v1/ai/usage-summary`;
       const body = null;
       return transport.unary(path, 'GET', body, {
         service: 'AiUsageLogService',
@@ -2273,7 +1868,7 @@ export function createAiUsageLogServiceClient(
       if (request.tenantId === undefined || request.tenantId === null) {
         throw new Error('missing required field request.tenant_id');
       }
-      const path = `admin/v1/ai/tenant-quotas/${request.tenantId}`;
+      const path = `/admin/v1/ai/tenant-quotas/${request.tenantId}`;
       const body = null;
       return transport.unary(path, 'GET', body, {
         service: 'AiUsageLogService',
@@ -2284,8 +1879,10 @@ export function createAiUsageLogServiceClient(
       if (request.tenantId === undefined || request.tenantId === null) {
         throw new Error('missing required field request.tenant_id');
       }
-      const path = `admin/v1/ai/tenant-quotas/${request.tenantId}`;
-      const body = JSON.stringify(request);
+      const path = `/admin/v1/ai/tenant-quotas/${request.tenantId}`;
+      const bodyMap = { ...request } as Record<string, unknown>;
+      delete bodyMap["tenantId"];
+      const body = JSON.stringify(bodyMap);
       return transport.unary(path, 'PUT', body, {
         service: 'AiUsageLogService',
         method: 'SetTenantQuota',
@@ -2296,26 +1893,26 @@ export function createAiUsageLogServiceClient(
 // 查询用量流水列表 - 回应
 export type aiservicev1_ListAiUsageLogResponse = {
   items: aiservicev1_AiUsageLog[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // AI 调用用量流水（每次成功的模型调用一行；配额按 total_tokens 聚合）
 export type aiservicev1_AiUsageLog = {
   completionTokens?: number;
-  conversationId?: number;
+  conversationId?: string;
   createdAt?: wellKnownTimestamp;
   durationMs?: number;
-  id?: number;
+  id?: string;
   modelName?: string;
   promptTokens?: number;
-  providerId?: number;
-  tenantId?: number;
+  providerId?: string;
+  tenantId?: string;
   totalTokens?: number;
-  userId?: number;
+  userId?: string;
 };
 
 export type aiservicev1_CountAiUsageLogResponse = {
-  count: number | undefined;
+  count: string | undefined;
 };
 
 // 当月用量汇总 - 回应
@@ -2323,13 +1920,13 @@ export type aiservicev1_UsageSummaryResponse = {
   monthCalls: number | undefined;
   monthTokens: number | undefined;
   quotaConfigured: boolean | undefined;
-  quotaLimit: number | undefined;
+  quotaLimit: string | undefined;
 };
 
 // 查询租户配额 - 请求
 export type aiservicev1_GetTenantQuotaRequest = {
   // 租户ID；缺省（0）= 调用者自身租户（平台管理员需显式指定）
-  tenantId?: number;
+  tenantId?: string;
 };
 
 // 租户配额 - 回应
@@ -2337,17 +1934,17 @@ export type aiservicev1_TenantQuotaResponse = {
   // 是否配置了配额（未配置 = 不限量）
   configured: boolean | undefined;
   // 月度 token 上限
-  monthlyTokenLimit: number | undefined;
+  monthlyTokenLimit: string | undefined;
   // 租户ID
-  tenantId: number | undefined;
+  tenantId: string | undefined;
 };
 
 // 设置租户配额 - 请求
 export type aiservicev1_SetTenantQuotaRequest = {
   // 月度 token 上限（按自然月聚合 total_tokens；0 = 取消配额）
-  monthlyTokenLimit: number | undefined;
+  monthlyTokenLimit: string | undefined;
   // 租户ID
-  tenantId: number | undefined;
+  tenantId: string | undefined;
 };
 
 // 智能问数（NL → 只读 SQL → 结构化结果；对 OLAP 分析库执行）
@@ -2363,7 +1960,7 @@ export function createAiQueryServiceClient(
 ): AiQueryService {
   return {
     Ask(request) {
-      const path = `admin/v1/ai/query/ask`;
+      const path = `/admin/v1/ai/query/ask`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'AiQueryService',
@@ -2446,7 +2043,7 @@ export function createAlertRuleServiceClient(
 ): AlertRuleService {
   return {
     List(request) {
-      const path = `admin/v1/alert-rules`;
+      const path = `/admin/v1/alert-rules`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -2494,56 +2091,9 @@ export function createAlertRuleServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -2561,7 +2111,7 @@ export function createAlertRuleServiceClient(
       }) as Promise<ubaservicev1_ListAlertRuleResponse>;
     },
     Count(request) {
-      const path = `admin/v1/alert-rules/count`;
+      const path = `/admin/v1/alert-rules/count`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -2609,56 +2159,9 @@ export function createAlertRuleServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -2679,7 +2182,7 @@ export function createAlertRuleServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/alert-rules/${request.id}`;
+      const path = `/admin/v1/alert-rules/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.viewMask) {
@@ -2697,7 +2200,7 @@ export function createAlertRuleServiceClient(
       }) as Promise<ubaservicev1_AlertRule>;
     },
     Create(request) {
-      const path = `admin/v1/alert-rules`;
+      const path = `/admin/v1/alert-rules`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'AlertRuleService',
@@ -2708,8 +2211,10 @@ export function createAlertRuleServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/alert-rules/${request.id}`;
-      const body = JSON.stringify(request);
+      const path = `/admin/v1/alert-rules/${request.id}`;
+      const bodyMap = { ...request } as Record<string, unknown>;
+      delete bodyMap["id"];
+      const body = JSON.stringify(bodyMap);
       return transport.unary(path, 'PUT', body, {
         service: 'AlertRuleService',
         method: 'Update',
@@ -2719,7 +2224,7 @@ export function createAlertRuleServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/alert-rules/${request.id}`;
+      const path = `/admin/v1/alert-rules/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.deletedBy) {
@@ -2741,30 +2246,30 @@ export function createAlertRuleServiceClient(
 // 获取告警规则列表 - 答复
 export type ubaservicev1_ListAlertRuleResponse = {
   items: ubaservicev1_AlertRule[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // 指标阈值告警规则
 export type ubaservicev1_AlertRule = {
   aggregator?: ubaservicev1_AlertAggregator;
-  appId?: number;
+  appId?: string;
   channels: ubaservicev1_AlertChannel[] | undefined;
   comparison?: ubaservicev1_AlertComparison;
   createdAt?: wellKnownTimestamp;
-  createdBy?: number;
+  createdBy?: string;
   deletedAt?: wellKnownTimestamp;
-  deletedBy?: number;
+  deletedBy?: string;
   description?: string;
   enabled?: boolean;
   eventName?: string;
-  id: number | undefined;
+  id: string | undefined;
   lastTriggeredAt?: wellKnownTimestamp;
   name?: string;
   silenceMinutes?: number;
-  tenantId?: number;
+  tenantId?: string;
   threshold?: number;
   updatedAt?: wellKnownTimestamp;
-  updatedBy?: number;
+  updatedBy?: string;
   windowMinutes?: number;
 };
 
@@ -2802,12 +2307,12 @@ export type ubaservicev1_AlertChannel =
   | 'WEBHOOK';
 // 告警规则数量 - 答复
 export type ubaservicev1_CountAlertRuleResponse = {
-  count: number | undefined;
+  count: string | undefined;
 };
 
 // 获取告警规则数据 - 请求
 export type ubaservicev1_GetAlertRuleRequest = {
-  id?: number;
+  id?: string;
   viewMask?: wellKnownFieldMask;
 };
 
@@ -2820,14 +2325,14 @@ export type ubaservicev1_CreateAlertRuleRequest = {
 export type ubaservicev1_UpdateAlertRuleRequest = {
   allowMissing?: boolean;
   data: ubaservicev1_AlertRule | undefined;
-  id: number | undefined;
+  id: string | undefined;
   updateMask: undefined | wellKnownFieldMask;
 };
 
 // 删除告警规则 - 请求
 export type ubaservicev1_DeleteAlertRuleRequest = {
-  deletedBy?: number;
-  id?: number;
+  deletedBy?: string;
+  id?: string;
 };
 
 // 数据分析服务（admin HTTP 网关，转发至 core gRPC）
@@ -2939,7 +2444,7 @@ export function createAnalyticsServiceClient(
 ): AnalyticsService {
   return {
     EventTrend(request) {
-      const path = `admin/v1/analytics/event-trend`;
+      const path = `/admin/v1/analytics/event-trend`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'AnalyticsService',
@@ -2947,7 +2452,7 @@ export function createAnalyticsServiceClient(
       }) as Promise<ubaservicev1_EventTrendResponse>;
     },
     Funnel(request) {
-      const path = `admin/v1/analytics/funnel`;
+      const path = `/admin/v1/analytics/funnel`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'AnalyticsService',
@@ -2955,7 +2460,7 @@ export function createAnalyticsServiceClient(
       }) as Promise<ubaservicev1_FunnelResponse>;
     },
     Retention(request) {
-      const path = `admin/v1/analytics/retention`;
+      const path = `/admin/v1/analytics/retention`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'AnalyticsService',
@@ -2963,7 +2468,7 @@ export function createAnalyticsServiceClient(
       }) as Promise<ubaservicev1_RetentionResponse>;
     },
     GroupBy(request) {
-      const path = `admin/v1/analytics/group-by`;
+      const path = `/admin/v1/analytics/group-by`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'AnalyticsService',
@@ -2971,7 +2476,7 @@ export function createAnalyticsServiceClient(
       }) as Promise<ubaservicev1_GroupByResponse>;
     },
     ActiveUsers(request) {
-      const path = `admin/v1/analytics/active-users`;
+      const path = `/admin/v1/analytics/active-users`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'AnalyticsService',
@@ -2979,7 +2484,7 @@ export function createAnalyticsServiceClient(
       }) as Promise<ubaservicev1_ActiveUsersResponse>;
     },
     Attribution(request) {
-      const path = `admin/v1/analytics/attribution`;
+      const path = `/admin/v1/analytics/attribution`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'AnalyticsService',
@@ -2987,7 +2492,7 @@ export function createAnalyticsServiceClient(
       }) as Promise<ubaservicev1_AttributionResponse>;
     },
     Distribution(request) {
-      const path = `admin/v1/analytics/distribution`;
+      const path = `/admin/v1/analytics/distribution`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'AnalyticsService',
@@ -2995,7 +2500,7 @@ export function createAnalyticsServiceClient(
       }) as Promise<ubaservicev1_DistributionResponse>;
     },
     BehaviorSequence(request) {
-      const path = `admin/v1/analytics/behavior-sequence`;
+      const path = `/admin/v1/analytics/behavior-sequence`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'AnalyticsService',
@@ -3003,7 +2508,7 @@ export function createAnalyticsServiceClient(
       }) as Promise<ubaservicev1_BehaviorSequenceResponse>;
     },
     Segmentation(request) {
-      const path = `admin/v1/analytics/segmentation`;
+      const path = `/admin/v1/analytics/segmentation`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'AnalyticsService',
@@ -3011,7 +2516,7 @@ export function createAnalyticsServiceClient(
       }) as Promise<ubaservicev1_SegmentationResponse>;
     },
     Click(request) {
-      const path = `admin/v1/analytics/click`;
+      const path = `/admin/v1/analytics/click`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'AnalyticsService',
@@ -3019,7 +2524,7 @@ export function createAnalyticsServiceClient(
       }) as Promise<ubaservicev1_ClickResponse>;
     },
     Lifecycle(request) {
-      const path = `admin/v1/analytics/lifecycle`;
+      const path = `/admin/v1/analytics/lifecycle`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'AnalyticsService',
@@ -3027,7 +2532,7 @@ export function createAnalyticsServiceClient(
       }) as Promise<ubaservicev1_LifecycleResponse>;
     },
     Churn(request) {
-      const path = `admin/v1/analytics/churn`;
+      const path = `/admin/v1/analytics/churn`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'AnalyticsService',
@@ -3035,7 +2540,7 @@ export function createAnalyticsServiceClient(
       }) as Promise<ubaservicev1_ChurnResponse>;
     },
     Interval(request) {
-      const path = `admin/v1/analytics/interval`;
+      const path = `/admin/v1/analytics/interval`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'AnalyticsService',
@@ -3043,7 +2548,7 @@ export function createAnalyticsServiceClient(
       }) as Promise<ubaservicev1_IntervalResponse>;
     },
     Matrix(request) {
-      const path = `admin/v1/analytics/matrix`;
+      const path = `/admin/v1/analytics/matrix`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'AnalyticsService',
@@ -3051,7 +2556,7 @@ export function createAnalyticsServiceClient(
       }) as Promise<ubaservicev1_MatrixResponse>;
     },
     Revenue(request) {
-      const path = `admin/v1/analytics/revenue`;
+      const path = `/admin/v1/analytics/revenue`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'AnalyticsService',
@@ -3059,7 +2564,7 @@ export function createAnalyticsServiceClient(
       }) as Promise<ubaservicev1_RevenueResponse>;
     },
     SessionAnalysis(request) {
-      const path = `admin/v1/analytics/session-analysis`;
+      const path = `/admin/v1/analytics/session-analysis`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'AnalyticsService',
@@ -3067,7 +2572,7 @@ export function createAnalyticsServiceClient(
       }) as Promise<ubaservicev1_SessionAnalysisResponse>;
     },
     Anomaly(request) {
-      const path = `admin/v1/analytics/anomaly`;
+      const path = `/admin/v1/analytics/anomaly`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'AnalyticsService',
@@ -3075,7 +2580,7 @@ export function createAnalyticsServiceClient(
       }) as Promise<ubaservicev1_AnomalyResponse>;
     },
     NewVsOld(request) {
-      const path = `admin/v1/analytics/new-vs-old`;
+      const path = `/admin/v1/analytics/new-vs-old`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'AnalyticsService',
@@ -3083,7 +2588,7 @@ export function createAnalyticsServiceClient(
       }) as Promise<ubaservicev1_NewVsOldResponse>;
     },
     PathSankey(request) {
-      const path = `admin/v1/analytics/path-sankey`;
+      const path = `/admin/v1/analytics/path-sankey`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'AnalyticsService',
@@ -3091,7 +2596,7 @@ export function createAnalyticsServiceClient(
       }) as Promise<ubaservicev1_PathSankeyResponse>;
     },
     LevelAnalysis(request) {
-      const path = `admin/v1/analytics/level-analysis`;
+      const path = `/admin/v1/analytics/level-analysis`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'AnalyticsService',
@@ -3099,7 +2604,7 @@ export function createAnalyticsServiceClient(
       }) as Promise<ubaservicev1_LevelAnalysisResponse>;
     },
     WhaleTier(request) {
-      const path = `admin/v1/analytics/whale-tier`;
+      const path = `/admin/v1/analytics/whale-tier`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'AnalyticsService',
@@ -3107,7 +2612,7 @@ export function createAnalyticsServiceClient(
       }) as Promise<ubaservicev1_WhaleTierResponse>;
     },
     LTV(request) {
-      const path = `admin/v1/analytics/ltv`;
+      const path = `/admin/v1/analytics/ltv`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'AnalyticsService',
@@ -3115,7 +2620,7 @@ export function createAnalyticsServiceClient(
       }) as Promise<ubaservicev1_LTVResponse>;
     },
     ServerRetention(request) {
-      const path = `admin/v1/analytics/server-retention`;
+      const path = `/admin/v1/analytics/server-retention`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'AnalyticsService',
@@ -3123,7 +2628,7 @@ export function createAnalyticsServiceClient(
       }) as Promise<ubaservicev1_ServerRetentionResponse>;
     },
     OnlineStats(request) {
-      const path = `admin/v1/analytics/online-stats`;
+      const path = `/admin/v1/analytics/online-stats`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'AnalyticsService',
@@ -3131,7 +2636,7 @@ export function createAnalyticsServiceClient(
       }) as Promise<ubaservicev1_OnlineStatsResponse>;
     },
     Economy(request) {
-      const path = `admin/v1/analytics/economy`;
+      const path = `/admin/v1/analytics/economy`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'AnalyticsService',
@@ -3143,7 +2648,7 @@ export function createAnalyticsServiceClient(
 // ============== 事件趋势 ==============
 export type ubaservicev1_EventTrendRequest = {
   // 应用 ID 过滤（可选，0 表示全部）
-  appId?: number;
+  appId?: string;
   // 全局维度拆分（可选，空表示不拆分）。设置后每条 query 按该维度拆成多条线
   dimension?: string;
   // 事件名过滤（可选，空表示全部事件）——向后兼容字段，queries 为空时使用
@@ -3163,9 +2668,9 @@ export type ubaservicev1_EventTrendRequest = {
 // 时间范围（毫秒时间戳，start/end 均含端点）
 export type ubaservicev1_TimeRange = {
   // 结束时间（含），Unix 毫秒
-  endMs: number | undefined;
+  endMs: string | undefined;
   // 起始时间（含），Unix 毫秒
-  startMs: number | undefined;
+  startMs: string | undefined;
 };
 
 // 时间粒度
@@ -3251,13 +2756,13 @@ export type ubaservicev1_EventTrendResponse = {
   // 多 series 趋势（多事件对比 / 维度拆分场景使用）
   series: ubaservicev1_EventSeries[] | undefined;
   // 区间内事件总量（向后兼容：取 series[0].total）
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // 时间序列中的一个数据点
 export type ubaservicev1_TimeSeriesPoint = {
   // 时间桶起点（Unix 毫秒）
-  timestamp: number | undefined;
+  timestamp: string | undefined;
   // 数值
   value: number | undefined;
 };
@@ -3269,25 +2774,25 @@ export type ubaservicev1_EventSeries = {
   // 趋势数据点
   points: ubaservicev1_TimeSeriesPoint[] | undefined;
   // 该序列区间总量
-  total: number | undefined;
+  total: string | undefined;
 };
 
 export type ubaservicev1_FunnelRequest = {
   // 应用 ID 过滤（可选）
-  appId?: number;
+  appId?: string;
   // 漏斗步骤事件名（有序，至少 2 步）
   steps: string[] | undefined;
   // 时间范围
   timeRange: ubaservicev1_TimeRange | undefined;
   // 转化窗口（毫秒，用户必须在窗口内完成全部步骤，默认 30 分钟）
-  windowMs?: number;
+  windowMs?: string;
 };
 
 export type ubaservicev1_FunnelResponse = {
   // 完成全部步骤的用户数
-  completedUsers: number | undefined;
+  completedUsers: string | undefined;
   // 进入首步的用户数
-  enteredUsers: number | undefined;
+  enteredUsers: string | undefined;
   // 整体转化率
   overallConversion: number | undefined;
   // 各步骤结果
@@ -3299,7 +2804,7 @@ export type ubaservicev1_FunnelStep = {
   // 相对上一步的转化率（0-1，首步为 1）
   conversionRate: number | undefined;
   // 完成该步骤的事件数
-  count: number | undefined;
+  count: string | undefined;
   // 该步骤的事件名
   eventName: string | undefined;
   // 相对首步的整体转化率（0-1，首步为 1）
@@ -3310,7 +2815,7 @@ export type ubaservicev1_FunnelStep = {
 
 export type ubaservicev1_RetentionRequest = {
   // 应用 ID 过滤（可选）
-  appId?: number;
+  appId?: string;
   // 当 retention_type=EVENT 时指定事件名
   eventName?: string;
   // 最大偏移天数（默认 7）
@@ -3332,15 +2837,15 @@ export type ubaservicev1_RetentionCohort = {
   // 各偏移天的留存
   cells: ubaservicev1_RetentionCell[] | undefined;
   // 同期群日期（Unix 毫秒，当天 0 点）
-  cohortDate: number | undefined;
+  cohortDate: string | undefined;
   // 该同期群规模（首日用户数）
-  size: number | undefined;
+  size: string | undefined;
 };
 
 // ============== 留存分析 ==============
 export type ubaservicev1_RetentionCell = {
   // 该偏移的活跃用户数
-  count: number | undefined;
+  count: string | undefined;
   // 相对注册/首次活跃的天数偏移（0 = 当天）
   offsetDays: number | undefined;
   // 留存率（0-1）
@@ -3350,7 +2855,7 @@ export type ubaservicev1_RetentionCell = {
 // ============== 维度分组聚合 ==============
 export type ubaservicev1_GroupByRequest = {
   // 应用 ID 过滤（可选）
-  appId?: number;
+  appId?: string;
   // 分组维度字段名（如 platform/channel/country/app_version/event_name）
   dimension: string | undefined;
   // 事件名过滤（可选）
@@ -3384,7 +2889,7 @@ export type ubaservicev1_GroupByBucket = {
 // ============== 活跃用户 ==============
 export type ubaservicev1_ActiveUsersRequest = {
   // 应用 ID 过滤（可选）
-  appId?: number;
+  appId?: string;
   // 时间粒度（DAU 按粒度分桶，同时给出 WAU/MAU 累计）
   granularity: ubaservicev1_AnalyticsGranularity | undefined;
   // 时间范围
@@ -3393,26 +2898,26 @@ export type ubaservicev1_ActiveUsersRequest = {
 
 export type ubaservicev1_ActiveUsersResponse = {
   // 最新一天的 DAU
-  latestDau: number | undefined;
+  latestDau: string | undefined;
   // 各时间桶的活跃用户数据
   points: ubaservicev1_ActiveUsersPoint[] | undefined;
 };
 
 export type ubaservicev1_ActiveUsersPoint = {
   // 日活
-  dau: number | undefined;
+  dau: string | undefined;
   // 月活（滚动 30 天）
-  mau: number | undefined;
+  mau: string | undefined;
   // 时间桶起点（Unix 毫秒）
-  timestamp: number | undefined;
+  timestamp: string | undefined;
   // 周活（滚动 7 天）
-  wau: number | undefined;
+  wau: string | undefined;
 };
 
 // ============== 归因分析 ==============
 export type ubaservicev1_AttributionRequest = {
   // 应用 ID 过滤（可选）
-  appId?: number;
+  appId?: string;
   // 转化事件名（如 pay_success）
   conversionEvent: string | undefined;
   // 归因维度：channel 渠道（默认）/ referer 来源页
@@ -3431,12 +2936,12 @@ export type ubaservicev1_AttributionResponse = {
   // 使用的归因模型
   model: string | undefined;
   // 转化用户总数
-  totalConverters: number | undefined;
+  totalConverters: string | undefined;
 };
 
 export type ubaservicev1_AttributionBucket = {
   // 该触点的转化用户数（去重）
-  converterUv: number | undefined;
+  converterUv: string | undefined;
   // 归因维度值（渠道/来源页）
   label: string | undefined;
   // 占比（0-1）
@@ -3446,7 +2951,7 @@ export type ubaservicev1_AttributionBucket = {
 // ============== 分布分析 ==============
 export type ubaservicev1_DistributionRequest = {
   // 应用 ID 过滤（可选）
-  appId?: number;
+  appId?: string;
   // 目标事件名（如 page_view）
   eventName: string | undefined;
   // 时间范围
@@ -3465,7 +2970,7 @@ export type ubaservicev1_DistributionBucket = {
   // 分桶标签（如 0_10s / 10_60s / 1_5min / 5min_plus）
   bucket: string | undefined;
   // 该桶事件数
-  count: number | undefined;
+  count: string | undefined;
   // 占比（0-1）
   percentage: number | undefined;
 };
@@ -3475,7 +2980,7 @@ export type ubaservicev1_DistributionSummary = {
   // 平均时长（秒）
   avgSec: number | undefined;
   // 总事件数
-  count: number | undefined;
+  count: string | undefined;
   // 最大值（秒）
   maxSec: number | undefined;
   // P50（中位数，秒）
@@ -3487,7 +2992,7 @@ export type ubaservicev1_DistributionSummary = {
 // ============== 行为序列 ==============
 export type ubaservicev1_BehaviorSequenceRequest = {
   // 应用 ID 过滤（可选）
-  appId?: number;
+  appId?: string;
   // 事件名过滤（可选，空表示全部事件）
   eventName?: string;
   // 最多返回事件数（默认 100）
@@ -3495,14 +3000,14 @@ export type ubaservicev1_BehaviorSequenceRequest = {
   // 时间范围
   timeRange: ubaservicev1_TimeRange | undefined;
   // 用户 ID
-  userId: number | undefined;
+  userId: string | undefined;
 };
 
 export type ubaservicev1_BehaviorSequenceResponse = {
   // 按时间升序排列的行为事件
   events: ubaservicev1_SequenceEvent[] | undefined;
   // 用户 ID
-  userId: number | undefined;
+  userId: string | undefined;
 };
 
 // 序列中的一个行为事件
@@ -3520,12 +3025,12 @@ export type ubaservicev1_SequenceEvent = {
   // 会话内序号
   sessionSeq?: number;
   // 事件时间（Unix 毫秒）
-  timestamp: number | undefined;
+  timestamp: string | undefined;
 };
 
 export type ubaservicev1_SegmentationRequest = {
   // 应用 ID 过滤（可选）
-  appId?: number;
+  appId?: string;
   // 必须未做过的事件（做过任一即排除）
   exclude: ubaservicev1_SegmentCondition[] | undefined;
   // 必须做过的事件（满足任一即纳入人群的"做过"集合）
@@ -3547,15 +3052,15 @@ export type ubaservicev1_SegmentCondition = {
 
 export type ubaservicev1_SegmentationResponse = {
   // 命中用户总数
-  total: number | undefined;
+  total: string | undefined;
   // 命中的用户 ID 列表
-  userIds: number[] | undefined;
+  userIds: string[] | undefined;
 };
 
 // ============== 点击热力图 ==============
 export type ubaservicev1_ClickRequest = {
   // 应用 ID 过滤（可选）
-  appId?: number;
+  appId?: string;
   // 网格大小（像素，默认 20）
   gridSize?: number;
   // 页面 URL（必填，按页面分组热力图）
@@ -3572,13 +3077,13 @@ export type ubaservicev1_ClickResponse = {
   // 元素点击 TOP
   topElements: ubaservicev1_ClickElementBucket[] | undefined;
   // 总点击次数
-  totalClicks: number | undefined;
+  totalClicks: string | undefined;
 };
 
 // 热力图网格点
 export type ubaservicev1_ClickHeatPoint = {
   // 该网格的点击次数
-  count: number | undefined;
+  count: string | undefined;
   // 热度（0-1，相对最大点击数的归一化值）
   intensity: number | undefined;
   // 网格左上角 X（像素）
@@ -3590,7 +3095,7 @@ export type ubaservicev1_ClickHeatPoint = {
 // 元素点击 TOP（按 element_xpath 聚合）
 export type ubaservicev1_ClickElementBucket = {
   // 点击次数
-  count: number | undefined;
+  count: string | undefined;
   // 元素 XPath
   elementXpath: string | undefined;
   // 占比（0-1）
@@ -3600,7 +3105,7 @@ export type ubaservicev1_ClickElementBucket = {
 // ============== 用户生命周期 ==============
 export type ubaservicev1_LifecycleRequest = {
   // 应用 ID 过滤（可选）
-  appId?: number;
+  appId?: string;
   // 流失判定天数（最后活跃距今 > N 天算流失，默认 30）
   churnDays?: number;
   // 新用户判定天数（注册距今 N 天内算新用户，默认 7）
@@ -3613,7 +3118,7 @@ export type ubaservicev1_LifecycleResponse = {
   // 各阶段分布
   stages: ubaservicev1_LifecycleStage[] | undefined;
   // 总用户数
-  totalUsers: number | undefined;
+  totalUsers: string | undefined;
 };
 
 // 生命周期阶段
@@ -3625,13 +3130,13 @@ export type ubaservicev1_LifecycleStage = {
   // 阶段中文名
   stageLabel: string | undefined;
   // 该阶段用户数
-  userCount: number | undefined;
+  userCount: string | undefined;
 };
 
 // ============== 流失与回流 ==============
 export type ubaservicev1_ChurnRequest = {
   // 应用 ID 过滤（可选）
-  appId?: number;
+  appId?: string;
   // 流失判定天数（最后活跃距今 > N 天算流失，默认 30）
   churnDays?: number;
   // 回流窗口（近 N 天内重新活跃算回流，默认 7）
@@ -3644,9 +3149,9 @@ export type ubaservicev1_ChurnResponse = {
   // 流失时长分布
   churnBuckets: ubaservicev1_ChurnBucket[] | undefined;
   // 流失用户总数
-  churnedUsers: number | undefined;
+  churnedUsers: string | undefined;
   // 回流用户数（曾是流失、近期又活跃）
-  reactivatedUsers: number | undefined;
+  reactivatedUsers: string | undefined;
   // 回流率（reactivated / churned，0-1）
   reactivationRate: number | undefined;
   // 回流触发事件 TOP
@@ -3658,13 +3163,13 @@ export type ubaservicev1_ChurnBucket = {
   // 分桶标签：30_60d / 60_90d / 90_plus
   bucket: string | undefined;
   // 该桶流失用户数
-  userCount: number | undefined;
+  userCount: string | undefined;
 };
 
 // 回流触发事件 TOP
 export type ubaservicev1_ReactivationTrigger = {
   // 触发次数
-  count: number | undefined;
+  count: string | undefined;
   // 事件名
   eventName: string | undefined;
   // 占比（0-1）
@@ -3674,7 +3179,7 @@ export type ubaservicev1_ReactivationTrigger = {
 // ============== 间隔时间分析 ==============
 export type ubaservicev1_IntervalRequest = {
   // 应用 ID 过滤（可选）
-  appId?: number;
+  appId?: string;
   // 起始事件名（如 register）
   eventFrom: string | undefined;
   // 结束事件名（如 pay_success）
@@ -3688,7 +3193,7 @@ export type ubaservicev1_IntervalResponse = {
   // 各分桶分布
   buckets: ubaservicev1_IntervalBucket[] | undefined;
   // 总样本数
-  count: number | undefined;
+  count: string | undefined;
   // 分位数摘要（单位：小时）
   p50Hours: number | undefined;
   p90Hours: number | undefined;
@@ -3699,7 +3204,7 @@ export type ubaservicev1_IntervalBucket = {
   // 分桶标签：instant / lt_1h / 1_24h / 1_7d / 7d_plus
   bucket: string | undefined;
   // 该桶样本数
-  count: number | undefined;
+  count: string | undefined;
   // 占比（0-1）
   percentage: number | undefined;
 };
@@ -3707,7 +3212,7 @@ export type ubaservicev1_IntervalBucket = {
 // ============== 矩阵/象限分析 ==============
 export type ubaservicev1_MatrixRequest = {
   // 应用 ID 过滤（可选）
-  appId?: number;
+  appId?: string;
   // 分析维度（默认 event_name）
   dimension?: string;
   // X/Y 的象限划分阈值类型：median 中位数（默认）/ avg 均值
@@ -3742,7 +3247,7 @@ export type ubaservicev1_MatrixPoint = {
 // ============== 付费/营收分析 ==============
 export type ubaservicev1_RevenueRequest = {
   // 应用 ID 过滤（可选）
-  appId?: number;
+  appId?: string;
   // 时间粒度（默认 DAY）
   granularity: ubaservicev1_AnalyticsGranularity | undefined;
   // 时间范围
@@ -3757,9 +3262,9 @@ export type ubaservicev1_RevenueResponse = {
   // 区间 GMV 汇总
   totalGmv: number | undefined;
   // 区间订单数
-  totalPayOrders: number | undefined;
+  totalPayOrders: string | undefined;
   // 区间付费用户数（去重）
-  totalPayUsers: number | undefined;
+  totalPayUsers: string | undefined;
 };
 
 // 单日营收数据点
@@ -3771,19 +3276,19 @@ export type ubaservicev1_RevenuePoint = {
   // GMV（总成交额）
   gmv: number | undefined;
   // 付费订单数
-  payOrders: number | undefined;
+  payOrders: string | undefined;
   // 付费率（0-1，pay_users / active_users）
   payRate: number | undefined;
   // 付费用户数
-  payUsers: number | undefined;
+  payUsers: string | undefined;
   // 时间桶（Unix 毫秒）
-  timestamp: number | undefined;
+  timestamp: string | undefined;
 };
 
 // ============== 会话分析 ==============
 export type ubaservicev1_SessionAnalysisRequest = {
   // 应用 ID 过滤（可选）
-  appId?: number;
+  appId?: string;
   // 平台过滤（可选，空表示全部）
   platform?: string;
   // 时间范围
@@ -3802,15 +3307,15 @@ export type ubaservicev1_SessionAnalysisResponse = {
   // P90 会话时长（秒）
   p90DurationSec: number | undefined;
   // 会话总数
-  sessionCount: number | undefined;
+  sessionCount: string | undefined;
   // 会话用户数（去重）
-  uniqueUsers: number | undefined;
+  uniqueUsers: string | undefined;
 };
 
 // ============== 同比环比/异常检测 ==============
 export type ubaservicev1_AnomalyRequest = {
   // 应用 ID 过滤（可选）
-  appId?: number;
+  appId?: string;
   // 事件名过滤（可选，空表示全部事件聚合）
   eventName?: string;
   // 时间范围（通常取近 8+ 天以算 7 日基线）
@@ -3819,7 +3324,7 @@ export type ubaservicev1_AnomalyRequest = {
 
 export type ubaservicev1_AnomalyResponse = {
   // 异常事件数（去重）
-  anomalyCount: number | undefined;
+  anomalyCount: string | undefined;
   // 各事件/日的趋势 + 异常标记
   points: ubaservicev1_AnomalyPoint[] | undefined;
 };
@@ -3833,11 +3338,11 @@ export type ubaservicev1_AnomalyPoint = {
   // 是否异常（当日 PV < 7日均值 * 阈值，默认 0.5）
   isAnomaly: boolean | undefined;
   // 当日 PV
-  pv: number | undefined;
+  pv: string | undefined;
   // 统计日期（Unix 毫秒）
-  statDate: number | undefined;
+  statDate: string | undefined;
   // 当日 UV
-  uv: number | undefined;
+  uv: string | undefined;
   // 环比昨日涨跌（0-1，正为涨）
   wowChange: number | undefined;
 };
@@ -3845,7 +3350,7 @@ export type ubaservicev1_AnomalyPoint = {
 // ============== 新老用户对比 ==============
 export type ubaservicev1_NewVsOldRequest = {
   // 应用 ID 过滤（可选）
-  appId?: number;
+  appId?: string;
   // 新用户判定天数（注册距今 N 天内算新用户，默认 7）
   newUserDays?: number;
   // 时间范围
@@ -3859,13 +3364,13 @@ export type ubaservicev1_NewVsOldResponse = {
 
 export type ubaservicev1_NewVsOldSegment = {
   // 事件量
-  eventCount: number | undefined;
+  eventCount: string | undefined;
   // 付费率（0-1）
   payRate: number | undefined;
   // 付费用户数
-  payUsers: number | undefined;
+  payUsers: string | undefined;
   // 用户数
-  userCount: number | undefined;
+  userCount: string | undefined;
   // 用户类型：new 新用户 / old 老用户
   userType: string | undefined;
 };
@@ -3873,7 +3378,7 @@ export type ubaservicev1_NewVsOldSegment = {
 // ============== 热门转化路径 ==============
 export type ubaservicev1_PathSankeyRequest = {
   // 应用 ID 过滤（可选）
-  appId?: number;
+  appId?: string;
   // 时间范围
   timeRange: ubaservicev1_TimeRange | undefined;
   // 返回前 N 条热门路径（默认 20）
@@ -3891,15 +3396,15 @@ export type ubaservicev1_PathBucket = {
   // 事件序列（如 "view_home,add_to_cart,pay_success"）
   eventSequence: string | undefined;
   // 路径出现次数
-  supportCount: number | undefined;
+  supportCount: string | undefined;
   // 走过该路径的去重用户数
-  uniqueUsers: number | undefined;
+  uniqueUsers: string | undefined;
 };
 
 // ============== 关卡/数值平衡分析 ==============
 export type ubaservicev1_LevelAnalysisRequest = {
   // 应用 ID 过滤（可选）
-  appId?: number;
+  appId?: string;
   // 指定关卡 ID（可选，空表示全部关卡）
   levelId?: string;
   // 时间范围
@@ -3914,13 +3419,13 @@ export type ubaservicev1_LevelAnalysisResponse = {
 // 单关分析结果
 export type ubaservicev1_LevelStat = {
   // 尝试次数（level_start）
-  attemptCount: number | undefined;
+  attemptCount: string | undefined;
   // 平均分
   avgScore: number | undefined;
   // 失败次数（level_fail）
-  failCount: number | undefined;
+  failCount: string | undefined;
   // 完成次数（level_finish）
-  finishCount: number | undefined;
+  finishCount: string | undefined;
   // 关卡 ID
   levelId: string | undefined;
   // 关卡名
@@ -3928,7 +3433,7 @@ export type ubaservicev1_LevelStat = {
   // 通过率（0-1，finish / (finish+fail)）
   passRate: number | undefined;
   // 挑战该关卡的玩家数（去重）
-  playerCount: number | undefined;
+  playerCount: string | undefined;
   // 满星率（0-1，context['stars']==3 占比）
   star3Rate: number | undefined;
   // 卡关率（0-1，1 - passRate，值越高说明越难/流失点）
@@ -3938,7 +3443,7 @@ export type ubaservicev1_LevelStat = {
 // ============== 鲸鱼用户/付费分层 ==============
 export type ubaservicev1_WhaleTierRequest = {
   // 应用 ID 过滤（可选）
-  appId?: number;
+  appId?: string;
 };
 
 export type ubaservicev1_WhaleTierResponse = {
@@ -3947,7 +3452,7 @@ export type ubaservicev1_WhaleTierResponse = {
   // 总流水
   totalRevenue: number | undefined;
   // 总用户数
-  totalUsers: number | undefined;
+  totalUsers: string | undefined;
 };
 
 // 付费分层
@@ -3965,13 +3470,13 @@ export type ubaservicev1_PayTierSegment = {
   // 该层累计充值总额
   totalAmount: number | undefined;
   // 该层用户数
-  userCount: number | undefined;
+  userCount: string | undefined;
 };
 
 // ============== 历史生命周期价值 LTV ==============
 export type ubaservicev1_LTVRequest = {
   // 应用 ID 过滤（可选）
-  appId?: number;
+  appId?: string;
   // 归因维度（可选，按渠道分组 LTV）：channel（默认，配合归因模型）
   dimension?: string;
   // 注册时间范围（按 register_time 过滤同期群）
@@ -3988,7 +3493,7 @@ export type ubaservicev1_LTVResponse = {
 // 单个 LTV 数据点（某天/某维度的累计付费价值）
 export type ubaservicev1_LTVPoint = {
   // 该同期群人数
-  cohortSize: number | undefined;
+  cohortSize: string | undefined;
   // 注册后第 N 天（0=注册当天）
   dayN: number | undefined;
   // 维度值（如渠道名，未分组时为空）
@@ -4002,7 +3507,7 @@ export type ubaservicev1_LTVPoint = {
 // ============== 滚服留存（按区服分组） ==============
 export type ubaservicev1_ServerRetentionRequest = {
   // 应用 ID 过滤（可选）
-  appId?: number;
+  appId?: string;
   // 最大偏移天数（默认 7）
   maxOffsetDays?: number;
   // 区服 ID 过滤（可选，空表示全部区服对比）
@@ -4021,7 +3526,7 @@ export type ubaservicev1_ServerRetentionResponse = {
 // 单区服留存
 export type ubaservicev1_ServerRetentionRow = {
   // 首日新增用户数（同期群规模）
-  cohortSize: number | undefined;
+  cohortSize: string | undefined;
   // 各偏移天的留存率（key=天数，如 "1"/"3"/"7"）
   retentionRates: { [key: string]: number } | undefined;
   // 区服 ID
@@ -4031,7 +3536,7 @@ export type ubaservicev1_ServerRetentionRow = {
 // ============== 同时在线 PCU/ACU ==============
 export type ubaservicev1_OnlineStatsRequest = {
   // 应用 ID 过滤（可选）
-  appId?: number;
+  appId?: string;
   // 区服过滤（可选）
   serverId?: string;
   // 时间范围
@@ -4040,19 +3545,19 @@ export type ubaservicev1_OnlineStatsRequest = {
 
 export type ubaservicev1_OnlineStatsResponse = {
   // ACU 平均同时在线
-  acu: number | undefined;
+  acu: string | undefined;
   // 统计时长（分钟）
-  durationMinutes: number | undefined;
+  durationMinutes: string | undefined;
   // PCU 峰值同时在线（时间段内最大同时在线数）
-  pcu: number | undefined;
+  pcu: string | undefined;
   // 总会话数
-  totalSessions: number | undefined;
+  totalSessions: string | undefined;
 };
 
 // ============== 经济系统/代币流向 ==============
 export type ubaservicev1_EconomyRequest = {
   // 应用 ID 过滤（可选）
-  appId?: number;
+  appId?: string;
   // 代币类型过滤（可选，如 GOLD/DIAMOND，空表示全部）
   currency?: string;
   // 时间范围
@@ -4113,7 +3618,7 @@ export function createApiServiceClient(
 ): ApiService {
   return {
     List(request) {
-      const path = `admin/v1/apis`;
+      const path = `/admin/v1/apis`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -4161,56 +3666,9 @@ export function createApiServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -4231,7 +3689,7 @@ export function createApiServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/apis/${request.id}`;
+      const path = `/admin/v1/apis/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.viewMask) {
@@ -4249,7 +3707,7 @@ export function createApiServiceClient(
       }) as Promise<resourceservicev1_Api>;
     },
     Create(request) {
-      const path = `admin/v1/apis`;
+      const path = `/admin/v1/apis`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'ApiService',
@@ -4260,8 +3718,10 @@ export function createApiServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/apis/${request.id}`;
-      const body = JSON.stringify(request);
+      const path = `/admin/v1/apis/${request.id}`;
+      const bodyMap = { ...request } as Record<string, unknown>;
+      delete bodyMap["id"];
+      const body = JSON.stringify(bodyMap);
       return transport.unary(path, 'PUT', body, {
         service: 'ApiService',
         method: 'Update',
@@ -4271,7 +3731,7 @@ export function createApiServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/apis/${request.id}`;
+      const path = `/admin/v1/apis/${request.id}`;
       const body = null;
       return transport.unary(path, 'DELETE', body, {
         service: 'ApiService',
@@ -4279,7 +3739,7 @@ export function createApiServiceClient(
       }) as Promise<wellKnownEmpty>;
     },
     SyncApis(request) {
-      const path = `admin/v1/apis/sync`;
+      const path = `/admin/v1/apis/sync`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'ApiService',
@@ -4287,7 +3747,7 @@ export function createApiServiceClient(
       }) as Promise<wellKnownEmpty>;
     },
     GetWalkRouteData(_request) {
-      const path = `admin/v1/apis/walk-route`;
+      const path = `/admin/v1/apis/walk-route`;
       const body = null;
       return transport.unary(path, 'GET', body, {
         service: 'ApiService',
@@ -4299,17 +3759,17 @@ export function createApiServiceClient(
 // 查询列表 - 回应
 export type resourceservicev1_ListApiResponse = {
   items: resourceservicev1_Api[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // API资源
 export type resourceservicev1_Api = {
   createdAt?: wellKnownTimestamp;
-  createdBy?: number;
+  createdBy?: string;
   deletedAt?: wellKnownTimestamp;
-  deletedBy?: number;
+  deletedBy?: string;
   description?: string;
-  id?: number;
+  id?: string;
   method?: string;
   module?: string;
   moduleDescription?: string;
@@ -4318,7 +3778,7 @@ export type resourceservicev1_Api = {
   scope?: resourceservicev1_Api_Scope;
   status?: resourceservicev1_Api_Status;
   updatedAt?: wellKnownTimestamp;
-  updatedBy?: number;
+  updatedBy?: string;
 };
 
 // API作用域
@@ -4332,7 +3792,7 @@ export type resourceservicev1_Api_Status =
   | 'ON';
 // 查询 - 请求
 export type resourceservicev1_GetApiRequest = {
-  id?: number;
+  id?: string;
   viewMask?: wellKnownFieldMask;
 };
 
@@ -4345,13 +3805,13 @@ export type resourceservicev1_CreateApiRequest = {
 export type resourceservicev1_UpdateApiRequest = {
   allowMissing?: boolean;
   data: resourceservicev1_Api | undefined;
-  id: number | undefined;
+  id: string | undefined;
   updateMask: undefined | wellKnownFieldMask;
 };
 
 // 删除 - 请求
 export type resourceservicev1_DeleteApiRequest = {
-  id?: number;
+  id?: string;
 };
 
 // API审计日志管理服务
@@ -4371,7 +3831,7 @@ export function createApiAuditLogServiceClient(
 ): ApiAuditLogService {
   return {
     List(request) {
-      const path = `admin/v1/api-audit-logs`;
+      const path = `/admin/v1/api-audit-logs`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -4419,56 +3879,9 @@ export function createApiAuditLogServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -4489,7 +3902,7 @@ export function createApiAuditLogServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/api-audit-logs/${request.id}`;
+      const path = `/admin/v1/api-audit-logs/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.viewMask) {
@@ -4511,7 +3924,7 @@ export function createApiAuditLogServiceClient(
 // 查询API审计日志列表 - 回应
 export type auditservicev1_ListApiAuditLogResponse = {
   items: auditservicev1_ApiAuditLog[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // 接口审计日志
@@ -4524,7 +3937,7 @@ export type auditservicev1_ApiAuditLog = {
   deviceInfo?: auditservicev1_DeviceInfo;
   geoLocation?: auditservicev1_GeoLocation;
   httpMethod?: string;
-  id?: number;
+  id?: string;
   ipAddress?: string;
   latencyMs?: number;
   logHash?: string;
@@ -4540,10 +3953,10 @@ export type auditservicev1_ApiAuditLog = {
   spanId?: string;
   statusCode?: number;
   success?: boolean;
-  tenantId?: number;
+  tenantId?: string;
   tenantName?: string;
   traceId?: string;
-  userId?: number;
+  userId?: string;
   username?: string;
 };
 
@@ -4553,8 +3966,8 @@ export type auditservicev1_GeoLocation = {
   city?: string;
   countryCode?: string;
   isp?: string;
-  latitude?: number;
-  longitude?: number;
+  latitude?: string;
+  longitude?: string;
   province?: string;
 };
 
@@ -4596,7 +4009,7 @@ export type auditservicev1_DeviceInfo_DeviceType =
   | 'TABLET';
 // 查询API审计日志详情 - 请求
 export type auditservicev1_GetApiAuditLogRequest = {
-  id?: number;
+  id?: string;
   viewMask?: wellKnownFieldMask;
 };
 
@@ -4629,7 +4042,7 @@ export function createApplicationServiceClient(
 ): ApplicationService {
   return {
     List(request) {
-      const path = `admin/v1/apps`;
+      const path = `/admin/v1/apps`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -4677,56 +4090,9 @@ export function createApplicationServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -4747,7 +4113,7 @@ export function createApplicationServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/apps/${request.id}`;
+      const path = `/admin/v1/apps/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.appId) {
@@ -4770,7 +4136,7 @@ export function createApplicationServiceClient(
       }) as Promise<ubaservicev1_Application>;
     },
     Create(request) {
-      const path = `admin/v1/apps`;
+      const path = `/admin/v1/apps`;
       const body = JSON.stringify(request?.data ?? {});
       return transport.unary(path, 'POST', body, {
         service: 'ApplicationService',
@@ -4781,7 +4147,7 @@ export function createApplicationServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/apps/${request.id}`;
+      const path = `/admin/v1/apps/${request.id}`;
       const body = JSON.stringify(request?.data ?? {});
       const queryParams: string[] = [];
       if (request.updateMask) {
@@ -4807,7 +4173,7 @@ export function createApplicationServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/apps/${request.id}`;
+      const path = `/admin/v1/apps/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.deletedBy) {
@@ -4829,7 +4195,7 @@ export function createApplicationServiceClient(
 // 获取UBA应用列表 - 答复
 export type ubaservicev1_ListApplicationResponse = {
   items: ubaservicev1_Application[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // UBA应用
@@ -4839,22 +4205,22 @@ export type ubaservicev1_Application = {
   appKey?: string;
   appSecret?: string;
   createdAt?: wellKnownTimestamp;
-  createdBy?: number;
+  createdBy?: string;
   deletedAt?: wellKnownTimestamp;
-  deletedBy?: number;
+  deletedBy?: string;
   desensitize?: boolean;
   // 内部主键（数据库使用，不对外暴露）
-  id: number | undefined;
+  id: string | undefined;
   name?: string;
   // 支持平台列表
   platforms: string[] | undefined;
   remark?: string;
   status?: ubaservicev1_Application_Status;
-  tenantId?: number;
+  tenantId?: string;
   tenantName?: string;
   type?: string;
   updatedAt?: wellKnownTimestamp;
-  updatedBy?: number;
+  updatedBy?: string;
   webhookSecret?: string;
   webhookUrl?: string;
 };
@@ -4867,7 +4233,7 @@ export type ubaservicev1_Application_Status =
 // 获取UBA应用数据 - 请求
 export type ubaservicev1_GetApplicationRequest = {
   appId?: string;
-  id?: number;
+  id?: string;
   viewMask?: wellKnownFieldMask;
 };
 
@@ -4880,14 +4246,14 @@ export type ubaservicev1_CreateApplicationRequest = {
 export type ubaservicev1_UpdateApplicationRequest = {
   allowMissing?: boolean;
   data: ubaservicev1_Application | undefined;
-  id: number | undefined;
+  id: string | undefined;
   updateMask: undefined | wellKnownFieldMask;
 };
 
 // 删除UBA应用 - 请求
 export type ubaservicev1_DeleteApplicationRequest = {
-  deletedBy?: number;
-  id?: number;
+  deletedBy?: string;
+  id?: string;
 };
 
 // 用户后台登录认证服务
@@ -4911,7 +4277,7 @@ export function createAuthenticationServiceClient(
 ): AuthenticationService {
   return {
     Login(request) {
-      const path = `admin/v1/login`;
+      const path = `/admin/v1/login`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'AuthenticationService',
@@ -4919,7 +4285,7 @@ export function createAuthenticationServiceClient(
       }) as Promise<authenticationservicev1_LoginResponse>;
     },
     Logout(request) {
-      const path = `admin/v1/logout`;
+      const path = `/admin/v1/logout`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'AuthenticationService',
@@ -4927,7 +4293,7 @@ export function createAuthenticationServiceClient(
       }) as Promise<wellKnownEmpty>;
     },
     RefreshToken(request) {
-      const path = `admin/v1/refresh-token`;
+      const path = `/admin/v1/refresh-token`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'AuthenticationService',
@@ -4953,7 +4319,7 @@ export type authenticationservicev1_LoginRequest = {
   redirect_uri?: string;
   refresh_token?: string;
   scope?: string;
-  user_id?: number;
+  user_id?: string;
   username?: string;
 };
 
@@ -4971,9 +4337,9 @@ export type authenticationservicev1_ClientType =
 // 用户登录 - 回应
 export type authenticationservicev1_LoginResponse = {
   access_token: string | undefined;
-  expires_in: number | undefined;
+  expires_in: string | undefined;
   id_token?: string;
-  refresh_expires_in?: number;
+  refresh_expires_in?: string;
   refresh_token?: string;
   scope?: string;
   token_type: authenticationservicev1_TokenType | undefined;
@@ -5001,7 +4367,7 @@ export function createBehaviorEventServiceClient(
 ): BehaviorEventService {
   return {
     List(request) {
-      const path = `admin/v1/behavior-events`;
+      const path = `/admin/v1/behavior-events`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -5049,56 +4415,9 @@ export function createBehaviorEventServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -5119,7 +4438,7 @@ export function createBehaviorEventServiceClient(
       if (request.eventId === undefined || request.eventId === null) {
         throw new Error('missing required field request.event_id');
       }
-      const path = `admin/v1/behavior-events/${request.eventId}`;
+      const path = `/admin/v1/behavior-events/${request.eventId}`;
       const body = null;
       return transport.unary(path, 'GET', body, {
         service: 'BehaviorEventService',
@@ -5130,7 +4449,7 @@ export function createBehaviorEventServiceClient(
 }
 export type ubaservicev1_ListBehaviorEventResponse = {
   items: ubaservicev1_BehaviorEvent[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // 行为事件（对应 events_fact 表）
@@ -5159,7 +4478,7 @@ export type ubaservicev1_BehaviorEvent = {
   eventName: string | undefined;
   // 时间
   eventTime: undefined | wellKnownTimestamp;
-  eventTs: number | undefined;
+  eventTs: string | undefined;
   // 地理位置
   geo?: string;
   globalUserId: string | undefined;
@@ -5192,13 +4511,13 @@ export type ubaservicev1_BehaviorEvent = {
   // 上下文：Context
   sessionId: string | undefined;
   sessionSeq: number | undefined;
-  tenantId: number | undefined;
+  tenantId: string | undefined;
   traceId: string | undefined;
   updatedAt?: wellKnownTimestamp;
   // 客户端 User-Agent
   userAgent?: string;
   // 主体：Who
-  userId: number | undefined;
+  userId: string | undefined;
   viewportWidth?: number;
 };
 
@@ -5248,7 +4567,7 @@ export function createCampaignServiceClient(
 ): CampaignService {
   return {
     List(request) {
-      const path = `admin/v1/campaigns`;
+      const path = `/admin/v1/campaigns`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -5296,56 +4615,9 @@ export function createCampaignServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -5363,7 +4635,7 @@ export function createCampaignServiceClient(
       }) as Promise<ubaservicev1_ListCampaignResponse>;
     },
     Count(request) {
-      const path = `admin/v1/campaigns/count`;
+      const path = `/admin/v1/campaigns/count`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -5411,56 +4683,9 @@ export function createCampaignServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -5481,7 +4706,7 @@ export function createCampaignServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/campaigns/${request.id}`;
+      const path = `/admin/v1/campaigns/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.viewMask) {
@@ -5499,7 +4724,7 @@ export function createCampaignServiceClient(
       }) as Promise<ubaservicev1_Campaign>;
     },
     Create(request) {
-      const path = `admin/v1/campaigns`;
+      const path = `/admin/v1/campaigns`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'CampaignService',
@@ -5510,8 +4735,10 @@ export function createCampaignServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/campaigns/${request.id}`;
-      const body = JSON.stringify(request);
+      const path = `/admin/v1/campaigns/${request.id}`;
+      const bodyMap = { ...request } as Record<string, unknown>;
+      delete bodyMap["id"];
+      const body = JSON.stringify(bodyMap);
       return transport.unary(path, 'PUT', body, {
         service: 'CampaignService',
         method: 'Update',
@@ -5521,7 +4748,7 @@ export function createCampaignServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/campaigns/${request.id}`;
+      const path = `/admin/v1/campaigns/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.deletedBy) {
@@ -5542,8 +4769,10 @@ export function createCampaignServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/campaigns/${request.id}/send`;
-      const body = JSON.stringify(request);
+      const path = `/admin/v1/campaigns/${request.id}/send`;
+      const bodyMap = { ...request } as Record<string, unknown>;
+      delete bodyMap["id"];
+      const body = JSON.stringify(bodyMap);
       return transport.unary(path, 'POST', body, {
         service: 'CampaignService',
         method: 'Send',
@@ -5553,8 +4782,10 @@ export function createCampaignServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/campaigns/${request.id}/cancel`;
-      const body = JSON.stringify(request);
+      const path = `/admin/v1/campaigns/${request.id}/cancel`;
+      const bodyMap = { ...request } as Record<string, unknown>;
+      delete bodyMap["id"];
+      const body = JSON.stringify(bodyMap);
       return transport.unary(path, 'POST', body, {
         service: 'CampaignService',
         method: 'Cancel',
@@ -5565,37 +4796,37 @@ export function createCampaignServiceClient(
 // 获取触达活动列表 - 答复
 export type ubaservicev1_ListCampaignResponse = {
   items: ubaservicev1_Campaign[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // 营销触达活动
 export type ubaservicev1_Campaign = {
-  appId?: number;
+  appId?: string;
   content?: string;
   createdAt?: wellKnownTimestamp;
-  createdBy?: number;
+  createdBy?: string;
   deletedAt?: wellKnownTimestamp;
-  deletedBy?: number;
+  deletedBy?: string;
   description?: string;
-  failedCount?: number;
-  id: number | undefined;
+  failedCount?: string;
+  id: string | undefined;
   lastSentAt?: wellKnownTimestamp;
   name?: string;
   scheduledAt?: wellKnownTimestamp;
   // 目标人群：用户分群 ID（uba_segments）
-  segmentId: number | undefined;
+  segmentId: string | undefined;
   sendMode?: ubaservicev1_CampaignSendMode;
-  sentCount?: number;
+  sentCount?: string;
   status?: ubaservicev1_CampaignStatus;
   // 通知模板编码（notification_templates.code），配置后按模板渲染，title/content 忽略
   templateCode?: string;
-  tenantId?: number;
+  tenantId?: string;
   // 文案：直接给定标题/正文（站内信），二选一 template_code
   title?: string;
   // 发送统计
-  totalCount?: number;
+  totalCount?: string;
   updatedAt?: wellKnownTimestamp;
-  updatedBy?: number;
+  updatedBy?: string;
 };
 
 // 发送模式
@@ -5622,12 +4853,12 @@ export type ubaservicev1_CampaignStatus =
   | 'CAMPAIGN_STATUS_SENT';
 // 触达活动数量 - 答复
 export type ubaservicev1_CountCampaignResponse = {
-  count: number | undefined;
+  count: string | undefined;
 };
 
 // 获取触达活动数据 - 请求
 export type ubaservicev1_GetCampaignRequest = {
-  id?: number;
+  id?: string;
   viewMask?: wellKnownFieldMask;
 };
 
@@ -5640,24 +4871,24 @@ export type ubaservicev1_CreateCampaignRequest = {
 export type ubaservicev1_UpdateCampaignRequest = {
   allowMissing?: boolean;
   data: ubaservicev1_Campaign | undefined;
-  id: number | undefined;
+  id: string | undefined;
   updateMask: undefined | wellKnownFieldMask;
 };
 
 // 删除触达活动 - 请求
 export type ubaservicev1_DeleteCampaignRequest = {
-  deletedBy?: number;
-  id?: number;
+  deletedBy?: string;
+  id?: string;
 };
 
 // 发送触达活动 - 请求
 export type ubaservicev1_SendCampaignRequest = {
-  id: number | undefined;
+  id: string | undefined;
 };
 
 // 取消触达活动 - 请求
 export type ubaservicev1_CancelCampaignRequest = {
-  id: number | undefined;
+  id: string | undefined;
 };
 
 // 自定义看板服务
@@ -5693,7 +4924,7 @@ export function createDashboardServiceClient(
 ): DashboardService {
   return {
     List(request) {
-      const path = `admin/v1/dashboards`;
+      const path = `/admin/v1/dashboards`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -5741,56 +4972,9 @@ export function createDashboardServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -5808,7 +4992,7 @@ export function createDashboardServiceClient(
       }) as Promise<ubaservicev1_ListDashboardResponse>;
     },
     Count(request) {
-      const path = `admin/v1/dashboards/count`;
+      const path = `/admin/v1/dashboards/count`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -5856,56 +5040,9 @@ export function createDashboardServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -5926,7 +5063,7 @@ export function createDashboardServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/dashboards/${request.id}`;
+      const path = `/admin/v1/dashboards/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.viewMask) {
@@ -5944,7 +5081,7 @@ export function createDashboardServiceClient(
       }) as Promise<ubaservicev1_Dashboard>;
     },
     Create(request) {
-      const path = `admin/v1/dashboards`;
+      const path = `/admin/v1/dashboards`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'DashboardService',
@@ -5955,8 +5092,10 @@ export function createDashboardServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/dashboards/${request.id}`;
-      const body = JSON.stringify(request);
+      const path = `/admin/v1/dashboards/${request.id}`;
+      const bodyMap = { ...request } as Record<string, unknown>;
+      delete bodyMap["id"];
+      const body = JSON.stringify(bodyMap);
       return transport.unary(path, 'PUT', body, {
         service: 'DashboardService',
         method: 'Update',
@@ -5966,7 +5105,7 @@ export function createDashboardServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/dashboards/${request.id}`;
+      const path = `/admin/v1/dashboards/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.deletedBy) {
@@ -5988,23 +5127,23 @@ export function createDashboardServiceClient(
 // 获取看板列表 - 答复
 export type ubaservicev1_ListDashboardResponse = {
   items: ubaservicev1_Dashboard[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // 自定义看板
 export type ubaservicev1_Dashboard = {
-  appId?: number;
+  appId?: string;
   createdAt?: wellKnownTimestamp;
-  createdBy?: number;
+  createdBy?: string;
   deletedAt?: wellKnownTimestamp;
-  deletedBy?: number;
+  deletedBy?: string;
   description?: string;
   enabled?: boolean;
-  id: number | undefined;
+  id: string | undefined;
   name?: string;
-  tenantId?: number;
+  tenantId?: string;
   updatedAt?: wellKnownTimestamp;
-  updatedBy?: number;
+  updatedBy?: string;
   widgets: ubaservicev1_DashboardWidget[] | undefined;
 };
 
@@ -6022,12 +5161,12 @@ export type ubaservicev1_DashboardWidget = {
 
 // 看板数量 - 答复
 export type ubaservicev1_CountDashboardResponse = {
-  count: number | undefined;
+  count: string | undefined;
 };
 
 // 获取看板数据 - 请求
 export type ubaservicev1_GetDashboardRequest = {
-  id?: number;
+  id?: string;
   viewMask?: wellKnownFieldMask;
 };
 
@@ -6040,14 +5179,14 @@ export type ubaservicev1_CreateDashboardRequest = {
 export type ubaservicev1_UpdateDashboardRequest = {
   allowMissing?: boolean;
   data: ubaservicev1_Dashboard | undefined;
-  id: number | undefined;
+  id: string | undefined;
   updateMask: undefined | wellKnownFieldMask;
 };
 
 // 删除看板 - 请求
 export type ubaservicev1_DeleteDashboardRequest = {
-  deletedBy?: number;
-  id?: number;
+  deletedBy?: string;
+  id?: string;
 };
 
 // 数据访问审计日志管理服务
@@ -6067,7 +5206,7 @@ export function createDataAccessAuditLogServiceClient(
 ): DataAccessAuditLogService {
   return {
     List(request) {
-      const path = `admin/v1/data-access-audit-logs`;
+      const path = `/admin/v1/data-access-audit-logs`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -6115,56 +5254,9 @@ export function createDataAccessAuditLogServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -6185,7 +5277,7 @@ export function createDataAccessAuditLogServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/data-access-audit-logs/${request.id}`;
+      const path = `/admin/v1/data-access-audit-logs/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.viewMask) {
@@ -6207,7 +5299,7 @@ export function createDataAccessAuditLogServiceClient(
 // 查询数据访问审计日志列表 - 回应
 export type auditservicev1_ListDataAccessAuditLogResponse = {
   items: auditservicev1_DataAccessAuditLog[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // 数据访问审计日志
@@ -6221,7 +5313,7 @@ export type auditservicev1_DataAccessAuditLog = {
   dataMasked?: boolean;
   dataSource?: string;
   dbUser?: string;
-  id?: number;
+  id?: string;
   ipAddress?: string;
   latencyMs?: number;
   logHash?: string;
@@ -6233,9 +5325,9 @@ export type auditservicev1_DataAccessAuditLog = {
   sqlText?: string;
   success?: boolean;
   tableName?: string;
-  tenantId?: number;
+  tenantId?: string;
   tenantName?: string;
-  userId?: number;
+  userId?: string;
   username?: string;
 };
 
@@ -6269,7 +5361,7 @@ export type auditservicev1_SensitiveLevel =
   | 'SENSITIVE_LEVEL_UNSPECIFIED';
 // 查询数据访问审计日志详情 - 请求
 export type auditservicev1_GetDataAccessAuditLogRequest = {
-  id?: number;
+  id?: string;
   viewMask?: wellKnownFieldMask;
 };
 
@@ -6302,7 +5394,7 @@ export function createDictEntryServiceClient(
 ): DictEntryService {
   return {
     List(request) {
-      const path = `admin/v1/dict/entries`;
+      const path = `/admin/v1/dict/entries`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -6350,56 +5442,9 @@ export function createDictEntryServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -6417,7 +5462,7 @@ export function createDictEntryServiceClient(
       }) as Promise<dictservicev1_ListDictEntryResponse>;
     },
     Create(request) {
-      const path = `admin/v1/dict/entries`;
+      const path = `/admin/v1/dict/entries`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'DictEntryService',
@@ -6428,15 +5473,17 @@ export function createDictEntryServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/dict/entries/${request.id}`;
-      const body = JSON.stringify(request);
+      const path = `/admin/v1/dict/entries/${request.id}`;
+      const bodyMap = { ...request } as Record<string, unknown>;
+      delete bodyMap["id"];
+      const body = JSON.stringify(bodyMap);
       return transport.unary(path, 'PUT', body, {
         service: 'DictEntryService',
         method: 'Update',
       }) as Promise<wellKnownEmpty>;
     },
     Delete(request) {
-      const path = `admin/v1/dict/entries`;
+      const path = `/admin/v1/dict/entries`;
       const body = null;
       const queryParams: string[] = [];
       if (request.ids) {
@@ -6456,7 +5503,7 @@ export function createDictEntryServiceClient(
       }) as Promise<wellKnownEmpty>;
     },
     ListByTypeCode(request) {
-      const path = `admin/v1/dict/entries/by-type-code`;
+      const path = `/admin/v1/dict/entries/by-type-code`;
       const body = null;
       const queryParams: string[] = [];
       if (request.typeCode) {
@@ -6483,27 +5530,27 @@ export function createDictEntryServiceClient(
 // 查询字典项列表 - 回应
 export type dictservicev1_ListDictEntryResponse = {
   items: dictservicev1_DictEntry[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // 字典项
 export type dictservicev1_DictEntry = {
   createdAt?: wellKnownTimestamp;
-  createdBy?: number;
+  createdBy?: string;
   currentI18n?: dictservicev1_DictEntryI18n;
   deletedAt?: wellKnownTimestamp;
-  deletedBy?: number;
+  deletedBy?: string;
   entryValue?: string;
   i18n: { [key: string]: dictservicev1_DictEntryI18n } | undefined;
-  id?: number;
+  id?: string;
   isEnabled?: boolean;
   numericValue?: number;
   sortOrder?: number;
-  tenantId?: number;
+  tenantId?: string;
   tenantName?: string;
-  typeId?: number;
+  typeId?: string;
   updatedAt?: wellKnownTimestamp;
-  updatedBy?: number;
+  updatedBy?: string;
 };
 
 // 字典项多语言信息
@@ -6523,13 +5570,13 @@ export type dictservicev1_CreateDictEntryRequest = {
 export type dictservicev1_UpdateDictEntryRequest = {
   allowMissing?: boolean;
   data: dictservicev1_DictEntry | undefined;
-  id: number | undefined;
+  id: string | undefined;
   updateMask: undefined | wellKnownFieldMask;
 };
 
 // 批量删除字典 - 请求
 export type dictservicev1_DeleteDictEntryRequest = {
-  ids: number[] | undefined;
+  ids: string[] | undefined;
 };
 
 export type dictservicev1_ListDictEntryByTypeCodeRequest = {
@@ -6551,6 +5598,10 @@ export interface DictTypeService {
   Get(
     request: dictservicev1_GetDictTypeRequest,
   ): Promise<dictservicev1_DictType>;
+  /** Alternate HTTP binding #1 of Get: GET /admin/v1/dict/types/code/{code} */
+  GetAlt1(
+    request: dictservicev1_GetDictTypeRequest,
+  ): Promise<dictservicev1_DictType>;
   // 创建字典类型
   Create(
     request: dictservicev1_CreateDictTypeRequest,
@@ -6570,7 +5621,7 @@ export function createDictTypeServiceClient(
 ): DictTypeService {
   return {
     List(request) {
-      const path = `admin/v1/dict/types`;
+      const path = `/admin/v1/dict/types`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -6618,56 +5669,9 @@ export function createDictTypeServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -6688,7 +5692,7 @@ export function createDictTypeServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/dict/types/${request.id}`;
+      const path = `/admin/v1/dict/types/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.code) {
@@ -6710,8 +5714,36 @@ export function createDictTypeServiceClient(
         method: 'Get',
       }) as Promise<dictservicev1_DictType>;
     },
+
+    // Alternate HTTP binding #1 of Get: GET /admin/v1/dict/types/code/{code}
+    GetAlt1(request) {
+      if (request.code === undefined || request.code === null) {
+        throw new Error('missing required field request.code');
+      }
+      const path = `/admin/v1/dict/types/code/${request.code}`;
+      const body = null;
+      const queryParams: string[] = [];
+      if (request.id) {
+        queryParams.push(
+          `id=${encodeURIComponent(request.id.toString())}`,
+        );
+      }
+      if (request.viewMask) {
+        queryParams.push(
+          `viewMask=${encodeURIComponent(request.viewMask.toString())}`,
+        );
+      }
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join('&')}`;
+      }
+      return transport.unary(uri, 'GET', body, {
+        service: 'DictTypeService',
+        method: 'Get',
+      }) as Promise<dictservicev1_DictType>;
+    },
     Create(request) {
-      const path = `admin/v1/dict/types`;
+      const path = `/admin/v1/dict/types`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'DictTypeService',
@@ -6722,15 +5754,17 @@ export function createDictTypeServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/dict/types/${request.id}`;
-      const body = JSON.stringify(request);
+      const path = `/admin/v1/dict/types/${request.id}`;
+      const bodyMap = { ...request } as Record<string, unknown>;
+      delete bodyMap["id"];
+      const body = JSON.stringify(bodyMap);
       return transport.unary(path, 'PUT', body, {
         service: 'DictTypeService',
         method: 'Update',
       }) as Promise<wellKnownEmpty>;
     },
     Delete(request) {
-      const path = `admin/v1/dict/types`;
+      const path = `/admin/v1/dict/types`;
       const body = null;
       const queryParams: string[] = [];
       if (request.ids) {
@@ -6754,30 +5788,30 @@ export function createDictTypeServiceClient(
 // 查询字典类型列表 - 回应
 export type dictservicev1_ListDictTypeResponse = {
   items: dictservicev1_DictType[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // 字典类型
 export type dictservicev1_DictType = {
   createdAt?: wellKnownTimestamp;
-  createdBy?: number;
+  createdBy?: string;
   deletedAt?: wellKnownTimestamp;
-  deletedBy?: number;
-  id?: number;
+  deletedBy?: string;
+  id?: string;
   isEnabled?: boolean;
   sortOrder?: number;
-  tenantId?: number;
+  tenantId?: string;
   tenantName?: string;
   typeCode?: string;
   typeName?: string;
   updatedAt?: wellKnownTimestamp;
-  updatedBy?: number;
+  updatedBy?: string;
 };
 
 // 查询字典类型详情 - 请求
 export type dictservicev1_GetDictTypeRequest = {
   code?: string;
-  id?: number;
+  id?: string;
   viewMask?: wellKnownFieldMask;
 };
 
@@ -6790,13 +5824,13 @@ export type dictservicev1_CreateDictTypeRequest = {
 export type dictservicev1_UpdateDictTypeRequest = {
   allowMissing?: boolean;
   data: dictservicev1_DictType | undefined;
-  id: number | undefined;
+  id: string | undefined;
   updateMask: undefined | wellKnownFieldMask;
 };
 
 // 批量删除字典 - 请求
 export type dictservicev1_DeleteDictTypeRequest = {
-  ids: number[] | undefined;
+  ids: string[] | undefined;
 };
 
 // 事件路径服务
@@ -6816,7 +5850,7 @@ export function createEventPathServiceClient(
 ): EventPathService {
   return {
     List(request) {
-      const path = `admin/v1/event-paths`;
+      const path = `/admin/v1/event-paths`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -6864,56 +5898,9 @@ export function createEventPathServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -6934,7 +5921,7 @@ export function createEventPathServiceClient(
       if (request.pathId === undefined || request.pathId === null) {
         throw new Error('missing required field request.path_id');
       }
-      const path = `admin/v1/event-paths/${request.pathId}`;
+      const path = `/admin/v1/event-paths/${request.pathId}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.viewMask) {
@@ -6955,7 +5942,7 @@ export function createEventPathServiceClient(
 }
 export type ubaservicev1_ListEventPathResponse = {
   items: ubaservicev1_EventPath[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // 事件路径（用户行为路径，包含有序事件序列和路径指标）
@@ -6975,7 +5962,7 @@ export type ubaservicev1_EventPath = {
   lastEvent: string | undefined;
   // 有序事件序列（路径节点列表，按发生顺序排列）
   nodes: ubaservicev1_PathNode[] | undefined;
-  pathHash: number | undefined;
+  pathHash: string | undefined;
   // 路径ID（唯一标识一条事件路径，hash 或 UUID）
   pathId: string | undefined;
   // 会话ID（路径所属会话）
@@ -6986,11 +5973,11 @@ export type ubaservicev1_EventPath = {
   // 步骤数（路径节点总数）
   stepCount: number | undefined;
   // 租户ID（多租户隔离，支持 SaaS 场景）
-  tenantId: number | undefined;
+  tenantId: string | undefined;
   // 路径总时长（毫秒，start_time 到 end_time 的间隔）
-  totalDurationMs: number | undefined;
+  totalDurationMs: string | undefined;
   // 用户ID（路径所属用户）
-  userId: number | undefined;
+  userId: string | undefined;
 };
 
 // 路径节点（事件路径中的单个事件节点，包含事件信息和对象信息）
@@ -7040,7 +6027,7 @@ export function createEventSchemaServiceClient(
 ): EventSchemaService {
   return {
     List(request) {
-      const path = `admin/v1/event-schemas`;
+      const path = `/admin/v1/event-schemas`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -7088,56 +6075,9 @@ export function createEventSchemaServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -7155,7 +6095,7 @@ export function createEventSchemaServiceClient(
       }) as Promise<ubaservicev1_ListEventSchemaResponse>;
     },
     Count(request) {
-      const path = `admin/v1/event-schemas/count`;
+      const path = `/admin/v1/event-schemas/count`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -7203,56 +6143,9 @@ export function createEventSchemaServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -7273,7 +6166,7 @@ export function createEventSchemaServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/event-schemas/${request.id}`;
+      const path = `/admin/v1/event-schemas/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.viewMask) {
@@ -7291,7 +6184,7 @@ export function createEventSchemaServiceClient(
       }) as Promise<ubaservicev1_EventSchema>;
     },
     Create(request) {
-      const path = `admin/v1/event-schemas`;
+      const path = `/admin/v1/event-schemas`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'EventSchemaService',
@@ -7302,8 +6195,10 @@ export function createEventSchemaServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/event-schemas/${request.id}`;
-      const body = JSON.stringify(request);
+      const path = `/admin/v1/event-schemas/${request.id}`;
+      const bodyMap = { ...request } as Record<string, unknown>;
+      delete bodyMap["id"];
+      const body = JSON.stringify(bodyMap);
       return transport.unary(path, 'PUT', body, {
         service: 'EventSchemaService',
         method: 'Update',
@@ -7313,7 +6208,7 @@ export function createEventSchemaServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/event-schemas/${request.id}`;
+      const path = `/admin/v1/event-schemas/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.deletedBy) {
@@ -7334,7 +6229,7 @@ export function createEventSchemaServiceClient(
 }
 export type ubaservicev1_ListEventSchemaResponse = {
   items: ubaservicev1_EventSchema[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // 事件 Schema
@@ -7342,7 +6237,7 @@ export type ubaservicev1_EventSchema = {
   // 事件类别
   category?: string;
   createdAt?: wellKnownTimestamp;
-  createdBy?: number;
+  createdBy?: string;
   // 事件描述
   description?: string;
   // 显示名
@@ -7350,15 +6245,15 @@ export type ubaservicev1_EventSchema = {
   // 事件名（唯一业务标识，对应 events_fact.event_name）
   eventName: string | undefined;
   // 自增主键
-  id?: number;
+  id?: string;
   // 属性 schema 列表
   properties: ubaservicev1_EventPropertySchema[] | undefined;
   // 启用状态
   status?: ubaservicev1_EventSchema_Status;
   // 租户ID
-  tenantId?: number;
+  tenantId?: string;
   updatedAt?: wellKnownTimestamp;
-  updatedBy?: number;
+  updatedBy?: string;
 };
 
 // 事件属性定义
@@ -7381,11 +6276,11 @@ export type ubaservicev1_EventSchema_Status =
   | 'ENABLED'
   | 'EVENT_SCHEMA_STATUS_UNSPECIFIED';
 export type ubaservicev1_CountEventSchemaResponse = {
-  count: number | undefined;
+  count: string | undefined;
 };
 
 export type ubaservicev1_GetEventSchemaRequest = {
-  id?: number;
+  id?: string;
   viewMask?: wellKnownFieldMask;
 };
 
@@ -7396,13 +6291,13 @@ export type ubaservicev1_CreateEventSchemaRequest = {
 export type ubaservicev1_UpdateEventSchemaRequest = {
   allowMissing?: boolean;
   data: ubaservicev1_EventSchema | undefined;
-  id: number | undefined;
+  id: string | undefined;
   updateMask: undefined | wellKnownFieldMask;
 };
 
 export type ubaservicev1_DeleteEventSchemaRequest = {
-  deletedBy?: number;
-  id?: number;
+  deletedBy?: string;
+  id?: string;
 };
 
 // 功能开关/AB实验服务
@@ -7442,7 +6337,7 @@ export function createFeatureFlagServiceClient(
 ): FeatureFlagService {
   return {
     List(request) {
-      const path = `admin/v1/feature-flags`;
+      const path = `/admin/v1/feature-flags`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -7490,56 +6385,9 @@ export function createFeatureFlagServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -7557,7 +6405,7 @@ export function createFeatureFlagServiceClient(
       }) as Promise<ubaservicev1_ListFeatureFlagResponse>;
     },
     Count(request) {
-      const path = `admin/v1/feature-flags/count`;
+      const path = `/admin/v1/feature-flags/count`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -7605,56 +6453,9 @@ export function createFeatureFlagServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -7675,7 +6476,7 @@ export function createFeatureFlagServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/feature-flags/${request.id}`;
+      const path = `/admin/v1/feature-flags/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.viewMask) {
@@ -7693,7 +6494,7 @@ export function createFeatureFlagServiceClient(
       }) as Promise<ubaservicev1_FeatureFlag>;
     },
     Create(request) {
-      const path = `admin/v1/feature-flags`;
+      const path = `/admin/v1/feature-flags`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'FeatureFlagService',
@@ -7704,8 +6505,10 @@ export function createFeatureFlagServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/feature-flags/${request.id}`;
-      const body = JSON.stringify(request);
+      const path = `/admin/v1/feature-flags/${request.id}`;
+      const bodyMap = { ...request } as Record<string, unknown>;
+      delete bodyMap["id"];
+      const body = JSON.stringify(bodyMap);
       return transport.unary(path, 'PUT', body, {
         service: 'FeatureFlagService',
         method: 'Update',
@@ -7715,7 +6518,7 @@ export function createFeatureFlagServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/feature-flags/${request.id}`;
+      const path = `/admin/v1/feature-flags/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.deletedBy) {
@@ -7736,7 +6539,7 @@ export function createFeatureFlagServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/feature-flags/${request.id}/result`;
+      const path = `/admin/v1/feature-flags/${request.id}/result`;
       const body = null;
       const queryParams: string[] = [];
       if (request.timeRange?.startMs) {
@@ -7763,28 +6566,28 @@ export function createFeatureFlagServiceClient(
 // 获取开关列表 - 答复
 export type ubaservicev1_ListFeatureFlagResponse = {
   items: ubaservicev1_FeatureFlag[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // 功能开关/AB实验
 export type ubaservicev1_FeatureFlag = {
-  appId?: number;
+  appId?: string;
   createdAt?: wellKnownTimestamp;
-  createdBy?: number;
+  createdBy?: string;
   deletedAt?: wellKnownTimestamp;
-  deletedBy?: number;
+  deletedBy?: string;
   description?: string;
   enabled?: boolean;
   endedAt?: wellKnownTimestamp;
   goalEventName?: string;
-  id: number | undefined;
+  id: string | undefined;
   key?: string;
   name?: string;
   rolloutPercentage?: number;
   startedAt?: wellKnownTimestamp;
-  tenantId?: number;
+  tenantId?: string;
   updatedAt?: wellKnownTimestamp;
-  updatedBy?: number;
+  updatedBy?: string;
   variants: ubaservicev1_FeatureFlagVariant[] | undefined;
 };
 
@@ -7800,12 +6603,12 @@ export type ubaservicev1_FeatureFlagVariant = {
 
 // 开关数量 - 答复
 export type ubaservicev1_CountFeatureFlagResponse = {
-  count: number | undefined;
+  count: string | undefined;
 };
 
 // 获取开关数据 - 请求
 export type ubaservicev1_GetFeatureFlagRequest = {
-  id?: number;
+  id?: string;
   viewMask?: wellKnownFieldMask;
 };
 
@@ -7818,19 +6621,19 @@ export type ubaservicev1_CreateFeatureFlagRequest = {
 export type ubaservicev1_UpdateFeatureFlagRequest = {
   allowMissing?: boolean;
   data: ubaservicev1_FeatureFlag | undefined;
-  id: number | undefined;
+  id: string | undefined;
   updateMask: undefined | wellKnownFieldMask;
 };
 
 // 删除开关 - 请求
 export type ubaservicev1_DeleteFeatureFlagRequest = {
-  deletedBy?: number;
-  id?: number;
+  deletedBy?: string;
+  id?: string;
 };
 
 // 实验结果请求
 export type ubaservicev1_GetFlagResultRequest = {
-  id: number | undefined;
+  id: string | undefined;
   // 分析时间范围（缺省为近 30 天）
   timeRange?: ubaservicev1_TimeRange;
 };
@@ -7850,9 +6653,9 @@ export type ubaservicev1_FlagVariantResult = {
   // 转化率（0~1）
   conversionRate: number | undefined;
   // 目标事件转化用户数
-  convertedUsers: number | undefined;
+  convertedUsers: string | undefined;
   // 曝光用户数（触发过 $feature_flag 事件的登录用户）
-  exposedUsers: number | undefined;
+  exposedUsers: string | undefined;
   // 变体标识
   variant: string | undefined;
 };
@@ -7886,7 +6689,7 @@ export function createFileServiceClient(
 ): FileService {
   return {
     List(request) {
-      const path = `admin/v1/files`;
+      const path = `/admin/v1/files`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -7934,56 +6737,9 @@ export function createFileServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -8004,7 +6760,7 @@ export function createFileServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/files/${request.id}`;
+      const path = `/admin/v1/files/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.viewMask) {
@@ -8022,7 +6778,7 @@ export function createFileServiceClient(
       }) as Promise<storageservicev1_File>;
     },
     Create(request) {
-      const path = `admin/v1/files`;
+      const path = `/admin/v1/files`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'FileService',
@@ -8033,8 +6789,10 @@ export function createFileServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/files/${request.id}`;
-      const body = JSON.stringify(request);
+      const path = `/admin/v1/files/${request.id}`;
+      const bodyMap = { ...request } as Record<string, unknown>;
+      delete bodyMap["id"];
+      const body = JSON.stringify(bodyMap);
       return transport.unary(path, 'PUT', body, {
         service: 'FileService',
         method: 'Update',
@@ -8044,7 +6802,7 @@ export function createFileServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/files/${request.id}`;
+      const path = `/admin/v1/files/${request.id}`;
       const body = null;
       return transport.unary(path, 'DELETE', body, {
         service: 'FileService',
@@ -8056,7 +6814,7 @@ export function createFileServiceClient(
 // 查询列表 - 回应
 export type storageservicev1_ListFileResponse = {
   items: storageservicev1_File[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // 文件
@@ -8064,25 +6822,25 @@ export type storageservicev1_File = {
   bucketName?: string;
   contentHash?: string;
   createdAt?: wellKnownTimestamp;
-  createdBy?: number;
+  createdBy?: string;
   deletedAt?: wellKnownTimestamp;
-  deletedBy?: number;
+  deletedBy?: string;
   extension?: string;
   fileDirectory?: string;
   fileGuid?: string;
   fileName?: string;
   //
   // Behaviors: OPTIONAL
-  id?: number;
+  id?: string;
   linkUrl?: string;
   provider?: storageservicev1_OSSProvider;
   saveFileName?: string;
-  size?: number;
+  size?: string;
   sizeFormat?: string;
-  tenantId?: number;
+  tenantId?: string;
   tenantName?: string;
   updatedAt?: wellKnownTimestamp;
-  updatedBy?: number;
+  updatedBy?: string;
 };
 
 // OSS供应商
@@ -8099,7 +6857,7 @@ export type storageservicev1_OSSProvider =
   | 'TENCENT';
 // 查询 - 请求
 export type storageservicev1_GetFileRequest = {
-  id?: number;
+  id?: string;
   viewMask?: wellKnownFieldMask;
 };
 
@@ -8112,13 +6870,13 @@ export type storageservicev1_CreateFileRequest = {
 export type storageservicev1_UpdateFileRequest = {
   allowMissing?: boolean;
   data: storageservicev1_File | undefined;
-  id: number | undefined;
+  id: string | undefined;
   updateMask: undefined | wellKnownFieldMask;
 };
 
 // 删除 - 请求
 export type storageservicev1_DeleteFileRequest = {
-  id?: number;
+  id?: string;
 };
 
 // 文件传输服务
@@ -8142,7 +6900,7 @@ export function createFileTransferServiceClient(
 ): FileTransferService {
   return {
     DownloadFile(request) {
-      const path = `admin/v1/file/download`;
+      const path = `/admin/v1/file/download`;
       const body = null;
       const queryParams: string[] = [];
       if (request.fileId) {
@@ -8210,7 +6968,7 @@ export function createFileTransferServiceClient(
       }) as Promise<storageservicev1_DownloadFileResponse>;
     },
     PutUploadFile(request) {
-      const path = `admin/v1/file/upload`;
+      const path = `/admin/v1/file/upload`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'PUT', body, {
         service: 'FileTransferService',
@@ -8218,7 +6976,7 @@ export function createFileTransferServiceClient(
       }) as Promise<storageservicev1_UploadFileResponse>;
     },
     PostUploadFile(request) {
-      const path = `admin/v1/file/upload`;
+      const path = `/admin/v1/file/upload`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'FileTransferService',
@@ -8232,12 +6990,12 @@ export type storageservicev1_DownloadFileRequest = {
   acceptMime?: string;
   disposition?: string;
   downloadUrl?: string;
-  fileId?: number;
+  fileId?: string;
   preferPresignedUrl?: boolean;
   presignExpireSeconds?: number;
-  rangeEnd?: number;
+  rangeEnd?: string;
   // 可选的分段下载范围（闭区间 start，开区间 end；为 0/0 表示全量）
-  rangeStart?: number;
+  rangeStart?: string;
   storageObject?: storageservicev1_StorageObject;
 };
 
@@ -8254,7 +7012,7 @@ export type storageservicev1_DownloadFileResponse = {
   downloadUrl?: string;
   file?: string;
   mime: string | undefined;
-  size: number | undefined;
+  size: string | undefined;
   sourceFileName: string | undefined;
   storagePath: string | undefined;
   updatedAt?: wellKnownTimestamp;
@@ -8264,11 +7022,11 @@ export type storageservicev1_UploadFileRequest = {
   file?: string;
   mime?: string;
   presign?: storageservicev1_PresignOption;
-  size?: number;
+  size?: string;
   sourceFileName?: string;
   storageObject: storageservicev1_StorageObject | undefined;
-  tenantId?: number;
-  userId?: number;
+  tenantId?: string;
+  userId?: string;
 };
 
 // 预签名选项
@@ -8300,7 +7058,7 @@ export function createIDMappingServiceClient(
 ): IDMappingService {
   return {
     List(request) {
-      const path = `admin/v1/id-mappings`;
+      const path = `/admin/v1/id-mappings`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -8348,56 +7106,9 @@ export function createIDMappingServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -8418,7 +7129,7 @@ export function createIDMappingServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/id-mappings/${request.id}`;
+      const path = `/admin/v1/id-mappings/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.viewMask) {
@@ -8440,7 +7151,7 @@ export function createIDMappingServiceClient(
 // 获取ID映射列表 - 答复
 export type ubaservicev1_ListIDMappingResponse = {
   items: ubaservicev1_IDMapping[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // ID 关联记录（对应 id_mapping 表）
@@ -8450,17 +7161,17 @@ export type ubaservicev1_IDMapping = {
   // 创建时间（记录映射关系创建的时间）
   createdAt?: wellKnownTimestamp;
   // 创建者用户ID（记录创建该映射关系的用户）
-  createdBy?: number;
+  createdBy?: string;
   // 删除时间（记录映射关系被删除的时间）
   deletedAt?: wellKnownTimestamp;
   // 删除者用户ID（记录删除该映射关系的用户）
-  deletedBy?: number;
+  deletedBy?: string;
   // 首次出现时间（映射关系首次被发现或建立的时间）
   firstSeen?: wellKnownTimestamp;
   // 全局用户唯一标识（用于跨平台、跨租户用户关联）
   globalUserId?: string;
   // 自增长主键ID
-  id: number | undefined;
+  id: string | undefined;
   // ID类型（如用户ID、设备ID、Cookie、邮箱、手机号、OpenID 等）
   idType?: string;
   // ID值（具体的标识符，如用户ID、设备ID、邮箱等）
@@ -8474,16 +7185,16 @@ export type ubaservicev1_IDMapping = {
   // 扩展属性（用于存储自定义的业务特征或附加信息）
   properties: { [key: string]: string } | undefined;
   // 租户ID（多租户隔离，支持 SaaS 场景）
-  tenantId?: number;
+  tenantId?: string;
   // 更新时间（记录映射关系最近一次更新的时间）
   updatedAt?: wellKnownTimestamp;
   // 更新者用户ID（记录最近一次更新该映射关系的用户）
-  updatedBy?: number;
+  updatedBy?: string;
 };
 
 // 获取ID映射数据 - 请求
 export type ubaservicev1_GetIDMappingRequest = {
-  id?: number;
+  id?: string;
   viewMask?: wellKnownFieldMask;
 };
 
@@ -8516,7 +7227,7 @@ export function createImportServiceClient(
 ): ImportService {
   return {
     Create(request) {
-      const path = `admin/v1/import-jobs`;
+      const path = `/admin/v1/import-jobs`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'ImportService',
@@ -8524,7 +7235,7 @@ export function createImportServiceClient(
       }) as Promise<ubaservicev1_ImportJob>;
     },
     List(request) {
-      const path = `admin/v1/import-jobs`;
+      const path = `/admin/v1/import-jobs`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -8572,56 +7283,9 @@ export function createImportServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -8642,7 +7306,7 @@ export function createImportServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/import-jobs/${request.id}`;
+      const path = `/admin/v1/import-jobs/${request.id}`;
       const body = null;
       return transport.unary(path, 'GET', body, {
         service: 'ImportService',
@@ -8653,8 +7317,10 @@ export function createImportServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/import-jobs/${request.id}/cancel`;
-      const body = JSON.stringify(request);
+      const path = `/admin/v1/import-jobs/${request.id}/cancel`;
+      const bodyMap = { ...request } as Record<string, unknown>;
+      delete bodyMap["id"];
+      const body = JSON.stringify(bodyMap);
       return transport.unary(path, 'POST', body, {
         service: 'ImportService',
         method: 'Cancel',
@@ -8664,7 +7330,7 @@ export function createImportServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/import-jobs/${request.id}`;
+      const path = `/admin/v1/import-jobs/${request.id}`;
       const body = null;
       return transport.unary(path, 'DELETE', body, {
         service: 'ImportService',
@@ -8688,7 +7354,7 @@ export type ubaservicev1_CreateImportJobRequest = {
 export type ubaservicev1_ImportJob = {
   appId?: string;
   createdAt?: wellKnownTimestamp;
-  createdBy?: number;
+  createdBy?: string;
   durationMs?: number;
   // 错误摘要（前 20 条）
   errors: string[] | undefined;
@@ -8696,12 +7362,12 @@ export type ubaservicev1_ImportJob = {
   eventsJson?: string;
   failedCount: number | undefined;
   finishedAt?: wellKnownTimestamp;
-  id: number | undefined;
+  id: string | undefined;
   importedCount: number | undefined;
   name?: string;
   startedAt?: wellKnownTimestamp;
   status?: ubaservicev1_ImportJobStatus;
-  tenantId?: number;
+  tenantId?: string;
   // 统计
   totalCount: number | undefined;
   updatedAt?: wellKnownTimestamp;
@@ -8724,22 +7390,22 @@ export type ubaservicev1_ImportJobStatus =
 // 导入任务列表 - 答复
 export type ubaservicev1_ListImportJobResponse = {
   items: ubaservicev1_ImportJob[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // 获取导入任务 - 请求
 export type ubaservicev1_GetImportJobRequest = {
-  id: number | undefined;
+  id: string | undefined;
 };
 
 // 取消导入任务 - 请求
 export type ubaservicev1_CancelImportJobRequest = {
-  id: number | undefined;
+  id: string | undefined;
 };
 
 // 删除导入任务 - 请求
 export type ubaservicev1_DeleteImportJobRequest = {
-  id: number | undefined;
+  id: string | undefined;
 };
 
 // 站内信消息管理服务
@@ -8775,7 +7441,7 @@ export function createInternalMessageServiceClient(
 ): InternalMessageService {
   return {
     ListMessage(request) {
-      const path = `admin/v1/internal-message/messages`;
+      const path = `/admin/v1/internal-message/messages`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -8823,56 +7489,9 @@ export function createInternalMessageServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -8893,7 +7512,7 @@ export function createInternalMessageServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/internal-message/messages/${request.id}`;
+      const path = `/admin/v1/internal-message/messages/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.viewMask) {
@@ -8914,8 +7533,10 @@ export function createInternalMessageServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/internal-message/messages/${request.id}`;
-      const body = JSON.stringify(request);
+      const path = `/admin/v1/internal-message/messages/${request.id}`;
+      const bodyMap = { ...request } as Record<string, unknown>;
+      delete bodyMap["id"];
+      const body = JSON.stringify(bodyMap);
       return transport.unary(path, 'PUT', body, {
         service: 'InternalMessageService',
         method: 'UpdateMessage',
@@ -8925,7 +7546,7 @@ export function createInternalMessageServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/internal-message/messages/${request.id}`;
+      const path = `/admin/v1/internal-message/messages/${request.id}`;
       const body = null;
       return transport.unary(path, 'DELETE', body, {
         service: 'InternalMessageService',
@@ -8933,7 +7554,7 @@ export function createInternalMessageServiceClient(
       }) as Promise<wellKnownEmpty>;
     },
     SendMessage(request) {
-      const path = `admin/v1/internal-message/send`;
+      const path = `/admin/v1/internal-message/send`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'InternalMessageService',
@@ -8941,7 +7562,7 @@ export function createInternalMessageServiceClient(
       }) as Promise<internal_messageservicev1_SendMessageResponse>;
     },
     RevokeMessage(request) {
-      const path = `admin/v1/internal-message/revoke`;
+      const path = `/admin/v1/internal-message/revoke`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'InternalMessageService',
@@ -8953,30 +7574,30 @@ export function createInternalMessageServiceClient(
 // 查询站内信消息列表 - 回应
 export type internal_messageservicev1_ListInternalMessageResponse = {
   items: internal_messageservicev1_InternalMessage[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // 站内信消息
 export type internal_messageservicev1_InternalMessage = {
-  categoryId?: number;
+  categoryId?: string;
   categoryName?: string;
   content?: string;
   createdAt?: wellKnownTimestamp;
-  createdBy?: number;
+  createdBy?: string;
   deletedAt?: wellKnownTimestamp;
-  deletedBy?: number;
+  deletedBy?: string;
   //
   // Behaviors: OPTIONAL
-  id?: number;
-  senderId?: number;
+  id?: string;
+  senderId?: string;
   senderName?: string;
   status?: internal_messageservicev1_InternalMessage_Status;
-  tenantId?: number;
+  tenantId?: string;
   tenantName?: string;
   title?: string;
   type?: internal_messageservicev1_InternalMessage_Type;
   updatedAt?: wellKnownTimestamp;
-  updatedBy?: number;
+  updatedBy?: string;
 };
 
 // 消息状态
@@ -8994,7 +7615,7 @@ export type internal_messageservicev1_InternalMessage_Type =
   | 'PRIVATE';
 // 查询站内信消息详情 - 请求
 export type internal_messageservicev1_GetInternalMessageRequest = {
-  id?: number;
+  id?: string;
   viewMask?: wellKnownFieldMask;
 };
 
@@ -9002,34 +7623,34 @@ export type internal_messageservicev1_GetInternalMessageRequest = {
 export type internal_messageservicev1_UpdateInternalMessageRequest = {
   allowMissing?: boolean;
   data: internal_messageservicev1_InternalMessage | undefined;
-  id: number | undefined;
+  id: string | undefined;
   updateMask: undefined | wellKnownFieldMask;
 };
 
 // 删除站内信消息 - 请求
 export type internal_messageservicev1_DeleteInternalMessageRequest = {
-  id?: number;
+  id?: string;
 };
 
 export type internal_messageservicev1_SendMessageRequest = {
-  categoryId?: number;
+  categoryId?: string;
   content: string | undefined;
-  conversationId?: number;
-  recipientUserId?: number;
-  sendUserId?: number;
+  conversationId?: string;
+  recipientUserId?: string;
+  sendUserId?: string;
   targetAll?: boolean;
-  targetUserIds: number[] | undefined;
+  targetUserIds: string[] | undefined;
   title?: string;
   type: internal_messageservicev1_InternalMessage_Type | undefined;
 };
 
 export type internal_messageservicev1_SendMessageResponse = {
-  messageId: number | undefined;
+  messageId: string | undefined;
 };
 
 export type internal_messageservicev1_RevokeMessageRequest = {
-  messageId: number | undefined;
-  userId: number | undefined;
+  messageId: string | undefined;
+  userId: string | undefined;
 };
 
 // 站内信消息分类管理服务
@@ -9061,7 +7682,7 @@ export function createInternalMessageCategoryServiceClient(
 ): InternalMessageCategoryService {
   return {
     List(request) {
-      const path = `admin/v1/internal-message/categories`;
+      const path = `/admin/v1/internal-message/categories`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -9109,56 +7730,9 @@ export function createInternalMessageCategoryServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -9179,7 +7753,7 @@ export function createInternalMessageCategoryServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/internal-message/categories/${request.id}`;
+      const path = `/admin/v1/internal-message/categories/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.viewMask) {
@@ -9197,7 +7771,7 @@ export function createInternalMessageCategoryServiceClient(
       }) as Promise<internal_messageservicev1_InternalMessageCategory>;
     },
     Create(request) {
-      const path = `admin/v1/internal-message/categories`;
+      const path = `/admin/v1/internal-message/categories`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'InternalMessageCategoryService',
@@ -9208,8 +7782,10 @@ export function createInternalMessageCategoryServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/internal-message/categories/${request.id}`;
-      const body = JSON.stringify(request);
+      const path = `/admin/v1/internal-message/categories/${request.id}`;
+      const bodyMap = { ...request } as Record<string, unknown>;
+      delete bodyMap["id"];
+      const body = JSON.stringify(bodyMap);
       return transport.unary(path, 'PUT', body, {
         service: 'InternalMessageCategoryService',
         method: 'Update',
@@ -9219,7 +7795,7 @@ export function createInternalMessageCategoryServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/internal-message/categories/${request.id}`;
+      const path = `/admin/v1/internal-message/categories/${request.id}`;
       const body = null;
       return transport.unary(path, 'DELETE', body, {
         service: 'InternalMessageCategoryService',
@@ -9231,30 +7807,30 @@ export function createInternalMessageCategoryServiceClient(
 // 查询站内信消息分类列表 - 回应
 export type internal_messageservicev1_ListInternalMessageCategoryResponse = {
   items: internal_messageservicev1_InternalMessageCategory[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // 站内信消息分类
 export type internal_messageservicev1_InternalMessageCategory = {
   code?: string;
   createdAt?: wellKnownTimestamp;
-  createdBy?: number;
+  createdBy?: string;
   deletedAt?: wellKnownTimestamp;
-  deletedBy?: number;
+  deletedBy?: string;
   iconUrl?: string;
-  id?: number;
+  id?: string;
   isEnabled?: boolean;
   name?: string;
   sortOrder?: number;
-  tenantId?: number;
+  tenantId?: string;
   tenantName?: string;
   updatedAt?: wellKnownTimestamp;
-  updatedBy?: number;
+  updatedBy?: string;
 };
 
 // 查询站内信消息分类详情 - 请求
 export type internal_messageservicev1_GetInternalMessageCategoryRequest = {
-  id?: number;
+  id?: string;
   viewMask?: wellKnownFieldMask;
 };
 
@@ -9267,13 +7843,13 @@ export type internal_messageservicev1_CreateInternalMessageCategoryRequest = {
 export type internal_messageservicev1_UpdateInternalMessageCategoryRequest = {
   allowMissing?: boolean;
   data: internal_messageservicev1_InternalMessageCategory | undefined;
-  id: number | undefined;
+  id: string | undefined;
   updateMask: undefined | wellKnownFieldMask;
 };
 
 // 删除站内信消息分类 - 请求
 export type internal_messageservicev1_DeleteInternalMessageCategoryRequest = {
-  id?: number;
+  id?: string;
 };
 
 // 站内信消息管理服务
@@ -9297,7 +7873,7 @@ export function createInternalMessageRecipientServiceClient(
 ): InternalMessageRecipientService {
   return {
     ListUserInbox(request) {
-      const path = `admin/v1/internal-message/inbox`;
+      const path = `/admin/v1/internal-message/inbox`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -9345,56 +7921,9 @@ export function createInternalMessageRecipientServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -9412,7 +7941,7 @@ export function createInternalMessageRecipientServiceClient(
       }) as Promise<internal_messageservicev1_ListUserInboxResponse>;
     },
     DeleteNotificationFromInbox(request) {
-      const path = `admin/v1/internal-message/inbox/delete`;
+      const path = `/admin/v1/internal-message/inbox/delete`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'InternalMessageRecipientService',
@@ -9420,7 +7949,7 @@ export function createInternalMessageRecipientServiceClient(
       }) as Promise<wellKnownEmpty>;
     },
     MarkNotificationAsRead(request) {
-      const path = `admin/v1/internal-message/read`;
+      const path = `/admin/v1/internal-message/read`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'InternalMessageRecipientService',
@@ -9431,27 +7960,27 @@ export function createInternalMessageRecipientServiceClient(
 }
 export type internal_messageservicev1_ListUserInboxResponse = {
   items: internal_messageservicev1_InternalMessageRecipient[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // 站内信消息用户接收信息
 export type internal_messageservicev1_InternalMessageRecipient = {
   content?: string;
   createdAt?: wellKnownTimestamp;
-  createdBy?: number;
+  createdBy?: string;
   deletedAt?: wellKnownTimestamp;
-  deletedBy?: number;
-  id?: number;
-  messageId?: number;
+  deletedBy?: string;
+  id?: string;
+  messageId?: string;
   readAt?: wellKnownTimestamp;
   receivedAt?: wellKnownTimestamp;
-  recipientUserId?: number;
+  recipientUserId?: string;
   status?: internal_messageservicev1_InternalMessageRecipient_Status;
-  tenantId?: number;
+  tenantId?: string;
   tenantName?: string;
   title?: string;
   updatedAt?: wellKnownTimestamp;
-  updatedBy?: number;
+  updatedBy?: string;
 };
 
 // 消息状态
@@ -9462,13 +7991,13 @@ export type internal_messageservicev1_InternalMessageRecipient_Status =
   | 'REVOKED'
   | 'SENT';
 export type internal_messageservicev1_DeleteNotificationFromInboxRequest = {
-  recipientIds: number[] | undefined;
-  userId: number | undefined;
+  recipientIds: string[] | undefined;
+  userId: string | undefined;
 };
 
 export type internal_messageservicev1_MarkNotificationAsReadRequest = {
-  recipientIds: number[] | undefined;
-  userId: number | undefined;
+  recipientIds: string[] | undefined;
+  userId: string | undefined;
 };
 
 // 语言管理服务
@@ -9504,7 +8033,7 @@ export function createLanguageServiceClient(
 ): LanguageService {
   return {
     List(request) {
-      const path = `admin/v1/dict/langs`;
+      const path = `/admin/v1/dict/langs`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -9552,56 +8081,9 @@ export function createLanguageServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -9622,7 +8104,7 @@ export function createLanguageServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/dict/langs/${request.id}`;
+      const path = `/admin/v1/dict/langs/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.code) {
@@ -9645,7 +8127,7 @@ export function createLanguageServiceClient(
       }) as Promise<dictservicev1_Language>;
     },
     Create(request) {
-      const path = `admin/v1/dict/langs`;
+      const path = `/admin/v1/dict/langs`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'LanguageService',
@@ -9656,15 +8138,17 @@ export function createLanguageServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/dict/langs/${request.id}`;
-      const body = JSON.stringify(request);
+      const path = `/admin/v1/dict/langs/${request.id}`;
+      const bodyMap = { ...request } as Record<string, unknown>;
+      delete bodyMap["id"];
+      const body = JSON.stringify(bodyMap);
       return transport.unary(path, 'PUT', body, {
         service: 'LanguageService',
         method: 'Update',
       }) as Promise<wellKnownEmpty>;
     },
     Delete(request) {
-      const path = `admin/v1/dict/langs`;
+      const path = `/admin/v1/dict/langs`;
       const body = null;
       const queryParams: string[] = [];
       if (request.id) {
@@ -9682,7 +8166,7 @@ export function createLanguageServiceClient(
       }) as Promise<wellKnownEmpty>;
     },
     BatchCreate(request) {
-      const path = `admin/v1/dict/langs/batch`;
+      const path = `/admin/v1/dict/langs/batch`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'LanguageService',
@@ -9694,16 +8178,16 @@ export function createLanguageServiceClient(
 // 语言列表 - 答复
 export type dictservicev1_ListLanguageResponse = {
   items: dictservicev1_Language[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // 语言
 export type dictservicev1_Language = {
   createdAt?: wellKnownTimestamp;
-  createdBy?: number;
+  createdBy?: string;
   deletedAt?: wellKnownTimestamp;
-  deletedBy?: number;
-  id?: number;
+  deletedBy?: string;
+  id?: string;
   isDefault?: boolean;
   isEnabled?: boolean;
   languageCode?: string;
@@ -9711,13 +8195,13 @@ export type dictservicev1_Language = {
   nativeName?: string;
   sortOrder?: number;
   updatedAt?: wellKnownTimestamp;
-  updatedBy?: number;
+  updatedBy?: string;
 };
 
 // 语言数据 - 请求
 export type dictservicev1_GetLanguageRequest = {
   code?: string;
-  id?: number;
+  id?: string;
   viewMask?: wellKnownFieldMask;
 };
 
@@ -9730,13 +8214,13 @@ export type dictservicev1_CreateLanguageRequest = {
 export type dictservicev1_UpdateLanguageRequest = {
   allowMissing?: boolean;
   data: dictservicev1_Language | undefined;
-  id: number | undefined;
+  id: string | undefined;
   updateMask: undefined | wellKnownFieldMask;
 };
 
 // 删除语言 - 请求
 export type dictservicev1_DeleteLanguageRequest = {
-  id?: number;
+  id?: string;
 };
 
 export type dictservicev1_BatchCreateLanguagesRequest = {
@@ -9760,7 +8244,7 @@ export function createLoginAuditLogServiceClient(
 ): LoginAuditLogService {
   return {
     List(request) {
-      const path = `admin/v1/login-audit-logs`;
+      const path = `/admin/v1/login-audit-logs`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -9808,56 +8292,9 @@ export function createLoginAuditLogServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -9878,7 +8315,7 @@ export function createLoginAuditLogServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/login-audit-logs/${request.id}`;
+      const path = `/admin/v1/login-audit-logs/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.viewMask) {
@@ -9900,7 +8337,7 @@ export function createLoginAuditLogServiceClient(
 // 查询登录审计日志列表 - 回应
 export type auditservicev1_ListLoginAuditLogResponse = {
   items: auditservicev1_LoginAuditLog[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // 登录审计日志
@@ -9910,7 +8347,7 @@ export type auditservicev1_LoginAuditLog = {
   deviceInfo?: auditservicev1_DeviceInfo;
   failureReason?: string;
   geoLocation?: auditservicev1_GeoLocation;
-  id?: number;
+  id?: string;
   ipAddress?: string;
   logHash?: string;
   loginMethod?: auditservicev1_LoginAuditLog_LoginMethod;
@@ -9922,10 +8359,10 @@ export type auditservicev1_LoginAuditLog = {
   sessionId?: string;
   signature?: string;
   status?: auditservicev1_LoginAuditLog_Status;
-  tenantId?: number;
+  tenantId?: string;
   tenantName?: string;
   traceId?: string;
-  userId?: number;
+  userId?: string;
   username?: string;
 };
 
@@ -9961,7 +8398,7 @@ export type auditservicev1_LoginAuditLog_RiskLevel =
   | 'RISK_LEVEL_UNSPECIFIED';
 // 查询登录审计日志详情 - 请求
 export type auditservicev1_GetLoginAuditLogRequest = {
-  id?: number;
+  id?: string;
   viewMask?: wellKnownFieldMask;
 };
 
@@ -9994,7 +8431,7 @@ export function createLoginPolicyServiceClient(
 ): LoginPolicyService {
   return {
     List(request) {
-      const path = `admin/v1/login-policies`;
+      const path = `/admin/v1/login-policies`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -10042,56 +8479,9 @@ export function createLoginPolicyServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -10112,7 +8502,7 @@ export function createLoginPolicyServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/login-policies/${request.id}`;
+      const path = `/admin/v1/login-policies/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.viewMask) {
@@ -10130,7 +8520,7 @@ export function createLoginPolicyServiceClient(
       }) as Promise<authenticationservicev1_LoginPolicy>;
     },
     Create(request) {
-      const path = `admin/v1/login-policies`;
+      const path = `/admin/v1/login-policies`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'LoginPolicyService',
@@ -10141,8 +8531,10 @@ export function createLoginPolicyServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/login-policies/${request.id}`;
-      const body = JSON.stringify(request);
+      const path = `/admin/v1/login-policies/${request.id}`;
+      const bodyMap = { ...request } as Record<string, unknown>;
+      delete bodyMap["id"];
+      const body = JSON.stringify(bodyMap);
       return transport.unary(path, 'PUT', body, {
         service: 'LoginPolicyService',
         method: 'Update',
@@ -10152,7 +8544,7 @@ export function createLoginPolicyServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/login-policies/${request.id}`;
+      const path = `/admin/v1/login-policies/${request.id}`;
       const body = null;
       return transport.unary(path, 'DELETE', body, {
         service: 'LoginPolicyService',
@@ -10164,26 +8556,26 @@ export function createLoginPolicyServiceClient(
 // 查询登录策略列表 - 回应
 export type authenticationservicev1_ListLoginPolicyResponse = {
   items: authenticationservicev1_LoginPolicy[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // 登录策略
 export type authenticationservicev1_LoginPolicy = {
   createdAt?: wellKnownTimestamp;
-  createdBy?: number;
+  createdBy?: string;
   deletedAt?: wellKnownTimestamp;
-  deletedBy?: number;
+  deletedBy?: string;
   //
   // Behaviors: OPTIONAL
-  id?: number;
+  id?: string;
   method?: authenticationservicev1_LoginPolicy_Method;
   reason?: string;
-  targetId?: number;
-  tenantId?: number;
+  targetId?: string;
+  tenantId?: string;
   tenantName?: string;
   type?: authenticationservicev1_LoginPolicy_Type;
   updatedAt?: wellKnownTimestamp;
-  updatedBy?: number;
+  updatedBy?: string;
   value?: string;
 };
 
@@ -10202,7 +8594,7 @@ export type authenticationservicev1_LoginPolicy_Method =
   | 'TIME';
 // 查询登录策略详情 - 请求
 export type authenticationservicev1_GetLoginPolicyRequest = {
-  id?: number;
+  id?: string;
   viewMask?: wellKnownFieldMask;
 };
 
@@ -10215,13 +8607,13 @@ export type authenticationservicev1_CreateLoginPolicyRequest = {
 export type authenticationservicev1_UpdateLoginPolicyRequest = {
   allowMissing?: boolean;
   data: authenticationservicev1_LoginPolicy | undefined;
-  id: number | undefined;
+  id: string | undefined;
   updateMask: undefined | wellKnownFieldMask;
 };
 
 // 删除登录策略 - 请求
 export type authenticationservicev1_DeleteLoginPolicyRequest = {
-  id?: number;
+  id?: string;
 };
 
 // 后台菜单管理服务
@@ -10253,7 +8645,7 @@ export function createMenuServiceClient(
 ): MenuService {
   return {
     List(request) {
-      const path = `admin/v1/menus`;
+      const path = `/admin/v1/menus`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -10301,56 +8693,9 @@ export function createMenuServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -10371,7 +8716,7 @@ export function createMenuServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/menus/${request.id}`;
+      const path = `/admin/v1/menus/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.viewMask) {
@@ -10389,7 +8734,7 @@ export function createMenuServiceClient(
       }) as Promise<resourceservicev1_Menu>;
     },
     Create(request) {
-      const path = `admin/v1/menus`;
+      const path = `/admin/v1/menus`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'MenuService',
@@ -10400,8 +8745,10 @@ export function createMenuServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/menus/${request.id}`;
-      const body = JSON.stringify(request);
+      const path = `/admin/v1/menus/${request.id}`;
+      const bodyMap = { ...request } as Record<string, unknown>;
+      delete bodyMap["id"];
+      const body = JSON.stringify(bodyMap);
       return transport.unary(path, 'PUT', body, {
         service: 'MenuService',
         method: 'Update',
@@ -10411,7 +8758,7 @@ export function createMenuServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/menus/${request.id}`;
+      const path = `/admin/v1/menus/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.operatorId) {
@@ -10433,7 +8780,7 @@ export function createMenuServiceClient(
 // 查询菜单列表 - 回应
 export type resourceservicev1_ListMenuResponse = {
   items: resourceservicev1_Menu[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // 菜单
@@ -10446,19 +8793,19 @@ export type resourceservicev1_Menu = {
   // Behaviors: OPTIONAL
   component?: string;
   createdAt?: wellKnownTimestamp;
-  createdBy?: number;
+  createdBy?: string;
   deletedAt?: wellKnownTimestamp;
-  deletedBy?: number;
+  deletedBy?: string;
   //
   // Behaviors: OPTIONAL
-  id?: number;
+  id?: string;
   //
   // Behaviors: OPTIONAL
   meta?: resourceservicev1_MenuMeta;
   //
   // Behaviors: OPTIONAL
   name?: string;
-  parentId?: number;
+  parentId?: string;
   //
   // Behaviors: OPTIONAL
   path?: string;
@@ -10468,7 +8815,7 @@ export type resourceservicev1_Menu = {
   status?: resourceservicev1_Menu_Status;
   type?: resourceservicev1_Menu_Type;
   updatedAt?: wellKnownTimestamp;
-  updatedBy?: number;
+  updatedBy?: string;
 };
 
 // 菜单状态
@@ -10484,7 +8831,7 @@ export type resourceservicev1_Menu_Type =
   | 'MENU';
 // 查询菜单详情 - 请求
 export type resourceservicev1_GetMenuRequest = {
-  id?: number;
+  id?: string;
   viewMask?: wellKnownFieldMask;
 };
 
@@ -10497,17 +8844,18 @@ export type resourceservicev1_CreateMenuRequest = {
 export type resourceservicev1_UpdateMenuRequest = {
   allowMissing?: boolean;
   data: resourceservicev1_Menu | undefined;
-  id: number | undefined;
+  id: string | undefined;
   updateMask: undefined | wellKnownFieldMask;
 };
 
 // 删除菜单 - 请求
 export type resourceservicev1_DeleteMenuRequest = {
-  id?: number;
-  operatorId?: number;
+  id?: string;
+  operatorId?: string;
 };
 
 // 通知投递台账管理服务（平台级只读视图）。
+//
 // 本域不含"发一条通知"的通用 HTTP 路由：SendDirect 只由进程内的业务 service 经 Notifier 接口调用。
 // 把它开放成端点等于给任意已登录操作员一个"向任意邮箱发信"的能力。
 // 两个刻意保留的手动触发口都是平台管理员专属、且只能发"测试文案"：
@@ -10528,7 +8876,7 @@ export function createNotificationServiceClient(
 ): NotificationService {
   return {
     ListNotificationDelivery(request) {
-      const path = `admin/v1/notification-deliveries`;
+      const path = `/admin/v1/notification-deliveries`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -10576,56 +8924,9 @@ export function createNotificationServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -10646,7 +8947,7 @@ export function createNotificationServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/notification-deliveries/${request.id}`;
+      const path = `/admin/v1/notification-deliveries/${request.id}`;
       const body = null;
       return transport.unary(path, 'GET', body, {
         service: 'NotificationService',
@@ -10658,7 +8959,7 @@ export function createNotificationServiceClient(
 // 查询投递台账列表 - 回应
 export type notificationservicev1_ListNotificationDeliveryResponse = {
   items: notificationservicev1_NotificationDelivery[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // 一条通知 × 一个渠道 × 一个收件人 = 一行投递台账
@@ -10667,16 +8968,16 @@ export type notificationservicev1_NotificationDelivery = {
   // 因此 attempts>0 而 status 仍为 SENDING = 拨过号但没回写结论。
   attempts?: number;
   channel?: notificationservicev1_Channel;
-  channelId?: number;
+  channelId?: string;
   createdAt?: wellKnownTimestamp;
-  createdBy?: number;
+  createdBy?: string;
   eventType?: notificationservicev1_EventType;
-  id?: number;
+  id?: string;
   lastError?: string;
-  recipientUserId?: number;
+  recipientUserId?: string;
   // 产生本条投递的业务对象主键，含义由 event_type 决定（INTERNAL_MESSAGE → sys_internal_messages.id）。
   // 存在的理由：台账不存正文快照（见 §3.3），排障时要能跳回业务对象去看发了什么。
-  relatedId?: number;
+  relatedId?: string;
   // 一次派发意图的标识：调用方不传则服务端生成 UUID。唯一性按 (request_id, channel) 组合，
   // 见 §3.3 与 ent schema 注释（今天没有调用方自传，它是"同一次意图不许两行"的提前落地）。
   requestId?: string;
@@ -10685,7 +8986,7 @@ export type notificationservicev1_NotificationDelivery = {
   // 脱敏后的投递目标（见 MaskTarget）：台账可查，但不得成为明文集邮地址的第二个真相源
   target?: string;
   updatedAt?: wellKnownTimestamp;
-  updatedBy?: number;
+  updatedBy?: string;
 };
 
 // 业务事件类型。路由（事件 → 渠道 / 是否异步）由 sys_notification_rules 表决定，
@@ -10729,7 +9030,7 @@ export type notificationservicev1_DeliveryStatus =
   | 'SKIPPED';
 // 查询投递台账详情 - 请求
 export type notificationservicev1_GetNotificationDeliveryRequest = {
-  id: number | undefined;
+  id: string | undefined;
 };
 
 // 通知渠道管理服务（平台级配置）
@@ -10769,7 +9070,7 @@ export function createNotificationChannelServiceClient(
 ): NotificationChannelService {
   return {
     ListNotificationChannel(request) {
-      const path = `admin/v1/notification-channels`;
+      const path = `/admin/v1/notification-channels`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -10817,56 +9118,9 @@ export function createNotificationChannelServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -10887,7 +9141,7 @@ export function createNotificationChannelServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/notification-channels/${request.id}`;
+      const path = `/admin/v1/notification-channels/${request.id}`;
       const body = null;
       return transport.unary(path, 'GET', body, {
         service: 'NotificationChannelService',
@@ -10895,7 +9149,7 @@ export function createNotificationChannelServiceClient(
       }) as Promise<notification_channelservicev1_NotificationChannel>;
     },
     CreateNotificationChannel(request) {
-      const path = `admin/v1/notification-channels`;
+      const path = `/admin/v1/notification-channels`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'NotificationChannelService',
@@ -10906,8 +9160,10 @@ export function createNotificationChannelServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/notification-channels/${request.id}`;
-      const body = JSON.stringify(request);
+      const path = `/admin/v1/notification-channels/${request.id}`;
+      const bodyMap = { ...request } as Record<string, unknown>;
+      delete bodyMap["id"];
+      const body = JSON.stringify(bodyMap);
       return transport.unary(path, 'PUT', body, {
         service: 'NotificationChannelService',
         method: 'UpdateNotificationChannel',
@@ -10917,7 +9173,7 @@ export function createNotificationChannelServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/notification-channels/${request.id}`;
+      const path = `/admin/v1/notification-channels/${request.id}`;
       const body = null;
       return transport.unary(path, 'DELETE', body, {
         service: 'NotificationChannelService',
@@ -10928,8 +9184,10 @@ export function createNotificationChannelServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/notification-channels/${request.id}/send-test-email`;
-      const body = JSON.stringify(request);
+      const path = `/admin/v1/notification-channels/${request.id}/send-test-email`;
+      const bodyMap = { ...request } as Record<string, unknown>;
+      delete bodyMap["id"];
+      const body = JSON.stringify(bodyMap);
       return transport.unary(path, 'POST', body, {
         service: 'NotificationChannelService',
         method: 'SendTestEmail',
@@ -10939,8 +9197,10 @@ export function createNotificationChannelServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/notification-channels/${request.id}/send-test`;
-      const body = JSON.stringify(request);
+      const path = `/admin/v1/notification-channels/${request.id}/send-test`;
+      const bodyMap = { ...request } as Record<string, unknown>;
+      delete bodyMap["id"];
+      const body = JSON.stringify(bodyMap);
       return transport.unary(path, 'POST', body, {
         service: 'NotificationChannelService',
         method: 'SendTest',
@@ -10951,13 +9211,13 @@ export function createNotificationChannelServiceClient(
 // 查询通知渠道列表 - 回应
 export type notification_channelservicev1_ListNotificationChannelResponse = {
   items: notification_channelservicev1_NotificationChannel[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // 通知渠道
 export type notification_channelservicev1_NotificationChannel = {
   createdAt?: wellKnownTimestamp;
-  createdBy?: number;
+  createdBy?: string;
   enabled?: boolean;
   // 密码不回传：仅创建/更新时写入；hasPassword 标识是否已配置
   hasPassword?: boolean;
@@ -10965,7 +9225,7 @@ export type notification_channelservicev1_NotificationChannel = {
   hasSmsAccessSecret?: boolean;
   // 密钥不回传：与 password 同一条约定，仅写入时接收
   hasWebhookSecret?: boolean;
-  id?: number;
+  id?: string;
   name?: string;
   remark?: string;
   smsAccessKeyId?: string;
@@ -10986,7 +9246,7 @@ export type notification_channelservicev1_NotificationChannel = {
   smtpUsername?: string;
   type?: notification_channelservicev1_NotificationChannel_Type;
   updatedAt?: wellKnownTimestamp;
-  updatedBy?: number;
+  updatedBy?: string;
   // 可用占位符：{{title}} {{content}} {{event_type}} {{timestamp}} {{sign}} {{nonce}}
   // {{recipient_user_id}} {{related_id}} {{delivered_at}}；替换按 JSON 字符串转义进行，
   // 渲染结果必须是合法 JSON。CUSTOM 风格下 {{sign}} 不可用（它要盖住正文本身）。
@@ -11009,6 +9269,7 @@ export type notification_channelservicev1_NotificationChannel_TlsMode =
 // 以及"对端到底收下了没有"用什么判。这一格把三件事捆在一起选，因为它们是同一次决策的产物
 // （钉钉把签名放 URL query 且只看 body 的 errcode，飞书把签名放 body 里且看 code）。
 // 正文形状不在这一格里：它由 webhook_payload_template 决定，留空时回落到本风格的内置默认模板。
+//
 // 为什么在包顶层而不成 `NotificationChannel` 里：proto3 的枚举成员名属于外层作用域而非枚举
 // 自身，嵌进消息就和 `TlsMode.NONE` 撞同一作用域。成员名则必须与 ent 列值逐字相同：
 // repo 的 EnumTypeConverter 按名字字符串配对，加前缀等于字段静默丢失。
@@ -11025,7 +9286,7 @@ export type notification_channelservicev1_SmsProvider =
   | 'TENCENT';
 // 查询通知渠道详情 - 请求
 export type notification_channelservicev1_GetNotificationChannelRequest = {
-  id: number | undefined;
+  id: string | undefined;
 };
 
 // 创建通知渠道 - 请求
@@ -11042,7 +9303,7 @@ export type notification_channelservicev1_CreateNotificationChannelRequest = {
 // 更新通知渠道 - 请求
 export type notification_channelservicev1_UpdateNotificationChannelRequest = {
   data: notification_channelservicev1_NotificationChannel | undefined;
-  id: number | undefined;
+  id: string | undefined;
   // 明文密码；留空表示不修改已存密码
   password?: string;
   // 明文访问密钥 Secret；留空表示不修改已存密钥（仅 SMS 渠道）
@@ -11055,18 +9316,18 @@ export type notification_channelservicev1_UpdateNotificationChannelRequest = {
 
 // 删除通知渠道 - 请求
 export type notification_channelservicev1_DeleteNotificationChannelRequest = {
-  id: number | undefined;
+  id: string | undefined;
 };
 
 // 发送测试邮件 - 请求
 export type notification_channelservicev1_SendTestEmailRequest = {
-  id: number | undefined;
+  id: string | undefined;
   recipient: string | undefined;
 };
 
 // 发送测试消息 - 请求（按渠道类型分派：EMAIL 走邮件，SMS 发一条测试验证码；WEBHOOK 不支持）
 export type notification_channelservicev1_SendTestRequest = {
-  id: number | undefined;
+  id: string | undefined;
   // 收件目标：EMAIL 为邮箱地址，SMS 为手机号（E.164 或纯号码均可）
   recipient: string | undefined;
 };
@@ -11092,7 +9353,7 @@ export function createNotificationPreferenceServiceClient(
 ): NotificationPreferenceService {
   return {
     GetMyNotificationPreference(_request) {
-      const path = `admin/v1/notification-preference`;
+      const path = `/admin/v1/notification-preference`;
       const body = null;
       return transport.unary(path, 'GET', body, {
         service: 'NotificationPreferenceService',
@@ -11100,7 +9361,7 @@ export function createNotificationPreferenceServiceClient(
       }) as Promise<notificationservicev1_NotificationPreference>;
     },
     UpdateMyNotificationPreference(request) {
-      const path = `admin/v1/notification-preference`;
+      const path = `/admin/v1/notification-preference`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'NotificationPreferenceService',
@@ -11108,7 +9369,7 @@ export function createNotificationPreferenceServiceClient(
       }) as Promise<notificationservicev1_NotificationPreference>;
     },
     ListMyNotificationCategories(_request) {
-      const path = `admin/v1/notification-preference/categories`;
+      const path = `/admin/v1/notification-preference/categories`;
       const body = null;
       return transport.unary(path, 'GET', body, {
         service: 'NotificationPreferenceService',
@@ -11122,7 +9383,7 @@ export function createNotificationPreferenceServiceClient(
 export type notificationservicev1_NotificationPreference = {
   // 退订的站内信分类 ID 列表：仅约束全员广播（targetAll），
   // 点对点定向发送不受退订影响（直接指名发给你的消息不可拒收）。
-  mutedCategoryIds: number[] | undefined;
+  mutedCategoryIds: string[] | undefined;
   // 是否启用实时推送静音时段：只抑制 SSE 实时推送（桌面通知/角标即时性），
   // 收件行照常落库，用户打开收件箱仍能看到全部消息。
   quietEnabled?: boolean;
@@ -11132,12 +9393,12 @@ export type notificationservicev1_NotificationPreference = {
   // 静音开始：自当日 00:00 起的分钟数（0-1439），默认 1320（22:00）。
   quietStartMinute?: number;
   updatedAt?: wellKnownTimestamp;
-  userId?: number;
+  userId?: string;
 };
 
 // 更新自己的通知偏好（字段全量提交；未登录不可用）。
 export type notificationservicev1_UpdateNotificationPreferenceRequest = {
-  mutedCategoryIds: number[] | undefined;
+  mutedCategoryIds: string[] | undefined;
   quietEnabled?: boolean;
   quietEndMinute?: number;
   quietStartMinute?: number;
@@ -11150,7 +9411,7 @@ export type notificationservicev1_ListMyNotificationCategoriesResponse = {
 
 // 可退订分类的精简项（只取 id + 名称，避免拖整个分类实体）。
 export type notificationservicev1_NotificationCategoryItem = {
-  id?: number;
+  id?: string;
   name?: string;
 };
 
@@ -11187,7 +9448,7 @@ export function createNotificationRuleServiceClient(
 ): NotificationRuleService {
   return {
     ListNotificationRule(request) {
-      const path = `admin/v1/notification-rules`;
+      const path = `/admin/v1/notification-rules`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -11235,56 +9496,9 @@ export function createNotificationRuleServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -11305,7 +9519,7 @@ export function createNotificationRuleServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/notification-rules/${request.id}`;
+      const path = `/admin/v1/notification-rules/${request.id}`;
       const body = null;
       return transport.unary(path, 'GET', body, {
         service: 'NotificationRuleService',
@@ -11313,7 +9527,7 @@ export function createNotificationRuleServiceClient(
       }) as Promise<notificationservicev1_NotificationRule>;
     },
     CreateNotificationRule(request) {
-      const path = `admin/v1/notification-rules`;
+      const path = `/admin/v1/notification-rules`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'NotificationRuleService',
@@ -11324,8 +9538,10 @@ export function createNotificationRuleServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/notification-rules/${request.id}`;
-      const body = JSON.stringify(request);
+      const path = `/admin/v1/notification-rules/${request.id}`;
+      const bodyMap = { ...request } as Record<string, unknown>;
+      delete bodyMap["id"];
+      const body = JSON.stringify(bodyMap);
       return transport.unary(path, 'PUT', body, {
         service: 'NotificationRuleService',
         method: 'UpdateNotificationRule',
@@ -11335,7 +9551,7 @@ export function createNotificationRuleServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/notification-rules/${request.id}`;
+      const path = `/admin/v1/notification-rules/${request.id}`;
       const body = null;
       return transport.unary(path, 'DELETE', body, {
         service: 'NotificationRuleService',
@@ -11346,8 +9562,10 @@ export function createNotificationRuleServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/notification-rules/${request.id}/test-dispatch`;
-      const body = JSON.stringify(request);
+      const path = `/admin/v1/notification-rules/${request.id}/test-dispatch`;
+      const bodyMap = { ...request } as Record<string, unknown>;
+      delete bodyMap["id"];
+      const body = JSON.stringify(bodyMap);
       return transport.unary(path, 'POST', body, {
         service: 'NotificationRuleService',
         method: 'TestDispatchNotification',
@@ -11358,28 +9576,28 @@ export function createNotificationRuleServiceClient(
 // 查询路由规则列表 - 回应
 export type notificationservicev1_ListNotificationRuleResponse = {
   items: notificationservicev1_NotificationRule[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // 一条业务事件类型 → 一行规则（event_type 唯一）
 export type notificationservicev1_NotificationRule = {
   channel?: notificationservicev1_Channel;
   createdAt?: wellKnownTimestamp;
-  createdBy?: number;
+  createdBy?: string;
   eventType?: notificationservicev1_EventType;
-  id?: number;
+  id?: string;
   // 异步 = 入队 asynq、请求立刻拿到 SENDING；同步 = 当场拨号并回写结论。
   // 判据是"调用方需不需要这次投递的结论"，与渠道无关（见 §4 P2-3）。
   isAsync?: boolean;
   isEnabled?: boolean;
   remark?: string;
   updatedAt?: wellKnownTimestamp;
-  updatedBy?: number;
+  updatedBy?: string;
 };
 
 // 查询路由规则详情 - 请求
 export type notificationservicev1_GetNotificationRuleRequest = {
-  id: number | undefined;
+  id: string | undefined;
 };
 
 // 创建路由规则 - 请求
@@ -11390,29 +9608,30 @@ export type notificationservicev1_CreateNotificationRuleRequest = {
 // 更新路由规则 - 请求
 export type notificationservicev1_UpdateNotificationRuleRequest = {
   data: notificationservicev1_NotificationRule | undefined;
-  id: number | undefined;
+  id: string | undefined;
   updateMask: undefined | wellKnownFieldMask;
 };
 
 // 删除路由规则 - 请求
 export type notificationservicev1_DeleteNotificationRuleRequest = {
-  id: number | undefined;
+  id: string | undefined;
 };
 
 // 测试投递 - 请求。
+//
 // target/title/content 全可空，缺省即"这条规则本来会发什么"：
 // target 对 EMAIL/INTERNAL 是必填的投递目标，对 WEBHOOK 留空则取所选渠道配置的 webhook_url；
 // title/content 留空由服务端按事件类型渲染一封测试文案（走 mailtext，与渠道测试邮件同一条出口）。
 export type notificationservicev1_TestDispatchNotificationRequest = {
   content?: string;
-  id: number | undefined;
+  id: string | undefined;
   target?: string;
   title?: string;
 };
 
 // 测试投递 - 回应。台账行号一并回传：报错时拿它去投递记录页查这一条。
 export type notificationservicev1_TestDispatchNotificationResponse = {
-  deliveryId: number | undefined;
+  deliveryId: string | undefined;
   status: notificationservicev1_DeliveryStatus | undefined;
 };
 
@@ -11449,7 +9668,7 @@ export function createNotificationTemplateServiceClient(
 ): NotificationTemplateService {
   return {
     ListNotificationTemplate(request) {
-      const path = `admin/v1/notification-templates`;
+      const path = `/admin/v1/notification-templates`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -11497,56 +9716,9 @@ export function createNotificationTemplateServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -11567,7 +9739,7 @@ export function createNotificationTemplateServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/notification-templates/${request.id}`;
+      const path = `/admin/v1/notification-templates/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.code) {
@@ -11585,7 +9757,7 @@ export function createNotificationTemplateServiceClient(
       }) as Promise<notificationservicev1_NotificationTemplate>;
     },
     CreateNotificationTemplate(request) {
-      const path = `admin/v1/notification-templates`;
+      const path = `/admin/v1/notification-templates`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'NotificationTemplateService',
@@ -11596,8 +9768,10 @@ export function createNotificationTemplateServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/notification-templates/${request.id}`;
-      const body = JSON.stringify(request);
+      const path = `/admin/v1/notification-templates/${request.id}`;
+      const bodyMap = { ...request } as Record<string, unknown>;
+      delete bodyMap["id"];
+      const body = JSON.stringify(bodyMap);
       return transport.unary(path, 'PUT', body, {
         service: 'NotificationTemplateService',
         method: 'UpdateNotificationTemplate',
@@ -11607,7 +9781,7 @@ export function createNotificationTemplateServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/notification-templates/${request.id}`;
+      const path = `/admin/v1/notification-templates/${request.id}`;
       const body = null;
       return transport.unary(path, 'DELETE', body, {
         service: 'NotificationTemplateService',
@@ -11618,8 +9792,10 @@ export function createNotificationTemplateServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/notification-templates/${request.id}/render`;
-      const body = JSON.stringify(request);
+      const path = `/admin/v1/notification-templates/${request.id}/render`;
+      const bodyMap = { ...request } as Record<string, unknown>;
+      delete bodyMap["id"];
+      const body = JSON.stringify(bodyMap);
       return transport.unary(path, 'POST', body, {
         service: 'NotificationTemplateService',
         method: 'RenderNotificationTemplate',
@@ -11629,7 +9805,7 @@ export function createNotificationTemplateServiceClient(
 }
 export type notificationservicev1_ListNotificationTemplateResponse = {
   items: notificationservicev1_NotificationTemplate[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // 通知模板：可复用的标题/正文占位模板（{{var}}），平台全局、code 全局唯一。
@@ -11639,7 +9815,7 @@ export type notificationservicev1_NotificationTemplate = {
   // 正文模板，支持 {{var}} 占位符
   contentTemplate?: string;
   createdAt?: wellKnownTimestamp;
-  id?: number;
+  id?: string;
   isEnabled?: boolean;
   name?: string;
   remark?: string;
@@ -11650,7 +9826,7 @@ export type notificationservicev1_NotificationTemplate = {
 
 export type notificationservicev1_GetNotificationTemplateRequest = {
   code?: string;
-  id?: number;
+  id?: string;
 };
 
 export type notificationservicev1_CreateNotificationTemplateRequest = {
@@ -11659,19 +9835,19 @@ export type notificationservicev1_CreateNotificationTemplateRequest = {
 
 export type notificationservicev1_UpdateNotificationTemplateRequest = {
   data: notificationservicev1_NotificationTemplate | undefined;
-  id: number | undefined;
+  id: string | undefined;
   // 字段掩码：留空更新全部字段
   updateMask?: wellKnownFieldMask;
 };
 
 export type notificationservicev1_DeleteNotificationTemplateRequest = {
-  id: number | undefined;
+  id: string | undefined;
 };
 
 // 按变量集试渲染（管理页预览；发送不经过这里）
 export type notificationservicev1_RenderNotificationTemplateRequest = {
   // 被渲染的模板 ID
-  id: number | undefined;
+  id: string | undefined;
   // 变量集：占位符名 → 值；模板引用了变量集里没有的占位符时整个渲染报错
   variables: { [key: string]: string } | undefined;
 };
@@ -11702,7 +9878,7 @@ export function createObjectServiceClient(
 ): ObjectService {
   return {
     List(request) {
-      const path = `admin/v1/object-dims`;
+      const path = `/admin/v1/object-dims`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -11750,56 +9926,9 @@ export function createObjectServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -11820,7 +9949,7 @@ export function createObjectServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/object-dims/${request.id}`;
+      const path = `/admin/v1/object-dims/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.viewMask) {
@@ -11838,7 +9967,7 @@ export function createObjectServiceClient(
       }) as Promise<ubaservicev1_ObjectDim>;
     },
     Create(request) {
-      const path = `admin/v1/object-dims`;
+      const path = `/admin/v1/object-dims`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'ObjectService',
@@ -11850,7 +9979,7 @@ export function createObjectServiceClient(
 // 获取对象维度列表 - 答复
 export type ubaservicev1_ListObjectDimResponse = {
   items: ubaservicev1_ObjectDim[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // 对象维度（对应 objects_dim 表）
@@ -11861,7 +9990,7 @@ export type ubaservicev1_ObjectDim = {
   categoryPath: string | undefined;
   createdAt?: wellKnownTimestamp;
   // 创建者用户ID（记录创建该对象的用户）
-  createdBy?: number;
+  createdBy?: string;
   // 币种（对象价格的币种，如 CNY、USD 等）
   currency: string | undefined;
   // 对象ID（唯一标识一个对象）
@@ -11877,10 +10006,10 @@ export type ubaservicev1_ObjectDim = {
   // 状态（对象当前状态，如上架、下架、有效、无效等）
   status: string | undefined;
   // 租户ID（多租户隔离，支持 SaaS 场景）
-  tenantId?: number;
+  tenantId?: string;
   updatedAt?: wellKnownTimestamp;
   // 更新者用户ID（记录最近一次更新该对象的用户）
-  updatedBy?: number;
+  updatedBy?: string;
   // 有效期起始时间（对象有效期的开始时间）
   validFrom: undefined | wellKnownTimestamp;
   // 有效期结束时间（对象有效期的结束时间）
@@ -11889,7 +10018,7 @@ export type ubaservicev1_ObjectDim = {
 
 // 获取对象维度数据 - 请求
 export type ubaservicev1_GetObjectDimRequest = {
-  id?: number;
+  id?: string;
   viewMask?: wellKnownFieldMask;
 };
 
@@ -11915,7 +10044,7 @@ export function createOperationAuditLogServiceClient(
 ): OperationAuditLogService {
   return {
     List(request) {
-      const path = `admin/v1/operation-audit-logs`;
+      const path = `/admin/v1/operation-audit-logs`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -11963,56 +10092,9 @@ export function createOperationAuditLogServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -12033,7 +10115,7 @@ export function createOperationAuditLogServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/operation-audit-logs/${request.id}`;
+      const path = `/admin/v1/operation-audit-logs/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.viewMask) {
@@ -12055,7 +10137,7 @@ export function createOperationAuditLogServiceClient(
 // 查询操作审计日志列表 - 回应
 export type auditservicev1_ListOperationAuditLogResponse = {
   items: auditservicev1_OperationAuditLog[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // 操作审计日志
@@ -12066,7 +10148,7 @@ export type auditservicev1_OperationAuditLog = {
   createdAt?: wellKnownTimestamp;
   failureReason?: string;
   geoLocation?: auditservicev1_GeoLocation;
-  id?: number;
+  id?: string;
   ipAddress?: string;
   logHash?: string;
   requestId?: string;
@@ -12075,10 +10157,10 @@ export type auditservicev1_OperationAuditLog = {
   sensitiveLevel?: auditservicev1_SensitiveLevel;
   signature?: string;
   success?: boolean;
-  tenantId?: number;
+  tenantId?: string;
   tenantName?: string;
   traceId?: string;
-  userId?: number;
+  userId?: string;
   username?: string;
 };
 
@@ -12096,7 +10178,7 @@ export type auditservicev1_OperationAuditLog_ActionType =
   | 'UPDATE';
 // 查询操作审计日志详情 - 请求
 export type auditservicev1_GetOperationAuditLogRequest = {
-  id?: number;
+  id?: string;
   viewMask?: wellKnownFieldMask;
 };
 
@@ -12129,7 +10211,7 @@ export function createOrgUnitServiceClient(
 ): OrgUnitService {
   return {
     List(request) {
-      const path = `admin/v1/org-units`;
+      const path = `/admin/v1/org-units`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -12177,56 +10259,9 @@ export function createOrgUnitServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -12247,7 +10282,7 @@ export function createOrgUnitServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/org-units/${request.id}`;
+      const path = `/admin/v1/org-units/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.viewMask) {
@@ -12265,7 +10300,7 @@ export function createOrgUnitServiceClient(
       }) as Promise<identityservicev1_OrgUnit>;
     },
     Create(request) {
-      const path = `admin/v1/org-units`;
+      const path = `/admin/v1/org-units`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'OrgUnitService',
@@ -12276,8 +10311,10 @@ export function createOrgUnitServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/org-units/${request.id}`;
-      const body = JSON.stringify(request);
+      const path = `/admin/v1/org-units/${request.id}`;
+      const bodyMap = { ...request } as Record<string, unknown>;
+      delete bodyMap["id"];
+      const body = JSON.stringify(bodyMap);
       return transport.unary(path, 'PUT', body, {
         service: 'OrgUnitService',
         method: 'Update',
@@ -12287,7 +10324,7 @@ export function createOrgUnitServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/org-units/${request.id}`;
+      const path = `/admin/v1/org-units/${request.id}`;
       const body = null;
       return transport.unary(path, 'DELETE', body, {
         service: 'OrgUnitService',
@@ -12299,7 +10336,7 @@ export function createOrgUnitServiceClient(
 // 获取组织单元列表 - 答复
 export type identityservicev1_ListOrgUnitResponse = {
   items: identityservicev1_OrgUnit[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // 组织单元
@@ -12309,26 +10346,26 @@ export type identityservicev1_OrgUnit = {
   businessScopes: string[] | undefined;
   children: identityservicev1_OrgUnit[] | undefined;
   code?: string;
-  contactUserId?: number;
+  contactUserId?: string;
   contactUserName?: string;
   country?: string;
   createdAt?: wellKnownTimestamp;
-  createdBy?: number;
+  createdBy?: string;
   deletedAt?: wellKnownTimestamp;
-  deletedBy?: number;
+  deletedBy?: string;
   description?: string;
   email?: string;
   endAt?: wellKnownTimestamp;
   externalId?: string;
-  id?: number;
+  id?: string;
   isLegalEntity?: boolean;
   latitude?: number;
-  leaderId?: number;
+  leaderId?: string;
   leaderName?: string;
-  legalEntityOrgId?: number;
+  legalEntityOrgId?: string;
   longitude?: number;
   name?: string;
-  parentId?: number;
+  parentId?: string;
   path?: string;
   permissionTags: string[] | undefined;
   phone?: string;
@@ -12338,12 +10375,12 @@ export type identityservicev1_OrgUnit = {
   startAt?: wellKnownTimestamp;
   status?: identityservicev1_OrgUnit_Status;
   taxId?: string;
-  tenantId?: number;
+  tenantId?: string;
   tenantName?: string;
   timezone?: string;
   type?: identityservicev1_OrgUnit_Type;
   updatedAt?: wellKnownTimestamp;
-  updatedBy?: number;
+  updatedBy?: string;
 };
 
 // 组织单元类型
@@ -12364,7 +10401,7 @@ export type identityservicev1_OrgUnit_Status =
   | 'ON';
 // 获取组织单元数据 - 请求
 export type identityservicev1_GetOrgUnitRequest = {
-  id?: number;
+  id?: string;
   viewMask?: wellKnownFieldMask;
 };
 
@@ -12377,13 +10414,13 @@ export type identityservicev1_CreateOrgUnitRequest = {
 export type identityservicev1_UpdateOrgUnitRequest = {
   allowMissing?: boolean;
   data: identityservicev1_OrgUnit | undefined;
-  id: number | undefined;
+  id: string | undefined;
   updateMask: undefined | wellKnownFieldMask;
 };
 
 // 删除组织单元 - 请求
 export type identityservicev1_DeleteOrgUnitRequest = {
-  id?: number;
+  id?: string;
 };
 
 // 权限点管理服务
@@ -12419,7 +10456,7 @@ export function createPermissionServiceClient(
 ): PermissionService {
   return {
     List(request) {
-      const path = `admin/v1/permissions`;
+      const path = `/admin/v1/permissions`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -12467,56 +10504,9 @@ export function createPermissionServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -12537,7 +10527,7 @@ export function createPermissionServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/permissions/${request.id}`;
+      const path = `/admin/v1/permissions/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.code) {
@@ -12560,7 +10550,7 @@ export function createPermissionServiceClient(
       }) as Promise<permissionservicev1_Permission>;
     },
     Create(request) {
-      const path = `admin/v1/permissions`;
+      const path = `/admin/v1/permissions`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'PermissionService',
@@ -12571,8 +10561,10 @@ export function createPermissionServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/permissions/${request.id}`;
-      const body = JSON.stringify(request);
+      const path = `/admin/v1/permissions/${request.id}`;
+      const bodyMap = { ...request } as Record<string, unknown>;
+      delete bodyMap["id"];
+      const body = JSON.stringify(bodyMap);
       return transport.unary(path, 'PUT', body, {
         service: 'PermissionService',
         method: 'Update',
@@ -12582,7 +10574,7 @@ export function createPermissionServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/permissions/${request.id}`;
+      const path = `/admin/v1/permissions/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.code) {
@@ -12605,7 +10597,7 @@ export function createPermissionServiceClient(
       }) as Promise<wellKnownEmpty>;
     },
     SyncPermissions(request) {
-      const path = `admin/v1/permissions/sync:perms`;
+      const path = `/admin/v1/permissions/sync:perms`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'PermissionService',
@@ -12617,26 +10609,26 @@ export function createPermissionServiceClient(
 // 查询列表 - 回应
 export type permissionservicev1_ListPermissionResponse = {
   items: permissionservicev1_Permission[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // 权限点
 export type permissionservicev1_Permission = {
-  apiIds: number[] | undefined;
+  apiIds: string[] | undefined;
   code?: string;
   createdAt?: wellKnownTimestamp;
-  createdBy?: number;
+  createdBy?: string;
   deletedAt?: wellKnownTimestamp;
-  deletedBy?: number;
+  deletedBy?: string;
   description?: string;
-  groupId?: number;
+  groupId?: string;
   groupName?: string;
-  id?: number;
-  menuIds: number[] | undefined;
+  id?: string;
+  menuIds: string[] | undefined;
   name?: string;
   status?: permissionservicev1_Permission_Status;
   updatedAt?: wellKnownTimestamp;
-  updatedBy?: number;
+  updatedBy?: string;
 };
 
 // 权限点状态
@@ -12646,7 +10638,7 @@ export type permissionservicev1_Permission_Status =
 // 查询 - 请求
 export type permissionservicev1_GetPermissionRequest = {
   code?: string;
-  id?: number;
+  id?: string;
   viewMask?: wellKnownFieldMask;
 };
 
@@ -12659,15 +10651,15 @@ export type permissionservicev1_CreatePermissionRequest = {
 export type permissionservicev1_UpdatePermissionRequest = {
   allowMissing?: boolean;
   data: permissionservicev1_Permission | undefined;
-  id: number | undefined;
+  id: string | undefined;
   updateMask: undefined | wellKnownFieldMask;
 };
 
 // 删除 - 请求
 export type permissionservicev1_DeletePermissionRequest = {
   code?: string;
-  groupId?: number;
-  id?: number;
+  groupId?: string;
+  id?: string;
 };
 
 // 权限变更审计日志服务
@@ -12687,7 +10679,7 @@ export function createPermissionAuditLogServiceClient(
 ): PermissionAuditLogService {
   return {
     List(request) {
-      const path = `admin/v1/permission-audit-logs`;
+      const path = `/admin/v1/permission-audit-logs`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -12735,56 +10727,9 @@ export function createPermissionAuditLogServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -12805,7 +10750,7 @@ export function createPermissionAuditLogServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/permission-audit-logs/${request.id}`;
+      const path = `/admin/v1/permission-audit-logs/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.viewMask) {
@@ -12827,19 +10772,19 @@ export function createPermissionAuditLogServiceClient(
 // 查询权限变更审计日志列表 - 回应
 export type auditservicev1_ListPermissionAuditLogResponse = {
   items: auditservicev1_PermissionAuditLog[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // 权限变更审计日志
 export type auditservicev1_PermissionAuditLog = {
   action?: auditservicev1_PermissionAuditLog_ActionType;
   createdAt?: wellKnownTimestamp;
-  id?: number;
+  id?: string;
   ipAddress?: string;
   logHash?: string;
   newValue?: string;
   oldValue?: string;
-  operatorId?: number;
+  operatorId?: string;
   operatorName?: string;
   reason?: string;
   requestId?: string;
@@ -12847,7 +10792,7 @@ export type auditservicev1_PermissionAuditLog = {
   targetId?: string;
   targetName?: string;
   targetType?: string;
-  tenantId?: number;
+  tenantId?: string;
 };
 
 // 变更动作
@@ -12870,7 +10815,7 @@ export type auditservicev1_PermissionAuditLog_ActionType =
   | 'UPDATE';
 // 查询权限变更审计日志详情 - 请求
 export type auditservicev1_GetPermissionAuditLogRequest = {
-  id?: number;
+  id?: string;
   viewMask?: wellKnownFieldMask;
 };
 
@@ -12903,7 +10848,7 @@ export function createPermissionGroupServiceClient(
 ): PermissionGroupService {
   return {
     List(request) {
-      const path = `admin/v1/permission-groups`;
+      const path = `/admin/v1/permission-groups`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -12951,56 +10896,9 @@ export function createPermissionGroupServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -13021,7 +10919,7 @@ export function createPermissionGroupServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/permission-groups/${request.id}`;
+      const path = `/admin/v1/permission-groups/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.viewMask) {
@@ -13039,7 +10937,7 @@ export function createPermissionGroupServiceClient(
       }) as Promise<permissionservicev1_PermissionGroup>;
     },
     Create(request) {
-      const path = `admin/v1/permission-groups`;
+      const path = `/admin/v1/permission-groups`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'PermissionGroupService',
@@ -13050,8 +10948,10 @@ export function createPermissionGroupServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/permission-groups/${request.id}`;
-      const body = JSON.stringify(request);
+      const path = `/admin/v1/permission-groups/${request.id}`;
+      const bodyMap = { ...request } as Record<string, unknown>;
+      delete bodyMap["id"];
+      const body = JSON.stringify(bodyMap);
       return transport.unary(path, 'PUT', body, {
         service: 'PermissionGroupService',
         method: 'Update',
@@ -13061,7 +10961,7 @@ export function createPermissionGroupServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/permission-groups/${request.id}`;
+      const path = `/admin/v1/permission-groups/${request.id}`;
       const body = null;
       return transport.unary(path, 'DELETE', body, {
         service: 'PermissionGroupService',
@@ -13073,26 +10973,26 @@ export function createPermissionGroupServiceClient(
 // 查询列表 - 回应
 export type permissionservicev1_ListPermissionGroupResponse = {
   items: permissionservicev1_PermissionGroup[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // 权限组
 export type permissionservicev1_PermissionGroup = {
   children: permissionservicev1_PermissionGroup[] | undefined;
   createdAt?: wellKnownTimestamp;
-  createdBy?: number;
+  createdBy?: string;
   deletedAt?: wellKnownTimestamp;
-  deletedBy?: number;
+  deletedBy?: string;
   description?: string;
-  id?: number;
+  id?: string;
   module?: string;
   name?: string;
-  parentId?: number;
+  parentId?: string;
   path?: string;
   sortOrder?: number;
   status?: permissionservicev1_PermissionGroup_Status;
   updatedAt?: wellKnownTimestamp;
-  updatedBy?: number;
+  updatedBy?: string;
 };
 
 // 状态
@@ -13101,7 +11001,7 @@ export type permissionservicev1_PermissionGroup_Status =
   | 'ON';
 // 查询 - 请求
 export type permissionservicev1_GetPermissionGroupRequest = {
-  id?: number;
+  id?: string;
   viewMask?: wellKnownFieldMask;
 };
 
@@ -13114,13 +11014,13 @@ export type permissionservicev1_CreatePermissionGroupRequest = {
 export type permissionservicev1_UpdatePermissionGroupRequest = {
   allowMissing?: boolean;
   data: permissionservicev1_PermissionGroup | undefined;
-  id: number | undefined;
+  id: string | undefined;
   updateMask: undefined | wellKnownFieldMask;
 };
 
 // 删除 - 请求
 export type permissionservicev1_DeletePermissionGroupRequest = {
-  id?: number;
+  id?: string;
 };
 
 // 策略评估日志服务
@@ -13140,7 +11040,7 @@ export function createPolicyEvaluationLogServiceClient(
 ): PolicyEvaluationLogService {
   return {
     List(request) {
-      const path = `admin/v1/policy-evaluation-logs`;
+      const path = `/admin/v1/policy-evaluation-logs`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -13188,56 +11088,9 @@ export function createPolicyEvaluationLogServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -13258,7 +11111,7 @@ export function createPolicyEvaluationLogServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/policy-evaluation-logs/${request.id}`;
+      const path = `/admin/v1/policy-evaluation-logs/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.viewMask) {
@@ -13280,7 +11133,7 @@ export function createPolicyEvaluationLogServiceClient(
 // 查询策略评估日志列表 - 回应
 export type permissionservicev1_ListPolicyEvaluationLogResponse = {
   items: permissionservicev1_PolicyEvaluationLog[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // 策略评估日志
@@ -13288,25 +11141,25 @@ export type permissionservicev1_PolicyEvaluationLog = {
   createdAt?: wellKnownTimestamp;
   effectDetails?: string;
   evaluationContext?: string;
-  id?: number;
+  id?: string;
   ipAddress?: string;
   logHash?: string;
-  membershipId?: number;
-  permissionId?: number;
-  policyId?: number;
+  membershipId?: string;
+  permissionId?: string;
+  policyId?: string;
   requestMethod?: string;
   requestPath?: string;
   result?: boolean;
   scopeSql?: string;
   signature?: string;
-  tenantId?: number;
+  tenantId?: string;
   traceId?: string;
-  userId?: number;
+  userId?: string;
 };
 
 // 查询策略评估日志详情 - 请求
 export type permissionservicev1_GetPolicyEvaluationLogRequest = {
-  id?: number;
+  id?: string;
   viewMask?: wellKnownFieldMask;
 };
 
@@ -13339,7 +11192,7 @@ export function createPositionServiceClient(
 ): PositionService {
   return {
     List(request) {
-      const path = `admin/v1/positions`;
+      const path = `/admin/v1/positions`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -13387,56 +11240,9 @@ export function createPositionServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -13457,7 +11263,7 @@ export function createPositionServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/positions/${request.id}`;
+      const path = `/admin/v1/positions/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.name) {
@@ -13485,7 +11291,7 @@ export function createPositionServiceClient(
       }) as Promise<identityservicev1_Position>;
     },
     Create(request) {
-      const path = `admin/v1/positions`;
+      const path = `/admin/v1/positions`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'PositionService',
@@ -13496,8 +11302,10 @@ export function createPositionServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/positions/${request.id}`;
-      const body = JSON.stringify(request);
+      const path = `/admin/v1/positions/${request.id}`;
+      const bodyMap = { ...request } as Record<string, unknown>;
+      delete bodyMap["id"];
+      const body = JSON.stringify(bodyMap);
       return transport.unary(path, 'PUT', body, {
         service: 'PositionService',
         method: 'Update',
@@ -13507,7 +11315,7 @@ export function createPositionServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/positions/${request.id}`;
+      const path = `/admin/v1/positions/${request.id}`;
       const body = null;
       return transport.unary(path, 'DELETE', body, {
         service: 'PositionService',
@@ -13519,38 +11327,38 @@ export function createPositionServiceClient(
 // 获取职位列表 - 答复
 export type identityservicev1_ListPositionResponse = {
   items: identityservicev1_Position[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // 职位
 export type identityservicev1_Position = {
   code?: string;
   createdAt?: wellKnownTimestamp;
-  createdBy?: number;
+  createdBy?: string;
   deletedAt?: wellKnownTimestamp;
-  deletedBy?: number;
+  deletedBy?: string;
   description?: string;
   endAt?: wellKnownTimestamp;
   headcount?: number;
-  id?: number;
+  id?: string;
   isKeyPosition?: boolean;
   jobFamily?: string;
   jobGrade?: string;
   level?: number;
   name?: string;
-  orgUnitId?: number;
+  orgUnitId?: string;
   orgUnitName?: string;
   remark?: string;
-  reportsToPositionId?: number;
+  reportsToPositionId?: string;
   reportsToPositionName?: string;
   sortOrder?: number;
   startAt?: wellKnownTimestamp;
   status?: identityservicev1_Position_Status;
-  tenantId?: number;
+  tenantId?: string;
   tenantName?: string;
   type?: identityservicev1_Position_Type;
   updatedAt?: wellKnownTimestamp;
-  updatedBy?: number;
+  updatedBy?: string;
 };
 
 // 职位状态
@@ -13568,7 +11376,7 @@ export type identityservicev1_Position_Type =
 // 获取职位数据 - 请求
 export type identityservicev1_GetPositionRequest = {
   code?: string;
-  id?: number;
+  id?: string;
   name?: string;
   viewMask?: wellKnownFieldMask;
 };
@@ -13582,13 +11390,13 @@ export type identityservicev1_CreatePositionRequest = {
 export type identityservicev1_UpdatePositionRequest = {
   allowMissing?: boolean;
   data: identityservicev1_Position | undefined;
-  id: number | undefined;
+  id: string | undefined;
   updateMask: undefined | wellKnownFieldMask;
 };
 
 // 删除职位 - 请求
 export type identityservicev1_DeletePositionRequest = {
-  id?: number;
+  id?: string;
 };
 
 // 会话回放服务（只读 + 删除）
@@ -13612,7 +11420,7 @@ export function createReplayServiceClient(
 ): ReplayService {
   return {
     ListSessions(request) {
-      const path = `admin/v1/replay-sessions`;
+      const path = `/admin/v1/replay-sessions`;
       const body = null;
       const queryParams: string[] = [];
       if (request.sessionId) {
@@ -13638,7 +11446,7 @@ export function createReplayServiceClient(
       if (request.sessionId === undefined || request.sessionId === null) {
         throw new Error('missing required field request.session_id');
       }
-      const path = `admin/v1/replay-sessions/${request.sessionId}/events`;
+      const path = `/admin/v1/replay-sessions/${request.sessionId}/events`;
       const body = null;
       return transport.unary(path, 'GET', body, {
         service: 'ReplayService',
@@ -13649,7 +11457,7 @@ export function createReplayServiceClient(
       if (request.sessionId === undefined || request.sessionId === null) {
         throw new Error('missing required field request.session_id');
       }
-      const path = `admin/v1/replay-sessions/${request.sessionId}`;
+      const path = `/admin/v1/replay-sessions/${request.sessionId}`;
       const body = null;
       return transport.unary(path, 'DELETE', body, {
         service: 'ReplayService',
@@ -13663,13 +11471,13 @@ export type ubaservicev1_ListReplaySessionsRequest = {
   // 按会话 ID 包含搜索（可选）
   sessionId?: string;
   // 按用户过滤（可选）
-  userId?: number;
+  userId?: string;
 };
 
 // 会话列表 - 答复
 export type ubaservicev1_ListReplaySessionsResponse = {
   items: ubaservicev1_ReplaySessionSummary[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // 会话列表条目
@@ -13679,15 +11487,15 @@ export type ubaservicev1_ReplaySessionSummary = {
   chunkCount: number | undefined;
   deviceId?: string;
   // 事件总数
-  eventCount: number | undefined;
+  eventCount: string | undefined;
   // 首次/最近上传时间
   firstSeenAt?: wellKnownTimestamp;
   lastSeenAt?: wellKnownTimestamp;
   // 首个分块的页面
   pageUrl?: string;
   sessionId: string | undefined;
-  tenantId?: number;
-  userId?: number;
+  tenantId?: string;
+  userId?: string;
 };
 
 // 会话详情 - 请求
@@ -13698,7 +11506,7 @@ export type ubaservicev1_GetReplaySessionRequest = {
 // 会话详情 - 答复：全部分块按 chunk_seq 拼接
 export type ubaservicev1_GetReplaySessionResponse = {
   chunkCount: number | undefined;
-  eventCount: number | undefined;
+  eventCount: string | undefined;
   // 拼接后的 rrweb 事件 JSON 数组字符串
   eventsJson: string | undefined;
   sessionId: string | undefined;
@@ -13742,7 +11550,7 @@ export function createReportSubscriptionServiceClient(
 ): ReportSubscriptionService {
   return {
     List(request) {
-      const path = `admin/v1/report-subscriptions`;
+      const path = `/admin/v1/report-subscriptions`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -13790,56 +11598,9 @@ export function createReportSubscriptionServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -13857,7 +11618,7 @@ export function createReportSubscriptionServiceClient(
       }) as Promise<ubaservicev1_ListReportSubscriptionResponse>;
     },
     Count(request) {
-      const path = `admin/v1/report-subscriptions/count`;
+      const path = `/admin/v1/report-subscriptions/count`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -13905,56 +11666,9 @@ export function createReportSubscriptionServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -13975,7 +11689,7 @@ export function createReportSubscriptionServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/report-subscriptions/${request.id}`;
+      const path = `/admin/v1/report-subscriptions/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.viewMask) {
@@ -13993,7 +11707,7 @@ export function createReportSubscriptionServiceClient(
       }) as Promise<ubaservicev1_ReportSubscription>;
     },
     Create(request) {
-      const path = `admin/v1/report-subscriptions`;
+      const path = `/admin/v1/report-subscriptions`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'ReportSubscriptionService',
@@ -14004,8 +11718,10 @@ export function createReportSubscriptionServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/report-subscriptions/${request.id}`;
-      const body = JSON.stringify(request);
+      const path = `/admin/v1/report-subscriptions/${request.id}`;
+      const bodyMap = { ...request } as Record<string, unknown>;
+      delete bodyMap["id"];
+      const body = JSON.stringify(bodyMap);
       return transport.unary(path, 'PUT', body, {
         service: 'ReportSubscriptionService',
         method: 'Update',
@@ -14015,7 +11731,7 @@ export function createReportSubscriptionServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/report-subscriptions/${request.id}`;
+      const path = `/admin/v1/report-subscriptions/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.deletedBy) {
@@ -14037,20 +11753,20 @@ export function createReportSubscriptionServiceClient(
 // 获取订阅列表 - 答复
 export type ubaservicev1_ListReportSubscriptionResponse = {
   items: ubaservicev1_ReportSubscription[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // 定时报告订阅：周期执行一个分析模型查询，把结果摘要推送到指定渠道
 export type ubaservicev1_ReportSubscription = {
-  appId?: number;
+  appId?: string;
   channels: ubaservicev1_ReportChannel[] | undefined;
   createdAt?: wellKnownTimestamp;
-  createdBy?: number;
+  createdBy?: string;
   deletedAt?: wellKnownTimestamp;
-  deletedBy?: number;
+  deletedBy?: string;
   description?: string;
   enabled?: boolean;
-  id: number | undefined;
+  id: string | undefined;
   intervalMinutes?: number;
   lastRunAt?: wellKnownTimestamp;
   // 分析模型标识：event-trend / active-users / group-by / funnel / retention
@@ -14058,9 +11774,9 @@ export type ubaservicev1_ReportSubscription = {
   name?: string;
   // 分析请求参数 JSON 快照（与对应分析 API 的请求体一致）
   paramsJson?: string;
-  tenantId?: number;
+  tenantId?: string;
   updatedAt?: wellKnownTimestamp;
-  updatedBy?: number;
+  updatedBy?: string;
 };
 
 // 报告推送渠道
@@ -14073,12 +11789,12 @@ export type ubaservicev1_ReportChannel =
   | 'REPORT_CHANNEL_WEBHOOK';
 // 订阅数量 - 答复
 export type ubaservicev1_CountReportSubscriptionResponse = {
-  count: number | undefined;
+  count: string | undefined;
 };
 
 // 获取订阅数据 - 请求
 export type ubaservicev1_GetReportSubscriptionRequest = {
-  id?: number;
+  id?: string;
   viewMask?: wellKnownFieldMask;
 };
 
@@ -14091,14 +11807,14 @@ export type ubaservicev1_CreateReportSubscriptionRequest = {
 export type ubaservicev1_UpdateReportSubscriptionRequest = {
   allowMissing?: boolean;
   data: ubaservicev1_ReportSubscription | undefined;
-  id: number | undefined;
+  id: string | undefined;
   updateMask: undefined | wellKnownFieldMask;
 };
 
 // 删除订阅 - 请求
 export type ubaservicev1_DeleteReportSubscriptionRequest = {
-  deletedBy?: number;
-  id?: number;
+  deletedBy?: string;
+  id?: string;
 };
 
 // 风险事件服务
@@ -14126,7 +11842,7 @@ export function createRiskEventServiceClient(
 ): RiskEventService {
   return {
     List(request) {
-      const path = `admin/v1/risk-events`;
+      const path = `/admin/v1/risk-events`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -14174,56 +11890,9 @@ export function createRiskEventServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -14241,7 +11910,7 @@ export function createRiskEventServiceClient(
       }) as Promise<ubaservicev1_ListRiskEventResponse>;
     },
     Count(request) {
-      const path = `admin/v1/risk-events/count`;
+      const path = `/admin/v1/risk-events/count`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -14289,56 +11958,9 @@ export function createRiskEventServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -14359,7 +11981,7 @@ export function createRiskEventServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/risk-events/${request.id}`;
+      const path = `/admin/v1/risk-events/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.viewMask) {
@@ -14377,7 +11999,7 @@ export function createRiskEventServiceClient(
       }) as Promise<ubaservicev1_RiskEvent>;
     },
     Create(request) {
-      const path = `admin/v1/risk-events`;
+      const path = `/admin/v1/risk-events`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'RiskEventService',
@@ -14389,15 +12011,15 @@ export function createRiskEventServiceClient(
 // 获取风险事件列表 - 答复
 export type ubaservicev1_ListRiskEventResponse = {
   items: ubaservicev1_RiskEvent[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // 风险事件
 export type ubaservicev1_RiskEvent = {
   createdAt?: wellKnownTimestamp;
-  createdBy?: number;
+  createdBy?: string;
   deletedAt?: wellKnownTimestamp;
-  deletedBy?: number;
+  deletedBy?: string;
   // 风险详情描述
   description?: string;
   // 设备ID（关联主体，风险事件涉及的设备）
@@ -14411,7 +12033,7 @@ export type ubaservicev1_RiskEvent = {
   // 处理时间
   handledTime?: wellKnownTimestamp;
   // 处理人ID
-  handlerId?: number;
+  handlerId?: string;
   // 风险事件发生时间
   occurTime?: wellKnownTimestamp;
   // 关联行为事件ID列表（风险事件关联的行为事件）
@@ -14428,7 +12050,7 @@ export type ubaservicev1_RiskEvent = {
   // 规则上下文（触发条件，结构化信息）
   ruleContext?: wellKnownStruct;
   // 触发规则ID
-  ruleId?: number;
+  ruleId?: string;
   // 规则名称
   ruleName?: string;
   // 会话ID（风险事件发生时的会话标识）
@@ -14436,11 +12058,11 @@ export type ubaservicev1_RiskEvent = {
   // 处置状态
   status?: ubaservicev1_RiskEvent_Status;
   // 租户ID（多租户隔离，支持 SaaS 场景）
-  tenantId?: number;
+  tenantId?: string;
   updatedAt?: wellKnownTimestamp;
-  updatedBy?: number;
+  updatedBy?: string;
   // 用户ID（关联主体，风险事件涉及的用户）
-  userId?: number;
+  userId?: string;
 };
 
 // Any JSON value.
@@ -14463,12 +12085,12 @@ export type ubaservicev1_RiskEvent_Status =
   // 未指定处置状态
   | 'RISK_EVENT_STATUS_UNSPECIFIED';
 export type ubaservicev1_CountRiskEventResponse = {
-  count: number | undefined;
+  count: string | undefined;
 };
 
 // 获取风险事件数据 - 请求
 export type ubaservicev1_GetRiskEventRequest = {
-  id?: number;
+  id?: string;
   viewMask?: wellKnownFieldMask;
 };
 
@@ -14510,7 +12132,7 @@ export function createRiskRuleServiceClient(
 ): RiskRuleService {
   return {
     List(request) {
-      const path = `admin/v1/risk-rules`;
+      const path = `/admin/v1/risk-rules`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -14558,56 +12180,9 @@ export function createRiskRuleServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -14625,7 +12200,7 @@ export function createRiskRuleServiceClient(
       }) as Promise<ubaservicev1_ListRiskRuleResponse>;
     },
     Count(request) {
-      const path = `admin/v1/risk-rules/count`;
+      const path = `/admin/v1/risk-rules/count`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -14673,56 +12248,9 @@ export function createRiskRuleServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -14743,7 +12271,7 @@ export function createRiskRuleServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/risk-rules/${request.id}`;
+      const path = `/admin/v1/risk-rules/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.viewMask) {
@@ -14761,7 +12289,7 @@ export function createRiskRuleServiceClient(
       }) as Promise<ubaservicev1_RiskRule>;
     },
     Create(request) {
-      const path = `admin/v1/risk-rules`;
+      const path = `/admin/v1/risk-rules`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'RiskRuleService',
@@ -14772,8 +12300,10 @@ export function createRiskRuleServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/risk-rules/${request.id}`;
-      const body = JSON.stringify(request);
+      const path = `/admin/v1/risk-rules/${request.id}`;
+      const bodyMap = { ...request } as Record<string, unknown>;
+      delete bodyMap["id"];
+      const body = JSON.stringify(bodyMap);
       return transport.unary(path, 'PUT', body, {
         service: 'RiskRuleService',
         method: 'Update',
@@ -14783,7 +12313,7 @@ export function createRiskRuleServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/risk-rules/${request.id}`;
+      const path = `/admin/v1/risk-rules/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.deletedBy) {
@@ -14805,7 +12335,7 @@ export function createRiskRuleServiceClient(
 // 获取风险规则列表 - 答复
 export type ubaservicev1_ListRiskRuleResponse = {
   items: ubaservicev1_RiskRule[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // 风险规则定义，描述一条风险规则的所有属性
@@ -14819,19 +12349,19 @@ export type ubaservicev1_RiskRule = {
   // 创建时间
   createdAt?: wellKnownTimestamp;
   // 创建者用户ID
-  createdBy?: number;
+  createdBy?: string;
   // 默认风险等级（规则对应的默认风险等级）
   defaultLevel?: string;
   // 删除时间
   deletedAt?: wellKnownTimestamp;
   // 删除者用户ID
-  deletedBy?: number;
+  deletedBy?: string;
   // 规则描述（规则的详细说明）
   description?: string;
   // 是否启用（true: 启用，false: 禁用，控制规则生效状态）
   enabled?: boolean;
   // 规则ID（唯一标识一条风险规则）
-  id: number | undefined;
+  id: string | undefined;
   // 规则名称（规则的显示名称）
   name?: string;
   // 优先级（越小优先级越高，控制规则执行顺序）
@@ -14839,11 +12369,11 @@ export type ubaservicev1_RiskRule = {
   // 风险类型（规则对应的风险类型）
   riskType?: string;
   // 租户ID（多租户隔离，支持 SaaS 场景）
-  tenantId?: number;
+  tenantId?: string;
   // 更新时间
   updatedAt?: wellKnownTimestamp;
   // 更新者用户ID
-  updatedBy?: number;
+  updatedBy?: string;
 };
 
 // 风险事件处置动作，定义规则触发后的处置方式
@@ -14872,12 +12402,12 @@ type wellKnownDuration = string;
 
 // 获取风险规则数量 - 答复
 export type ubaservicev1_CountRiskRuleResponse = {
-  count: number | undefined;
+  count: string | undefined;
 };
 
 // 获取风险规则数据 - 请求
 export type ubaservicev1_GetRiskRuleRequest = {
-  id?: number;
+  id?: string;
   viewMask?: wellKnownFieldMask;
 };
 
@@ -14890,14 +12420,14 @@ export type ubaservicev1_CreateRiskRuleRequest = {
 export type ubaservicev1_UpdateRiskRuleRequest = {
   allowMissing?: boolean;
   data: ubaservicev1_RiskRule | undefined;
-  id: number | undefined;
+  id: string | undefined;
   updateMask: undefined | wellKnownFieldMask;
 };
 
 // 删除风险规则 - 请求
 export type ubaservicev1_DeleteRiskRuleRequest = {
-  deletedBy?: number;
-  id?: number;
+  deletedBy?: string;
+  id?: string;
 };
 
 // 角色管理服务
@@ -14929,7 +12459,7 @@ export function createRoleServiceClient(
 ): RoleService {
   return {
     List(request) {
-      const path = `admin/v1/roles`;
+      const path = `/admin/v1/roles`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -14977,56 +12507,9 @@ export function createRoleServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -15047,7 +12530,7 @@ export function createRoleServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/roles/${request.id}`;
+      const path = `/admin/v1/roles/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.name) {
@@ -15075,7 +12558,7 @@ export function createRoleServiceClient(
       }) as Promise<permissionservicev1_Role>;
     },
     Create(request) {
-      const path = `admin/v1/roles`;
+      const path = `/admin/v1/roles`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'RoleService',
@@ -15086,8 +12569,10 @@ export function createRoleServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/roles/${request.id}`;
-      const body = JSON.stringify(request);
+      const path = `/admin/v1/roles/${request.id}`;
+      const bodyMap = { ...request } as Record<string, unknown>;
+      delete bodyMap["id"];
+      const body = JSON.stringify(bodyMap);
       return transport.unary(path, 'PUT', body, {
         service: 'RoleService',
         method: 'Update',
@@ -15097,7 +12582,7 @@ export function createRoleServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/roles/${request.id}`;
+      const path = `/admin/v1/roles/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.code) {
@@ -15124,30 +12609,30 @@ export function createRoleServiceClient(
 // 角色列表 - 答复
 export type permissionservicev1_ListRoleResponse = {
   items: permissionservicev1_Role[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // 角色
 export type permissionservicev1_Role = {
   code?: string;
   createdAt?: wellKnownTimestamp;
-  createdBy?: number;
+  createdBy?: string;
   deletedAt?: wellKnownTimestamp;
-  deletedBy?: number;
+  deletedBy?: string;
   description?: string;
-  id?: number;
+  id?: string;
   isProtected?: boolean;
   name?: string;
-  parentId?: number;
+  parentId?: string;
   parentName?: string;
-  permissions: number[] | undefined;
+  permissions: string[] | undefined;
   sortOrder?: number;
   status?: permissionservicev1_Role_Status;
-  tenantId?: number;
+  tenantId?: string;
   tenantName?: string;
   type?: permissionservicev1_Role_Type;
   updatedAt?: wellKnownTimestamp;
-  updatedBy?: number;
+  updatedBy?: string;
 };
 
 // 角色状态
@@ -15162,7 +12647,7 @@ export type permissionservicev1_Role_Type =
 // 角色数据 - 请求
 export type permissionservicev1_GetRoleRequest = {
   code?: string;
-  id?: number;
+  id?: string;
   name?: string;
   viewMask?: wellKnownFieldMask;
 };
@@ -15176,15 +12661,15 @@ export type permissionservicev1_CreateRoleRequest = {
 export type permissionservicev1_UpdateRoleRequest = {
   allowMissing?: boolean;
   data: permissionservicev1_Role | undefined;
-  id: number | undefined;
+  id: string | undefined;
   updateMask: undefined | wellKnownFieldMask;
 };
 
 // 删除角色 - 请求
 export type permissionservicev1_DeleteRoleRequest = {
   code?: string;
-  id?: number;
-  tenantId?: number;
+  id?: string;
+  tenantId?: string;
 };
 
 // 用户分群服务
@@ -15228,7 +12713,7 @@ export function createSegmentServiceClient(
 ): SegmentService {
   return {
     List(request) {
-      const path = `admin/v1/segments`;
+      const path = `/admin/v1/segments`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -15276,56 +12761,9 @@ export function createSegmentServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -15343,7 +12781,7 @@ export function createSegmentServiceClient(
       }) as Promise<ubaservicev1_ListSegmentResponse>;
     },
     Count(request) {
-      const path = `admin/v1/segments/count`;
+      const path = `/admin/v1/segments/count`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -15391,56 +12829,9 @@ export function createSegmentServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -15461,7 +12852,7 @@ export function createSegmentServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/segments/${request.id}`;
+      const path = `/admin/v1/segments/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.viewMask) {
@@ -15479,7 +12870,7 @@ export function createSegmentServiceClient(
       }) as Promise<ubaservicev1_Segment>;
     },
     Create(request) {
-      const path = `admin/v1/segments`;
+      const path = `/admin/v1/segments`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'SegmentService',
@@ -15490,8 +12881,10 @@ export function createSegmentServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/segments/${request.id}`;
-      const body = JSON.stringify(request);
+      const path = `/admin/v1/segments/${request.id}`;
+      const bodyMap = { ...request } as Record<string, unknown>;
+      delete bodyMap["id"];
+      const body = JSON.stringify(bodyMap);
       return transport.unary(path, 'PUT', body, {
         service: 'SegmentService',
         method: 'Update',
@@ -15501,7 +12894,7 @@ export function createSegmentServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/segments/${request.id}`;
+      const path = `/admin/v1/segments/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.deletedBy) {
@@ -15522,8 +12915,10 @@ export function createSegmentServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/segments/${request.id}/refresh`;
-      const body = JSON.stringify(request);
+      const path = `/admin/v1/segments/${request.id}/refresh`;
+      const bodyMap = { ...request } as Record<string, unknown>;
+      delete bodyMap["id"];
+      const body = JSON.stringify(bodyMap);
       return transport.unary(path, 'POST', body, {
         service: 'SegmentService',
         method: 'Refresh',
@@ -15533,7 +12928,7 @@ export function createSegmentServiceClient(
       if (request.segmentId === undefined || request.segmentId === null) {
         throw new Error('missing required field request.segment_id');
       }
-      const path = `admin/v1/segments/${request.segmentId}/users`;
+      const path = `/admin/v1/segments/${request.segmentId}/users`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -15560,29 +12955,29 @@ export function createSegmentServiceClient(
 // 获取分群列表 - 答复
 export type ubaservicev1_ListSegmentResponse = {
   items: ubaservicev1_Segment[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // 用户分群
 export type ubaservicev1_Segment = {
-  appId?: number;
+  appId?: string;
   createdAt?: wellKnownTimestamp;
-  createdBy?: number;
+  createdBy?: string;
   // 圈选定义（对应 SegmentationRequest 的时间范围与 include/exclude 条件）
   definition?: ubaservicev1_SegmentationDefinition;
   deletedAt?: wellKnownTimestamp;
-  deletedBy?: number;
+  deletedBy?: string;
   description?: string;
   enabled?: boolean;
-  id: number | undefined;
+  id: string | undefined;
   lastRefreshedAt?: wellKnownTimestamp;
   maxUsers?: number;
   name?: string;
   refreshIntervalMinutes?: number;
-  tenantId?: number;
+  tenantId?: string;
   updatedAt?: wellKnownTimestamp;
-  updatedBy?: number;
-  userCount?: number;
+  updatedBy?: string;
+  userCount?: string;
 };
 
 // 分群圈选定义（SegmentationRequest 的可持久化快照）
@@ -15599,12 +12994,12 @@ export type ubaservicev1_SegmentationDefinition = {
 
 // 分群数量 - 答复
 export type ubaservicev1_CountSegmentResponse = {
-  count: number | undefined;
+  count: string | undefined;
 };
 
 // 获取分群数据 - 请求
 export type ubaservicev1_GetSegmentRequest = {
-  id?: number;
+  id?: string;
   viewMask?: wellKnownFieldMask;
 };
 
@@ -15619,38 +13014,38 @@ export type ubaservicev1_CreateSegmentRequest = {
 export type ubaservicev1_UpdateSegmentRequest = {
   allowMissing?: boolean;
   data: ubaservicev1_Segment | undefined;
-  id: number | undefined;
+  id: string | undefined;
   updateMask: undefined | wellKnownFieldMask;
 };
 
 // 删除分群 - 请求
 export type ubaservicev1_DeleteSegmentRequest = {
-  deletedBy?: number;
-  id?: number;
+  deletedBy?: string;
+  id?: string;
 };
 
 // 刷新分群 - 请求
 export type ubaservicev1_RefreshSegmentRequest = {
-  id: number | undefined;
+  id: string | undefined;
 };
 
 // 查询分群用户 - 请求
 export type ubaservicev1_ListSegmentUsersRequest = {
   page?: number;
   pageSize?: number;
-  segmentId: number | undefined;
+  segmentId: string | undefined;
 };
 
 // 查询分群用户 - 答复
 export type ubaservicev1_ListSegmentUsersResponse = {
   items: ubaservicev1_SegmentUser[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // 分群成员
 export type ubaservicev1_SegmentUser = {
   joinedAt: undefined | wellKnownTimestamp;
-  userId: number | undefined;
+  userId: string | undefined;
 };
 
 // 会话服务
@@ -15670,7 +13065,7 @@ export function createSessionServiceClient(
 ): SessionService {
   return {
     List(request) {
-      const path = `admin/v1/sessions`;
+      const path = `/admin/v1/sessions`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -15718,56 +13113,9 @@ export function createSessionServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -15788,7 +13136,7 @@ export function createSessionServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/sessions/${request.id}`;
+      const path = `/admin/v1/sessions/${request.id}`;
       const body = null;
       return transport.unary(path, 'GET', body, {
         service: 'SessionService',
@@ -15799,7 +13147,7 @@ export function createSessionServiceClient(
 }
 export type ubaservicev1_ListSessionResponse = {
   items: ubaservicev1_Session[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // 会话（对应 sessions 表）
@@ -15814,7 +13162,7 @@ export type ubaservicev1_Session = {
   // 设备ID（会话主体设备）
   deviceId: string | undefined;
   // 会话时长（起止时间间隔，单位秒）
-  durationMs: number | undefined;
+  durationMs: string | undefined;
   // 会话结束时间
   endTime: undefined | wellKnownTimestamp;
   // 入口页面（会话起始页面）
@@ -15846,18 +13194,18 @@ export type ubaservicev1_Session = {
   // 会话起始时间
   startTime: undefined | wellKnownTimestamp;
   // 租户ID（多租户隔离，支持 SaaS 场景）
-  tenantId: number | undefined;
+  tenantId: string | undefined;
   // 会话内总金额（本会话内发生的总金额，字符串类型，支持多币种）
   totalAmount: string | undefined;
   // 更新时间（会话最近一次更新的时间）
   updateTime: undefined | wellKnownTimestamp;
   // 用户ID（会话主体用户）
-  userId: number | undefined;
+  userId: string | undefined;
 };
 
 // 查询会话详情请求
 export type ubaservicev1_GetSessionRequest = {
-  id: number | undefined;
+  id: string | undefined;
 };
 
 // 自助 SQL 查询服务（只读）
@@ -15873,7 +13221,7 @@ export function createSqlQueryServiceClient(
 ): SqlQueryService {
   return {
     ExecuteQuery(request) {
-      const path = `admin/v1/sql-query/execute`;
+      const path = `/admin/v1/sql-query/execute`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'SqlQueryService',
@@ -15895,9 +13243,9 @@ export type ubaservicev1_ExecuteSqlQueryResponse = {
   // 列名
   columns: string[] | undefined;
   // 执行耗时（毫秒）
-  durationMs: number | undefined;
+  durationMs: string | undefined;
   // 返回行数
-  rowCount: number | undefined;
+  rowCount: string | undefined;
   // 数据行
   rows: ubaservicev1_SqlResultRow[] | undefined;
   // 是否因行数上限截断
@@ -15942,7 +13290,7 @@ export function createTagDefinitionServiceClient(
 ): TagDefinitionService {
   return {
     List(request) {
-      const path = `admin/v1/tag-definitions`;
+      const path = `/admin/v1/tag-definitions`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -15990,56 +13338,9 @@ export function createTagDefinitionServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -16057,7 +13358,7 @@ export function createTagDefinitionServiceClient(
       }) as Promise<ubaservicev1_ListTagDefinitionResponse>;
     },
     Count(request) {
-      const path = `admin/v1/tag-definitions/count`;
+      const path = `/admin/v1/tag-definitions/count`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -16105,56 +13406,9 @@ export function createTagDefinitionServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -16175,7 +13429,7 @@ export function createTagDefinitionServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/tag-definitions/${request.id}`;
+      const path = `/admin/v1/tag-definitions/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.viewMask) {
@@ -16193,7 +13447,7 @@ export function createTagDefinitionServiceClient(
       }) as Promise<ubaservicev1_TagDefinition>;
     },
     Create(request) {
-      const path = `admin/v1/tag-definitions`;
+      const path = `/admin/v1/tag-definitions`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'TagDefinitionService',
@@ -16204,8 +13458,10 @@ export function createTagDefinitionServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/tag-definitions/${request.id}`;
-      const body = JSON.stringify(request);
+      const path = `/admin/v1/tag-definitions/${request.id}`;
+      const bodyMap = { ...request } as Record<string, unknown>;
+      delete bodyMap["id"];
+      const body = JSON.stringify(bodyMap);
       return transport.unary(path, 'PUT', body, {
         service: 'TagDefinitionService',
         method: 'Update',
@@ -16215,7 +13471,7 @@ export function createTagDefinitionServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/tag-definitions/${request.id}`;
+      const path = `/admin/v1/tag-definitions/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.deletedBy) {
@@ -16237,7 +13493,7 @@ export function createTagDefinitionServiceClient(
 // 获取标签定义列表 - 答复
 export type ubaservicev1_ListTagDefinitionResponse = {
   items: ubaservicev1_TagDefinition[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // 标签定义（对应 tag_definition 表）
@@ -16249,13 +13505,13 @@ export type ubaservicev1_TagDefinition = {
   // 标签唯一代码，业务唯一标识，支持英文、数字、下划线
   code?: string;
   createdAt?: wellKnownTimestamp;
-  createdBy?: number;
+  createdBy?: string;
   deletedAt?: wellKnownTimestamp;
-  deletedBy?: number;
+  deletedBy?: string;
   // 标签描述（详细说明）
   description?: string;
   // 标签ID（唯一标识一个标签）
-  id: number | undefined;
+  id: string | undefined;
   // 是否动态标签（true: 动态计算，false: 静态打标）
   isDynamic?: boolean;
   // 是否系统预置（true: 系统预置，false: 用户自定义）
@@ -16269,9 +13525,9 @@ export type ubaservicev1_TagDefinition = {
   // 标签类型（如布尔、枚举、数值、字符串、列表等）
   tagType?: string;
   // 租户ID（多租户隔离，支持 SaaS 场景）
-  tenantId?: number;
+  tenantId?: string;
   updatedAt?: wellKnownTimestamp;
-  updatedBy?: number;
+  updatedBy?: string;
 };
 
 // 标签规则定义（简化，实际可根据需求扩展为更复杂的表达式结构）
@@ -16292,15 +13548,15 @@ export type ubaservicev1_TagValue = {
   description?: string;
   // 图标
   icon?: string;
-  id?: number;
+  id?: string;
   // 标签值显示名称（用于展示）
   label?: string;
   // 排序
   sortOrder?: number;
   // 标签ID（所属标签ID，关联 TagDefinition.id）
-  tagId?: number;
+  tagId?: string;
   // 租户ID（多租户隔离，支持 SaaS 场景）
-  tenantId?: number;
+  tenantId?: string;
   updatedAt?: wellKnownTimestamp;
   // 标签值（实际存储值）
   value?: string;
@@ -16308,12 +13564,12 @@ export type ubaservicev1_TagValue = {
 
 // 标签定义数量 - 答复
 export type ubaservicev1_CountTagDefinitionResponse = {
-  count: number | undefined;
+  count: string | undefined;
 };
 
 // 获取标签定义数据 - 请求
 export type ubaservicev1_GetTagDefinitionRequest = {
-  id?: number;
+  id?: string;
   viewMask?: wellKnownFieldMask;
 };
 
@@ -16326,14 +13582,14 @@ export type ubaservicev1_CreateTagDefinitionRequest = {
 export type ubaservicev1_UpdateTagDefinitionRequest = {
   allowMissing?: boolean;
   data: ubaservicev1_TagDefinition | undefined;
-  id: number | undefined;
+  id: string | undefined;
   updateMask: undefined | wellKnownFieldMask;
 };
 
 // 删除标签定义 - 请求
 export type ubaservicev1_DeleteTagDefinitionRequest = {
-  deletedBy?: number;
-  id?: number;
+  deletedBy?: string;
+  id?: string;
 };
 
 // 调度任务管理服务
@@ -16344,6 +13600,10 @@ export interface TaskService {
   ): Promise<taskservicev1_ListTaskResponse>;
   // 查询调度任务详情
   Get(
+    request: taskservicev1_GetTaskRequest,
+  ): Promise<taskservicev1_Task>;
+  /** Alternate HTTP binding #1 of Get: GET /admin/v1/tasks/type-name/{type_name} */
+  GetAlt1(
     request: taskservicev1_GetTaskRequest,
   ): Promise<taskservicev1_Task>;
   // 创建调度任务
@@ -16385,7 +13645,7 @@ export function createTaskServiceClient(
 ): TaskService {
   return {
     List(request) {
-      const path = `admin/v1/tasks`;
+      const path = `/admin/v1/tasks`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -16433,56 +13693,9 @@ export function createTaskServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -16503,7 +13716,7 @@ export function createTaskServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/tasks/${request.id}`;
+      const path = `/admin/v1/tasks/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.typeName) {
@@ -16525,8 +13738,36 @@ export function createTaskServiceClient(
         method: 'Get',
       }) as Promise<taskservicev1_Task>;
     },
+
+    // Alternate HTTP binding #1 of Get: GET /admin/v1/tasks/type-name/{type_name}
+    GetAlt1(request) {
+      if (request.typeName === undefined || request.typeName === null) {
+        throw new Error('missing required field request.type_name');
+      }
+      const path = `/admin/v1/tasks/type-name/${request.typeName}`;
+      const body = null;
+      const queryParams: string[] = [];
+      if (request.id) {
+        queryParams.push(
+          `id=${encodeURIComponent(request.id.toString())}`,
+        );
+      }
+      if (request.viewMask) {
+        queryParams.push(
+          `viewMask=${encodeURIComponent(request.viewMask.toString())}`,
+        );
+      }
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join('&')}`;
+      }
+      return transport.unary(uri, 'GET', body, {
+        service: 'TaskService',
+        method: 'Get',
+      }) as Promise<taskservicev1_Task>;
+    },
     Create(request) {
-      const path = `admin/v1/tasks`;
+      const path = `/admin/v1/tasks`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'TaskService',
@@ -16537,8 +13778,10 @@ export function createTaskServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/tasks/${request.id}`;
-      const body = JSON.stringify(request);
+      const path = `/admin/v1/tasks/${request.id}`;
+      const bodyMap = { ...request } as Record<string, unknown>;
+      delete bodyMap["id"];
+      const body = JSON.stringify(bodyMap);
       return transport.unary(path, 'PUT', body, {
         service: 'TaskService',
         method: 'Update',
@@ -16548,7 +13791,7 @@ export function createTaskServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/tasks/${request.id}`;
+      const path = `/admin/v1/tasks/${request.id}`;
       const body = null;
       return transport.unary(path, 'DELETE', body, {
         service: 'TaskService',
@@ -16556,7 +13799,7 @@ export function createTaskServiceClient(
       }) as Promise<wellKnownEmpty>;
     },
     ListTaskTypeName(_request) {
-      const path = `admin/v1/tasks:type-names`;
+      const path = `/admin/v1/tasks:type-names`;
       const body = null;
       return transport.unary(path, 'GET', body, {
         service: 'TaskService',
@@ -16564,7 +13807,7 @@ export function createTaskServiceClient(
       }) as Promise<taskservicev1_ListTaskTypeNameResponse>;
     },
     RestartAllTask(request) {
-      const path = `admin/v1/tasks:restart`;
+      const path = `/admin/v1/tasks:restart`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'TaskService',
@@ -16572,7 +13815,7 @@ export function createTaskServiceClient(
       }) as Promise<taskservicev1_RestartAllTaskResponse>;
     },
     StartAllTask(request) {
-      const path = `admin/v1/tasks:start`;
+      const path = `/admin/v1/tasks:start`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'TaskService',
@@ -16580,7 +13823,7 @@ export function createTaskServiceClient(
       }) as Promise<wellKnownEmpty>;
     },
     StopAllTask(request) {
-      const path = `admin/v1/tasks:stop`;
+      const path = `/admin/v1/tasks:stop`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'TaskService',
@@ -16588,7 +13831,7 @@ export function createTaskServiceClient(
       }) as Promise<wellKnownEmpty>;
     },
     ControlTask(request) {
-      const path = `admin/v1/tasks:control`;
+      const path = `/admin/v1/tasks:control`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'TaskService',
@@ -16600,22 +13843,22 @@ export function createTaskServiceClient(
 // 查询调度任务列表 - 回应
 export type taskservicev1_ListTaskResponse = {
   items: taskservicev1_Task[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // 调度任务
 export type taskservicev1_Task = {
   createdAt?: wellKnownTimestamp;
-  createdBy?: number;
+  createdBy?: string;
   //
   // Behaviors: OPTIONAL
   cronSpec?: string;
   deletedAt?: wellKnownTimestamp;
-  deletedBy?: number;
+  deletedBy?: string;
   enable?: boolean;
   //
   // Behaviors: OPTIONAL
-  id?: number;
+  id?: string;
   remark?: string;
   //
   // Behaviors: OPTIONAL
@@ -16623,7 +13866,7 @@ export type taskservicev1_Task = {
   //
   // Behaviors: OPTIONAL
   taskPayload?: string;
-  tenantId?: number;
+  tenantId?: string;
   //
   // Behaviors: OPTIONAL
   type?: taskservicev1_Task_Type;
@@ -16631,7 +13874,7 @@ export type taskservicev1_Task = {
   // Behaviors: OPTIONAL
   typeName?: string;
   updatedAt?: wellKnownTimestamp;
-  updatedBy?: number;
+  updatedBy?: string;
 };
 
 // 调度任务类型
@@ -16672,7 +13915,7 @@ export type taskservicev1_TaskOption = {
 
 // 查询调度任务详情 - 请求
 export type taskservicev1_GetTaskRequest = {
-  id?: number;
+  id?: string;
   //
   // Behaviors: OPTIONAL
   typeName?: string;
@@ -16688,13 +13931,13 @@ export type taskservicev1_CreateTaskRequest = {
 export type taskservicev1_UpdateTaskRequest = {
   allowMissing?: boolean;
   data: taskservicev1_Task | undefined;
-  id: number | undefined;
+  id: string | undefined;
   updateMask: undefined | wellKnownFieldMask;
 };
 
 // 删除调度任务 - 请求
 export type taskservicev1_DeleteTaskRequest = {
-  id?: number;
+  id?: string;
 };
 
 // 任务类型名称列表 - 回应
@@ -16757,7 +14000,7 @@ export function createTenantServiceClient(
 ): TenantService {
   return {
     List(request) {
-      const path = `admin/v1/tenants`;
+      const path = `/admin/v1/tenants`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -16805,56 +14048,9 @@ export function createTenantServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -16875,7 +14071,7 @@ export function createTenantServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/tenants/${request.id}`;
+      const path = `/admin/v1/tenants/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.code) {
@@ -16903,7 +14099,7 @@ export function createTenantServiceClient(
       }) as Promise<identityservicev1_Tenant>;
     },
     Create(request) {
-      const path = `admin/v1/tenants`;
+      const path = `/admin/v1/tenants`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'TenantService',
@@ -16914,8 +14110,10 @@ export function createTenantServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/tenants/${request.id}`;
-      const body = JSON.stringify(request);
+      const path = `/admin/v1/tenants/${request.id}`;
+      const bodyMap = { ...request } as Record<string, unknown>;
+      delete bodyMap["id"];
+      const body = JSON.stringify(bodyMap);
       return transport.unary(path, 'PUT', body, {
         service: 'TenantService',
         method: 'Update',
@@ -16925,7 +14123,7 @@ export function createTenantServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/tenants/${request.id}`;
+      const path = `/admin/v1/tenants/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.code) {
@@ -16943,7 +14141,7 @@ export function createTenantServiceClient(
       }) as Promise<wellKnownEmpty>;
     },
     CreateTenantWithAdminUser(request) {
-      const path = `admin/v1/tenants:with-admin`;
+      const path = `/admin/v1/tenants:with-admin`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'TenantService',
@@ -16951,7 +14149,7 @@ export function createTenantServiceClient(
       }) as Promise<wellKnownEmpty>;
     },
     TenantExists(request) {
-      const path = `admin/v1/tenants:exists`;
+      const path = `/admin/v1/tenants:exists`;
       const body = null;
       const queryParams: string[] = [];
       if (request.code) {
@@ -16978,22 +14176,22 @@ export function createTenantServiceClient(
 // 租户列表 - 答复
 export type identityservicev1_ListTenantResponse = {
   items: identityservicev1_Tenant[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // 租户
 export type identityservicev1_Tenant = {
-  adminUserId?: number;
+  adminUserId?: string;
   adminUserName?: string;
   auditStatus?: identityservicev1_Tenant_AuditStatus;
   code?: string;
   createdAt?: wellKnownTimestamp;
-  createdBy?: number;
+  createdBy?: string;
   deletedAt?: wellKnownTimestamp;
-  deletedBy?: number;
+  deletedBy?: string;
   domain?: string;
   expiredAt?: wellKnownTimestamp;
-  id?: number;
+  id?: string;
   industry?: string;
   logoUrl?: string;
   memberCount?: number;
@@ -17005,7 +14203,7 @@ export type identityservicev1_Tenant = {
   type?: identityservicev1_Tenant_Type;
   unsubscribeAt?: wellKnownTimestamp;
   updatedAt?: wellKnownTimestamp;
-  updatedBy?: number;
+  updatedBy?: string;
 };
 
 // 租户类型
@@ -17031,7 +14229,7 @@ export type identityservicev1_Tenant_AuditStatus =
 // 租户数据 - 请求
 export type identityservicev1_GetTenantRequest = {
   code?: string;
-  id?: number;
+  id?: string;
   name?: string;
   viewMask?: wellKnownFieldMask;
 };
@@ -17045,19 +14243,19 @@ export type identityservicev1_CreateTenantRequest = {
 export type identityservicev1_UpdateTenantRequest = {
   allowMissing?: boolean;
   data: identityservicev1_Tenant | undefined;
-  id: number | undefined;
+  id: string | undefined;
   updateMask: undefined | wellKnownFieldMask;
 };
 
 // 删除租户 - 请求
 export type identityservicev1_DeleteTenantRequest = {
   code?: string;
-  id?: number;
+  id?: string;
 };
 
 // 创建租户及管理员用户 - 请求
 export type identityservicev1_CreateTenantWithAdminUserRequest = {
-  operatorUserId?: number;
+  operatorUserId?: string;
   password: string | undefined;
   tenant: identityservicev1_Tenant | undefined;
   user: identityservicev1_User | undefined;
@@ -17068,39 +14266,39 @@ export type identityservicev1_User = {
   address?: string;
   avatar?: string;
   createdAt?: wellKnownTimestamp;
-  createdBy?: number;
+  createdBy?: string;
   deletedAt?: wellKnownTimestamp;
-  deletedBy?: number;
+  deletedBy?: string;
   description?: string;
   email?: string;
   gender?: identityservicev1_User_Gender;
-  id?: number;
+  id?: string;
   lastLoginAt?: wellKnownTimestamp;
   lastLoginIp?: string;
   lockedUntil?: wellKnownTimestamp;
   mobile?: string;
   nickname?: string;
-  orgUnitId?: number;
-  orgUnitIds: number[] | undefined;
+  orgUnitId?: string;
+  orgUnitIds: string[] | undefined;
   orgUnitName?: string;
   orgUnitNames: string[] | undefined;
-  positionId?: number;
-  positionIds: number[] | undefined;
+  positionId?: string;
+  positionIds: string[] | undefined;
   positionName?: string;
   positionNames: string[] | undefined;
   realname?: string;
   region?: string;
   remark?: string;
-  roleId?: number;
-  roleIds: number[] | undefined;
+  roleId?: string;
+  roleIds: string[] | undefined;
   roleNames: string[] | undefined;
   roles: string[] | undefined;
   status?: identityservicev1_User_Status;
   telephone?: string;
-  tenantId?: number;
+  tenantId?: string;
   tenantName?: string;
   updatedAt?: wellKnownTimestamp;
-  updatedBy?: number;
+  updatedBy?: string;
   username?: string;
 };
 
@@ -17138,6 +14336,10 @@ export interface UserService {
   Get(
     request: identityservicev1_GetUserRequest,
   ): Promise<identityservicev1_User>;
+  /** Alternate HTTP binding #1 of Get: GET /admin/v1/users/username/{username} */
+  GetAlt1(
+    request: identityservicev1_GetUserRequest,
+  ): Promise<identityservicev1_User>;
   // 创建用户
   Create(
     request: identityservicev1_CreateUserRequest,
@@ -17148,6 +14350,10 @@ export interface UserService {
   ): Promise<wellKnownEmpty>;
   // 删除用户
   Delete(
+    request: identityservicev1_DeleteUserRequest,
+  ): Promise<wellKnownEmpty>;
+  /** Alternate HTTP binding #1 of Delete: DELETE /admin/v1/users/username/{username} */
+  DeleteAlt1(
     request: identityservicev1_DeleteUserRequest,
   ): Promise<wellKnownEmpty>;
   // 用户是否存在
@@ -17165,7 +14371,7 @@ export function createUserServiceClient(
 ): UserService {
   return {
     List(request) {
-      const path = `admin/v1/users`;
+      const path = `/admin/v1/users`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -17213,56 +14419,9 @@ export function createUserServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -17283,7 +14442,7 @@ export function createUserServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/users/${request.id}`;
+      const path = `/admin/v1/users/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.username) {
@@ -17305,8 +14464,36 @@ export function createUserServiceClient(
         method: 'Get',
       }) as Promise<identityservicev1_User>;
     },
+
+    // Alternate HTTP binding #1 of Get: GET /admin/v1/users/username/{username}
+    GetAlt1(request) {
+      if (request.username === undefined || request.username === null) {
+        throw new Error('missing required field request.username');
+      }
+      const path = `/admin/v1/users/username/${request.username}`;
+      const body = null;
+      const queryParams: string[] = [];
+      if (request.id) {
+        queryParams.push(
+          `id=${encodeURIComponent(request.id.toString())}`,
+        );
+      }
+      if (request.viewMask) {
+        queryParams.push(
+          `viewMask=${encodeURIComponent(request.viewMask.toString())}`,
+        );
+      }
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join('&')}`;
+      }
+      return transport.unary(uri, 'GET', body, {
+        service: 'UserService',
+        method: 'Get',
+      }) as Promise<identityservicev1_User>;
+    },
     Create(request) {
-      const path = `admin/v1/users`;
+      const path = `/admin/v1/users`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'UserService',
@@ -17317,8 +14504,10 @@ export function createUserServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/users/${request.id}`;
-      const body = JSON.stringify(request);
+      const path = `/admin/v1/users/${request.id}`;
+      const bodyMap = { ...request } as Record<string, unknown>;
+      delete bodyMap["id"];
+      const body = JSON.stringify(bodyMap);
       return transport.unary(path, 'PUT', body, {
         service: 'UserService',
         method: 'Update',
@@ -17328,7 +14517,7 @@ export function createUserServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/users/${request.id}`;
+      const path = `/admin/v1/users/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.username) {
@@ -17350,8 +14539,36 @@ export function createUserServiceClient(
         method: 'Delete',
       }) as Promise<wellKnownEmpty>;
     },
+
+    // Alternate HTTP binding #1 of Delete: DELETE /admin/v1/users/username/{username}
+    DeleteAlt1(request) {
+      if (request.username === undefined || request.username === null) {
+        throw new Error('missing required field request.username');
+      }
+      const path = `/admin/v1/users/username/${request.username}`;
+      const body = null;
+      const queryParams: string[] = [];
+      if (request.id) {
+        queryParams.push(
+          `id=${encodeURIComponent(request.id.toString())}`,
+        );
+      }
+      if (request.deletedBy) {
+        queryParams.push(
+          `deletedBy=${encodeURIComponent(request.deletedBy.toString())}`,
+        );
+      }
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join('&')}`;
+      }
+      return transport.unary(uri, 'DELETE', body, {
+        service: 'UserService',
+        method: 'Delete',
+      }) as Promise<wellKnownEmpty>;
+    },
     UserExists(request) {
-      const path = `admin/v1/users:exists`;
+      const path = `/admin/v1/users:exists`;
       const body = null;
       const queryParams: string[] = [];
       if (request.id) {
@@ -17377,8 +14594,10 @@ export function createUserServiceClient(
       if (request.userId === undefined || request.userId === null) {
         throw new Error('missing required field request.user_id');
       }
-      const path = `admin/v1/users/${request.userId}/password`;
-      const body = JSON.stringify(request);
+      const path = `/admin/v1/users/${request.userId}/password`;
+      const bodyMap = { ...request } as Record<string, unknown>;
+      delete bodyMap["userId"];
+      const body = JSON.stringify(bodyMap);
       return transport.unary(path, 'POST', body, {
         service: 'UserService',
         method: 'EditUserPassword',
@@ -17389,12 +14608,12 @@ export function createUserServiceClient(
 // 获取用户列表 - 答复
 export type identityservicev1_ListUserResponse = {
   items: identityservicev1_User[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // 获取用户数据 - 请求
 export type identityservicev1_GetUserRequest = {
-  id?: number;
+  id?: string;
   username?: string;
   viewMask?: wellKnownFieldMask;
 };
@@ -17411,21 +14630,21 @@ export type identityservicev1_UpdateUserRequest = {
   //
   // Behaviors: REQUIRED
   data: identityservicev1_User | undefined;
-  id: number | undefined;
+  id: string | undefined;
   password?: string;
   updateMask: undefined | wellKnownFieldMask;
 };
 
 // 删除用户 - 请求
 export type identityservicev1_DeleteUserRequest = {
-  deletedBy?: number;
-  id?: number;
+  deletedBy?: string;
+  id?: string;
   username?: string;
 };
 
 // 用户是否存在 - 请求
 export type identityservicev1_UserExistsRequest = {
-  id?: number;
+  id?: string;
   username?: string;
 };
 
@@ -17437,7 +14656,7 @@ export type identityservicev1_UserExistsResponse = {
 // 强制修改用户密码（不验证） - 请求
 export type identityservicev1_EditUserPasswordRequest = {
   newPassword: string | undefined;
-  userId: number | undefined;
+  userId: string | undefined;
 };
 
 // 用户画像服务
@@ -17457,7 +14676,7 @@ export function createUserBehaviorProfileServiceClient(
 ): UserBehaviorProfileService {
   return {
     List(request) {
-      const path = `admin/v1/user-behavior-profiles`;
+      const path = `/admin/v1/user-behavior-profiles`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -17505,56 +14724,9 @@ export function createUserBehaviorProfileServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -17575,7 +14747,7 @@ export function createUserBehaviorProfileServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/user-behavior-profiles/${request.id}`;
+      const path = `/admin/v1/user-behavior-profiles/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.viewMask) {
@@ -17597,7 +14769,7 @@ export function createUserBehaviorProfileServiceClient(
 // 获取用户画像列表 - 答复
 export type ubaservicev1_ListUserBehaviorProfileResponse = {
   items: ubaservicev1_UserBehaviorProfile[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // 用户画像（对应 users_dim 表）
@@ -17610,7 +14782,7 @@ export type ubaservicev1_UserBehaviorProfile = {
   // 地理位置
   geo: { [key: string]: string } | undefined;
   // 自增长主键ID
-  id?: number;
+  id?: string;
   lastActiveDate: undefined | wellKnownTimestamp;
   lastPayTime: undefined | wellKnownTimestamp;
   // 最后风险时间
@@ -17630,23 +14802,23 @@ export type ubaservicev1_UserBehaviorProfile = {
   // 风险画像
   riskScore: number | undefined;
   riskTags: string[] | undefined;
-  tenantId: number | undefined;
+  tenantId: string | undefined;
   // 行为画像
-  totalEvents: number | undefined;
+  totalEvents: string | undefined;
   totalPayAmount: string | undefined;
   totalSessions: number | undefined;
   updatedAt?: wellKnownTimestamp;
-  userId: number | undefined;
+  userId: string | undefined;
   // 身份属性
   userLevel: number | undefined;
   userRole: string | undefined;
-  ver: number | undefined;
+  ver: string | undefined;
   vipLevel: number | undefined;
 };
 
 // 获取用户画像数据 - 请求
 export type ubaservicev1_GetUserBehaviorProfileRequest = {
-  id?: number;
+  id?: string;
   viewMask?: wellKnownFieldMask;
 };
 
@@ -17687,7 +14859,7 @@ export function createUserProfileServiceClient(
 ): UserProfileService {
   return {
     GetUser(_request) {
-      const path = `admin/v1/me`;
+      const path = `/admin/v1/me`;
       const body = null;
       return transport.unary(path, 'GET', body, {
         service: 'UserProfileService',
@@ -17695,7 +14867,7 @@ export function createUserProfileServiceClient(
       }) as Promise<identityservicev1_User>;
     },
     UpdateUser(request) {
-      const path = `admin/v1/me`;
+      const path = `/admin/v1/me`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'PUT', body, {
         service: 'UserProfileService',
@@ -17703,7 +14875,7 @@ export function createUserProfileServiceClient(
       }) as Promise<wellKnownEmpty>;
     },
     ChangePassword(request) {
-      const path = `admin/v1/me/password`;
+      const path = `/admin/v1/me/password`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'UserProfileService',
@@ -17711,7 +14883,7 @@ export function createUserProfileServiceClient(
       }) as Promise<wellKnownEmpty>;
     },
     UploadAvatar(request) {
-      const path = `admin/v1/me/avatar`;
+      const path = `/admin/v1/me/avatar`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'UserProfileService',
@@ -17719,7 +14891,7 @@ export function createUserProfileServiceClient(
       }) as Promise<identityservicev1_UploadAvatarResponse>;
     },
     DeleteAvatar(_request) {
-      const path = `admin/v1/me/avatar`;
+      const path = `/admin/v1/me/avatar`;
       const body = null;
       return transport.unary(path, 'DELETE', body, {
         service: 'UserProfileService',
@@ -17727,7 +14899,7 @@ export function createUserProfileServiceClient(
       }) as Promise<wellKnownEmpty>;
     },
     BindContact(request) {
-      const path = `admin/v1/me/contact`;
+      const path = `/admin/v1/me/contact`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'UserProfileService',
@@ -17735,7 +14907,7 @@ export function createUserProfileServiceClient(
       }) as Promise<wellKnownEmpty>;
     },
     VerifyContact(request) {
-      const path = `admin/v1/me/contact/verify`;
+      const path = `/admin/v1/me/contact/verify`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'UserProfileService',
@@ -17830,7 +15002,7 @@ export function createUserTagServiceClient(
 ): UserTagService {
   return {
     List(request) {
-      const path = `admin/v1/user-tags`;
+      const path = `/admin/v1/user-tags`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -17878,56 +15050,9 @@ export function createUserTagServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -17945,7 +15070,7 @@ export function createUserTagServiceClient(
       }) as Promise<ubaservicev1_ListUserTagResponse>;
     },
     Count(request) {
-      const path = `admin/v1/user-tags/count`;
+      const path = `/admin/v1/user-tags/count`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -17993,56 +15118,9 @@ export function createUserTagServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -18063,7 +15141,7 @@ export function createUserTagServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/user-tags/${request.id}`;
+      const path = `/admin/v1/user-tags/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.viewMask) {
@@ -18081,7 +15159,7 @@ export function createUserTagServiceClient(
       }) as Promise<ubaservicev1_UserTag>;
     },
     Create(request) {
-      const path = `admin/v1/user-tags`;
+      const path = `/admin/v1/user-tags`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'UserTagService',
@@ -18092,8 +15170,10 @@ export function createUserTagServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/user-tags/${request.id}`;
-      const body = JSON.stringify(request);
+      const path = `/admin/v1/user-tags/${request.id}`;
+      const bodyMap = { ...request } as Record<string, unknown>;
+      delete bodyMap["id"];
+      const body = JSON.stringify(bodyMap);
       return transport.unary(path, 'PUT', body, {
         service: 'UserTagService',
         method: 'Update',
@@ -18103,7 +15183,7 @@ export function createUserTagServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/user-tags/${request.id}`;
+      const path = `/admin/v1/user-tags/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.deletedBy) {
@@ -18125,7 +15205,7 @@ export function createUserTagServiceClient(
 // 获取用户标签列表 - 答复
 export type ubaservicev1_ListUserTagResponse = {
   items: ubaservicev1_UserTag[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // 用户标签记录（对应 user_tag 表）
@@ -18133,27 +15213,27 @@ export type ubaservicev1_UserTag = {
   // 置信度（算法打标时，范围0~1）
   confidence?: number;
   createdAt?: wellKnownTimestamp;
-  createdBy?: number;
+  createdBy?: string;
   deletedAt?: wellKnownTimestamp;
-  deletedBy?: number;
+  deletedBy?: string;
   // 有效时间（标签生效时间）
   effectiveTime?: wellKnownTimestamp;
   // 过期时间（标签失效时间）
   expireTime?: wellKnownTimestamp;
   // 主键ID（自增长，唯一标识一条用户标签记录）
-  id?: number;
+  id?: string;
   // 标签来源（如人工打标、规则引擎、算法模型、批量导入等）
   source?: string;
   // 来源规则ID（如果是规则计算，记录规则ID）
-  sourceRuleId?: number;
+  sourceRuleId?: string;
   // 标签ID（唯一标识一个标签）
-  tagId?: number;
+  tagId?: string;
   // 租户ID（多租户隔离，支持 SaaS 场景）
-  tenantId?: number;
+  tenantId?: string;
   updatedAt?: wellKnownTimestamp;
-  updatedBy?: number;
+  updatedBy?: string;
   // 用户ID（唯一标识一个用户）
-  userId?: number;
+  userId?: string;
   // 标签值（根据 tag_type 解析，实际存储值）
   value?: string;
   // 标签值显示名称（枚举值的展示名称）
@@ -18161,12 +15241,12 @@ export type ubaservicev1_UserTag = {
 };
 
 export type ubaservicev1_CountUserTagResponse = {
-  count: number | undefined;
+  count: string | undefined;
 };
 
 // 获取用户标签数据 - 请求
 export type ubaservicev1_GetUserTagRequest = {
-  id?: number;
+  id?: string;
   viewMask?: wellKnownFieldMask;
 };
 
@@ -18179,14 +15259,14 @@ export type ubaservicev1_CreateUserTagRequest = {
 export type ubaservicev1_UpdateUserTagRequest = {
   allowMissing?: boolean;
   data: ubaservicev1_UserTag | undefined;
-  id: number | undefined;
+  id: string | undefined;
   updateMask: undefined | wellKnownFieldMask;
 };
 
 // 删除用户标签 - 请求
 export type ubaservicev1_DeleteUserTagRequest = {
-  deletedBy?: number;
-  id?: number;
+  deletedBy?: string;
+  id?: string;
 };
 
 // 可视化埋点服务
@@ -18226,7 +15306,7 @@ export function createVisualEventServiceClient(
 ): VisualEventService {
   return {
     List(request) {
-      const path = `admin/v1/visual-events`;
+      const path = `/admin/v1/visual-events`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -18274,56 +15354,9 @@ export function createVisualEventServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -18341,7 +15374,7 @@ export function createVisualEventServiceClient(
       }) as Promise<ubaservicev1_ListVisualEventResponse>;
     },
     Count(request) {
-      const path = `admin/v1/visual-events/count`;
+      const path = `/admin/v1/visual-events/count`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -18389,56 +15422,9 @@ export function createVisualEventServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -18459,7 +15445,7 @@ export function createVisualEventServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/visual-events/${request.id}`;
+      const path = `/admin/v1/visual-events/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.viewMask) {
@@ -18477,7 +15463,7 @@ export function createVisualEventServiceClient(
       }) as Promise<ubaservicev1_VisualEvent>;
     },
     Create(request) {
-      const path = `admin/v1/visual-events`;
+      const path = `/admin/v1/visual-events`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'VisualEventService',
@@ -18488,8 +15474,10 @@ export function createVisualEventServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/visual-events/${request.id}`;
-      const body = JSON.stringify(request);
+      const path = `/admin/v1/visual-events/${request.id}`;
+      const bodyMap = { ...request } as Record<string, unknown>;
+      delete bodyMap["id"];
+      const body = JSON.stringify(bodyMap);
       return transport.unary(path, 'PUT', body, {
         service: 'VisualEventService',
         method: 'Update',
@@ -18499,7 +15487,7 @@ export function createVisualEventServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/visual-events/${request.id}`;
+      const path = `/admin/v1/visual-events/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.deletedBy) {
@@ -18517,7 +15505,7 @@ export function createVisualEventServiceClient(
       }) as Promise<wellKnownEmpty>;
     },
     ListForApp(request) {
-      const path = `admin/v1/visual-events/for-app`;
+      const path = `/admin/v1/visual-events/for-app`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'VisualEventService',
@@ -18529,16 +15517,16 @@ export function createVisualEventServiceClient(
 // 获取可视化埋点列表 - 答复
 export type ubaservicev1_ListVisualEventResponse = {
   items: ubaservicev1_VisualEvent[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // 可视化埋点规则
 export type ubaservicev1_VisualEvent = {
   appId?: string;
   createdAt?: wellKnownTimestamp;
-  createdBy?: number;
+  createdBy?: string;
   deletedAt?: wellKnownTimestamp;
-  deletedBy?: number;
+  deletedBy?: string;
   // 显示名
   displayName?: string;
   // 元素 XPath（SDK 点击采集时同口径生成）
@@ -18546,7 +15534,7 @@ export type ubaservicev1_VisualEvent = {
   enabled?: boolean;
   // 事件名（点击命中后上报的事件）
   eventName?: string;
-  id: number | undefined;
+  id: string | undefined;
   // 匹配方式
   matchType?: ubaservicev1_VisualMatchType;
   // 规则作用页面（前缀匹配；空为全部页面）
@@ -18554,9 +15542,9 @@ export type ubaservicev1_VisualEvent = {
   // 随事件上报的静态属性
   properties: { [key: string]: string } | undefined;
   remark?: string;
-  tenantId?: number;
+  tenantId?: string;
   updatedAt?: wellKnownTimestamp;
-  updatedBy?: number;
+  updatedBy?: string;
 };
 
 // 元素匹配方式
@@ -18569,12 +15557,12 @@ export type ubaservicev1_VisualMatchType =
   | 'XPATH_PREFIX';
 // 可视化埋点数量 - 答复
 export type ubaservicev1_CountVisualEventResponse = {
-  count: number | undefined;
+  count: string | undefined;
 };
 
 // 获取可视化埋点数据 - 请求
 export type ubaservicev1_GetVisualEventRequest = {
-  id?: number;
+  id?: string;
   viewMask?: wellKnownFieldMask;
 };
 
@@ -18587,20 +15575,20 @@ export type ubaservicev1_CreateVisualEventRequest = {
 export type ubaservicev1_UpdateVisualEventRequest = {
   allowMissing?: boolean;
   data: ubaservicev1_VisualEvent | undefined;
-  id: number | undefined;
+  id: string | undefined;
   updateMask: undefined | wellKnownFieldMask;
 };
 
 // 删除可视化埋点 - 请求
 export type ubaservicev1_DeleteVisualEventRequest = {
-  deletedBy?: number;
-  id?: number;
+  deletedBy?: string;
+  id?: string;
 };
 
 // 按应用下发启用规则 - 请求（collector 转发）
 export type ubaservicev1_ListVisualEventsForAppRequest = {
   appId?: string;
-  tenantId?: number;
+  tenantId?: string;
 };
 
 // 按应用下发启用规则 - 答复
@@ -18645,7 +15633,7 @@ export function createWebhookServiceClient(
 ): WebhookService {
   return {
     List(request) {
-      const path = `admin/v1/webhooks`;
+      const path = `/admin/v1/webhooks`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -18693,56 +15681,9 @@ export function createWebhookServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -18760,7 +15701,7 @@ export function createWebhookServiceClient(
       }) as Promise<ubaservicev1_ListWebhookResponse>;
     },
     Count(request) {
-      const path = `admin/v1/webhooks/count`;
+      const path = `/admin/v1/webhooks/count`;
       const body = null;
       const queryParams: string[] = [];
       if (request.page) {
@@ -18808,56 +15749,9 @@ export function createWebhookServiceClient(
           `filterExpr.type=${encodeURIComponent(request.filterExpr.type.toString())}`,
         );
       }
-      if (request.filterExpr?.conditions?.field) {
-        queryParams.push(
-          `filterExpr.conditions.field=${encodeURIComponent(request.filterExpr.conditions.field.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.op) {
-        queryParams.push(
-          `filterExpr.conditions.op=${encodeURIComponent(request.filterExpr.conditions.op.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.value) {
-        queryParams.push(
-          `filterExpr.conditions.value=${encodeURIComponent(request.filterExpr.conditions.value.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonValue) {
-        queryParams.push(
-          `filterExpr.conditions.jsonValue=${encodeURIComponent(request.filterExpr.conditions.jsonValue.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.values) {
-        request.filterExpr.conditions.values.forEach((x) => {
-          queryParams.push(
-            `filterExpr.conditions.values=${encodeURIComponent(x.toString())}`,
-          );
-        });
-      }
-      if (request.filterExpr?.conditions?.datePart) {
-        queryParams.push(
-          `filterExpr.conditions.datePart=${encodeURIComponent(request.filterExpr.conditions.datePart.toString())}`,
-        );
-      }
-      if (request.filterExpr?.conditions?.jsonPath) {
-        queryParams.push(
-          `filterExpr.conditions.jsonPath=${encodeURIComponent(request.filterExpr.conditions.jsonPath.toString())}`,
-        );
-      }
       if (request.orderBy) {
         queryParams.push(
           `orderBy=${encodeURIComponent(request.orderBy.toString())}`,
-        );
-      }
-      if (request.sorting?.field) {
-        queryParams.push(
-          `sorting.field=${encodeURIComponent(request.sorting.field.toString())}`,
-        );
-      }
-      if (request.sorting?.direction) {
-        queryParams.push(
-          `sorting.direction=${encodeURIComponent(request.sorting.direction.toString())}`,
         );
       }
       if (request.fieldMask) {
@@ -18878,7 +15772,7 @@ export function createWebhookServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/webhooks/${request.id}`;
+      const path = `/admin/v1/webhooks/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.viewMask) {
@@ -18896,7 +15790,7 @@ export function createWebhookServiceClient(
       }) as Promise<ubaservicev1_Webhook>;
     },
     Create(request) {
-      const path = `admin/v1/webhooks`;
+      const path = `/admin/v1/webhooks`;
       const body = JSON.stringify(request);
       return transport.unary(path, 'POST', body, {
         service: 'WebhookService',
@@ -18907,8 +15801,10 @@ export function createWebhookServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/webhooks/${request.id}`;
-      const body = JSON.stringify(request);
+      const path = `/admin/v1/webhooks/${request.id}`;
+      const bodyMap = { ...request } as Record<string, unknown>;
+      delete bodyMap["id"];
+      const body = JSON.stringify(bodyMap);
       return transport.unary(path, 'PUT', body, {
         service: 'WebhookService',
         method: 'Update',
@@ -18918,7 +15814,7 @@ export function createWebhookServiceClient(
       if (request.id === undefined || request.id === null) {
         throw new Error('missing required field request.id');
       }
-      const path = `admin/v1/webhooks/${request.id}`;
+      const path = `/admin/v1/webhooks/${request.id}`;
       const body = null;
       const queryParams: string[] = [];
       if (request.deletedBy) {
@@ -18939,7 +15835,7 @@ export function createWebhookServiceClient(
       if (request.webhookId === undefined || request.webhookId === null) {
         throw new Error('missing required field request.webhook_id');
       }
-      const path = `admin/v1/webhooks/${request.webhookId}/delivery-logs`;
+      const path = `/admin/v1/webhooks/${request.webhookId}/delivery-logs`;
       const body = null;
       const queryParams: string[] = [];
       if (request.success) {
@@ -18966,29 +15862,29 @@ export function createWebhookServiceClient(
 // 获取网络钩子列表 - 答复
 export type ubaservicev1_ListWebhookResponse = {
   items: ubaservicev1_Webhook[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // 网络钩子配置
 export type ubaservicev1_Webhook = {
   appId?: string;
   createdAt?: wellKnownTimestamp;
-  createdBy?: number;
+  createdBy?: string;
   deletedAt?: wellKnownTimestamp;
-  deletedBy?: number;
+  deletedBy?: string;
   // 状态
   enabled?: boolean;
   // 触发条件
   eventTypes: string[] | undefined;
   failureCount?: number;
   filter?: ubaservicev1_WebhookFilter;
-  id: number | undefined;
+  id: string | undefined;
   lastTriggeredAt?: wellKnownTimestamp;
   name?: string;
   secret?: string;
-  tenantId?: number;
+  tenantId?: string;
   updatedAt?: wellKnownTimestamp;
-  updatedBy?: number;
+  updatedBy?: string;
   url?: string;
 };
 
@@ -19001,12 +15897,12 @@ export type ubaservicev1_WebhookFilter = {
 
 // 网络钩子数量 - 答复
 export type ubaservicev1_CountWebhookResponse = {
-  count: number | undefined;
+  count: string | undefined;
 };
 
 // 获取网络钩子数据 - 请求
 export type ubaservicev1_GetWebhookRequest = {
-  id?: number;
+  id?: string;
   viewMask?: wellKnownFieldMask;
 };
 
@@ -19019,14 +15915,14 @@ export type ubaservicev1_CreateWebhookRequest = {
 export type ubaservicev1_UpdateWebhookRequest = {
   allowMissing?: boolean;
   data: ubaservicev1_Webhook | undefined;
-  id: number | undefined;
+  id: string | undefined;
   updateMask: undefined | wellKnownFieldMask;
 };
 
 // 删除网络钩子 - 请求
 export type ubaservicev1_DeleteWebhookRequest = {
-  deletedBy?: number;
-  id?: number;
+  deletedBy?: string;
+  id?: string;
 };
 
 // 查询网络钩子投递日志 - 请求
@@ -19035,28 +15931,28 @@ export type ubaservicev1_ListWebhookDeliveryLogRequest = {
   limit?: number;
   // 按投递结果过滤，不传则返回全部
   success?: boolean;
-  webhookId: number | undefined;
+  webhookId: string | undefined;
 };
 
 // 查询网络钩子投递日志 - 答复
 export type ubaservicev1_ListWebhookDeliveryLogResponse = {
   items: ubaservicev1_WebhookDeliveryLog[] | undefined;
-  total: number | undefined;
+  total: string | undefined;
 };
 
 // 网络钩子投递日志
 export type ubaservicev1_WebhookDeliveryLog = {
   errorMessage: string | undefined;
   eventType: string | undefined;
-  id: number | undefined;
+  id: string | undefined;
   payload: string | undefined;
   responseBody: string | undefined;
   retryCount: number | undefined;
   sentAt: undefined | wellKnownTimestamp;
   statusCode: number | undefined;
   success: boolean | undefined;
-  tenantId: number | undefined;
-  webhookId: number | undefined;
+  tenantId: string | undefined;
+  webhookId: string | undefined;
 };
 
 export class ApiClient {

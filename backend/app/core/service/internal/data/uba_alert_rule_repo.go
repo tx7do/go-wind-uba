@@ -114,7 +114,7 @@ func (r *AlertRuleRepo) Count(ctx context.Context, req *paginationV1.PagingReque
 	}
 
 	return &ubaV1.CountAlertRuleResponse{
-		Count: uint64(count),
+		Count: int64(count),
 	}, nil
 }
 
@@ -139,7 +139,7 @@ func (r *AlertRuleRepo) List(ctx context.Context, req *paginationV1.PagingReques
 	}, nil
 }
 
-func (r *AlertRuleRepo) IsExist(ctx context.Context, id uint32) (bool, error) {
+func (r *AlertRuleRepo) IsExist(ctx context.Context, id int64) (bool, error) {
 	exist, err := r.entClient.Client().AlertRule.Query().
 		Where(alertrule.IDEQ(id)).
 		Exist(ctx)
@@ -284,7 +284,7 @@ func (r *AlertRuleRepo) Update(ctx context.Context, req *ubaV1.UpdateAlertRuleRe
 }
 
 // UpdateTriggerState 触发后回写最后触发时间（评估器专用，不经 DTO 层）。
-func (r *AlertRuleRepo) UpdateTriggerState(ctx context.Context, id uint32, triggeredAt time.Time) error {
+func (r *AlertRuleRepo) UpdateTriggerState(ctx context.Context, id int64, triggeredAt time.Time) error {
 	err := r.entClient.Client().AlertRule.UpdateOneID(id).
 		SetLastTriggeredAt(triggeredAt).
 		SetUpdatedAt(triggeredAt).

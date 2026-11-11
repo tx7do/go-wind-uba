@@ -6,7 +6,7 @@ import (
 )
 
 // BehaviorEventKey 行为事件分区键
-func BehaviorEventKey(tenantID string, userID *uint32, deviceID string) string {
+func BehaviorEventKey(tenantID string, userID *int64, deviceID string) string {
 	var key string
 	if userID != nil && *userID > 0 {
 		key = fmt.Sprintf("%s:%d", tenantID, *userID)

@@ -39,9 +39,9 @@ const (
 // NewUserTokenPayload 创建用户令牌
 func NewUserTokenPayload(
 	username string,
-	userID uint32,
-	tenantID uint32,
-	orgUnitID *uint32,
+	userID int64,
+	tenantID int64,
+	orgUnitID *int64,
 	roleCodes []string,
 	dataScope *identityV1.DataScope,
 	clientID *string,
@@ -119,7 +119,7 @@ func NewUserTokenPayloadWithClaims(claims *authn.AuthClaims) (*authenticationV1.
 		payload.Jti = trans.Ptr(jti)
 	}
 
-	userId, err := claims.GetUint32(ClaimFieldUserID)
+	userId, err := claims.GetInt64(ClaimFieldUserID)
 	if err != nil {
 		log.Errorf("GetUint32 ClaimFieldUserID failed: %v", err)
 	}
@@ -127,7 +127,7 @@ func NewUserTokenPayloadWithClaims(claims *authn.AuthClaims) (*authenticationV1.
 		payload.UserId = userId
 	}
 
-	tenantId, err := claims.GetUint32(ClaimFieldTenantID)
+	tenantId, err := claims.GetInt64(ClaimFieldTenantID)
 	if err != nil {
 		log.Errorf("GetUint32 ClaimFieldTenantID failed: %v", err)
 	}
@@ -170,7 +170,7 @@ func NewUserTokenPayloadWithClaims(claims *authn.AuthClaims) (*authenticationV1.
 		}
 	}
 
-	orgUnitID, err := claims.GetUint32(ClaimFieldOrgUnitID)
+	orgUnitID, err := claims.GetInt64(ClaimFieldOrgUnitID)
 	if err != nil {
 		log.Errorf("GetUint32 ClaimFieldOrgUnitID failed: %v", err)
 	}
@@ -198,12 +198,12 @@ func NewUserTokenPayloadWithJwtMapClaims(claims jwt.MapClaims) (*authenticationV
 	// goroutine（未认证 DoS）。类型不符跳过该字段而非崩溃。
 	userId, _ := claims[ClaimFieldUserID]
 	if v, ok := userId.(float64); ok {
-		payload.UserId = uint32(v)
+		payload.UserId = int64(v)
 	}
 
 	tenantId, _ := claims[ClaimFieldTenantID]
 	if v, ok := tenantId.(float64); ok {
-		payload.TenantId = trans.Ptr(uint32(v))
+		payload.TenantId = trans.Ptr(int64(v))
 	}
 
 	clientId, _ := claims[ClaimFieldClientID]
@@ -225,7 +225,7 @@ func NewUserTokenPayloadWithJwtMapClaims(claims jwt.MapClaims) (*authenticationV
 
 	orgUnitID, _ := claims[ClaimFieldOrgUnitID]
 	if v, ok := orgUnitID.(float64); ok {
-		payload.OrgUnitId = trans.Ptr(uint32(v))
+		payload.OrgUnitId = trans.Ptr(int64(v))
 	}
 
 	roleCodes, _ := claims[ClaimFieldRoleCodes]

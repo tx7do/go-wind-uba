@@ -10,52 +10,52 @@ import (
 )
 
 // ID filters vertices based on their ID field.
-func ID(id uint32) predicate.UserTag {
+func ID(id int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldEQ(FieldID, id))
 }
 
 // IDEQ applies the EQ predicate on the ID field.
-func IDEQ(id uint32) predicate.UserTag {
+func IDEQ(id int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldEQ(FieldID, id))
 }
 
 // IDNEQ applies the NEQ predicate on the ID field.
-func IDNEQ(id uint32) predicate.UserTag {
+func IDNEQ(id int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldNEQ(FieldID, id))
 }
 
 // IDIn applies the In predicate on the ID field.
-func IDIn(ids ...uint32) predicate.UserTag {
+func IDIn(ids ...int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldIn(FieldID, ids...))
 }
 
 // IDNotIn applies the NotIn predicate on the ID field.
-func IDNotIn(ids ...uint32) predicate.UserTag {
+func IDNotIn(ids ...int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldNotIn(FieldID, ids...))
 }
 
 // IDGT applies the GT predicate on the ID field.
-func IDGT(id uint32) predicate.UserTag {
+func IDGT(id int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldGT(FieldID, id))
 }
 
 // IDGTE applies the GTE predicate on the ID field.
-func IDGTE(id uint32) predicate.UserTag {
+func IDGTE(id int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldGTE(FieldID, id))
 }
 
 // IDLT applies the LT predicate on the ID field.
-func IDLT(id uint32) predicate.UserTag {
+func IDLT(id int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldLT(FieldID, id))
 }
 
 // IDLTE applies the LTE predicate on the ID field.
-func IDLTE(id uint32) predicate.UserTag {
+func IDLTE(id int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldLTE(FieldID, id))
 }
 
 // TenantID applies equality check predicate on the "tenant_id" field. It's identical to TenantIDEQ.
-func TenantID(v uint32) predicate.UserTag {
+func TenantID(v int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldEQ(FieldTenantID, v))
 }
 
@@ -75,27 +75,27 @@ func DeletedAt(v time.Time) predicate.UserTag {
 }
 
 // CreatedBy applies equality check predicate on the "created_by" field. It's identical to CreatedByEQ.
-func CreatedBy(v uint32) predicate.UserTag {
+func CreatedBy(v int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldEQ(FieldCreatedBy, v))
 }
 
 // UpdatedBy applies equality check predicate on the "updated_by" field. It's identical to UpdatedByEQ.
-func UpdatedBy(v uint32) predicate.UserTag {
+func UpdatedBy(v int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldEQ(FieldUpdatedBy, v))
 }
 
 // DeletedBy applies equality check predicate on the "deleted_by" field. It's identical to DeletedByEQ.
-func DeletedBy(v uint32) predicate.UserTag {
+func DeletedBy(v int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldEQ(FieldDeletedBy, v))
 }
 
 // UserID applies equality check predicate on the "user_id" field. It's identical to UserIDEQ.
-func UserID(v uint32) predicate.UserTag {
+func UserID(v int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldEQ(FieldUserID, v))
 }
 
 // TagID applies equality check predicate on the "tag_id" field. It's identical to TagIDEQ.
-func TagID(v uint32) predicate.UserTag {
+func TagID(v int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldEQ(FieldTagID, v))
 }
 
@@ -120,7 +120,7 @@ func Source(v string) predicate.UserTag {
 }
 
 // SourceRuleID applies equality check predicate on the "source_rule_id" field. It's identical to SourceRuleIDEQ.
-func SourceRuleID(v uint32) predicate.UserTag {
+func SourceRuleID(v int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldEQ(FieldSourceRuleID, v))
 }
 
@@ -140,42 +140,42 @@ func IsActive(v bool) predicate.UserTag {
 }
 
 // TenantIDEQ applies the EQ predicate on the "tenant_id" field.
-func TenantIDEQ(v uint32) predicate.UserTag {
+func TenantIDEQ(v int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldEQ(FieldTenantID, v))
 }
 
 // TenantIDNEQ applies the NEQ predicate on the "tenant_id" field.
-func TenantIDNEQ(v uint32) predicate.UserTag {
+func TenantIDNEQ(v int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldNEQ(FieldTenantID, v))
 }
 
 // TenantIDIn applies the In predicate on the "tenant_id" field.
-func TenantIDIn(vs ...uint32) predicate.UserTag {
+func TenantIDIn(vs ...int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldIn(FieldTenantID, vs...))
 }
 
 // TenantIDNotIn applies the NotIn predicate on the "tenant_id" field.
-func TenantIDNotIn(vs ...uint32) predicate.UserTag {
+func TenantIDNotIn(vs ...int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldNotIn(FieldTenantID, vs...))
 }
 
 // TenantIDGT applies the GT predicate on the "tenant_id" field.
-func TenantIDGT(v uint32) predicate.UserTag {
+func TenantIDGT(v int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldGT(FieldTenantID, v))
 }
 
 // TenantIDGTE applies the GTE predicate on the "tenant_id" field.
-func TenantIDGTE(v uint32) predicate.UserTag {
+func TenantIDGTE(v int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldGTE(FieldTenantID, v))
 }
 
 // TenantIDLT applies the LT predicate on the "tenant_id" field.
-func TenantIDLT(v uint32) predicate.UserTag {
+func TenantIDLT(v int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldLT(FieldTenantID, v))
 }
 
 // TenantIDLTE applies the LTE predicate on the "tenant_id" field.
-func TenantIDLTE(v uint32) predicate.UserTag {
+func TenantIDLTE(v int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldLTE(FieldTenantID, v))
 }
 
@@ -340,42 +340,42 @@ func DeletedAtNotNil() predicate.UserTag {
 }
 
 // CreatedByEQ applies the EQ predicate on the "created_by" field.
-func CreatedByEQ(v uint32) predicate.UserTag {
+func CreatedByEQ(v int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldEQ(FieldCreatedBy, v))
 }
 
 // CreatedByNEQ applies the NEQ predicate on the "created_by" field.
-func CreatedByNEQ(v uint32) predicate.UserTag {
+func CreatedByNEQ(v int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldNEQ(FieldCreatedBy, v))
 }
 
 // CreatedByIn applies the In predicate on the "created_by" field.
-func CreatedByIn(vs ...uint32) predicate.UserTag {
+func CreatedByIn(vs ...int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldIn(FieldCreatedBy, vs...))
 }
 
 // CreatedByNotIn applies the NotIn predicate on the "created_by" field.
-func CreatedByNotIn(vs ...uint32) predicate.UserTag {
+func CreatedByNotIn(vs ...int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldNotIn(FieldCreatedBy, vs...))
 }
 
 // CreatedByGT applies the GT predicate on the "created_by" field.
-func CreatedByGT(v uint32) predicate.UserTag {
+func CreatedByGT(v int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldGT(FieldCreatedBy, v))
 }
 
 // CreatedByGTE applies the GTE predicate on the "created_by" field.
-func CreatedByGTE(v uint32) predicate.UserTag {
+func CreatedByGTE(v int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldGTE(FieldCreatedBy, v))
 }
 
 // CreatedByLT applies the LT predicate on the "created_by" field.
-func CreatedByLT(v uint32) predicate.UserTag {
+func CreatedByLT(v int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldLT(FieldCreatedBy, v))
 }
 
 // CreatedByLTE applies the LTE predicate on the "created_by" field.
-func CreatedByLTE(v uint32) predicate.UserTag {
+func CreatedByLTE(v int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldLTE(FieldCreatedBy, v))
 }
 
@@ -390,42 +390,42 @@ func CreatedByNotNil() predicate.UserTag {
 }
 
 // UpdatedByEQ applies the EQ predicate on the "updated_by" field.
-func UpdatedByEQ(v uint32) predicate.UserTag {
+func UpdatedByEQ(v int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldEQ(FieldUpdatedBy, v))
 }
 
 // UpdatedByNEQ applies the NEQ predicate on the "updated_by" field.
-func UpdatedByNEQ(v uint32) predicate.UserTag {
+func UpdatedByNEQ(v int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldNEQ(FieldUpdatedBy, v))
 }
 
 // UpdatedByIn applies the In predicate on the "updated_by" field.
-func UpdatedByIn(vs ...uint32) predicate.UserTag {
+func UpdatedByIn(vs ...int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldIn(FieldUpdatedBy, vs...))
 }
 
 // UpdatedByNotIn applies the NotIn predicate on the "updated_by" field.
-func UpdatedByNotIn(vs ...uint32) predicate.UserTag {
+func UpdatedByNotIn(vs ...int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldNotIn(FieldUpdatedBy, vs...))
 }
 
 // UpdatedByGT applies the GT predicate on the "updated_by" field.
-func UpdatedByGT(v uint32) predicate.UserTag {
+func UpdatedByGT(v int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldGT(FieldUpdatedBy, v))
 }
 
 // UpdatedByGTE applies the GTE predicate on the "updated_by" field.
-func UpdatedByGTE(v uint32) predicate.UserTag {
+func UpdatedByGTE(v int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldGTE(FieldUpdatedBy, v))
 }
 
 // UpdatedByLT applies the LT predicate on the "updated_by" field.
-func UpdatedByLT(v uint32) predicate.UserTag {
+func UpdatedByLT(v int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldLT(FieldUpdatedBy, v))
 }
 
 // UpdatedByLTE applies the LTE predicate on the "updated_by" field.
-func UpdatedByLTE(v uint32) predicate.UserTag {
+func UpdatedByLTE(v int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldLTE(FieldUpdatedBy, v))
 }
 
@@ -440,42 +440,42 @@ func UpdatedByNotNil() predicate.UserTag {
 }
 
 // DeletedByEQ applies the EQ predicate on the "deleted_by" field.
-func DeletedByEQ(v uint32) predicate.UserTag {
+func DeletedByEQ(v int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldEQ(FieldDeletedBy, v))
 }
 
 // DeletedByNEQ applies the NEQ predicate on the "deleted_by" field.
-func DeletedByNEQ(v uint32) predicate.UserTag {
+func DeletedByNEQ(v int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldNEQ(FieldDeletedBy, v))
 }
 
 // DeletedByIn applies the In predicate on the "deleted_by" field.
-func DeletedByIn(vs ...uint32) predicate.UserTag {
+func DeletedByIn(vs ...int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldIn(FieldDeletedBy, vs...))
 }
 
 // DeletedByNotIn applies the NotIn predicate on the "deleted_by" field.
-func DeletedByNotIn(vs ...uint32) predicate.UserTag {
+func DeletedByNotIn(vs ...int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldNotIn(FieldDeletedBy, vs...))
 }
 
 // DeletedByGT applies the GT predicate on the "deleted_by" field.
-func DeletedByGT(v uint32) predicate.UserTag {
+func DeletedByGT(v int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldGT(FieldDeletedBy, v))
 }
 
 // DeletedByGTE applies the GTE predicate on the "deleted_by" field.
-func DeletedByGTE(v uint32) predicate.UserTag {
+func DeletedByGTE(v int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldGTE(FieldDeletedBy, v))
 }
 
 // DeletedByLT applies the LT predicate on the "deleted_by" field.
-func DeletedByLT(v uint32) predicate.UserTag {
+func DeletedByLT(v int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldLT(FieldDeletedBy, v))
 }
 
 // DeletedByLTE applies the LTE predicate on the "deleted_by" field.
-func DeletedByLTE(v uint32) predicate.UserTag {
+func DeletedByLTE(v int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldLTE(FieldDeletedBy, v))
 }
 
@@ -490,42 +490,42 @@ func DeletedByNotNil() predicate.UserTag {
 }
 
 // UserIDEQ applies the EQ predicate on the "user_id" field.
-func UserIDEQ(v uint32) predicate.UserTag {
+func UserIDEQ(v int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldEQ(FieldUserID, v))
 }
 
 // UserIDNEQ applies the NEQ predicate on the "user_id" field.
-func UserIDNEQ(v uint32) predicate.UserTag {
+func UserIDNEQ(v int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldNEQ(FieldUserID, v))
 }
 
 // UserIDIn applies the In predicate on the "user_id" field.
-func UserIDIn(vs ...uint32) predicate.UserTag {
+func UserIDIn(vs ...int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldIn(FieldUserID, vs...))
 }
 
 // UserIDNotIn applies the NotIn predicate on the "user_id" field.
-func UserIDNotIn(vs ...uint32) predicate.UserTag {
+func UserIDNotIn(vs ...int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldNotIn(FieldUserID, vs...))
 }
 
 // UserIDGT applies the GT predicate on the "user_id" field.
-func UserIDGT(v uint32) predicate.UserTag {
+func UserIDGT(v int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldGT(FieldUserID, v))
 }
 
 // UserIDGTE applies the GTE predicate on the "user_id" field.
-func UserIDGTE(v uint32) predicate.UserTag {
+func UserIDGTE(v int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldGTE(FieldUserID, v))
 }
 
 // UserIDLT applies the LT predicate on the "user_id" field.
-func UserIDLT(v uint32) predicate.UserTag {
+func UserIDLT(v int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldLT(FieldUserID, v))
 }
 
 // UserIDLTE applies the LTE predicate on the "user_id" field.
-func UserIDLTE(v uint32) predicate.UserTag {
+func UserIDLTE(v int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldLTE(FieldUserID, v))
 }
 
@@ -540,42 +540,42 @@ func UserIDNotNil() predicate.UserTag {
 }
 
 // TagIDEQ applies the EQ predicate on the "tag_id" field.
-func TagIDEQ(v uint32) predicate.UserTag {
+func TagIDEQ(v int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldEQ(FieldTagID, v))
 }
 
 // TagIDNEQ applies the NEQ predicate on the "tag_id" field.
-func TagIDNEQ(v uint32) predicate.UserTag {
+func TagIDNEQ(v int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldNEQ(FieldTagID, v))
 }
 
 // TagIDIn applies the In predicate on the "tag_id" field.
-func TagIDIn(vs ...uint32) predicate.UserTag {
+func TagIDIn(vs ...int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldIn(FieldTagID, vs...))
 }
 
 // TagIDNotIn applies the NotIn predicate on the "tag_id" field.
-func TagIDNotIn(vs ...uint32) predicate.UserTag {
+func TagIDNotIn(vs ...int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldNotIn(FieldTagID, vs...))
 }
 
 // TagIDGT applies the GT predicate on the "tag_id" field.
-func TagIDGT(v uint32) predicate.UserTag {
+func TagIDGT(v int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldGT(FieldTagID, v))
 }
 
 // TagIDGTE applies the GTE predicate on the "tag_id" field.
-func TagIDGTE(v uint32) predicate.UserTag {
+func TagIDGTE(v int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldGTE(FieldTagID, v))
 }
 
 // TagIDLT applies the LT predicate on the "tag_id" field.
-func TagIDLT(v uint32) predicate.UserTag {
+func TagIDLT(v int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldLT(FieldTagID, v))
 }
 
 // TagIDLTE applies the LTE predicate on the "tag_id" field.
-func TagIDLTE(v uint32) predicate.UserTag {
+func TagIDLTE(v int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldLTE(FieldTagID, v))
 }
 
@@ -865,42 +865,42 @@ func SourceContainsFold(v string) predicate.UserTag {
 }
 
 // SourceRuleIDEQ applies the EQ predicate on the "source_rule_id" field.
-func SourceRuleIDEQ(v uint32) predicate.UserTag {
+func SourceRuleIDEQ(v int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldEQ(FieldSourceRuleID, v))
 }
 
 // SourceRuleIDNEQ applies the NEQ predicate on the "source_rule_id" field.
-func SourceRuleIDNEQ(v uint32) predicate.UserTag {
+func SourceRuleIDNEQ(v int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldNEQ(FieldSourceRuleID, v))
 }
 
 // SourceRuleIDIn applies the In predicate on the "source_rule_id" field.
-func SourceRuleIDIn(vs ...uint32) predicate.UserTag {
+func SourceRuleIDIn(vs ...int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldIn(FieldSourceRuleID, vs...))
 }
 
 // SourceRuleIDNotIn applies the NotIn predicate on the "source_rule_id" field.
-func SourceRuleIDNotIn(vs ...uint32) predicate.UserTag {
+func SourceRuleIDNotIn(vs ...int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldNotIn(FieldSourceRuleID, vs...))
 }
 
 // SourceRuleIDGT applies the GT predicate on the "source_rule_id" field.
-func SourceRuleIDGT(v uint32) predicate.UserTag {
+func SourceRuleIDGT(v int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldGT(FieldSourceRuleID, v))
 }
 
 // SourceRuleIDGTE applies the GTE predicate on the "source_rule_id" field.
-func SourceRuleIDGTE(v uint32) predicate.UserTag {
+func SourceRuleIDGTE(v int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldGTE(FieldSourceRuleID, v))
 }
 
 // SourceRuleIDLT applies the LT predicate on the "source_rule_id" field.
-func SourceRuleIDLT(v uint32) predicate.UserTag {
+func SourceRuleIDLT(v int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldLT(FieldSourceRuleID, v))
 }
 
 // SourceRuleIDLTE applies the LTE predicate on the "source_rule_id" field.
-func SourceRuleIDLTE(v uint32) predicate.UserTag {
+func SourceRuleIDLTE(v int64) predicate.UserTag {
 	return predicate.UserTag(sql.FieldLTE(FieldSourceRuleID, v))
 }
 

@@ -81,9 +81,9 @@ func (IDMapping) Fields() []ent.Field {
 
 func (IDMapping) Mixin() []ent.Mixin {
 	return []ent.Mixin{
-		mixin.AutoIncrementId{},
-		mixin.TenantID[uint32]{},
-		mixin.OperatorID{},
+		mixin.AutoIncrementId64{},
+		mixin.TenantID[int64]{},
+		mixin.OperatorID64{},
 		mixin.TimeAt{},
 	}
 }

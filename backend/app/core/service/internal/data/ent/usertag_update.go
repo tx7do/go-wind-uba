@@ -70,14 +70,14 @@ func (_u *UserTagUpdate) ClearDeletedAt() *UserTagUpdate {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (_u *UserTagUpdate) SetCreatedBy(v uint32) *UserTagUpdate {
+func (_u *UserTagUpdate) SetCreatedBy(v int64) *UserTagUpdate {
 	_u.mutation.ResetCreatedBy()
 	_u.mutation.SetCreatedBy(v)
 	return _u
 }
 
 // SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
-func (_u *UserTagUpdate) SetNillableCreatedBy(v *uint32) *UserTagUpdate {
+func (_u *UserTagUpdate) SetNillableCreatedBy(v *int64) *UserTagUpdate {
 	if v != nil {
 		_u.SetCreatedBy(*v)
 	}
@@ -85,7 +85,7 @@ func (_u *UserTagUpdate) SetNillableCreatedBy(v *uint32) *UserTagUpdate {
 }
 
 // AddCreatedBy adds value to the "created_by" field.
-func (_u *UserTagUpdate) AddCreatedBy(v int32) *UserTagUpdate {
+func (_u *UserTagUpdate) AddCreatedBy(v int64) *UserTagUpdate {
 	_u.mutation.AddCreatedBy(v)
 	return _u
 }
@@ -97,14 +97,14 @@ func (_u *UserTagUpdate) ClearCreatedBy() *UserTagUpdate {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (_u *UserTagUpdate) SetUpdatedBy(v uint32) *UserTagUpdate {
+func (_u *UserTagUpdate) SetUpdatedBy(v int64) *UserTagUpdate {
 	_u.mutation.ResetUpdatedBy()
 	_u.mutation.SetUpdatedBy(v)
 	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (_u *UserTagUpdate) SetNillableUpdatedBy(v *uint32) *UserTagUpdate {
+func (_u *UserTagUpdate) SetNillableUpdatedBy(v *int64) *UserTagUpdate {
 	if v != nil {
 		_u.SetUpdatedBy(*v)
 	}
@@ -112,7 +112,7 @@ func (_u *UserTagUpdate) SetNillableUpdatedBy(v *uint32) *UserTagUpdate {
 }
 
 // AddUpdatedBy adds value to the "updated_by" field.
-func (_u *UserTagUpdate) AddUpdatedBy(v int32) *UserTagUpdate {
+func (_u *UserTagUpdate) AddUpdatedBy(v int64) *UserTagUpdate {
 	_u.mutation.AddUpdatedBy(v)
 	return _u
 }
@@ -124,14 +124,14 @@ func (_u *UserTagUpdate) ClearUpdatedBy() *UserTagUpdate {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (_u *UserTagUpdate) SetDeletedBy(v uint32) *UserTagUpdate {
+func (_u *UserTagUpdate) SetDeletedBy(v int64) *UserTagUpdate {
 	_u.mutation.ResetDeletedBy()
 	_u.mutation.SetDeletedBy(v)
 	return _u
 }
 
 // SetNillableDeletedBy sets the "deleted_by" field if the given value is not nil.
-func (_u *UserTagUpdate) SetNillableDeletedBy(v *uint32) *UserTagUpdate {
+func (_u *UserTagUpdate) SetNillableDeletedBy(v *int64) *UserTagUpdate {
 	if v != nil {
 		_u.SetDeletedBy(*v)
 	}
@@ -139,7 +139,7 @@ func (_u *UserTagUpdate) SetNillableDeletedBy(v *uint32) *UserTagUpdate {
 }
 
 // AddDeletedBy adds value to the "deleted_by" field.
-func (_u *UserTagUpdate) AddDeletedBy(v int32) *UserTagUpdate {
+func (_u *UserTagUpdate) AddDeletedBy(v int64) *UserTagUpdate {
 	_u.mutation.AddDeletedBy(v)
 	return _u
 }
@@ -151,14 +151,14 @@ func (_u *UserTagUpdate) ClearDeletedBy() *UserTagUpdate {
 }
 
 // SetUserID sets the "user_id" field.
-func (_u *UserTagUpdate) SetUserID(v uint32) *UserTagUpdate {
+func (_u *UserTagUpdate) SetUserID(v int64) *UserTagUpdate {
 	_u.mutation.ResetUserID()
 	_u.mutation.SetUserID(v)
 	return _u
 }
 
 // SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (_u *UserTagUpdate) SetNillableUserID(v *uint32) *UserTagUpdate {
+func (_u *UserTagUpdate) SetNillableUserID(v *int64) *UserTagUpdate {
 	if v != nil {
 		_u.SetUserID(*v)
 	}
@@ -166,7 +166,7 @@ func (_u *UserTagUpdate) SetNillableUserID(v *uint32) *UserTagUpdate {
 }
 
 // AddUserID adds value to the "user_id" field.
-func (_u *UserTagUpdate) AddUserID(v int32) *UserTagUpdate {
+func (_u *UserTagUpdate) AddUserID(v int64) *UserTagUpdate {
 	_u.mutation.AddUserID(v)
 	return _u
 }
@@ -178,14 +178,14 @@ func (_u *UserTagUpdate) ClearUserID() *UserTagUpdate {
 }
 
 // SetTagID sets the "tag_id" field.
-func (_u *UserTagUpdate) SetTagID(v uint32) *UserTagUpdate {
+func (_u *UserTagUpdate) SetTagID(v int64) *UserTagUpdate {
 	_u.mutation.ResetTagID()
 	_u.mutation.SetTagID(v)
 	return _u
 }
 
 // SetNillableTagID sets the "tag_id" field if the given value is not nil.
-func (_u *UserTagUpdate) SetNillableTagID(v *uint32) *UserTagUpdate {
+func (_u *UserTagUpdate) SetNillableTagID(v *int64) *UserTagUpdate {
 	if v != nil {
 		_u.SetTagID(*v)
 	}
@@ -193,7 +193,7 @@ func (_u *UserTagUpdate) SetNillableTagID(v *uint32) *UserTagUpdate {
 }
 
 // AddTagID adds value to the "tag_id" field.
-func (_u *UserTagUpdate) AddTagID(v int32) *UserTagUpdate {
+func (_u *UserTagUpdate) AddTagID(v int64) *UserTagUpdate {
 	_u.mutation.AddTagID(v)
 	return _u
 }
@@ -292,14 +292,14 @@ func (_u *UserTagUpdate) ClearSource() *UserTagUpdate {
 }
 
 // SetSourceRuleID sets the "source_rule_id" field.
-func (_u *UserTagUpdate) SetSourceRuleID(v uint32) *UserTagUpdate {
+func (_u *UserTagUpdate) SetSourceRuleID(v int64) *UserTagUpdate {
 	_u.mutation.ResetSourceRuleID()
 	_u.mutation.SetSourceRuleID(v)
 	return _u
 }
 
 // SetNillableSourceRuleID sets the "source_rule_id" field if the given value is not nil.
-func (_u *UserTagUpdate) SetNillableSourceRuleID(v *uint32) *UserTagUpdate {
+func (_u *UserTagUpdate) SetNillableSourceRuleID(v *int64) *UserTagUpdate {
 	if v != nil {
 		_u.SetSourceRuleID(*v)
 	}
@@ -307,7 +307,7 @@ func (_u *UserTagUpdate) SetNillableSourceRuleID(v *uint32) *UserTagUpdate {
 }
 
 // AddSourceRuleID adds value to the "source_rule_id" field.
-func (_u *UserTagUpdate) AddSourceRuleID(v int32) *UserTagUpdate {
+func (_u *UserTagUpdate) AddSourceRuleID(v int64) *UserTagUpdate {
 	_u.mutation.AddSourceRuleID(v)
 	return _u
 }
@@ -430,7 +430,7 @@ func (_u *UserTagUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if err := _u.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(usertag.Table, usertag.Columns, sqlgraph.NewFieldSpec(usertag.FieldID, field.TypeUint32))
+	_spec := sqlgraph.NewUpdateSpec(usertag.Table, usertag.Columns, sqlgraph.NewFieldSpec(usertag.FieldID, field.TypeInt64))
 	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -439,7 +439,7 @@ func (_u *UserTagUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		}
 	}
 	if _u.mutation.TenantIDCleared() {
-		_spec.ClearField(usertag.FieldTenantID, field.TypeUint32)
+		_spec.ClearField(usertag.FieldTenantID, field.TypeInt64)
 	}
 	if _u.mutation.CreatedAtCleared() {
 		_spec.ClearField(usertag.FieldCreatedAt, field.TypeTime)
@@ -457,49 +457,49 @@ func (_u *UserTagUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		_spec.ClearField(usertag.FieldDeletedAt, field.TypeTime)
 	}
 	if value, ok := _u.mutation.CreatedBy(); ok {
-		_spec.SetField(usertag.FieldCreatedBy, field.TypeUint32, value)
+		_spec.SetField(usertag.FieldCreatedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedCreatedBy(); ok {
-		_spec.AddField(usertag.FieldCreatedBy, field.TypeUint32, value)
+		_spec.AddField(usertag.FieldCreatedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.CreatedByCleared() {
-		_spec.ClearField(usertag.FieldCreatedBy, field.TypeUint32)
+		_spec.ClearField(usertag.FieldCreatedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.UpdatedBy(); ok {
-		_spec.SetField(usertag.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.SetField(usertag.FieldUpdatedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
-		_spec.AddField(usertag.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.AddField(usertag.FieldUpdatedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.UpdatedByCleared() {
-		_spec.ClearField(usertag.FieldUpdatedBy, field.TypeUint32)
+		_spec.ClearField(usertag.FieldUpdatedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.DeletedBy(); ok {
-		_spec.SetField(usertag.FieldDeletedBy, field.TypeUint32, value)
+		_spec.SetField(usertag.FieldDeletedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedDeletedBy(); ok {
-		_spec.AddField(usertag.FieldDeletedBy, field.TypeUint32, value)
+		_spec.AddField(usertag.FieldDeletedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.DeletedByCleared() {
-		_spec.ClearField(usertag.FieldDeletedBy, field.TypeUint32)
+		_spec.ClearField(usertag.FieldDeletedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.UserID(); ok {
-		_spec.SetField(usertag.FieldUserID, field.TypeUint32, value)
+		_spec.SetField(usertag.FieldUserID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedUserID(); ok {
-		_spec.AddField(usertag.FieldUserID, field.TypeUint32, value)
+		_spec.AddField(usertag.FieldUserID, field.TypeInt64, value)
 	}
 	if _u.mutation.UserIDCleared() {
-		_spec.ClearField(usertag.FieldUserID, field.TypeUint32)
+		_spec.ClearField(usertag.FieldUserID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.TagID(); ok {
-		_spec.SetField(usertag.FieldTagID, field.TypeUint32, value)
+		_spec.SetField(usertag.FieldTagID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedTagID(); ok {
-		_spec.AddField(usertag.FieldTagID, field.TypeUint32, value)
+		_spec.AddField(usertag.FieldTagID, field.TypeInt64, value)
 	}
 	if _u.mutation.TagIDCleared() {
-		_spec.ClearField(usertag.FieldTagID, field.TypeUint32)
+		_spec.ClearField(usertag.FieldTagID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.Value(); ok {
 		_spec.SetField(usertag.FieldValue, field.TypeString, value)
@@ -529,13 +529,13 @@ func (_u *UserTagUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		_spec.ClearField(usertag.FieldSource, field.TypeString)
 	}
 	if value, ok := _u.mutation.SourceRuleID(); ok {
-		_spec.SetField(usertag.FieldSourceRuleID, field.TypeUint32, value)
+		_spec.SetField(usertag.FieldSourceRuleID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedSourceRuleID(); ok {
-		_spec.AddField(usertag.FieldSourceRuleID, field.TypeUint32, value)
+		_spec.AddField(usertag.FieldSourceRuleID, field.TypeInt64, value)
 	}
 	if _u.mutation.SourceRuleIDCleared() {
-		_spec.ClearField(usertag.FieldSourceRuleID, field.TypeUint32)
+		_spec.ClearField(usertag.FieldSourceRuleID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.EffectiveTime(); ok {
 		_spec.SetField(usertag.FieldEffectiveTime, field.TypeTime, value)
@@ -618,14 +618,14 @@ func (_u *UserTagUpdateOne) ClearDeletedAt() *UserTagUpdateOne {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (_u *UserTagUpdateOne) SetCreatedBy(v uint32) *UserTagUpdateOne {
+func (_u *UserTagUpdateOne) SetCreatedBy(v int64) *UserTagUpdateOne {
 	_u.mutation.ResetCreatedBy()
 	_u.mutation.SetCreatedBy(v)
 	return _u
 }
 
 // SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
-func (_u *UserTagUpdateOne) SetNillableCreatedBy(v *uint32) *UserTagUpdateOne {
+func (_u *UserTagUpdateOne) SetNillableCreatedBy(v *int64) *UserTagUpdateOne {
 	if v != nil {
 		_u.SetCreatedBy(*v)
 	}
@@ -633,7 +633,7 @@ func (_u *UserTagUpdateOne) SetNillableCreatedBy(v *uint32) *UserTagUpdateOne {
 }
 
 // AddCreatedBy adds value to the "created_by" field.
-func (_u *UserTagUpdateOne) AddCreatedBy(v int32) *UserTagUpdateOne {
+func (_u *UserTagUpdateOne) AddCreatedBy(v int64) *UserTagUpdateOne {
 	_u.mutation.AddCreatedBy(v)
 	return _u
 }
@@ -645,14 +645,14 @@ func (_u *UserTagUpdateOne) ClearCreatedBy() *UserTagUpdateOne {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (_u *UserTagUpdateOne) SetUpdatedBy(v uint32) *UserTagUpdateOne {
+func (_u *UserTagUpdateOne) SetUpdatedBy(v int64) *UserTagUpdateOne {
 	_u.mutation.ResetUpdatedBy()
 	_u.mutation.SetUpdatedBy(v)
 	return _u
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (_u *UserTagUpdateOne) SetNillableUpdatedBy(v *uint32) *UserTagUpdateOne {
+func (_u *UserTagUpdateOne) SetNillableUpdatedBy(v *int64) *UserTagUpdateOne {
 	if v != nil {
 		_u.SetUpdatedBy(*v)
 	}
@@ -660,7 +660,7 @@ func (_u *UserTagUpdateOne) SetNillableUpdatedBy(v *uint32) *UserTagUpdateOne {
 }
 
 // AddUpdatedBy adds value to the "updated_by" field.
-func (_u *UserTagUpdateOne) AddUpdatedBy(v int32) *UserTagUpdateOne {
+func (_u *UserTagUpdateOne) AddUpdatedBy(v int64) *UserTagUpdateOne {
 	_u.mutation.AddUpdatedBy(v)
 	return _u
 }
@@ -672,14 +672,14 @@ func (_u *UserTagUpdateOne) ClearUpdatedBy() *UserTagUpdateOne {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (_u *UserTagUpdateOne) SetDeletedBy(v uint32) *UserTagUpdateOne {
+func (_u *UserTagUpdateOne) SetDeletedBy(v int64) *UserTagUpdateOne {
 	_u.mutation.ResetDeletedBy()
 	_u.mutation.SetDeletedBy(v)
 	return _u
 }
 
 // SetNillableDeletedBy sets the "deleted_by" field if the given value is not nil.
-func (_u *UserTagUpdateOne) SetNillableDeletedBy(v *uint32) *UserTagUpdateOne {
+func (_u *UserTagUpdateOne) SetNillableDeletedBy(v *int64) *UserTagUpdateOne {
 	if v != nil {
 		_u.SetDeletedBy(*v)
 	}
@@ -687,7 +687,7 @@ func (_u *UserTagUpdateOne) SetNillableDeletedBy(v *uint32) *UserTagUpdateOne {
 }
 
 // AddDeletedBy adds value to the "deleted_by" field.
-func (_u *UserTagUpdateOne) AddDeletedBy(v int32) *UserTagUpdateOne {
+func (_u *UserTagUpdateOne) AddDeletedBy(v int64) *UserTagUpdateOne {
 	_u.mutation.AddDeletedBy(v)
 	return _u
 }
@@ -699,14 +699,14 @@ func (_u *UserTagUpdateOne) ClearDeletedBy() *UserTagUpdateOne {
 }
 
 // SetUserID sets the "user_id" field.
-func (_u *UserTagUpdateOne) SetUserID(v uint32) *UserTagUpdateOne {
+func (_u *UserTagUpdateOne) SetUserID(v int64) *UserTagUpdateOne {
 	_u.mutation.ResetUserID()
 	_u.mutation.SetUserID(v)
 	return _u
 }
 
 // SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (_u *UserTagUpdateOne) SetNillableUserID(v *uint32) *UserTagUpdateOne {
+func (_u *UserTagUpdateOne) SetNillableUserID(v *int64) *UserTagUpdateOne {
 	if v != nil {
 		_u.SetUserID(*v)
 	}
@@ -714,7 +714,7 @@ func (_u *UserTagUpdateOne) SetNillableUserID(v *uint32) *UserTagUpdateOne {
 }
 
 // AddUserID adds value to the "user_id" field.
-func (_u *UserTagUpdateOne) AddUserID(v int32) *UserTagUpdateOne {
+func (_u *UserTagUpdateOne) AddUserID(v int64) *UserTagUpdateOne {
 	_u.mutation.AddUserID(v)
 	return _u
 }
@@ -726,14 +726,14 @@ func (_u *UserTagUpdateOne) ClearUserID() *UserTagUpdateOne {
 }
 
 // SetTagID sets the "tag_id" field.
-func (_u *UserTagUpdateOne) SetTagID(v uint32) *UserTagUpdateOne {
+func (_u *UserTagUpdateOne) SetTagID(v int64) *UserTagUpdateOne {
 	_u.mutation.ResetTagID()
 	_u.mutation.SetTagID(v)
 	return _u
 }
 
 // SetNillableTagID sets the "tag_id" field if the given value is not nil.
-func (_u *UserTagUpdateOne) SetNillableTagID(v *uint32) *UserTagUpdateOne {
+func (_u *UserTagUpdateOne) SetNillableTagID(v *int64) *UserTagUpdateOne {
 	if v != nil {
 		_u.SetTagID(*v)
 	}
@@ -741,7 +741,7 @@ func (_u *UserTagUpdateOne) SetNillableTagID(v *uint32) *UserTagUpdateOne {
 }
 
 // AddTagID adds value to the "tag_id" field.
-func (_u *UserTagUpdateOne) AddTagID(v int32) *UserTagUpdateOne {
+func (_u *UserTagUpdateOne) AddTagID(v int64) *UserTagUpdateOne {
 	_u.mutation.AddTagID(v)
 	return _u
 }
@@ -840,14 +840,14 @@ func (_u *UserTagUpdateOne) ClearSource() *UserTagUpdateOne {
 }
 
 // SetSourceRuleID sets the "source_rule_id" field.
-func (_u *UserTagUpdateOne) SetSourceRuleID(v uint32) *UserTagUpdateOne {
+func (_u *UserTagUpdateOne) SetSourceRuleID(v int64) *UserTagUpdateOne {
 	_u.mutation.ResetSourceRuleID()
 	_u.mutation.SetSourceRuleID(v)
 	return _u
 }
 
 // SetNillableSourceRuleID sets the "source_rule_id" field if the given value is not nil.
-func (_u *UserTagUpdateOne) SetNillableSourceRuleID(v *uint32) *UserTagUpdateOne {
+func (_u *UserTagUpdateOne) SetNillableSourceRuleID(v *int64) *UserTagUpdateOne {
 	if v != nil {
 		_u.SetSourceRuleID(*v)
 	}
@@ -855,7 +855,7 @@ func (_u *UserTagUpdateOne) SetNillableSourceRuleID(v *uint32) *UserTagUpdateOne
 }
 
 // AddSourceRuleID adds value to the "source_rule_id" field.
-func (_u *UserTagUpdateOne) AddSourceRuleID(v int32) *UserTagUpdateOne {
+func (_u *UserTagUpdateOne) AddSourceRuleID(v int64) *UserTagUpdateOne {
 	_u.mutation.AddSourceRuleID(v)
 	return _u
 }
@@ -991,7 +991,7 @@ func (_u *UserTagUpdateOne) sqlSave(ctx context.Context) (_node *UserTag, err er
 	if err := _u.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(usertag.Table, usertag.Columns, sqlgraph.NewFieldSpec(usertag.FieldID, field.TypeUint32))
+	_spec := sqlgraph.NewUpdateSpec(usertag.Table, usertag.Columns, sqlgraph.NewFieldSpec(usertag.FieldID, field.TypeInt64))
 	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "UserTag.id" for update`)}
@@ -1017,7 +1017,7 @@ func (_u *UserTagUpdateOne) sqlSave(ctx context.Context) (_node *UserTag, err er
 		}
 	}
 	if _u.mutation.TenantIDCleared() {
-		_spec.ClearField(usertag.FieldTenantID, field.TypeUint32)
+		_spec.ClearField(usertag.FieldTenantID, field.TypeInt64)
 	}
 	if _u.mutation.CreatedAtCleared() {
 		_spec.ClearField(usertag.FieldCreatedAt, field.TypeTime)
@@ -1035,49 +1035,49 @@ func (_u *UserTagUpdateOne) sqlSave(ctx context.Context) (_node *UserTag, err er
 		_spec.ClearField(usertag.FieldDeletedAt, field.TypeTime)
 	}
 	if value, ok := _u.mutation.CreatedBy(); ok {
-		_spec.SetField(usertag.FieldCreatedBy, field.TypeUint32, value)
+		_spec.SetField(usertag.FieldCreatedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedCreatedBy(); ok {
-		_spec.AddField(usertag.FieldCreatedBy, field.TypeUint32, value)
+		_spec.AddField(usertag.FieldCreatedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.CreatedByCleared() {
-		_spec.ClearField(usertag.FieldCreatedBy, field.TypeUint32)
+		_spec.ClearField(usertag.FieldCreatedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.UpdatedBy(); ok {
-		_spec.SetField(usertag.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.SetField(usertag.FieldUpdatedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedUpdatedBy(); ok {
-		_spec.AddField(usertag.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.AddField(usertag.FieldUpdatedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.UpdatedByCleared() {
-		_spec.ClearField(usertag.FieldUpdatedBy, field.TypeUint32)
+		_spec.ClearField(usertag.FieldUpdatedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.DeletedBy(); ok {
-		_spec.SetField(usertag.FieldDeletedBy, field.TypeUint32, value)
+		_spec.SetField(usertag.FieldDeletedBy, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedDeletedBy(); ok {
-		_spec.AddField(usertag.FieldDeletedBy, field.TypeUint32, value)
+		_spec.AddField(usertag.FieldDeletedBy, field.TypeInt64, value)
 	}
 	if _u.mutation.DeletedByCleared() {
-		_spec.ClearField(usertag.FieldDeletedBy, field.TypeUint32)
+		_spec.ClearField(usertag.FieldDeletedBy, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.UserID(); ok {
-		_spec.SetField(usertag.FieldUserID, field.TypeUint32, value)
+		_spec.SetField(usertag.FieldUserID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedUserID(); ok {
-		_spec.AddField(usertag.FieldUserID, field.TypeUint32, value)
+		_spec.AddField(usertag.FieldUserID, field.TypeInt64, value)
 	}
 	if _u.mutation.UserIDCleared() {
-		_spec.ClearField(usertag.FieldUserID, field.TypeUint32)
+		_spec.ClearField(usertag.FieldUserID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.TagID(); ok {
-		_spec.SetField(usertag.FieldTagID, field.TypeUint32, value)
+		_spec.SetField(usertag.FieldTagID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedTagID(); ok {
-		_spec.AddField(usertag.FieldTagID, field.TypeUint32, value)
+		_spec.AddField(usertag.FieldTagID, field.TypeInt64, value)
 	}
 	if _u.mutation.TagIDCleared() {
-		_spec.ClearField(usertag.FieldTagID, field.TypeUint32)
+		_spec.ClearField(usertag.FieldTagID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.Value(); ok {
 		_spec.SetField(usertag.FieldValue, field.TypeString, value)
@@ -1107,13 +1107,13 @@ func (_u *UserTagUpdateOne) sqlSave(ctx context.Context) (_node *UserTag, err er
 		_spec.ClearField(usertag.FieldSource, field.TypeString)
 	}
 	if value, ok := _u.mutation.SourceRuleID(); ok {
-		_spec.SetField(usertag.FieldSourceRuleID, field.TypeUint32, value)
+		_spec.SetField(usertag.FieldSourceRuleID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedSourceRuleID(); ok {
-		_spec.AddField(usertag.FieldSourceRuleID, field.TypeUint32, value)
+		_spec.AddField(usertag.FieldSourceRuleID, field.TypeInt64, value)
 	}
 	if _u.mutation.SourceRuleIDCleared() {
-		_spec.ClearField(usertag.FieldSourceRuleID, field.TypeUint32)
+		_spec.ClearField(usertag.FieldSourceRuleID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.EffectiveTime(); ok {
 		_spec.SetField(usertag.FieldEffectiveTime, field.TypeTime, value)

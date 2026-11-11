@@ -28,9 +28,9 @@ require (
 	github.com/tx7do/go-crud/api v0.0.7
 	github.com/tx7do/go-crud/clickhouse v0.0.18
 	github.com/tx7do/go-crud/doris v0.0.16
-	github.com/tx7do/go-crud/entgo v0.0.57
-	github.com/tx7do/go-crud/pagination v0.0.16
-	github.com/tx7do/go-crud/viewer v0.0.7
+	github.com/tx7do/go-crud/entgo v0.2.6
+	github.com/tx7do/go-crud/pagination v0.1.0
+	github.com/tx7do/go-crud/viewer v0.0.9
 	github.com/tx7do/go-utils v1.1.42
 	github.com/tx7do/go-utils/aggregator v0.0.5
 	github.com/tx7do/go-utils/copierutil v0.0.8
@@ -180,7 +180,7 @@ require (
 	github.com/tjfoc/gmsm v1.4.1 // indirect
 	github.com/tklauser/go-sysconf v0.4.0 // indirect
 	github.com/tklauser/numcpus v0.12.0 // indirect
-	github.com/tx7do/go-crud/audit v0.0.3 // indirect
+	github.com/tx7do/go-crud/audit v0.0.4 // indirect
 	github.com/tx7do/go-crud/cache v0.0.2 // indirect
 	github.com/tx7do/go-wind v0.0.2 // indirect
 	github.com/tx7do/go-wind-plugins/encoding v0.0.1 // indirect

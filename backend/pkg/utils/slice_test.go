@@ -28,9 +28,9 @@ func TestFilterBlacklist(t *testing.T) {
 }
 
 func TestNumberSliceToString(t *testing.T) {
-	assert.Equal(t, "1,2,3", NumberSliceToString([]uint32{1, 2, 3}))
-	assert.Equal(t, "42", NumberSliceToString([]uint32{42}))
+	assert.Equal(t, "1,2,3", NumberSliceToString([]int64{1, 2, 3}))
+	assert.Equal(t, "42", NumberSliceToString([]int64{42}))
 	assert.Equal(t, "", NumberSliceToString(nil))
-	assert.Equal(t, "", NumberSliceToString([]uint32{}))
-	assert.Equal(t, "4294967295", NumberSliceToString([]uint32{4294967295}), "uint32 上界不得溢出")
+	assert.Equal(t, "", NumberSliceToString([]int64{}))
+	assert.Equal(t, "4294967295", NumberSliceToString([]int64{4294967295}), "int64 上界不得溢出")
 }

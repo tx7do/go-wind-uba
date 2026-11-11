@@ -40,7 +40,7 @@ func (_d *AlertRuleDelete) ExecX(ctx context.Context) int {
 }
 
 func (_d *AlertRuleDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := sqlgraph.NewDeleteSpec(alertrule.Table, sqlgraph.NewFieldSpec(alertrule.FieldID, field.TypeUint32))
+	_spec := sqlgraph.NewDeleteSpec(alertrule.Table, sqlgraph.NewFieldSpec(alertrule.FieldID, field.TypeInt64))
 	if ps := _d.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {

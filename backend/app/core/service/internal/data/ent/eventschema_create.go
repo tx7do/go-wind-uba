@@ -66,13 +66,13 @@ func (_c *EventSchemaCreate) SetNillableDeletedAt(v *time.Time) *EventSchemaCrea
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (_c *EventSchemaCreate) SetCreatedBy(v uint32) *EventSchemaCreate {
+func (_c *EventSchemaCreate) SetCreatedBy(v int64) *EventSchemaCreate {
 	_c.mutation.SetCreatedBy(v)
 	return _c
 }
 
 // SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
-func (_c *EventSchemaCreate) SetNillableCreatedBy(v *uint32) *EventSchemaCreate {
+func (_c *EventSchemaCreate) SetNillableCreatedBy(v *int64) *EventSchemaCreate {
 	if v != nil {
 		_c.SetCreatedBy(*v)
 	}
@@ -80,13 +80,13 @@ func (_c *EventSchemaCreate) SetNillableCreatedBy(v *uint32) *EventSchemaCreate 
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (_c *EventSchemaCreate) SetUpdatedBy(v uint32) *EventSchemaCreate {
+func (_c *EventSchemaCreate) SetUpdatedBy(v int64) *EventSchemaCreate {
 	_c.mutation.SetUpdatedBy(v)
 	return _c
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (_c *EventSchemaCreate) SetNillableUpdatedBy(v *uint32) *EventSchemaCreate {
+func (_c *EventSchemaCreate) SetNillableUpdatedBy(v *int64) *EventSchemaCreate {
 	if v != nil {
 		_c.SetUpdatedBy(*v)
 	}
@@ -94,13 +94,13 @@ func (_c *EventSchemaCreate) SetNillableUpdatedBy(v *uint32) *EventSchemaCreate 
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (_c *EventSchemaCreate) SetDeletedBy(v uint32) *EventSchemaCreate {
+func (_c *EventSchemaCreate) SetDeletedBy(v int64) *EventSchemaCreate {
 	_c.mutation.SetDeletedBy(v)
 	return _c
 }
 
 // SetNillableDeletedBy sets the "deleted_by" field if the given value is not nil.
-func (_c *EventSchemaCreate) SetNillableDeletedBy(v *uint32) *EventSchemaCreate {
+func (_c *EventSchemaCreate) SetNillableDeletedBy(v *int64) *EventSchemaCreate {
 	if v != nil {
 		_c.SetDeletedBy(*v)
 	}
@@ -108,13 +108,13 @@ func (_c *EventSchemaCreate) SetNillableDeletedBy(v *uint32) *EventSchemaCreate 
 }
 
 // SetTenantID sets the "tenant_id" field.
-func (_c *EventSchemaCreate) SetTenantID(v uint32) *EventSchemaCreate {
+func (_c *EventSchemaCreate) SetTenantID(v int64) *EventSchemaCreate {
 	_c.mutation.SetTenantID(v)
 	return _c
 }
 
 // SetNillableTenantID sets the "tenant_id" field if the given value is not nil.
-func (_c *EventSchemaCreate) SetNillableTenantID(v *uint32) *EventSchemaCreate {
+func (_c *EventSchemaCreate) SetNillableTenantID(v *int64) *EventSchemaCreate {
 	if v != nil {
 		_c.SetTenantID(*v)
 	}
@@ -198,7 +198,7 @@ func (_c *EventSchemaCreate) SetNillableStatus(v *string) *EventSchemaCreate {
 }
 
 // SetID sets the "id" field.
-func (_c *EventSchemaCreate) SetID(v uint32) *EventSchemaCreate {
+func (_c *EventSchemaCreate) SetID(v int64) *EventSchemaCreate {
 	_c.mutation.SetID(v)
 	return _c
 }
@@ -284,7 +284,7 @@ func (_c *EventSchemaCreate) sqlSave(ctx context.Context) (*EventSchema, error) 
 	}
 	if _spec.ID.Value != _node.ID {
 		id := _spec.ID.Value.(int64)
-		_node.ID = uint32(id)
+		_node.ID = int64(id)
 	}
 	_c.mutation.id = &_node.ID
 	_c.mutation.done = true
@@ -294,7 +294,7 @@ func (_c *EventSchemaCreate) sqlSave(ctx context.Context) (*EventSchema, error) 
 func (_c *EventSchemaCreate) createSpec() (*EventSchema, *sqlgraph.CreateSpec) {
 	var (
 		_node = &EventSchema{config: _c.config}
-		_spec = sqlgraph.NewCreateSpec(eventschema.Table, sqlgraph.NewFieldSpec(eventschema.FieldID, field.TypeUint32))
+		_spec = sqlgraph.NewCreateSpec(eventschema.Table, sqlgraph.NewFieldSpec(eventschema.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = _c.conflict
 	if id, ok := _c.mutation.ID(); ok {
@@ -314,19 +314,19 @@ func (_c *EventSchemaCreate) createSpec() (*EventSchema, *sqlgraph.CreateSpec) {
 		_node.DeletedAt = &value
 	}
 	if value, ok := _c.mutation.CreatedBy(); ok {
-		_spec.SetField(eventschema.FieldCreatedBy, field.TypeUint32, value)
+		_spec.SetField(eventschema.FieldCreatedBy, field.TypeInt64, value)
 		_node.CreatedBy = &value
 	}
 	if value, ok := _c.mutation.UpdatedBy(); ok {
-		_spec.SetField(eventschema.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.SetField(eventschema.FieldUpdatedBy, field.TypeInt64, value)
 		_node.UpdatedBy = &value
 	}
 	if value, ok := _c.mutation.DeletedBy(); ok {
-		_spec.SetField(eventschema.FieldDeletedBy, field.TypeUint32, value)
+		_spec.SetField(eventschema.FieldDeletedBy, field.TypeInt64, value)
 		_node.DeletedBy = &value
 	}
 	if value, ok := _c.mutation.TenantID(); ok {
-		_spec.SetField(eventschema.FieldTenantID, field.TypeUint32, value)
+		_spec.SetField(eventschema.FieldTenantID, field.TypeInt64, value)
 		_node.TenantID = &value
 	}
 	if value, ok := _c.mutation.EventName(); ok {
@@ -442,7 +442,7 @@ func (u *EventSchemaUpsert) ClearDeletedAt() *EventSchemaUpsert {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (u *EventSchemaUpsert) SetCreatedBy(v uint32) *EventSchemaUpsert {
+func (u *EventSchemaUpsert) SetCreatedBy(v int64) *EventSchemaUpsert {
 	u.Set(eventschema.FieldCreatedBy, v)
 	return u
 }
@@ -454,7 +454,7 @@ func (u *EventSchemaUpsert) UpdateCreatedBy() *EventSchemaUpsert {
 }
 
 // AddCreatedBy adds v to the "created_by" field.
-func (u *EventSchemaUpsert) AddCreatedBy(v uint32) *EventSchemaUpsert {
+func (u *EventSchemaUpsert) AddCreatedBy(v int64) *EventSchemaUpsert {
 	u.Add(eventschema.FieldCreatedBy, v)
 	return u
 }
@@ -466,7 +466,7 @@ func (u *EventSchemaUpsert) ClearCreatedBy() *EventSchemaUpsert {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (u *EventSchemaUpsert) SetUpdatedBy(v uint32) *EventSchemaUpsert {
+func (u *EventSchemaUpsert) SetUpdatedBy(v int64) *EventSchemaUpsert {
 	u.Set(eventschema.FieldUpdatedBy, v)
 	return u
 }
@@ -478,7 +478,7 @@ func (u *EventSchemaUpsert) UpdateUpdatedBy() *EventSchemaUpsert {
 }
 
 // AddUpdatedBy adds v to the "updated_by" field.
-func (u *EventSchemaUpsert) AddUpdatedBy(v uint32) *EventSchemaUpsert {
+func (u *EventSchemaUpsert) AddUpdatedBy(v int64) *EventSchemaUpsert {
 	u.Add(eventschema.FieldUpdatedBy, v)
 	return u
 }
@@ -490,7 +490,7 @@ func (u *EventSchemaUpsert) ClearUpdatedBy() *EventSchemaUpsert {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (u *EventSchemaUpsert) SetDeletedBy(v uint32) *EventSchemaUpsert {
+func (u *EventSchemaUpsert) SetDeletedBy(v int64) *EventSchemaUpsert {
 	u.Set(eventschema.FieldDeletedBy, v)
 	return u
 }
@@ -502,7 +502,7 @@ func (u *EventSchemaUpsert) UpdateDeletedBy() *EventSchemaUpsert {
 }
 
 // AddDeletedBy adds v to the "deleted_by" field.
-func (u *EventSchemaUpsert) AddDeletedBy(v uint32) *EventSchemaUpsert {
+func (u *EventSchemaUpsert) AddDeletedBy(v int64) *EventSchemaUpsert {
 	u.Add(eventschema.FieldDeletedBy, v)
 	return u
 }
@@ -718,14 +718,14 @@ func (u *EventSchemaUpsertOne) ClearDeletedAt() *EventSchemaUpsertOne {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (u *EventSchemaUpsertOne) SetCreatedBy(v uint32) *EventSchemaUpsertOne {
+func (u *EventSchemaUpsertOne) SetCreatedBy(v int64) *EventSchemaUpsertOne {
 	return u.Update(func(s *EventSchemaUpsert) {
 		s.SetCreatedBy(v)
 	})
 }
 
 // AddCreatedBy adds v to the "created_by" field.
-func (u *EventSchemaUpsertOne) AddCreatedBy(v uint32) *EventSchemaUpsertOne {
+func (u *EventSchemaUpsertOne) AddCreatedBy(v int64) *EventSchemaUpsertOne {
 	return u.Update(func(s *EventSchemaUpsert) {
 		s.AddCreatedBy(v)
 	})
@@ -746,14 +746,14 @@ func (u *EventSchemaUpsertOne) ClearCreatedBy() *EventSchemaUpsertOne {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (u *EventSchemaUpsertOne) SetUpdatedBy(v uint32) *EventSchemaUpsertOne {
+func (u *EventSchemaUpsertOne) SetUpdatedBy(v int64) *EventSchemaUpsertOne {
 	return u.Update(func(s *EventSchemaUpsert) {
 		s.SetUpdatedBy(v)
 	})
 }
 
 // AddUpdatedBy adds v to the "updated_by" field.
-func (u *EventSchemaUpsertOne) AddUpdatedBy(v uint32) *EventSchemaUpsertOne {
+func (u *EventSchemaUpsertOne) AddUpdatedBy(v int64) *EventSchemaUpsertOne {
 	return u.Update(func(s *EventSchemaUpsert) {
 		s.AddUpdatedBy(v)
 	})
@@ -774,14 +774,14 @@ func (u *EventSchemaUpsertOne) ClearUpdatedBy() *EventSchemaUpsertOne {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (u *EventSchemaUpsertOne) SetDeletedBy(v uint32) *EventSchemaUpsertOne {
+func (u *EventSchemaUpsertOne) SetDeletedBy(v int64) *EventSchemaUpsertOne {
 	return u.Update(func(s *EventSchemaUpsert) {
 		s.SetDeletedBy(v)
 	})
 }
 
 // AddDeletedBy adds v to the "deleted_by" field.
-func (u *EventSchemaUpsertOne) AddDeletedBy(v uint32) *EventSchemaUpsertOne {
+func (u *EventSchemaUpsertOne) AddDeletedBy(v int64) *EventSchemaUpsertOne {
 	return u.Update(func(s *EventSchemaUpsert) {
 		s.AddDeletedBy(v)
 	})
@@ -943,7 +943,7 @@ func (u *EventSchemaUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *EventSchemaUpsertOne) ID(ctx context.Context) (id uint32, err error) {
+func (u *EventSchemaUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -952,7 +952,7 @@ func (u *EventSchemaUpsertOne) ID(ctx context.Context) (id uint32, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *EventSchemaUpsertOne) IDX(ctx context.Context) uint32 {
+func (u *EventSchemaUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -1009,7 +1009,7 @@ func (_c *EventSchemaCreateBulk) Save(ctx context.Context) ([]*EventSchema, erro
 				mutation.id = &nodes[i].ID
 				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = uint32(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -1190,14 +1190,14 @@ func (u *EventSchemaUpsertBulk) ClearDeletedAt() *EventSchemaUpsertBulk {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (u *EventSchemaUpsertBulk) SetCreatedBy(v uint32) *EventSchemaUpsertBulk {
+func (u *EventSchemaUpsertBulk) SetCreatedBy(v int64) *EventSchemaUpsertBulk {
 	return u.Update(func(s *EventSchemaUpsert) {
 		s.SetCreatedBy(v)
 	})
 }
 
 // AddCreatedBy adds v to the "created_by" field.
-func (u *EventSchemaUpsertBulk) AddCreatedBy(v uint32) *EventSchemaUpsertBulk {
+func (u *EventSchemaUpsertBulk) AddCreatedBy(v int64) *EventSchemaUpsertBulk {
 	return u.Update(func(s *EventSchemaUpsert) {
 		s.AddCreatedBy(v)
 	})
@@ -1218,14 +1218,14 @@ func (u *EventSchemaUpsertBulk) ClearCreatedBy() *EventSchemaUpsertBulk {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (u *EventSchemaUpsertBulk) SetUpdatedBy(v uint32) *EventSchemaUpsertBulk {
+func (u *EventSchemaUpsertBulk) SetUpdatedBy(v int64) *EventSchemaUpsertBulk {
 	return u.Update(func(s *EventSchemaUpsert) {
 		s.SetUpdatedBy(v)
 	})
 }
 
 // AddUpdatedBy adds v to the "updated_by" field.
-func (u *EventSchemaUpsertBulk) AddUpdatedBy(v uint32) *EventSchemaUpsertBulk {
+func (u *EventSchemaUpsertBulk) AddUpdatedBy(v int64) *EventSchemaUpsertBulk {
 	return u.Update(func(s *EventSchemaUpsert) {
 		s.AddUpdatedBy(v)
 	})
@@ -1246,14 +1246,14 @@ func (u *EventSchemaUpsertBulk) ClearUpdatedBy() *EventSchemaUpsertBulk {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (u *EventSchemaUpsertBulk) SetDeletedBy(v uint32) *EventSchemaUpsertBulk {
+func (u *EventSchemaUpsertBulk) SetDeletedBy(v int64) *EventSchemaUpsertBulk {
 	return u.Update(func(s *EventSchemaUpsert) {
 		s.SetDeletedBy(v)
 	})
 }
 
 // AddDeletedBy adds v to the "deleted_by" field.
-func (u *EventSchemaUpsertBulk) AddDeletedBy(v uint32) *EventSchemaUpsertBulk {
+func (u *EventSchemaUpsertBulk) AddDeletedBy(v int64) *EventSchemaUpsertBulk {
 	return u.Update(func(s *EventSchemaUpsert) {
 		s.AddDeletedBy(v)
 	})

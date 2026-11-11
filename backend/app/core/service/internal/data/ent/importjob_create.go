@@ -65,13 +65,13 @@ func (_c *ImportJobCreate) SetNillableDeletedAt(v *time.Time) *ImportJobCreate {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (_c *ImportJobCreate) SetCreatedBy(v uint32) *ImportJobCreate {
+func (_c *ImportJobCreate) SetCreatedBy(v int64) *ImportJobCreate {
 	_c.mutation.SetCreatedBy(v)
 	return _c
 }
 
 // SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
-func (_c *ImportJobCreate) SetNillableCreatedBy(v *uint32) *ImportJobCreate {
+func (_c *ImportJobCreate) SetNillableCreatedBy(v *int64) *ImportJobCreate {
 	if v != nil {
 		_c.SetCreatedBy(*v)
 	}
@@ -79,13 +79,13 @@ func (_c *ImportJobCreate) SetNillableCreatedBy(v *uint32) *ImportJobCreate {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (_c *ImportJobCreate) SetUpdatedBy(v uint32) *ImportJobCreate {
+func (_c *ImportJobCreate) SetUpdatedBy(v int64) *ImportJobCreate {
 	_c.mutation.SetUpdatedBy(v)
 	return _c
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (_c *ImportJobCreate) SetNillableUpdatedBy(v *uint32) *ImportJobCreate {
+func (_c *ImportJobCreate) SetNillableUpdatedBy(v *int64) *ImportJobCreate {
 	if v != nil {
 		_c.SetUpdatedBy(*v)
 	}
@@ -93,13 +93,13 @@ func (_c *ImportJobCreate) SetNillableUpdatedBy(v *uint32) *ImportJobCreate {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (_c *ImportJobCreate) SetDeletedBy(v uint32) *ImportJobCreate {
+func (_c *ImportJobCreate) SetDeletedBy(v int64) *ImportJobCreate {
 	_c.mutation.SetDeletedBy(v)
 	return _c
 }
 
 // SetNillableDeletedBy sets the "deleted_by" field if the given value is not nil.
-func (_c *ImportJobCreate) SetNillableDeletedBy(v *uint32) *ImportJobCreate {
+func (_c *ImportJobCreate) SetNillableDeletedBy(v *int64) *ImportJobCreate {
 	if v != nil {
 		_c.SetDeletedBy(*v)
 	}
@@ -107,13 +107,13 @@ func (_c *ImportJobCreate) SetNillableDeletedBy(v *uint32) *ImportJobCreate {
 }
 
 // SetTenantID sets the "tenant_id" field.
-func (_c *ImportJobCreate) SetTenantID(v uint32) *ImportJobCreate {
+func (_c *ImportJobCreate) SetTenantID(v int64) *ImportJobCreate {
 	_c.mutation.SetTenantID(v)
 	return _c
 }
 
 // SetNillableTenantID sets the "tenant_id" field if the given value is not nil.
-func (_c *ImportJobCreate) SetNillableTenantID(v *uint32) *ImportJobCreate {
+func (_c *ImportJobCreate) SetNillableTenantID(v *int64) *ImportJobCreate {
 	if v != nil {
 		_c.SetTenantID(*v)
 	}
@@ -267,7 +267,7 @@ func (_c *ImportJobCreate) SetNillableDurationMs(v *uint32) *ImportJobCreate {
 }
 
 // SetID sets the "id" field.
-func (_c *ImportJobCreate) SetID(v uint32) *ImportJobCreate {
+func (_c *ImportJobCreate) SetID(v int64) *ImportJobCreate {
 	_c.mutation.SetID(v)
 	return _c
 }
@@ -379,7 +379,7 @@ func (_c *ImportJobCreate) sqlSave(ctx context.Context) (*ImportJob, error) {
 	}
 	if _spec.ID.Value != _node.ID {
 		id := _spec.ID.Value.(int64)
-		_node.ID = uint32(id)
+		_node.ID = int64(id)
 	}
 	_c.mutation.id = &_node.ID
 	_c.mutation.done = true
@@ -389,7 +389,7 @@ func (_c *ImportJobCreate) sqlSave(ctx context.Context) (*ImportJob, error) {
 func (_c *ImportJobCreate) createSpec() (*ImportJob, *sqlgraph.CreateSpec) {
 	var (
 		_node = &ImportJob{config: _c.config}
-		_spec = sqlgraph.NewCreateSpec(importjob.Table, sqlgraph.NewFieldSpec(importjob.FieldID, field.TypeUint32))
+		_spec = sqlgraph.NewCreateSpec(importjob.Table, sqlgraph.NewFieldSpec(importjob.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = _c.conflict
 	if id, ok := _c.mutation.ID(); ok {
@@ -409,19 +409,19 @@ func (_c *ImportJobCreate) createSpec() (*ImportJob, *sqlgraph.CreateSpec) {
 		_node.DeletedAt = &value
 	}
 	if value, ok := _c.mutation.CreatedBy(); ok {
-		_spec.SetField(importjob.FieldCreatedBy, field.TypeUint32, value)
+		_spec.SetField(importjob.FieldCreatedBy, field.TypeInt64, value)
 		_node.CreatedBy = &value
 	}
 	if value, ok := _c.mutation.UpdatedBy(); ok {
-		_spec.SetField(importjob.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.SetField(importjob.FieldUpdatedBy, field.TypeInt64, value)
 		_node.UpdatedBy = &value
 	}
 	if value, ok := _c.mutation.DeletedBy(); ok {
-		_spec.SetField(importjob.FieldDeletedBy, field.TypeUint32, value)
+		_spec.SetField(importjob.FieldDeletedBy, field.TypeInt64, value)
 		_node.DeletedBy = &value
 	}
 	if value, ok := _c.mutation.TenantID(); ok {
-		_spec.SetField(importjob.FieldTenantID, field.TypeUint32, value)
+		_spec.SetField(importjob.FieldTenantID, field.TypeInt64, value)
 		_node.TenantID = &value
 	}
 	if value, ok := _c.mutation.Name(); ok {
@@ -557,7 +557,7 @@ func (u *ImportJobUpsert) ClearDeletedAt() *ImportJobUpsert {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (u *ImportJobUpsert) SetCreatedBy(v uint32) *ImportJobUpsert {
+func (u *ImportJobUpsert) SetCreatedBy(v int64) *ImportJobUpsert {
 	u.Set(importjob.FieldCreatedBy, v)
 	return u
 }
@@ -569,7 +569,7 @@ func (u *ImportJobUpsert) UpdateCreatedBy() *ImportJobUpsert {
 }
 
 // AddCreatedBy adds v to the "created_by" field.
-func (u *ImportJobUpsert) AddCreatedBy(v uint32) *ImportJobUpsert {
+func (u *ImportJobUpsert) AddCreatedBy(v int64) *ImportJobUpsert {
 	u.Add(importjob.FieldCreatedBy, v)
 	return u
 }
@@ -581,7 +581,7 @@ func (u *ImportJobUpsert) ClearCreatedBy() *ImportJobUpsert {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (u *ImportJobUpsert) SetUpdatedBy(v uint32) *ImportJobUpsert {
+func (u *ImportJobUpsert) SetUpdatedBy(v int64) *ImportJobUpsert {
 	u.Set(importjob.FieldUpdatedBy, v)
 	return u
 }
@@ -593,7 +593,7 @@ func (u *ImportJobUpsert) UpdateUpdatedBy() *ImportJobUpsert {
 }
 
 // AddUpdatedBy adds v to the "updated_by" field.
-func (u *ImportJobUpsert) AddUpdatedBy(v uint32) *ImportJobUpsert {
+func (u *ImportJobUpsert) AddUpdatedBy(v int64) *ImportJobUpsert {
 	u.Add(importjob.FieldUpdatedBy, v)
 	return u
 }
@@ -605,7 +605,7 @@ func (u *ImportJobUpsert) ClearUpdatedBy() *ImportJobUpsert {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (u *ImportJobUpsert) SetDeletedBy(v uint32) *ImportJobUpsert {
+func (u *ImportJobUpsert) SetDeletedBy(v int64) *ImportJobUpsert {
 	u.Set(importjob.FieldDeletedBy, v)
 	return u
 }
@@ -617,7 +617,7 @@ func (u *ImportJobUpsert) UpdateDeletedBy() *ImportJobUpsert {
 }
 
 // AddDeletedBy adds v to the "deleted_by" field.
-func (u *ImportJobUpsert) AddDeletedBy(v uint32) *ImportJobUpsert {
+func (u *ImportJobUpsert) AddDeletedBy(v int64) *ImportJobUpsert {
 	u.Add(importjob.FieldDeletedBy, v)
 	return u
 }
@@ -917,14 +917,14 @@ func (u *ImportJobUpsertOne) ClearDeletedAt() *ImportJobUpsertOne {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (u *ImportJobUpsertOne) SetCreatedBy(v uint32) *ImportJobUpsertOne {
+func (u *ImportJobUpsertOne) SetCreatedBy(v int64) *ImportJobUpsertOne {
 	return u.Update(func(s *ImportJobUpsert) {
 		s.SetCreatedBy(v)
 	})
 }
 
 // AddCreatedBy adds v to the "created_by" field.
-func (u *ImportJobUpsertOne) AddCreatedBy(v uint32) *ImportJobUpsertOne {
+func (u *ImportJobUpsertOne) AddCreatedBy(v int64) *ImportJobUpsertOne {
 	return u.Update(func(s *ImportJobUpsert) {
 		s.AddCreatedBy(v)
 	})
@@ -945,14 +945,14 @@ func (u *ImportJobUpsertOne) ClearCreatedBy() *ImportJobUpsertOne {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (u *ImportJobUpsertOne) SetUpdatedBy(v uint32) *ImportJobUpsertOne {
+func (u *ImportJobUpsertOne) SetUpdatedBy(v int64) *ImportJobUpsertOne {
 	return u.Update(func(s *ImportJobUpsert) {
 		s.SetUpdatedBy(v)
 	})
 }
 
 // AddUpdatedBy adds v to the "updated_by" field.
-func (u *ImportJobUpsertOne) AddUpdatedBy(v uint32) *ImportJobUpsertOne {
+func (u *ImportJobUpsertOne) AddUpdatedBy(v int64) *ImportJobUpsertOne {
 	return u.Update(func(s *ImportJobUpsert) {
 		s.AddUpdatedBy(v)
 	})
@@ -973,14 +973,14 @@ func (u *ImportJobUpsertOne) ClearUpdatedBy() *ImportJobUpsertOne {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (u *ImportJobUpsertOne) SetDeletedBy(v uint32) *ImportJobUpsertOne {
+func (u *ImportJobUpsertOne) SetDeletedBy(v int64) *ImportJobUpsertOne {
 	return u.Update(func(s *ImportJobUpsert) {
 		s.SetDeletedBy(v)
 	})
 }
 
 // AddDeletedBy adds v to the "deleted_by" field.
-func (u *ImportJobUpsertOne) AddDeletedBy(v uint32) *ImportJobUpsertOne {
+func (u *ImportJobUpsertOne) AddDeletedBy(v int64) *ImportJobUpsertOne {
 	return u.Update(func(s *ImportJobUpsert) {
 		s.AddDeletedBy(v)
 	})
@@ -1240,7 +1240,7 @@ func (u *ImportJobUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *ImportJobUpsertOne) ID(ctx context.Context) (id uint32, err error) {
+func (u *ImportJobUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -1249,7 +1249,7 @@ func (u *ImportJobUpsertOne) ID(ctx context.Context) (id uint32, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *ImportJobUpsertOne) IDX(ctx context.Context) uint32 {
+func (u *ImportJobUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -1306,7 +1306,7 @@ func (_c *ImportJobCreateBulk) Save(ctx context.Context) ([]*ImportJob, error) {
 				mutation.id = &nodes[i].ID
 				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = uint32(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -1487,14 +1487,14 @@ func (u *ImportJobUpsertBulk) ClearDeletedAt() *ImportJobUpsertBulk {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (u *ImportJobUpsertBulk) SetCreatedBy(v uint32) *ImportJobUpsertBulk {
+func (u *ImportJobUpsertBulk) SetCreatedBy(v int64) *ImportJobUpsertBulk {
 	return u.Update(func(s *ImportJobUpsert) {
 		s.SetCreatedBy(v)
 	})
 }
 
 // AddCreatedBy adds v to the "created_by" field.
-func (u *ImportJobUpsertBulk) AddCreatedBy(v uint32) *ImportJobUpsertBulk {
+func (u *ImportJobUpsertBulk) AddCreatedBy(v int64) *ImportJobUpsertBulk {
 	return u.Update(func(s *ImportJobUpsert) {
 		s.AddCreatedBy(v)
 	})
@@ -1515,14 +1515,14 @@ func (u *ImportJobUpsertBulk) ClearCreatedBy() *ImportJobUpsertBulk {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (u *ImportJobUpsertBulk) SetUpdatedBy(v uint32) *ImportJobUpsertBulk {
+func (u *ImportJobUpsertBulk) SetUpdatedBy(v int64) *ImportJobUpsertBulk {
 	return u.Update(func(s *ImportJobUpsert) {
 		s.SetUpdatedBy(v)
 	})
 }
 
 // AddUpdatedBy adds v to the "updated_by" field.
-func (u *ImportJobUpsertBulk) AddUpdatedBy(v uint32) *ImportJobUpsertBulk {
+func (u *ImportJobUpsertBulk) AddUpdatedBy(v int64) *ImportJobUpsertBulk {
 	return u.Update(func(s *ImportJobUpsert) {
 		s.AddUpdatedBy(v)
 	})
@@ -1543,14 +1543,14 @@ func (u *ImportJobUpsertBulk) ClearUpdatedBy() *ImportJobUpsertBulk {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (u *ImportJobUpsertBulk) SetDeletedBy(v uint32) *ImportJobUpsertBulk {
+func (u *ImportJobUpsertBulk) SetDeletedBy(v int64) *ImportJobUpsertBulk {
 	return u.Update(func(s *ImportJobUpsert) {
 		s.SetDeletedBy(v)
 	})
 }
 
 // AddDeletedBy adds v to the "deleted_by" field.
-func (u *ImportJobUpsertBulk) AddDeletedBy(v uint32) *ImportJobUpsertBulk {
+func (u *ImportJobUpsertBulk) AddDeletedBy(v int64) *ImportJobUpsertBulk {
 	return u.Update(func(s *ImportJobUpsert) {
 		s.AddDeletedBy(v)
 	})

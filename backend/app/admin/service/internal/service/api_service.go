@@ -172,7 +172,7 @@ func (s *ApiService) syncWithOpenAPI(ctx context.Context) error {
 		return adminV1.ErrorInternalServerError("OpenAPI document paths is nil")
 	}
 
-	var count uint32 = 0
+	var count int64 = 0
 	var apiList []*resourceV1.Api
 
 	// 遍历所有路径和操作
@@ -216,7 +216,7 @@ func (s *ApiService) syncWithWalkRoute(ctx context.Context) error {
 		return adminV1.ErrorInternalServerError("router walker is nil")
 	}
 
-	var count uint32 = 0
+	var count int64 = 0
 
 	var apiList []*resourceV1.Api
 
@@ -259,7 +259,7 @@ func (s *ApiService) GetWalkRouteData(_ context.Context, _ *emptypb.Empty) (*res
 	resp := &resourceV1.ListApiResponse{
 		Items: []*resourceV1.Api{},
 	}
-	var count uint32 = 0
+	var count int64 = 0
 	if err := s.routeWalker.WalkRoute(func(info http.RouteInfo) error {
 		//log.Infof("Path[%s] Method[%s]", info.Path, info.Method)
 		count++
@@ -274,7 +274,7 @@ func (s *ApiService) GetWalkRouteData(_ context.Context, _ *emptypb.Empty) (*res
 		s.log.Errorf("failed to walk route: %v", err)
 		return nil, adminV1.ErrorInternalServerError("failed to walk route")
 	}
-	resp.Total = uint64(count)
+	resp.Total = int64(count)
 
 	return resp, nil
 }

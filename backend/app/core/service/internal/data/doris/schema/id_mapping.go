@@ -4,7 +4,7 @@ import "time"
 
 type IDMapping struct {
 	GlobalUserID *string    `db:"global_user_id"`
-	TenantID     *uint32    `db:"tenant_id"`
+	TenantID     *int64     `db:"tenant_id"`
 	IDType       *string    `db:"id_type"`
 	IDValue      *string    `db:"id_value"`
 	Confidence   *float32   `db:"confidence"`

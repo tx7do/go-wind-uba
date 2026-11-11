@@ -23,13 +23,13 @@ type TagValueCreate struct {
 }
 
 // SetTenantID sets the "tenant_id" field.
-func (_c *TagValueCreate) SetTenantID(v uint32) *TagValueCreate {
+func (_c *TagValueCreate) SetTenantID(v int64) *TagValueCreate {
 	_c.mutation.SetTenantID(v)
 	return _c
 }
 
 // SetNillableTenantID sets the "tenant_id" field if the given value is not nil.
-func (_c *TagValueCreate) SetNillableTenantID(v *uint32) *TagValueCreate {
+func (_c *TagValueCreate) SetNillableTenantID(v *int64) *TagValueCreate {
 	if v != nil {
 		_c.SetTenantID(*v)
 	}
@@ -93,13 +93,13 @@ func (_c *TagValueCreate) SetNillableSortOrder(v *uint32) *TagValueCreate {
 }
 
 // SetTagID sets the "tag_id" field.
-func (_c *TagValueCreate) SetTagID(v uint32) *TagValueCreate {
+func (_c *TagValueCreate) SetTagID(v int64) *TagValueCreate {
 	_c.mutation.SetTagID(v)
 	return _c
 }
 
 // SetNillableTagID sets the "tag_id" field if the given value is not nil.
-func (_c *TagValueCreate) SetNillableTagID(v *uint32) *TagValueCreate {
+func (_c *TagValueCreate) SetNillableTagID(v *int64) *TagValueCreate {
 	if v != nil {
 		_c.SetTagID(*v)
 	}
@@ -177,7 +177,7 @@ func (_c *TagValueCreate) SetNillableIcon(v *string) *TagValueCreate {
 }
 
 // SetID sets the "id" field.
-func (_c *TagValueCreate) SetID(v uint32) *TagValueCreate {
+func (_c *TagValueCreate) SetID(v int64) *TagValueCreate {
 	_c.mutation.SetID(v)
 	return _c
 }
@@ -258,7 +258,7 @@ func (_c *TagValueCreate) sqlSave(ctx context.Context) (*TagValue, error) {
 	}
 	if _spec.ID.Value != _node.ID {
 		id := _spec.ID.Value.(int64)
-		_node.ID = uint32(id)
+		_node.ID = int64(id)
 	}
 	_c.mutation.id = &_node.ID
 	_c.mutation.done = true
@@ -268,7 +268,7 @@ func (_c *TagValueCreate) sqlSave(ctx context.Context) (*TagValue, error) {
 func (_c *TagValueCreate) createSpec() (*TagValue, *sqlgraph.CreateSpec) {
 	var (
 		_node = &TagValue{config: _c.config}
-		_spec = sqlgraph.NewCreateSpec(tagvalue.Table, sqlgraph.NewFieldSpec(tagvalue.FieldID, field.TypeUint32))
+		_spec = sqlgraph.NewCreateSpec(tagvalue.Table, sqlgraph.NewFieldSpec(tagvalue.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = _c.conflict
 	if id, ok := _c.mutation.ID(); ok {
@@ -276,7 +276,7 @@ func (_c *TagValueCreate) createSpec() (*TagValue, *sqlgraph.CreateSpec) {
 		_spec.ID.Value = id
 	}
 	if value, ok := _c.mutation.TenantID(); ok {
-		_spec.SetField(tagvalue.FieldTenantID, field.TypeUint32, value)
+		_spec.SetField(tagvalue.FieldTenantID, field.TypeInt64, value)
 		_node.TenantID = &value
 	}
 	if value, ok := _c.mutation.CreatedAt(); ok {
@@ -296,7 +296,7 @@ func (_c *TagValueCreate) createSpec() (*TagValue, *sqlgraph.CreateSpec) {
 		_node.SortOrder = &value
 	}
 	if value, ok := _c.mutation.TagID(); ok {
-		_spec.SetField(tagvalue.FieldTagID, field.TypeUint32, value)
+		_spec.SetField(tagvalue.FieldTagID, field.TypeInt64, value)
 		_node.TagID = &value
 	}
 	if value, ok := _c.mutation.Value(); ok {
@@ -432,7 +432,7 @@ func (u *TagValueUpsert) ClearSortOrder() *TagValueUpsert {
 }
 
 // SetTagID sets the "tag_id" field.
-func (u *TagValueUpsert) SetTagID(v uint32) *TagValueUpsert {
+func (u *TagValueUpsert) SetTagID(v int64) *TagValueUpsert {
 	u.Set(tagvalue.FieldTagID, v)
 	return u
 }
@@ -444,7 +444,7 @@ func (u *TagValueUpsert) UpdateTagID() *TagValueUpsert {
 }
 
 // AddTagID adds v to the "tag_id" field.
-func (u *TagValueUpsert) AddTagID(v uint32) *TagValueUpsert {
+func (u *TagValueUpsert) AddTagID(v int64) *TagValueUpsert {
 	u.Add(tagvalue.FieldTagID, v)
 	return u
 }
@@ -670,14 +670,14 @@ func (u *TagValueUpsertOne) ClearSortOrder() *TagValueUpsertOne {
 }
 
 // SetTagID sets the "tag_id" field.
-func (u *TagValueUpsertOne) SetTagID(v uint32) *TagValueUpsertOne {
+func (u *TagValueUpsertOne) SetTagID(v int64) *TagValueUpsertOne {
 	return u.Update(func(s *TagValueUpsert) {
 		s.SetTagID(v)
 	})
 }
 
 // AddTagID adds v to the "tag_id" field.
-func (u *TagValueUpsertOne) AddTagID(v uint32) *TagValueUpsertOne {
+func (u *TagValueUpsertOne) AddTagID(v int64) *TagValueUpsertOne {
 	return u.Update(func(s *TagValueUpsert) {
 		s.AddTagID(v)
 	})
@@ -818,7 +818,7 @@ func (u *TagValueUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *TagValueUpsertOne) ID(ctx context.Context) (id uint32, err error) {
+func (u *TagValueUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -827,7 +827,7 @@ func (u *TagValueUpsertOne) ID(ctx context.Context) (id uint32, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *TagValueUpsertOne) IDX(ctx context.Context) uint32 {
+func (u *TagValueUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -884,7 +884,7 @@ func (_c *TagValueCreateBulk) Save(ctx context.Context) ([]*TagValue, error) {
 				mutation.id = &nodes[i].ID
 				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = uint32(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -1093,14 +1093,14 @@ func (u *TagValueUpsertBulk) ClearSortOrder() *TagValueUpsertBulk {
 }
 
 // SetTagID sets the "tag_id" field.
-func (u *TagValueUpsertBulk) SetTagID(v uint32) *TagValueUpsertBulk {
+func (u *TagValueUpsertBulk) SetTagID(v int64) *TagValueUpsertBulk {
 	return u.Update(func(s *TagValueUpsert) {
 		s.SetTagID(v)
 	})
 }
 
 // AddTagID adds v to the "tag_id" field.
-func (u *TagValueUpsertBulk) AddTagID(v uint32) *TagValueUpsertBulk {
+func (u *TagValueUpsertBulk) AddTagID(v int64) *TagValueUpsertBulk {
 	return u.Update(func(s *TagValueUpsert) {
 		s.AddTagID(v)
 	})

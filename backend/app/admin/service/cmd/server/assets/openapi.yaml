@@ -193,8 +193,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: viewMask
                   in: query
                   schema:
@@ -217,8 +216,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             requestBody:
                 content:
                     application/json:
@@ -239,8 +237,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -384,8 +381,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -403,8 +399,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             requestBody:
                 content:
                     application/json:
@@ -429,8 +424,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             requestBody:
                 content:
                     application/json:
@@ -455,14 +449,12 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: id
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -478,8 +470,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             requestBody:
                 content:
                     application/json:
@@ -504,8 +495,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: viewMask
                   in: query
                   schema:
@@ -528,8 +518,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             requestBody:
                 content:
                     application/json:
@@ -550,8 +539,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -723,8 +711,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -911,8 +898,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: viewMask
                   in: query
                   schema:
@@ -935,8 +921,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             requestBody:
                 content:
                     application/json:
@@ -957,8 +942,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -974,8 +958,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             requestBody:
                 content:
                     application/json:
@@ -1020,8 +1003,7 @@ paths:
                   description: 租户ID；缺省（0）= 调用者自身租户（平台管理员需显式指定）
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -1040,8 +1022,7 @@ paths:
                   description: 租户ID
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             requestBody:
                 content:
                     application/json:
@@ -1406,8 +1387,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: viewMask
                   in: query
                   schema:
@@ -1430,8 +1410,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             requestBody:
                 content:
                     application/json:
@@ -1455,13 +1434,11 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: deletedBy
                   in: query
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -2030,8 +2007,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: viewMask
                   in: query
                   schema:
@@ -2175,8 +2151,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: viewMask
                   in: query
                   schema:
@@ -2199,8 +2174,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             requestBody:
                 content:
                     application/json:
@@ -2221,8 +2195,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -2334,8 +2307,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: appId
                   in: query
                   schema:
@@ -2362,8 +2334,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: updateMask
                   in: query
                   schema:
@@ -2396,13 +2367,11 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: deletedBy
                   in: query
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -2689,8 +2658,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: viewMask
                   in: query
                   schema:
@@ -2713,8 +2681,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             requestBody:
                 content:
                     application/json:
@@ -2738,13 +2705,11 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: deletedBy
                   in: query
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -2760,8 +2725,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             requestBody:
                 content:
                     application/json:
@@ -2786,8 +2750,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             requestBody:
                 content:
                     application/json:
@@ -2986,8 +2949,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: viewMask
                   in: query
                   schema:
@@ -3010,8 +2972,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             requestBody:
                 content:
                     application/json:
@@ -3035,13 +2996,11 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: deletedBy
                   in: query
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -3135,8 +3094,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: viewMask
                   in: query
                   schema:
@@ -3253,8 +3211,7 @@ paths:
                   schema:
                     type: array
                     items:
-                        type: integer
-                        format: uint32
+                        type: string
             responses:
                 "200":
                     description: OK
@@ -3292,8 +3249,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             requestBody:
                 content:
                     application/json:
@@ -3406,8 +3362,7 @@ paths:
                 - name: id
                   in: query
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -3439,8 +3394,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: code
                   in: query
                   schema:
@@ -3467,8 +3421,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             requestBody:
                 content:
                     application/json:
@@ -3583,8 +3536,7 @@ paths:
                   schema:
                     type: array
                     items:
-                        type: integer
-                        format: uint32
+                        type: string
             responses:
                 "200":
                     description: OK
@@ -3604,8 +3556,7 @@ paths:
                 - name: id
                   in: query
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: viewMask
                   in: query
                   schema:
@@ -3629,8 +3580,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: code
                   in: query
                   schema:
@@ -3657,8 +3607,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             requestBody:
                 content:
                     application/json:
@@ -4001,8 +3950,7 @@ paths:
                 - name: deletedBy
                   in: query
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -4192,8 +4140,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: viewMask
                   in: query
                   schema:
@@ -4216,8 +4163,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             requestBody:
                 content:
                     application/json:
@@ -4241,13 +4187,11 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: deletedBy
                   in: query
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -4263,8 +4207,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: timeRange.startMs
                   in: query
                   description: 起始时间（含），Unix 毫秒
@@ -4292,8 +4235,7 @@ paths:
                 - name: fileId
                   in: query
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: storageObject.bucketName
                   in: query
                   schema:
@@ -4484,8 +4426,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: viewMask
                   in: query
                   schema:
@@ -4508,8 +4449,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             requestBody:
                 content:
                     application/json:
@@ -4530,8 +4470,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -4625,8 +4564,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: viewMask
                   in: query
                   schema:
@@ -4746,8 +4684,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -4765,8 +4702,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -4782,8 +4718,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             requestBody:
                 content:
                     application/json:
@@ -4914,8 +4849,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: viewMask
                   in: query
                   schema:
@@ -4938,8 +4872,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             requestBody:
                 content:
                     application/json:
@@ -4960,8 +4893,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -5149,8 +5081,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: viewMask
                   in: query
                   schema:
@@ -5173,8 +5104,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             requestBody:
                 content:
                     application/json:
@@ -5195,8 +5125,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -5362,8 +5291,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: viewMask
                   in: query
                   schema:
@@ -5480,8 +5408,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: viewMask
                   in: query
                   schema:
@@ -5504,8 +5431,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             requestBody:
                 content:
                     application/json:
@@ -5526,8 +5452,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -5754,8 +5679,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: viewMask
                   in: query
                   schema:
@@ -5778,8 +5702,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             requestBody:
                 content:
                     application/json:
@@ -5800,13 +5723,11 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: operatorId
                   in: query
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -5918,8 +5839,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -5937,8 +5857,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             requestBody:
                 content:
                     application/json:
@@ -5959,8 +5878,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -5976,8 +5894,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             requestBody:
                 content:
                     application/json:
@@ -5999,8 +5916,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             requestBody:
                 content:
                     application/json:
@@ -6100,8 +6016,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -6260,8 +6175,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -6279,8 +6193,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             requestBody:
                 content:
                     application/json:
@@ -6301,8 +6214,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -6318,8 +6230,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             requestBody:
                 content:
                     application/json:
@@ -6440,8 +6351,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: code
                   in: query
                   schema:
@@ -6463,8 +6373,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             requestBody:
                 content:
                     application/json:
@@ -6485,8 +6394,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -6503,8 +6411,7 @@ paths:
                   description: 被渲染的模板 ID
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             requestBody:
                 content:
                     application/json:
@@ -6622,8 +6529,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: viewMask
                   in: query
                   schema:
@@ -6725,8 +6631,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: viewMask
                   in: query
                   schema:
@@ -6843,8 +6748,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: viewMask
                   in: query
                   schema:
@@ -6867,8 +6771,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             requestBody:
                 content:
                     application/json:
@@ -6889,8 +6792,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -6997,8 +6899,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: viewMask
                   in: query
                   schema:
@@ -7115,8 +7016,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: viewMask
                   in: query
                   schema:
@@ -7139,8 +7039,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             requestBody:
                 content:
                     application/json:
@@ -7161,8 +7060,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -7285,8 +7183,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: code
                   in: query
                   schema:
@@ -7313,8 +7210,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             requestBody:
                 content:
                     application/json:
@@ -7335,8 +7231,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: code
                   in: query
                   schema:
@@ -7344,8 +7239,7 @@ paths:
                 - name: groupId
                   in: query
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -7439,8 +7333,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: viewMask
                   in: query
                   schema:
@@ -7557,8 +7450,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: name
                   in: query
                   schema:
@@ -7589,8 +7481,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             requestBody:
                 content:
                     application/json:
@@ -7611,8 +7502,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -7652,8 +7542,7 @@ paths:
                   in: query
                   description: 按用户过滤（可选）
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -7881,8 +7770,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: viewMask
                   in: query
                   schema:
@@ -7905,8 +7793,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             requestBody:
                 content:
                     application/json:
@@ -7930,13 +7817,11 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: deletedBy
                   in: query
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -8321,8 +8206,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: viewMask
                   in: query
                   schema:
@@ -8345,8 +8229,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             requestBody:
                 content:
                     application/json:
@@ -8370,13 +8253,11 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: deletedBy
                   in: query
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -8485,8 +8366,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: name
                   in: query
                   schema:
@@ -8517,8 +8397,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             requestBody:
                 content:
                     application/json:
@@ -8539,8 +8418,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: code
                   in: query
                   schema:
@@ -8548,8 +8426,7 @@ paths:
                 - name: tenantId
                   in: query
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -8752,8 +8629,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: viewMask
                   in: query
                   schema:
@@ -8776,8 +8652,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             requestBody:
                 content:
                     application/json:
@@ -8801,13 +8676,11 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: deletedBy
                   in: query
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -8823,8 +8696,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             requestBody:
                 content:
                     application/json:
@@ -8849,8 +8721,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: page
                   in: query
                   schema:
@@ -8957,8 +8828,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -9170,8 +9040,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: viewMask
                   in: query
                   schema:
@@ -9194,8 +9063,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             requestBody:
                 content:
                     application/json:
@@ -9219,13 +9087,11 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: deletedBy
                   in: query
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -9338,8 +9204,7 @@ paths:
                 - name: id
                   in: query
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: viewMask
                   in: query
                   schema:
@@ -9363,8 +9228,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: typeName
                   in: query
                   schema:
@@ -9391,8 +9255,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             requestBody:
                 content:
                     application/json:
@@ -9413,8 +9276,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -9597,8 +9459,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: code
                   in: query
                   schema:
@@ -9629,8 +9490,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             requestBody:
                 content:
                     application/json:
@@ -9651,8 +9511,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: code
                   in: query
                   schema:
@@ -9788,8 +9647,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: viewMask
                   in: query
                   schema:
@@ -9987,8 +9845,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: viewMask
                   in: query
                   schema:
@@ -10011,8 +9868,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             requestBody:
                 content:
                     application/json:
@@ -10036,13 +9892,11 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: deletedBy
                   in: query
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -10158,8 +10012,7 @@ paths:
                 - name: id
                   in: query
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: viewMask
                   in: query
                   schema:
@@ -10186,13 +10039,11 @@ paths:
                 - name: id
                   in: query
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: deletedBy
                   in: query
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -10208,8 +10059,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: username
                   in: query
                   schema:
@@ -10236,8 +10086,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             requestBody:
                 content:
                     application/json:
@@ -10258,8 +10107,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: username
                   in: query
                   schema:
@@ -10267,8 +10115,7 @@ paths:
                 - name: deletedBy
                   in: query
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -10284,8 +10131,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             requestBody:
                 content:
                     application/json:
@@ -10306,8 +10152,7 @@ paths:
                 - name: id
                   in: query
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: username
                   in: query
                   schema:
@@ -10523,8 +10368,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: viewMask
                   in: query
                   schema:
@@ -10547,8 +10391,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             requestBody:
                 content:
                     application/json:
@@ -10572,13 +10415,11 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: deletedBy
                   in: query
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -10768,8 +10609,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: viewMask
                   in: query
                   schema:
@@ -10792,8 +10632,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             requestBody:
                 content:
                     application/json:
@@ -10817,13 +10656,11 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: deletedBy
                   in: query
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -10839,8 +10676,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
                 - name: success
                   in: query
                   description: 按投递结果过滤，不传则返回全部
@@ -10894,9 +10730,8 @@ components:
                     description: 时间粒度（DAU 按粒度分桶，同时给出 WAU/MAU 累计）
                     format: enum
                 appId:
-                    type: integer
+                    type: string
                     description: 应用 ID 过滤（可选）
-                    format: uint32
             description: ============== 活跃用户 ==============
         ActiveUsersResponse:
             type: object
@@ -10913,40 +10748,33 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 会话ID
-                    format: uint32
                 title:
                     type: string
                     description: 会话标题（默认取首条消息摘要）
                 providerId:
-                    type: integer
+                    type: string
                     description: 会话使用的提供商ID（0 表示未指定）
-                    format: uint32
                 userId:
-                    type: integer
+                    type: string
                     description: 归属用户ID
-                    format: uint32
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID
-                    format: uint32
                 lastMessageAt:
                     type: string
                     description: 最近一条消息时间
                     format: date-time
                 createdBy:
-                    type: integer
+                    type: string
                     description: 创建者用户ID
-                    format: uint32
                 updatedBy:
-                    type: integer
+                    type: string
                     description: 更新者用户ID
-                    format: uint32
                 deletedBy:
-                    type: integer
+                    type: string
                     description: 删除者用户ID
-                    format: uint32
                 createdAt:
                     type: string
                     description: 创建时间
@@ -10964,11 +10792,9 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
-                    format: uint32
+                    type: string
                 baseId:
-                    type: integer
-                    format: uint32
+                    type: string
                 name:
                     type: string
                 chunkCount:
@@ -10979,11 +10805,9 @@ components:
                 errorMessage:
                     type: string
                 userId:
-                    type: integer
-                    format: uint32
+                    type: string
                 tenantId:
-                    type: integer
-                    format: uint32
+                    type: string
                 createdAt:
                     type: string
                     format: date-time
@@ -10992,9 +10816,8 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 知识库ID
-                    format: uint32
                 name:
                     type: string
                     description: 知识库名称
@@ -11002,33 +10825,27 @@ components:
                     type: string
                     description: 描述
                 providerId:
-                    type: integer
+                    type: string
                     description: 向量化使用的模型提供商ID（其端点须支持 OpenAI 兼容 /v1/embeddings）
-                    format: uint32
                 embeddingModel:
                     type: string
                     description: embedding 模型名，如 text-embedding-3-small
                 userId:
-                    type: integer
+                    type: string
                     description: 创建人用户ID
-                    format: uint32
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID（0=平台级）
-                    format: uint32
                 docCount:
                     type: integer
                     description: 文档数（读视图）
                     format: uint32
                 createdBy:
-                    type: integer
-                    format: uint32
+                    type: string
                 updatedBy:
-                    type: integer
-                    format: uint32
+                    type: string
                 deletedBy:
-                    type: integer
-                    format: uint32
+                    type: string
                 createdAt:
                     type: string
                     format: date-time
@@ -11043,13 +10860,11 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 消息ID
-                    format: uint32
                 conversationId:
-                    type: integer
+                    type: string
                     description: 所属会话ID
-                    format: uint32
                 role:
                     enum:
                         - AI_ROLE_UNSPECIFIED
@@ -11081,25 +10896,20 @@ components:
                     type: string
                     description: 生成失败原因（仅失败记录）
                 userId:
-                    type: integer
+                    type: string
                     description: 归属用户ID
-                    format: uint32
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID
-                    format: uint32
                 createdBy:
-                    type: integer
+                    type: string
                     description: 创建者用户ID
-                    format: uint32
                 updatedBy:
-                    type: integer
+                    type: string
                     description: 更新者用户ID
-                    format: uint32
                 deletedBy:
-                    type: integer
+                    type: string
                     description: 删除者用户ID
-                    format: uint32
                 createdAt:
                     type: string
                     description: 创建时间
@@ -11117,9 +10927,8 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 提供商ID
-                    format: uint32
                 name:
                     type: string
                     description: 提供商显示名称，如 DeepSeek、通义千问、本地 Ollama
@@ -11170,17 +10979,14 @@ components:
                     type: boolean
                     description: 是否启用
                 createdBy:
-                    type: integer
+                    type: string
                     description: 创建者用户ID
-                    format: uint32
                 updatedBy:
-                    type: integer
+                    type: string
                     description: 更新者用户ID
-                    format: uint32
                 deletedBy:
-                    type: integer
+                    type: string
                     description: 删除者用户ID
-                    format: uint32
                 createdAt:
                     type: string
                     description: 创建时间
@@ -11216,25 +11022,20 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 流水ID
-                    format: uint32
                 providerId:
-                    type: integer
+                    type: string
                     description: 提供商ID
-                    format: uint32
                 conversationId:
-                    type: integer
+                    type: string
                     description: 会话ID（0 表示非对话调用）
-                    format: uint32
                 userId:
-                    type: integer
+                    type: string
                     description: 发起用户ID
-                    format: uint32
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID（0 表示平台自用）
-                    format: uint32
                 modelName:
                     type: string
                     description: 模型名称
@@ -11263,17 +11064,14 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 主键ID，唯一标识告警规则
-                    format: uint32
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID，多租户隔离，支持SaaS场景
-                    format: uint32
                 appId:
-                    type: integer
+                    type: string
                     description: 关联应用ID（分析域数字ID），0/不传为全部应用
-                    format: uint32
                 name:
                     type: string
                     description: 规则名称
@@ -11333,17 +11131,14 @@ components:
                     description: 最后触发时间
                     format: date-time
                 createdBy:
-                    type: integer
+                    type: string
                     description: 创建者用户ID
-                    format: uint32
                 updatedBy:
-                    type: integer
+                    type: string
                     description: 更新者用户ID
-                    format: uint32
                 deletedBy:
-                    type: integer
+                    type: string
                     description: 删除者用户ID
-                    format: uint32
                 createdAt:
                     type: string
                     description: 创建时间
@@ -11392,9 +11187,8 @@ components:
                         - $ref: '#/components/schemas/TimeRange'
                     description: 时间范围（通常取近 8+ 天以算 7 日基线）
                 appId:
-                    type: integer
+                    type: string
                     description: 应用 ID 过滤（可选）
-                    format: uint32
                 eventName:
                     type: string
                     description: 事件名过滤（可选，空表示全部事件聚合）
@@ -11414,9 +11208,8 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 资源ID
-                    format: uint32
                 operation:
                     type: string
                     description: 接口操作名
@@ -11451,17 +11244,14 @@ components:
                     description: 状态
                     format: enum
                 createdBy:
-                    type: integer
+                    type: string
                     description: 创建者用户ID
-                    format: uint32
                 updatedBy:
-                    type: integer
+                    type: string
                     description: 更新者用户ID
-                    format: uint32
                 deletedBy:
-                    type: integer
+                    type: string
                     description: 删除者用户ID
-                    format: uint32
                 createdAt:
                     type: string
                     description: 创建时间
@@ -11479,20 +11269,17 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 接口审计日志ID
-                    format: uint32
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID
-                    format: uint32
                 tenantName:
                     type: string
                     description: 租户名称
                 userId:
-                    type: integer
+                    type: string
                     description: 用户ID
-                    format: uint32
                 username:
                     type: string
                     description: 账号名
@@ -11575,9 +11362,8 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: ID
-                    format: uint32
                 name:
                     type: string
                     description: UBA应用名称
@@ -11620,24 +11406,20 @@ components:
                     type: string
                     description: 回调签名密钥
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID
-                    format: uint32
                 tenantName:
                     type: string
                     description: 租户名称
                 createdBy:
-                    type: integer
+                    type: string
                     description: 创建者用户ID
-                    format: uint32
                 updatedBy:
-                    type: integer
+                    type: string
                     description: 更新者用户ID
-                    format: uint32
                 deletedBy:
-                    type: integer
+                    type: string
                     description: 删除者用户ID
-                    format: uint32
                 createdAt:
                     type: string
                     description: 创建时间
@@ -11729,9 +11511,8 @@ components:
                     type: string
                     description: 归因模型：last_touch 末次触达（默认）/ first_touch 首次触达
                 appId:
-                    type: integer
+                    type: string
                     description: 应用 ID 过滤（可选）
-                    format: uint32
             description: ============== 归因分析 ==============
         AttributionResponse:
             type: object
@@ -11764,13 +11545,11 @@ components:
                     type: string
                     description: 事件ID，建议使用 UUID，作为事件的唯一标识，同时也可用于路由和去重
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID，事件所属的租户，用于多租户隔离
-                    format: uint32
                 userId:
-                    type: integer
+                    type: string
                     description: 用户ID，事件的主体，可以是用户、设备、账号等，具体含义由业务定义
-                    format: uint32
                 deviceId:
                     type: string
                 accountId:
@@ -11933,13 +11712,11 @@ components:
                         - $ref: '#/components/schemas/TimeRange'
                     description: 时间范围
                 userId:
-                    type: integer
+                    type: string
                     description: 用户 ID
-                    format: uint32
                 appId:
-                    type: integer
+                    type: string
                     description: 应用 ID 过滤（可选）
-                    format: uint32
                 eventName:
                     type: string
                     description: 事件名过滤（可选，空表示全部事件）
@@ -11952,9 +11729,8 @@ components:
             type: object
             properties:
                 userId:
-                    type: integer
+                    type: string
                     description: 用户 ID
-                    format: uint32
                 events:
                     type: array
                     items:
@@ -11989,17 +11765,14 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 主键ID
-                    format: uint32
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID
-                    format: uint32
                 appId:
-                    type: integer
+                    type: string
                     description: 关联应用ID
-                    format: uint32
                 name:
                     type: string
                     description: 活动名称
@@ -12007,9 +11780,8 @@ components:
                     type: string
                     description: 活动描述
                 segmentId:
-                    type: integer
+                    type: string
                     description: 目标分群ID
-                    format: uint32
                 title:
                     type: string
                     description: 消息标题
@@ -12056,17 +11828,14 @@ components:
                     description: 最近发送时间
                     format: date-time
                 createdBy:
-                    type: integer
+                    type: string
                     description: 创建者用户ID
-                    format: uint32
                 updatedBy:
-                    type: integer
+                    type: string
                     description: 更新者用户ID
-                    format: uint32
                 deletedBy:
-                    type: integer
+                    type: string
                     description: 删除者用户ID
-                    format: uint32
                 createdAt:
                     type: string
                     description: 创建时间
@@ -12084,16 +11853,14 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 活动ID
-                    format: uint32
             description: 取消触达活动 - 请求
         CancelImportJobRequest:
             type: object
             properties:
                 id:
-                    type: integer
-                    format: uint32
+                    type: string
             description: 取消导入任务 - 请求
         ChangePasswordRequest:
             type: object
@@ -12127,28 +11894,23 @@ components:
             type: object
             properties:
                 conversationId:
-                    type: integer
+                    type: string
                     description: 会话ID；0 表示新建会话
-                    format: uint32
                 providerId:
-                    type: integer
+                    type: string
                     description: 提供商ID；0 表示使用默认提供商
-                    format: uint32
                 content:
                     type: string
                     description: 用户输入内容
                 knowledgeBaseId:
-                    type: integer
+                    type: string
                     description: 知识库ID；>0 时检索该库并把片段注入 system 上下文（RAG）
-                    format: uint32
                 operatorUserId:
-                    type: integer
+                    type: string
                     description: 操作者用户ID（BFF 注入）
-                    format: uint32
                 operatorTenantId:
-                    type: integer
+                    type: string
                     description: 操作者租户ID（BFF 注入）
-                    format: uint32
             description: 发起对话 - 请求
         ChatResponse:
             type: object
@@ -12185,9 +11947,8 @@ components:
                         - $ref: '#/components/schemas/TimeRange'
                     description: 时间范围（回流窗口，end_ms 视为"今天"）
                 appId:
-                    type: integer
+                    type: string
                     description: 应用 ID 过滤（可选）
-                    format: uint32
                 churnDays:
                     type: integer
                     description: 流失判定天数（最后活跃距今 > N 天算流失，默认 30）
@@ -12268,9 +12029,8 @@ components:
                     description: 网格大小（像素，默认 20）
                     format: uint32
                 appId:
-                    type: integer
+                    type: string
                     description: 应用 ID 过滤（可选）
-                    format: uint32
             description: ============== 点击热力图 ==============
         ClickResponse:
             type: object
@@ -12630,9 +12390,8 @@ components:
                 password:
                     type: string
                 operatorUserId:
-                    type: integer
+                    type: string
                     description: 操作人用户ID
-                    format: uint32
             description: 创建租户及管理员用户 - 请求
         CreateUserRequest:
             type: object
@@ -12685,17 +12444,14 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 主键ID，唯一标识看板
-                    format: uint32
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID，多租户隔离，支持SaaS场景
-                    format: uint32
                 appId:
-                    type: integer
+                    type: string
                     description: 关联应用ID
-                    format: uint32
                 name:
                     type: string
                     description: 看板名称
@@ -12711,17 +12467,14 @@ components:
                     type: boolean
                     description: 是否启用
                 createdBy:
-                    type: integer
+                    type: string
                     description: 创建者用户ID
-                    format: uint32
                 updatedBy:
-                    type: integer
+                    type: string
                     description: 更新者用户ID
-                    format: uint32
                 deletedBy:
-                    type: integer
+                    type: string
                     description: 删除者用户ID
-                    format: uint32
                 createdAt:
                     type: string
                     description: 创建时间
@@ -12759,20 +12512,17 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: API审计日志ID
-                    format: uint32
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID
-                    format: uint32
                 tenantName:
                     type: string
                     description: 租户名称
                 userId:
-                    type: integer
+                    type: string
                     description: 用户ID
-                    format: uint32
                 username:
                     type: string
                     description: 账号名
@@ -12870,14 +12620,12 @@ components:
             type: object
             properties:
                 userId:
-                    type: integer
+                    type: string
                     description: 用户ID
-                    format: uint32
                 recipientIds:
                     type: array
                     items:
-                        type: integer
-                        format: uint32
+                        type: string
                     description: 收件箱记录ID列表
         DeviceInfo:
             type: object
@@ -12969,13 +12717,11 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 字典项ID
-                    format: uint32
                 typeId:
-                    type: integer
+                    type: string
                     description: 字典类型ID
-                    format: uint32
                 entryValue:
                     example: MALE
                     type: string
@@ -13001,24 +12747,20 @@ components:
                 currentI18n:
                     $ref: '#/components/schemas/DictEntryI18n'
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID，0代表系统全局角色
-                    format: uint32
                 tenantName:
                     type: string
                     description: 租户名称
                 createdBy:
-                    type: integer
+                    type: string
                     description: 创建者用户ID
-                    format: uint32
                 updatedBy:
-                    type: integer
+                    type: string
                     description: 更新者用户ID
-                    format: uint32
                 deletedBy:
-                    type: integer
+                    type: string
                     description: 删除者用户ID
-                    format: uint32
                 createdAt:
                     type: string
                     description: 创建时间
@@ -13052,9 +12794,8 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 字典类型ID
-                    format: uint32
                 typeCode:
                     type: string
                     description: 字典类型唯一编码，如 app_type、platform、risk_type
@@ -13069,24 +12810,20 @@ components:
                     description: 排序号，越小越靠前
                     format: uint32
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID，0代表系统全局角色
-                    format: uint32
                 tenantName:
                     type: string
                     description: 租户名称
                 createdBy:
-                    type: integer
+                    type: string
                     description: 创建者用户ID
-                    format: uint32
                 updatedBy:
-                    type: integer
+                    type: string
                     description: 更新者用户ID
-                    format: uint32
                 deletedBy:
-                    type: integer
+                    type: string
                     description: 删除者用户ID
-                    format: uint32
                 createdAt:
                     type: string
                     description: 创建时间
@@ -13125,9 +12862,8 @@ components:
                     type: string
                     description: 目标事件名（如 page_view）
                 appId:
-                    type: integer
+                    type: string
                     description: 应用 ID 过滤（可选）
-                    format: uint32
             description: ============== 分布分析 ==============
         DistributionResponse:
             type: object
@@ -13202,9 +12938,8 @@ components:
                         - $ref: '#/components/schemas/TimeRange'
                     description: 时间范围
                 appId:
-                    type: integer
+                    type: string
                     description: 应用 ID 过滤（可选）
-                    format: uint32
                 currency:
                     type: string
                     description: 代币类型过滤（可选，如 GOLD/DIAMOND，空表示全部）
@@ -13221,9 +12956,8 @@ components:
             type: object
             properties:
                 userId:
-                    type: integer
+                    type: string
                     description: 用户ID
-                    format: uint32
                 newPassword:
                     type: string
                     description: 新密码
@@ -13247,13 +12981,11 @@ components:
                     type: string
                     description: 路径ID，唯一标识一条事件路径，hash 或 UUID
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID，多租户隔离，支持 SaaS 场景
-                    format: uint32
                 userId:
-                    type: integer
+                    type: string
                     description: 用户ID，路径所属用户
-                    format: uint32
                 sessionId:
                     type: string
                     description: 会话ID，路径所属会话
@@ -13353,13 +13085,11 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: ID
-                    format: uint32
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID
-                    format: uint32
                 eventName:
                     type: string
                     description: 事件名，唯一业务标识
@@ -13386,13 +13116,11 @@ components:
                     description: 启用状态
                     format: enum
                 createdBy:
-                    type: integer
+                    type: string
                     description: 创建者用户ID
-                    format: uint32
                 updatedBy:
-                    type: integer
+                    type: string
                     description: 更新者用户ID
-                    format: uint32
                 createdAt:
                     type: string
                     description: 创建时间
@@ -13435,9 +13163,8 @@ components:
                     description: 时间粒度
                     format: enum
                 appId:
-                    type: integer
+                    type: string
                     description: 应用 ID 过滤（可选，0 表示全部）
-                    format: uint32
                 eventName:
                     type: string
                     description: 事件名过滤（可选，空表示全部事件）——向后兼容字段，queries 为空时使用
@@ -13521,17 +13248,14 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 主键ID
-                    format: uint32
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID
-                    format: uint32
                 appId:
-                    type: integer
+                    type: string
                     description: 关联应用ID，空为全部应用
-                    format: uint32
                 key:
                     type: string
                     description: 开关唯一标识（租户内唯一）
@@ -13565,17 +13289,14 @@ components:
                     description: 实验结束时间
                     format: date-time
                 createdBy:
-                    type: integer
+                    type: string
                     description: 创建者用户ID
-                    format: uint32
                 updatedBy:
-                    type: integer
+                    type: string
                     description: 更新者用户ID
-                    format: uint32
                 deletedBy:
-                    type: integer
+                    type: string
                     description: 删除者用户ID
-                    format: uint32
                 createdAt:
                     type: string
                     description: 创建时间
@@ -13607,9 +13328,8 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 文件ID
-                    format: uint32
                 provider:
                     enum:
                         - MINIO
@@ -13661,24 +13381,20 @@ components:
                     type: string
                     description: 文件内容hash值
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID，0代表系统全局角色
-                    format: uint32
                 tenantName:
                     type: string
                     description: 租户名称
                 createdBy:
-                    type: integer
+                    type: string
                     description: 创建者用户ID
-                    format: uint32
                 updatedBy:
-                    type: integer
+                    type: string
                     description: 更新者用户ID
-                    format: uint32
                 deletedBy:
-                    type: integer
+                    type: string
                     description: 删除者用户ID
-                    format: uint32
                 createdAt:
                     type: string
                     description: 创建时间
@@ -13747,9 +13463,8 @@ components:
                         type: string
                     description: 漏斗步骤事件名（有序，至少 2 步）
                 appId:
-                    type: integer
+                    type: string
                     description: 应用 ID 过滤（可选）
-                    format: uint32
                 windowMs:
                     type: string
                     description: 转化窗口（毫秒，用户必须在窗口内完成全部步骤，默认 30 分钟）
@@ -13862,9 +13577,8 @@ components:
                     type: string
                     description: 聚合指标：COUNT=事件数(默认)，UNIQUE_USER=去重用户数，SUM_AMOUNT=金额求和
                 appId:
-                    type: integer
+                    type: string
                     description: 应用 ID 过滤（可选）
-                    format: uint32
                 eventName:
                     type: string
                     description: 事件名过滤（可选）
@@ -13892,16 +13606,14 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 自增长主键ID，唯一标识一条ID映射记录
-                    format: uint32
                 globalUserId:
                     type: string
                     description: 全局用户唯一标识，用于跨平台、跨租户用户关联
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID，多租户隔离，支持 SaaS 场景
-                    format: uint32
                 idType:
                     type: string
                     description: ID类型，标识不同类型的用户、设备、账号等标识符
@@ -13932,17 +13644,14 @@ components:
                         type: string
                     description: 扩展属性，存储自定义的业务特征或附加信息，便于业务灵活扩展
                 createdBy:
-                    type: integer
+                    type: string
                     description: 创建者用户ID，记录创建该映射关系的用户
-                    format: uint32
                 updatedBy:
-                    type: integer
+                    type: string
                     description: 更新者用户ID，记录最近一次更新该映射关系的用户
-                    format: uint32
                 deletedBy:
-                    type: integer
+                    type: string
                     description: 删除者用户ID，记录删除该映射关系的用户
-                    format: uint32
                 createdAt:
                     type: string
                     description: 创建时间，记录映射关系创建的时间
@@ -13960,13 +13669,11 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 主键ID
-                    format: uint32
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID
-                    format: uint32
                 appId:
                     type: string
                     description: 关联应用标识
@@ -14017,9 +13724,8 @@ components:
                     description: 耗时（毫秒）
                     format: uint32
                 createdBy:
-                    type: integer
+                    type: string
                     description: 创建者用户ID
-                    format: uint32
                 createdAt:
                     type: string
                     description: 创建时间
@@ -14044,9 +13750,8 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 消息ID
-                    format: uint32
                 title:
                     type: string
                     description: 消息标题
@@ -14073,38 +13778,32 @@ components:
                     description: 消息类型
                     format: enum
                 senderId:
-                    type: integer
+                    type: string
                     description: 发送者 ID（用户 ID，系统消息为0）
-                    format: uint32
                 senderName:
                     type: string
                     description: 发送者名称
                 categoryId:
-                    type: integer
+                    type: string
                     description: 分类ID
-                    format: uint32
                 categoryName:
                     type: string
                     description: 分类名称
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID，0代表系统全局角色
-                    format: uint32
                 tenantName:
                     type: string
                     description: 租户名称
                 createdBy:
-                    type: integer
+                    type: string
                     description: 创建者用户ID
-                    format: uint32
                 updatedBy:
-                    type: integer
+                    type: string
                     description: 更新者用户ID
-                    format: uint32
                 deletedBy:
-                    type: integer
+                    type: string
                     description: 删除者用户ID
-                    format: uint32
                 createdAt:
                     type: string
                     description: 创建时间
@@ -14122,9 +13821,8 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 分类ID
-                    format: uint32
                 name:
                     type: string
                     description: 名称
@@ -14142,24 +13840,20 @@ components:
                     type: boolean
                     description: 是否启用
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID，0代表系统全局角色
-                    format: uint32
                 tenantName:
                     type: string
                     description: 租户名称
                 createdBy:
-                    type: integer
+                    type: string
                     description: 创建者用户ID
-                    format: uint32
                 updatedBy:
-                    type: integer
+                    type: string
                     description: 更新者用户ID
-                    format: uint32
                 deletedBy:
-                    type: integer
+                    type: string
                     description: 删除者用户ID
-                    format: uint32
                 createdAt:
                     type: string
                     description: 创建时间
@@ -14177,17 +13871,14 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 记录ID
-                    format: uint32
                 messageId:
-                    type: integer
+                    type: string
                     description: 站内信内容ID
-                    format: uint32
                 recipientUserId:
-                    type: integer
+                    type: string
                     description: 接收者用户ID
-                    format: uint32
                 status:
                     enum:
                         - SENT
@@ -14213,24 +13904,20 @@ components:
                     type: string
                     description: 消息内容
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID，0代表系统全局角色
-                    format: uint32
                 tenantName:
                     type: string
                     description: 租户名称
                 createdBy:
-                    type: integer
+                    type: string
                     description: 创建者用户ID
-                    format: uint32
                 updatedBy:
-                    type: integer
+                    type: string
                     description: 更新者用户ID
-                    format: uint32
                 deletedBy:
-                    type: integer
+                    type: string
                     description: 删除者用户ID
-                    format: uint32
                 createdAt:
                     type: string
                     description: 创建时间
@@ -14272,9 +13959,8 @@ components:
                     type: string
                     description: 结束事件名（如 pay_success）
                 appId:
-                    type: integer
+                    type: string
                     description: 应用 ID 过滤（可选）
-                    format: uint32
             description: ============== 间隔时间分析 ==============
         IntervalResponse:
             type: object
@@ -14358,9 +14044,8 @@ components:
                         - $ref: '#/components/schemas/TimeRange'
                     description: 注册时间范围（按 register_time 过滤同期群）
                 appId:
-                    type: integer
+                    type: string
                     description: 应用 ID 过滤（可选）
-                    format: uint32
                 dimension:
                     type: string
                     description: 归因维度（可选，按渠道分组 LTV）：channel（默认，配合归因模型）
@@ -14381,9 +14066,8 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 语言ID
-                    format: uint32
                 languageCode:
                     type: string
                     description: 标准语言代码
@@ -14404,17 +14088,14 @@ components:
                     description: 排序顺序，值越小越靠前
                     format: uint32
                 createdBy:
-                    type: integer
+                    type: string
                     description: 创建者用户ID
-                    format: uint32
                 updatedBy:
-                    type: integer
+                    type: string
                     description: 更新者用户ID
-                    format: uint32
                 deletedBy:
-                    type: integer
+                    type: string
                     description: 删除者用户ID
-                    format: uint32
                 createdAt:
                     type: string
                     description: 创建时间
@@ -14436,9 +14117,8 @@ components:
                         - $ref: '#/components/schemas/TimeRange'
                     description: 时间范围
                 appId:
-                    type: integer
+                    type: string
                     description: 应用 ID 过滤（可选）
-                    format: uint32
                 levelId:
                     type: string
                     description: 指定关卡 ID（可选，空表示全部关卡）
@@ -14497,9 +14177,8 @@ components:
                         - $ref: '#/components/schemas/TimeRange'
                     description: 时间范围（基准日，end_ms 视为"今天"）
                 appId:
-                    type: integer
+                    type: string
                     description: 应用 ID 过滤（可选）
-                    format: uint32
                 newUserDays:
                     type: integer
                     description: 新用户判定天数（注册距今 N 天内算新用户，默认 7）
@@ -15156,9 +14835,8 @@ components:
                     type: string
                     description: 应用标识
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID（服务端可覆盖）
-                    format: uint32
             description: 按应用下发启用规则 - 请求（collector 转发）
         ListVisualEventsForAppResponse:
             type: object
@@ -15197,20 +14875,17 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 登录审计日志ID
-                    format: uint32
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID
-                    format: uint32
                 tenantName:
                     type: string
                     description: 租户名称
                 userId:
-                    type: integer
+                    type: string
                     description: 用户ID
-                    format: uint32
                 username:
                     type: string
                     description: 账号名
@@ -15303,13 +14978,11 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 登录策略ID
-                    format: uint32
                 targetId:
-                    type: integer
+                    type: string
                     description: 目标用户ID
-                    format: uint32
                 type:
                     enum:
                         - LOGIN_RESTRICTION_TYPE_UNSPECIFIED
@@ -15336,24 +15009,20 @@ components:
                     type: string
                     description: 限制原因
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID，0代表系统全局角色
-                    format: uint32
                 tenantName:
                     type: string
                     description: 租户名称
                 createdBy:
-                    type: integer
+                    type: string
                     description: 创建者用户ID
-                    format: uint32
                 updatedBy:
-                    type: integer
+                    type: string
                     description: 更新者用户ID
-                    format: uint32
                 deletedBy:
-                    type: integer
+                    type: string
                     description: 删除者用户ID
-                    format: uint32
                 createdAt:
                     type: string
                     description: 创建时间
@@ -15396,9 +15065,8 @@ components:
                     type: string
                     description: 跳转链接
                 user_id:
-                    type: integer
+                    type: string
                     description: 用户ID
-                    format: uint32
                 username:
                     type: string
                     description: 用户名
@@ -15465,14 +15133,12 @@ components:
             type: object
             properties:
                 userId:
-                    type: integer
+                    type: string
                     description: 用户ID
-                    format: uint32
                 recipientIds:
                     type: array
                     items:
-                        type: integer
-                        format: uint32
+                        type: string
                     description: 收件箱记录ID列表
         MatrixPoint:
             type: object
@@ -15503,9 +15169,8 @@ components:
                     type: string
                     description: 分析维度（默认 event_name）
                 appId:
-                    type: integer
+                    type: string
                     description: 应用 ID 过滤（可选）
-                    format: uint32
                 split:
                     type: string
                     description: X/Y 的象限划分阈值类型：median 中位数（默认）/ avg 均值
@@ -15533,9 +15198,8 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 菜单ID
-                    format: uint32
                 status:
                     enum:
                         - OFF
@@ -15571,26 +15235,22 @@ components:
                 meta:
                     $ref: '#/components/schemas/MenuMeta'
                 parentId:
-                    type: integer
+                    type: string
                     description: 父节点ID
-                    format: uint32
                 children:
                     type: array
                     items:
                         $ref: '#/components/schemas/Menu'
                     description: 子节点树
                 createdBy:
-                    type: integer
+                    type: string
                     description: 创建者用户ID
-                    format: uint32
                 updatedBy:
-                    type: integer
+                    type: string
                     description: 更新者用户ID
-                    format: uint32
                 deletedBy:
-                    type: integer
+                    type: string
                     description: 删除者用户ID
-                    format: uint32
                 createdAt:
                     type: string
                     description: 创建时间
@@ -15725,9 +15385,8 @@ components:
                         - $ref: '#/components/schemas/TimeRange'
                     description: 时间范围
                 appId:
-                    type: integer
+                    type: string
                     description: 应用 ID 过滤（可选）
-                    format: uint32
                 newUserDays:
                     type: integer
                     description: 新用户判定天数（注册距今 N 天内算新用户，默认 7）
@@ -15764,8 +15423,7 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
-                    format: uint32
+                    type: string
                 name:
                     type: string
             description: 可退订分类的精简项（只取 id + 名称，避免拖整个分类实体）。
@@ -15773,9 +15431,8 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 渠道ID
-                    format: uint32
                 name:
                     type: string
                     description: 渠道名称
@@ -15865,11 +15522,9 @@ components:
                     type: string
                     description: 发件人显示名（仅 EMAIL 渠道）
                 createdBy:
-                    type: integer
-                    format: uint32
+                    type: string
                 updatedBy:
-                    type: integer
-                    format: uint32
+                    type: string
                 createdAt:
                     type: string
                     format: date-time
@@ -15881,9 +15536,8 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 台账ID
-                    format: uint32
                 eventType:
                     enum:
                         - EVENT_TYPE_UNSPECIFIED
@@ -15911,13 +15565,11 @@ components:
                     description: 投递渠道
                     format: enum
                 channelId:
-                    type: integer
+                    type: string
                     description: 实际选中的渠道配置ID
-                    format: uint32
                 recipientUserId:
-                    type: integer
+                    type: string
                     description: 收件用户ID（直发模式可为空）
-                    format: uint32
                 target:
                     type: string
                     description: 投递目标（脱敏）
@@ -15939,9 +15591,8 @@ components:
                     description: 投递完成时间
                     format: date-time
                 relatedId:
-                    type: integer
+                    type: string
                     description: 关联业务对象ID（按 event_type 解释）
-                    format: uint32
                 requestId:
                     type: string
                     description: 派发请求ID（幂等锚）
@@ -15950,11 +15601,9 @@ components:
                     description: 实际尝试投递次数（含首次）
                     format: uint32
                 createdBy:
-                    type: integer
-                    format: uint32
+                    type: string
                 updatedBy:
-                    type: integer
-                    format: uint32
+                    type: string
                 createdAt:
                     type: string
                     format: date-time
@@ -15966,8 +15615,7 @@ components:
             type: object
             properties:
                 userId:
-                    type: integer
-                    format: uint32
+                    type: string
                 quietEnabled:
                     type: boolean
                     description: |-
@@ -15986,8 +15634,7 @@ components:
                 mutedCategoryIds:
                     type: array
                     items:
-                        type: integer
-                        format: uint32
+                        type: string
                     description: |-
                         退订的站内信分类 ID 列表：仅约束全员广播（targetAll），
                          点对点定向发送不受退订影响（直接指名发给你的消息不可拒收）。
@@ -16001,9 +15648,8 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 规则ID
-                    format: uint32
                 eventType:
                     enum:
                         - EVENT_TYPE_UNSPECIFIED
@@ -16040,11 +15686,9 @@ components:
                     type: string
                     description: 备注
                 createdBy:
-                    type: integer
-                    format: uint32
+                    type: string
                 updatedBy:
-                    type: integer
-                    format: uint32
+                    type: string
                 createdAt:
                     type: string
                     format: date-time
@@ -16056,8 +15700,7 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
-                    format: uint32
+                    type: string
                 name:
                     type: string
                 code:
@@ -16113,9 +15756,8 @@ components:
                     type: string
                     description: 状态，对象当前状态，如上架、下架、有效、无效等
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID，多租户隔离，支持 SaaS 场景
-                    format: uint32
                 validFrom:
                     type: string
                     description: 有效期起始时间，对象有效期的开始时间
@@ -16125,13 +15767,11 @@ components:
                     description: 有效期结束时间，对象有效期的结束时间
                     format: date-time
                 createdBy:
-                    type: integer
+                    type: string
                     description: 创建者用户ID，记录创建该对象的用户
-                    format: uint32
                 updatedBy:
-                    type: integer
+                    type: string
                     description: 更新者用户ID，记录最近一次更新该对象的用户
-                    format: uint32
                 createdAt:
                     type: string
                     description: 创建时间
@@ -16149,9 +15789,8 @@ components:
                         - $ref: '#/components/schemas/TimeRange'
                     description: 时间范围
                 appId:
-                    type: integer
+                    type: string
                     description: 应用 ID 过滤（可选）
-                    format: uint32
                 serverId:
                     type: string
                     description: 区服过滤（可选）
@@ -16175,20 +15814,17 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: API审计日志ID
-                    format: uint32
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID
-                    format: uint32
                 tenantName:
                     type: string
                     description: 租户名称
                 userId:
-                    type: integer
+                    type: string
                     description: 用户ID
-                    format: uint32
                 username:
                     type: string
                     description: 账号名
@@ -16262,9 +15898,8 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 组织单元ID
-                    format: uint32
                 name:
                     type: string
                     description: 组织单元名称
@@ -16301,16 +15936,14 @@ components:
                     description: 排序顺序，值越小越靠前
                     format: uint32
                 leaderId:
-                    type: integer
+                    type: string
                     description: 负责人用户ID
-                    format: uint32
                 leaderName:
                     type: string
                     description: 负责人用户名称
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID
-                    format: uint32
                 tenantName:
                     type: string
                     description: 租户名称
@@ -16338,9 +15971,8 @@ components:
                     type: string
                     description: 税号
                 legalEntityOrgId:
-                    type: integer
+                    type: string
                     description: 关联的法定主体组织ID（若有）
-                    format: uint32
                 address:
                     type: string
                     description: 详细地址
@@ -16383,33 +16015,28 @@ components:
                         type: string
                     description: 与权限/角色映射的标签
                 contactUserId:
-                    type: integer
+                    type: string
                     description: 业务联系人用户ID
-                    format: uint32
                 contactUserName:
                     type: string
                     description: 业务联系人用户名称
                 parentId:
-                    type: integer
+                    type: string
                     description: 父节点ID
-                    format: uint32
                 children:
                     type: array
                     items:
                         $ref: '#/components/schemas/OrgUnit'
                     description: 子节点树
                 createdBy:
-                    type: integer
+                    type: string
                     description: 创建者用户ID
-                    format: uint32
                 updatedBy:
-                    type: integer
+                    type: string
                     description: 更新者用户ID
-                    format: uint32
                 deletedBy:
-                    type: integer
+                    type: string
                     description: 删除者用户ID
-                    format: uint32
                 createdAt:
                     type: string
                     description: 创建时间
@@ -16468,9 +16095,8 @@ components:
                         - $ref: '#/components/schemas/TimeRange'
                     description: 时间范围
                 appId:
-                    type: integer
+                    type: string
                     description: 应用 ID 过滤（可选）
-                    format: uint32
                 topN:
                     type: integer
                     description: 返回前 N 条热门路径（默认 20）
@@ -16517,9 +16143,8 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 权限点ID
-                    format: uint32
                 name:
                     type: string
                     description: 权限点名称（如：删除用户）
@@ -16537,36 +16162,30 @@ components:
                     description: 状态
                     format: enum
                 groupId:
-                    type: integer
+                    type: string
                     description: 分组ID
-                    format: uint32
                 groupName:
                     type: string
                     description: 分组名称
                 menuIds:
                     type: array
                     items:
-                        type: integer
-                        format: uint32
+                        type: string
                     description: 关联的菜单ID
                 apiIds:
                     type: array
                     items:
-                        type: integer
-                        format: uint32
+                        type: string
                     description: 关联的API资源ID
                 createdBy:
-                    type: integer
+                    type: string
                     description: 创建者用户ID
-                    format: uint32
                 updatedBy:
-                    type: integer
+                    type: string
                     description: 更新者用户ID
-                    format: uint32
                 deletedBy:
-                    type: integer
+                    type: string
                     description: 删除者用户ID
-                    format: uint32
                 createdAt:
                     type: string
                     description: 创建时间
@@ -16584,17 +16203,14 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 权限变更审计日志ID
-                    format: uint32
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID
-                    format: uint32
                 operatorId:
-                    type: integer
+                    type: string
                     description: 操作者用户ID
-                    format: uint32
                 operatorName:
                     type: string
                     description: 操作者用户名
@@ -16659,9 +16275,8 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 权限组ID
-                    format: uint32
                 name:
                     type: string
                     description: 分组名称（如：用户管理、订单操作）
@@ -16686,26 +16301,22 @@ components:
                     type: string
                     description: 描述
                 parentId:
-                    type: integer
+                    type: string
                     description: 父节点ID
-                    format: uint32
                 children:
                     type: array
                     items:
                         $ref: '#/components/schemas/PermissionGroup'
                     description: 子节点树
                 createdBy:
-                    type: integer
+                    type: string
                     description: 创建者用户ID
-                    format: uint32
                 updatedBy:
-                    type: integer
+                    type: string
                     description: 更新者用户ID
-                    format: uint32
                 deletedBy:
-                    type: integer
+                    type: string
                     description: 删除者用户ID
-                    format: uint32
                 createdAt:
                     type: string
                     description: 创建时间
@@ -16735,29 +16346,23 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 策略评估日志ID
-                    format: uint32
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID
-                    format: uint32
                 userId:
-                    type: integer
+                    type: string
                     description: 操作者用户ID
-                    format: uint32
                 membershipId:
-                    type: integer
+                    type: string
                     description: 成员身份ID
-                    format: uint32
                 permissionId:
-                    type: integer
+                    type: string
                     description: 权限点ID
-                    format: uint32
                 policyId:
-                    type: integer
+                    type: string
                     description: 策略ID（可能无策略）
-                    format: uint32
                 requestPath:
                     type: string
                     description: 请求API路径
@@ -16798,9 +16403,8 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 职位ID
-                    format: uint32
                 name:
                     type: string
                     description: 职位名称
@@ -16853,23 +16457,20 @@ components:
                     type: boolean
                     description: 是否关键岗位
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID
-                    format: uint32
                 tenantName:
                     type: string
                     description: 租户名称
                 orgUnitId:
-                    type: integer
+                    type: string
                     description: 所属组织单元ID
-                    format: uint32
                 orgUnitName:
                     type: string
                     description: 所属组织单元名称
                 reportsToPositionId:
-                    type: integer
+                    type: string
                     description: 汇报关系用户ID
-                    format: uint32
                 reportsToPositionName:
                     type: string
                     description: 汇报关系用户名称
@@ -16882,17 +16483,14 @@ components:
                     description: 失效时间（UTC）
                     format: date-time
                 createdBy:
-                    type: integer
+                    type: string
                     description: 创建者用户ID
-                    format: uint32
                 updatedBy:
-                    type: integer
+                    type: string
                     description: 更新者用户ID
-                    format: uint32
                 deletedBy:
-                    type: integer
+                    type: string
                     description: 删除者用户ID
-                    format: uint32
                 createdAt:
                     type: string
                     description: 创建时间
@@ -16974,25 +16572,22 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 分群ID
-                    format: uint32
             description: 刷新分群 - 请求
         ReindexDocsRequest:
             type: object
             properties:
                 baseId:
-                    type: integer
+                    type: string
                     description: 知识库ID；0 表示全部知识库
-                    format: uint32
             description: 重索引 - 请求
         RenderNotificationTemplateRequest:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 被渲染的模板 ID
-                    format: uint32
                 variables:
                     type: object
                     additionalProperties:
@@ -17012,15 +16607,13 @@ components:
                 sessionId:
                     type: string
                 tenantId:
-                    type: integer
-                    format: uint32
+                    type: string
                 appId:
                     type: string
                 deviceId:
                     type: string
                 userId:
-                    type: integer
-                    format: uint32
+                    type: string
                 pageUrl:
                     type: string
                     description: 首个分块的页面
@@ -17043,17 +16636,14 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 主键ID，唯一标识订阅
-                    format: uint32
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID，多租户隔离，支持SaaS场景
-                    format: uint32
                 appId:
-                    type: integer
+                    type: string
                     description: 关联应用ID
-                    format: uint32
                 name:
                     type: string
                     description: 订阅名称
@@ -17088,17 +16678,14 @@ components:
                     description: 最近一次执行时间
                     format: date-time
                 createdBy:
-                    type: integer
+                    type: string
                     description: 创建者用户ID
-                    format: uint32
                 updatedBy:
-                    type: integer
+                    type: string
                     description: 更新者用户ID
-                    format: uint32
                 deletedBy:
-                    type: integer
+                    type: string
                     description: 删除者用户ID
-                    format: uint32
                 createdAt:
                     type: string
                     description: 创建时间
@@ -17156,9 +16743,8 @@ components:
                         - $ref: '#/components/schemas/TimeRange'
                     description: 时间范围（按 cohort_date 过滤）
                 appId:
-                    type: integer
+                    type: string
                     description: 应用 ID 过滤（可选）
-                    format: uint32
                 retentionType:
                     type: string
                     description: 留存类型：ACTIVE=活跃留存（默认），EVENT=指定事件留存
@@ -17220,9 +16806,8 @@ components:
                         - $ref: '#/components/schemas/TimeRange'
                     description: 时间范围
                 appId:
-                    type: integer
+                    type: string
                     description: 应用 ID 过滤（可选）
-                    format: uint32
                 granularity:
                     enum:
                         - ANALYTICS_GRANULARITY_UNSPECIFIED
@@ -17260,13 +16845,11 @@ components:
             type: object
             properties:
                 messageId:
-                    type: integer
+                    type: string
                     description: 消息ID
-                    format: uint32
                 userId:
-                    type: integer
+                    type: string
                     description: 用户ID
-                    format: uint32
         RiskAction:
             type: object
             properties:
@@ -17296,13 +16879,11 @@ components:
                     type: string
                     description: 风险事件ID
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID，多租户隔离，支持 SaaS 场景
-                    format: uint32
                 userId:
-                    type: integer
+                    type: string
                     description: 用户ID，关联主体，风险事件涉及的用户
-                    format: uint32
                 deviceId:
                     type: string
                     description: 设备ID，关联主体，风险事件涉及的设备
@@ -17320,9 +16901,8 @@ components:
                     description: 风险评分，0-100，风险事件的评分
                     format: float
                 ruleId:
-                    type: integer
+                    type: string
                     description: 触发规则ID，标识触发风险事件的规则
-                    format: uint32
                 ruleName:
                     type: string
                     description: 规则名称，触发风险事件的规则名称
@@ -17358,9 +16938,8 @@ components:
                     description: 处置状态，风险事件的处理状态
                     format: enum
                 handlerId:
-                    type: integer
+                    type: string
                     description: 处理人ID，风险事件的处理人
-                    format: uint32
                 handledTime:
                     type: string
                     description: 处理时间，风险事件被处理的时间
@@ -17377,17 +16956,14 @@ components:
                     description: 风险事件上报时间
                     format: date-time
                 createdBy:
-                    type: integer
+                    type: string
                     description: 创建者用户ID
-                    format: uint32
                 updatedBy:
-                    type: integer
+                    type: string
                     description: 更新者用户ID
-                    format: uint32
                 deletedBy:
-                    type: integer
+                    type: string
                     description: 删除者用户ID
-                    format: uint32
                 createdAt:
                     type: string
                     description: 创建时间
@@ -17405,13 +16981,11 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 规则ID，唯一标识一条风险规则
-                    format: uint32
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID，多租户隔离，支持 SaaS 场景
-                    format: uint32
                 name:
                     type: string
                     description: 规则名称
@@ -17443,17 +17017,14 @@ components:
                     description: 优先级，越小优先级越高
                     format: uint32
                 createdBy:
-                    type: integer
+                    type: string
                     description: 创建者用户ID
-                    format: uint32
                 updatedBy:
-                    type: integer
+                    type: string
                     description: 更新者用户ID
-                    format: uint32
                 deletedBy:
-                    type: integer
+                    type: string
                     description: 删除者用户ID
-                    format: uint32
                 createdAt:
                     type: string
                     description: 创建时间
@@ -17471,9 +17042,8 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 角色ID
-                    format: uint32
                 name:
                     type: string
                     description: 角色名称
@@ -17509,28 +17079,29 @@ components:
                 permissions:
                     type: array
                     items:
-                        type: integer
-                        format: uint32
+                        type: string
                     description: 绑定的权限点ID列表
+                parentId:
+                    type: string
+                    description: 父角色ID，0表示无父级（根角色）
+                parentName:
+                    type: string
+                    description: 父角色名称（响应回填）
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID，0代表系统全局角色
-                    format: uint32
                 tenantName:
                     type: string
                     description: 租户名称
                 createdBy:
-                    type: integer
+                    type: string
                     description: 创建者用户ID
-                    format: uint32
                 updatedBy:
-                    type: integer
+                    type: string
                     description: 更新者用户ID
-                    format: uint32
                 deletedBy:
-                    type: integer
+                    type: string
                     description: 删除者用户ID
-                    format: uint32
                 createdAt:
                     type: string
                     description: 创建时间
@@ -17548,8 +17119,7 @@ components:
             type: object
             properties:
                 baseId:
-                    type: integer
-                    format: uint32
+                    type: string
                 query:
                     type: string
                 topK:
@@ -17568,17 +17138,14 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 主键ID，唯一标识分群
-                    format: uint32
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID，多租户隔离，支持SaaS场景
-                    format: uint32
                 appId:
-                    type: integer
+                    type: string
                     description: 关联应用ID
-                    format: uint32
                 name:
                     type: string
                     description: 分群名称
@@ -17608,17 +17175,14 @@ components:
                     type: boolean
                     description: 是否启用，停用后不参与定时刷新
                 createdBy:
-                    type: integer
+                    type: string
                     description: 创建者用户ID
-                    format: uint32
                 updatedBy:
-                    type: integer
+                    type: string
                     description: 更新者用户ID
-                    format: uint32
                 deletedBy:
-                    type: integer
+                    type: string
                     description: 删除者用户ID
-                    format: uint32
                 createdAt:
                     type: string
                     description: 创建时间
@@ -17649,9 +17213,8 @@ components:
             type: object
             properties:
                 userId:
-                    type: integer
+                    type: string
                     description: 用户ID
-                    format: uint32
                 joinedAt:
                     type: string
                     description: 进入分群时间
@@ -17697,9 +17260,8 @@ components:
                         $ref: '#/components/schemas/SegmentCondition'
                     description: 必须未做过的事件（做过任一即排除）
                 appId:
-                    type: integer
+                    type: string
                     description: 应用 ID 过滤（可选）
-                    format: uint32
                 limit:
                     type: integer
                     description: 最多返回用户数（默认 5000）
@@ -17710,8 +17272,7 @@ components:
                 userIds:
                     type: array
                     items:
-                        type: integer
-                        format: uint32
+                        type: string
                     description: 命中的用户 ID 列表
                 total:
                     type: string
@@ -17720,9 +17281,8 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 活动ID
-                    format: uint32
             description: 发送触达活动 - 请求
         SendMessageRequest:
             type: object
@@ -17736,22 +17296,18 @@ components:
                     description: 消息类型
                     format: enum
                 recipientUserId:
-                    type: integer
+                    type: string
                     description: 接收者用户ID
-                    format: uint32
                 conversationId:
-                    type: integer
+                    type: string
                     description: 会话ID
-                    format: uint32
                 categoryId:
-                    type: integer
+                    type: string
                     description: 分类ID
-                    format: uint32
                 targetUserIds:
                     type: array
                     items:
-                        type: integer
-                        format: uint32
+                        type: string
                     description: 定向发送用户ID列表
                 targetAll:
                     type: boolean
@@ -17763,23 +17319,20 @@ components:
                     type: string
                     description: 消息内容
                 sendUserId:
-                    type: integer
+                    type: string
                     description: 发送者用户ID
-                    format: uint32
         SendMessageResponse:
             type: object
             properties:
                 messageId:
-                    type: integer
+                    type: string
                     description: 消息ID
-                    format: uint32
         SendTestEmailRequest:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 渠道ID
-                    format: uint32
                 recipient:
                     type: string
                     description: 测试收件人邮箱
@@ -17788,9 +17341,8 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 渠道ID
-                    format: uint32
                 recipient:
                     type: string
                     description: 测试收件人（邮箱/手机号，按渠道类型）
@@ -17829,9 +17381,8 @@ components:
                         - $ref: '#/components/schemas/TimeRange'
                     description: 时间范围（按首次活跃日过滤）
                 appId:
-                    type: integer
+                    type: string
                     description: 应用 ID 过滤（可选）
-                    format: uint32
                 serverId:
                     type: string
                     description: 区服 ID 过滤（可选，空表示全部区服对比）
@@ -17877,13 +17428,11 @@ components:
                     type: string
                     description: 会话ID，唯一标识一条会话
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID，多租户隔离，支持 SaaS 场景
-                    format: uint32
                 userId:
-                    type: integer
+                    type: string
                     description: 用户ID，会话主体用户
-                    format: uint32
                 deviceId:
                     type: string
                     description: 设备ID，会话主体设备
@@ -17970,9 +17519,8 @@ components:
                         - $ref: '#/components/schemas/TimeRange'
                     description: 时间范围
                 appId:
-                    type: integer
+                    type: string
                     description: 应用 ID 过滤（可选）
-                    format: uint32
                 platform:
                     type: string
                     description: 平台过滤（可选，空表示全部）
@@ -18010,9 +17558,8 @@ components:
             type: object
             properties:
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID
-                    format: uint32
                 monthlyTokenLimit:
                     type: string
                     description: 月度 token 上限（按自然月聚合 total_tokens；0 = 取消配额）
@@ -18049,9 +17596,8 @@ components:
             type: object
             properties:
                 baseId:
-                    type: integer
+                    type: string
                     description: 知识库ID（自动创建/复用）
-                    format: uint32
                 docCount:
                     type: integer
                     description: 本次同步的文档数
@@ -18065,13 +17611,11 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 标签ID，唯一标识一个标签
-                    format: uint32
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID，多租户隔离，支持 SaaS 场景
-                    format: uint32
                 name:
                     type: string
                     description: 标签名称，显示名称
@@ -18107,17 +17651,14 @@ components:
                     description: 动态标签刷新间隔，单位秒
                     format: uint32
                 createdBy:
-                    type: integer
+                    type: string
                     description: 创建者用户ID
-                    format: uint32
                 updatedBy:
-                    type: integer
+                    type: string
                     description: 更新者用户ID
-                    format: uint32
                 deletedBy:
-                    type: integer
+                    type: string
                     description: 删除者用户ID
-                    format: uint32
                 createdAt:
                     type: string
                     description: 创建时间
@@ -18147,8 +17688,7 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
-                    format: uint32
+                    type: string
                 value:
                     type: string
                     description: 标签值，实际存储值
@@ -18169,13 +17709,11 @@ components:
                     type: string
                     description: 图标
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID，多租户隔离，支持 SaaS 场景
-                    format: uint32
                 tagId:
-                    type: integer
+                    type: string
                     description: 标签ID（所属标签ID，关联 TagDefinition.id）
-                    format: uint32
                 createdAt:
                     type: string
                     description: 创建时间
@@ -18193,9 +17731,8 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 任务ID
-                    format: uint32
                 type:
                     enum:
                         - PERIODIC
@@ -18222,21 +17759,17 @@ components:
                     type: string
                     description: 备注
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID，0代表系统全局角色
-                    format: uint32
                 createdBy:
-                    type: integer
+                    type: string
                     description: 创建者用户ID
-                    format: uint32
                 updatedBy:
-                    type: integer
+                    type: string
                     description: 更新者用户ID
-                    format: uint32
                 deletedBy:
-                    type: integer
+                    type: string
                     description: 删除者用户ID
-                    format: uint32
                 createdAt:
                     type: string
                     description: 创建时间
@@ -18292,9 +17825,8 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 租户ID
-                    format: uint32
                 name:
                     type: string
                     description: 租户名称
@@ -18325,9 +17857,8 @@ components:
                     type: string
                     description: 备注
                 adminUserId:
-                    type: integer
+                    type: string
                     description: 管理员用户ID
-                    format: uint32
                 adminUserName:
                     type: string
                     description: 管理员用户名
@@ -18369,17 +17900,14 @@ components:
                     description: 审核状态
                     format: enum
                 createdBy:
-                    type: integer
+                    type: string
                     description: 创建者用户ID
-                    format: uint32
                 updatedBy:
-                    type: integer
+                    type: string
                     description: 更新者用户ID
-                    format: uint32
                 deletedBy:
-                    type: integer
+                    type: string
                     description: 删除者用户ID
-                    format: uint32
                 createdAt:
                     type: string
                     description: 创建时间
@@ -18403,9 +17931,8 @@ components:
             type: object
             properties:
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID
-                    format: uint32
                 configured:
                     type: boolean
                     description: 是否配置了配额（未配置 = 不限量）
@@ -18417,8 +17944,7 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
-                    format: uint32
+                    type: string
             description: 测试连通性 - 请求
         TestAiProviderConnectionResponse:
             type: object
@@ -18435,9 +17961,8 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 规则ID
-                    format: uint32
                 target:
                     type: string
                     description: 投递目标（收件邮箱/站内收件用户ID；WEBHOOK 留空用渠道配置的地址）
@@ -18457,9 +17982,8 @@ components:
             type: object
             properties:
                 deliveryId:
-                    type: integer
+                    type: string
                     description: 本次测试产生的台账ID
-                    format: uint32
                 status:
                     enum:
                         - DELIVERY_STATUS_UNSPECIFIED
@@ -18496,8 +18020,7 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
-                    format: uint32
+                    type: string
                 data:
                     $ref: '#/components/schemas/AiConversation'
                 updateMask:
@@ -18510,8 +18033,7 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
-                    format: uint32
+                    type: string
                 data:
                     $ref: '#/components/schemas/AiKnowledgeBase'
                 updateMask:
@@ -18524,8 +18046,7 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
-                    format: uint32
+                    type: string
                 data:
                     $ref: '#/components/schemas/AiProvider'
                 updateMask:
@@ -18539,9 +18060,8 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 告警规则ID
-                    format: uint32
                 data:
                     $ref: '#/components/schemas/AlertRule'
                 updateMask:
@@ -18556,8 +18076,7 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
-                    format: uint32
+                    type: string
                 data:
                     $ref: '#/components/schemas/Api'
                 updateMask:
@@ -18573,9 +18092,8 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 活动ID
-                    format: uint32
                 data:
                     $ref: '#/components/schemas/Campaign'
                 updateMask:
@@ -18590,9 +18108,8 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 看板ID
-                    format: uint32
                 data:
                     $ref: '#/components/schemas/Dashboard'
                 updateMask:
@@ -18607,8 +18124,7 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
-                    format: uint32
+                    type: string
                 data:
                     $ref: '#/components/schemas/DictEntry'
                 updateMask:
@@ -18624,8 +18140,7 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
-                    format: uint32
+                    type: string
                 data:
                     $ref: '#/components/schemas/DictType'
                 updateMask:
@@ -18653,9 +18168,8 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 开关ID
-                    format: uint32
                 data:
                     $ref: '#/components/schemas/FeatureFlag'
                 updateMask:
@@ -18670,8 +18184,7 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
-                    format: uint32
+                    type: string
                 data:
                     $ref: '#/components/schemas/File'
                 updateMask:
@@ -18687,8 +18200,7 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
-                    format: uint32
+                    type: string
                 data:
                     $ref: '#/components/schemas/InternalMessageCategory'
                 updateMask:
@@ -18704,8 +18216,7 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
-                    format: uint32
+                    type: string
                 data:
                     $ref: '#/components/schemas/InternalMessage'
                 updateMask:
@@ -18721,8 +18232,7 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
-                    format: uint32
+                    type: string
                 data:
                     $ref: '#/components/schemas/Language'
                 updateMask:
@@ -18738,8 +18248,7 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
-                    format: uint32
+                    type: string
                 data:
                     $ref: '#/components/schemas/LoginPolicy'
                 updateMask:
@@ -18755,8 +18264,7 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
-                    format: uint32
+                    type: string
                 data:
                     $ref: '#/components/schemas/Menu'
                 updateMask:
@@ -18772,8 +18280,7 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
-                    format: uint32
+                    type: string
                 data:
                     $ref: '#/components/schemas/NotificationChannel'
                 updateMask:
@@ -18803,15 +18310,13 @@ components:
                 mutedCategoryIds:
                     type: array
                     items:
-                        type: integer
-                        format: uint32
+                        type: string
             description: 更新自己的通知偏好（字段全量提交；未登录不可用）。
         UpdateNotificationRuleRequest:
             type: object
             properties:
                 id:
-                    type: integer
-                    format: uint32
+                    type: string
                 data:
                     $ref: '#/components/schemas/NotificationRule'
                 updateMask:
@@ -18822,8 +18327,7 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
-                    format: uint32
+                    type: string
                 data:
                     $ref: '#/components/schemas/NotificationTemplate'
                 updateMask:
@@ -18834,8 +18338,7 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
-                    format: uint32
+                    type: string
                 data:
                     $ref: '#/components/schemas/OrgUnit'
                 updateMask:
@@ -18851,8 +18354,7 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
-                    format: uint32
+                    type: string
                 data:
                     $ref: '#/components/schemas/PermissionGroup'
                 updateMask:
@@ -18868,8 +18370,7 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
-                    format: uint32
+                    type: string
                 data:
                     $ref: '#/components/schemas/Permission'
                 updateMask:
@@ -18885,8 +18386,7 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
-                    format: uint32
+                    type: string
                 data:
                     $ref: '#/components/schemas/Position'
                 updateMask:
@@ -18902,9 +18402,8 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 订阅ID
-                    format: uint32
                 data:
                     $ref: '#/components/schemas/ReportSubscription'
                 updateMask:
@@ -18919,8 +18418,7 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
-                    format: uint32
+                    type: string
                 data:
                     $ref: '#/components/schemas/RiskRule'
                 updateMask:
@@ -18936,8 +18434,7 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
-                    format: uint32
+                    type: string
                 data:
                     $ref: '#/components/schemas/Role'
                 updateMask:
@@ -18953,9 +18450,8 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 分群ID
-                    format: uint32
                 data:
                     $ref: '#/components/schemas/Segment'
                 updateMask:
@@ -18970,9 +18466,8 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: TagDefinition配置ID
-                    format: uint32
                 data:
                     $ref: '#/components/schemas/TagDefinition'
                 updateMask:
@@ -18988,8 +18483,7 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
-                    format: uint32
+                    type: string
                 data:
                     $ref: '#/components/schemas/Task'
                 updateMask:
@@ -19005,8 +18499,7 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
-                    format: uint32
+                    type: string
                 data:
                     $ref: '#/components/schemas/Tenant'
                 updateMask:
@@ -19024,8 +18517,7 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
-                    format: uint32
+                    type: string
                 data:
                     $ref: '#/components/schemas/User'
                 password:
@@ -19045,8 +18537,7 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
-                    format: uint32
+                    type: string
                 data:
                     $ref: '#/components/schemas/UserTag'
                 updateMask:
@@ -19062,9 +18553,8 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 埋点ID
-                    format: uint32
                 data:
                     $ref: '#/components/schemas/VisualEvent'
                 updateMask:
@@ -19079,9 +18569,8 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: Webhook配置ID
-                    format: uint32
                 data:
                     $ref: '#/components/schemas/Webhook'
                 updateMask:
@@ -19097,8 +18586,7 @@ components:
             type: object
             properties:
                 baseId:
-                    type: integer
-                    format: uint32
+                    type: string
                 fileName:
                     type: string
                 contentBase64:
@@ -19111,8 +18599,7 @@ components:
             type: object
             properties:
                 baseId:
-                    type: integer
-                    format: uint32
+                    type: string
                 name:
                     type: string
                 content:
@@ -19162,13 +18649,11 @@ components:
                     type: string
                     description: 文件大小（字节）
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID，0代表系统全局角色
-                    format: uint32
                 userId:
-                    type: integer
+                    type: string
                     description: 用户ID
-                    format: uint32
         UploadFileResponse:
             type: object
             properties:
@@ -19196,25 +18681,21 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 用户ID
-                    format: uint32
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID
-                    format: uint32
                 tenantName:
                     type: string
                     description: 租户名称
                 orgUnitId:
-                    type: integer
+                    type: string
                     description: 组织ID
-                    format: uint32
                 orgUnitIds:
                     type: array
                     items:
-                        type: integer
-                        format: uint32
+                        type: string
                     description: 归属组织ID列表
                 orgUnitName:
                     type: string
@@ -19225,14 +18706,12 @@ components:
                         type: string
                     description: 组织名称列表
                 positionId:
-                    type: integer
+                    type: string
                     description: 职位ID
-                    format: uint32
                 positionIds:
                     type: array
                     items:
-                        type: integer
-                        format: uint32
+                        type: string
                     description: 职位列表
                 positionName:
                     type: string
@@ -19243,14 +18722,12 @@ components:
                         type: string
                     description: 职位名称列表
                 roleId:
-                    type: integer
+                    type: string
                     description: 角色ID
-                    format: uint32
                 roleIds:
                     type: array
                     items:
-                        type: integer
-                        format: uint32
+                        type: string
                     description: 角色ID列表
                 roles:
                     type: array
@@ -19326,17 +18803,14 @@ components:
                     description: 锁定截止时间
                     format: date-time
                 createdBy:
-                    type: integer
+                    type: string
                     description: 创建者用户ID
-                    format: uint32
                 updatedBy:
-                    type: integer
+                    type: string
                     description: 更新者用户ID
-                    format: uint32
                 deletedBy:
-                    type: integer
+                    type: string
                     description: 删除者用户ID
-                    format: uint32
                 createdAt:
                     type: string
                     description: 创建时间
@@ -19354,17 +18828,14 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 自增长主键ID，唯一标识一条用户画像记录
-                    format: uint32
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID
-                    format: uint32
                 userId:
-                    type: integer
+                    type: string
                     description: 用户ID
-                    format: uint32
                 registerTime:
                     type: string
                     description: 注册时间
@@ -19472,21 +18943,17 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 主键ID，自增长，唯一标识一条用户标签记录
-                    format: uint32
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID，多租户隔离，支持 SaaS 场景
-                    format: uint32
                 userId:
-                    type: integer
+                    type: string
                     description: 用户ID，唯一标识一个用户
-                    format: uint32
                 tagId:
-                    type: integer
+                    type: string
                     description: 标签ID，唯一标识一个标签
-                    format: uint32
                 value:
                     type: string
                     description: 标签值，根据 tag_type 解析，实际存储值
@@ -19501,9 +18968,8 @@ components:
                     type: string
                     description: 标签来源，如人工打标、规则引擎、算法模型、批量导入等
                 sourceRuleId:
-                    type: integer
+                    type: string
                     description: 来源规则ID，如果是规则计算，记录规则ID
-                    format: uint32
                 effectiveTime:
                     type: string
                     description: 有效时间，标签生效时间
@@ -19513,17 +18979,14 @@ components:
                     description: 过期时间，标签失效时间
                     format: date-time
                 createdBy:
-                    type: integer
+                    type: string
                     description: 创建者用户ID
-                    format: uint32
                 updatedBy:
-                    type: integer
+                    type: string
                     description: 更新者用户ID
-                    format: uint32
                 deletedBy:
-                    type: integer
+                    type: string
                     description: 删除者用户ID
-                    format: uint32
                 createdAt:
                     type: string
                     description: 创建时间
@@ -19551,13 +19014,11 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 主键ID
-                    format: uint32
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID
-                    format: uint32
                 appId:
                     type: string
                     description: 关联应用标识
@@ -19593,17 +19054,14 @@ components:
                     type: string
                     description: 备注
                 createdBy:
-                    type: integer
+                    type: string
                     description: 创建者用户ID
-                    format: uint32
                 updatedBy:
-                    type: integer
+                    type: string
                     description: 更新者用户ID
-                    format: uint32
                 deletedBy:
-                    type: integer
+                    type: string
                     description: 删除者用户ID
-                    format: uint32
                 createdAt:
                     type: string
                     description: 创建时间
@@ -19621,13 +19079,11 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 主键ID，唯一标识Webhook配置
-                    format: uint32
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID，多租户隔离，支持SaaS场景
-                    format: uint32
                 appId:
                     type: string
                     description: 关联的应用标识（对应 Application.app_id）
@@ -19659,17 +19115,14 @@ components:
                     description: 最后触发时间
                     format: date-time
                 createdBy:
-                    type: integer
+                    type: string
                     description: 创建者用户ID
-                    format: uint32
                 updatedBy:
-                    type: integer
+                    type: string
                     description: 更新者用户ID
-                    format: uint32
                 deletedBy:
-                    type: integer
+                    type: string
                     description: 删除者用户ID
-                    format: uint32
                 createdAt:
                     type: string
                     description: 创建时间
@@ -19690,13 +19143,11 @@ components:
                     type: string
                     description: 日志主键ID
                 webhookId:
-                    type: integer
+                    type: string
                     description: Webhook配置ID
-                    format: uint32
                 tenantId:
-                    type: integer
+                    type: string
                     description: 租户ID
-                    format: uint32
                 eventType:
                     type: string
                     description: 事件类型
@@ -19748,9 +19199,8 @@ components:
             type: object
             properties:
                 appId:
-                    type: integer
+                    type: string
                     description: 应用 ID 过滤（可选）
-                    format: uint32
             description: ============== 鲸鱼用户/付费分层 ==============
         WhaleTierResponse:
             type: object

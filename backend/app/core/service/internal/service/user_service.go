@@ -75,10 +75,10 @@ func (s *UserService) init() {
 
 func (s *UserService) extractRelationIDs(
 	users []*identityV1.User,
-	roleSet aggregator.ResourceMap[uint32, *permissionV1.Role],
-	tenantSet aggregator.ResourceMap[uint32, *identityV1.Tenant],
-	orgUnitSet aggregator.ResourceMap[uint32, *identityV1.OrgUnit],
-	posSet aggregator.ResourceMap[uint32, *identityV1.Position],
+	roleSet aggregator.ResourceMap[int64, *permissionV1.Role],
+	tenantSet aggregator.ResourceMap[int64, *identityV1.Tenant],
+	orgUnitSet aggregator.ResourceMap[int64, *identityV1.OrgUnit],
+	posSet aggregator.ResourceMap[int64, *identityV1.Position],
 ) {
 	for _, v := range users {
 		if v == nil {
@@ -122,13 +122,13 @@ func (s *UserService) extractRelationIDs(
 
 func (s *UserService) fetchRelationInfo(
 	ctx context.Context,
-	roleSet aggregator.ResourceMap[uint32, *permissionV1.Role],
-	tenantSet aggregator.ResourceMap[uint32, *identityV1.Tenant],
-	orgUnitSet aggregator.ResourceMap[uint32, *identityV1.OrgUnit],
-	posSet aggregator.ResourceMap[uint32, *identityV1.Position],
+	roleSet aggregator.ResourceMap[int64, *permissionV1.Role],
+	tenantSet aggregator.ResourceMap[int64, *identityV1.Tenant],
+	orgUnitSet aggregator.ResourceMap[int64, *identityV1.OrgUnit],
+	posSet aggregator.ResourceMap[int64, *identityV1.Position],
 ) error {
 	if len(roleSet) > 0 {
-		roleIds := make([]uint32, 0, len(roleSet))
+		roleIds := make([]int64, 0, len(roleSet))
 		for id := range roleSet {
 			roleIds = append(roleIds, id)
 		}
@@ -145,7 +145,7 @@ func (s *UserService) fetchRelationInfo(
 	}
 
 	if len(tenantSet) > 0 {
-		tenantIds := make([]uint32, 0, len(tenantSet))
+		tenantIds := make([]int64, 0, len(tenantSet))
 		for id := range tenantSet {
 			tenantIds = append(tenantIds, id)
 		}
@@ -162,7 +162,7 @@ func (s *UserService) fetchRelationInfo(
 	}
 
 	if len(orgUnitSet) > 0 {
-		orgUnitIds := make([]uint32, 0, len(orgUnitSet))
+		orgUnitIds := make([]int64, 0, len(orgUnitSet))
 		for id := range orgUnitSet {
 			orgUnitIds = append(orgUnitIds, id)
 		}
@@ -179,7 +179,7 @@ func (s *UserService) fetchRelationInfo(
 	}
 
 	if len(posSet) > 0 {
-		posIds := make([]uint32, 0, len(posSet))
+		posIds := make([]int64, 0, len(posSet))
 		for id := range posSet {
 			posIds = append(posIds, id)
 		}
@@ -200,15 +200,15 @@ func (s *UserService) fetchRelationInfo(
 
 func (s *UserService) bindRelations(
 	users []*identityV1.User,
-	roleSet aggregator.ResourceMap[uint32, *permissionV1.Role],
-	tenantSet aggregator.ResourceMap[uint32, *identityV1.Tenant],
-	orgUnitSet aggregator.ResourceMap[uint32, *identityV1.OrgUnit],
-	posSet aggregator.ResourceMap[uint32, *identityV1.Position],
+	roleSet aggregator.ResourceMap[int64, *permissionV1.Role],
+	tenantSet aggregator.ResourceMap[int64, *identityV1.Tenant],
+	orgUnitSet aggregator.ResourceMap[int64, *identityV1.OrgUnit],
+	posSet aggregator.ResourceMap[int64, *identityV1.Position],
 ) {
 	aggregator.PopulateMulti(
 		users,
 		roleSet,
-		func(ou *identityV1.User) []uint32 { return ou.GetRoleIds() },
+		func(ou *identityV1.User) []int64 { return ou.GetRoleIds() },
 		func(ou *identityV1.User, r []*permissionV1.Role) {
 			for _, role := range r {
 				ou.RoleNames = append(ou.RoleNames, role.GetName())
@@ -219,7 +219,7 @@ func (s *UserService) bindRelations(
 	aggregator.Populate(
 		users,
 		roleSet,
-		func(ou *identityV1.User) uint32 { return ou.GetRoleId() },
+		func(ou *identityV1.User) int64 { return ou.GetRoleId() },
 		func(ou *identityV1.User, r *permissionV1.Role) {
 			ou.RoleNames = append(ou.RoleNames, r.GetName())
 			ou.Roles = append(ou.Roles, r.GetCode())
@@ -229,7 +229,7 @@ func (s *UserService) bindRelations(
 	aggregator.Populate(
 		users,
 		tenantSet,
-		func(ou *identityV1.User) uint32 { return ou.GetTenantId() },
+		func(ou *identityV1.User) int64 { return ou.GetTenantId() },
 		func(ou *identityV1.User, r *identityV1.Tenant) {
 			ou.TenantName = r.Name
 		},
@@ -238,7 +238,7 @@ func (s *UserService) bindRelations(
 	aggregator.PopulateMulti(
 		users,
 		posSet,
-		func(ou *identityV1.User) []uint32 { return ou.GetPositionIds() },
+		func(ou *identityV1.User) []int64 { return ou.GetPositionIds() },
 		func(ou *identityV1.User, r []*identityV1.Position) {
 			for _, pos := range r {
 				ou.PositionNames = append(ou.PositionNames, pos.GetName())
@@ -248,7 +248,7 @@ func (s *UserService) bindRelations(
 	aggregator.Populate(
 		users,
 		posSet,
-		func(ou *identityV1.User) uint32 { return ou.GetPositionId() },
+		func(ou *identityV1.User) int64 { return ou.GetPositionId() },
 		func(ou *identityV1.User, r *identityV1.Position) {
 			ou.PositionName = r.Name
 		},
@@ -257,7 +257,7 @@ func (s *UserService) bindRelations(
 	aggregator.PopulateMulti(
 		users,
 		orgUnitSet,
-		func(ou *identityV1.User) []uint32 { return ou.GetOrgUnitIds() },
+		func(ou *identityV1.User) []int64 { return ou.GetOrgUnitIds() },
 		func(ou *identityV1.User, orgs []*identityV1.OrgUnit) {
 			for _, org := range orgs {
 				ou.OrgUnitNames = append(ou.OrgUnitNames, org.GetName())
@@ -267,7 +267,7 @@ func (s *UserService) bindRelations(
 	aggregator.Populate(
 		users,
 		orgUnitSet,
-		func(ou *identityV1.User) uint32 { return ou.GetOrgUnitId() },
+		func(ou *identityV1.User) int64 { return ou.GetOrgUnitId() },
 		func(ou *identityV1.User, org *identityV1.OrgUnit) {
 			ou.OrgUnitName = org.Name
 		},
@@ -275,10 +275,10 @@ func (s *UserService) bindRelations(
 }
 
 func (s *UserService) enrichRelations(ctx context.Context, users []*identityV1.User) error {
-	var roleSet = make(aggregator.ResourceMap[uint32, *permissionV1.Role])
-	var tenantSet = make(aggregator.ResourceMap[uint32, *identityV1.Tenant])
-	var orgUnitSet = make(aggregator.ResourceMap[uint32, *identityV1.OrgUnit])
-	var posSet = make(aggregator.ResourceMap[uint32, *identityV1.Position])
+	var roleSet = make(aggregator.ResourceMap[int64, *permissionV1.Role])
+	var tenantSet = make(aggregator.ResourceMap[int64, *identityV1.Tenant])
+	var orgUnitSet = make(aggregator.ResourceMap[int64, *identityV1.OrgUnit])
+	var posSet = make(aggregator.ResourceMap[int64, *identityV1.Position])
 
 	s.extractRelationIDs(users, roleSet, tenantSet, orgUnitSet, posSet)
 	if err := s.fetchRelationInfo(ctx, roleSet, tenantSet, orgUnitSet, posSet); err != nil {
@@ -288,7 +288,7 @@ func (s *UserService) enrichRelations(ctx context.Context, users []*identityV1.U
 	return nil
 }
 
-func (s *UserService) queryUserIDsByRelationIDs(ctx context.Context, roleIDs []uint32, orgUnitIDs []uint32, positionIDs []uint32) ([]uint32, error) {
+func (s *UserService) queryUserIDsByRelationIDs(ctx context.Context, roleIDs []int64, orgUnitIDs []int64, positionIDs []int64) ([]int64, error) {
 	if len(roleIDs) == 0 && len(orgUnitIDs) == 0 && len(positionIDs) == 0 {
 		return nil, nil
 	}
@@ -303,20 +303,20 @@ func (s *UserService) queryUserIDsByRelationIDs(ctx context.Context, roleIDs []u
 	}
 }
 
-func (s *UserService) queryUserIDsByRelationIDsUserTenantRelationOneToMany(_ context.Context, _, _, _ []uint32) ([]uint32, error) {
+func (s *UserService) queryUserIDsByRelationIDsUserTenantRelationOneToMany(_ context.Context, _, _, _ []int64) ([]int64, error) {
 	return nil, fmt.Errorf("not implemented")
 }
 
-func (s *UserService) queryUserIDsByRelationIDsUserTenantRelationOneToOne(ctx context.Context, roleIDs, orgUnitIDs, positionIDs []uint32) ([]uint32, error) {
+func (s *UserService) queryUserIDsByRelationIDsUserTenantRelationOneToOne(ctx context.Context, roleIDs, orgUnitIDs, positionIDs []int64) ([]int64, error) {
 	if len(roleIDs) == 0 && len(orgUnitIDs) == 0 && len(positionIDs) == 0 {
 		return nil, nil
 	}
 
 	var err error
 
-	var orgUnitUserIDs []uint32
-	var positionUserIDs []uint32
-	var roleUserIDs []uint32
+	var orgUnitUserIDs []int64
+	var positionUserIDs []int64
+	var roleUserIDs []int64
 	if len(orgUnitIDs) > 0 {
 		orgUnitUserIDs, err = s.userRepo.ListUserIDsByOrgUnitIDs(ctx, orgUnitIDs, true)
 		if err != nil {
@@ -337,7 +337,7 @@ func (s *UserService) queryUserIDsByRelationIDsUserTenantRelationOneToOne(ctx co
 	}
 
 	// 收集所有非空列表用于求交集
-	lists := make([][]uint32, 0, 3)
+	lists := make([][]int64, 0, 3)
 	if orgUnitUserIDs != nil {
 		lists = append(lists, orgUnitUserIDs)
 	}
@@ -350,7 +350,7 @@ func (s *UserService) queryUserIDsByRelationIDsUserTenantRelationOneToOne(ctx co
 
 	// 如果没有任何实际列表（例如对应 ids 为空导致查询未执行），返回空
 	if len(lists) == 0 {
-		return []uint32{}, nil
+		return []int64{}, nil
 	}
 
 	// 逐步求交集
@@ -387,7 +387,7 @@ func (s *UserService) Count(ctx context.Context, req *paginationV1.PagingRequest
 	}
 
 	return &identityV1.CountUserResponse{
-		Count: uint64(count),
+		Count: int64(count),
 	}, nil
 }
 
@@ -479,9 +479,9 @@ func (s *UserService) Delete(ctx context.Context, req *identityV1.DeleteUserRequ
 	}
 
 	// 操作者身份（系统/后台任务上下文取不到时为 0，不阻断管理端正常删除）
-	var operatorUserId uint32
+	var operatorUserId int64
 	if md, mdErr := metadata.FromServerContext(ctx); mdErr == nil && md != nil {
-		operatorUserId = uint32(md.GetUserId())
+		operatorUserId = int64(md.GetUserId())
 	}
 
 	// 禁止删除默认超级管理员：初始化时创建的平台级 admin（恒为 id=1，
@@ -537,7 +537,7 @@ func (s *UserService) createDefaultUser(ctx context.Context) error {
 	var err error
 
 	// 创建默认用户，并记录实际生成的用户 ID（凭证绑定实际 ID，不假定其为 1）
-	var defaultUserID uint32
+	var defaultUserID int64
 	for _, user := range constants.DefaultUsers {
 		var created *identityV1.User
 		if created, err = s.userRepo.Create(ctx, &identityV1.CreateUserRequest{

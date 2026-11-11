@@ -11,8 +11,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/tx7do/go-utils/trans"
-	"github.com/tx7do/kratos-bootstrap/bootstrap"
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
+	"github.com/tx7do/kratos-bootstrap/bootstrap"
 	"google.golang.org/grpc"
 
 	collectorV1 "go-wind-uba/api/gen/go/collector/service/v1"
@@ -65,7 +65,7 @@ func testEnabledApp() *ubaV1.Application {
 		AppId:     trans.Ptr("app-001"),
 		AppSecret: trans.Ptr("secret-abc"),
 		Status:    ubaV1.Application_ON.Enum(),
-		TenantId:  trans.Ptr(uint32(42)),
+		TenantId:  trans.Ptr(int64(42)),
 	}
 }
 
@@ -94,14 +94,14 @@ func TestAppAuthenticator_Authenticate_GrpcLookupAndCache(t *testing.T) {
 	first := NewAppAuthenticator(bctx, &fakeApplicationClient{app: testEnabledApp()}, rc)
 	app, err := first.Authenticate(ctx, "app-001", "secret-abc")
 	require.NoError(t, err)
-	assert.Equal(t, uint32(42), app.TenantID)
+	assert.Equal(t, int64(42), app.TenantID)
 	require.True(t, mr.Exists(appAuthCacheKey("app-001")))
 
 	// 二次：换一个 gRPC 必挂的客户端，命中缓存仍应通过 —— 证明确实走了缓存。
 	second := NewAppAuthenticator(bctx, &fakeApplicationClient{err: errors.New("grpc down")}, rc)
 	app2, err := second.Authenticate(ctx, "app-001", "secret-abc")
 	require.NoError(t, err, "cached app should authenticate even when grpc is down")
-	assert.Equal(t, uint32(42), app2.TenantID)
+	assert.Equal(t, int64(42), app2.TenantID)
 }
 
 func TestAppAuthenticator_Authenticate_WrongSecret(t *testing.T) {
@@ -153,7 +153,7 @@ func TestAppAuthenticator_LookupApp(t *testing.T) {
 	auth, _ := newTestAuthenticator(t, testEnabledApp(), nil)
 	app, err := auth.LookupApp(context.Background(), "app-001")
 	require.NoError(t, err)
-	assert.Equal(t, uint32(42), app.TenantID)
+	assert.Equal(t, int64(42), app.TenantID)
 
 	disabled := testEnabledApp()
 	disabled.Status = ubaV1.Application_OFF.Enum()

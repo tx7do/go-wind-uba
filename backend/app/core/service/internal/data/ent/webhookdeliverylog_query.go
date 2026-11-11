@@ -85,8 +85,8 @@ func (_q *WebhookDeliveryLogQuery) FirstX(ctx context.Context) *WebhookDeliveryL
 
 // FirstID returns the first WebhookDeliveryLog ID from the query.
 // Returns a *NotFoundError when no WebhookDeliveryLog ID was found.
-func (_q *WebhookDeliveryLogQuery) FirstID(ctx context.Context) (id uint32, err error) {
-	var ids []uint32
+func (_q *WebhookDeliveryLogQuery) FirstID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -98,7 +98,7 @@ func (_q *WebhookDeliveryLogQuery) FirstID(ctx context.Context) (id uint32, err 
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (_q *WebhookDeliveryLogQuery) FirstIDX(ctx context.Context) uint32 {
+func (_q *WebhookDeliveryLogQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -136,8 +136,8 @@ func (_q *WebhookDeliveryLogQuery) OnlyX(ctx context.Context) *WebhookDeliveryLo
 // OnlyID is like Only, but returns the only WebhookDeliveryLog ID in the query.
 // Returns a *NotSingularError when more than one WebhookDeliveryLog ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (_q *WebhookDeliveryLogQuery) OnlyID(ctx context.Context) (id uint32, err error) {
-	var ids []uint32
+func (_q *WebhookDeliveryLogQuery) OnlyID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -153,7 +153,7 @@ func (_q *WebhookDeliveryLogQuery) OnlyID(ctx context.Context) (id uint32, err e
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (_q *WebhookDeliveryLogQuery) OnlyIDX(ctx context.Context) uint32 {
+func (_q *WebhookDeliveryLogQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -181,7 +181,7 @@ func (_q *WebhookDeliveryLogQuery) AllX(ctx context.Context) []*WebhookDeliveryL
 }
 
 // IDs executes the query and returns a list of WebhookDeliveryLog IDs.
-func (_q *WebhookDeliveryLogQuery) IDs(ctx context.Context) (ids []uint32, err error) {
+func (_q *WebhookDeliveryLogQuery) IDs(ctx context.Context) (ids []int64, err error) {
 	if _q.ctx.Unique == nil && _q.path != nil {
 		_q.Unique(true)
 	}
@@ -193,7 +193,7 @@ func (_q *WebhookDeliveryLogQuery) IDs(ctx context.Context) (ids []uint32, err e
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (_q *WebhookDeliveryLogQuery) IDsX(ctx context.Context) []uint32 {
+func (_q *WebhookDeliveryLogQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -381,7 +381,7 @@ func (_q *WebhookDeliveryLogQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (_q *WebhookDeliveryLogQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(webhookdeliverylog.Table, webhookdeliverylog.Columns, sqlgraph.NewFieldSpec(webhookdeliverylog.FieldID, field.TypeUint32))
+	_spec := sqlgraph.NewQuerySpec(webhookdeliverylog.Table, webhookdeliverylog.Columns, sqlgraph.NewFieldSpec(webhookdeliverylog.FieldID, field.TypeInt64))
 	_spec.From = _q.sql
 	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

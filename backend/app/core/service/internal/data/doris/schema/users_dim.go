@@ -7,8 +7,8 @@ import (
 )
 
 type UsersDim struct {
-	TenantID         *uint32          `db:"tenant_id"`
-	UserID           *uint32          `db:"user_id"`
+	TenantID         *int64           `db:"tenant_id"`
+	UserID           *int64           `db:"user_id"`
 	RegisterTime     *time.Time       `db:"register_time"`
 	RegisterChannel  *string          `db:"register_channel"`
 	FirstActiveDate  *time.Time       `db:"first_active_date"`
@@ -16,8 +16,8 @@ type UsersDim struct {
 	UserLevel        *uint16          `db:"user_level"`
 	VipLevel         *uint8           `db:"vip_level"`
 	UserRole         *string          `db:"user_role"`
-	TotalEvents      *uint64          `db:"total_events"`
-	TotalSessions    *uint32          `db:"total_sessions"`
+	TotalEvents      *int64           `db:"total_events"`
+	TotalSessions    *int64           `db:"total_sessions"`
 	TotalPayAmount   *decimal.Decimal `db:"total_pay_amount"`
 	LastPayTime      *time.Time       `db:"last_pay_time"`
 	PreferCategories StringArray      `db:"prefer_categories"`
@@ -31,7 +31,7 @@ type UsersDim struct {
 	DeviceType       *string          `db:"device_type"`
 	Platform         *string          `db:"platform"`
 	Country          *string          `db:"country"`
-	Ver              *uint64          `db:"ver"`
+	Ver              *int64           `db:"ver"`
 	CreatedAt        *time.Time       `db:"created_at"`
 	UpdatedAt        *time.Time       `db:"updated_at"`
 }

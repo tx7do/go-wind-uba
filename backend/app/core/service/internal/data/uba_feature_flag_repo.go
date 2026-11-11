@@ -123,7 +123,7 @@ func (r *FeatureFlagRepo) Count(ctx context.Context, req *paginationV1.PagingReq
 	}
 
 	return &ubaV1.CountFeatureFlagResponse{
-		Count: uint64(count),
+		Count: int64(count),
 	}, nil
 }
 
@@ -148,7 +148,7 @@ func (r *FeatureFlagRepo) List(ctx context.Context, req *paginationV1.PagingRequ
 	}, nil
 }
 
-func (r *FeatureFlagRepo) IsExist(ctx context.Context, id uint32) (bool, error) {
+func (r *FeatureFlagRepo) IsExist(ctx context.Context, id int64) (bool, error) {
 	exist, err := r.entClient.Client().FeatureFlag.Query().
 		Where(featureflag.IDEQ(id)).
 		Exist(ctx)
@@ -266,7 +266,7 @@ func (r *FeatureFlagRepo) Update(ctx context.Context, req *ubaV1.UpdateFeatureFl
 }
 
 // ListEnabledByTenant 列出租户下启用的开关（评估用）；appID 非 0 时按应用过滤。
-func (r *FeatureFlagRepo) ListEnabledByTenant(ctx context.Context, tenantID, appID uint32) ([]*ent.FeatureFlag, error) {
+func (r *FeatureFlagRepo) ListEnabledByTenant(ctx context.Context, tenantID, appID int64) ([]*ent.FeatureFlag, error) {
 	entities, err := r.entClient.Client().FeatureFlag.Query().
 		Where(
 			featureflag.EnabledEQ(true),
@@ -292,7 +292,7 @@ func (r *FeatureFlagRepo) ListEnabledByTenant(ctx context.Context, tenantID, app
 }
 
 // GetEntity 读取原始实体（评估/结果分析需要 variants 等完整字段）。
-func (r *FeatureFlagRepo) GetEntity(ctx context.Context, id uint32) (*ent.FeatureFlag, error) {
+func (r *FeatureFlagRepo) GetEntity(ctx context.Context, id int64) (*ent.FeatureFlag, error) {
 	entity, err := r.entClient.Client().FeatureFlag.Query().
 		Where(featureflag.IDEQ(id)).
 		Only(ctx)

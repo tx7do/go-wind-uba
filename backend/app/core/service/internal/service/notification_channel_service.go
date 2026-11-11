@@ -1,11 +1,11 @@
 package service
 
 import (
-	"github.com/go-kratos/kratos/v2/log"
-	"time"
-	"fmt"
 	"context"
+	"fmt"
+	"github.com/go-kratos/kratos/v2/log"
 	"strconv"
+	"time"
 
 	paginationV1 "github.com/tx7do/go-crud/api/gen/go/pagination/v1"
 	"github.com/tx7do/go-utils/trans"
@@ -25,7 +25,7 @@ import (
 // 一期实现 EMAIL（SMTP）渠道：CRUD 留在本服务，"发"这件事已经交还给 NotificationService
 // （渠道选择策略与 SMTP 调用收在 data/channel/email_sender.go 一处）。
 type NotificationChannelService struct {
-		notificationChannelV1.UnimplementedNotificationChannelServiceServer
+	notificationChannelV1.UnimplementedNotificationChannelServiceServer
 
 	log  *log.Helper
 	repo *data.NotificationChannelRepo
@@ -58,7 +58,6 @@ func (s *NotificationChannelService) GetNotificationChannel(ctx context.Context,
 		return nil, notificationV1.ErrorNotificationBadRequest("id is required")
 	}
 
-
 	return s.repo.Get(ctx, req.GetId())
 }
 
@@ -66,7 +65,6 @@ func (s *NotificationChannelService) CreateNotificationChannel(ctx context.Conte
 	if req == nil || req.Data == nil {
 		return nil, notificationV1.ErrorNotificationBadRequest("invalid parameter")
 	}
-
 
 	operator, err := auth.FromContext(ctx)
 	if err != nil {
@@ -86,7 +84,6 @@ func (s *NotificationChannelService) UpdateNotificationChannel(ctx context.Conte
 	if req == nil || req.Data == nil {
 		return nil, notificationV1.ErrorNotificationBadRequest("invalid parameter")
 	}
-
 
 	operator, err := auth.FromContext(ctx)
 	if err != nil {
@@ -126,14 +123,13 @@ func (s *NotificationChannelService) SendTest(ctx context.Context, req *notifica
 }
 
 // sendTest 两代测试入口的共同实现：查类型 → 分派 → SendDirect 显式点名渠道。
-func (s *NotificationChannelService) sendTest(ctx context.Context, id uint32, recipient string) (*emptypb.Empty, error) {
+func (s *NotificationChannelService) sendTest(ctx context.Context, id int64, recipient string) (*emptypb.Empty, error) {
 	if id == 0 {
 		return nil, notificationV1.ErrorNotificationBadRequest("id is required")
 	}
 	if recipient == "" {
 		return nil, notificationV1.ErrorNotificationBadRequest("recipient is required")
 	}
-
 
 	operator, err := auth.FromContext(ctx)
 	if err != nil {
@@ -182,8 +178,8 @@ func (s *NotificationChannelService) sendTest(ctx context.Context, id uint32, re
 	return &emptypb.Empty{}, nil
 }
 
-func itoa(v uint32) string {
-	return strconv.FormatUint(uint64(v), 10)
+func itoa(v int64) string {
+	return strconv.FormatInt(int64(v), 10)
 }
 
 // generateVCode 生成 6 位数字验证码（渠道测试短信用）。

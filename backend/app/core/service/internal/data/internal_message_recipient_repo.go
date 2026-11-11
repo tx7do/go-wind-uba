@@ -86,7 +86,7 @@ func (r *InternalMessageRecipientRepo) Count(ctx context.Context, whereCond []fu
 	return count, nil
 }
 
-func (r *InternalMessageRecipientRepo) IsExist(ctx context.Context, id uint32) (bool, error) {
+func (r *InternalMessageRecipientRepo) IsExist(ctx context.Context, id int64) (bool, error) {
 	exist, err := r.entClient.Client().InternalMessageRecipient.Query().
 		Where(internalmessagerecipient.IDEQ(id)).
 		Exist(ctx)
@@ -110,7 +110,7 @@ func (r *InternalMessageRecipientRepo) List(ctx context.Context, req *pagination
 	// 钉住之后前端传不传都只会拿到自己的行。
 	// 平台/系统视图豁免：用户详情页要看指定用户的收件箱，异步任务路径也需要全量读。
 	if vc, ok := viewer.FromContext(ctx); ok && !vc.IsPlatformContext() && !vc.IsSystemContext() {
-		builder.Where(internalmessagerecipient.RecipientUserIDEQ(uint32(vc.UserID())))
+		builder.Where(internalmessagerecipient.RecipientUserIDEQ(int64(vc.UserID())))
 	}
 
 	ret, err := r.repository.ListWithPaging(ctx, builder, builder.Clone(), req)
@@ -211,7 +211,7 @@ func (r *InternalMessageRecipientRepo) Update(ctx context.Context, req *internal
 	return err
 }
 
-func (r *InternalMessageRecipientRepo) Delete(ctx context.Context, id uint32) error {
+func (r *InternalMessageRecipientRepo) Delete(ctx context.Context, id int64) error {
 	if id == 0 {
 		return internalMessageV1.ErrorBadRequest("invalid parameter")
 	}
@@ -232,9 +232,9 @@ func (r *InternalMessageRecipientRepo) Delete(ctx context.Context, id uint32) er
 // inboxScopedUserID 收件箱操作的目标用户以服务端上下文为准：
 // 请求体里的 user_id 是客户端可任填的字段，直接采信等于任何登录用户
 // 都能标记/删除/撤销别人的收件记录。平台/系统视图豁免（管理端代操作）。
-func (r *InternalMessageRecipientRepo) inboxScopedUserID(ctx context.Context, reqUserID uint32) uint32 {
+func (r *InternalMessageRecipientRepo) inboxScopedUserID(ctx context.Context, reqUserID int64) int64 {
 	if vc, ok := viewer.FromContext(ctx); ok && !vc.IsPlatformContext() && !vc.IsSystemContext() {
-		return uint32(vc.UserID())
+		return int64(vc.UserID())
 	}
 
 	return reqUserID
@@ -315,7 +315,7 @@ func (r *InternalMessageRecipientRepo) RevokeMessage(ctx context.Context, req *i
 
 // DeleteMessageWithRecipients 事务删除消息与其全部收件行，
 // 防止只删消息本体后在收件箱/通知面板留下无标题的幽灵行。
-func (r *InternalMessageRecipientRepo) DeleteMessageWithRecipients(ctx context.Context, messageID uint32) (err error) {
+func (r *InternalMessageRecipientRepo) DeleteMessageWithRecipients(ctx context.Context, messageID int64) (err error) {
 	if messageID == 0 {
 		return internalMessageV1.ErrorBadRequest("invalid parameter")
 	}

@@ -54,10 +54,10 @@ message EventSchema {
   }
 
   // 自增主键
-  optional uint32 id = 1 [json_name = "id", (gnostic.openapi.v3.property) = {description: "ID"}];
+  optional int64 id = 1 [json_name = "id", (gnostic.openapi.v3.property) = {description: "ID"}];
 
   // 租户ID
-  optional uint32 tenant_id = 2 [json_name = "tenantId", (gnostic.openapi.v3.property) = {description: "租户ID"}];
+  optional int64 tenant_id = 2 [json_name = "tenantId", (gnostic.openapi.v3.property) = {description: "租户ID"}];
 
   // 事件名（唯一业务标识，对应 events_fact.event_name）
   string event_name = 3 [json_name = "eventName", (gnostic.openapi.v3.property) = {description: "事件名，唯一业务标识"}];
@@ -74,8 +74,8 @@ message EventSchema {
   // 启用状态
   optional Status status = 8 [json_name = "status", (gnostic.openapi.v3.property) = {description: "启用状态"}];
 
-  optional uint32 created_by = 100 [json_name = "createdBy", (gnostic.openapi.v3.property) = {description: "创建者用户ID"}];
-  optional uint32 updated_by = 101 [json_name = "updatedBy", (gnostic.openapi.v3.property) = {description: "更新者用户ID"}];
+  optional int64 created_by = 100 [json_name = "createdBy", (gnostic.openapi.v3.property) = {description: "创建者用户ID"}];
+  optional int64 updated_by = 101 [json_name = "updatedBy", (gnostic.openapi.v3.property) = {description: "更新者用户ID"}];
 
   optional google.protobuf.Timestamp created_at = 200 [json_name = "createdAt", (gnostic.openapi.v3.property) = {description: "创建时间"}];
   optional google.protobuf.Timestamp updated_at = 201 [json_name = "updatedAt", (gnostic.openapi.v3.property) = {description: "更新时间"}];
@@ -83,16 +83,16 @@ message EventSchema {
 
 message ListEventSchemaResponse {
   repeated EventSchema items = 1;
-  uint64 total = 2;
+  int64 total = 2;
 }
 
 message CountEventSchemaResponse {
-  uint64 count = 1;
+  int64 count = 1;
 }
 
 message GetEventSchemaRequest {
   oneof query_by {
-    uint64 id = 1 [json_name = "id"];
+    int64 id = 1 [json_name = "id"];
   }
   optional google.protobuf.FieldMask view_mask = 100 [json_name = "viewMask"];
 }
@@ -102,7 +102,7 @@ message CreateEventSchemaRequest {
 }
 
 message UpdateEventSchemaRequest {
-  uint64 id = 1;
+  int64 id = 1;
   EventSchema data = 2 [json_name = "data"];
   google.protobuf.FieldMask update_mask = 3 [json_name = "updateMask"];
   optional bool allow_missing = 4 [json_name = "allowMissing"];
@@ -110,7 +110,7 @@ message UpdateEventSchemaRequest {
 
 message DeleteEventSchemaRequest {
   oneof query_by {
-    uint64 id = 1 [json_name = "id"];
+    int64 id = 1 [json_name = "id"];
   }
-  optional uint32 deleted_by = 100 [json_name = "deletedBy"];
+  optional int64 deleted_by = 100 [json_name = "deletedBy"];
 }

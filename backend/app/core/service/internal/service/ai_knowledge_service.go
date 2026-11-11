@@ -189,7 +189,7 @@ func (s *AiKnowledgeService) UploadDocFile(ctx context.Context, req *aiV1.Upload
 
 // ingestDoc 切片 → 向量化 → 落库的共用主链（纯文本与文件入口共用）。
 // 失败时文档行标 FAILED（错误信息保留），不让一次 embedding 故障污染整个请求语义。
-func (s *AiKnowledgeService) ingestDoc(ctx context.Context, userId, tenantId uint32, base *ent.AiKnowledgeBase, docName, content string) (*aiV1.AiDoc, error) {
+func (s *AiKnowledgeService) ingestDoc(ctx context.Context, userId, tenantId int64, base *ent.AiKnowledgeBase, docName, content string) (*aiV1.AiDoc, error) {
 	if base.EmbeddingModel == nil || base.ProviderID == nil {
 		return nil, aiV1.ErrorBadRequest("knowledge base embedding config is incomplete")
 	}
@@ -219,18 +219,18 @@ func (s *AiKnowledgeService) ingestDoc(ctx context.Context, userId, tenantId uin
 	vectors, err := embedTextsForBase(ctx, s.providerRepo, s.usageLogRepo, s.log, userId, tenantId, base, chunks)
 	if err != nil {
 		errMsg := err.Error()
-		_ = s.repo.UpdateDocStatus(ctx, doc.ID, "FAILED", uint32(0), errMsg)
+		_ = s.repo.UpdateDocStatus(ctx, doc.ID, "FAILED", int64(0), errMsg)
 		return nil, aiV1.ErrorInternalServerError("embed doc failed: %v", err)
 	}
 
 	// 4. 切片落库
 	if err = s.repo.InsertChunks(ctx, tenantId, doc.ID, chunks, vectors); err != nil {
 		errMsg := err.Error()
-		_ = s.repo.UpdateDocStatus(ctx, doc.ID, "FAILED", uint32(0), errMsg)
+		_ = s.repo.UpdateDocStatus(ctx, doc.ID, "FAILED", int64(0), errMsg)
 		return nil, err
 	}
 
-	chunkCount := uint32(len(chunks))
+	chunkCount := int64(len(chunks))
 	if err = s.repo.UpdateDocStatus(ctx, doc.ID, "READY", chunkCount, ""); err != nil {
 		return nil, err
 	}
@@ -254,7 +254,7 @@ func (s *AiKnowledgeService) ListDocs(ctx context.Context, req *aiV1.ListAiDocsR
 	for _, entity := range entities {
 		dtos = append(dtos, s.repo.ToDocDTO(entity))
 	}
-	return &aiV1.ListAiDocsResponse{Items: dtos, Total: uint64(len(dtos))}, nil
+	return &aiV1.ListAiDocsResponse{Items: dtos, Total: int64(len(dtos))}, nil
 }
 
 func (s *AiKnowledgeService) DeleteDoc(ctx context.Context, req *aiV1.DeleteAiDocRequest) (*emptypb.Empty, error) {
@@ -282,7 +282,7 @@ func (s *AiKnowledgeService) Search(ctx context.Context, req *aiV1.SearchAiKnowl
 	for _, hit := range hits {
 		resp.Hits = append(resp.Hits, &aiV1.KnowledgeHit{
 			Doc:        &aiV1.AiDoc{Id: &hit.DocID},
-			ChunkIndex: hit.ChunkIndex,
+			ChunkIndex: uint32(hit.ChunkIndex),
 			Content:    hit.Content,
 			Score:      hit.Score,
 		})
@@ -293,7 +293,7 @@ func (s *AiKnowledgeService) Search(ctx context.Context, req *aiV1.SearchAiKnowl
 // searchKnowledgeBase 包级检索：向量化 query 并按余弦相似度取 topK 片段。
 // tenantId=0（平台用户）可检索任意库，租户用户经 SQL 的 tenant 过滤兜底；
 // chat 主链路（RAG 注入）与本 service 共用。向量化消耗记入用量流水。
-func searchKnowledgeBase(ctx context.Context, knowledgeRepo *data.AiKnowledgeRepo, providerRepo *data.AiProviderRepo, usageLogRepo *data.AiUsageLogRepo, log *log.Helper, userId, tenantId uint32, baseId uint32, query string, topK int) ([]*data.ChunkHit, error) {
+func searchKnowledgeBase(ctx context.Context, knowledgeRepo *data.AiKnowledgeRepo, providerRepo *data.AiProviderRepo, usageLogRepo *data.AiUsageLogRepo, log *log.Helper, userId, tenantId int64, baseId int64, query string, topK int) ([]*data.ChunkHit, error) {
 	base, err := knowledgeRepo.GetEntityByID(ctx, baseId)
 	if err != nil {
 		return nil, err
@@ -310,7 +310,7 @@ func searchKnowledgeBase(ctx context.Context, knowledgeRepo *data.AiKnowledgeRep
 // ── 向量化 ─────────────────────────────────────────────────────────
 
 // embedOneForBase 单文本向量化，返回 pgvector 字面量（包级，供检索与 chat 复用）。
-func embedOneForBase(ctx context.Context, providerRepo *data.AiProviderRepo, usageLogRepo *data.AiUsageLogRepo, log *log.Helper, userId, tenantId uint32, base *ent.AiKnowledgeBase, text string) (string, error) {
+func embedOneForBase(ctx context.Context, providerRepo *data.AiProviderRepo, usageLogRepo *data.AiUsageLogRepo, log *log.Helper, userId, tenantId int64, base *ent.AiKnowledgeBase, text string) (string, error) {
 	vectors, err := embedTextsForBase(ctx, providerRepo, usageLogRepo, log, userId, tenantId, base, []string{text})
 	if err != nil {
 		return "", err
@@ -320,8 +320,8 @@ func embedOneForBase(ctx context.Context, providerRepo *data.AiProviderRepo, usa
 
 // embedTextsForBase 批量向量化，返回与 texts 对齐的 pgvector 字面量数组。
 // embedding 消耗与 chat 同口径记入用量流水；记量失败不阻断向量化，仅记日志。
-func embedTextsForBase(ctx context.Context, providerRepo *data.AiProviderRepo, usageLogRepo *data.AiUsageLogRepo, log *log.Helper, userId, tenantId uint32, base *ent.AiKnowledgeBase, texts []string) ([]string, error) {
-	provider, err := providerRepo.GetEntityByID(ctx, derefUint32(base.ProviderID))
+func embedTextsForBase(ctx context.Context, providerRepo *data.AiProviderRepo, usageLogRepo *data.AiUsageLogRepo, log *log.Helper, userId, tenantId int64, base *ent.AiKnowledgeBase, texts []string) ([]string, error) {
+	provider, err := providerRepo.GetEntityByID(ctx, derefInt64Local(base.ProviderID))
 	if err != nil {
 		return nil, err
 	}
@@ -349,9 +349,9 @@ func embedTextsForBase(ctx context.Context, providerRepo *data.AiProviderRepo, u
 			UserID:       userId,
 			TenantID:     tenantId,
 			ModelName:    modelName,
-			PromptTokens: uint32(resp.Usage.PromptTokens),
-			TotalTokens:  uint32(resp.Usage.TotalTokens),
-			DurationMs:   uint32(time.Since(callStart).Milliseconds()),
+			PromptTokens: int64(resp.Usage.PromptTokens),
+			TotalTokens:  int64(resp.Usage.TotalTokens),
+			DurationMs:   int64(time.Since(callStart).Milliseconds()),
 		}); uerr != nil {
 			log.Errorf("record embedding usage failed: %v", uerr)
 		}
@@ -403,18 +403,18 @@ func splitIntoChunks(content string, size, overlap int) []string {
 }
 
 // derefUint32 nil 安全取值。
-func derefUint32(p *uint32) uint32 {
+func derefUint32(p *uint32) int64 {
 	if p == nil {
 		return 0
 	}
-	return *p
+	return int64(*p)
 }
 
 // operator 从 viewer 上下文取操作者（unary 中间件注入）。
-func (s *AiKnowledgeService) operator(ctx context.Context) (uint32, uint32) {
-	var userId, tenantId uint32
+func (s *AiKnowledgeService) operator(ctx context.Context) (int64, int64) {
+	var userId, tenantId int64
 	if vc, exist := viewer.FromContext(ctx); exist && vc != nil {
-		tenantId = uint32(vc.TenantID())
+		tenantId = int64(vc.TenantID())
 	}
 	if uid, ok := viewerUserIDFromContext(ctx); ok {
 		userId = uid
@@ -447,7 +447,7 @@ const reindexEmbedBatchSize = 32
 func (s *AiKnowledgeService) ReindexDocsWorker(taskType string, data *task.AiDocReindexPayload) error {
 	ctx := appViewer.NewSystemViewerContext(context.Background())
 
-	var baseIds []uint32
+	var baseIds []int64
 	if data != nil && data.BaseID > 0 {
 		baseIds = append(baseIds, data.BaseID)
 	} else {
@@ -472,7 +472,7 @@ func (s *AiKnowledgeService) ReindexDocsWorker(taskType string, data *task.AiDoc
 }
 
 // reindexBase 对单个知识库分批重算全部切片向量，返回更新的切片数。
-func (s *AiKnowledgeService) reindexBase(ctx context.Context, baseId uint32) (int, error) {
+func (s *AiKnowledgeService) reindexBase(ctx context.Context, baseId int64) (int, error) {
 	base, err := s.repo.GetEntityByID(ctx, baseId)
 	if err != nil {
 		return 0, err
@@ -499,7 +499,7 @@ func (s *AiKnowledgeService) reindexBase(ctx context.Context, baseId uint32) (in
 			texts = append(texts, ref.Content)
 		}
 		// 重索引是平台维护操作（无操作者）：消耗按知识库归属租户计量、userId=0。
-		vectors, err := embedTextsForBase(ctx, s.providerRepo, s.usageLogRepo, s.log, 0, derefUint32(base.TenantID), base, texts)
+		vectors, err := embedTextsForBase(ctx, s.providerRepo, s.usageLogRepo, s.log, 0, derefInt64Local(base.TenantID), base, texts)
 		if err != nil {
 			return updated, err
 		}
@@ -511,4 +511,11 @@ func (s *AiKnowledgeService) reindexBase(ctx context.Context, baseId uint32) (in
 		}
 	}
 	return updated, nil
+}
+
+func derefInt64Local(v *int64) int64 {
+	if v == nil {
+		return 0
+	}
+	return *v
 }

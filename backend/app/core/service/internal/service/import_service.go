@@ -47,7 +47,7 @@ type ImportService struct {
 	ch         *clickhouseData.EventsFactRepo
 
 	mu        sync.Mutex
-	cancelled map[uint32]bool
+	cancelled map[int64]bool
 }
 
 func NewImportService(
@@ -61,7 +61,7 @@ func NewImportService(
 		importRepo: importRepo,
 		doris:      dorisRepo,
 		ch:         chRepo,
-		cancelled:  make(map[uint32]bool),
+		cancelled:  make(map[int64]bool),
 	}
 }
 
@@ -112,7 +112,7 @@ func (s *ImportService) Create(ctx context.Context, req *ubaV1.CreateImportJobRe
 	}
 	appID := req.GetAppId()
 
-	entity, err := s.importRepo.Create(ctx, name, &appID, req.GetEventsJson(), uint32(len(rawEvents)), tenantID, operatorID)
+	entity, err := s.importRepo.Create(ctx, name, &appID, req.GetEventsJson(), int64(len(rawEvents)), tenantID, operatorID)
 	if err != nil {
 		return nil, err
 	}
@@ -154,7 +154,7 @@ func (s *ImportService) Delete(ctx context.Context, req *ubaV1.DeleteImportJobRe
 }
 
 // executeImport 解析 events_json → 分批构造行为事件 → 写入 Doris events_fact。
-func (s *ImportService) executeImport(ctx context.Context, jobID uint32) {
+func (s *ImportService) executeImport(ctx context.Context, jobID int64) {
 	s.mu.Lock()
 	if s.cancelled[jobID] {
 		delete(s.cancelled, jobID)
@@ -183,11 +183,11 @@ func (s *ImportService) executeImport(ctx context.Context, jobID uint32) {
 		return
 	}
 
-	total := uint32(len(rawEvents))
-	var imported, failed uint32
+	total := int64(len(rawEvents))
+	var imported, failed int64
 	var errMsgs []string
 
-	tenantID := uint32(0)
+	tenantID := int64(0)
 	if entity.TenantID != nil {
 		tenantID = *entity.TenantID
 	}
@@ -234,7 +234,7 @@ func (s *ImportService) executeImport(ctx context.Context, jobID uint32) {
 }
 
 // importBatch 批量写入 Doris。
-func (s *ImportService) importBatch(ctx context.Context, batch []map[string]any, tenantID uint32, appID string) (imported, failed uint32, errMsgs []string) {
+func (s *ImportService) importBatch(ctx context.Context, batch []map[string]any, tenantID int64, appID string) (imported, failed int64, errMsgs []string) {
 	for _, raw := range batch {
 		if err := s.importSingleEvent(ctx, raw, tenantID, appID); err != nil {
 			failed++
@@ -251,7 +251,7 @@ func (s *ImportService) importBatch(ctx context.Context, batch []map[string]any,
 }
 
 // importSingleEvent 把单条历史事件转换为 BehaviorEvent 并写入 Doris。
-func (s *ImportService) importSingleEvent(ctx context.Context, raw map[string]any, tenantID uint32, appID string) error {
+func (s *ImportService) importSingleEvent(ctx context.Context, raw map[string]any, tenantID int64, appID string) error {
 	eventID, _ := raw["eventId"].(string)
 	eventName, _ := raw["eventName"].(string)
 	if eventName == "" {
@@ -292,8 +292,8 @@ func (s *ImportService) importSingleEvent(ctx context.Context, raw map[string]an
 			event.PageUrl = &v
 		}
 		if v, ok := behaviorData["durationMs"].(float64); ok {
-			d := uint32(v)
-			event.DurationMs = d
+			d := int64(v)
+			event.DurationMs = uint32(d)
 		}
 	}
 
@@ -320,13 +320,13 @@ func extractStrPtr(m map[string]any, key string) *string {
 	return nil
 }
 
-func extractUint32Val(m map[string]any, key string) uint32 {
+func extractUint32Val(m map[string]any, key string) int64 {
 	if v, ok := m[key].(float64); ok {
-		return uint32(v)
+		return int64(v)
 	}
 	return 0
 }
 
 // operatorIDFromCtx / tenantIDFromCtx 从上下文提取操作者（简化版，供导入服务用）。
-func operatorIDFromCtx(ctx context.Context) uint32 { return 0 }
-func tenantIDFromCtx(ctx context.Context) uint32   { return 0 }
+func operatorIDFromCtx(ctx context.Context) int64 { return 0 }
+func tenantIDFromCtx(ctx context.Context) int64   { return 0 }

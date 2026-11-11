@@ -70,14 +70,14 @@ func (_u *AiTenantQuotaUpdate) ClearDeletedAt() *AiTenantQuotaUpdate {
 }
 
 // SetTenantID sets the "tenant_id" field.
-func (_u *AiTenantQuotaUpdate) SetTenantID(v uint32) *AiTenantQuotaUpdate {
+func (_u *AiTenantQuotaUpdate) SetTenantID(v int64) *AiTenantQuotaUpdate {
 	_u.mutation.ResetTenantID()
 	_u.mutation.SetTenantID(v)
 	return _u
 }
 
 // SetNillableTenantID sets the "tenant_id" field if the given value is not nil.
-func (_u *AiTenantQuotaUpdate) SetNillableTenantID(v *uint32) *AiTenantQuotaUpdate {
+func (_u *AiTenantQuotaUpdate) SetNillableTenantID(v *int64) *AiTenantQuotaUpdate {
 	if v != nil {
 		_u.SetTenantID(*v)
 	}
@@ -85,7 +85,7 @@ func (_u *AiTenantQuotaUpdate) SetNillableTenantID(v *uint32) *AiTenantQuotaUpda
 }
 
 // AddTenantID adds value to the "tenant_id" field.
-func (_u *AiTenantQuotaUpdate) AddTenantID(v int32) *AiTenantQuotaUpdate {
+func (_u *AiTenantQuotaUpdate) AddTenantID(v int64) *AiTenantQuotaUpdate {
 	_u.mutation.AddTenantID(v)
 	return _u
 }
@@ -150,7 +150,7 @@ func (_u *AiTenantQuotaUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *
 }
 
 func (_u *AiTenantQuotaUpdate) sqlSave(ctx context.Context) (_node int, err error) {
-	_spec := sqlgraph.NewUpdateSpec(aitenantquota.Table, aitenantquota.Columns, sqlgraph.NewFieldSpec(aitenantquota.FieldID, field.TypeUint32))
+	_spec := sqlgraph.NewUpdateSpec(aitenantquota.Table, aitenantquota.Columns, sqlgraph.NewFieldSpec(aitenantquota.FieldID, field.TypeInt64))
 	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -174,10 +174,10 @@ func (_u *AiTenantQuotaUpdate) sqlSave(ctx context.Context) (_node int, err erro
 		_spec.ClearField(aitenantquota.FieldDeletedAt, field.TypeTime)
 	}
 	if value, ok := _u.mutation.TenantID(); ok {
-		_spec.SetField(aitenantquota.FieldTenantID, field.TypeUint32, value)
+		_spec.SetField(aitenantquota.FieldTenantID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedTenantID(); ok {
-		_spec.AddField(aitenantquota.FieldTenantID, field.TypeUint32, value)
+		_spec.AddField(aitenantquota.FieldTenantID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.MonthlyTokenLimit(); ok {
 		_spec.SetField(aitenantquota.FieldMonthlyTokenLimit, field.TypeUint64, value)
@@ -248,14 +248,14 @@ func (_u *AiTenantQuotaUpdateOne) ClearDeletedAt() *AiTenantQuotaUpdateOne {
 }
 
 // SetTenantID sets the "tenant_id" field.
-func (_u *AiTenantQuotaUpdateOne) SetTenantID(v uint32) *AiTenantQuotaUpdateOne {
+func (_u *AiTenantQuotaUpdateOne) SetTenantID(v int64) *AiTenantQuotaUpdateOne {
 	_u.mutation.ResetTenantID()
 	_u.mutation.SetTenantID(v)
 	return _u
 }
 
 // SetNillableTenantID sets the "tenant_id" field if the given value is not nil.
-func (_u *AiTenantQuotaUpdateOne) SetNillableTenantID(v *uint32) *AiTenantQuotaUpdateOne {
+func (_u *AiTenantQuotaUpdateOne) SetNillableTenantID(v *int64) *AiTenantQuotaUpdateOne {
 	if v != nil {
 		_u.SetTenantID(*v)
 	}
@@ -263,7 +263,7 @@ func (_u *AiTenantQuotaUpdateOne) SetNillableTenantID(v *uint32) *AiTenantQuotaU
 }
 
 // AddTenantID adds value to the "tenant_id" field.
-func (_u *AiTenantQuotaUpdateOne) AddTenantID(v int32) *AiTenantQuotaUpdateOne {
+func (_u *AiTenantQuotaUpdateOne) AddTenantID(v int64) *AiTenantQuotaUpdateOne {
 	_u.mutation.AddTenantID(v)
 	return _u
 }
@@ -341,7 +341,7 @@ func (_u *AiTenantQuotaUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)
 }
 
 func (_u *AiTenantQuotaUpdateOne) sqlSave(ctx context.Context) (_node *AiTenantQuota, err error) {
-	_spec := sqlgraph.NewUpdateSpec(aitenantquota.Table, aitenantquota.Columns, sqlgraph.NewFieldSpec(aitenantquota.FieldID, field.TypeUint32))
+	_spec := sqlgraph.NewUpdateSpec(aitenantquota.Table, aitenantquota.Columns, sqlgraph.NewFieldSpec(aitenantquota.FieldID, field.TypeInt64))
 	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "AiTenantQuota.id" for update`)}
@@ -382,10 +382,10 @@ func (_u *AiTenantQuotaUpdateOne) sqlSave(ctx context.Context) (_node *AiTenantQ
 		_spec.ClearField(aitenantquota.FieldDeletedAt, field.TypeTime)
 	}
 	if value, ok := _u.mutation.TenantID(); ok {
-		_spec.SetField(aitenantquota.FieldTenantID, field.TypeUint32, value)
+		_spec.SetField(aitenantquota.FieldTenantID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedTenantID(); ok {
-		_spec.AddField(aitenantquota.FieldTenantID, field.TypeUint32, value)
+		_spec.AddField(aitenantquota.FieldTenantID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.MonthlyTokenLimit(); ok {
 		_spec.SetField(aitenantquota.FieldMonthlyTokenLimit, field.TypeUint64, value)

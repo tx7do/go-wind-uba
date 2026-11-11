@@ -62,7 +62,7 @@ func TestChToStructValue(t *testing.T) {
 		{"nil", nil, "", "null"},
 		{"time", time.Unix(0, 0).UTC(), "time", "string"},
 		{"string", "a", "a", "string"},
-		{"uint64", uint64(7), "7", "number"},
+		{"int64", int64(7), "7", "number"},
 		{"bytes", []byte("b"), "b", "string"},
 		{"slice", []string{"x", "y"}, "x,y", "list"},
 		{"map", map[string]string{"k": "v"}, "k=v", "struct"},

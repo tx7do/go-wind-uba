@@ -52,7 +52,7 @@ func (FeatureFlag) Fields() []ent.Field {
 			Optional().
 			Nillable(),
 
-		field.Uint32("app_id").
+		field.Int64("app_id").
 			Comment("关联应用ID，0/空为该租户全部应用").
 			Optional().
 			Nillable(),
@@ -88,10 +88,10 @@ func (FeatureFlag) Fields() []ent.Field {
 
 func (FeatureFlag) Mixin() []ent.Mixin {
 	return []ent.Mixin{
-		mixin.AutoIncrementId{},
+		mixin.AutoIncrementId64{},
 		mixin.TimeAt{},
-		mixin.OperatorID{},
-		mixin.TenantID[uint32]{},
+		mixin.OperatorID64{},
+		mixin.TenantID[int64]{},
 	}
 }
 

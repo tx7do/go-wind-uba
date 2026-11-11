@@ -86,7 +86,7 @@ func (r *ApplicationRepo) Count(ctx context.Context, req *paginationV1.PagingReq
 	}
 
 	return &ubaV1.CountApplicationResponse{
-		Count: uint64(count),
+		Count: int64(count),
 	}, nil
 }
 
@@ -111,7 +111,7 @@ func (r *ApplicationRepo) List(ctx context.Context, req *paginationV1.PagingRequ
 	}, nil
 }
 
-func (r *ApplicationRepo) IsExist(ctx context.Context, id uint32) (bool, error) {
+func (r *ApplicationRepo) IsExist(ctx context.Context, id int64) (bool, error) {
 	exist, err := r.entClient.Client().Application.Query().
 		Where(application.IDEQ(id)).
 		Exist(ctx)

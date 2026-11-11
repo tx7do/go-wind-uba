@@ -65,13 +65,13 @@ func (_c *ReplayChunkCreate) SetNillableDeletedAt(v *time.Time) *ReplayChunkCrea
 }
 
 // SetTenantID sets the "tenant_id" field.
-func (_c *ReplayChunkCreate) SetTenantID(v uint32) *ReplayChunkCreate {
+func (_c *ReplayChunkCreate) SetTenantID(v int64) *ReplayChunkCreate {
 	_c.mutation.SetTenantID(v)
 	return _c
 }
 
 // SetNillableTenantID sets the "tenant_id" field if the given value is not nil.
-func (_c *ReplayChunkCreate) SetNillableTenantID(v *uint32) *ReplayChunkCreate {
+func (_c *ReplayChunkCreate) SetNillableTenantID(v *int64) *ReplayChunkCreate {
 	if v != nil {
 		_c.SetTenantID(*v)
 	}
@@ -113,13 +113,13 @@ func (_c *ReplayChunkCreate) SetNillableDeviceID(v *string) *ReplayChunkCreate {
 }
 
 // SetUserID sets the "user_id" field.
-func (_c *ReplayChunkCreate) SetUserID(v uint32) *ReplayChunkCreate {
+func (_c *ReplayChunkCreate) SetUserID(v int64) *ReplayChunkCreate {
 	_c.mutation.SetUserID(v)
 	return _c
 }
 
 // SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (_c *ReplayChunkCreate) SetNillableUserID(v *uint32) *ReplayChunkCreate {
+func (_c *ReplayChunkCreate) SetNillableUserID(v *int64) *ReplayChunkCreate {
 	if v != nil {
 		_c.SetUserID(*v)
 	}
@@ -189,7 +189,7 @@ func (_c *ReplayChunkCreate) SetNillableDurationMs(v *uint32) *ReplayChunkCreate
 }
 
 // SetID sets the "id" field.
-func (_c *ReplayChunkCreate) SetID(v uint32) *ReplayChunkCreate {
+func (_c *ReplayChunkCreate) SetID(v int64) *ReplayChunkCreate {
 	_c.mutation.SetID(v)
 	return _c
 }
@@ -300,7 +300,7 @@ func (_c *ReplayChunkCreate) sqlSave(ctx context.Context) (*ReplayChunk, error) 
 	}
 	if _spec.ID.Value != _node.ID {
 		id := _spec.ID.Value.(int64)
-		_node.ID = uint32(id)
+		_node.ID = int64(id)
 	}
 	_c.mutation.id = &_node.ID
 	_c.mutation.done = true
@@ -310,7 +310,7 @@ func (_c *ReplayChunkCreate) sqlSave(ctx context.Context) (*ReplayChunk, error) 
 func (_c *ReplayChunkCreate) createSpec() (*ReplayChunk, *sqlgraph.CreateSpec) {
 	var (
 		_node = &ReplayChunk{config: _c.config}
-		_spec = sqlgraph.NewCreateSpec(replaychunk.Table, sqlgraph.NewFieldSpec(replaychunk.FieldID, field.TypeUint32))
+		_spec = sqlgraph.NewCreateSpec(replaychunk.Table, sqlgraph.NewFieldSpec(replaychunk.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = _c.conflict
 	if id, ok := _c.mutation.ID(); ok {
@@ -330,7 +330,7 @@ func (_c *ReplayChunkCreate) createSpec() (*ReplayChunk, *sqlgraph.CreateSpec) {
 		_node.DeletedAt = &value
 	}
 	if value, ok := _c.mutation.TenantID(); ok {
-		_spec.SetField(replaychunk.FieldTenantID, field.TypeUint32, value)
+		_spec.SetField(replaychunk.FieldTenantID, field.TypeInt64, value)
 		_node.TenantID = &value
 	}
 	if value, ok := _c.mutation.AppID(); ok {
@@ -346,7 +346,7 @@ func (_c *ReplayChunkCreate) createSpec() (*ReplayChunk, *sqlgraph.CreateSpec) {
 		_node.DeviceID = &value
 	}
 	if value, ok := _c.mutation.UserID(); ok {
-		_spec.SetField(replaychunk.FieldUserID, field.TypeUint32, value)
+		_spec.SetField(replaychunk.FieldUserID, field.TypeInt64, value)
 		_node.UserID = value
 	}
 	if value, ok := _c.mutation.PageURL(); ok {
@@ -506,7 +506,7 @@ func (u *ReplayChunkUpsert) ClearDeviceID() *ReplayChunkUpsert {
 }
 
 // SetUserID sets the "user_id" field.
-func (u *ReplayChunkUpsert) SetUserID(v uint32) *ReplayChunkUpsert {
+func (u *ReplayChunkUpsert) SetUserID(v int64) *ReplayChunkUpsert {
 	u.Set(replaychunk.FieldUserID, v)
 	return u
 }
@@ -518,7 +518,7 @@ func (u *ReplayChunkUpsert) UpdateUserID() *ReplayChunkUpsert {
 }
 
 // AddUserID adds v to the "user_id" field.
-func (u *ReplayChunkUpsert) AddUserID(v uint32) *ReplayChunkUpsert {
+func (u *ReplayChunkUpsert) AddUserID(v int64) *ReplayChunkUpsert {
 	u.Add(replaychunk.FieldUserID, v)
 	return u
 }
@@ -760,14 +760,14 @@ func (u *ReplayChunkUpsertOne) ClearDeviceID() *ReplayChunkUpsertOne {
 }
 
 // SetUserID sets the "user_id" field.
-func (u *ReplayChunkUpsertOne) SetUserID(v uint32) *ReplayChunkUpsertOne {
+func (u *ReplayChunkUpsertOne) SetUserID(v int64) *ReplayChunkUpsertOne {
 	return u.Update(func(s *ReplayChunkUpsert) {
 		s.SetUserID(v)
 	})
 }
 
 // AddUserID adds v to the "user_id" field.
-func (u *ReplayChunkUpsertOne) AddUserID(v uint32) *ReplayChunkUpsertOne {
+func (u *ReplayChunkUpsertOne) AddUserID(v int64) *ReplayChunkUpsertOne {
 	return u.Update(func(s *ReplayChunkUpsert) {
 		s.AddUserID(v)
 	})
@@ -894,7 +894,7 @@ func (u *ReplayChunkUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *ReplayChunkUpsertOne) ID(ctx context.Context) (id uint32, err error) {
+func (u *ReplayChunkUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -903,7 +903,7 @@ func (u *ReplayChunkUpsertOne) ID(ctx context.Context) (id uint32, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *ReplayChunkUpsertOne) IDX(ctx context.Context) uint32 {
+func (u *ReplayChunkUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -960,7 +960,7 @@ func (_c *ReplayChunkCreateBulk) Save(ctx context.Context) ([]*ReplayChunk, erro
 				mutation.id = &nodes[i].ID
 				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = uint32(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -1197,14 +1197,14 @@ func (u *ReplayChunkUpsertBulk) ClearDeviceID() *ReplayChunkUpsertBulk {
 }
 
 // SetUserID sets the "user_id" field.
-func (u *ReplayChunkUpsertBulk) SetUserID(v uint32) *ReplayChunkUpsertBulk {
+func (u *ReplayChunkUpsertBulk) SetUserID(v int64) *ReplayChunkUpsertBulk {
 	return u.Update(func(s *ReplayChunkUpsert) {
 		s.SetUserID(v)
 	})
 }
 
 // AddUserID adds v to the "user_id" field.
-func (u *ReplayChunkUpsertBulk) AddUserID(v uint32) *ReplayChunkUpsertBulk {
+func (u *ReplayChunkUpsertBulk) AddUserID(v int64) *ReplayChunkUpsertBulk {
 	return u.Update(func(s *ReplayChunkUpsert) {
 		s.AddUserID(v)
 	})

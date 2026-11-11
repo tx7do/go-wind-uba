@@ -29,13 +29,13 @@ service ReplayService {
 
 // 录制分块
 message ReplayChunk {
-  uint32 id = 1 [json_name = "id"];
-  optional uint32 tenant_id = 2 [json_name = "tenantId"];
+  int64 id = 1 [json_name = "id"];
+  optional int64 tenant_id = 2 [json_name = "tenantId"];
   optional string app_id = 3 [json_name = "appId"];
   // 会话 ID（SDK 的 sessionId）
   string session_id = 4 [json_name = "sessionId"];
   optional string device_id = 5 [json_name = "deviceId"];
-  optional uint32 user_id = 6 [json_name = "userId"];
+  optional int64 user_id = 6 [json_name = "userId"];
   // 录制起始页面
   optional string page_url = 7 [json_name = "pageUrl"];
   // 分块序号（0 起，同会话内递增）
@@ -52,9 +52,9 @@ message UploadReplayChunkRequest {
   string app_id = 1 [json_name = "appId"];
   string session_id = 2 [json_name = "sessionId"];
   // 租户 ID：collector 按应用权威值覆盖，SDK 传啥都会被覆盖
-  optional uint32 tenant_id = 10 [json_name = "tenantId"];
+  optional int64 tenant_id = 10 [json_name = "tenantId"];
   optional string device_id = 3 [json_name = "deviceId"];
-  optional uint32 user_id = 4 [json_name = "userId"];
+  optional int64 user_id = 4 [json_name = "userId"];
   optional string page_url = 5 [json_name = "pageUrl"];
   uint32 chunk_seq = 6 [json_name = "chunkSeq"];
   // rrweb 事件 JSON 数组字符串（原样存储）
@@ -65,7 +65,7 @@ message UploadReplayChunkRequest {
 
 // 上传分块 - 答复
 message UploadReplayChunkResponse {
-  uint32 id = 1 [json_name = "id"];
+  int64 id = 1 [json_name = "id"];
 }
 
 // 会话列表 - 请求
@@ -73,16 +73,16 @@ message ListReplaySessionsRequest {
   // 按会话 ID 包含搜索（可选）
   optional string session_id = 1 [json_name = "sessionId"];
   // 按用户过滤（可选）
-  optional uint32 user_id = 2 [json_name = "userId"];
+  optional int64 user_id = 2 [json_name = "userId"];
 }
 
 // 会话列表条目
 message ReplaySessionSummary {
   string session_id = 1 [json_name = "sessionId"];
-  optional uint32 tenant_id = 2 [json_name = "tenantId"];
+  optional int64 tenant_id = 2 [json_name = "tenantId"];
   optional string app_id = 3 [json_name = "appId"];
   optional string device_id = 4 [json_name = "deviceId"];
-  optional uint32 user_id = 5 [json_name = "userId"];
+  optional int64 user_id = 5 [json_name = "userId"];
   // 首个分块的页面
   optional string page_url = 6 [json_name = "pageUrl"];
   // 分块数
@@ -97,7 +97,7 @@ message ReplaySessionSummary {
 // 会话列表 - 答复
 message ListReplaySessionsResponse {
   repeated ReplaySessionSummary items = 1 [json_name = "items"];
-  uint64 total = 2 [json_name = "total"];
+  int64 total = 2 [json_name = "total"];
 }
 
 // 会话详情 - 请求

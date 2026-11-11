@@ -64,10 +64,10 @@ func (s *ApiAuditLogService) ExportApiAuditLog(ctx context.Context, req *paginat
 		SheetName:    "API审计日志",
 		Format:       format,
 		Columns:      apiAuditLogExportColumns,
-		FetchPage: func(ctx context.Context, page, pageSize uint32) ([]*auditV1.ApiAuditLog, error) {
+		FetchPage: func(ctx context.Context, page, pageSize int64) ([]*auditV1.ApiAuditLog, error) {
 			resp, err := s.List(ctx, &paginationV1.PagingRequest{
-				Page:          trans.Ptr(page),
-				PageSize:      trans.Ptr(pageSize),
+				Page:          trans.Ptr(uint32(page)),
+				PageSize:      trans.Ptr(uint32(pageSize)),
 				OrderBy:       trans.Ptr(exportOrderBy(req)),
 				FilteringType: req.FilteringType,
 			})
@@ -101,10 +101,10 @@ func (s *LoginAuditLogService) ExportLoginAuditLog(ctx context.Context, req *pag
 		SheetName:    "登录审计日志",
 		Format:       format,
 		Columns:      loginAuditLogExportColumns,
-		FetchPage: func(ctx context.Context, page, pageSize uint32) ([]*auditV1.LoginAuditLog, error) {
+		FetchPage: func(ctx context.Context, page, pageSize int64) ([]*auditV1.LoginAuditLog, error) {
 			resp, err := s.loginAuditLogServiceClient.List(ctx, &paginationV1.PagingRequest{
-				Page:          trans.Ptr(page),
-				PageSize:      trans.Ptr(pageSize),
+				Page:          trans.Ptr(uint32(page)),
+				PageSize:      trans.Ptr(uint32(pageSize)),
 				OrderBy:       trans.Ptr(exportOrderBy(req)),
 				FilteringType: req.FilteringType,
 			})
@@ -139,10 +139,10 @@ func (s *OperationAuditLogService) ExportOperationAuditLog(ctx context.Context, 
 		SheetName:    "操作审计日志",
 		Format:       format,
 		Columns:      operationAuditLogExportColumns,
-		FetchPage: func(ctx context.Context, page, pageSize uint32) ([]*auditV1.OperationAuditLog, error) {
+		FetchPage: func(ctx context.Context, page, pageSize int64) ([]*auditV1.OperationAuditLog, error) {
 			resp, err := s.operationAuditLogServiceClient.List(ctx, &paginationV1.PagingRequest{
-				Page:          trans.Ptr(page),
-				PageSize:      trans.Ptr(pageSize),
+				Page:          trans.Ptr(uint32(page)),
+				PageSize:      trans.Ptr(uint32(pageSize)),
 				OrderBy:       trans.Ptr(exportOrderBy(req)),
 				FilteringType: req.FilteringType,
 			})
@@ -176,10 +176,10 @@ func (s *DataAccessAuditLogService) ExportDataAccessAuditLog(ctx context.Context
 		SheetName:    "数据访问审计日志",
 		Format:       format,
 		Columns:      dataAccessAuditLogExportColumns,
-		FetchPage: func(ctx context.Context, page, pageSize uint32) ([]*auditV1.DataAccessAuditLog, error) {
+		FetchPage: func(ctx context.Context, page, pageSize int64) ([]*auditV1.DataAccessAuditLog, error) {
 			resp, err := s.dataAccessAuditLogServiceClient.List(ctx, &paginationV1.PagingRequest{
-				Page:          trans.Ptr(page),
-				PageSize:      trans.Ptr(pageSize),
+				Page:          trans.Ptr(uint32(page)),
+				PageSize:      trans.Ptr(uint32(pageSize)),
 				OrderBy:       trans.Ptr(exportOrderBy(req)),
 				FilteringType: req.FilteringType,
 			})
@@ -212,10 +212,10 @@ func (s *PermissionAuditLogService) ExportPermissionAuditLog(ctx context.Context
 		SheetName:    "权限审计日志",
 		Format:       format,
 		Columns:      permissionAuditLogExportColumns,
-		FetchPage: func(ctx context.Context, page, pageSize uint32) ([]*auditV1.PermissionAuditLog, error) {
+		FetchPage: func(ctx context.Context, page, pageSize int64) ([]*auditV1.PermissionAuditLog, error) {
 			resp, err := s.permissionAuditLogServiceClient.List(ctx, &paginationV1.PagingRequest{
-				Page:          trans.Ptr(page),
-				PageSize:      trans.Ptr(pageSize),
+				Page:          trans.Ptr(uint32(page)),
+				PageSize:      trans.Ptr(uint32(pageSize)),
 				OrderBy:       trans.Ptr(exportOrderBy(req)),
 				FilteringType: req.FilteringType,
 			})

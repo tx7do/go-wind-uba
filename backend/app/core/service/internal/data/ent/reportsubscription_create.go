@@ -65,13 +65,13 @@ func (_c *ReportSubscriptionCreate) SetNillableDeletedAt(v *time.Time) *ReportSu
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (_c *ReportSubscriptionCreate) SetCreatedBy(v uint32) *ReportSubscriptionCreate {
+func (_c *ReportSubscriptionCreate) SetCreatedBy(v int64) *ReportSubscriptionCreate {
 	_c.mutation.SetCreatedBy(v)
 	return _c
 }
 
 // SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
-func (_c *ReportSubscriptionCreate) SetNillableCreatedBy(v *uint32) *ReportSubscriptionCreate {
+func (_c *ReportSubscriptionCreate) SetNillableCreatedBy(v *int64) *ReportSubscriptionCreate {
 	if v != nil {
 		_c.SetCreatedBy(*v)
 	}
@@ -79,13 +79,13 @@ func (_c *ReportSubscriptionCreate) SetNillableCreatedBy(v *uint32) *ReportSubsc
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (_c *ReportSubscriptionCreate) SetUpdatedBy(v uint32) *ReportSubscriptionCreate {
+func (_c *ReportSubscriptionCreate) SetUpdatedBy(v int64) *ReportSubscriptionCreate {
 	_c.mutation.SetUpdatedBy(v)
 	return _c
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (_c *ReportSubscriptionCreate) SetNillableUpdatedBy(v *uint32) *ReportSubscriptionCreate {
+func (_c *ReportSubscriptionCreate) SetNillableUpdatedBy(v *int64) *ReportSubscriptionCreate {
 	if v != nil {
 		_c.SetUpdatedBy(*v)
 	}
@@ -93,13 +93,13 @@ func (_c *ReportSubscriptionCreate) SetNillableUpdatedBy(v *uint32) *ReportSubsc
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (_c *ReportSubscriptionCreate) SetDeletedBy(v uint32) *ReportSubscriptionCreate {
+func (_c *ReportSubscriptionCreate) SetDeletedBy(v int64) *ReportSubscriptionCreate {
 	_c.mutation.SetDeletedBy(v)
 	return _c
 }
 
 // SetNillableDeletedBy sets the "deleted_by" field if the given value is not nil.
-func (_c *ReportSubscriptionCreate) SetNillableDeletedBy(v *uint32) *ReportSubscriptionCreate {
+func (_c *ReportSubscriptionCreate) SetNillableDeletedBy(v *int64) *ReportSubscriptionCreate {
 	if v != nil {
 		_c.SetDeletedBy(*v)
 	}
@@ -107,13 +107,13 @@ func (_c *ReportSubscriptionCreate) SetNillableDeletedBy(v *uint32) *ReportSubsc
 }
 
 // SetTenantID sets the "tenant_id" field.
-func (_c *ReportSubscriptionCreate) SetTenantID(v uint32) *ReportSubscriptionCreate {
+func (_c *ReportSubscriptionCreate) SetTenantID(v int64) *ReportSubscriptionCreate {
 	_c.mutation.SetTenantID(v)
 	return _c
 }
 
 // SetNillableTenantID sets the "tenant_id" field if the given value is not nil.
-func (_c *ReportSubscriptionCreate) SetNillableTenantID(v *uint32) *ReportSubscriptionCreate {
+func (_c *ReportSubscriptionCreate) SetNillableTenantID(v *int64) *ReportSubscriptionCreate {
 	if v != nil {
 		_c.SetTenantID(*v)
 	}
@@ -149,13 +149,13 @@ func (_c *ReportSubscriptionCreate) SetNillableDescription(v *string) *ReportSub
 }
 
 // SetAppID sets the "app_id" field.
-func (_c *ReportSubscriptionCreate) SetAppID(v uint32) *ReportSubscriptionCreate {
+func (_c *ReportSubscriptionCreate) SetAppID(v int64) *ReportSubscriptionCreate {
 	_c.mutation.SetAppID(v)
 	return _c
 }
 
 // SetNillableAppID sets the "app_id" field if the given value is not nil.
-func (_c *ReportSubscriptionCreate) SetNillableAppID(v *uint32) *ReportSubscriptionCreate {
+func (_c *ReportSubscriptionCreate) SetNillableAppID(v *int64) *ReportSubscriptionCreate {
 	if v != nil {
 		_c.SetAppID(*v)
 	}
@@ -239,7 +239,7 @@ func (_c *ReportSubscriptionCreate) SetNillableLastRunAt(v *time.Time) *ReportSu
 }
 
 // SetID sets the "id" field.
-func (_c *ReportSubscriptionCreate) SetID(v uint32) *ReportSubscriptionCreate {
+func (_c *ReportSubscriptionCreate) SetID(v int64) *ReportSubscriptionCreate {
 	_c.mutation.SetID(v)
 	return _c
 }
@@ -335,7 +335,7 @@ func (_c *ReportSubscriptionCreate) sqlSave(ctx context.Context) (*ReportSubscri
 	}
 	if _spec.ID.Value != _node.ID {
 		id := _spec.ID.Value.(int64)
-		_node.ID = uint32(id)
+		_node.ID = int64(id)
 	}
 	_c.mutation.id = &_node.ID
 	_c.mutation.done = true
@@ -345,7 +345,7 @@ func (_c *ReportSubscriptionCreate) sqlSave(ctx context.Context) (*ReportSubscri
 func (_c *ReportSubscriptionCreate) createSpec() (*ReportSubscription, *sqlgraph.CreateSpec) {
 	var (
 		_node = &ReportSubscription{config: _c.config}
-		_spec = sqlgraph.NewCreateSpec(reportsubscription.Table, sqlgraph.NewFieldSpec(reportsubscription.FieldID, field.TypeUint32))
+		_spec = sqlgraph.NewCreateSpec(reportsubscription.Table, sqlgraph.NewFieldSpec(reportsubscription.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = _c.conflict
 	if id, ok := _c.mutation.ID(); ok {
@@ -365,19 +365,19 @@ func (_c *ReportSubscriptionCreate) createSpec() (*ReportSubscription, *sqlgraph
 		_node.DeletedAt = &value
 	}
 	if value, ok := _c.mutation.CreatedBy(); ok {
-		_spec.SetField(reportsubscription.FieldCreatedBy, field.TypeUint32, value)
+		_spec.SetField(reportsubscription.FieldCreatedBy, field.TypeInt64, value)
 		_node.CreatedBy = &value
 	}
 	if value, ok := _c.mutation.UpdatedBy(); ok {
-		_spec.SetField(reportsubscription.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.SetField(reportsubscription.FieldUpdatedBy, field.TypeInt64, value)
 		_node.UpdatedBy = &value
 	}
 	if value, ok := _c.mutation.DeletedBy(); ok {
-		_spec.SetField(reportsubscription.FieldDeletedBy, field.TypeUint32, value)
+		_spec.SetField(reportsubscription.FieldDeletedBy, field.TypeInt64, value)
 		_node.DeletedBy = &value
 	}
 	if value, ok := _c.mutation.TenantID(); ok {
-		_spec.SetField(reportsubscription.FieldTenantID, field.TypeUint32, value)
+		_spec.SetField(reportsubscription.FieldTenantID, field.TypeInt64, value)
 		_node.TenantID = &value
 	}
 	if value, ok := _c.mutation.Name(); ok {
@@ -389,7 +389,7 @@ func (_c *ReportSubscriptionCreate) createSpec() (*ReportSubscription, *sqlgraph
 		_node.Description = &value
 	}
 	if value, ok := _c.mutation.AppID(); ok {
-		_spec.SetField(reportsubscription.FieldAppID, field.TypeUint32, value)
+		_spec.SetField(reportsubscription.FieldAppID, field.TypeInt64, value)
 		_node.AppID = &value
 	}
 	if value, ok := _c.mutation.Model(); ok {
@@ -505,7 +505,7 @@ func (u *ReportSubscriptionUpsert) ClearDeletedAt() *ReportSubscriptionUpsert {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (u *ReportSubscriptionUpsert) SetCreatedBy(v uint32) *ReportSubscriptionUpsert {
+func (u *ReportSubscriptionUpsert) SetCreatedBy(v int64) *ReportSubscriptionUpsert {
 	u.Set(reportsubscription.FieldCreatedBy, v)
 	return u
 }
@@ -517,7 +517,7 @@ func (u *ReportSubscriptionUpsert) UpdateCreatedBy() *ReportSubscriptionUpsert {
 }
 
 // AddCreatedBy adds v to the "created_by" field.
-func (u *ReportSubscriptionUpsert) AddCreatedBy(v uint32) *ReportSubscriptionUpsert {
+func (u *ReportSubscriptionUpsert) AddCreatedBy(v int64) *ReportSubscriptionUpsert {
 	u.Add(reportsubscription.FieldCreatedBy, v)
 	return u
 }
@@ -529,7 +529,7 @@ func (u *ReportSubscriptionUpsert) ClearCreatedBy() *ReportSubscriptionUpsert {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (u *ReportSubscriptionUpsert) SetUpdatedBy(v uint32) *ReportSubscriptionUpsert {
+func (u *ReportSubscriptionUpsert) SetUpdatedBy(v int64) *ReportSubscriptionUpsert {
 	u.Set(reportsubscription.FieldUpdatedBy, v)
 	return u
 }
@@ -541,7 +541,7 @@ func (u *ReportSubscriptionUpsert) UpdateUpdatedBy() *ReportSubscriptionUpsert {
 }
 
 // AddUpdatedBy adds v to the "updated_by" field.
-func (u *ReportSubscriptionUpsert) AddUpdatedBy(v uint32) *ReportSubscriptionUpsert {
+func (u *ReportSubscriptionUpsert) AddUpdatedBy(v int64) *ReportSubscriptionUpsert {
 	u.Add(reportsubscription.FieldUpdatedBy, v)
 	return u
 }
@@ -553,7 +553,7 @@ func (u *ReportSubscriptionUpsert) ClearUpdatedBy() *ReportSubscriptionUpsert {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (u *ReportSubscriptionUpsert) SetDeletedBy(v uint32) *ReportSubscriptionUpsert {
+func (u *ReportSubscriptionUpsert) SetDeletedBy(v int64) *ReportSubscriptionUpsert {
 	u.Set(reportsubscription.FieldDeletedBy, v)
 	return u
 }
@@ -565,7 +565,7 @@ func (u *ReportSubscriptionUpsert) UpdateDeletedBy() *ReportSubscriptionUpsert {
 }
 
 // AddDeletedBy adds v to the "deleted_by" field.
-func (u *ReportSubscriptionUpsert) AddDeletedBy(v uint32) *ReportSubscriptionUpsert {
+func (u *ReportSubscriptionUpsert) AddDeletedBy(v int64) *ReportSubscriptionUpsert {
 	u.Add(reportsubscription.FieldDeletedBy, v)
 	return u
 }
@@ -613,7 +613,7 @@ func (u *ReportSubscriptionUpsert) ClearDescription() *ReportSubscriptionUpsert 
 }
 
 // SetAppID sets the "app_id" field.
-func (u *ReportSubscriptionUpsert) SetAppID(v uint32) *ReportSubscriptionUpsert {
+func (u *ReportSubscriptionUpsert) SetAppID(v int64) *ReportSubscriptionUpsert {
 	u.Set(reportsubscription.FieldAppID, v)
 	return u
 }
@@ -625,7 +625,7 @@ func (u *ReportSubscriptionUpsert) UpdateAppID() *ReportSubscriptionUpsert {
 }
 
 // AddAppID adds v to the "app_id" field.
-func (u *ReportSubscriptionUpsert) AddAppID(v uint32) *ReportSubscriptionUpsert {
+func (u *ReportSubscriptionUpsert) AddAppID(v int64) *ReportSubscriptionUpsert {
 	u.Add(reportsubscription.FieldAppID, v)
 	return u
 }
@@ -835,14 +835,14 @@ func (u *ReportSubscriptionUpsertOne) ClearDeletedAt() *ReportSubscriptionUpsert
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (u *ReportSubscriptionUpsertOne) SetCreatedBy(v uint32) *ReportSubscriptionUpsertOne {
+func (u *ReportSubscriptionUpsertOne) SetCreatedBy(v int64) *ReportSubscriptionUpsertOne {
 	return u.Update(func(s *ReportSubscriptionUpsert) {
 		s.SetCreatedBy(v)
 	})
 }
 
 // AddCreatedBy adds v to the "created_by" field.
-func (u *ReportSubscriptionUpsertOne) AddCreatedBy(v uint32) *ReportSubscriptionUpsertOne {
+func (u *ReportSubscriptionUpsertOne) AddCreatedBy(v int64) *ReportSubscriptionUpsertOne {
 	return u.Update(func(s *ReportSubscriptionUpsert) {
 		s.AddCreatedBy(v)
 	})
@@ -863,14 +863,14 @@ func (u *ReportSubscriptionUpsertOne) ClearCreatedBy() *ReportSubscriptionUpsert
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (u *ReportSubscriptionUpsertOne) SetUpdatedBy(v uint32) *ReportSubscriptionUpsertOne {
+func (u *ReportSubscriptionUpsertOne) SetUpdatedBy(v int64) *ReportSubscriptionUpsertOne {
 	return u.Update(func(s *ReportSubscriptionUpsert) {
 		s.SetUpdatedBy(v)
 	})
 }
 
 // AddUpdatedBy adds v to the "updated_by" field.
-func (u *ReportSubscriptionUpsertOne) AddUpdatedBy(v uint32) *ReportSubscriptionUpsertOne {
+func (u *ReportSubscriptionUpsertOne) AddUpdatedBy(v int64) *ReportSubscriptionUpsertOne {
 	return u.Update(func(s *ReportSubscriptionUpsert) {
 		s.AddUpdatedBy(v)
 	})
@@ -891,14 +891,14 @@ func (u *ReportSubscriptionUpsertOne) ClearUpdatedBy() *ReportSubscriptionUpsert
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (u *ReportSubscriptionUpsertOne) SetDeletedBy(v uint32) *ReportSubscriptionUpsertOne {
+func (u *ReportSubscriptionUpsertOne) SetDeletedBy(v int64) *ReportSubscriptionUpsertOne {
 	return u.Update(func(s *ReportSubscriptionUpsert) {
 		s.SetDeletedBy(v)
 	})
 }
 
 // AddDeletedBy adds v to the "deleted_by" field.
-func (u *ReportSubscriptionUpsertOne) AddDeletedBy(v uint32) *ReportSubscriptionUpsertOne {
+func (u *ReportSubscriptionUpsertOne) AddDeletedBy(v int64) *ReportSubscriptionUpsertOne {
 	return u.Update(func(s *ReportSubscriptionUpsert) {
 		s.AddDeletedBy(v)
 	})
@@ -961,14 +961,14 @@ func (u *ReportSubscriptionUpsertOne) ClearDescription() *ReportSubscriptionUpse
 }
 
 // SetAppID sets the "app_id" field.
-func (u *ReportSubscriptionUpsertOne) SetAppID(v uint32) *ReportSubscriptionUpsertOne {
+func (u *ReportSubscriptionUpsertOne) SetAppID(v int64) *ReportSubscriptionUpsertOne {
 	return u.Update(func(s *ReportSubscriptionUpsert) {
 		s.SetAppID(v)
 	})
 }
 
 // AddAppID adds v to the "app_id" field.
-func (u *ReportSubscriptionUpsertOne) AddAppID(v uint32) *ReportSubscriptionUpsertOne {
+func (u *ReportSubscriptionUpsertOne) AddAppID(v int64) *ReportSubscriptionUpsertOne {
 	return u.Update(func(s *ReportSubscriptionUpsert) {
 		s.AddAppID(v)
 	})
@@ -1123,7 +1123,7 @@ func (u *ReportSubscriptionUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *ReportSubscriptionUpsertOne) ID(ctx context.Context) (id uint32, err error) {
+func (u *ReportSubscriptionUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -1132,7 +1132,7 @@ func (u *ReportSubscriptionUpsertOne) ID(ctx context.Context) (id uint32, err er
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *ReportSubscriptionUpsertOne) IDX(ctx context.Context) uint32 {
+func (u *ReportSubscriptionUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -1189,7 +1189,7 @@ func (_c *ReportSubscriptionCreateBulk) Save(ctx context.Context) ([]*ReportSubs
 				mutation.id = &nodes[i].ID
 				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = uint32(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -1370,14 +1370,14 @@ func (u *ReportSubscriptionUpsertBulk) ClearDeletedAt() *ReportSubscriptionUpser
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (u *ReportSubscriptionUpsertBulk) SetCreatedBy(v uint32) *ReportSubscriptionUpsertBulk {
+func (u *ReportSubscriptionUpsertBulk) SetCreatedBy(v int64) *ReportSubscriptionUpsertBulk {
 	return u.Update(func(s *ReportSubscriptionUpsert) {
 		s.SetCreatedBy(v)
 	})
 }
 
 // AddCreatedBy adds v to the "created_by" field.
-func (u *ReportSubscriptionUpsertBulk) AddCreatedBy(v uint32) *ReportSubscriptionUpsertBulk {
+func (u *ReportSubscriptionUpsertBulk) AddCreatedBy(v int64) *ReportSubscriptionUpsertBulk {
 	return u.Update(func(s *ReportSubscriptionUpsert) {
 		s.AddCreatedBy(v)
 	})
@@ -1398,14 +1398,14 @@ func (u *ReportSubscriptionUpsertBulk) ClearCreatedBy() *ReportSubscriptionUpser
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (u *ReportSubscriptionUpsertBulk) SetUpdatedBy(v uint32) *ReportSubscriptionUpsertBulk {
+func (u *ReportSubscriptionUpsertBulk) SetUpdatedBy(v int64) *ReportSubscriptionUpsertBulk {
 	return u.Update(func(s *ReportSubscriptionUpsert) {
 		s.SetUpdatedBy(v)
 	})
 }
 
 // AddUpdatedBy adds v to the "updated_by" field.
-func (u *ReportSubscriptionUpsertBulk) AddUpdatedBy(v uint32) *ReportSubscriptionUpsertBulk {
+func (u *ReportSubscriptionUpsertBulk) AddUpdatedBy(v int64) *ReportSubscriptionUpsertBulk {
 	return u.Update(func(s *ReportSubscriptionUpsert) {
 		s.AddUpdatedBy(v)
 	})
@@ -1426,14 +1426,14 @@ func (u *ReportSubscriptionUpsertBulk) ClearUpdatedBy() *ReportSubscriptionUpser
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (u *ReportSubscriptionUpsertBulk) SetDeletedBy(v uint32) *ReportSubscriptionUpsertBulk {
+func (u *ReportSubscriptionUpsertBulk) SetDeletedBy(v int64) *ReportSubscriptionUpsertBulk {
 	return u.Update(func(s *ReportSubscriptionUpsert) {
 		s.SetDeletedBy(v)
 	})
 }
 
 // AddDeletedBy adds v to the "deleted_by" field.
-func (u *ReportSubscriptionUpsertBulk) AddDeletedBy(v uint32) *ReportSubscriptionUpsertBulk {
+func (u *ReportSubscriptionUpsertBulk) AddDeletedBy(v int64) *ReportSubscriptionUpsertBulk {
 	return u.Update(func(s *ReportSubscriptionUpsert) {
 		s.AddDeletedBy(v)
 	})
@@ -1496,14 +1496,14 @@ func (u *ReportSubscriptionUpsertBulk) ClearDescription() *ReportSubscriptionUps
 }
 
 // SetAppID sets the "app_id" field.
-func (u *ReportSubscriptionUpsertBulk) SetAppID(v uint32) *ReportSubscriptionUpsertBulk {
+func (u *ReportSubscriptionUpsertBulk) SetAppID(v int64) *ReportSubscriptionUpsertBulk {
 	return u.Update(func(s *ReportSubscriptionUpsert) {
 		s.SetAppID(v)
 	})
 }
 
 // AddAppID adds v to the "app_id" field.
-func (u *ReportSubscriptionUpsertBulk) AddAppID(v uint32) *ReportSubscriptionUpsertBulk {
+func (u *ReportSubscriptionUpsertBulk) AddAppID(v int64) *ReportSubscriptionUpsertBulk {
 	return u.Update(func(s *ReportSubscriptionUpsert) {
 		s.AddAppID(v)
 	})

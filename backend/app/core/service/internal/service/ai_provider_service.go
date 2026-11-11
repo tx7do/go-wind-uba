@@ -92,13 +92,13 @@ func (s *AiProviderService) TestConnection(ctx context.Context, req *aiV1.TestAi
 
 	start := time.Now()
 	models, err := client.ListModels(testCtx)
-	latencyMs := uint32(time.Since(start).Milliseconds())
+	latencyMs := int64(time.Since(start).Milliseconds())
 	if err != nil {
 		s.log.Warnf("ai provider connection test failed: provider=%d: %v", req.GetId(), err)
 		return &aiV1.TestAiProviderConnectionResponse{
 			Success:   false,
 			Message:   fmt.Sprintf("端点不可达或密钥无效: %v", err),
-			LatencyMs: latencyMs,
+			LatencyMs: uint32(latencyMs),
 		}, nil
 	}
 
@@ -118,6 +118,6 @@ func (s *AiProviderService) TestConnection(ctx context.Context, req *aiV1.TestAi
 	return &aiV1.TestAiProviderConnectionResponse{
 		Success:   true,
 		Message:   summary,
-		LatencyMs: latencyMs,
+		LatencyMs: uint32(latencyMs),
 	}, nil
 }

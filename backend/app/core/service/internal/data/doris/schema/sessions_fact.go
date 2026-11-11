@@ -9,19 +9,19 @@ import (
 type SessionsFact struct {
 	SessionID *string `db:"session_id"`
 
-	TenantID     *uint32 `db:"tenant_id"`
-	UserID       *uint32 `db:"user_id"`
+	TenantID     *int64  `db:"tenant_id"`
+	UserID       *int64  `db:"user_id"`
 	DeviceID     *string `db:"device_id"`
 	GlobalUserID *string `db:"global_user_id"`
 
 	StartTime   *time.Time `db:"start_time"`
 	EndTime     *time.Time `db:"end_time"`
 	SessionDate *time.Time `db:"session_date"`
-	DurationMs  *uint64    `db:"duration_ms"`
+	DurationMs  *int64     `db:"duration_ms"`
 
-	EventCount    *uint32 `db:"event_count"`
-	PageViewCount *uint32 `db:"page_view_count"`
-	ActionCount   *uint32 `db:"action_count"`
+	EventCount    *int64  `db:"event_count"`
+	PageViewCount *int64  `db:"page_view_count"`
+	ActionCount   *int64  `db:"action_count"`
 	EntryPage     *string `db:"entry_page"`
 	ExitPage      *string `db:"exit_page"`
 	IsBounce      *uint8  `db:"is_bounce"`
@@ -33,7 +33,7 @@ type SessionsFact struct {
 	Country    *string `db:"country"`
 
 	TotalAmount   *decimal.Decimal `db:"total_amount"`
-	PayEventCount *uint32          `db:"pay_event_count"`
+	PayEventCount *int64           `db:"pay_event_count"`
 
 	RiskLevel *string     `db:"risk_level"`
 	RiskTags  StringArray `db:"risk_tags"`

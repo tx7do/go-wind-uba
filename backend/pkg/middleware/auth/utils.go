@@ -67,8 +67,8 @@ func setRequestTenantId(req interface{}, payload *authenticationV1.UserTokenPayl
 	// 字段名必须用导出形式 "TenantId"：FieldByName 对非导出名恒返回 invalid Value、注入被静默跳过
 	field := v.FieldByName("TenantId")
 	if field.IsValid() && field.Kind() == reflect.Pointer && field.CanSet() {
-		// payload.TenantId 本身就是 *uint32（proto optional 字段），
-		// 再取地址会得到 **uint32，reflect.Set 直接 panic。
+		// payload.TenantId 本身就是 *int64（proto optional 字段），
+		// 再取地址会得到 **int64，reflect.Set 直接 panic。
 		field.Set(reflect.ValueOf(payload.TenantId))
 	}
 

@@ -28,7 +28,7 @@ func (TagValue) Annotations() []schema.Annotation {
 
 func (TagValue) Fields() []ent.Field {
 	return []ent.Field{
-		field.Uint32("tag_id").
+		field.Int64("tag_id").
 			Comment("标签定义ID，关联 uba_tag_definitions.id").
 			Optional().
 			Nillable(),
@@ -63,8 +63,8 @@ func (TagValue) Fields() []ent.Field {
 
 func (TagValue) Mixin() []ent.Mixin {
 	return []ent.Mixin{
-		mixin.AutoIncrementId{},
-		mixin.TenantID[uint32]{},
+		mixin.AutoIncrementId64{},
+		mixin.TenantID[int64]{},
 		mixin.TimeAt{},
 		mixin.SortOrder{},
 	}

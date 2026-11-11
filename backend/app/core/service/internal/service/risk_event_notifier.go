@@ -7,8 +7,8 @@ import (
 	"sync"
 
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/tx7do/kratos-transport/broker"
 	"github.com/tx7do/kratos-bootstrap/bootstrap"
+	"github.com/tx7do/kratos-transport/broker"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/encoding/prototext"
 	"google.golang.org/protobuf/proto"

@@ -150,5 +150,3 @@ func toStructValue(v any) (*structpb.Value, error) {
 		return structpb.NewValue(val)
 	}
 }
-
-

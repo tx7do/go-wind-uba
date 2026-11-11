@@ -78,7 +78,7 @@ func (r *RiskRuleRepo) Count(ctx context.Context, req *paginationV1.PagingReques
 	}
 
 	return &ubaV1.CountRiskRuleResponse{
-		Count: uint64(count),
+		Count: int64(count),
 	}, nil
 }
 
@@ -102,7 +102,7 @@ func (r *RiskRuleRepo) List(ctx context.Context, req *paginationV1.PagingRequest
 }
 
 // IsExist 判断风险规则是否存在
-func (r *RiskRuleRepo) IsExist(ctx context.Context, id uint32) (bool, error) {
+func (r *RiskRuleRepo) IsExist(ctx context.Context, id int64) (bool, error) {
 	exist, err := r.entClient.Client().RiskRule.Query().
 		Where(riskrule.IDEQ(id)).
 		Exist(ctx)

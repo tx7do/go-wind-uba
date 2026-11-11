@@ -33,12 +33,12 @@ service TagDefinitionService {
 // 标签定义（对应 tag_definition 表）
 message TagDefinition {
   // 标签ID（唯一标识一个标签）
-  uint32 id = 1 [
+  int64 id = 1 [
     json_name = "id",
     (gnostic.openapi.v3.property) = {description: "标签ID，唯一标识一个标签"}
   ];
   // 租户ID（多租户隔离，支持 SaaS 场景）
-  optional uint32 tenant_id = 2 [
+  optional int64 tenant_id = 2 [
     json_name = "tenantId",
     (gnostic.openapi.v3.property) = {description: "租户ID，多租户隔离，支持 SaaS 场景"}
   ];
@@ -99,9 +99,9 @@ message TagDefinition {
     (gnostic.openapi.v3.property) = {description: "动态标签刷新间隔，单位秒"}
   ];
 
-  optional uint32 created_by = 100 [json_name = "createdBy", (gnostic.openapi.v3.property) = {description: "创建者用户ID"}]; // 创建者用户ID
-  optional uint32 updated_by = 101 [json_name = "updatedBy", (gnostic.openapi.v3.property) = {description: "更新者用户ID"}]; // 更新者用户ID
-  optional uint32 deleted_by = 102 [json_name = "deletedBy", (gnostic.openapi.v3.property) = {description: "删除者用户ID"}]; // 删除者用户ID
+  optional int64 created_by = 100 [json_name = "createdBy", (gnostic.openapi.v3.property) = {description: "创建者用户ID"}]; // 创建者用户ID
+  optional int64 updated_by = 101 [json_name = "updatedBy", (gnostic.openapi.v3.property) = {description: "更新者用户ID"}]; // 更新者用户ID
+  optional int64 deleted_by = 102 [json_name = "deletedBy", (gnostic.openapi.v3.property) = {description: "删除者用户ID"}]; // 删除者用户ID
 
   optional google.protobuf.Timestamp created_at = 200 [json_name = "createdAt", (gnostic.openapi.v3.property) = {description: "创建时间"}];// 创建时间
   optional google.protobuf.Timestamp updated_at = 201 [json_name = "updatedAt", (gnostic.openapi.v3.property) = {description: "更新时间"}];// 更新时间
@@ -124,7 +124,7 @@ message TagRule {
 
 // 标签值定义（用于枚举型标签的取值范围）
 message TagValue {
-  optional uint32 id = 1;
+  optional int64 id = 1;
 
   // 标签值（实际存储值）
   optional string value = 2 [
@@ -163,13 +163,13 @@ message TagValue {
   ];
 
   // 租户ID（多租户隔离，支持 SaaS 场景）
-  optional uint32 tenant_id = 10 [
+  optional int64 tenant_id = 10 [
     json_name = "tenantId",
     (gnostic.openapi.v3.property) = {description: "租户ID，多租户隔离，支持 SaaS 场景"}
   ];
 
   // 标签ID（所属标签ID，关联 TagDefinition.id）
-  optional uint32 tag_id = 11 [
+  optional int64 tag_id = 11 [
     json_name = "tagId",
     (gnostic.openapi.v3.property) = {description: "标签ID（所属标签ID，关联 TagDefinition.id）"}
   ];
@@ -182,13 +182,13 @@ message TagValue {
 // 获取标签定义列表 - 答复
 message ListTagDefinitionResponse {
   repeated TagDefinition items = 1 [json_name = "items", (gnostic.openapi.v3.property) = {description: "TagDefinition列表"}]; // TagDefinition列表
-  uint64 total = 2 [json_name = "total", (gnostic.openapi.v3.property) = {description: "总数"}]; // 总数
+  int64 total = 2 [json_name = "total", (gnostic.openapi.v3.property) = {description: "总数"}]; // 总数
 }
 
 // 获取标签定义数据 - 请求
 message GetTagDefinitionRequest {
   oneof query_by {
-    uint32 id = 1 [json_name = "id", (gnostic.openapi.v3.property) = {description: "ID", read_only: true}]; // ID
+    int64 id = 1 [json_name = "id", (gnostic.openapi.v3.property) = {description: "ID", read_only: true}]; // ID
   }
 
   optional google.protobuf.FieldMask view_mask = 100 [json_name = "viewMask", (gnostic.openapi.v3.property) = {description: "视图字段过滤器，用于控制返回的字段"}]; // 视图字段过滤器
@@ -201,7 +201,7 @@ message CreateTagDefinitionRequest {
 
 // 更新标签定义 - 请求
 message UpdateTagDefinitionRequest {
-  uint32 id = 1 [json_name = "id", (gnostic.openapi.v3.property) = {description: "TagDefinition配置ID"}]; // TagDefinition配置ID
+  int64 id = 1 [json_name = "id", (gnostic.openapi.v3.property) = {description: "TagDefinition配置ID"}]; // TagDefinition配置ID
 
   TagDefinition data = 2 [json_name = "data", (gnostic.openapi.v3.property) = {description: "TagDefinition配置数据"}]; // TagDefinition配置数据
 
@@ -213,13 +213,13 @@ message UpdateTagDefinitionRequest {
 // 删除标签定义 - 请求
 message DeleteTagDefinitionRequest {
   oneof query_by {
-    uint32 id = 1 [json_name = "id", (gnostic.openapi.v3.property) = {description: "ID", read_only: true}]; // ID
+    int64 id = 1 [json_name = "id", (gnostic.openapi.v3.property) = {description: "ID", read_only: true}]; // ID
   }
 
-  optional uint32 deleted_by = 100 [json_name = "deletedBy", (gnostic.openapi.v3.property) = {description: "删除者用户ID"}]; // 删除者用户ID
+  optional int64 deleted_by = 100 [json_name = "deletedBy", (gnostic.openapi.v3.property) = {description: "删除者用户ID"}]; // 删除者用户ID
 }
 
 // 标签定义数量 - 答复
 message CountTagDefinitionResponse {
-  uint64 count = 1 [json_name = "count", (gnostic.openapi.v3.property) = {description: "数量"}]; // 数量
+  int64 count = 1 [json_name = "count", (gnostic.openapi.v3.property) = {description: "数量"}]; // 数量
 }

@@ -88,7 +88,7 @@ var (
 	Hooks  [1]ent.Hook
 	Policy ent.Policy
 	// DefaultTenantID holds the default value on creation for the "tenant_id" field.
-	DefaultTenantID uint32
+	DefaultTenantID int64
 	// EventNameValidator is a validator for the "event_name" field. It is called by the builders before save.
 	EventNameValidator func(string) error
 	// ElementXpathValidator is a validator for the "element_xpath" field. It is called by the builders before save.
@@ -98,7 +98,7 @@ var (
 	// DefaultEnabled holds the default value on creation for the "enabled" field.
 	DefaultEnabled bool
 	// IDValidator is a validator for the "id" field. It is called by the builders before save.
-	IDValidator func(uint32) error
+	IDValidator func(int64) error
 )
 
 // OrderOption defines the ordering options for the VisualEvent queries.

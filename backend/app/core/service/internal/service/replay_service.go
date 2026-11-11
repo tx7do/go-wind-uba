@@ -15,8 +15,8 @@ import (
 	"go-wind-uba/app/core/service/internal/data"
 	"go-wind-uba/pkg/task"
 
-	appViewer "go-wind-uba/pkg/entgo/viewer"
 	ubaV1 "go-wind-uba/api/gen/go/uba/service/v1"
+	appViewer "go-wind-uba/pkg/entgo/viewer"
 )
 
 const (
@@ -72,10 +72,10 @@ func (s *ReplayService) UploadChunk(ctx context.Context, req *ubaV1.UploadReplay
 		req.DeviceId,
 		req.GetUserId(),
 		req.PageUrl,
-		req.GetChunkSeq(),
+		int64(req.GetChunkSeq()),
 		req.GetEventsJson(),
-		req.GetEventCount(),
-		req.GetDurationMs(),
+		int64(req.GetEventCount()),
+		int64(req.GetDurationMs()),
 	)
 	if err != nil {
 		return nil, err
@@ -104,8 +104,8 @@ func (s *ReplayService) ListSessions(ctx context.Context, req *ubaV1.ListReplayS
 			DeviceId:   row.DeviceID,
 			UserId:     &row.UserID,
 			PageUrl:    row.PageURL,
-			ChunkCount: uint32(row.ChunkCount),
-			EventCount: uint64(row.EventCount),
+			ChunkCount: uint32(int64(row.ChunkCount)),
+			EventCount: uint64(int64(row.EventCount)),
 		}
 		if row.FirstSeenAt != nil {
 			item.FirstSeenAt = timestamppb.New(*row.FirstSeenAt)
@@ -118,7 +118,7 @@ func (s *ReplayService) ListSessions(ctx context.Context, req *ubaV1.ListReplayS
 
 	return &ubaV1.ListReplaySessionsResponse{
 		Items: items,
-		Total: uint64(len(items)),
+		Total: int64(len(items)),
 	}, nil
 }
 
@@ -136,7 +136,7 @@ func (s *ReplayService) GetSessionEvents(ctx context.Context, req *ubaV1.GetRepl
 		return nil, ubaV1.ErrorReplaySessionNotFound("replay session [%s] not found", req.GetSessionId())
 	}
 
-	var totalEvents uint64
+	var totalEvents int64
 	var sb strings.Builder
 	sb.WriteByte('[')
 	for i, chunk := range chunks {
@@ -151,15 +151,15 @@ func (s *ReplayService) GetSessionEvents(ctx context.Context, req *ubaV1.GetRepl
 			sb.WriteByte(',')
 		}
 		sb.WriteString(body)
-		totalEvents += uint64(chunk.EventCount)
+		totalEvents += int64(chunk.EventCount)
 	}
 	sb.WriteByte(']')
 
 	return &ubaV1.GetReplaySessionResponse{
 		SessionId:  req.GetSessionId(),
 		EventsJson: sb.String(),
-		ChunkCount: uint32(len(chunks)),
-		EventCount: totalEvents,
+		ChunkCount: uint32(int64(len(chunks))),
+		EventCount: uint64(totalEvents),
 	}, nil
 }
 
@@ -203,4 +203,3 @@ func (s *ReplayService) AsyncReplayRetentionSweep(_ string, _ *task.ReplayRetent
 	}
 	return nil
 }
-

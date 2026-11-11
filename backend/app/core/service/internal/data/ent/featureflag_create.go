@@ -66,13 +66,13 @@ func (_c *FeatureFlagCreate) SetNillableDeletedAt(v *time.Time) *FeatureFlagCrea
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (_c *FeatureFlagCreate) SetCreatedBy(v uint32) *FeatureFlagCreate {
+func (_c *FeatureFlagCreate) SetCreatedBy(v int64) *FeatureFlagCreate {
 	_c.mutation.SetCreatedBy(v)
 	return _c
 }
 
 // SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
-func (_c *FeatureFlagCreate) SetNillableCreatedBy(v *uint32) *FeatureFlagCreate {
+func (_c *FeatureFlagCreate) SetNillableCreatedBy(v *int64) *FeatureFlagCreate {
 	if v != nil {
 		_c.SetCreatedBy(*v)
 	}
@@ -80,13 +80,13 @@ func (_c *FeatureFlagCreate) SetNillableCreatedBy(v *uint32) *FeatureFlagCreate 
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (_c *FeatureFlagCreate) SetUpdatedBy(v uint32) *FeatureFlagCreate {
+func (_c *FeatureFlagCreate) SetUpdatedBy(v int64) *FeatureFlagCreate {
 	_c.mutation.SetUpdatedBy(v)
 	return _c
 }
 
 // SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (_c *FeatureFlagCreate) SetNillableUpdatedBy(v *uint32) *FeatureFlagCreate {
+func (_c *FeatureFlagCreate) SetNillableUpdatedBy(v *int64) *FeatureFlagCreate {
 	if v != nil {
 		_c.SetUpdatedBy(*v)
 	}
@@ -94,13 +94,13 @@ func (_c *FeatureFlagCreate) SetNillableUpdatedBy(v *uint32) *FeatureFlagCreate 
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (_c *FeatureFlagCreate) SetDeletedBy(v uint32) *FeatureFlagCreate {
+func (_c *FeatureFlagCreate) SetDeletedBy(v int64) *FeatureFlagCreate {
 	_c.mutation.SetDeletedBy(v)
 	return _c
 }
 
 // SetNillableDeletedBy sets the "deleted_by" field if the given value is not nil.
-func (_c *FeatureFlagCreate) SetNillableDeletedBy(v *uint32) *FeatureFlagCreate {
+func (_c *FeatureFlagCreate) SetNillableDeletedBy(v *int64) *FeatureFlagCreate {
 	if v != nil {
 		_c.SetDeletedBy(*v)
 	}
@@ -108,13 +108,13 @@ func (_c *FeatureFlagCreate) SetNillableDeletedBy(v *uint32) *FeatureFlagCreate 
 }
 
 // SetTenantID sets the "tenant_id" field.
-func (_c *FeatureFlagCreate) SetTenantID(v uint32) *FeatureFlagCreate {
+func (_c *FeatureFlagCreate) SetTenantID(v int64) *FeatureFlagCreate {
 	_c.mutation.SetTenantID(v)
 	return _c
 }
 
 // SetNillableTenantID sets the "tenant_id" field if the given value is not nil.
-func (_c *FeatureFlagCreate) SetNillableTenantID(v *uint32) *FeatureFlagCreate {
+func (_c *FeatureFlagCreate) SetNillableTenantID(v *int64) *FeatureFlagCreate {
 	if v != nil {
 		_c.SetTenantID(*v)
 	}
@@ -164,13 +164,13 @@ func (_c *FeatureFlagCreate) SetNillableDescription(v *string) *FeatureFlagCreat
 }
 
 // SetAppID sets the "app_id" field.
-func (_c *FeatureFlagCreate) SetAppID(v uint32) *FeatureFlagCreate {
+func (_c *FeatureFlagCreate) SetAppID(v int64) *FeatureFlagCreate {
 	_c.mutation.SetAppID(v)
 	return _c
 }
 
 // SetNillableAppID sets the "app_id" field if the given value is not nil.
-func (_c *FeatureFlagCreate) SetNillableAppID(v *uint32) *FeatureFlagCreate {
+func (_c *FeatureFlagCreate) SetNillableAppID(v *int64) *FeatureFlagCreate {
 	if v != nil {
 		_c.SetAppID(*v)
 	}
@@ -254,7 +254,7 @@ func (_c *FeatureFlagCreate) SetNillableEndedAt(v *time.Time) *FeatureFlagCreate
 }
 
 // SetID sets the "id" field.
-func (_c *FeatureFlagCreate) SetID(v uint32) *FeatureFlagCreate {
+func (_c *FeatureFlagCreate) SetID(v int64) *FeatureFlagCreate {
 	_c.mutation.SetID(v)
 	return _c
 }
@@ -348,7 +348,7 @@ func (_c *FeatureFlagCreate) sqlSave(ctx context.Context) (*FeatureFlag, error) 
 	}
 	if _spec.ID.Value != _node.ID {
 		id := _spec.ID.Value.(int64)
-		_node.ID = uint32(id)
+		_node.ID = int64(id)
 	}
 	_c.mutation.id = &_node.ID
 	_c.mutation.done = true
@@ -358,7 +358,7 @@ func (_c *FeatureFlagCreate) sqlSave(ctx context.Context) (*FeatureFlag, error) 
 func (_c *FeatureFlagCreate) createSpec() (*FeatureFlag, *sqlgraph.CreateSpec) {
 	var (
 		_node = &FeatureFlag{config: _c.config}
-		_spec = sqlgraph.NewCreateSpec(featureflag.Table, sqlgraph.NewFieldSpec(featureflag.FieldID, field.TypeUint32))
+		_spec = sqlgraph.NewCreateSpec(featureflag.Table, sqlgraph.NewFieldSpec(featureflag.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = _c.conflict
 	if id, ok := _c.mutation.ID(); ok {
@@ -378,19 +378,19 @@ func (_c *FeatureFlagCreate) createSpec() (*FeatureFlag, *sqlgraph.CreateSpec) {
 		_node.DeletedAt = &value
 	}
 	if value, ok := _c.mutation.CreatedBy(); ok {
-		_spec.SetField(featureflag.FieldCreatedBy, field.TypeUint32, value)
+		_spec.SetField(featureflag.FieldCreatedBy, field.TypeInt64, value)
 		_node.CreatedBy = &value
 	}
 	if value, ok := _c.mutation.UpdatedBy(); ok {
-		_spec.SetField(featureflag.FieldUpdatedBy, field.TypeUint32, value)
+		_spec.SetField(featureflag.FieldUpdatedBy, field.TypeInt64, value)
 		_node.UpdatedBy = &value
 	}
 	if value, ok := _c.mutation.DeletedBy(); ok {
-		_spec.SetField(featureflag.FieldDeletedBy, field.TypeUint32, value)
+		_spec.SetField(featureflag.FieldDeletedBy, field.TypeInt64, value)
 		_node.DeletedBy = &value
 	}
 	if value, ok := _c.mutation.TenantID(); ok {
-		_spec.SetField(featureflag.FieldTenantID, field.TypeUint32, value)
+		_spec.SetField(featureflag.FieldTenantID, field.TypeInt64, value)
 		_node.TenantID = &value
 	}
 	if value, ok := _c.mutation.Key(); ok {
@@ -406,7 +406,7 @@ func (_c *FeatureFlagCreate) createSpec() (*FeatureFlag, *sqlgraph.CreateSpec) {
 		_node.Description = &value
 	}
 	if value, ok := _c.mutation.AppID(); ok {
-		_spec.SetField(featureflag.FieldAppID, field.TypeUint32, value)
+		_spec.SetField(featureflag.FieldAppID, field.TypeInt64, value)
 		_node.AppID = &value
 	}
 	if value, ok := _c.mutation.Variants(); ok {
@@ -522,7 +522,7 @@ func (u *FeatureFlagUpsert) ClearDeletedAt() *FeatureFlagUpsert {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (u *FeatureFlagUpsert) SetCreatedBy(v uint32) *FeatureFlagUpsert {
+func (u *FeatureFlagUpsert) SetCreatedBy(v int64) *FeatureFlagUpsert {
 	u.Set(featureflag.FieldCreatedBy, v)
 	return u
 }
@@ -534,7 +534,7 @@ func (u *FeatureFlagUpsert) UpdateCreatedBy() *FeatureFlagUpsert {
 }
 
 // AddCreatedBy adds v to the "created_by" field.
-func (u *FeatureFlagUpsert) AddCreatedBy(v uint32) *FeatureFlagUpsert {
+func (u *FeatureFlagUpsert) AddCreatedBy(v int64) *FeatureFlagUpsert {
 	u.Add(featureflag.FieldCreatedBy, v)
 	return u
 }
@@ -546,7 +546,7 @@ func (u *FeatureFlagUpsert) ClearCreatedBy() *FeatureFlagUpsert {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (u *FeatureFlagUpsert) SetUpdatedBy(v uint32) *FeatureFlagUpsert {
+func (u *FeatureFlagUpsert) SetUpdatedBy(v int64) *FeatureFlagUpsert {
 	u.Set(featureflag.FieldUpdatedBy, v)
 	return u
 }
@@ -558,7 +558,7 @@ func (u *FeatureFlagUpsert) UpdateUpdatedBy() *FeatureFlagUpsert {
 }
 
 // AddUpdatedBy adds v to the "updated_by" field.
-func (u *FeatureFlagUpsert) AddUpdatedBy(v uint32) *FeatureFlagUpsert {
+func (u *FeatureFlagUpsert) AddUpdatedBy(v int64) *FeatureFlagUpsert {
 	u.Add(featureflag.FieldUpdatedBy, v)
 	return u
 }
@@ -570,7 +570,7 @@ func (u *FeatureFlagUpsert) ClearUpdatedBy() *FeatureFlagUpsert {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (u *FeatureFlagUpsert) SetDeletedBy(v uint32) *FeatureFlagUpsert {
+func (u *FeatureFlagUpsert) SetDeletedBy(v int64) *FeatureFlagUpsert {
 	u.Set(featureflag.FieldDeletedBy, v)
 	return u
 }
@@ -582,7 +582,7 @@ func (u *FeatureFlagUpsert) UpdateDeletedBy() *FeatureFlagUpsert {
 }
 
 // AddDeletedBy adds v to the "deleted_by" field.
-func (u *FeatureFlagUpsert) AddDeletedBy(v uint32) *FeatureFlagUpsert {
+func (u *FeatureFlagUpsert) AddDeletedBy(v int64) *FeatureFlagUpsert {
 	u.Add(featureflag.FieldDeletedBy, v)
 	return u
 }
@@ -648,7 +648,7 @@ func (u *FeatureFlagUpsert) ClearDescription() *FeatureFlagUpsert {
 }
 
 // SetAppID sets the "app_id" field.
-func (u *FeatureFlagUpsert) SetAppID(v uint32) *FeatureFlagUpsert {
+func (u *FeatureFlagUpsert) SetAppID(v int64) *FeatureFlagUpsert {
 	u.Set(featureflag.FieldAppID, v)
 	return u
 }
@@ -660,7 +660,7 @@ func (u *FeatureFlagUpsert) UpdateAppID() *FeatureFlagUpsert {
 }
 
 // AddAppID adds v to the "app_id" field.
-func (u *FeatureFlagUpsert) AddAppID(v uint32) *FeatureFlagUpsert {
+func (u *FeatureFlagUpsert) AddAppID(v int64) *FeatureFlagUpsert {
 	u.Add(featureflag.FieldAppID, v)
 	return u
 }
@@ -864,14 +864,14 @@ func (u *FeatureFlagUpsertOne) ClearDeletedAt() *FeatureFlagUpsertOne {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (u *FeatureFlagUpsertOne) SetCreatedBy(v uint32) *FeatureFlagUpsertOne {
+func (u *FeatureFlagUpsertOne) SetCreatedBy(v int64) *FeatureFlagUpsertOne {
 	return u.Update(func(s *FeatureFlagUpsert) {
 		s.SetCreatedBy(v)
 	})
 }
 
 // AddCreatedBy adds v to the "created_by" field.
-func (u *FeatureFlagUpsertOne) AddCreatedBy(v uint32) *FeatureFlagUpsertOne {
+func (u *FeatureFlagUpsertOne) AddCreatedBy(v int64) *FeatureFlagUpsertOne {
 	return u.Update(func(s *FeatureFlagUpsert) {
 		s.AddCreatedBy(v)
 	})
@@ -892,14 +892,14 @@ func (u *FeatureFlagUpsertOne) ClearCreatedBy() *FeatureFlagUpsertOne {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (u *FeatureFlagUpsertOne) SetUpdatedBy(v uint32) *FeatureFlagUpsertOne {
+func (u *FeatureFlagUpsertOne) SetUpdatedBy(v int64) *FeatureFlagUpsertOne {
 	return u.Update(func(s *FeatureFlagUpsert) {
 		s.SetUpdatedBy(v)
 	})
 }
 
 // AddUpdatedBy adds v to the "updated_by" field.
-func (u *FeatureFlagUpsertOne) AddUpdatedBy(v uint32) *FeatureFlagUpsertOne {
+func (u *FeatureFlagUpsertOne) AddUpdatedBy(v int64) *FeatureFlagUpsertOne {
 	return u.Update(func(s *FeatureFlagUpsert) {
 		s.AddUpdatedBy(v)
 	})
@@ -920,14 +920,14 @@ func (u *FeatureFlagUpsertOne) ClearUpdatedBy() *FeatureFlagUpsertOne {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (u *FeatureFlagUpsertOne) SetDeletedBy(v uint32) *FeatureFlagUpsertOne {
+func (u *FeatureFlagUpsertOne) SetDeletedBy(v int64) *FeatureFlagUpsertOne {
 	return u.Update(func(s *FeatureFlagUpsert) {
 		s.SetDeletedBy(v)
 	})
 }
 
 // AddDeletedBy adds v to the "deleted_by" field.
-func (u *FeatureFlagUpsertOne) AddDeletedBy(v uint32) *FeatureFlagUpsertOne {
+func (u *FeatureFlagUpsertOne) AddDeletedBy(v int64) *FeatureFlagUpsertOne {
 	return u.Update(func(s *FeatureFlagUpsert) {
 		s.AddDeletedBy(v)
 	})
@@ -1011,14 +1011,14 @@ func (u *FeatureFlagUpsertOne) ClearDescription() *FeatureFlagUpsertOne {
 }
 
 // SetAppID sets the "app_id" field.
-func (u *FeatureFlagUpsertOne) SetAppID(v uint32) *FeatureFlagUpsertOne {
+func (u *FeatureFlagUpsertOne) SetAppID(v int64) *FeatureFlagUpsertOne {
 	return u.Update(func(s *FeatureFlagUpsert) {
 		s.SetAppID(v)
 	})
 }
 
 // AddAppID adds v to the "app_id" field.
-func (u *FeatureFlagUpsertOne) AddAppID(v uint32) *FeatureFlagUpsertOne {
+func (u *FeatureFlagUpsertOne) AddAppID(v int64) *FeatureFlagUpsertOne {
 	return u.Update(func(s *FeatureFlagUpsert) {
 		s.AddAppID(v)
 	})
@@ -1166,7 +1166,7 @@ func (u *FeatureFlagUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *FeatureFlagUpsertOne) ID(ctx context.Context) (id uint32, err error) {
+func (u *FeatureFlagUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -1175,7 +1175,7 @@ func (u *FeatureFlagUpsertOne) ID(ctx context.Context) (id uint32, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *FeatureFlagUpsertOne) IDX(ctx context.Context) uint32 {
+func (u *FeatureFlagUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -1232,7 +1232,7 @@ func (_c *FeatureFlagCreateBulk) Save(ctx context.Context) ([]*FeatureFlag, erro
 				mutation.id = &nodes[i].ID
 				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = uint32(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -1413,14 +1413,14 @@ func (u *FeatureFlagUpsertBulk) ClearDeletedAt() *FeatureFlagUpsertBulk {
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (u *FeatureFlagUpsertBulk) SetCreatedBy(v uint32) *FeatureFlagUpsertBulk {
+func (u *FeatureFlagUpsertBulk) SetCreatedBy(v int64) *FeatureFlagUpsertBulk {
 	return u.Update(func(s *FeatureFlagUpsert) {
 		s.SetCreatedBy(v)
 	})
 }
 
 // AddCreatedBy adds v to the "created_by" field.
-func (u *FeatureFlagUpsertBulk) AddCreatedBy(v uint32) *FeatureFlagUpsertBulk {
+func (u *FeatureFlagUpsertBulk) AddCreatedBy(v int64) *FeatureFlagUpsertBulk {
 	return u.Update(func(s *FeatureFlagUpsert) {
 		s.AddCreatedBy(v)
 	})
@@ -1441,14 +1441,14 @@ func (u *FeatureFlagUpsertBulk) ClearCreatedBy() *FeatureFlagUpsertBulk {
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (u *FeatureFlagUpsertBulk) SetUpdatedBy(v uint32) *FeatureFlagUpsertBulk {
+func (u *FeatureFlagUpsertBulk) SetUpdatedBy(v int64) *FeatureFlagUpsertBulk {
 	return u.Update(func(s *FeatureFlagUpsert) {
 		s.SetUpdatedBy(v)
 	})
 }
 
 // AddUpdatedBy adds v to the "updated_by" field.
-func (u *FeatureFlagUpsertBulk) AddUpdatedBy(v uint32) *FeatureFlagUpsertBulk {
+func (u *FeatureFlagUpsertBulk) AddUpdatedBy(v int64) *FeatureFlagUpsertBulk {
 	return u.Update(func(s *FeatureFlagUpsert) {
 		s.AddUpdatedBy(v)
 	})
@@ -1469,14 +1469,14 @@ func (u *FeatureFlagUpsertBulk) ClearUpdatedBy() *FeatureFlagUpsertBulk {
 }
 
 // SetDeletedBy sets the "deleted_by" field.
-func (u *FeatureFlagUpsertBulk) SetDeletedBy(v uint32) *FeatureFlagUpsertBulk {
+func (u *FeatureFlagUpsertBulk) SetDeletedBy(v int64) *FeatureFlagUpsertBulk {
 	return u.Update(func(s *FeatureFlagUpsert) {
 		s.SetDeletedBy(v)
 	})
 }
 
 // AddDeletedBy adds v to the "deleted_by" field.
-func (u *FeatureFlagUpsertBulk) AddDeletedBy(v uint32) *FeatureFlagUpsertBulk {
+func (u *FeatureFlagUpsertBulk) AddDeletedBy(v int64) *FeatureFlagUpsertBulk {
 	return u.Update(func(s *FeatureFlagUpsert) {
 		s.AddDeletedBy(v)
 	})
@@ -1560,14 +1560,14 @@ func (u *FeatureFlagUpsertBulk) ClearDescription() *FeatureFlagUpsertBulk {
 }
 
 // SetAppID sets the "app_id" field.
-func (u *FeatureFlagUpsertBulk) SetAppID(v uint32) *FeatureFlagUpsertBulk {
+func (u *FeatureFlagUpsertBulk) SetAppID(v int64) *FeatureFlagUpsertBulk {
 	return u.Update(func(s *FeatureFlagUpsert) {
 		s.SetAppID(v)
 	})
 }
 
 // AddAppID adds v to the "app_id" field.
-func (u *FeatureFlagUpsertBulk) AddAppID(v uint32) *FeatureFlagUpsertBulk {
+func (u *FeatureFlagUpsertBulk) AddAppID(v int64) *FeatureFlagUpsertBulk {
 	return u.Update(func(s *FeatureFlagUpsert) {
 		s.AddAppID(v)
 	})

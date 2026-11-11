@@ -30,7 +30,7 @@ func NewPermissionApiRepo(ctx *bootstrap.Context, entClient *entCrud.EntClient[*
 func (r *PermissionApiRepo) CleanApis(
 	ctx context.Context,
 	tx *ent.Tx,
-	permissionIDs []uint32,
+	permissionIDs []int64,
 ) error {
 	if _, err := tx.PermissionApi.Delete().
 		Where(
@@ -47,8 +47,8 @@ func (r *PermissionApiRepo) CleanApis(
 func (r *PermissionApiRepo) CleanNotExistApis(
 	ctx context.Context,
 	tx *ent.Tx,
-	permissionID uint32,
-	apiIDs []uint32,
+	permissionID int64,
+	apiIDs []int64,
 ) error {
 	if _, err := tx.PermissionApi.Delete().
 		Where(
@@ -65,8 +65,8 @@ func (r *PermissionApiRepo) CleanNotExistApis(
 // AssignApis 给权限分配API资源
 func (r *PermissionApiRepo) AssignApis(
 	ctx context.Context,
-	permissionID uint32,
-	apiIDs []uint32,
+	permissionID int64,
+	apiIDs []int64,
 ) (err error) {
 	var tx *ent.Tx
 	tx, err = r.entClient.Client().Tx(ctx)
@@ -98,8 +98,8 @@ func (r *PermissionApiRepo) AssignApis(
 func (r *PermissionApiRepo) AssignApisWithTx(
 	ctx context.Context,
 	tx *ent.Tx,
-	permissionID uint32,
-	apis []uint32,
+	permissionID int64,
+	apis []int64,
 ) error {
 	if len(apis) == 0 {
 		return nil
@@ -129,7 +129,7 @@ func (r *PermissionApiRepo) AssignApisWithTx(
 }
 
 // ListApiIDs 列出权限关联的API资源ID列表
-func (r *PermissionApiRepo) ListApiIDs(ctx context.Context, permissionIDs []uint32) ([]uint32, error) {
+func (r *PermissionApiRepo) ListApiIDs(ctx context.Context, permissionIDs []int64) ([]int64, error) {
 	q := r.entClient.Client().PermissionApi.
 		Query().
 		Where(
@@ -144,9 +144,9 @@ func (r *PermissionApiRepo) ListApiIDs(ctx context.Context, permissionIDs []uint
 		return nil, permissionV1.ErrorInternalServerError("list permission apis by permission id failed")
 	}
 
-	ids := make([]uint32, len(intIDs))
+	ids := make([]int64, len(intIDs))
 	for i, v := range intIDs {
-		ids[i] = uint32(v)
+		ids[i] = int64(v)
 	}
 	return ids, nil
 }
@@ -167,7 +167,7 @@ func (r *PermissionApiRepo) Truncate(ctx context.Context) error {
 }
 
 // Delete 删除权限关联的API资源
-func (r *PermissionApiRepo) Delete(ctx context.Context, permissionID uint32) error {
+func (r *PermissionApiRepo) Delete(ctx context.Context, permissionID int64) error {
 	if _, err := r.entClient.Client().PermissionApi.Delete().
 		Where(
 			permissionapi.PermissionIDEQ(permissionID),
@@ -179,7 +179,7 @@ func (r *PermissionApiRepo) Delete(ctx context.Context, permissionID uint32) err
 	return nil
 }
 
-func (r *PermissionApiRepo) DeleteByPermissionIDs(ctx context.Context, permissionIDs []uint32) error {
+func (r *PermissionApiRepo) DeleteByPermissionIDs(ctx context.Context, permissionIDs []int64) error {
 	if _, err := r.entClient.Client().PermissionApi.Delete().
 		Where(
 			permissionapi.PermissionIDIn(permissionIDs...),
@@ -192,7 +192,7 @@ func (r *PermissionApiRepo) DeleteByPermissionIDs(ctx context.Context, permissio
 }
 
 // AssignApi 给权限分配API资源
-func (r *PermissionApiRepo) AssignApi(ctx context.Context, permissionID uint32, apiID uint32) error {
+func (r *PermissionApiRepo) AssignApi(ctx context.Context, permissionID int64, apiID int64) error {
 	now := time.Now()
 	pm := r.entClient.Client().PermissionApi.
 		Create().

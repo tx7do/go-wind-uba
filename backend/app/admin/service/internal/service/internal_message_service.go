@@ -181,7 +181,7 @@ func (s *InternalMessageService) SendMessage(ctx context.Context, req *internalM
 }
 
 // sendNotification 向客户端发送通知消息
-func (s *InternalMessageService) sendNotification(ctx context.Context, messageId uint32, recipientUserId uint32, senderUserId uint32, now *time.Time, title, content string) error {
+func (s *InternalMessageService) sendNotification(ctx context.Context, messageId int64, recipientUserId int64, senderUserId int64, now *time.Time, title, content string) error {
 	recipient := &internalMessageV1.InternalMessageRecipient{
 		MessageId:       trans.Ptr(messageId),
 		RecipientUserId: trans.Ptr(recipientUserId),

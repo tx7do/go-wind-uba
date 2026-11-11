@@ -39,7 +39,7 @@ func (Dashboard) Fields() []ent.Field {
 			Optional().
 			Nillable(),
 
-		field.Uint32("app_id").
+		field.Int64("app_id").
 			Comment("关联应用ID").
 			Optional().
 			Nillable(),
@@ -55,10 +55,10 @@ func (Dashboard) Fields() []ent.Field {
 
 func (Dashboard) Mixin() []ent.Mixin {
 	return []ent.Mixin{
-		mixin.AutoIncrementId{},
+		mixin.AutoIncrementId64{},
 		mixin.TimeAt{},
-		mixin.OperatorID{},
-		mixin.TenantID[uint32]{},
+		mixin.OperatorID64{},
+		mixin.TenantID[int64]{},
 	}
 }
 

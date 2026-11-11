@@ -88,7 +88,7 @@ func (r *ImportJobRepo) Count(ctx context.Context, req *paginationV1.PagingReque
 		return nil, ubaV1.ErrorImportInternalError("query import job count failed")
 	}
 
-	return &ubaV1.CountImportJobResponse{Count: uint64(count)}, nil
+	return &ubaV1.CountImportJobResponse{Count: int64(count)}, nil
 }
 
 func (r *ImportJobRepo) List(ctx context.Context, req *paginationV1.PagingRequest) (*ubaV1.ListImportJobResponse, error) {
@@ -109,7 +109,7 @@ func (r *ImportJobRepo) List(ctx context.Context, req *paginationV1.PagingReques
 	return &ubaV1.ListImportJobResponse{Total: ret.Total, Items: ret.Items}, nil
 }
 
-func (r *ImportJobRepo) IsExist(ctx context.Context, id uint32) (bool, error) {
+func (r *ImportJobRepo) IsExist(ctx context.Context, id int64) (bool, error) {
 	exist, err := r.entClient.Client().ImportJob.Query().
 		Where(importjob.IDEQ(id)).
 		Exist(ctx)
@@ -138,20 +138,20 @@ func (r *ImportJobRepo) Get(ctx context.Context, req *ubaV1.GetImportJobRequest)
 }
 
 // GetEntityWithEvents 读取含 events_json 的原始实体（导入执行器用）。
-func (r *ImportJobRepo) GetEntityWithEvents(ctx context.Context, id uint32) (*ent.ImportJob, error) {
+func (r *ImportJobRepo) GetEntityWithEvents(ctx context.Context, id int64) (*ent.ImportJob, error) {
 	return r.entClient.Client().ImportJob.Query().
 		Where(importjob.IDEQ(id)).
 		Only(ctx)
 }
 
-func (r *ImportJobRepo) Create(ctx context.Context, name string, appID *string, eventsJSON string, totalCount uint32, tenantID, createdBy uint32) (*ent.ImportJob, error) {
+func (r *ImportJobRepo) Create(ctx context.Context, name string, appID *string, eventsJSON string, totalCount int64, tenantID, createdBy int64) (*ent.ImportJob, error) {
 	now := time.Now()
 	return r.entClient.Client().ImportJob.Create().
 		SetNillableTenantID(&tenantID).
 		SetNillableAppID(appID).
 		SetNillableName(&name).
 		SetEventsJSON(eventsJSON).
-		SetTotalCount(totalCount).
+		SetTotalCount(uint32(totalCount)).
 		SetStatus("PENDING").
 		SetNillableCreatedBy(&createdBy).
 		SetCreatedAt(now).
@@ -160,10 +160,10 @@ func (r *ImportJobRepo) Create(ctx context.Context, name string, appID *string, 
 }
 
 // UpdateProgress 回写进度与结论。
-func (r *ImportJobRepo) UpdateProgress(ctx context.Context, id uint32, imported, failed uint32, status string, errMsgs []string, startedAt, finishedAt time.Time) error {
+func (r *ImportJobRepo) UpdateProgress(ctx context.Context, id int64, imported, failed int64, status string, errMsgs []string, startedAt, finishedAt time.Time) error {
 	builder := r.entClient.Client().ImportJob.UpdateOneID(id).
-		SetImportedCount(imported).
-		SetFailedCount(failed).
+		SetImportedCount(uint32(imported)).
+		SetFailedCount(uint32(failed)).
 		SetStatus(status).
 		SetStartedAt(startedAt).
 		SetFinishedAt(finishedAt).
@@ -182,7 +182,7 @@ func (r *ImportJobRepo) UpdateProgress(ctx context.Context, id uint32, imported,
 }
 
 // UpdateStatus 仅改状态（取消等）。
-func (r *ImportJobRepo) UpdateStatus(ctx context.Context, id uint32, status string) error {
+func (r *ImportJobRepo) UpdateStatus(ctx context.Context, id int64, status string) error {
 	err := r.entClient.Client().ImportJob.UpdateOneID(id).
 		SetStatus(status).
 		SetUpdatedAt(time.Now()).
@@ -195,7 +195,7 @@ func (r *ImportJobRepo) UpdateStatus(ctx context.Context, id uint32, status stri
 }
 
 // ClearEventsJSON 导入完成后清空 events_json（释放存储）。
-func (r *ImportJobRepo) ClearEventsJSON(ctx context.Context, id uint32) {
+func (r *ImportJobRepo) ClearEventsJSON(ctx context.Context, id int64) {
 	_ = r.entClient.Client().ImportJob.UpdateOneID(id).
 		ClearEventsJSON().
 		Exec(ctx)

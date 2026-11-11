@@ -26,8 +26,8 @@ type ApiRepo struct {
 	entClient *entCrud.EntClient[*ent.Client]
 	log       *log.Helper
 
-	mapper         *mapper.CopierMapper[resourceV1.Api, ent.Api]
-	scopeConverter *mapper.EnumTypeConverter[resourceV1.Api_Scope, api.Scope]
+	mapper          *mapper.CopierMapper[resourceV1.Api, ent.Api]
+	scopeConverter  *mapper.EnumTypeConverter[resourceV1.Api_Scope, api.Scope]
 	statusConverter *mapper.EnumTypeConverter[resourceV1.Api_Status, api.Status]
 
 	repository *entCrud.Repository[
@@ -90,7 +90,7 @@ func (r *ApiRepo) Count(ctx context.Context, req *paginationV1.PagingRequest) (*
 	}
 
 	return &resourceV1.CountApiResponse{
-		Count: uint64(count),
+		Count: int64(count),
 	}, nil
 }
 
@@ -115,7 +115,7 @@ func (r *ApiRepo) List(ctx context.Context, req *paginationV1.PagingRequest) (*r
 	}, nil
 }
 
-func (r *ApiRepo) IsExist(ctx context.Context, id uint32) (bool, error) {
+func (r *ApiRepo) IsExist(ctx context.Context, id int64) (bool, error) {
 	exist, err := r.entClient.Client().Api.Query().
 		Where(api.IDEQ(id)).
 		Exist(ctx)
@@ -174,7 +174,7 @@ func (r *ApiRepo) GetApiByEndpoint(ctx context.Context, path, method string) (*r
 }
 
 // GetApiByIDs 根据ID列表获取API资源
-func (r *ApiRepo) GetApiByIDs(ctx context.Context, ids []uint32) ([]*resourceV1.Api, error) {
+func (r *ApiRepo) GetApiByIDs(ctx context.Context, ids []int64) ([]*resourceV1.Api, error) {
 	if len(ids) == 0 {
 		return nil, resourceV1.ErrorBadRequest("invalid parameter")
 	}

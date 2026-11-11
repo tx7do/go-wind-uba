@@ -92,7 +92,7 @@ func (r *RiskEventsRepo) List(ctx context.Context, req *paginationV1.PagingReque
 	}
 	return &ubaV1.ListRiskEventResponse{
 		Items: result.Items,
-		Total: result.Total,
+		Total: int64(result.Total),
 	}, nil
 }
 

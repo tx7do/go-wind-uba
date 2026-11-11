@@ -42,7 +42,7 @@ func (ReplayChunk) Fields() []ent.Field {
 			Optional().
 			Nillable(),
 
-		field.Uint32("user_id").
+		field.Int64("user_id").
 			Comment("登录用户 ID").
 			Default(0),
 
@@ -70,9 +70,9 @@ func (ReplayChunk) Fields() []ent.Field {
 
 func (ReplayChunk) Mixin() []ent.Mixin {
 	return []ent.Mixin{
-		mixin.AutoIncrementId{},
+		mixin.AutoIncrementId64{},
 		mixin.TimeAt{},
-		mixin.TenantID[uint32]{},
+		mixin.TenantID[int64]{},
 	}
 }
 

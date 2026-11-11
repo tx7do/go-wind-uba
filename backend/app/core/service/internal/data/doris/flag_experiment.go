@@ -16,7 +16,7 @@ import (
 func (r *AnalyticsRepo) FlagExperimentResult(
 	ctx context.Context,
 	flagKey, goalEvent string,
-	appFilter uint32,
+	appFilter int64,
 	startMs, endMs int64,
 ) ([]data.FlagVariantStat, error) {
 	goal := goalEvent

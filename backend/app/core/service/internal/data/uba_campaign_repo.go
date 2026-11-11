@@ -84,7 +84,7 @@ func (r *CampaignRepo) Count(ctx context.Context, req *paginationV1.PagingReques
 	}
 
 	return &ubaV1.CountCampaignResponse{
-		Count: uint64(count),
+		Count: int64(count),
 	}, nil
 }
 
@@ -109,7 +109,7 @@ func (r *CampaignRepo) List(ctx context.Context, req *paginationV1.PagingRequest
 	}, nil
 }
 
-func (r *CampaignRepo) IsExist(ctx context.Context, id uint32) (bool, error) {
+func (r *CampaignRepo) IsExist(ctx context.Context, id int64) (bool, error) {
 	exist, err := r.entClient.Client().Campaign.Query().
 		Where(campaign.IDEQ(id)).
 		Exist(ctx)
@@ -143,7 +143,7 @@ func (r *CampaignRepo) Get(ctx context.Context, req *ubaV1.GetCampaignRequest) (
 }
 
 // GetEntity 读取原始实体（发送执行器需要完整字段）。
-func (r *CampaignRepo) GetEntity(ctx context.Context, id uint32) (*ent.Campaign, error) {
+func (r *CampaignRepo) GetEntity(ctx context.Context, id int64) (*ent.Campaign, error) {
 	entity, err := r.entClient.Client().Campaign.Query().
 		Where(campaign.IDEQ(id)).
 		Only(ctx)
@@ -241,11 +241,11 @@ func (r *CampaignRepo) Update(ctx context.Context, req *ubaV1.UpdateCampaignRequ
 }
 
 // UpdateSendProgress 群发执行器回写进度与结论。
-func (r *CampaignRepo) UpdateSendProgress(ctx context.Context, id uint32, total, sent, failed uint64, status string, now time.Time) error {
+func (r *CampaignRepo) UpdateSendProgress(ctx context.Context, id int64, total, sent, failed int64, status string, now time.Time) error {
 	builder := r.entClient.Client().Campaign.UpdateOneID(id).
-		SetTotalCount(total).
-		SetSentCount(sent).
-		SetFailedCount(failed).
+		SetTotalCount(uint64(total)).
+		SetSentCount(uint64(sent)).
+		SetFailedCount(uint64(failed)).
 		SetStatus(status).
 		SetLastSentAt(now).
 		SetUpdatedAt(now)
@@ -258,7 +258,7 @@ func (r *CampaignRepo) UpdateSendProgress(ctx context.Context, id uint32, total,
 }
 
 // UpdateStatus 仅改状态（取消/开始发送等）。
-func (r *CampaignRepo) UpdateStatus(ctx context.Context, id uint32, status string, now time.Time) error {
+func (r *CampaignRepo) UpdateStatus(ctx context.Context, id int64, status string, now time.Time) error {
 	err := r.entClient.Client().Campaign.UpdateOneID(id).
 		SetStatus(status).
 		SetUpdatedAt(now).

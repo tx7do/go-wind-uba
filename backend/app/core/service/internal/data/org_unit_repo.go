@@ -125,12 +125,12 @@ func (r *OrgUnitRepo) List(ctx context.Context, req *paginationV1.PagingRequest)
 	}
 
 	sort.SliceStable(entities, func(i, j int) bool {
-		var sortI, sortJ uint32
+		var sortI, sortJ int64
 		if entities[i].SortOrder != nil {
-			sortI = *entities[i].SortOrder
+			sortI = int64(*entities[i].SortOrder)
 		}
 		if entities[j].SortOrder != nil {
-			sortJ = *entities[j].SortOrder
+			sortJ = int64(*entities[j].SortOrder)
 		}
 		return sortI < sortJ
 	})
@@ -145,8 +145,8 @@ func (r *OrgUnitRepo) List(ctx context.Context, req *paginationV1.PagingRequest)
 	// 构建树形结构
 	dtos = pagination.BuildTree(
 		dtos,
-		func(node *identityV1.OrgUnit) *uint32 { return node.Id },
-		func(node *identityV1.OrgUnit) *uint32 { return node.ParentId },
+		func(node *identityV1.OrgUnit) *int64 { return node.Id },
+		func(node *identityV1.OrgUnit) *int64 { return node.ParentId },
 		func(node *identityV1.OrgUnit) *[]*identityV1.OrgUnit { return &node.Children },
 	)
 
@@ -156,12 +156,12 @@ func (r *OrgUnitRepo) List(ctx context.Context, req *paginationV1.PagingRequest)
 	}
 
 	return &identityV1.ListOrgUnitResponse{
-		Total: uint64(count),
+		Total: int64(count),
 		Items: dtos,
 	}, err
 }
 
-func (r *OrgUnitRepo) IsExist(ctx context.Context, id uint32) (bool, error) {
+func (r *OrgUnitRepo) IsExist(ctx context.Context, id int64) (bool, error) {
 	exist, err := r.entClient.Client().OrgUnit.Query().
 		Where(orgunit.IDEQ(id)).
 		Exist(ctx)
@@ -195,7 +195,7 @@ func (r *OrgUnitRepo) Get(ctx context.Context, req *identityV1.GetOrgUnitRequest
 }
 
 // ListOrgUnitsByIds 通过多个ID获取组织列表
-func (r *OrgUnitRepo) ListOrgUnitsByIds(ctx context.Context, ids []uint32) ([]*identityV1.OrgUnit, error) {
+func (r *OrgUnitRepo) ListOrgUnitsByIds(ctx context.Context, ids []int64) ([]*identityV1.OrgUnit, error) {
 	if len(ids) == 0 {
 		return []*identityV1.OrgUnit{}, nil
 	}
@@ -366,7 +366,7 @@ func (r *OrgUnitRepo) Delete(ctx context.Context, req *identityV1.DeleteOrgUnitR
 		return identityV1.ErrorBadRequest("invalid parameter")
 	}
 
-	childrenIds, err := entCrud.QueryAllChildrenIds(ctx, r.entClient, "sys_org_units", req.GetId())
+	childrenIds, err := entCrud.QueryAllChildrenIds64(ctx, r.entClient, "sys_org_units", req.GetId())
 	if err != nil {
 		r.log.Errorf("query child orgUnits failed: %s", err.Error())
 		return identityV1.ErrorInternalServerError("query child orgUnits failed")
@@ -412,7 +412,7 @@ func (r *OrgUnitRepo) setTreePath(ctx context.Context, tx *ent.Tx, entity *ent.O
 		}
 	}
 	err = tx.OrgUnit.UpdateOneID(entity.ID).
-		SetPath(entCrud.ComputeTreePath(parentPath, entity.ID)).
+		SetPath(entCrud.ComputeTreePath64(parentPath, entity.ID)).
 		Exec(ctx)
 
 	return err

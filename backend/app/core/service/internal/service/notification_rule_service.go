@@ -1,9 +1,9 @@
 package service
 
 import (
-	"google.golang.org/protobuf/proto"
 	"github.com/go-kratos/kratos/v2/log"
 	appViewer "go-wind-uba/pkg/entgo/viewer"
+	"google.golang.org/protobuf/proto"
 
 	"context"
 	"strings"
@@ -26,7 +26,7 @@ import (
 // 这张表是投递时"事件 → 渠道 + 派发方式"的唯一运行时真相（见 NotificationService.resolveRoute），
 // 本服务只管它的增删改查与一次测试投递，不参与投递决策：两条路径读同一张表，不各存一份副本。
 type NotificationRuleService struct {
-		notificationV1.UnimplementedNotificationRuleServiceServer
+	notificationV1.UnimplementedNotificationRuleServiceServer
 
 	log      *log.Helper
 	repo     *data.NotificationRuleRepo
@@ -94,7 +94,6 @@ func (s *NotificationRuleService) GetNotificationRule(ctx context.Context, req *
 		return nil, notificationV1.ErrorNotificationBadRequest("id is required")
 	}
 
-
 	return s.repo.Get(ctx, req.GetId())
 }
 
@@ -102,7 +101,6 @@ func (s *NotificationRuleService) CreateNotificationRule(ctx context.Context, re
 	if req == nil || req.Data == nil {
 		return nil, notificationV1.ErrorNotificationBadRequest("invalid parameter")
 	}
-
 
 	operator, err := auth.FromContext(ctx)
 	if err != nil {
@@ -122,7 +120,6 @@ func (s *NotificationRuleService) UpdateNotificationRule(ctx context.Context, re
 		return nil, notificationV1.ErrorNotificationBadRequest("invalid parameter")
 	}
 
-
 	operator, err := auth.FromContext(ctx)
 	if err != nil {
 		return nil, err
@@ -139,7 +136,6 @@ func (s *NotificationRuleService) DeleteNotificationRule(ctx context.Context, re
 	if req == nil || req.GetId() == 0 {
 		return nil, notificationV1.ErrorNotificationBadRequest("id is required")
 	}
-
 
 	if err := s.repo.Delete(ctx, req.GetId()); err != nil {
 		return nil, err
@@ -160,7 +156,6 @@ func (s *NotificationRuleService) TestDispatchNotification(ctx context.Context, 
 	if req == nil || req.GetId() == 0 {
 		return nil, notificationV1.ErrorNotificationBadRequest("id is required")
 	}
-
 
 	operator, err := auth.FromContext(ctx)
 	if err != nil {
@@ -222,7 +217,7 @@ func (s *NotificationRuleService) TestDispatchNotification(ctx context.Context, 
 // 留空时只有 WEBHOOK 兜得出默认值：那条渠道登记的 webhook_url 就是"这个事件该发去哪"，
 // 于是顺手把 channel_id 也钉成同一行 —— 否则 sender 会另选一条启用的 WEBHOOK 配置，
 // 管理员在 A 行点测试、实际打到 B 行。EMAIL 没有可兜的收件地址，留空即报错。
-func (s *NotificationRuleService) testDispatchTarget(ctx context.Context, rule *notificationV1.NotificationRule, requested string) (string, *uint32, error) {
+func (s *NotificationRuleService) testDispatchTarget(ctx context.Context, rule *notificationV1.NotificationRule, requested string) (string, *int64, error) {
 	if target := strings.TrimSpace(requested); target != "" {
 		return target, nil, nil
 	}

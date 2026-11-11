@@ -8,8 +8,8 @@ import (
 
 type EventsFact struct {
 	EventID       *string          `db:"event_id"`
-	TenantID      *uint32          `db:"tenant_id"`
-	UserID        *uint32          `db:"user_id"`
+	TenantID      *int64           `db:"tenant_id"`
+	UserID        *int64           `db:"user_id"`
 	DeviceID      *string          `db:"device_id"`
 	AccountID     *string          `db:"account_id"`
 	GlobalUserID  *string          `db:"global_user_id"`
@@ -23,7 +23,7 @@ type EventsFact struct {
 	ObjectID      *string          `db:"object_id"`
 	ObjectName    *string          `db:"object_name"`
 	SessionID     *string          `db:"session_id"`
-	SessionSeq    *uint32          `db:"session_seq"`
+	SessionSeq    *int64           `db:"session_seq"`
 	Platform      *string          `db:"platform"`
 	Os            *string          `db:"os"`
 	AppVersion    *string          `db:"app_version"`
@@ -43,18 +43,18 @@ type EventsFact struct {
 	ErrorCode     *string          `db:"error_code"`
 	TraceID       *string          `db:"trace_id"`
 	Score         *int32           `db:"score"`
-	Quantity      *uint32          `db:"quantity"`
+	Quantity      *int64           `db:"quantity"`
 	Amount        *decimal.Decimal `db:"amount"`
-	DurationMs    *uint32          `db:"duration_ms"`
+	DurationMs    *int64           `db:"duration_ms"`
 	// 点击热力图字段
-	ClickX        *uint32 `db:"click_x"`
-	ClickY        *uint32 `db:"click_y"`
+	ClickX        *int64  `db:"click_x"`
+	ClickY        *int64  `db:"click_y"`
 	ElementXpath  *string `db:"element_xpath"`
 	PageUrl       *string `db:"page_url"`
-	ViewportWidth *uint32 `db:"viewport_width"`
+	ViewportWidth *int64  `db:"viewport_width"`
 	// 游戏专属维度
 	ServerID  *string    `db:"server_id"`
-	Level     *uint32    `db:"level"`
+	Level     *int64     `db:"level"`
 	CreatedAt *time.Time `db:"created_at"`
 	UpdatedAt *time.Time `db:"updated_at"`
 }

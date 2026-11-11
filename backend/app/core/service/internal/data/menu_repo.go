@@ -88,7 +88,7 @@ func (r *MenuRepo) Count(ctx context.Context, whereCond []func(s *sql.Selector))
 	return count, nil
 }
 
-func (r *MenuRepo) buildMenuTree(items []*resourceV1.Menu, parentId uint32) []*resourceV1.Menu {
+func (r *MenuRepo) buildMenuTree(items []*resourceV1.Menu, parentId int64) []*resourceV1.Menu {
 	var tree []*resourceV1.Menu
 	for _, item := range items {
 		if item.GetParentId() == parentId {
@@ -131,8 +131,8 @@ func (r *MenuRepo) List(ctx context.Context, req *paginationV1.PagingRequest, tr
 	if treeTravel {
 		dtos = pagination.BuildTree(
 			dtos,
-			func(node *resourceV1.Menu) *uint32 { return node.Id },
-			func(node *resourceV1.Menu) *uint32 { return node.ParentId },
+			func(node *resourceV1.Menu) *int64 { return node.Id },
+			func(node *resourceV1.Menu) *int64 { return node.ParentId },
 			func(node *resourceV1.Menu) *[]*resourceV1.Menu { return &node.Children },
 		)
 	}
@@ -143,12 +143,12 @@ func (r *MenuRepo) List(ctx context.Context, req *paginationV1.PagingRequest, tr
 	}
 
 	return &resourceV1.ListMenuResponse{
-		Total: uint64(count),
+		Total: int64(count),
 		Items: dtos,
 	}, nil
 }
 
-func (r *MenuRepo) IsExist(ctx context.Context, id uint32) (bool, error) {
+func (r *MenuRepo) IsExist(ctx context.Context, id int64) (bool, error) {
 	exist, err := r.entClient.Client().Menu.Query().
 		Where(menu.IDEQ(id)).
 		Exist(ctx)
@@ -298,7 +298,7 @@ func (r *MenuRepo) Delete(ctx context.Context, req *resourceV1.DeleteMenuRequest
 		return resourceV1.ErrorBadRequest("invalid parameter")
 	}
 
-	childrenIds, err := entCrud.QueryAllChildrenIds(ctx, r.entClient, "sys_menus", req.GetId())
+	childrenIds, err := entCrud.QueryAllChildrenIds64(ctx, r.entClient, "sys_menus", req.GetId())
 	if err != nil {
 		r.log.Errorf("query child menus failed: %s", err.Error())
 		return resourceV1.ErrorInternalServerError("query child menus failed")

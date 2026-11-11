@@ -59,9 +59,9 @@ var notificationDeliveryExportColumns = []ExportColumn[*notificationV1.Notificat
 	{"投递目标", func(d *notificationV1.NotificationDelivery) string { return exportStr(d.Target) }},
 	{"结果", func(d *notificationV1.NotificationDelivery) string { return exportEnumText(d.Status) }},
 	{"尝试次数", func(d *notificationV1.NotificationDelivery) string { return exportUint32(d.Attempts) }},
-	{"收件用户", func(d *notificationV1.NotificationDelivery) string { return exportUint32(d.RecipientUserId) }},
-	{"渠道配置", func(d *notificationV1.NotificationDelivery) string { return exportUint32(d.ChannelId) }},
-	{"关联对象", func(d *notificationV1.NotificationDelivery) string { return exportUint32(d.RelatedId) }},
+	{"收件用户", func(d *notificationV1.NotificationDelivery) string { return exportInt64(d.RecipientUserId) }},
+	{"渠道配置", func(d *notificationV1.NotificationDelivery) string { return exportInt64(d.ChannelId) }},
+	{"关联对象", func(d *notificationV1.NotificationDelivery) string { return exportInt64(d.RelatedId) }},
 	{"派发请求", func(d *notificationV1.NotificationDelivery) string { return exportStr(d.RequestId) }},
 	{"完成时间", func(d *notificationV1.NotificationDelivery) string { return exportTimestamp(d.SentAt) }},
 	{"失败原因", func(d *notificationV1.NotificationDelivery) string { return exportStr(d.LastError) }},
@@ -87,10 +87,10 @@ func (s *NotificationService) ExportNotificationDelivery(ctx context.Context, re
 		SheetName:    "投递台账",
 		Format:       format,
 		Columns:      notificationDeliveryExportColumns,
-		FetchPage: func(ctx context.Context, page, pageSize uint32) ([]*notificationV1.NotificationDelivery, error) {
+		FetchPage: func(ctx context.Context, page, pageSize int64) ([]*notificationV1.NotificationDelivery, error) {
 			resp, err := s.notificationServiceClient.ListDelivery(ctx, &paginationV1.PagingRequest{
-				Page:          trans.Ptr(page),
-				PageSize:      trans.Ptr(pageSize),
+				Page:          trans.Ptr(uint32(page)),
+				PageSize:      trans.Ptr(uint32(pageSize)),
 				OrderBy:       orderBy,
 				FilteringType: req.FilteringType,
 			})

@@ -26,7 +26,7 @@ func bytesReader(b []byte) *bytes.Reader {
 func TestBuildExportPagingAndTruncation(t *testing.T) {
 	// 2500 行数据、每页 1000：应拉 3 页，且 MaxRows=2000 时截断。
 	total := 2500
-	pages := map[uint32]int{}
+	pages := map[int64]int{}
 	opt := ExportOptions[*notificationV1.NotificationDelivery]{
 		FilenameBase: "notification-deliveries",
 		SheetName:    "投递台账",
@@ -36,13 +36,13 @@ func TestBuildExportPagingAndTruncation(t *testing.T) {
 			{"投递时间", func(d *notificationV1.NotificationDelivery) string { return exportTimestamp(d.CreatedAt) }},
 			{"投递目标", func(d *notificationV1.NotificationDelivery) string { return exportStr(d.Target) }},
 		},
-		FetchPage: func(ctx context.Context, page, pageSize uint32) ([]*notificationV1.NotificationDelivery, error) {
+		FetchPage: func(ctx context.Context, page, pageSize int64) ([]*notificationV1.NotificationDelivery, error) {
 			pages[page]++
 			out := make([]*notificationV1.NotificationDelivery, 0, pageSize)
 			start := int((page - 1) * pageSize)
 			for i := start; i < start+int(pageSize) && i < total; i++ {
 				out = append(out, &notificationV1.NotificationDelivery{
-					Id:        trans.Ptr(uint32(i + 1)),
+					Id:        trans.Ptr(int64(i + 1)),
 					Target:    trans.Ptr("user***@example.com"),
 					CreatedAt: timestamppb.New(unix(int64(i))),
 				})
@@ -98,7 +98,7 @@ func TestBuildExportCSVSanitizeAndBOM(t *testing.T) {
 			{"目标", func(d *notificationV1.NotificationDelivery) string { return exportStr(d.Target) }},
 			{"原因", func(d *notificationV1.NotificationDelivery) string { return exportStr(d.LastError) }},
 		},
-		FetchPage: func(ctx context.Context, page, pageSize uint32) ([]*notificationV1.NotificationDelivery, error) {
+		FetchPage: func(ctx context.Context, page, pageSize int64) ([]*notificationV1.NotificationDelivery, error) {
 			return []*notificationV1.NotificationDelivery{
 				{Target: trans.Ptr("=cmd|'/c calc'!A0"), LastError: trans.Ptr("-1 行失败")},
 			}, nil

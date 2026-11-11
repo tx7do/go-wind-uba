@@ -70,14 +70,14 @@ func (_u *WebhookDeliveryLogUpdate) ClearDeletedAt() *WebhookDeliveryLogUpdate {
 }
 
 // SetWebhookID sets the "webhook_id" field.
-func (_u *WebhookDeliveryLogUpdate) SetWebhookID(v uint32) *WebhookDeliveryLogUpdate {
+func (_u *WebhookDeliveryLogUpdate) SetWebhookID(v int64) *WebhookDeliveryLogUpdate {
 	_u.mutation.ResetWebhookID()
 	_u.mutation.SetWebhookID(v)
 	return _u
 }
 
 // SetNillableWebhookID sets the "webhook_id" field if the given value is not nil.
-func (_u *WebhookDeliveryLogUpdate) SetNillableWebhookID(v *uint32) *WebhookDeliveryLogUpdate {
+func (_u *WebhookDeliveryLogUpdate) SetNillableWebhookID(v *int64) *WebhookDeliveryLogUpdate {
 	if v != nil {
 		_u.SetWebhookID(*v)
 	}
@@ -85,7 +85,7 @@ func (_u *WebhookDeliveryLogUpdate) SetNillableWebhookID(v *uint32) *WebhookDeli
 }
 
 // AddWebhookID adds value to the "webhook_id" field.
-func (_u *WebhookDeliveryLogUpdate) AddWebhookID(v int32) *WebhookDeliveryLogUpdate {
+func (_u *WebhookDeliveryLogUpdate) AddWebhookID(v int64) *WebhookDeliveryLogUpdate {
 	_u.mutation.AddWebhookID(v)
 	return _u
 }
@@ -285,7 +285,7 @@ func (_u *WebhookDeliveryLogUpdate) Modify(modifiers ...func(u *sql.UpdateBuilde
 }
 
 func (_u *WebhookDeliveryLogUpdate) sqlSave(ctx context.Context) (_node int, err error) {
-	_spec := sqlgraph.NewUpdateSpec(webhookdeliverylog.Table, webhookdeliverylog.Columns, sqlgraph.NewFieldSpec(webhookdeliverylog.FieldID, field.TypeUint32))
+	_spec := sqlgraph.NewUpdateSpec(webhookdeliverylog.Table, webhookdeliverylog.Columns, sqlgraph.NewFieldSpec(webhookdeliverylog.FieldID, field.TypeInt64))
 	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -309,13 +309,13 @@ func (_u *WebhookDeliveryLogUpdate) sqlSave(ctx context.Context) (_node int, err
 		_spec.ClearField(webhookdeliverylog.FieldDeletedAt, field.TypeTime)
 	}
 	if _u.mutation.TenantIDCleared() {
-		_spec.ClearField(webhookdeliverylog.FieldTenantID, field.TypeUint32)
+		_spec.ClearField(webhookdeliverylog.FieldTenantID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.WebhookID(); ok {
-		_spec.SetField(webhookdeliverylog.FieldWebhookID, field.TypeUint32, value)
+		_spec.SetField(webhookdeliverylog.FieldWebhookID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedWebhookID(); ok {
-		_spec.AddField(webhookdeliverylog.FieldWebhookID, field.TypeUint32, value)
+		_spec.AddField(webhookdeliverylog.FieldWebhookID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.EventType(); ok {
 		_spec.SetField(webhookdeliverylog.FieldEventType, field.TypeString, value)
@@ -425,14 +425,14 @@ func (_u *WebhookDeliveryLogUpdateOne) ClearDeletedAt() *WebhookDeliveryLogUpdat
 }
 
 // SetWebhookID sets the "webhook_id" field.
-func (_u *WebhookDeliveryLogUpdateOne) SetWebhookID(v uint32) *WebhookDeliveryLogUpdateOne {
+func (_u *WebhookDeliveryLogUpdateOne) SetWebhookID(v int64) *WebhookDeliveryLogUpdateOne {
 	_u.mutation.ResetWebhookID()
 	_u.mutation.SetWebhookID(v)
 	return _u
 }
 
 // SetNillableWebhookID sets the "webhook_id" field if the given value is not nil.
-func (_u *WebhookDeliveryLogUpdateOne) SetNillableWebhookID(v *uint32) *WebhookDeliveryLogUpdateOne {
+func (_u *WebhookDeliveryLogUpdateOne) SetNillableWebhookID(v *int64) *WebhookDeliveryLogUpdateOne {
 	if v != nil {
 		_u.SetWebhookID(*v)
 	}
@@ -440,7 +440,7 @@ func (_u *WebhookDeliveryLogUpdateOne) SetNillableWebhookID(v *uint32) *WebhookD
 }
 
 // AddWebhookID adds value to the "webhook_id" field.
-func (_u *WebhookDeliveryLogUpdateOne) AddWebhookID(v int32) *WebhookDeliveryLogUpdateOne {
+func (_u *WebhookDeliveryLogUpdateOne) AddWebhookID(v int64) *WebhookDeliveryLogUpdateOne {
 	_u.mutation.AddWebhookID(v)
 	return _u
 }
@@ -653,7 +653,7 @@ func (_u *WebhookDeliveryLogUpdateOne) Modify(modifiers ...func(u *sql.UpdateBui
 }
 
 func (_u *WebhookDeliveryLogUpdateOne) sqlSave(ctx context.Context) (_node *WebhookDeliveryLog, err error) {
-	_spec := sqlgraph.NewUpdateSpec(webhookdeliverylog.Table, webhookdeliverylog.Columns, sqlgraph.NewFieldSpec(webhookdeliverylog.FieldID, field.TypeUint32))
+	_spec := sqlgraph.NewUpdateSpec(webhookdeliverylog.Table, webhookdeliverylog.Columns, sqlgraph.NewFieldSpec(webhookdeliverylog.FieldID, field.TypeInt64))
 	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "WebhookDeliveryLog.id" for update`)}
@@ -694,13 +694,13 @@ func (_u *WebhookDeliveryLogUpdateOne) sqlSave(ctx context.Context) (_node *Webh
 		_spec.ClearField(webhookdeliverylog.FieldDeletedAt, field.TypeTime)
 	}
 	if _u.mutation.TenantIDCleared() {
-		_spec.ClearField(webhookdeliverylog.FieldTenantID, field.TypeUint32)
+		_spec.ClearField(webhookdeliverylog.FieldTenantID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.WebhookID(); ok {
-		_spec.SetField(webhookdeliverylog.FieldWebhookID, field.TypeUint32, value)
+		_spec.SetField(webhookdeliverylog.FieldWebhookID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedWebhookID(); ok {
-		_spec.AddField(webhookdeliverylog.FieldWebhookID, field.TypeUint32, value)
+		_spec.AddField(webhookdeliverylog.FieldWebhookID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.EventType(); ok {
 		_spec.SetField(webhookdeliverylog.FieldEventType, field.TypeString, value)

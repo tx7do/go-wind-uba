@@ -28,7 +28,7 @@ func (WebhookDeliveryLog) Annotations() []schema.Annotation {
 
 func (WebhookDeliveryLog) Fields() []ent.Field {
 	return []ent.Field{
-		field.Uint32("webhook_id").
+		field.Int64("webhook_id").
 			Comment("Webhook配置ID"),
 
 		field.String("event_type").
@@ -70,9 +70,9 @@ func (WebhookDeliveryLog) Fields() []ent.Field {
 
 func (WebhookDeliveryLog) Mixin() []ent.Mixin {
 	return []ent.Mixin{
-		mixin.AutoIncrementId{},
+		mixin.AutoIncrementId64{},
 		mixin.TimeAt{},
-		mixin.TenantID[uint32]{},
+		mixin.TenantID[int64]{},
 	}
 }
 

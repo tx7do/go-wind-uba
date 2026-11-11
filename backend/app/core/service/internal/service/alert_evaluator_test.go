@@ -54,9 +54,9 @@ func TestDerefHelpers(t *testing.T) {
 	assert.Equal(t, "x", derefStr(&s))
 	assert.Equal(t, "", derefStr(nil))
 
-	v := uint32(7)
-	assert.Equal(t, uint32(7), derefU32(&v))
-	assert.Equal(t, uint32(0), derefU32(nil))
+	v := int64(7)
+	assert.Equal(t, int64(7), derefU32(&v))
+	assert.Equal(t, int64(0), derefU32(nil))
 }
 
 // fakeTrendAnalytics 记录入参并返回预设 total，用于验证 evaluateRule 的查询构造。
@@ -87,7 +87,7 @@ func TestAlertEvaluator_EvaluateRule_WindowAndQuery(t *testing.T) {
 		WindowMinutes: 60,
 		Comparison:    "GTE",
 		Threshold:     30,
-		AppID:         trans.Ptr(uint32(9)),
+		AppID:         trans.Ptr(int64(9)),
 		EventName:     trans.Ptr("pay_success"),
 	}
 
@@ -103,7 +103,7 @@ func TestAlertEvaluator_EvaluateRule_WindowAndQuery(t *testing.T) {
 	assert.Equal(t, now.UnixMilli(), req.GetTimeRange().GetEndMs())
 	assert.Equal(t, ubaV1.AnalyticsGranularity_HOUR, req.GetGranularity())
 	require.NotNil(t, req.AppId)
-	assert.Equal(t, uint32(9), *req.AppId)
+	assert.Equal(t, int64(9), *req.AppId)
 	assert.Equal(t, "pay_success", req.GetEventName())
 }
 

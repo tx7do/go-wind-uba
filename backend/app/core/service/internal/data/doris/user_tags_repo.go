@@ -143,6 +143,6 @@ func (r *UserTagsRepo) List(ctx context.Context, req *paginationV1.PagingRequest
 	}
 	return &ubaV1.ListUserTagResponse{
 		Items: result.Items,
-		Total: result.Total,
+		Total: int64(result.Total),
 	}, nil
 }
