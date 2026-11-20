@@ -69,6 +69,7 @@ func initApp(ctx *bootstrap.Context) (*kratos.App, func(), error) {
 	restMiddlewares := server.NewRestMiddleware(ctx)
 
 	httpServer := server.NewRestServer(ctx, restMiddlewares,
+		nil,
 		reportService,
 		// register:rest-arg ── 新模块服务实参在此行后追加(make register 工具锚点,勿删)
 	)
