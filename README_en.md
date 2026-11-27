@@ -135,6 +135,11 @@ The platform provides 25 analysis models across three categories: general behavi
 | Web SDK (TypeScript) | Browser / Node | Web event collection with auto-tracking and custom events, sendBeacon fallback on unload |
 | C# SDK (.NET) | Unity (native + WebGL) / Godot 4 / .NET | Game/client tracking with batch reporting and retry fallback, zero-dependency core library |
 | Flutter SDK (Dart) | Android / iOS / Windows / macOS / Linux | Mobile/desktop tracking with offline queue replay, session rotation and lifecycle auto-tracking (Flutter Web not yet supported) |
+| WeChat SDK (TypeScript) | WeChat Mini Program / Mini Game | Mini-program tracking with App/Page auto-tracking, offline replay and feature flags |
+| Go SDK | Go server-side | Server-side event source (payment/order/risk), zero dependencies, in-memory queue replay |
+| Java SDK | Java server-side | Server-side event source (order/payment/risk), zero dependencies (JDK 11+) |
+| Android SDK (Kotlin) | Android native | Native app tracking with automatic Activity page_view and disk replay |
+| iOS SDK (Swift) | iOS / macOS | Native app tracking, SPM package, UserDefaults disk replay (no IDFA collection) |
 
 > For integration instructions, see the [Data Collection SDK Integration Guide](docs/sdk_integration.md).
 
@@ -312,10 +317,15 @@ go-wind-uba/
 │   └── docs/                           # Documentation
 ├── frontend/                           # Frontend project
 │   ├── admin/                          # Admin dashboard (Vue 3 + Vben Admin)
-│   └── sdk/web/                        # Web data collection SDK
+│   ├── sdk/web/                        # Web data collection SDK
+│   └── sdk/wechat/                     # WeChat mini program / mini game collection SDK
 ├── sdk/                                # Non-web data collection SDKs
 │   ├── csharp/                         # C# SDK (Unity / Godot / .NET)
-│   └── flutter/uba/                    # Flutter SDK (Android / iOS / desktop)
+│   ├── flutter/uba/                    # Flutter SDK (Android / iOS / desktop)
+│   ├── go/uba/                         # Go server-side SDK
+│   ├── java/uba/                       # Java server-side SDK
+│   ├── android/uba/                    # Android SDK (Kotlin)
+│   └── ios/uba/                        # iOS/macOS SDK (Swift)
 └── LICENSE                             # MIT License
 ```
 
@@ -331,6 +341,11 @@ go-wind-uba/
 | [Web SDK Documentation](frontend/sdk/web/uba/README.md) | Full Web SDK API | Web integrators |
 | [C# SDK Documentation](sdk/csharp/README.md) | Full C# SDK (Unity/Godot) API | Game/client integrators |
 | [Flutter SDK Documentation](sdk/flutter/uba/README.md) | Full Flutter SDK API | Mobile/desktop integrators |
+| [WeChat SDK Documentation](frontend/sdk/wechat/uba/README.md) | Full WeChat mini program / mini game SDK API | Mini-program integrators |
+| [Go SDK Documentation](sdk/go/uba/README.md) | Full Go server-side SDK API | Server-side event sources |
+| [Java SDK Documentation](sdk/java/uba/README.md) | Full Java server-side SDK API | Server-side event sources |
+| [Android SDK Documentation](sdk/android/uba/README.md) | Full Android SDK API | Android native integrators |
+| [iOS SDK Documentation](sdk/ios/uba/README.md) | Full iOS/macOS SDK API | iOS native integrators |
 | [Deployment Guide](backend/docs/build_deploy.md) | Build, Docker deployment | Ops |
 | [Superset Deployment](backend/docs/deploy_superset.md) | BI visualization platform integration | Data analysts |
 
@@ -628,6 +643,91 @@ client.identify(1001);
 ```
 
 > See the [Flutter SDK Documentation](sdk/flutter/uba/README.md) for details.
+
+### WeChat Mini Program / Mini Game SDK Quick Start
+
+```ts
+import { UbaClient } from '@go-wind-uba/uba-wechat-sdk';
+
+// Initialize (singleton; appId/appSecret are obtained after creating an app under "Application Management")
+const uba = UbaClient.init({
+  appId: 'your_app_id',
+  appSecret: 'your_app_secret',
+  endpoint: 'https://collector.example.com', // must be added to the mini program request domain allowlist
+});
+
+App(uba.instrumentApp({ onLaunch() {} })); // auto flush on onHide + session rotation
+Page(uba.instrumentPage({ onLoad() {} })); // auto page_view on onLoad
+
+uba.track('button_click', { scene: 'home' });
+uba.identify(1001);
+```
+
+> See the [WeChat SDK Documentation](frontend/sdk/wechat/uba/README.md) for details.
+
+### Go Server-side SDK Quick Start
+
+```go
+import "go-wind-uba/sdk/go/uba"
+
+client, _ := uba.NewClient(uba.Config{
+    AppID: "your_app_id", AppSecret: "your_app_secret",
+    Endpoint: "http://localhost:5700",
+})
+defer client.Close()
+
+client.Identify(1001)
+client.Track("order_paid", uba.P{"orderId": "ORD-001"},
+    &uba.TrackOptions{ObjectType: "order", Amount: "99.90"})
+```
+
+> See the [Go SDK Documentation](sdk/go/uba/README.md) for details.
+
+### Java Server-side SDK Quick Start
+
+```java
+import com.gowind.uba.*;
+
+UbaClient client = new UbaClient(new UbaConfig()
+        .appId("your_app_id").appSecret("your_app_secret")
+        .endpoint("http://localhost:5700"));
+client.identify(1001);
+client.track("order_paid", TrackOptions.p("orderId", "ORD-001"),
+        new TrackOptions().objectType("order").amount("99.90"));
+client.close();
+```
+
+> See the [Java SDK Documentation](sdk/java/uba/README.md) for details.
+
+### Android SDK Quick Start
+
+```kotlin
+// Application.onCreate (copy the android/ adapter source into the host project)
+UbaAndroid.init(this, UbaConfig(
+    appId = "your_app_id", appSecret = "your_app_secret",
+    endpoint = "http://localhost:5700", autoTrackLaunch = true,
+))
+
+UbaAndroid.client?.track("button_click", mapOf("scene" to "home"))
+UbaAndroid.client?.identify(1001)
+```
+
+> See the [Android SDK Documentation](sdk/android/uba/README.md) for details.
+
+### iOS SDK Quick Start
+
+```swift
+import UbaSDK
+
+let client = UbaClient(config: UbaConfig(
+    appId: "your_app_id", appSecret: "your_app_secret",
+    endpoint: "http://localhost:5700", autoTrackLaunch: true
+))
+client.identify(1001)
+client.track("button_click", properties: ["scene": "home"])
+```
+
+> See the [iOS SDK Documentation](sdk/ios/uba/README.md) for details.
 
 ---
 

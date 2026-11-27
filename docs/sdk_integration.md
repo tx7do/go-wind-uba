@@ -6,6 +6,11 @@
 > - Web SDK：[`frontend/sdk/web/uba/README.md`](../frontend/sdk/web/uba/README.md)
 > - C# SDK：[`sdk/csharp/README.md`](../sdk/csharp/README.md)
 > - Flutter SDK：[`sdk/flutter/uba/README.md`](../sdk/flutter/uba/README.md)
+> - 微信小程序/小游戏 SDK：[`frontend/sdk/wechat/uba/README.md`](../frontend/sdk/wechat/uba/README.md)
+> - Go 服务端 SDK：[`sdk/go/uba/README.md`](../sdk/go/uba/README.md)
+> - Java 服务端 SDK：[`sdk/java/uba/README.md`](../sdk/java/uba/README.md)
+> - Android SDK：[`sdk/android/uba/README.md`](../sdk/android/uba/README.md)
+> - iOS/macOS SDK：[`sdk/ios/uba/README.md`](../sdk/ios/uba/README.md)
 
 ---
 
@@ -39,6 +44,11 @@
 | Godot 4（.NET）桌面 / 移动 | **C# SDK** + 默认 `HttpClientTransport` | `sdk/csharp/` |
 | .NET 控制台 / 后台服务 | **C# SDK** + 默认 `HttpClientTransport` | `sdk/csharp/` |
 | Flutter App / 游戏（Android / iOS / 桌面） | **Flutter SDK** | `sdk/flutter/uba/` |
+| 微信小程序 / 小游戏 | **微信 SDK（TypeScript）** | `frontend/sdk/wechat/uba/` |
+| Go 服务端（支付/订单/风控事件源） | **Go SDK** | `sdk/go/uba/` |
+| Java 服务端（订单/支付/风控系统） | **Java SDK** | `sdk/java/uba/` |
+| Android 原生 App | **Android SDK（Kotlin）** | `sdk/android/uba/` |
+| iOS / macOS 原生 App | **iOS SDK（Swift）** | `sdk/ios/uba/` |
 
 **共同能力**（各端一致）：
 
@@ -54,19 +64,21 @@
 
 不同 SDK 自动采集字段的来源差异（接入时需知晓）：
 
-| 字段 | Web SDK | C# SDK (Unity) | C# SDK (Godot) | Flutter SDK |
-|------|---------|---------------|----------------|-------------|
-| `deviceId` | localStorage 持久化 | PlayerPrefs 持久化 | 进程级（重启变化） | shared_preferences 持久化（uuid v4） |
-| `sessionId` | sessionStorage（标签关闭失效） | 进程级 GUID | 进程级 GUID | 进程内 uuid，后台超 30s（可配）回前台轮换 |
-| `platform` | UA 探测（web/ios/...） | 编译宏探测（UNITY_IOS 等） | 固定 `dotnet` | `Platform.operatingSystem`（android/ios/...） |
-| `clientInfo.userAgent` | navigator.userAgent | Unity 版本 + 操作系统 | .NET 运行时信息 | `uba_flutter/<版本> (<platform>)` |
-| 卸载兜底 | `sendBeacon`（enableBeacon） | 无（需手动 FlushAsync） | 无（需手动 FlushAsync） | 退后台自动 flush（UbaLifecycleObserver） |
+| 字段 | Web SDK | C# SDK (Unity) | C# SDK (Godot) | Flutter SDK | 微信 SDK | Go/Java SDK（服务端） | Android SDK | iOS SDK |
+|------|---------|---------------|----------------|-------------|----------|----------------------|-------------|---------|
+| `deviceId` | localStorage 持久化 | PlayerPrefs 持久化 | 进程级（重启变化） | shared_preferences 持久化（uuid v4） | wx storage 持久化 | 实例 hostname（可配） | SharedPreferences 持久化 | UserDefaults 持久化 |
+| `sessionId` | sessionStorage（标签关闭失效） | 进程级 GUID | 进程级 GUID | 进程内 uuid，后台超 30s 回前台轮换 | 进程内 uuid，后台超 30s 轮换 | 进程级（可选超时轮换） | 进程内 uuid，后台超 30s 轮换 | 进程内 uuid，后台超 30s 轮换 |
+| `platform` | UA 探测（web/ios/...） | 编译宏探测（UNITY_IOS 等） | 固定 `dotnet` | `Platform.operatingSystem` | 自动探测 mini_program / mini_game | 固定 `server` | 固定 `android` | 固定 `ios` / `macos` |
+| `clientInfo.userAgent` | navigator.userAgent | Unity 版本 + 操作系统 | .NET 运行时信息 | `uba_flutter/<版本> (<platform>)` | 系统信息拼接（model/system） | `uba-go` / `uba-java` + GOOS/os.name | `uba-android` | `uba-swift` |
+| 卸载兜底 | `sendBeacon`（enableBeacon） | 无（需手动 FlushAsync） | 无（需手动 FlushAsync） | 退后台自动 flush（UbaLifecycleObserver） | App onHide 自动 flush | 常驻进程无需兜底 | 全部 Activity 退后台自动 flush | 退后台自动 flush |
+| 离线补发 | 落盘补发（cap 500） | 无 | 无 | 落盘补发（cap 500） | 落盘补发（cap 500） | 内存队列补发（cap 10000） | 落盘补发（cap 500） | 落盘补发（cap 500） |
 
 **注意事项**：
 - **Godot 的 deviceId 进程级**：重启后变化，若需稳定设备标识，建议自行持久化（如存配置文件）后通过 `SetSuperProperties` 或自定义 ContextProvider 注入。
 - **Unity WebGL 必须用 `UnityWebRequestTransport`**：HttpClient 在 WebGL 平台不可用，会抛异常。
-- **客户端卸载兜底**：Web SDK 有 sendBeacon；C# 端需在 `OnApplicationQuit` / `OnDestroy` 调用 `FlushAsync()`；Flutter 端注册 `UbaLifecycleObserver` 后退到后台自动 flush（App 被杀前的最后一次依赖系统，关键路径建议在退后台时机完成上报）。
-- **Flutter 离线补发**：flush 失败的事件落盘（shared_preferences，上限 500 条），下次启动自动补发；4xx（除 429）确定性失败不落盘不重试。
+- **客户端卸载兜底**：Web SDK 有 sendBeacon；C# 端需在 `OnApplicationQuit` / `OnDestroy` 调用 `FlushAsync()`；Flutter/微信/Android/iOS 端退到后台自动 flush（App 被杀前的最后一次依赖系统，关键路径建议在退后台时机完成上报）。
+- **离线补发**：客户端 SDK（Web/Flutter/微信/Android/iOS）flush 失败的事件落盘（上限 500 条），下次启动自动补发；4xx（除 429）确定性失败不落盘不重试。服务端 SDK（Go/Java）为常驻进程，失败留在内存队列由定时器补发。
+- **服务端 SDK 无设备/会话语义**：deviceId 取实例 hostname（可配），sessionId 为进程级（可选超时轮换），适合支付回调、风控触发、订单流转等后端事件。
 
 ---
 
@@ -251,7 +263,169 @@ await client.flush();
 
 ---
 
-## 七、上报协议契约
+## 七、微信小程序/小游戏 SDK 快速上手
+
+```bash
+cd frontend/sdk/wechat/uba
+pnpm install && pnpm build   # 产物 dist/
+```
+
+> 小程序后台需把 collector 域名加入 **request 合法域名**。
+
+```ts
+// app.ts
+import { UbaClient } from '@go-wind-uba/uba-wechat-sdk';
+
+const uba = UbaClient.init({
+  appId: 'your_app_id',
+  appSecret: 'your_app_secret',
+  endpoint: 'https://collector.example.com',
+  appVersion: '1.0.0',
+  autoTrackLaunch: true, // 首装自动埋 app_launch
+});
+
+App(uba.instrumentApp({ onLaunch() {} }));   // onHide 自动 flush + 会话轮换
+Page(uba.instrumentPage({ onLoad() {} }));   // onLoad 自动埋 page_view（含来源页与停留时长）
+
+uba.track('button_click', { scene: 'home' });
+uba.identify(1001);
+await uba.flush();
+```
+
+常用配置与其他端一致（batchSize 20 / flushInterval 5000 / maxRetries 3 / timeout 8000），
+额外支持 `platform` 覆盖（默认自动探测 mini_program / mini_game）。
+详见 [微信 SDK 文档](../frontend/sdk/wechat/uba/README.md)。
+
+---
+
+## 八、Go 服务端 SDK 快速上手
+
+服务端事件源（支付回调、风控触发、订单流转），零第三方依赖（仅标准库）。
+
+```go
+import (
+    "go-wind-uba/sdk/go/uba"
+)
+
+client, err := uba.NewClient(uba.Config{
+    AppID:      "your_app_id",
+    AppSecret:  "your_app_secret",
+    Endpoint:   "http://localhost:5700",
+    AppVersion: "1.0.0",
+})
+if err != nil {
+    panic(err)
+}
+defer client.Close()
+
+client.Identify(1001)
+client.Track("order_paid", uba.P{"orderId": "ORD-001"}, &uba.TrackOptions{
+    EventCategory: "order",
+    ObjectType:    "order",
+    ObjectID:      "ORD-001",
+    Amount:        "99.90",
+    OpResult:      "success",
+})
+
+client.TrackRisk("login_failed", &uba.RiskEvent{
+    RiskType: "login_anomaly", RiskLevel: "HIGH", RiskScore: 88.5,
+}, uba.P{"try_count": "8"}, nil)
+```
+
+服务端语义：deviceId 取实例 hostname（可配 `DeviceID`），platform 固定 `server`，
+sessionId 进程级（`SessionTimeout > 0` 时按事件间隔轮换）；失败留在内存队列由定时器补发。
+详见 [Go SDK 文档](../sdk/go/uba/README.md)。
+
+---
+
+## 九、Java 服务端 SDK 快速上手
+
+JDK 11+，零第三方依赖（内置 HttpClient + 手写 JSON writer）。
+
+```xml
+<dependency>
+  <groupId>com.gowind</groupId>
+  <artifactId>uba-sdk</artifactId>
+  <version>1.0.0</version>
+</dependency>
+```
+
+```java
+import com.gowind.uba.*;
+
+UbaClient client = new UbaClient(new UbaConfig()
+        .appId("your_app_id").appSecret("your_app_secret")
+        .endpoint("http://localhost:5700").appVersion("1.0.0"));
+
+client.identify(1001);
+client.track("order_paid", TrackOptions.p("orderId", "ORD-001"),
+        new TrackOptions().objectType("order").amount("99.90").opResult("success"));
+client.trackRisk("login_failed",
+        new RiskEvent().riskType("login_anomaly").riskLevel("HIGH").riskScore(88.5),
+        TrackOptions.p("try_count", "8"), null);
+client.close(); // 冲刷剩余队列
+```
+
+服务端语义与 Go SDK 一致（deviceId=hostname、platform=server、内存队列补发）。
+详见 [Java SDK 文档](../sdk/java/uba/README.md)。
+
+---
+
+## 十、Android SDK 快速上手（Kotlin）
+
+核心层纯 Kotlin（零依赖），Android 适配层源码随宿主 App 编译（SharedPreferences 持久化 +
+ActivityLifecycleCallbacks 自动 page_view / 前后台 flush）。
+
+```kotlin
+// 自定义 Application.onCreate
+UbaAndroid.init(this, UbaConfig(
+    appId = "your_app_id",
+    appSecret = "your_app_secret",
+    endpoint = "http://localhost:5700",
+    appVersion = BuildConfig.VERSION_NAME,
+    autoTrackLaunch = true,
+))
+
+// 任意位置
+UbaAndroid.client?.track("button_click", mapOf("scene" to "home"))
+UbaAndroid.client?.trackRisk("abnormal_click",
+    RiskEvent(riskType = "device_anomaly", riskLevel = "HIGH", riskScore = 85.0))
+UbaAndroid.client?.identify(1001)
+```
+
+页面浏览自动埋点（Activity resumed → page_view）、退后台自动 flush、会话轮换均由适配层自动完成。
+详见 [Android SDK 文档](../sdk/android/uba/README.md)。
+
+---
+
+## 十一、iOS/macOS SDK 快速上手（Swift）
+
+Swift Package（SPM），核心仅 Foundation，iOS 13+ / macOS 10.15+ 通用。
+
+```swift
+let client = UbaClient(config: UbaConfig(
+    appId: "your_app_id",
+    appSecret: "your_app_secret",
+    endpoint: "http://localhost:5700",
+    appVersion: "1.0.0",
+    autoTrackLaunch: true
+))
+
+// AppDelegate
+applicationDidEnterBackground → client.handleBackground()   // 退后台立即 flush
+applicationWillEnterForeground → client.handleForeground()  // 超时轮换会话
+
+client.identify(1001)
+client.track("button_click", properties: ["scene": "home"])
+client.trackPageView("HomeViewController")
+```
+
+不采集 IDFA；构建与测试需在 macOS 执行（`swift build && swift test`）。
+详见 [iOS SDK 文档](../sdk/ios/uba/README.md)。
+
+---
+
+## 十二、上报协议契约
 
 所有 SDK 对接 collector 服务的统一接口 `POST /uba/v1/report`，两端契约完全一致。
 
@@ -339,7 +513,7 @@ await client.flush();
 
 ---
 
-## 八、事件 Schema 管理（可选）
+## 十三、事件 Schema 管理（可选）
 
 如需对上报事件做**字段校验**，可在管理后台「开发者 / 事件 Schema」中登记合法事件名及其属性 schema（属性名 / 类型 / 是否必填）。登记后可用于上报校验，降低脏数据。
 
@@ -347,7 +521,7 @@ await client.flush();
 
 ---
 
-## 九、联调与排错
+## 十四、联调与排错
 
 ### 启动本地 collector
 
@@ -377,12 +551,13 @@ go run ./app/collector/service/cmd/server/ -c ./app/collector/service/configs
 | 事件未入库但无报错 | 检查响应体 `failedCount`，可能字段校验部分失败；开启 SDK `debug` 查看日志 |
 | Unity WebGL 上报失败 | 确认使用 `UnityWebRequestTransport` 而非默认 HttpClient |
 | Flutter 首次 init 报 MissingPluginException | shared_preferences 插件未注册：确认宿主跑过 `flutter pub get` 且重新构建（不能热重载恢复） |
+| 微信小程序上报失败（fail 回调） | 检查小程序后台是否把 collector 域名加入 **request 合法域名**（HTTPS 必需，开发工具可临时勾选"不校验域名"） |
 | 数据查不到 | 确认 collector → Kafka → Doris（Routine Load）入仓链路在跑：`uba-ingest status`；`tenantId` 由服务端补全，勿手动上报 |
-| 页面跳转丢失事件 | Web 确认 `enableBeacon: true`；Flutter 确认已注册 `UbaLifecycleObserver`（退后台自动 flush） |
+| 页面跳转丢失事件 | Web 确认 `enableBeacon: true`；Flutter/微信/Android/iOS 确认已接生命周期自动 flush（退后台时机上报） |
 
 ---
 
-## 十、进阶场景
+## 十五、进阶场景
 
 ### 1. 自定义 Transport / ContextProvider（C#）
 
@@ -448,7 +623,7 @@ Schema 登记是**可选增强**，不登记也能上报；但登记后能显著
 
 ---
 
-## 十一、相关文档
+## 十六、相关文档
 
 - [Web SDK 完整文档](../frontend/sdk/web/uba/README.md)
 - [C# SDK 完整文档](../sdk/csharp/README.md)

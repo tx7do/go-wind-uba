@@ -137,6 +137,11 @@
 | Web SDK (TypeScript) | 浏览器 / Node           | 网页端事件采集，自动埋点 + 自定义事件，sendBeacon 卸载兜底 |
 | C# SDK (.NET)        | Unity（原生 + WebGL）/ Godot 4 / .NET | 游戏/客户端埋点，批量上报 + 重试降级，零依赖核心库 |
 | Flutter SDK (Dart)   | Android / iOS / Windows / macOS / Linux | 移动端/桌面端埋点，离线队列补发 + 会话轮换 + 生命周期自动埋点（Flutter Web 暂不支持） |
+| 微信 SDK (TypeScript) | 微信小程序 / 小游戏       | 小程序端埋点，App/Page 自动埋点 + 离线补发 + AB 开关 |
+| Go SDK               | Go 服务端               | 服务端事件源（支付/订单/风控），零依赖，内存队列补发 |
+| Java SDK             | Java 服务端             | 服务端事件源（订单/支付/风控），零依赖（JDK 11+） |
+| Android SDK (Kotlin) | Android 原生            | 原生 App 埋点，Activity 自动 page_view + 落盘补发 |
+| iOS SDK (Swift)      | iOS / macOS            | 原生 App 埋点，SPM 包，UserDefaults 落盘补发（不采集 IDFA） |
 
 > 接入指引见 [数据采集 SDK 接入指南](docs/sdk_integration.md)。
 
@@ -314,10 +319,15 @@ go-wind-uba/
 │   └── docs/                           # 文档
 ├── frontend/                           # 前端项目
 │   ├── admin/                          # 管理后台（Vue 3 + Vben Admin）
-│   └── sdk/web/                        # Web 数据采集 SDK
+│   ├── sdk/web/                        # Web 数据采集 SDK
+│   └── sdk/wechat/                     # 微信小程序/小游戏采集 SDK
 ├── sdk/                                # 非 Web 端数据采集 SDK
 │   ├── csharp/                         # C# SDK（Unity / Godot / .NET）
-│   └── flutter/uba/                    # Flutter SDK（Android / iOS / 桌面）
+│   ├── flutter/uba/                    # Flutter SDK（Android / iOS / 桌面）
+│   ├── go/uba/                         # Go 服务端 SDK
+│   ├── java/uba/                       # Java 服务端 SDK
+│   ├── android/uba/                    # Android SDK（Kotlin）
+│   └── ios/uba/                        # iOS/macOS SDK（Swift）
 └── LICENSE                             # MIT 开源许可
 ```
 
@@ -333,6 +343,11 @@ go-wind-uba/
 | [Web SDK 文档](frontend/sdk/web/uba/README.md) | Web SDK 完整 API | Web 端接入 |
 | [C# SDK 文档](sdk/csharp/README.md) | C# SDK（Unity/Godot）完整 API | 游戏/客户端接入 |
 | [Flutter SDK 文档](sdk/flutter/uba/README.md) | Flutter SDK 完整 API | 移动端/桌面端接入 |
+| [微信 SDK 文档](frontend/sdk/wechat/uba/README.md) | 微信小程序/小游戏 SDK 完整 API | 小程序接入 |
+| [Go SDK 文档](sdk/go/uba/README.md) | Go 服务端 SDK 完整 API | 服务端事件源 |
+| [Java SDK 文档](sdk/java/uba/README.md) | Java 服务端 SDK 完整 API | 服务端事件源 |
+| [Android SDK 文档](sdk/android/uba/README.md) | Android SDK 完整 API | Android 原生接入 |
+| [iOS SDK 文档](sdk/ios/uba/README.md) | iOS/macOS SDK 完整 API | iOS 原生接入 |
 | [部署文档](backend/docs/build_deploy.md) | 构建、Docker 部署 | 运维 |
 | [Superset 部署](backend/docs/deploy_superset.md) | BI 可视化平台对接 | 数据分析 |
 
@@ -625,6 +640,91 @@ client.identify(1001);
 ```
 
 > 详见 [Flutter SDK 文档](sdk/flutter/uba/README.md)
+
+### 微信小程序/小游戏 SDK 快速接入
+
+```ts
+import { UbaClient } from '@go-wind-uba/uba-wechat-sdk';
+
+// 初始化（单例，appId/appSecret 在管理后台「应用管理」中创建应用后获得）
+const uba = UbaClient.init({
+  appId: 'your_app_id',
+  appSecret: 'your_app_secret',
+  endpoint: 'https://collector.example.com', // 需加入小程序 request 合法域名
+});
+
+App(uba.instrumentApp({ onLaunch() {} })); // onHide 自动 flush + 会话轮换
+Page(uba.instrumentPage({ onLoad() {} })); // onLoad 自动埋 page_view
+
+uba.track('button_click', { scene: 'home' });
+uba.identify(1001);
+```
+
+> 详见 [微信 SDK 文档](frontend/sdk/wechat/uba/README.md)
+
+### Go 服务端 SDK 快速接入
+
+```go
+import "go-wind-uba/sdk/go/uba"
+
+client, _ := uba.NewClient(uba.Config{
+    AppID: "your_app_id", AppSecret: "your_app_secret",
+    Endpoint: "http://localhost:5700",
+})
+defer client.Close()
+
+client.Identify(1001)
+client.Track("order_paid", uba.P{"orderId": "ORD-001"},
+    &uba.TrackOptions{ObjectType: "order", Amount: "99.90"})
+```
+
+> 详见 [Go SDK 文档](sdk/go/uba/README.md)
+
+### Java 服务端 SDK 快速接入
+
+```java
+import com.gowind.uba.*;
+
+UbaClient client = new UbaClient(new UbaConfig()
+        .appId("your_app_id").appSecret("your_app_secret")
+        .endpoint("http://localhost:5700"));
+client.identify(1001);
+client.track("order_paid", TrackOptions.p("orderId", "ORD-001"),
+        new TrackOptions().objectType("order").amount("99.90"));
+client.close();
+```
+
+> 详见 [Java SDK 文档](sdk/java/uba/README.md)
+
+### Android SDK 快速接入
+
+```kotlin
+// Application.onCreate（android/ 适配层源码拷入宿主工程）
+UbaAndroid.init(this, UbaConfig(
+    appId = "your_app_id", appSecret = "your_app_secret",
+    endpoint = "http://localhost:5700", autoTrackLaunch = true,
+))
+
+UbaAndroid.client?.track("button_click", mapOf("scene" to "home"))
+UbaAndroid.client?.identify(1001)
+```
+
+> 详见 [Android SDK 文档](sdk/android/uba/README.md)
+
+### iOS SDK 快速接入
+
+```swift
+import UbaSDK
+
+let client = UbaClient(config: UbaConfig(
+    appId: "your_app_id", appSecret: "your_app_secret",
+    endpoint: "http://localhost:5700", autoTrackLaunch: true
+))
+client.identify(1001)
+client.track("button_click", properties: ["scene": "home"])
+```
+
+> 详见 [iOS SDK 文档](sdk/ios/uba/README.md)
 
 ---
 

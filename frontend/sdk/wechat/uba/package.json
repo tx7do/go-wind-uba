@@ -1,0 +1,37 @@
+{
+  "name": "@go-wind-uba/uba-wechat-sdk",
+  "version": "1.0.0",
+  "description": "GoWind UBA 微信小程序/小游戏埋点 SDK —— 批量上报 + 重试退避 + 离线补发 + 会话轮换 + 自动埋点",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "src",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "clean": "rimraf dist"
+  },
+  "keywords": [
+    "uba",
+    "wechat",
+    "miniprogram",
+    "minigame",
+    "analytics"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "vitest": "^3.2.4"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
+  }
+}

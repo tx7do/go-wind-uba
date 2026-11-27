@@ -137,6 +137,11 @@
 | Web SDK (TypeScript) | ブラウザ / Node | Webイベント収集、自動トラッキング＋カスタムイベント、sendBeaconによるアンロード時フォールバック |
 | C# SDK (.NET) | Unity（ネイティブ + WebGL）/ Godot 4 / .NET | ゲーム/クライアント計測、バッチ報告＋リトライ降格、ゼロ依存コアライブラリ |
 | Flutter SDK (Dart) | Android / iOS / Windows / macOS / Linux | モバイル/デスクトップ計測、オフラインキュー再送＋セッションローテーション＋ライフサイクル自動計測（Flutter Web は未対応） |
+| WeChat SDK (TypeScript) | WeChat ミニプログラム / ミニゲーム | ミニプログラム計測、App/Page 自動計測＋オフライン再送＋AB フラグ |
+| Go SDK | Go サーバーサイド | サーバー側イベントソース（決済/注文/リスク）、ゼロ依存、メモリキュー再送 |
+| Java SDK | Java サーバーサイド | サーバー側イベントソース（注文/決済/リスク）、ゼロ依存（JDK 11+） |
+| Android SDK (Kotlin) | Android ネイティブ | ネイティブアプリ計測、Activity 自動 page_view＋ディスク再送 |
+| iOS SDK (Swift) | iOS / macOS | ネイティブアプリ計測、SPM パッケージ、UserDefaults ディスク再送（IDFA 収集なし） |
 
 > 導入手順については、[データ収集 SDK 導入ガイド](docs/sdk_integration.md) を参照してください。
 
@@ -314,10 +319,15 @@ go-wind-uba/
 │   └── docs/                           # ドキュメント
 ├── frontend/                           # フロントエンドプロジェクト
 │   ├── admin/                          # 管理画面（Vue 3 + Vben Admin）
-│   └── sdk/web/                        # Webデータ収集SDK
+│   ├── sdk/web/                        # Webデータ収集SDK
+│   └── sdk/wechat/                     # WeChat ミニプログラム/ミニゲーム収集SDK
 ├── sdk/                                # 非 Web データ収集SDK
 │   ├── csharp/                         # C# SDK（Unity / Godot / .NET）
-│   └── flutter/uba/                    # Flutter SDK（Android / iOS / デスクトップ）
+│   ├── flutter/uba/                    # Flutter SDK（Android / iOS / デスクトップ）
+│   ├── go/uba/                         # Go サーバーサイド SDK
+│   ├── java/uba/                       # Java サーバーサイド SDK
+│   ├── android/uba/                    # Android SDK（Kotlin）
+│   └── ios/uba/                        # iOS/macOS SDK（Swift）
 └── LICENSE                             # MITライセンス
 ```
 
@@ -333,6 +343,11 @@ go-wind-uba/
 | [Web SDKドキュメント](frontend/sdk/web/uba/README.md) | Web SDK完全API | Web導入者 |
 | [C# SDKドキュメント](sdk/csharp/README.md) | C# SDK（Unity/Godot）完全API | ゲーム/クライアント導入者 |
 | [Flutter SDKドキュメント](sdk/flutter/uba/README.md) | Flutter SDK完全API | モバイル/デスクトップ導入者 |
+| [WeChat SDKドキュメント](frontend/sdk/wechat/uba/README.md) | WeChat ミニプログラム/ミニゲーム SDK完全API | ミニプログラム導入者 |
+| [Go SDKドキュメント](sdk/go/uba/README.md) | Go サーバーサイド SDK完全API | サーバー側イベントソース |
+| [Java SDKドキュメント](sdk/java/uba/README.md) | Java サーバーサイド SDK完全API | サーバー側イベントソース |
+| [Android SDKドキュメント](sdk/android/uba/README.md) | Android SDK完全API | Android ネイティブ導入者 |
+| [iOS SDKドキュメント](sdk/ios/uba/README.md) | iOS/macOS SDK完全API | iOS ネイティブ導入者 |
 | [デプロイドキュメント](backend/docs/build_deploy.md) | ビルド、Dockerデプロイ | 運用 |
 | [Supersetデプロイ](backend/docs/deploy_superset.md) | BI可視化プラットフォーム連携 | データ分析 |
 
@@ -629,6 +644,91 @@ client.identify(1001);
 ```
 
 > 詳細は [Flutter SDK ドキュメント](sdk/flutter/uba/README.md) を参照してください。
+
+### WeChat ミニプログラム/ミニゲーム SDK クイックスタート
+
+```ts
+import { UbaClient } from '@go-wind-uba/uba-wechat-sdk';
+
+// 初期化（シングルトン。appId/appSecret は管理画面の「アプリケーション管理」でアプリ作成後に取得します）
+const uba = UbaClient.init({
+  appId: 'your_app_id',
+  appSecret: 'your_app_secret',
+  endpoint: 'https://collector.example.com', // ミニプログラムの request 正規ドメインに追加が必要
+});
+
+App(uba.instrumentApp({ onLaunch() {} })); // onHide 時の自動 flush ＋ セッションローテーション
+Page(uba.instrumentPage({ onLoad() {} })); // onLoad 時の自動 page_view
+
+uba.track('button_click', { scene: 'home' });
+uba.identify(1001);
+```
+
+> 詳細は [WeChat SDK ドキュメント](frontend/sdk/wechat/uba/README.md) を参照してください。
+
+### Go サーバーサイド SDK クイックスタート
+
+```go
+import "go-wind-uba/sdk/go/uba"
+
+client, _ := uba.NewClient(uba.Config{
+    AppID: "your_app_id", AppSecret: "your_app_secret",
+    Endpoint: "http://localhost:5700",
+})
+defer client.Close()
+
+client.Identify(1001)
+client.Track("order_paid", uba.P{"orderId": "ORD-001"},
+    &uba.TrackOptions{ObjectType: "order", Amount: "99.90"})
+```
+
+> 詳細は [Go SDK ドキュメント](sdk/go/uba/README.md) を参照してください。
+
+### Java サーバーサイド SDK クイックスタート
+
+```java
+import com.gowind.uba.*;
+
+UbaClient client = new UbaClient(new UbaConfig()
+        .appId("your_app_id").appSecret("your_app_secret")
+        .endpoint("http://localhost:5700"));
+client.identify(1001);
+client.track("order_paid", TrackOptions.p("orderId", "ORD-001"),
+        new TrackOptions().objectType("order").amount("99.90"));
+client.close();
+```
+
+> 詳細は [Java SDK ドキュメント](sdk/java/uba/README.md) を参照してください。
+
+### Android SDK クイックスタート
+
+```kotlin
+// Application.onCreate（android/ アダプタソースをホストプロジェクトにコピー）
+UbaAndroid.init(this, UbaConfig(
+    appId = "your_app_id", appSecret = "your_app_secret",
+    endpoint = "http://localhost:5700", autoTrackLaunch = true,
+))
+
+UbaAndroid.client?.track("button_click", mapOf("scene" to "home"))
+UbaAndroid.client?.identify(1001)
+```
+
+> 詳細は [Android SDK ドキュメント](sdk/android/uba/README.md) を参照してください。
+
+### iOS SDK クイックスタート
+
+```swift
+import UbaSDK
+
+let client = UbaClient(config: UbaConfig(
+    appId: "your_app_id", appSecret: "your_app_secret",
+    endpoint: "http://localhost:5700", autoTrackLaunch: true
+))
+client.identify(1001)
+client.track("button_click", properties: ["scene": "home"])
+```
+
+> 詳細は [iOS SDK ドキュメント](sdk/ios/uba/README.md) を参照してください。
 
 ---
 

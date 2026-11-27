@@ -15,10 +15,15 @@ go-wind-uba/
 ├── backend/        ★ Go 1.25 + Kratos + Ent 多服务后端 → 见 backend/AGENTS.md
 ├── frontend/       ★ 前端(双产物)→ 见 frontend/AGENTS.md
 │   ├── admin/        vue-vben-admin v5 monorepo(Vue3 + TS + AntD Vue)
-│   └── sdk/web/uba/  浏览器/Node 埋点 TS SDK
+│   ├── sdk/web/uba/  浏览器/Node 埋点 TS SDK
+│   └── sdk/wechat/uba/ 微信小程序/小游戏埋点 TS SDK
 ├── sdk/
 │   ├── csharp/       C# SDK(Unity / Godot / .NET,独立子项目)
-│   └── flutter/uba/  Flutter 埋点 SDK(Android / iOS / 桌面)
+│   ├── flutter/uba/  Flutter 埋点 SDK(Android / iOS / 桌面)
+│   ├── go/uba/       Go 服务端埋点 SDK(零依赖)
+│   ├── java/uba/     Java 服务端埋点 SDK(JDK11+,零依赖)
+│   ├── android/uba/  Android 埋点 SDK(Kotlin,核心零依赖)
+│   └── ios/uba/      iOS/macOS 埋点 SDK(Swift SPM)
 ├── docs/             架构 / 开发指南 / SDK 集成文档
 ├── README.md         中文(另附 en / ja 版本)
 └── LICENSE
@@ -36,6 +41,11 @@ go-wind-uba/
 | Web SDK | 纯 TypeScript,`tsc` 构建,上报到 collector | `frontend/AGENTS.md` |
 | C# SDK | C#(`sdk/csharp/`) | `sdk/csharp/README.md` |
 | Flutter SDK | Dart(`sdk/flutter/uba/`)· 仅依赖 shared_preferences,flutter_test 验证 | `sdk/flutter/uba/AGENTS.md` |
+| 微信 SDK | TypeScript(`frontend/sdk/wechat/uba/`)· 零运行时依赖,vitest + wx mock 验证 | `frontend/sdk/wechat/uba/AGENTS.md` |
+| Go SDK | Go(`sdk/go/uba/`)· 零依赖,go test -race 验证 | `sdk/go/uba/AGENTS.md` |
+| Java SDK | Java 11(`sdk/java/uba/`)· 零依赖,mvn test 验证 | `sdk/java/uba/AGENTS.md` |
+| Android SDK | Kotlin(`sdk/android/uba/`)· 核心零依赖 gradle test 验证;android/ 适配层宿主编译 | `sdk/android/uba/AGENTS.md` |
+| iOS SDK | Swift(`sdk/ios/uba/`)· 仅 Foundation;**本机 Windows 不验证,macOS swift test** | `sdk/ios/uba/AGENTS.md` |
 
 ## 4. 数据流(理解全局的关键)
 
@@ -119,6 +129,9 @@ paste <(grep -n '^#' README.md) <(grep -n '^#' README_en.md) <(grep -n '^#' READ
 | 改 Web 埋点 SDK | `frontend/AGENTS.md`(sdk/web/uba 段)|
 | 改 C# SDK | `sdk/csharp/README.md` |
 | 改 Flutter SDK | `sdk/flutter/uba/AGENTS.md`(契约铁律:数值标量只进 behavior oneof) |
+| 改微信 SDK | `frontend/sdk/wechat/uba/AGENTS.md` |
+| 改 Go/Java 服务端 SDK | `sdk/go/uba/AGENTS.md` / `sdk/java/uba/AGENTS.md` |
+| 改 Android/iOS SDK | `sdk/android/uba/AGENTS.md` / `sdk/ios/uba/AGENTS.md`(iOS 需 macOS 验证) |
 | 理解整体架构 | `docs/architecture.md` + 本文件第 4 节 |
 
 ## 7. 常用命令(顶层)
