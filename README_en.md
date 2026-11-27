@@ -140,6 +140,9 @@ The platform provides 25 analysis models across three categories: general behavi
 | Java SDK | Java server-side | Server-side event source (order/payment/risk), zero dependencies (JDK 11+) |
 | Android SDK (Kotlin) | Android native | Native app tracking with automatic Activity page_view and disk replay |
 | iOS SDK (Swift) | iOS / macOS | Native app tracking, SPM package, UserDefaults disk replay (no IDFA collection) |
+| Python SDK | Python server-side | Script/automation event source, zero dependencies (standard library only) |
+| Unreal SDK (C++) | UE games (PC / console) | Zero-dependency C++17 core with an Unreal plugin shell (FHttpModule bridge) |
+| HarmonyOS SDK (ArkTS) | HarmonyOS | Native app tracking, hvigor library (requires DevEco verification) |
 
 > For integration instructions, see the [Data Collection SDK Integration Guide](docs/sdk_integration.md).
 
@@ -325,7 +328,10 @@ go-wind-uba/
 │   ├── go/uba/                         # Go server-side SDK
 │   ├── java/uba/                       # Java server-side SDK
 │   ├── android/uba/                    # Android SDK (Kotlin)
-│   └── ios/uba/                        # iOS/macOS SDK (Swift)
+│   ├── ios/uba/                        # iOS/macOS SDK (Swift)
+│   ├── python/uba/                     # Python server-side SDK
+│   ├── unreal/uba/                     # Unreal SDK (C++)
+│   └── harmonyos/uba/                  # HarmonyOS SDK (ArkTS)
 └── LICENSE                             # MIT License
 ```
 
@@ -346,6 +352,9 @@ go-wind-uba/
 | [Java SDK Documentation](sdk/java/uba/README.md) | Full Java server-side SDK API | Server-side event sources |
 | [Android SDK Documentation](sdk/android/uba/README.md) | Full Android SDK API | Android native integrators |
 | [iOS SDK Documentation](sdk/ios/uba/README.md) | Full iOS/macOS SDK API | iOS native integrators |
+| [Python SDK Documentation](sdk/python/uba/README.md) | Full Python server-side SDK API | Server-side event sources |
+| [Unreal SDK Documentation](sdk/unreal/uba/README.md) | Full Unreal SDK API | UE game integrators |
+| [HarmonyOS SDK Documentation](sdk/harmonyos/uba/README.md) | Full HarmonyOS SDK API | HarmonyOS native integrators |
 | [Deployment Guide](backend/docs/build_deploy.md) | Build, Docker deployment | Ops |
 | [Superset Deployment](backend/docs/deploy_superset.md) | BI visualization platform integration | Data analysts |
 
@@ -728,6 +737,53 @@ client.track("button_click", properties: ["scene": "home"])
 ```
 
 > See the [iOS SDK Documentation](sdk/ios/uba/README.md) for details.
+
+### Python Server-side SDK Quick Start
+
+```python
+from uba import UbaClient, UbaConfig, TrackOptions
+
+client = UbaClient(UbaConfig(
+    app_id="your_app_id", app_secret="your_app_secret",
+    endpoint="http://localhost:5700",
+))
+client.identify(1001)
+client.track("order_paid", {"orderId": "ORD-001"},
+             TrackOptions(object_type="order", amount="99.90"))
+client.close()
+```
+
+> See the [Python SDK Documentation](sdk/python/uba/README.md) for details.
+
+### Unreal SDK Quick Start
+
+```cpp
+// Copy UnrealPlugin/ into the project Plugins/ folder (Blueprint nodes available)
+#include "UbaSubsystem.h"
+FUbaSettings Settings;
+Settings.AppId = TEXT("your_app_id");
+Settings.AppSecret = TEXT("your_app_secret");
+Settings.Endpoint = TEXT("http://localhost:5700");
+GEngine->GetEngineSubsystem<UUbaSubsystem>()->Init(Settings);
+```
+
+> See the [Unreal SDK Documentation](sdk/unreal/uba/README.md) for details.
+
+### HarmonyOS SDK Quick Start
+
+```ts
+import { UbaClient, UbaConfig, loadDeviceId } from '@go-wind/uba-harmonyos'
+
+const config = new UbaConfig()
+config.appId = 'your_app_id'
+config.appSecret = 'your_app_secret'
+config.endpoint = 'https://collector.example.com'
+const deviceId = await loadDeviceId(this.context)
+const client = await UbaClient.create(config, deviceId)
+client.track('button_click', new Map([['scene', 'home']]))
+```
+
+> See the [HarmonyOS SDK Documentation](sdk/harmonyos/uba/README.md) for details.
 
 ---
 

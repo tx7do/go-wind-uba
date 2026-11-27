@@ -11,6 +11,9 @@
 > - Java 服务端 SDK：[`sdk/java/uba/README.md`](../sdk/java/uba/README.md)
 > - Android SDK：[`sdk/android/uba/README.md`](../sdk/android/uba/README.md)
 > - iOS/macOS SDK：[`sdk/ios/uba/README.md`](../sdk/ios/uba/README.md)
+> - Python SDK：[`sdk/python/uba/README.md`](../sdk/python/uba/README.md)
+> - Unreal SDK：[`sdk/unreal/uba/README.md`](../sdk/unreal/uba/README.md)
+> - HarmonyOS SDK：[`sdk/harmonyos/uba/README.md`](../sdk/harmonyos/uba/README.md)
 
 ---
 
@@ -49,6 +52,9 @@
 | Java 服务端（订单/支付/风控系统） | **Java SDK** | `sdk/java/uba/` |
 | Android 原生 App | **Android SDK（Kotlin）** | `sdk/android/uba/` |
 | iOS / macOS 原生 App | **iOS SDK（Swift）** | `sdk/ios/uba/` |
+| Python 脚本 / 自动化任务 | **Python SDK** | `sdk/python/uba/` |
+| Unreal 游戏（PC / 主机） | **Unreal SDK（C++）** | `sdk/unreal/uba/` |
+| HarmonyOS（鸿蒙）App | **HarmonyOS SDK（ArkTS）** | `sdk/harmonyos/uba/` |
 
 **共同能力**（各端一致）：
 
@@ -425,7 +431,81 @@ client.trackPageView("HomeViewController")
 
 ---
 
-## 十二、上报协议契约
+## 十二、Python 服务端 SDK 快速上手
+
+数据团队脚本、自动化任务、后端事件源。零第三方依赖（标准库 json/urllib/threading），Python 3.9+。
+
+```bash
+pip install -e sdk/python/uba
+```
+
+```python
+from uba import UbaClient, UbaConfig, TrackOptions, RiskEvent
+
+client = UbaClient(UbaConfig(
+    app_id="your_app_id",
+    app_secret="your_app_secret",
+    endpoint="http://localhost:5700",
+))
+client.identify(1001)
+client.track("order_paid", {"orderId": "ORD-001"},
+             TrackOptions(object_type="order", amount="99.90"))
+client.track_risk("login_failed",
+                  RiskEvent(risk_type="login_anomaly", risk_level="HIGH", risk_score=88.5))
+client.close()
+```
+
+服务端语义与 Go/Java 一致（deviceId=hostname、platform=server、内存队列补发）。
+测试：`PYTHONPATH=src python -m unittest discover -s tests -v`（25 用例）。
+详见 [Python SDK 文档](../sdk/python/uba/README.md)。
+
+---
+
+## 十三、Unreal Engine SDK 快速上手（C++）
+
+PC/主机游戏覆盖。分层交付：`core/` 纯 C++17 核心层（零依赖，本机 g++ 测试全绿）+ `UnrealPlugin/` 插件壳（源码交付，宿主工程编译）。
+
+```cpp
+// UE：把 UnrealPlugin/ 拷入工程 Plugins/，C++ 初始化
+#include "UbaSubsystem.h"
+FUbaSettings Settings;
+Settings.AppId = TEXT("your_app_id");
+Settings.AppSecret = TEXT("your_app_secret");
+Settings.Endpoint = TEXT("http://localhost:5700");
+GEngine->GetEngineSubsystem<UUbaSubsystem>()->Init(Settings);
+GEngine->GetEngineSubsystem<UUbaSubsystem>()->Track(TEXT("level_pass"), {}, TEXT("game"), TEXT("level"), TEXT("1-1"), 100);
+```
+
+Blueprint 启用插件后在「Uba」分类下直接调用。核心层测试：
+`g++ -std=c++17 -Icore core/uba_core.cpp core/uba_core_test.cpp -o uba_tests && ./uba_tests`。
+详见 [Unreal SDK 文档](../sdk/unreal/uba/README.md)。
+
+---
+
+## 十四、HarmonyOS SDK 快速上手（ArkTS）
+
+鸿蒙原生 App。hvigor library 模块，`@ohos.net.http` 传输 + preferences 设备 ID 持久化。
+
+> 需 DevEco Studio 验证（本仓库 Windows 无 hvigor 环境）：`hvigorw test`。
+
+```ts
+import { UbaClient, UbaConfig, loadDeviceId } from '@go-wind/uba-harmonyos'
+
+const config = new UbaConfig()
+config.appId = 'your_app_id'
+config.appSecret = 'your_app_secret'
+config.endpoint = 'https://collector.example.com'
+const deviceId = await loadDeviceId(this.context)
+const client = await UbaClient.create(config, deviceId)
+client.identify(1001)
+client.track('button_click', new Map([['scene', 'home']]))
+```
+
+详见 [HarmonyOS SDK 文档](../sdk/harmonyos/uba/README.md)。
+
+---
+
+## 十五、上报协议契约
 
 所有 SDK 对接 collector 服务的统一接口 `POST /uba/v1/report`，两端契约完全一致。
 
@@ -513,7 +593,7 @@ client.trackPageView("HomeViewController")
 
 ---
 
-## 十三、事件 Schema 管理（可选）
+## 十六、事件 Schema 管理（可选）
 
 如需对上报事件做**字段校验**，可在管理后台「开发者 / 事件 Schema」中登记合法事件名及其属性 schema（属性名 / 类型 / 是否必填）。登记后可用于上报校验，降低脏数据。
 
@@ -521,7 +601,7 @@ client.trackPageView("HomeViewController")
 
 ---
 
-## 十四、联调与排错
+## 十七、联调与排错
 
 ### 启动本地 collector
 
@@ -557,7 +637,7 @@ go run ./app/collector/service/cmd/server/ -c ./app/collector/service/configs
 
 ---
 
-## 十五、进阶场景
+## 十八、进阶场景
 
 ### 1. 自定义 Transport / ContextProvider（C#）
 
@@ -623,7 +703,7 @@ Schema 登记是**可选增强**，不登记也能上报；但登记后能显著
 
 ---
 
-## 十六、相关文档
+## 十九、相关文档
 
 - [Web SDK 完整文档](../frontend/sdk/web/uba/README.md)
 - [C# SDK 完整文档](../sdk/csharp/README.md)

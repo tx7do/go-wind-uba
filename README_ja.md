@@ -142,6 +142,9 @@
 | Java SDK | Java サーバーサイド | サーバー側イベントソース（注文/決済/リスク）、ゼロ依存（JDK 11+） |
 | Android SDK (Kotlin) | Android ネイティブ | ネイティブアプリ計測、Activity 自動 page_view＋ディスク再送 |
 | iOS SDK (Swift) | iOS / macOS | ネイティブアプリ計測、SPM パッケージ、UserDefaults ディスク再送（IDFA 収集なし） |
+| Python SDK | Python サーバーサイド | スクリプト/自動処理のイベントソース、ゼロ依存（標準ライブラリのみ） |
+| Unreal SDK (C++) | UE ゲーム（PC / コンソール） | ゼロ依存の C++17 コア＋ UE プラグインシェル（FHttpModule ブリッジ） |
+| HarmonyOS SDK (ArkTS) | HarmonyOS | ネイティブアプリ計測、hvigor library（DevEco での検証が必要） |
 
 > 導入手順については、[データ収集 SDK 導入ガイド](docs/sdk_integration.md) を参照してください。
 
@@ -327,7 +330,10 @@ go-wind-uba/
 │   ├── go/uba/                         # Go サーバーサイド SDK
 │   ├── java/uba/                       # Java サーバーサイド SDK
 │   ├── android/uba/                    # Android SDK（Kotlin）
-│   └── ios/uba/                        # iOS/macOS SDK（Swift）
+│   ├── ios/uba/                        # iOS/macOS SDK（Swift）
+│   ├── python/uba/                     # Python サーバーサイド SDK
+│   ├── unreal/uba/                     # Unreal SDK（C++）
+│   └── harmonyos/uba/                  # HarmonyOS SDK（ArkTS）
 └── LICENSE                             # MITライセンス
 ```
 
@@ -348,6 +354,9 @@ go-wind-uba/
 | [Java SDKドキュメント](sdk/java/uba/README.md) | Java サーバーサイド SDK完全API | サーバー側イベントソース |
 | [Android SDKドキュメント](sdk/android/uba/README.md) | Android SDK完全API | Android ネイティブ導入者 |
 | [iOS SDKドキュメント](sdk/ios/uba/README.md) | iOS/macOS SDK完全API | iOS ネイティブ導入者 |
+| [Python SDKドキュメント](sdk/python/uba/README.md) | Python サーバーサイド SDK完全API | サーバー側イベントソース |
+| [Unreal SDKドキュメント](sdk/unreal/uba/README.md) | Unreal SDK完全API | UE ゲーム導入者 |
+| [HarmonyOS SDKドキュメント](sdk/harmonyos/uba/README.md) | HarmonyOS SDK完全API | 鸿蒙ネイティブ導入者 |
 | [デプロイドキュメント](backend/docs/build_deploy.md) | ビルド、Dockerデプロイ | 運用 |
 | [Supersetデプロイ](backend/docs/deploy_superset.md) | BI可視化プラットフォーム連携 | データ分析 |
 
@@ -729,6 +738,53 @@ client.track("button_click", properties: ["scene": "home"])
 ```
 
 > 詳細は [iOS SDK ドキュメント](sdk/ios/uba/README.md) を参照してください。
+
+### Python サーバーサイド SDK クイックスタート
+
+```python
+from uba import UbaClient, UbaConfig, TrackOptions
+
+client = UbaClient(UbaConfig(
+    app_id="your_app_id", app_secret="your_app_secret",
+    endpoint="http://localhost:5700",
+))
+client.identify(1001)
+client.track("order_paid", {"orderId": "ORD-001"},
+             TrackOptions(object_type="order", amount="99.90"))
+client.close()
+```
+
+> 詳細は [Python SDK ドキュメント](sdk/python/uba/README.md) を参照してください。
+
+### Unreal SDK クイックスタート
+
+```cpp
+// UnrealPlugin/ をプロジェクトの Plugins/ にコピー（Blueprint ノードあり）
+#include "UbaSubsystem.h"
+FUbaSettings Settings;
+Settings.AppId = TEXT("your_app_id");
+Settings.AppSecret = TEXT("your_app_secret");
+Settings.Endpoint = TEXT("http://localhost:5700");
+GEngine->GetEngineSubsystem<UUbaSubsystem>()->Init(Settings);
+```
+
+> 詳細は [Unreal SDK ドキュメント](sdk/unreal/uba/README.md) を参照してください。
+
+### HarmonyOS SDK クイックスタート
+
+```ts
+import { UbaClient, UbaConfig, loadDeviceId } from '@go-wind/uba-harmonyos'
+
+const config = new UbaConfig()
+config.appId = 'your_app_id'
+config.appSecret = 'your_app_secret'
+config.endpoint = 'https://collector.example.com'
+const deviceId = await loadDeviceId(this.context)
+const client = await UbaClient.create(config, deviceId)
+client.track('button_click', new Map([['scene', 'home']]))
+```
+
+> 詳細は [HarmonyOS SDK ドキュメント](sdk/harmonyos/uba/README.md) を参照してください。
 
 ---
 

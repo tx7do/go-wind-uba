@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gowind-uba-sdk"
+version = "1.0.0"
+description = "GoWind UBA Python 服务端埋点 SDK —— 零第三方依赖（仅标准库）"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "GoWind UBA" }]
+keywords = ["uba", "analytics", "tracking"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+# 本 SDK 测试用标准库 unittest：python -m unittest discover -s tests -v
+testpaths = ["tests"]

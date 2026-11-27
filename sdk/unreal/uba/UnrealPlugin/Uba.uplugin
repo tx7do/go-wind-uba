@@ -1,0 +1,23 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0.0",
+	"FriendlyName": "GoWind UBA",
+	"Description": "GoWind UBA 风行用户行为分析平台 Unreal Engine 埋点插件（封装纯 C++ 核心层，HTTP 走 FHttpModule）",
+	"Category": "Analytics",
+	"CanContainContent": true,
+	"Installed": true,
+	"Modules": [
+		{
+			"Name": "Uba",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	],
+	"Dependencies": [
+		{
+			"Name": "Engine",
+			"Type": "Runtime"
+		}
+	]
+}

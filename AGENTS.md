@@ -23,7 +23,10 @@ go-wind-uba/
 │   ├── go/uba/       Go 服务端埋点 SDK(零依赖)
 │   ├── java/uba/     Java 服务端埋点 SDK(JDK11+,零依赖)
 │   ├── android/uba/  Android 埋点 SDK(Kotlin,核心零依赖)
-│   └── ios/uba/      iOS/macOS 埋点 SDK(Swift SPM)
+│   ├── ios/uba/      iOS/macOS 埋点 SDK(Swift SPM)
+│   ├── python/uba/   Python 服务端埋点 SDK(零依赖)
+│   ├── unreal/uba/   Unreal 埋点 SDK(C++17 核心 + UE 插件壳)
+│   └── harmonyos/uba/ HarmonyOS 埋点 SDK(ArkTS hvigor library)
 ├── docs/             架构 / 开发指南 / SDK 集成文档
 ├── README.md         中文(另附 en / ja 版本)
 └── LICENSE
@@ -46,6 +49,9 @@ go-wind-uba/
 | Java SDK | Java 11(`sdk/java/uba/`)· 零依赖,mvn test 验证 | `sdk/java/uba/AGENTS.md` |
 | Android SDK | Kotlin(`sdk/android/uba/`)· 核心零依赖 gradle test 验证;android/ 适配层宿主编译 | `sdk/android/uba/AGENTS.md` |
 | iOS SDK | Swift(`sdk/ios/uba/`)· 仅 Foundation;**本机 Windows 不验证,macOS swift test** | `sdk/ios/uba/AGENTS.md` |
+| Python SDK | Python 3.9(`sdk/python/uba/`)· 零依赖,unittest 验证 | `sdk/python/uba/AGENTS.md` |
+| Unreal SDK | C++17 core(`sdk/unreal/uba/`)· g++ 测试验证;UE 插件壳宿主编译 | `sdk/unreal/uba/AGENTS.md` |
+| HarmonyOS SDK | ArkTS(`sdk/harmonyos/uba/`)· hvigor library;**需 DevEco 验证** | `sdk/harmonyos/uba/AGENTS.md` |
 
 ## 4. 数据流(理解全局的关键)
 
@@ -132,6 +138,7 @@ paste <(grep -n '^#' README.md) <(grep -n '^#' README_en.md) <(grep -n '^#' READ
 | 改微信 SDK | `frontend/sdk/wechat/uba/AGENTS.md` |
 | 改 Go/Java 服务端 SDK | `sdk/go/uba/AGENTS.md` / `sdk/java/uba/AGENTS.md` |
 | 改 Android/iOS SDK | `sdk/android/uba/AGENTS.md` / `sdk/ios/uba/AGENTS.md`(iOS 需 macOS 验证) |
+| 改 Python/Unreal/鸿蒙 SDK | `sdk/python/uba/AGENTS.md` / `sdk/unreal/uba/AGENTS.md` / `sdk/harmonyos/uba/AGENTS.md`(鸿蒙需 DevEco 验证) |
 | 理解整体架构 | `docs/architecture.md` + 本文件第 4 节 |
 
 ## 7. 常用命令(顶层)

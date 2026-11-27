@@ -142,6 +142,9 @@
 | Java SDK             | Java 服务端             | 服务端事件源（订单/支付/风控），零依赖（JDK 11+） |
 | Android SDK (Kotlin) | Android 原生            | 原生 App 埋点，Activity 自动 page_view + 落盘补发 |
 | iOS SDK (Swift)      | iOS / macOS            | 原生 App 埋点，SPM 包，UserDefaults 落盘补发（不采集 IDFA） |
+| Python SDK           | Python 服务端           | 脚本/自动化任务事件源，零依赖（仅标准库） |
+| Unreal SDK (C++)     | UE 游戏（PC / 主机）      | 核心 C++17 零依赖 + UE 插件壳（FHttpModule 桥接） |
+| HarmonyOS SDK (ArkTS) | HarmonyOS（鸿蒙）       | 原生 App 埋点，hvigor library（需 DevEco 验证） |
 
 > 接入指引见 [数据采集 SDK 接入指南](docs/sdk_integration.md)。
 
@@ -327,7 +330,10 @@ go-wind-uba/
 │   ├── go/uba/                         # Go 服务端 SDK
 │   ├── java/uba/                       # Java 服务端 SDK
 │   ├── android/uba/                    # Android SDK（Kotlin）
-│   └── ios/uba/                        # iOS/macOS SDK（Swift）
+│   ├── ios/uba/                        # iOS/macOS SDK（Swift）
+│   ├── python/uba/                     # Python 服务端 SDK
+│   ├── unreal/uba/                     # Unreal SDK（C++）
+│   └── harmonyos/uba/                  # HarmonyOS SDK（ArkTS）
 └── LICENSE                             # MIT 开源许可
 ```
 
@@ -348,6 +354,9 @@ go-wind-uba/
 | [Java SDK 文档](sdk/java/uba/README.md) | Java 服务端 SDK 完整 API | 服务端事件源 |
 | [Android SDK 文档](sdk/android/uba/README.md) | Android SDK 完整 API | Android 原生接入 |
 | [iOS SDK 文档](sdk/ios/uba/README.md) | iOS/macOS SDK 完整 API | iOS 原生接入 |
+| [Python SDK 文档](sdk/python/uba/README.md) | Python 服务端 SDK 完整 API | 服务端事件源 |
+| [Unreal SDK 文档](sdk/unreal/uba/README.md) | Unreal SDK 完整 API | UE 游戏接入 |
+| [HarmonyOS SDK 文档](sdk/harmonyos/uba/README.md) | HarmonyOS SDK 完整 API | 鸿蒙原生接入 |
 | [部署文档](backend/docs/build_deploy.md) | 构建、Docker 部署 | 运维 |
 | [Superset 部署](backend/docs/deploy_superset.md) | BI 可视化平台对接 | 数据分析 |
 
@@ -725,6 +734,53 @@ client.track("button_click", properties: ["scene": "home"])
 ```
 
 > 详见 [iOS SDK 文档](sdk/ios/uba/README.md)
+
+### Python SDK 快速接入
+
+```python
+from uba import UbaClient, UbaConfig, TrackOptions
+
+client = UbaClient(UbaConfig(
+    app_id="your_app_id", app_secret="your_app_secret",
+    endpoint="http://localhost:5700",
+))
+client.identify(1001)
+client.track("order_paid", {"orderId": "ORD-001"},
+             TrackOptions(object_type="order", amount="99.90"))
+client.close()
+```
+
+> 详见 [Python SDK 文档](sdk/python/uba/README.md)
+
+### Unreal SDK 快速接入
+
+```cpp
+// UnrealPlugin/ 拷入工程 Plugins/，C++ 初始化（Blueprint 有同名节点）
+#include "UbaSubsystem.h"
+FUbaSettings Settings;
+Settings.AppId = TEXT("your_app_id");
+Settings.AppSecret = TEXT("your_app_secret");
+Settings.Endpoint = TEXT("http://localhost:5700");
+GEngine->GetEngineSubsystem<UUbaSubsystem>()->Init(Settings);
+```
+
+> 详见 [Unreal SDK 文档](sdk/unreal/uba/README.md)
+
+### HarmonyOS SDK 快速接入
+
+```ts
+import { UbaClient, UbaConfig, loadDeviceId } from '@go-wind/uba-harmonyos'
+
+const config = new UbaConfig()
+config.appId = 'your_app_id'
+config.appSecret = 'your_app_secret'
+config.endpoint = 'https://collector.example.com'
+const deviceId = await loadDeviceId(this.context)
+const client = await UbaClient.create(config, deviceId)
+client.track('button_click', new Map([['scene', 'home']]))
+```
+
+> 详见 [HarmonyOS SDK 文档](sdk/harmonyos/uba/README.md)
 
 ---
 

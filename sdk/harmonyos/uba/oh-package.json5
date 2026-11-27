@@ -1,0 +1,13 @@
+{
+  "name": "@go-wind/uba-harmonyos",
+  "version": "1.0.0",
+  "description": "GoWind UBA 鸿蒙 HarmonyOS 埋点 SDK（ArkTS）—— 批量上报 + 重试退避 + AB 开关",
+  "main": "src/main/ets/index.ets",
+  "types": "src/main/ets/index.ets",
+  "author": "GoWind UBA",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "@ohos/hypium": "1.0.21"
+  }
+}
