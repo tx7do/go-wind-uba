@@ -136,6 +136,7 @@
 | --- | --- | --- |
 | Web SDK (TypeScript) | ブラウザ / Node | Webイベント収集、自動トラッキング＋カスタムイベント、sendBeaconによるアンロード時フォールバック |
 | C# SDK (.NET) | Unity（ネイティブ + WebGL）/ Godot 4 / .NET | ゲーム/クライアント計測、バッチ報告＋リトライ降格、ゼロ依存コアライブラリ |
+| Flutter SDK (Dart) | Android / iOS / Windows / macOS / Linux | モバイル/デスクトップ計測、オフラインキュー再送＋セッションローテーション＋ライフサイクル自動計測（Flutter Web は未対応） |
 
 > 導入手順については、[データ収集 SDK 導入ガイド](docs/sdk_integration.md) を参照してください。
 
@@ -314,6 +315,9 @@ go-wind-uba/
 ├── frontend/                           # フロントエンドプロジェクト
 │   ├── admin/                          # 管理画面（Vue 3 + Vben Admin）
 │   └── sdk/web/                        # Webデータ収集SDK
+├── sdk/                                # 非 Web データ収集SDK
+│   ├── csharp/                         # C# SDK（Unity / Godot / .NET）
+│   └── flutter/uba/                    # Flutter SDK（Android / iOS / デスクトップ）
 └── LICENSE                             # MITライセンス
 ```
 
@@ -328,6 +332,7 @@ go-wind-uba/
 | [SDK導入ガイド](docs/sdk_integration.md) | appId/appSecret取得、SDK選定、報告プロトコル、フィールド一覧 | 計測導入者 |
 | [Web SDKドキュメント](frontend/sdk/web/uba/README.md) | Web SDK完全API | Web導入者 |
 | [C# SDKドキュメント](sdk/csharp/README.md) | C# SDK（Unity/Godot）完全API | ゲーム/クライアント導入者 |
+| [Flutter SDKドキュメント](sdk/flutter/uba/README.md) | Flutter SDK完全API | モバイル/デスクトップ導入者 |
 | [デプロイドキュメント](backend/docs/build_deploy.md) | ビルド、Dockerデプロイ | 運用 |
 | [Supersetデプロイ](backend/docs/deploy_superset.md) | BI可視化プラットフォーム連携 | データ分析 |
 
@@ -589,6 +594,41 @@ client.Track("scene_load", new() { ["scene"] = "Main" });
 
 > Unity WebGL では `UnityWebRequestTransport` を使用してください（WebGL では HttpClient は利用できません）。
 > 詳細は [C# SDK ドキュメント](sdk/csharp/README.md) を参照してください。
+
+### Flutter SDK クイックスタート
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:uba_flutter/uba_flutter.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // 初期化（シングルトン。appId/appSecret は管理画面の「アプリケーション管理」で
+  // アプリ作成後に取得します）
+  final client = await UbaClient.init(UbaConfig(
+    appId: 'your_app_id',
+    appSecret: 'your_app_secret',
+    endpoint: 'http://localhost:5700', // collector サービスのアドレス
+    appVersion: '1.0.0',
+  ));
+
+  // バックグラウンド遷移時の自動 flush ＋ セッションローテーション
+  UbaLifecycleObserver(client).register();
+  runApp(const MyApp());
+}
+
+// スーパープロパティを設定（以降のすべてのイベントに自動付与）
+client.setSuperProperties({'version': '1.0.0'});
+
+// カスタムイベントのトラッキング
+client.track('button_click', properties: {'scene': 'home'});
+
+// ログイン後にユーザーを紐付け
+client.identify(1001);
+```
+
+> 詳細は [Flutter SDK ドキュメント](sdk/flutter/uba/README.md) を参照してください。
 
 ---
 

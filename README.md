@@ -136,6 +136,7 @@
 |----------------------|----------------------|-------------------------------|
 | Web SDK (TypeScript) | 浏览器 / Node           | 网页端事件采集，自动埋点 + 自定义事件，sendBeacon 卸载兜底 |
 | C# SDK (.NET)        | Unity（原生 + WebGL）/ Godot 4 / .NET | 游戏/客户端埋点，批量上报 + 重试降级，零依赖核心库 |
+| Flutter SDK (Dart)   | Android / iOS / Windows / macOS / Linux | 移动端/桌面端埋点，离线队列补发 + 会话轮换 + 生命周期自动埋点（Flutter Web 暂不支持） |
 
 > 接入指引见 [数据采集 SDK 接入指南](docs/sdk_integration.md)。
 
@@ -314,6 +315,9 @@ go-wind-uba/
 ├── frontend/                           # 前端项目
 │   ├── admin/                          # 管理后台（Vue 3 + Vben Admin）
 │   └── sdk/web/                        # Web 数据采集 SDK
+├── sdk/                                # 非 Web 端数据采集 SDK
+│   ├── csharp/                         # C# SDK（Unity / Godot / .NET）
+│   └── flutter/uba/                    # Flutter SDK（Android / iOS / 桌面）
 └── LICENSE                             # MIT 开源许可
 ```
 
@@ -328,6 +332,7 @@ go-wind-uba/
 | [SDK 接入指南](docs/sdk_integration.md) | 获取 appId/appSecret、SDK 选型、上报协议、字段全集 | 埋点接入方 |
 | [Web SDK 文档](frontend/sdk/web/uba/README.md) | Web SDK 完整 API | Web 端接入 |
 | [C# SDK 文档](sdk/csharp/README.md) | C# SDK（Unity/Godot）完整 API | 游戏/客户端接入 |
+| [Flutter SDK 文档](sdk/flutter/uba/README.md) | Flutter SDK 完整 API | 移动端/桌面端接入 |
 | [部署文档](backend/docs/build_deploy.md) | 构建、Docker 部署 | 运维 |
 | [Superset 部署](backend/docs/deploy_superset.md) | BI 可视化平台对接 | 数据分析 |
 
@@ -586,6 +591,40 @@ client.Track("scene_load", new() { ["scene"] = "Main" });
 
 > Unity WebGL 必须使用 `UnityWebRequestTransport`（HttpClient 在 WebGL 不可用）。
 > 详见 [C# SDK 文档](sdk/csharp/README.md)
+
+### Flutter SDK 快速接入
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:uba_flutter/uba_flutter.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // 初始化（单例，appId/appSecret 在管理后台「应用管理」中创建应用后获得）
+  final client = await UbaClient.init(UbaConfig(
+    appId: 'your_app_id',
+    appSecret: 'your_app_secret',
+    endpoint: 'http://localhost:5700', // collector 服务地址
+    appVersion: '1.0.0',
+  ));
+
+  // 退后台自动 flush + 会话轮换
+  UbaLifecycleObserver(client).register();
+  runApp(const MyApp());
+}
+
+// 设置公共属性（后续每条事件自动携带）
+client.setSuperProperties({'version': '1.0.0'});
+
+// 上报自定义事件
+client.track('button_click', properties: {'scene': 'home'});
+
+// 登录后绑定用户
+client.identify(1001);
+```
+
+> 详见 [Flutter SDK 文档](sdk/flutter/uba/README.md)
 
 ---
 

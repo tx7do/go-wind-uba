@@ -5,6 +5,7 @@
 > 各 SDK 的完整 API 文档见：
 > - Web SDK：[`frontend/sdk/web/uba/README.md`](../frontend/sdk/web/uba/README.md)
 > - C# SDK：[`sdk/csharp/README.md`](../sdk/csharp/README.md)
+> - Flutter SDK：[`sdk/flutter/uba/README.md`](../sdk/flutter/uba/README.md)
 
 ---
 
@@ -37,8 +38,9 @@
 | Unity WebGL（H5 游戏） | **C# SDK** + `UnityWebRequestTransport`（**必须**，HttpClient 在 WebGL 不可用） | `sdk/csharp/` |
 | Godot 4（.NET）桌面 / 移动 | **C# SDK** + 默认 `HttpClientTransport` | `sdk/csharp/` |
 | .NET 控制台 / 后台服务 | **C# SDK** + 默认 `HttpClientTransport` | `sdk/csharp/` |
+| Flutter App / 游戏（Android / iOS / 桌面） | **Flutter SDK** | `sdk/flutter/uba/` |
 
-**共同能力**（两端一致）：
+**共同能力**（各端一致）：
 
 - 应用级鉴权（appId + appSecret 在请求体）
 - 批量上报（本地缓冲，定时 / 定量自动 flush）
@@ -52,18 +54,19 @@
 
 不同 SDK 自动采集字段的来源差异（接入时需知晓）：
 
-| 字段 | Web SDK | C# SDK (Unity) | C# SDK (Godot) |
-|------|---------|---------------|----------------|
-| `deviceId` | localStorage 持久化 | PlayerPrefs 持久化 | 进程级（重启变化） |
-| `sessionId` | sessionStorage（标签关闭失效） | 进程级 GUID | 进程级 GUID |
-| `platform` | UA 探测（web/ios/...） | 编译宏探测（UNITY_IOS 等） | 固定 `dotnet` |
-| `clientInfo.userAgent` | navigator.userAgent | Unity 版本 + 操作系统 | .NET 运行时信息 |
-| 卸载兜底 | `sendBeacon`（enableBeacon） | 无（需手动 FlushAsync） | 无（需手动 FlushAsync） |
+| 字段 | Web SDK | C# SDK (Unity) | C# SDK (Godot) | Flutter SDK |
+|------|---------|---------------|----------------|-------------|
+| `deviceId` | localStorage 持久化 | PlayerPrefs 持久化 | 进程级（重启变化） | shared_preferences 持久化（uuid v4） |
+| `sessionId` | sessionStorage（标签关闭失效） | 进程级 GUID | 进程级 GUID | 进程内 uuid，后台超 30s（可配）回前台轮换 |
+| `platform` | UA 探测（web/ios/...） | 编译宏探测（UNITY_IOS 等） | 固定 `dotnet` | `Platform.operatingSystem`（android/ios/...） |
+| `clientInfo.userAgent` | navigator.userAgent | Unity 版本 + 操作系统 | .NET 运行时信息 | `uba_flutter/<版本> (<platform>)` |
+| 卸载兜底 | `sendBeacon`（enableBeacon） | 无（需手动 FlushAsync） | 无（需手动 FlushAsync） | 退后台自动 flush（UbaLifecycleObserver） |
 
 **注意事项**：
 - **Godot 的 deviceId 进程级**：重启后变化，若需稳定设备标识，建议自行持久化（如存配置文件）后通过 `SetSuperProperties` 或自定义 ContextProvider 注入。
 - **Unity WebGL 必须用 `UnityWebRequestTransport`**：HttpClient 在 WebGL 平台不可用，会抛异常。
-- **客户端卸载兜底**：仅 Web SDK 有 sendBeacon；C# 端需在 `OnApplicationQuit` / `OnDestroy` 调用 `FlushAsync()` 保证最后一批不丢。
+- **客户端卸载兜底**：Web SDK 有 sendBeacon；C# 端需在 `OnApplicationQuit` / `OnDestroy` 调用 `FlushAsync()`；Flutter 端注册 `UbaLifecycleObserver` 后退到后台自动 flush（App 被杀前的最后一次依赖系统，关键路径建议在退后台时机完成上报）。
+- **Flutter 离线补发**：flush 失败的事件落盘（shared_preferences，上限 500 条），下次启动自动补发；4xx（除 429）确定性失败不落盘不重试。
 
 ---
 
@@ -171,7 +174,84 @@ client.Track("scene_load", new() { ["scene"] = "Main" });
 
 ---
 
-## 六、上报协议契约
+## 六、Flutter SDK 快速上手（Android / iOS / 桌面）
+
+### 引入
+
+在宿主 App 的 `pubspec.yaml` 以 path 依赖引入（或发布到私有 pub 源）：
+
+```yaml
+dependencies:
+  uba_flutter:
+    path: ../go-wind-uba/sdk/flutter/uba
+```
+
+### 初始化与上报
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:uba_flutter/uba_flutter.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final client = await UbaClient.init(UbaConfig(
+    appId: 'your_app_id',
+    appSecret: 'your_app_secret',
+    endpoint: 'http://localhost:5700', // collector 服务地址
+    appVersion: '1.0.0',
+    debug: true,                       // 联调期打开
+  ));
+
+  // 后台自动 flush + 会话轮换（强烈建议）
+  UbaLifecycleObserver(client).register();
+  runApp(const MyApp());
+}
+
+// MaterialApp 挂页面浏览自动埋点：
+// navigatorObservers: [UbaScreenObserver(UbaClient.instance!)]
+
+// 行为事件（最常用）
+client.track('button_click', properties: {'scene': 'home'}, options: const TrackOptions(
+  objectType: 'button',
+  objectId: 'btn_buy',
+));
+
+// 风险事件
+client.trackRisk('abnormal_click', const RiskEvent(
+  riskType: 'device_anomaly',
+  riskLevel: 'HIGH',
+  riskScore: 85,
+  description: '短时间内频繁点击，疑似机器操作',
+));
+
+// 登录绑定用户（后续事件自动带 userId）
+client.identify(1001);
+
+// 关键转化节点，立即上报
+client.track('purchase', properties: {'orderId': 'ORD-001'});
+await client.flush();
+```
+
+### 常用配置
+
+| 参数 | 默认值 | 说明 |
+|------|--------|------|
+| `batchSize` | `20` | 缓冲达到该数量触发 flush |
+| `flushIntervalMs` | `5000` | 定时 flush 间隔（毫秒） |
+| `maxRetries` | `3` | 失败最大重试次数（指数退避） |
+| `timeoutMs` | `8000` | 单次请求超时（须 < 服务端 10s） |
+| `persistQueue` | `true` | flush 失败落盘，下次启动补发（上限 500 条） |
+| `sessionTimeoutMs` | `30000` | 后台超过该时长回前台 = 新会话 |
+| `autoTrackLaunch` | `false` | 首装自动埋 `app_launch` |
+| `sampleRate` | `1.0` | 会话级确定性采样率 |
+| `requireConsent` | `false` | 隐私合规：授权（`setConsent(true)`）前不发 |
+
+> 完整 API、平台说明（Flutter Web 暂不支持）、自动采集字段见 [Flutter SDK 文档](../sdk/flutter/uba/README.md)。
+
+---
+
+## 七、上报协议契约
 
 所有 SDK 对接 collector 服务的统一接口 `POST /uba/v1/report`，两端契约完全一致。
 
@@ -259,7 +339,7 @@ client.Track("scene_load", new() { ["scene"] = "Main" });
 
 ---
 
-## 七、事件 Schema 管理（可选）
+## 八、事件 Schema 管理（可选）
 
 如需对上报事件做**字段校验**，可在管理后台「开发者 / 事件 Schema」中登记合法事件名及其属性 schema（属性名 / 类型 / 是否必填）。登记后可用于上报校验，降低脏数据。
 
@@ -267,7 +347,7 @@ client.Track("scene_load", new() { ["scene"] = "Main" });
 
 ---
 
-## 八、联调与排错
+## 九、联调与排错
 
 ### 启动本地 collector
 
@@ -283,6 +363,12 @@ go run ./app/collector/service/cmd/server/ -c ./app/collector/service/configs
 2. 修改 `test.html` 里的 `appId` / `appSecret` / `endpoint`。
 3. 浏览器打开，点击按钮触发上报，观察 Network 面板与 Console。
 
+### Flutter SDK 联调
+
+1. 在 `sdk/flutter/uba/example/lib/main.dart` 顶部填入真实 `appId` / `appSecret` / `endpoint`。
+2. `flutter pub get && flutter run`（选目标设备）跑示例 App。
+3. 保持 SDK `debug: true`，点击按钮触发上报；collector 侧观察请求日志。
+
 ### 常见问题
 
 | 现象 | 排查方向 |
@@ -290,12 +376,13 @@ go run ./app/collector/service/cmd/server/ -c ./app/collector/service/configs
 | 上报返回 401 | appId/appSecret 错误，或应用状态非 `ON`；检查管理后台「应用管理」 |
 | 事件未入库但无报错 | 检查响应体 `failedCount`，可能字段校验部分失败；开启 SDK `debug` 查看日志 |
 | Unity WebGL 上报失败 | 确认使用 `UnityWebRequestTransport` 而非默认 HttpClient |
+| Flutter 首次 init 报 MissingPluginException | shared_preferences 插件未注册：确认宿主跑过 `flutter pub get` 且重新构建（不能热重载恢复） |
 | 数据查不到 | 确认 collector → Kafka → Doris（Routine Load）入仓链路在跑：`uba-ingest status`；`tenantId` 由服务端补全，勿手动上报 |
-| 页面跳转丢失事件 | 确认 `enableBeacon: true`（默认开启），卸载时用 sendBeacon 兜底 |
+| 页面跳转丢失事件 | Web 确认 `enableBeacon: true`；Flutter 确认已注册 `UbaLifecycleObserver`（退后台自动 flush） |
 
 ---
 
-## 九、进阶场景
+## 十、进阶场景
 
 ### 1. 自定义 Transport / ContextProvider（C#）
 
@@ -361,9 +448,10 @@ Schema 登记是**可选增强**，不登记也能上报；但登记后能显著
 
 ---
 
-## 十、相关文档
+## 十一、相关文档
 
 - [Web SDK 完整文档](../frontend/sdk/web/uba/README.md)
 - [C# SDK 完整文档](../sdk/csharp/README.md)
+- [Flutter SDK 完整文档](../sdk/flutter/uba/README.md)
 - [项目总览 README](../README.md)
 - [部署文档](../backend/docs/build_deploy.md)

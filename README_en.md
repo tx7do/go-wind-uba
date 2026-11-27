@@ -134,6 +134,7 @@ The platform provides 25 analysis models across three categories: general behavi
 | --- | --- | --- |
 | Web SDK (TypeScript) | Browser / Node | Web event collection with auto-tracking and custom events, sendBeacon fallback on unload |
 | C# SDK (.NET) | Unity (native + WebGL) / Godot 4 / .NET | Game/client tracking with batch reporting and retry fallback, zero-dependency core library |
+| Flutter SDK (Dart) | Android / iOS / Windows / macOS / Linux | Mobile/desktop tracking with offline queue replay, session rotation and lifecycle auto-tracking (Flutter Web not yet supported) |
 
 > For integration instructions, see the [Data Collection SDK Integration Guide](docs/sdk_integration.md).
 
@@ -312,6 +313,9 @@ go-wind-uba/
 ├── frontend/                           # Frontend project
 │   ├── admin/                          # Admin dashboard (Vue 3 + Vben Admin)
 │   └── sdk/web/                        # Web data collection SDK
+├── sdk/                                # Non-web data collection SDKs
+│   ├── csharp/                         # C# SDK (Unity / Godot / .NET)
+│   └── flutter/uba/                    # Flutter SDK (Android / iOS / desktop)
 └── LICENSE                             # MIT License
 ```
 
@@ -326,6 +330,7 @@ go-wind-uba/
 | [SDK Integration Guide](docs/sdk_integration.md) | Get appId/appSecret, SDK selection, reporting protocol, full field set | Tracking integrators |
 | [Web SDK Documentation](frontend/sdk/web/uba/README.md) | Full Web SDK API | Web integrators |
 | [C# SDK Documentation](sdk/csharp/README.md) | Full C# SDK (Unity/Godot) API | Game/client integrators |
+| [Flutter SDK Documentation](sdk/flutter/uba/README.md) | Full Flutter SDK API | Mobile/desktop integrators |
 | [Deployment Guide](backend/docs/build_deploy.md) | Build, Docker deployment | Ops |
 | [Superset Deployment](backend/docs/deploy_superset.md) | BI visualization platform integration | Data analysts |
 
@@ -588,6 +593,41 @@ client.Track("scene_load", new() { ["scene"] = "Main" });
 
 > Unity WebGL must use `UnityWebRequestTransport` (HttpClient is unavailable in WebGL).
 > See the [C# SDK Documentation](sdk/csharp/README.md) for details.
+
+### Flutter SDK Quick Start
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:uba_flutter/uba_flutter.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize (singleton; appId/appSecret are obtained after creating an app
+  // under "Application Management" in the admin backend)
+  final client = await UbaClient.init(UbaConfig(
+    appId: 'your_app_id',
+    appSecret: 'your_app_secret',
+    endpoint: 'http://localhost:5700', // collector service address
+    appVersion: '1.0.0',
+  ));
+
+  // Auto flush on background + session rotation
+  UbaLifecycleObserver(client).register();
+  runApp(const MyApp());
+}
+
+// Set super properties (automatically attached to every subsequent event)
+client.setSuperProperties({'version': '1.0.0'});
+
+// Track a custom event
+client.track('button_click', properties: {'scene': 'home'});
+
+// Bind the user after login
+client.identify(1001);
+```
+
+> See the [Flutter SDK Documentation](sdk/flutter/uba/README.md) for details.
 
 ---
 

@@ -17,7 +17,8 @@ go-wind-uba/
 │   ├── admin/        vue-vben-admin v5 monorepo(Vue3 + TS + AntD Vue)
 │   └── sdk/web/uba/  浏览器/Node 埋点 TS SDK
 ├── sdk/
-│   └── csharp/       C# SDK(独立子项目)
+│   ├── csharp/       C# SDK(Unity / Godot / .NET,独立子项目)
+│   └── flutter/uba/  Flutter 埋点 SDK(Android / iOS / 桌面)
 ├── docs/             架构 / 开发指南 / SDK 集成文档
 ├── README.md         中文(另附 en / ja 版本)
 └── LICENSE
@@ -34,6 +35,7 @@ go-wind-uba/
 | 管理后台 | Vue 3 · TypeScript · Vite · Ant Design Vue · vue-vben-admin v5 · pnpm monorepo + turbo + changeset | `frontend/AGENTS.md` |
 | Web SDK | 纯 TypeScript,`tsc` 构建,上报到 collector | `frontend/AGENTS.md` |
 | C# SDK | C#(`sdk/csharp/`) | `sdk/csharp/README.md` |
+| Flutter SDK | Dart(`sdk/flutter/uba/`)· 仅依赖 shared_preferences,flutter_test 验证 | `sdk/flutter/uba/AGENTS.md` |
 
 ## 4. 数据流(理解全局的关键)
 
@@ -116,6 +118,7 @@ paste <(grep -n '^#' README.md) <(grep -n '^#' README_en.md) <(grep -n '^#' READ
 | 改分析模型(前后端) | `backend/AGENTS.md` + `frontend/AGENTS.md`(分析模型是双端核心)|
 | 改 Web 埋点 SDK | `frontend/AGENTS.md`(sdk/web/uba 段)|
 | 改 C# SDK | `sdk/csharp/README.md` |
+| 改 Flutter SDK | `sdk/flutter/uba/AGENTS.md`(契约铁律:数值标量只进 behavior oneof) |
 | 理解整体架构 | `docs/architecture.md` + 本文件第 4 节 |
 
 ## 7. 常用命令(顶层)

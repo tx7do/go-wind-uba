@@ -1,0 +1,27 @@
+name: uba_flutter
+description: >-
+  GoWind UBA Flutter SDK —— 风行用户行为分析平台埋点采集（Android / iOS / Windows / macOS / Linux）。
+  批量上报 + 重试退避 + 离线持久化队列 + 会话轮换 + 生命周期自动埋点 + AB 实验开关。
+version: 1.0.0
+issue_tracker: https://github.com/go-wind-uba/go-wind-uba/issues
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.13.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  shared_preferences: ">=2.2.0 <4.0.0"
+
+dev_dependencies:
+  fake_async: ^1.3.1
+  flutter_lints: ">=4.0.0 <7.0.0"
+  flutter_test:
+    sdk: flutter
+
+topics:
+  - analytics
+  - uba
+  - tracking
+  - telemetry

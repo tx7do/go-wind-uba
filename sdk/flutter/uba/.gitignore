@@ -1,0 +1,14 @@
+# Dart / Flutter
+.dart_tool/
+*.iml
+*.ipr
+*.iws
+.packages
+.pub-cache/
+.pub/
+build/
+pubspec.lock
+
+# IDE
+.idea/
+.vscode/
