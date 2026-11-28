@@ -1,0 +1,5 @@
+# OLAP 引擎二选一:分析数据(events_fact 等)落在哪个引擎。
+# 可选值:doris(默认)| clickhouse
+# 亦可用环境变量 UBA_OLAP_ENGINE 覆盖(优先级更高)。
+olap:
+  engine: doris

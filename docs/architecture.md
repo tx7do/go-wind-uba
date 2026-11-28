@@ -79,7 +79,7 @@ graph TB
 | 职责 | 事件入库、分析建模、风险检测、标签管理、用户画像、数据同步 |
 | 数据源 | PostgreSQL（业务实体，走 ent ORM）+ OLAP 引擎（分析数据） |
 | 对外协议 | gRPC（供 admin/collector 调用） |
-| 特点 | 承载所有"重"业务逻辑；`data.UseClickHouse` 在 ClickHouse / Doris 间二选一，但它是**编译期常量 `false`**（详见「OLAP 引擎二选一」） |
+| 特点 | 承载所有"重"业务逻辑；`data.UseClickHouse` 在 ClickHouse / Doris 间二选一，由**部署配置决定**（详见「OLAP 引擎二选一」） |
 
 ### 3. Admin Service（管理后台 BFF）
 
@@ -169,12 +169,13 @@ Admin 前端
 
 ### OLAP 引擎二选一（现状：两引擎读数逻辑已对齐，默认仍走 Doris）
 
-- **部署时任选其一，不叠加使用**：`data.UseClickHouse` 编译期路由决定服务连哪个引擎，运行期不会同时使用两个。
+- **部署时任选其一，不叠加使用**：`data.UseClickHouse` 由部署配置路由决定服务连哪个引擎，运行期不会同时使用两个。
 - 代码按引擎成对镜像：`internal/data/{doris,clickhouse}/` 各一份 repo + `schema/` 镜像定义，
   service 层 `if data.UseClickHouse { ckRepo } else { dorisRepo }` 分支路由。
-- **但 `data.UseClickHouse` 是编译期常量而非配置项** —— `internal/data/data.go:35` 写死
-  `const UseClickHouse bool = false`。因此 ClickHouse 分支被编译掉、`configs/data.yaml` 里的
-  `data.clickhouse` 段并不能启用它；换引擎要改这行常量重新构建。
+- **`data.UseClickHouse` 现已改为部署配置驱动**（原为编译期常量）：优先级
+  环境变量 `UBA_OLAP_ENGINE` > 服务配置目录下 `olap.yaml` 的 `olap.engine`
+  （`doris` | `clickhouse`，缺省 Doris）。切换引擎改配置重启即可，无需重新构建；
+  两个引擎分支都会编译进产物，由 `pkg/olapcfg` 在进程启动时路由。
 - ClickHouse 侧曾核实的数据正确性缺陷（已全部修复）：
   1. **无事件去重（已修）**：`events_fact` 原是普通 `MergeTree`，Kafka at-least-once 重放会重复计入
      所有 PV/UV/GMV。现改为 `ReplacingMergeTree(updated_at)`，排序键追加 `event_id` 对齐 Doris 的

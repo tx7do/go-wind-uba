@@ -2,6 +2,7 @@ package data
 
 import (
 	"github.com/go-kratos/kratos/v2/registry"
+	"go-wind-uba/pkg/olapcfg"
 
 	"github.com/tx7do/go-utils/password"
 
@@ -32,4 +33,6 @@ func NewPasswordCrypto() password.Crypto {
 }
 
 // UseClickHouse 是否使用ClickHouse作为数据存储，否则使用Doris。
-const UseClickHouse bool = false
+// 由部署配置决定：configs/olap.yaml 的 olap.engine，或环境变量 UBA_OLAP_ENGINE
+// （后者优先）；进程启动时一次性装载，默认 Doris。
+var UseClickHouse = olapcfg.UseClickHouse()
