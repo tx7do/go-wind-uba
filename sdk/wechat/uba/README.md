@@ -7,7 +7,7 @@ GoWind UBA 风行用户行为分析平台的**微信小程序 / 微信小游戏*
 ## 结构
 
 ```
-frontend/sdk/wechat/uba/
+sdk/wechat/uba/
 ├── src/
 │   ├── client.ts     # UbaClient 单例：init/track/trackRisk/identify/flags + App/Page 包装器
 │   ├── config.ts     # UbaConfig 解析与校验（默认值对齐其他端：批量 20/5s/3 次重试/1s 退避/8s 超时）
@@ -34,7 +34,7 @@ frontend/sdk/wechat/uba/
 ## 快速开始
 
 ```bash
-cd frontend/sdk/wechat/uba
+cd sdk/wechat/uba
 pnpm install
 pnpm build   # 产物 dist/，拷入小程序项目或以 npm 包方式引入
 ```

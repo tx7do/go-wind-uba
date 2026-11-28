@@ -4,10 +4,10 @@
 > 🎓 **第一次接触本平台？** 跟着 [上手教程](tutorial.md) 走一遍（约 15 分钟），从启动服务到在管理后台看见你的第一条事件。
 
 > 各 SDK 的完整 API 文档见：
-> - Web SDK：[`frontend/sdk/web/uba/README.md`](../frontend/sdk/web/uba/README.md)
+> - Web SDK：[`sdk/web/uba/README.md`](../sdk/web/uba/README.md)
 > - C# SDK：[`sdk/csharp/README.md`](../sdk/csharp/README.md)
 > - Flutter SDK：[`sdk/flutter/uba/README.md`](../sdk/flutter/uba/README.md)
-> - 微信小程序/小游戏 SDK：[`frontend/sdk/wechat/uba/README.md`](../frontend/sdk/wechat/uba/README.md)
+> - 微信小程序/小游戏 SDK：[`sdk/wechat/uba/README.md`](../sdk/wechat/uba/README.md)
 > - Go 服务端 SDK：[`sdk/go/uba/README.md`](../sdk/go/uba/README.md)
 > - Java 服务端 SDK：[`sdk/java/uba/README.md`](../sdk/java/uba/README.md)
 > - Android SDK：[`sdk/android/uba/README.md`](../sdk/android/uba/README.md)
@@ -42,13 +42,13 @@
 
 | 你的场景 | 选择 | 包路径 |
 |---------|------|--------|
-| 浏览器网页 / Node 服务 | **Web SDK（TypeScript）** | `frontend/sdk/web/uba/` |
+| 浏览器网页 / Node 服务 | **Web SDK（TypeScript）** | `sdk/web/uba/` |
 | Unity 游戏（iOS / Android / PC 原生） | **C# SDK** + `UnityWebRequestTransport` | `sdk/csharp/` |
 | Unity WebGL（H5 游戏） | **C# SDK** + `UnityWebRequestTransport`（**必须**，HttpClient 在 WebGL 不可用） | `sdk/csharp/` |
 | Godot 4（.NET）桌面 / 移动 | **C# SDK** + 默认 `HttpClientTransport` | `sdk/csharp/` |
 | .NET 控制台 / 后台服务 | **C# SDK** + 默认 `HttpClientTransport` | `sdk/csharp/` |
 | Flutter App / 游戏（Android / iOS / 桌面） | **Flutter SDK** | `sdk/flutter/uba/` |
-| 微信小程序 / 小游戏 | **微信 SDK（TypeScript）** | `frontend/sdk/wechat/uba/` |
+| 微信小程序 / 小游戏 | **微信 SDK（TypeScript）** | `sdk/wechat/uba/` |
 | Go 服务端（支付/订单/风控事件源） | **Go SDK** | `sdk/go/uba/` |
 | Java 服务端（订单/支付/风控系统） | **Java SDK** | `sdk/java/uba/` |
 | Android 原生 App | **Android SDK（Kotlin）** | `sdk/android/uba/` |
@@ -96,7 +96,7 @@
 ### 安装
 
 ```bash
-cd frontend/sdk/web/uba
+cd sdk/web/uba
 pnpm install     # 安装 typescript
 pnpm build       # 构建 dist/
 ```
@@ -144,7 +144,7 @@ await uba.flush();
 | `timeout` | `8000` | 单次请求超时（须 < 服务端 10s） |
 | `enableBeacon` | `true` | 页面卸载时用 sendBeacon 兜底 |
 
-> 完整 API 与自动采集字段见 [Web SDK 文档](../frontend/sdk/web/uba/README.md)。
+> 完整 API 与自动采集字段见 [Web SDK 文档](../sdk/web/uba/README.md)。
 
 ---
 
@@ -275,7 +275,7 @@ await client.flush();
 ## 七、微信小程序/小游戏 SDK 快速上手
 
 ```bash
-cd frontend/sdk/wechat/uba
+cd sdk/wechat/uba
 pnpm install && pnpm build   # 产物 dist/
 ```
 
@@ -303,7 +303,7 @@ await uba.flush();
 
 常用配置与其他端一致（batchSize 20 / flushInterval 5000 / maxRetries 3 / timeout 8000），
 额外支持 `platform` 覆盖（默认自动探测 mini_program / mini_game）。
-详见 [微信 SDK 文档](../frontend/sdk/wechat/uba/README.md)。
+详见 [微信 SDK 文档](../sdk/wechat/uba/README.md)。
 
 ---
 
@@ -616,7 +616,7 @@ go run ./app/collector/service/cmd/server/ -c ./app/collector/service/configs
 
 ### Web SDK 联调
 
-1. `cd frontend/sdk/web/uba && pnpm build` 生成 `dist/`。
+1. `cd sdk/web/uba && pnpm build` 生成 `dist/`。
 2. 修改 `test.html` 里的 `appId` / `appSecret` / `endpoint`。
 3. 浏览器打开，点击按钮触发上报，观察 Network 面板与 Console。
 
@@ -712,7 +712,7 @@ Schema 登记是**可选增强**，不登记也能上报；但登记后能显著
 ## 十九、相关文档
 
 - [上手教程](tutorial.md)（任务导向：从零到看见数据）
-- [Web SDK 完整文档](../frontend/sdk/web/uba/README.md)
+- [Web SDK 完整文档](../sdk/web/uba/README.md)
 - [C# SDK 完整文档](../sdk/csharp/README.md)
 - [Flutter SDK 完整文档](../sdk/flutter/uba/README.md)
 - [项目总览 README](../README.md)

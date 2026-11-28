@@ -1,4 +1,4 @@
-# CLAUDE.md — frontend/sdk/wechat/uba 速记
+# CLAUDE.md — sdk/wechat/uba 速记
 
 - 微信小程序/小游戏 TS SDK，零运行时依赖（wx API 手写声明在 src/wx-env.ts）。
 - 宿主探测：有 `Page` 全局 → mini_program，否则 mini_game；config.platform 可覆盖。

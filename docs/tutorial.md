@@ -50,7 +50,7 @@ go run ./app/collector/service/cmd/server/ -c ./app/collector/service/configs  #
 最省事：仓库自带调试页，改两个值、浏览器打开。
 
 ```bash
-cd frontend/sdk/web/uba && pnpm install && pnpm build   # 生成 dist/
+cd sdk/web/uba && pnpm install && pnpm build   # 生成 dist/
 # 编辑 test.html：把 init 里的 appId/appSecret/endpoint 换成你的，然后浏览器直接打开
 ```
 
@@ -60,7 +60,7 @@ cd frontend/sdk/web/uba && pnpm install && pnpm build   # 生成 dist/
 <!DOCTYPE html><meta charset="utf-8">
 <button id="buy">下单</button>
 <script type="module">
-  import { UbaClient } from './frontend/sdk/web/uba/dist/index.js';
+  import { UbaClient } from './sdk/web/uba/dist/index.js';
 
   const uba = UbaClient.init({
     appId: 'your_app_id',
@@ -84,7 +84,7 @@ cd frontend/sdk/web/uba && pnpm install && pnpm build   # 生成 dist/
 3. collector 终端日志有 produce 记录。
 
 > 点击事件没自动埋？Web SDK 的点击自动埋点（`elementXpath`/坐标热力）与 SPA 路由 `page_view`
-> 需要开自动埋点（`autoTrack` / `autoTrackPv` 配置，默认开）——详见 [Web SDK 文档](../frontend/sdk/web/uba/README.md)。
+> 需要开自动埋点（`autoTrack` / `autoTrackPv` 配置，默认开）——详见 [Web SDK 文档](../sdk/web/uba/README.md)。
 
 ## 四、验证数据链路（Kafka → Doris → 看板）
 
@@ -120,8 +120,8 @@ make ingest                                            # 构建入仓运维 CLI
 
 | 端 | 引入 | 最小上报 | 文档 |
 |---|---|---|---|
-| Web / Node | `pnpm build` 产物或 npm 包 | `UbaClient.init({...}).track('evt')` | [Web](../frontend/sdk/web/uba/README.md) |
-| 微信小程序/小游戏 | npm 或 dist 拷入 | `uba.instrumentPage({})` 自动埋 page_view | [微信](../frontend/sdk/wechat/uba/README.md) |
+| Web / Node | `pnpm build` 产物或 npm 包 | `UbaClient.init({...}).track('evt')` | [Web](../sdk/web/uba/README.md) |
+| 微信小程序/小游戏 | npm 或 dist 拷入 | `uba.instrumentPage({})` 自动埋 page_view | [微信](../sdk/wechat/uba/README.md) |
 | Flutter | pubspec path 依赖 | `await UbaClient.init(config)` | [Flutter](../sdk/flutter/uba/README.md) |
 | Android | gradle 模块 + 适配层源码 | `UbaAndroid.init(this, config)` | [Android](../sdk/android/uba/README.md) |
 | iOS/macOS | SPM 包 | `UbaClient(config:)` | [iOS](../sdk/ios/uba/README.md) |

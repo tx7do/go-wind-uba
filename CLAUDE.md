@@ -59,7 +59,7 @@ cd backend && make help      # api / ent / register / build / lint / test
 # 前端
 cd frontend/admin && pnpm install && pnpm dev:antd
 # Web SDK
-cd frontend/sdk/web/uba && pnpm build
+cd sdk/web/uba && pnpm build
 ```
 
 详见根 `AGENTS.md` 及各子目录指南。

@@ -320,11 +320,11 @@ go-wind-uba/
 │   │   ├── docker/                     # Dockerデプロイスクリプト
 │   │   └── env/                        # 環境セットアップスクリプト
 │   └── docs/                           # ドキュメント
-├── frontend/                           # フロントエンドプロジェクト
-│   ├── admin/                          # 管理画面（Vue 3 + Vben Admin）
-│   ├── sdk/web/                        # Webデータ収集SDK
-│   └── sdk/wechat/                     # WeChat ミニプログラム/ミニゲーム収集SDK
-├── sdk/                                # 非 Web データ収集SDK
+├── frontend/                           # フロントエンドプロジェクト（管理画面）
+│   └── admin/                          # 管理画面（Vue 3 + Vben Admin）
+├── sdk/                                # 全データ収集SDK（11種、sdk/README.md 参照）
+│   ├── web/uba/                        # ブラウザ/Node トラッキング TS SDK
+│   ├── wechat/uba/                     # WeChat ミニプログラム/ミニゲーム TS SDK
 │   ├── csharp/                         # C# SDK（Unity / Godot / .NET）
 │   ├── flutter/uba/                    # Flutter SDK（Android / iOS / デスクトップ）
 │   ├── go/uba/                         # Go サーバーサイド SDK
@@ -350,10 +350,10 @@ go-wind-uba/
 | [システムアーキテクチャ](docs/architecture.md) | サービス責務、データフロー、ストレージ階層、主要設計パターン | 全体設計を理解したい人 |
 | [二次開発ガイド](docs/development_guide.md) | コード生成パイプライン、サービス/エンティティ/分析集計/フロントエンドページの追加 | 二次開発者 |
 | [SDK導入ガイド](docs/sdk_integration.md) | appId/appSecret取得、SDK選定、報告プロトコル、フィールド一覧 | 計測導入者 |
-| [Web SDKドキュメント](frontend/sdk/web/uba/README.md) | Web SDK完全API | Web導入者 |
+| [Web SDKドキュメント](sdk/web/uba/README.md) | Web SDK完全API | Web導入者 |
 | [C# SDKドキュメント](sdk/csharp/README.md) | C# SDK（Unity/Godot）完全API | ゲーム/クライアント導入者 |
 | [Flutter SDKドキュメント](sdk/flutter/uba/README.md) | Flutter SDK完全API | モバイル/デスクトップ導入者 |
-| [WeChat SDKドキュメント](frontend/sdk/wechat/uba/README.md) | WeChat ミニプログラム/ミニゲーム SDK完全API | ミニプログラム導入者 |
+| [WeChat SDKドキュメント](sdk/wechat/uba/README.md) | WeChat ミニプログラム/ミニゲーム SDK完全API | ミニプログラム導入者 |
 | [Go SDKドキュメント](sdk/go/uba/README.md) | Go サーバーサイド SDK完全API | サーバー側イベントソース |
 | [Java SDKドキュメント](sdk/java/uba/README.md) | Java サーバーサイド SDK完全API | サーバー側イベントソース |
 | [Android SDKドキュメント](sdk/android/uba/README.md) | Android SDK完全API | Android ネイティブ導入者 |
@@ -604,7 +604,7 @@ uba.identify(1001);
 uba.track('purchase', { orderId: 'ORD-001' }, { amount: '99.90', quantity: 1 });
 ```
 
-> 詳細は [Web SDK ドキュメント](frontend/sdk/web/uba/README.md) を参照してください。
+> 詳細は [Web SDK ドキュメント](sdk/web/uba/README.md) を参照してください。
 
 ### C# SDK（Unity / Godot）
 
@@ -677,7 +677,7 @@ uba.track('button_click', { scene: 'home' });
 uba.identify(1001);
 ```
 
-> 詳細は [WeChat SDK ドキュメント](frontend/sdk/wechat/uba/README.md) を参照してください。
+> 詳細は [WeChat SDK ドキュメント](sdk/wechat/uba/README.md) を参照してください。
 
 ### Go サーバーサイド SDK クイックスタート
 

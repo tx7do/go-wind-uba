@@ -318,11 +318,11 @@ go-wind-uba/
 │   │   ├── docker/                     # Docker deployment scripts
 │   │   └── env/                        # Environment setup scripts
 │   └── docs/                           # Documentation
-├── frontend/                           # Frontend project
-│   ├── admin/                          # Admin dashboard (Vue 3 + Vben Admin)
-│   ├── sdk/web/                        # Web data collection SDK
-│   └── sdk/wechat/                     # WeChat mini program / mini game collection SDK
-├── sdk/                                # Non-web data collection SDKs
+├── frontend/                           # Frontend project (admin console)
+│   └── admin/                          # Admin dashboard (Vue 3 + Vben Admin)
+├── sdk/                                # All data collection SDKs (11, see sdk/README.md)
+│   ├── web/uba/                        # Browser/Node tracking TS SDK
+│   ├── wechat/uba/                     # WeChat mini program / mini game TS SDK
 │   ├── csharp/                         # C# SDK (Unity / Godot / .NET)
 │   ├── flutter/uba/                    # Flutter SDK (Android / iOS / desktop)
 │   ├── go/uba/                         # Go server-side SDK
@@ -348,10 +348,10 @@ go-wind-uba/
 | [System Architecture](docs/architecture.md) | Service responsibilities, data flow, storage tiers, key design patterns | Those who want to understand the overall design |
 | [Development Guide](docs/development_guide.md) | Code generation pipeline, adding services/entities/analysis aggregates/frontend pages | Developers |
 | [SDK Integration Guide](docs/sdk_integration.md) | Get appId/appSecret, SDK selection, reporting protocol, full field set | Tracking integrators |
-| [Web SDK Documentation](frontend/sdk/web/uba/README.md) | Full Web SDK API | Web integrators |
+| [Web SDK Documentation](sdk/web/uba/README.md) | Full Web SDK API | Web integrators |
 | [C# SDK Documentation](sdk/csharp/README.md) | Full C# SDK (Unity/Godot) API | Game/client integrators |
 | [Flutter SDK Documentation](sdk/flutter/uba/README.md) | Full Flutter SDK API | Mobile/desktop integrators |
-| [WeChat SDK Documentation](frontend/sdk/wechat/uba/README.md) | Full WeChat mini program / mini game SDK API | Mini-program integrators |
+| [WeChat SDK Documentation](sdk/wechat/uba/README.md) | Full WeChat mini program / mini game SDK API | Mini-program integrators |
 | [Go SDK Documentation](sdk/go/uba/README.md) | Full Go server-side SDK API | Server-side event sources |
 | [Java SDK Documentation](sdk/java/uba/README.md) | Full Java server-side SDK API | Server-side event sources |
 | [Android SDK Documentation](sdk/android/uba/README.md) | Full Android SDK API | Android native integrators |
@@ -603,7 +603,7 @@ uba.identify(1001);
 uba.track('purchase', { orderId: 'ORD-001' }, { amount: '99.90', quantity: 1 });
 ```
 
-> See the [Web SDK Documentation](frontend/sdk/web/uba/README.md) for details.
+> See the [Web SDK Documentation](sdk/web/uba/README.md) for details.
 
 ### C# SDK (Unity / Godot)
 
@@ -676,7 +676,7 @@ uba.track('button_click', { scene: 'home' });
 uba.identify(1001);
 ```
 
-> See the [WeChat SDK Documentation](frontend/sdk/wechat/uba/README.md) for details.
+> See the [WeChat SDK Documentation](sdk/wechat/uba/README.md) for details.
 
 ### Go Server-side SDK Quick Start
 

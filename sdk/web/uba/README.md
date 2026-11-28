@@ -24,7 +24,7 @@
 本项目内使用，直接引用源码或构建产物：
 
 ```bash
-cd frontend/sdk/web/uba
+cd sdk/web/uba
 pnpm install     # 安装 typescript
 pnpm build       # 构建 dist/
 ```

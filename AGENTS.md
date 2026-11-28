@@ -13,11 +13,11 @@
 ```
 go-wind-uba/
 ├── backend/        ★ Go 1.25 + Kratos + Ent 多服务后端 → 见 backend/AGENTS.md
-├── frontend/       ★ 前端(双产物)→ 见 frontend/AGENTS.md
-│   ├── admin/        vue-vben-admin v5 monorepo(Vue3 + TS + AntD Vue)
-│   ├── sdk/web/uba/  浏览器/Node 埋点 TS SDK
-│   └── sdk/wechat/uba/ 微信小程序/小游戏埋点 TS SDK
-├── sdk/
+├── frontend/       ★ 前端(管理后台)→ 见 frontend/AGENTS.md
+│   └── admin/        vue-vben-admin v5 monorepo(Vue3 + TS + AntD Vue)
+├── sdk/              ★ 全部数据采集 SDK(11 端,见 sdk/README.md)
+│   ├── web/uba/      浏览器/Node 埋点 TS SDK
+│   ├── wechat/uba/   微信小程序/小游戏埋点 TS SDK
 │   ├── csharp/       C# SDK(Unity / Godot / .NET,独立子项目)
 │   ├── flutter/uba/  Flutter 埋点 SDK(Android / iOS / 桌面)
 │   ├── go/uba/       Go 服务端埋点 SDK(零依赖)
@@ -41,10 +41,10 @@ go-wind-uba/
 |---|---|---|
 | 后端 | Go 1.25 · Kratos v2 · Ent · PostgreSQL · Doris · ClickHouse · Redis · Asynq · SeaweedFS(S3 兼容，服务名沿用 minio) · Kratos authn(JWT)/ authz(Casbin/OPA) | `backend/AGENTS.md` |
 | 管理后台 | Vue 3 · TypeScript · Vite · Ant Design Vue · vue-vben-admin v5 · pnpm monorepo + turbo + changeset | `frontend/AGENTS.md` |
-| Web SDK | 纯 TypeScript,`tsc` 构建,上报到 collector | `frontend/AGENTS.md` |
+| Web SDK | TypeScript(`sdk/web/uba/`)· `tsc` 构建,上报到 collector | `sdk/web/uba/AGENTS.md` |
 | C# SDK | C#(`sdk/csharp/`) | `sdk/csharp/README.md` |
 | Flutter SDK | Dart(`sdk/flutter/uba/`)· 仅依赖 shared_preferences,flutter_test 验证 | `sdk/flutter/uba/AGENTS.md` |
-| 微信 SDK | TypeScript(`frontend/sdk/wechat/uba/`)· 零运行时依赖,vitest + wx mock 验证 | `frontend/sdk/wechat/uba/AGENTS.md` |
+| 微信 SDK | TypeScript(`sdk/wechat/uba/`)· 零运行时依赖,vitest + wx mock 验证 | `sdk/wechat/uba/AGENTS.md` |
 | Go SDK | Go(`sdk/go/uba/`)· 零依赖,go test -race 验证 | `sdk/go/uba/AGENTS.md` |
 | Java SDK | Java 11(`sdk/java/uba/`)· 零依赖,mvn test 验证 | `sdk/java/uba/AGENTS.md` |
 | Android SDK | Kotlin(`sdk/android/uba/`)· 核心零依赖 gradle test 验证;android/ 适配层宿主编译 | `sdk/android/uba/AGENTS.md` |
@@ -132,10 +132,10 @@ paste <(grep -n '^#' README.md) <(grep -n '^#' README_en.md) <(grep -n '^#' READ
 | 改后端契约,影响前端调用 | `backend/AGENTS.md`(注意 `make api` 生成链)|
 | 改管理后台页面 / 组件 / i18n | `frontend/AGENTS.md` |
 | 改分析模型(前后端) | `backend/AGENTS.md` + `frontend/AGENTS.md`(分析模型是双端核心)|
-| 改 Web 埋点 SDK | `frontend/AGENTS.md`(sdk/web/uba 段)|
+| 改 Web 埋点 SDK | `sdk/web/uba/AGENTS.md` |
 | 改 C# SDK | `sdk/csharp/README.md` |
 | 改 Flutter SDK | `sdk/flutter/uba/AGENTS.md`(契约铁律:数值标量只进 behavior oneof) |
-| 改微信 SDK | `frontend/sdk/wechat/uba/AGENTS.md` |
+| 改微信 SDK | `sdk/wechat/uba/AGENTS.md` |
 | 改 Go/Java 服务端 SDK | `sdk/go/uba/AGENTS.md` / `sdk/java/uba/AGENTS.md` |
 | 改 Android/iOS SDK | `sdk/android/uba/AGENTS.md` / `sdk/ios/uba/AGENTS.md`(iOS 需 macOS 验证) |
 | 改 Python/Unreal/鸿蒙 SDK | `sdk/python/uba/AGENTS.md` / `sdk/unreal/uba/AGENTS.md` / `sdk/harmonyos/uba/AGENTS.md`(鸿蒙需 DevEco 验证) |
@@ -155,7 +155,7 @@ make help && make api && make build
 # 前端(在 frontend/admin/ 下)
 pnpm install && pnpm dev:antd
 
-# Web SDK(在 frontend/sdk/web/uba/ 下)
+# Web SDK(在 sdk/web/uba/ 下)
 pnpm build && pnpm typecheck
 ```
 

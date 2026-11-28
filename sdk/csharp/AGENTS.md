@@ -81,5 +81,5 @@ Unity 适配层(`Uba.Unity`)依赖 `UnityEngine.dll`:在 Unity 项目内编译,�
 
 ## 7. 与其他 SDK 的关系
 
-- 同一上报契约还有 `frontend/sdk/web/uba/`(浏览器/Node,TS)。改契约时两处都要同步,
+- 同一上报契约还有 `sdk/web/uba/`(浏览器/Node,TS)。改契约时两处都要同步,
    以 `backend/api/protos/` 为唯一真相源。

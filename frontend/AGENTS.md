@@ -10,7 +10,6 @@
 | 子目录 | 技术栈 | 说明 |
 |---|---|---|
 | `admin/` | Vue 3 + TypeScript + Vite + Ant Design Vue,基于 [vue-vben-admin v5](https://github.com/vben/vue-vben-admin) monorepo | 管理后台(主前端) |
-| `sdk/web/uba/` | 纯 TypeScript SDK,`tsc` 编译 | 浏览器/Node 埋点 SDK,上报到 collector 服务 |
 
 两者均使用 **pnpm**(admin 有 `preinstall: only-allow pnpm`,**禁止 npm/yarn**)。
 

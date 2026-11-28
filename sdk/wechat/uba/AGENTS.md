@@ -1,4 +1,4 @@
-# Agent Guide — frontend/sdk/wechat/uba
+# Agent Guide — sdk/wechat/uba
 
 微信小程序/小游戏埋点 SDK（TypeScript）。权威契约在 `backend/api/protos/`；测试走 vitest + 手写 wx mock。
 
@@ -15,7 +15,7 @@
 ## 提交前自查
 
 ```bash
-cd frontend/sdk/wechat/uba
+cd sdk/wechat/uba
 pnpm typecheck   # tsc --noEmit 0 error
 pnpm test        # vitest 全绿（金样/批量重试/落盘/包装器）
 pnpm build       # 产物 dist/

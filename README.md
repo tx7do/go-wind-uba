@@ -321,10 +321,10 @@ go-wind-uba/
 │   │   └── env/                        # 环境安装脚本
 │   └── docs/                           # 文档
 ├── frontend/                           # 前端项目
-│   ├── admin/                          # 管理后台（Vue 3 + Vben Admin）
-│   ├── sdk/web/                        # Web 数据采集 SDK
-│   └── sdk/wechat/                     # 微信小程序/小游戏采集 SDK
-├── sdk/                                # 非 Web 端数据采集 SDK
+│   └── admin/                          # 管理后台（Vue 3 + Vben Admin）
+├── sdk/                                # 全部数据采集 SDK（11 端，见 sdk/README.md）
+│   ├── web/uba/                        # 浏览器/Node 埋点 TS SDK
+│   ├── wechat/uba/                     # 微信小程序/小游戏埋点 TS SDK
 │   ├── csharp/                         # C# SDK（Unity / Godot / .NET）
 │   ├── flutter/uba/                    # Flutter SDK（Android / iOS / 桌面）
 │   ├── go/uba/                         # Go 服务端 SDK
@@ -350,10 +350,10 @@ go-wind-uba/
 | [系统架构](docs/architecture.md) | 服务职责、数据流转、存储分层、关键设计模式 | 想理解整体设计的人 |
 | [二次开发导引](docs/development_guide.md) | 代码生成管线、新增服务/实体/分析聚合/前端页面 | 二次开发者 |
 | [SDK 接入指南](docs/sdk_integration.md) | 获取 appId/appSecret、SDK 选型、上报协议、字段全集 | 埋点接入方 |
-| [Web SDK 文档](frontend/sdk/web/uba/README.md) | Web SDK 完整 API | Web 端接入 |
+| [Web SDK 文档](sdk/web/uba/README.md) | Web SDK 完整 API | Web 端接入 |
 | [C# SDK 文档](sdk/csharp/README.md) | C# SDK（Unity/Godot）完整 API | 游戏/客户端接入 |
 | [Flutter SDK 文档](sdk/flutter/uba/README.md) | Flutter SDK 完整 API | 移动端/桌面端接入 |
-| [微信 SDK 文档](frontend/sdk/wechat/uba/README.md) | 微信小程序/小游戏 SDK 完整 API | 小程序接入 |
+| [微信 SDK 文档](sdk/wechat/uba/README.md) | 微信小程序/小游戏 SDK 完整 API | 小程序接入 |
 | [Go SDK 文档](sdk/go/uba/README.md) | Go 服务端 SDK 完整 API | 服务端事件源 |
 | [Java SDK 文档](sdk/java/uba/README.md) | Java 服务端 SDK 完整 API | 服务端事件源 |
 | [Android SDK 文档](sdk/android/uba/README.md) | Android SDK 完整 API | Android 原生接入 |
@@ -601,7 +601,7 @@ uba.identify(1001);
 uba.track('purchase', { orderId: 'ORD-001' }, { amount: '99.90', quantity: 1 });
 ```
 
-> 详见 [Web SDK 文档](frontend/sdk/web/uba/README.md)
+> 详见 [Web SDK 文档](sdk/web/uba/README.md)
 
 ### C# SDK（Unity / Godot）
 
@@ -673,7 +673,7 @@ uba.track('button_click', { scene: 'home' });
 uba.identify(1001);
 ```
 
-> 详见 [微信 SDK 文档](frontend/sdk/wechat/uba/README.md)
+> 详见 [微信 SDK 文档](sdk/wechat/uba/README.md)
 
 ### Go 服务端 SDK 快速接入
 
