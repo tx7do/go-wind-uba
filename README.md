@@ -343,6 +343,7 @@ go-wind-uba/
 
 | 文档 | 说明 | 适用读者 |
 |------|------|---------|
+| [上手教程](docs/tutorial.md) | 从零到看见第一条事件的端到端 walkthrough | 首次接入 / 试用评估 |
 | [系统架构](docs/architecture.md) | 服务职责、数据流转、存储分层、关键设计模式 | 想理解整体设计的人 |
 | [二次开发导引](docs/development_guide.md) | 代码生成管线、新增服务/实体/分析聚合/前端页面 | 二次开发者 |
 | [SDK 接入指南](docs/sdk_integration.md) | 获取 appId/appSecret、SDK 选型、上报协议、字段全集 | 埋点接入方 |

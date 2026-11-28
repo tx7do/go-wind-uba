@@ -1,6 +1,7 @@
 # 数据采集 SDK 接入指南
 
-本文档是 go-wind-uba 埋点 SDK 的**统一接入入口**，覆盖：接入前置准备、SDK 选型、各 SDK 快速上手、上报协议契约。
+本文档是 go-wind-uba 埋点 SDK 的**统一接入入口**（字典式参考），覆盖：接入前置准备、SDK 选型、各 SDK 快速上手、上报协议契约。
+> 🎓 **第一次接触本平台？** 跟着 [上手教程](tutorial.md) 走一遍（约 15 分钟），从启动服务到在管理后台看见你的第一条事件。
 
 > 各 SDK 的完整 API 文档见：
 > - Web SDK：[`frontend/sdk/web/uba/README.md`](../frontend/sdk/web/uba/README.md)
@@ -710,6 +711,7 @@ Schema 登记是**可选增强**，不登记也能上报；但登记后能显著
 
 ## 十九、相关文档
 
+- [上手教程](tutorial.md)（任务导向：从零到看见数据）
 - [Web SDK 完整文档](../frontend/sdk/web/uba/README.md)
 - [C# SDK 完整文档](../sdk/csharp/README.md)
 - [Flutter SDK 完整文档](../sdk/flutter/uba/README.md)
