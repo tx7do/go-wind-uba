@@ -140,6 +140,8 @@ paste <(grep -n '^#' README.md) <(grep -n '^#' README_en.md) <(grep -n '^#' READ
 | 改 Android/iOS SDK | `sdk/android/uba/AGENTS.md` / `sdk/ios/uba/AGENTS.md`(iOS 需 macOS 验证) |
 | 改 Python/Unreal/鸿蒙 SDK | `sdk/python/uba/AGENTS.md` / `sdk/unreal/uba/AGENTS.md` / `sdk/harmonyos/uba/AGENTS.md`(鸿蒙需 DevEco 验证) |
 | 首次接入 / 想走通完整流程 | `docs/tutorial.md`（从零到看见数据的端到端教程） |
+| 用数（分析模型/看板） | `docs/analytics-tutorial.md`（数据分析教程） |
+| 运营（分群/触达/AB/告警） | `docs/growth-tutorial.md`（增长闭环教程） |
 | 理解整体架构 | `docs/architecture.md` + 本文件第 4 节 |
 
 ## 7. 常用命令(顶层)
