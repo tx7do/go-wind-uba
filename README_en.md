@@ -343,6 +343,7 @@ go-wind-uba/
 | --- | --- | --- |
 | [Hands-on Tutorial](docs/tutorial.md) | End-to-end walkthrough from zero to your first event | First-time integrators |
 | [Analytics Tutorial](docs/analytics-tutorial.md) | How to use the 25 analysis models: funnels, retention, drill-down, dashboards | Analysts / operators / PMs |
+| [Growth Loop Tutorial](docs/growth-tutorial.md) | Task chain across segments, campaigns, A/B tests, alerts, reports | Operators / growth |
 | [System Architecture](docs/architecture.md) | Service responsibilities, data flow, storage tiers, key design patterns | Those who want to understand the overall design |
 | [Development Guide](docs/development_guide.md) | Code generation pipeline, adding services/entities/analysis aggregates/frontend pages | Developers |
 | [SDK Integration Guide](docs/sdk_integration.md) | Get appId/appSecret, SDK selection, reporting protocol, full field set | Tracking integrators |
