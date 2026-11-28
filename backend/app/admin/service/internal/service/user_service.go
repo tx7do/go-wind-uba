@@ -18,6 +18,7 @@ import (
 	identityV1 "go-wind-uba/api/gen/go/identity/service/v1"
 	permissionV1 "go-wind-uba/api/gen/go/permission/service/v1"
 
+	"go-wind-uba/pkg/masking"
 	"go-wind-uba/pkg/middleware/auth"
 	"go-wind-uba/pkg/utils"
 )
@@ -62,7 +63,17 @@ func (s *UserService) init() {
 }
 
 func (s *UserService) List(ctx context.Context, req *paginationV1.PagingRequest) (*identityV1.ListUserResponse, error) {
-	return s.userServiceClient.List(ctx, req)
+	resp, err := s.userServiceClient.List(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+
+	// 字段脱敏(企业构建;开源构建无策略恒原样)
+	for _, u := range resp.GetItems() {
+		s.maskUserContact(ctx, u)
+	}
+
+	return resp, nil
 }
 
 func (s *UserService) Count(ctx context.Context, req *paginationV1.PagingRequest) (*identityV1.CountUserResponse, error) {
@@ -75,7 +86,20 @@ func (s *UserService) Get(ctx context.Context, req *identityV1.GetUserRequest) (
 		return nil, err
 	}
 
+	s.maskUserContact(ctx, resp)
+
 	return resp, nil
+}
+
+// maskUserContact 对用户联系类敏感字段应用脱敏策略。
+// 策略由企业版按 field_permission 能力注入;豁免规则(如管理员豁免)在策略侧判定。
+func (s *UserService) maskUserContact(ctx context.Context, u *identityV1.User) {
+	if u == nil {
+		return
+	}
+	u.Email = masking.Maybe(ctx, masking.ResourceUser, "email", u.Email)
+	u.Mobile = masking.Maybe(ctx, masking.ResourceUser, "mobile", u.Mobile)
+	u.Telephone = masking.Maybe(ctx, masking.ResourceUser, "telephone", u.Telephone)
 }
 
 func (s *UserService) Create(ctx context.Context, req *identityV1.CreateUserRequest) (*identityV1.User, error) {
