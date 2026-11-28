@@ -581,6 +581,18 @@ func (m *GetUserRequest) validate(all bool) error {
 			errors = append(errors, err)
 		}
 		// no validation rules for Username
+	case *GetUserRequest_Email:
+		if v == nil {
+			err := GetUserRequestValidationError{
+				field:  "QueryBy",
+				reason: "oneof value cannot be a typed-nil",
+			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
+		}
+		// no validation rules for Email
 	default:
 		_ = v // ensures v is used
 	}

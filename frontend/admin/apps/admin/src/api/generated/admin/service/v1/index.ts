@@ -4256,6 +4256,28 @@ export type ubaservicev1_DeleteApplicationRequest = {
   id?: string;
 };
 
+// 能力清单 - 回应
+export type CapabilitiesResponse = {
+  capabilities: string[] | undefined;
+};
+
+// 单点登录授权地址 - 回应
+export type SsoAuthorizeResponse = {
+  authorize_url: string | undefined;
+  state: string | undefined;
+};
+
+// 单点登录回调 - 请求
+export type SsoCallbackRequest = {
+  //
+  // Behaviors: REQUIRED
+  code: string | undefined;
+  provider: string | undefined;
+  //
+  // Behaviors: REQUIRED
+  state: string | undefined;
+};
+
 // 用户后台登录认证服务
 export interface AuthenticationService {
   // 登录
@@ -4269,6 +4291,18 @@ export interface AuthenticationService {
   // 刷新认证令牌
   RefreshToken(
     request: authenticationservicev1_LoginRequest,
+  ): Promise<authenticationservicev1_LoginResponse>;
+  // 查询平台已授权的能力清单(公开;开源构建恒为空,企业构建按 license 返回)
+  Capabilities(
+    request: wellKnownEmpty,
+  ): Promise<CapabilitiesResponse>;
+  // 企业单点登录:生成 IdP 授权地址与 state(公开)
+  SsoAuthorize(
+    request: wellKnownEmpty,
+  ): Promise<SsoAuthorizeResponse>;
+  // 企业单点登录:授权码换平台令牌(公开)
+  SsoCallback(
+    request: SsoCallbackRequest,
   ): Promise<authenticationservicev1_LoginResponse>;
 }
 
@@ -4298,6 +4332,50 @@ export function createAuthenticationServiceClient(
       return transport.unary(path, 'POST', body, {
         service: 'AuthenticationService',
         method: 'RefreshToken',
+      }) as Promise<authenticationservicev1_LoginResponse>;
+    },
+    Capabilities(_request) {
+      const path = `/admin/v1/capabilities`;
+      const body = null;
+      return transport.unary(path, 'GET', body, {
+        service: 'AuthenticationService',
+        method: 'Capabilities',
+      }) as Promise<CapabilitiesResponse>;
+    },
+    SsoAuthorize(_request) {
+      const path = `/admin/v1/sso/authorize`;
+      const body = null;
+      return transport.unary(path, 'GET', body, {
+        service: 'AuthenticationService',
+        method: 'SsoAuthorize',
+      }) as Promise<SsoAuthorizeResponse>;
+    },
+    SsoCallback(request) {
+      const path = `/admin/v1/sso/callback`;
+      const body = null;
+      const queryParams: string[] = [];
+      if (request.provider) {
+        queryParams.push(
+          `provider=${encodeURIComponent(request.provider.toString())}`,
+        );
+      }
+      if (request.code) {
+        queryParams.push(
+          `code=${encodeURIComponent(request.code.toString())}`,
+        );
+      }
+      if (request.state) {
+        queryParams.push(
+          `state=${encodeURIComponent(request.state.toString())}`,
+        );
+      }
+      let uri = path;
+      if (queryParams.length > 0) {
+        uri += `?${queryParams.join('&')}`;
+      }
+      return transport.unary(uri, 'GET', body, {
+        service: 'AuthenticationService',
+        method: 'SsoCallback',
       }) as Promise<authenticationservicev1_LoginResponse>;
     },
   };
@@ -14450,6 +14528,11 @@ export function createUserServiceClient(
           `username=${encodeURIComponent(request.username.toString())}`,
         );
       }
+      if (request.email) {
+        queryParams.push(
+          `email=${encodeURIComponent(request.email.toString())}`,
+        );
+      }
       if (request.viewMask) {
         queryParams.push(
           `viewMask=${encodeURIComponent(request.viewMask.toString())}`,
@@ -14476,6 +14559,11 @@ export function createUserServiceClient(
       if (request.id) {
         queryParams.push(
           `id=${encodeURIComponent(request.id.toString())}`,
+        );
+      }
+      if (request.email) {
+        queryParams.push(
+          `email=${encodeURIComponent(request.email.toString())}`,
         );
       }
       if (request.viewMask) {
@@ -14613,6 +14701,7 @@ export type identityservicev1_ListUserResponse = {
 
 // 获取用户数据 - 请求
 export type identityservicev1_GetUserRequest = {
+  email?: string;
   id?: string;
   username?: string;
   viewMask?: wellKnownFieldMask;

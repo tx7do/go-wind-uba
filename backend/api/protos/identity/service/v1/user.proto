@@ -240,6 +240,10 @@ message GetUserRequest {
       (gnostic.openapi.v3.property) = {description: "用户登录名", read_only: true},
       json_name = "username"
     ]; // 用户登录名
+    string email = 3 [
+      (gnostic.openapi.v3.property) = {description: "用户邮箱(单点登录按邮箱映射用户)", read_only: true},
+      json_name = "email"
+    ]; // 用户邮箱
   }
 
   optional google.protobuf.FieldMask view_mask = 100 [

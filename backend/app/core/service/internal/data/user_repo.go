@@ -382,6 +382,8 @@ func (r *userRepo) Get(ctx context.Context, req *identityV1.GetUserRequest) (*id
 		whereCond = append(whereCond, user.IDEQ(req.GetId()))
 	case *identityV1.GetUserRequest_Username:
 		whereCond = append(whereCond, user.UsernameEQ(req.GetUsername()))
+	case *identityV1.GetUserRequest_Email:
+		whereCond = append(whereCond, user.EmailEQ(req.GetEmail()))
 	default:
 		whereCond = append(whereCond, user.IDEQ(req.GetId()))
 	}

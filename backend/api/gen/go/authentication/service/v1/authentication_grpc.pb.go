@@ -21,6 +21,7 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	AuthenticationService_Login_FullMethodName           = "/authentication.service.v1.AuthenticationService/Login"
+	AuthenticationService_SsoLogin_FullMethodName        = "/authentication.service.v1.AuthenticationService/SsoLogin"
 	AuthenticationService_Logout_FullMethodName          = "/authentication.service.v1.AuthenticationService/Logout"
 	AuthenticationService_RegisterUser_FullMethodName    = "/authentication.service.v1.AuthenticationService/RegisterUser"
 	AuthenticationService_RefreshToken_FullMethodName    = "/authentication.service.v1.AuthenticationService/RefreshToken"
@@ -40,6 +41,9 @@ const (
 type AuthenticationServiceClient interface {
 	// 用户登录
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
+	// 单点登录换取平台令牌:identifier 必须是已由外部 IdP(OIDC/SAML 等)验证过的
+	// 身份标识,本方法不做凭据校验,仅供受信调用方(如企业版 SSO 回调)使用。
+	SsoLogin(ctx context.Context, in *SsoLoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
 	// 用户登出
 	Logout(ctx context.Context, in *LogoutRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// 注册用户
@@ -72,6 +76,16 @@ func (c *authenticationServiceClient) Login(ctx context.Context, in *LoginReques
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(LoginResponse)
 	err := c.cc.Invoke(ctx, AuthenticationService_Login_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authenticationServiceClient) SsoLogin(ctx context.Context, in *SsoLoginRequest, opts ...grpc.CallOption) (*LoginResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(LoginResponse)
+	err := c.cc.Invoke(ctx, AuthenticationService_SsoLogin_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -176,6 +190,9 @@ func (c *authenticationServiceClient) WhoAmI(ctx context.Context, in *emptypb.Em
 type AuthenticationServiceServer interface {
 	// 用户登录
 	Login(context.Context, *LoginRequest) (*LoginResponse, error)
+	// 单点登录换取平台令牌:identifier 必须是已由外部 IdP(OIDC/SAML 等)验证过的
+	// 身份标识,本方法不做凭据校验,仅供受信调用方(如企业版 SSO 回调)使用。
+	SsoLogin(context.Context, *SsoLoginRequest) (*LoginResponse, error)
 	// 用户登出
 	Logout(context.Context, *LogoutRequest) (*emptypb.Empty, error)
 	// 注册用户
@@ -206,6 +223,9 @@ type UnimplementedAuthenticationServiceServer struct{}
 
 func (UnimplementedAuthenticationServiceServer) Login(context.Context, *LoginRequest) (*LoginResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method Login not implemented")
+}
+func (UnimplementedAuthenticationServiceServer) SsoLogin(context.Context, *SsoLoginRequest) (*LoginResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method SsoLogin not implemented")
 }
 func (UnimplementedAuthenticationServiceServer) Logout(context.Context, *LogoutRequest) (*emptypb.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method Logout not implemented")
@@ -269,6 +289,24 @@ func _AuthenticationService_Login_Handler(srv interface{}, ctx context.Context, 
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AuthenticationServiceServer).Login(ctx, req.(*LoginRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthenticationService_SsoLogin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SsoLoginRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthenticationServiceServer).SsoLogin(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthenticationService_SsoLogin_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthenticationServiceServer).SsoLogin(ctx, req.(*SsoLoginRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -445,6 +483,10 @@ var AuthenticationService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Login",
 			Handler:    _AuthenticationService_Login_Handler,
+		},
+		{
+			MethodName: "SsoLogin",
+			Handler:    _AuthenticationService_SsoLogin_Handler,
 		},
 		{
 			MethodName: "Logout",

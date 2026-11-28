@@ -22,6 +22,8 @@ type Provider interface {
 	Valid() error
 	// Allows 判断某项能力当前是否已授权且授权有效。
 	Allows(capability string) bool
+	// Capabilities 返回当前已授权且有效的能力清单(给前端展示用,如 /capabilities)。
+	Capabilities() []string
 	// Licensee 返回被授权方名称;开源构建返回空串。
 	Licensee() string
 	// ExpiresAt 返回授权到期时间;开源构建返回零值。
@@ -65,6 +67,16 @@ func Current() Provider {
 // Enabled 快捷判断某能力当前是否可用。
 func Enabled(capability string) bool { return Current().Allows(capability) }
 
+// Capabilities 返回当前已授权的能力清单(开源构建恒为空)。
+func Capabilities() []string { return Current().Capabilities() }
+
+// IsConfigured 是否已装配真实授权提供者(企业构建)。
+// 用于区分"平台能力"与"仅企业构建可用的入口"(如单点登录回调)。
+func IsConfigured() bool {
+	_, isNoop := Current().(NoopProvider)
+	return !isNoop
+}
+
 // Require 作为企业特性守卫:能力未授权时返回 *NotLicensedError。
 func Require(capability string) error {
 	if Enabled(capability) {
@@ -76,9 +88,10 @@ func Require(capability string) error {
 // NoopProvider 开源构建的默认实现:平台始终合法,所有企业能力关闭。
 type NoopProvider struct{}
 
-func (NoopProvider) Valid() error         { return nil }
-func (NoopProvider) Allows(string) bool   { return false }
-func (NoopProvider) Licensee() string     { return "" }
-func (NoopProvider) ExpiresAt() time.Time { return time.Time{} }
+func (NoopProvider) Valid() error            { return nil }
+func (NoopProvider) Allows(string) bool      { return false }
+func (NoopProvider) Capabilities() []string  { return nil }
+func (NoopProvider) Licensee() string        { return "" }
+func (NoopProvider) ExpiresAt() time.Time    { return time.Time{} }
 
 var _ Provider = NoopProvider{}

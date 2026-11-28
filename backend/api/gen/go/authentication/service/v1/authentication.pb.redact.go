@@ -60,6 +60,17 @@ func (s *redactedAuthenticationServiceServer) Login(ctx context.Context, in *Log
 	return res, err
 }
 
+// SsoLogin is the redacted wrapper for the actual AuthenticationServiceServer.SsoLogin method
+// Unary RPC
+func (s *redactedAuthenticationServiceServer) SsoLogin(ctx context.Context, in *SsoLoginRequest) (*LoginResponse, error) {
+	res, err := s.srv.SsoLogin(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
 // Logout is the redacted wrapper for the actual AuthenticationServiceServer.Logout method
 // Unary RPC
 func (s *redactedAuthenticationServiceServer) Logout(ctx context.Context, in *LogoutRequest) (*emptypb.Empty, error) {
@@ -157,6 +168,26 @@ func (s *redactedAuthenticationServiceServer) WhoAmI(ctx context.Context, in *em
 		redact.Apply(res)
 	}
 	return res, err
+}
+
+// Redact method implementation for SsoLoginRequest
+func (x *SsoLoginRequest) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Provider
+
+	// Safe field: IdentityType
+
+	// Safe field: Identifier
+
+	// Safe field: ClientType
+
+	// Safe field: ClientId
+
+	// Safe field: DeviceId
+	return x.String()
 }
 
 // Redact method implementation for LoginRequest

@@ -14,6 +14,7 @@ import (
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	reflect "reflect"
+	sync "sync"
 	unsafe "unsafe"
 )
 
@@ -24,31 +25,224 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// 能力清单 - 回应
+type CapabilitiesResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Capabilities  []string               `protobuf:"bytes,1,rep,name=capabilities,proto3" json:"capabilities,omitempty"` // 已授权能力清单
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CapabilitiesResponse) Reset() {
+	*x = CapabilitiesResponse{}
+	mi := &file_admin_service_v1_i_authentication_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CapabilitiesResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CapabilitiesResponse) ProtoMessage() {}
+
+func (x *CapabilitiesResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_admin_service_v1_i_authentication_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CapabilitiesResponse.ProtoReflect.Descriptor instead.
+func (*CapabilitiesResponse) Descriptor() ([]byte, []int) {
+	return file_admin_service_v1_i_authentication_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *CapabilitiesResponse) GetCapabilities() []string {
+	if x != nil {
+		return x.Capabilities
+	}
+	return nil
+}
+
+// 单点登录授权地址 - 回应
+type SsoAuthorizeResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	AuthorizeUrl  string                 `protobuf:"bytes,1,opt,name=authorize_url,proto3" json:"authorize_url,omitempty"` // IdP 授权地址
+	State         string                 `protobuf:"bytes,2,opt,name=state,proto3" json:"state,omitempty"`                 // 防 CSRF 状态码
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SsoAuthorizeResponse) Reset() {
+	*x = SsoAuthorizeResponse{}
+	mi := &file_admin_service_v1_i_authentication_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SsoAuthorizeResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SsoAuthorizeResponse) ProtoMessage() {}
+
+func (x *SsoAuthorizeResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_admin_service_v1_i_authentication_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SsoAuthorizeResponse.ProtoReflect.Descriptor instead.
+func (*SsoAuthorizeResponse) Descriptor() ([]byte, []int) {
+	return file_admin_service_v1_i_authentication_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *SsoAuthorizeResponse) GetAuthorizeUrl() string {
+	if x != nil {
+		return x.AuthorizeUrl
+	}
+	return ""
+}
+
+func (x *SsoAuthorizeResponse) GetState() string {
+	if x != nil {
+		return x.State
+	}
+	return ""
+}
+
+// 单点登录回调 - 请求
+type SsoCallbackRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Provider      string                 `protobuf:"bytes,1,opt,name=provider,proto3" json:"provider,omitempty"` // 身份提供方标识(预留多 IdP)
+	Code          string                 `protobuf:"bytes,2,opt,name=code,proto3" json:"code,omitempty"`         // IdP 返回的授权码
+	State         string                 `protobuf:"bytes,3,opt,name=state,proto3" json:"state,omitempty"`       // SsoAuthorize 返回的 state
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SsoCallbackRequest) Reset() {
+	*x = SsoCallbackRequest{}
+	mi := &file_admin_service_v1_i_authentication_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SsoCallbackRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SsoCallbackRequest) ProtoMessage() {}
+
+func (x *SsoCallbackRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_admin_service_v1_i_authentication_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SsoCallbackRequest.ProtoReflect.Descriptor instead.
+func (*SsoCallbackRequest) Descriptor() ([]byte, []int) {
+	return file_admin_service_v1_i_authentication_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *SsoCallbackRequest) GetProvider() string {
+	if x != nil {
+		return x.Provider
+	}
+	return ""
+}
+
+func (x *SsoCallbackRequest) GetCode() string {
+	if x != nil {
+		return x.Code
+	}
+	return ""
+}
+
+func (x *SsoCallbackRequest) GetState() string {
+	if x != nil {
+		return x.State
+	}
+	return ""
+}
+
 var File_admin_service_v1_i_authentication_proto protoreflect.FileDescriptor
 
 const file_admin_service_v1_i_authentication_proto_rawDesc = "" +
 	"\n" +
-	"'admin/service/v1/i_authentication.proto\x12\x10admin.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a.authentication/service/v1/authentication.proto2\xf3\x02\n" +
+	"'admin/service/v1/i_authentication.proto\x12\x10admin.service.v1\x1a$gnostic/openapi/v3/annotations.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a.authentication/service/v1/authentication.proto\"\x8b\x01\n" +
+	"\x14CapabilitiesResponse\x12s\n" +
+	"\fcapabilities\x18\x01 \x03(\tBO\xbaGL\x92\x02I已授权的企业能力名,如 sso / field_permission / retention_policyR\fcapabilities\"\xad\x01\n" +
+	"\x14SsoAuthorizeResponse\x12O\n" +
+	"\rauthorize_url\x18\x01 \x01(\tB)\xbaG&\x92\x02#IdP 授权地址,前端直接跳转R\rauthorize_url\x12D\n" +
+	"\x05state\x18\x02 \x01(\tB.\xbaG+\x92\x02(防 CSRF 状态码,回调时原样带回R\x05state\"d\n" +
+	"\x12SsoCallbackRequest\x12\x1a\n" +
+	"\bprovider\x18\x01 \x01(\tR\bprovider\x12\x17\n" +
+	"\x04code\x18\x02 \x01(\tB\x03\xe0A\x02R\x04code\x12\x19\n" +
+	"\x05state\x18\x03 \x01(\tB\x03\xe0A\x02R\x05state2\xe3\x05\n" +
 	"\x15AuthenticationService\x12{\n" +
 	"\x05Login\x12'.authentication.service.v1.LoginRequest\x1a(.authentication.service.v1.LoginResponse\"\x1f\xbaG\x02Z\x00\x82\xd3\xe4\x93\x02\x14:\x01*\"\x0f/admin/v1/login\x12U\n" +
 	"\x06Logout\x12\x16.google.protobuf.Empty\x1a\x16.google.protobuf.Empty\"\x1b\x82\xd3\xe4\x93\x02\x15:\x01*\"\x10/admin/v1/logout\x12\x85\x01\n" +
-	"\fRefreshToken\x12'.authentication.service.v1.LoginRequest\x1a(.authentication.service.v1.LoginResponse\"\"\x82\xd3\xe4\x93\x02\x1c:\x01*\"\x17/admin/v1/refresh-tokenB\xbf\x01\n" +
+	"\fRefreshToken\x12'.authentication.service.v1.LoginRequest\x1a(.authentication.service.v1.LoginResponse\"\"\x82\xd3\xe4\x93\x02\x1c:\x01*\"\x17/admin/v1/refresh-token\x12s\n" +
+	"\fCapabilities\x12\x16.google.protobuf.Empty\x1a&.admin.service.v1.CapabilitiesResponse\"#\xbaG\x02Z\x00\x82\xd3\xe4\x93\x02\x18\x12\x16/admin/v1/capabilities\x12t\n" +
+	"\fSsoAuthorize\x12\x16.google.protobuf.Empty\x1a&.admin.service.v1.SsoAuthorizeResponse\"$\xbaG\x02Z\x00\x82\xd3\xe4\x93\x02\x19\x12\x17/admin/v1/sso/authorize\x12\x82\x01\n" +
+	"\vSsoCallback\x12$.admin.service.v1.SsoCallbackRequest\x1a(.authentication.service.v1.LoginResponse\"#\xbaG\x02Z\x00\x82\xd3\xe4\x93\x02\x18\x12\x16/admin/v1/sso/callbackB\xbf\x01\n" +
 	"\x14com.admin.service.v1B\x14IAuthenticationProtoP\x01Z/go-wind-uba/api/gen/go/admin/service/v1;adminpb\xa2\x02\x03ASX\xaa\x02\x10Admin.Service.V1\xca\x02\x10Admin\\Service\\V1\xe2\x02\x1cAdmin\\Service\\V1\\GPBMetadata\xea\x02\x12Admin::Service::V1b\x06proto3"
 
+var (
+	file_admin_service_v1_i_authentication_proto_rawDescOnce sync.Once
+	file_admin_service_v1_i_authentication_proto_rawDescData []byte
+)
+
+func file_admin_service_v1_i_authentication_proto_rawDescGZIP() []byte {
+	file_admin_service_v1_i_authentication_proto_rawDescOnce.Do(func() {
+		file_admin_service_v1_i_authentication_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_admin_service_v1_i_authentication_proto_rawDesc), len(file_admin_service_v1_i_authentication_proto_rawDesc)))
+	})
+	return file_admin_service_v1_i_authentication_proto_rawDescData
+}
+
+var file_admin_service_v1_i_authentication_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_admin_service_v1_i_authentication_proto_goTypes = []any{
-	(*v1.LoginRequest)(nil),  // 0: authentication.service.v1.LoginRequest
-	(*emptypb.Empty)(nil),    // 1: google.protobuf.Empty
-	(*v1.LoginResponse)(nil), // 2: authentication.service.v1.LoginResponse
+	(*CapabilitiesResponse)(nil), // 0: admin.service.v1.CapabilitiesResponse
+	(*SsoAuthorizeResponse)(nil), // 1: admin.service.v1.SsoAuthorizeResponse
+	(*SsoCallbackRequest)(nil),   // 2: admin.service.v1.SsoCallbackRequest
+	(*v1.LoginRequest)(nil),      // 3: authentication.service.v1.LoginRequest
+	(*emptypb.Empty)(nil),        // 4: google.protobuf.Empty
+	(*v1.LoginResponse)(nil),     // 5: authentication.service.v1.LoginResponse
 }
 var file_admin_service_v1_i_authentication_proto_depIdxs = []int32{
-	0, // 0: admin.service.v1.AuthenticationService.Login:input_type -> authentication.service.v1.LoginRequest
-	1, // 1: admin.service.v1.AuthenticationService.Logout:input_type -> google.protobuf.Empty
-	0, // 2: admin.service.v1.AuthenticationService.RefreshToken:input_type -> authentication.service.v1.LoginRequest
-	2, // 3: admin.service.v1.AuthenticationService.Login:output_type -> authentication.service.v1.LoginResponse
-	1, // 4: admin.service.v1.AuthenticationService.Logout:output_type -> google.protobuf.Empty
-	2, // 5: admin.service.v1.AuthenticationService.RefreshToken:output_type -> authentication.service.v1.LoginResponse
-	3, // [3:6] is the sub-list for method output_type
-	0, // [0:3] is the sub-list for method input_type
+	3, // 0: admin.service.v1.AuthenticationService.Login:input_type -> authentication.service.v1.LoginRequest
+	4, // 1: admin.service.v1.AuthenticationService.Logout:input_type -> google.protobuf.Empty
+	3, // 2: admin.service.v1.AuthenticationService.RefreshToken:input_type -> authentication.service.v1.LoginRequest
+	4, // 3: admin.service.v1.AuthenticationService.Capabilities:input_type -> google.protobuf.Empty
+	4, // 4: admin.service.v1.AuthenticationService.SsoAuthorize:input_type -> google.protobuf.Empty
+	2, // 5: admin.service.v1.AuthenticationService.SsoCallback:input_type -> admin.service.v1.SsoCallbackRequest
+	5, // 6: admin.service.v1.AuthenticationService.Login:output_type -> authentication.service.v1.LoginResponse
+	4, // 7: admin.service.v1.AuthenticationService.Logout:output_type -> google.protobuf.Empty
+	5, // 8: admin.service.v1.AuthenticationService.RefreshToken:output_type -> authentication.service.v1.LoginResponse
+	0, // 9: admin.service.v1.AuthenticationService.Capabilities:output_type -> admin.service.v1.CapabilitiesResponse
+	1, // 10: admin.service.v1.AuthenticationService.SsoAuthorize:output_type -> admin.service.v1.SsoAuthorizeResponse
+	5, // 11: admin.service.v1.AuthenticationService.SsoCallback:output_type -> authentication.service.v1.LoginResponse
+	6, // [6:12] is the sub-list for method output_type
+	0, // [0:6] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
@@ -65,12 +259,13 @@ func file_admin_service_v1_i_authentication_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_admin_service_v1_i_authentication_proto_rawDesc), len(file_admin_service_v1_i_authentication_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   0,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
 		GoTypes:           file_admin_service_v1_i_authentication_proto_goTypes,
 		DependencyIndexes: file_admin_service_v1_i_authentication_proto_depIdxs,
+		MessageInfos:      file_admin_service_v1_i_authentication_proto_msgTypes,
 	}.Build()
 	File_admin_service_v1_i_authentication_proto = out.File
 	file_admin_service_v1_i_authentication_proto_goTypes = nil

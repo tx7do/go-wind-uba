@@ -21,17 +21,26 @@ var _ = binding.EncodeURL
 
 const _ = http.SupportPackageIsVersion1
 
+const OperationAuthenticationServiceCapabilities = "/admin.service.v1.AuthenticationService/Capabilities"
 const OperationAuthenticationServiceLogin = "/admin.service.v1.AuthenticationService/Login"
 const OperationAuthenticationServiceLogout = "/admin.service.v1.AuthenticationService/Logout"
 const OperationAuthenticationServiceRefreshToken = "/admin.service.v1.AuthenticationService/RefreshToken"
+const OperationAuthenticationServiceSsoAuthorize = "/admin.service.v1.AuthenticationService/SsoAuthorize"
+const OperationAuthenticationServiceSsoCallback = "/admin.service.v1.AuthenticationService/SsoCallback"
 
 type AuthenticationServiceHTTPServer interface {
+	// Capabilities 查询平台已授权的能力清单(公开;开源构建恒为空,企业构建按 license 返回)
+	Capabilities(context.Context, *emptypb.Empty) (*CapabilitiesResponse, error)
 	// Login 登录
 	Login(context.Context, *v1.LoginRequest) (*v1.LoginResponse, error)
 	// Logout 登出
 	Logout(context.Context, *emptypb.Empty) (*emptypb.Empty, error)
 	// RefreshToken 刷新认证令牌
 	RefreshToken(context.Context, *v1.LoginRequest) (*v1.LoginResponse, error)
+	// SsoAuthorize 企业单点登录:生成 IdP 授权地址与 state(公开)
+	SsoAuthorize(context.Context, *emptypb.Empty) (*SsoAuthorizeResponse, error)
+	// SsoCallback 企业单点登录:授权码换平台令牌(公开)
+	SsoCallback(context.Context, *SsoCallbackRequest) (*v1.LoginResponse, error)
 }
 
 func RegisterAuthenticationServiceHTTPServer(s *http.Server, srv AuthenticationServiceHTTPServer) {
@@ -39,6 +48,9 @@ func RegisterAuthenticationServiceHTTPServer(s *http.Server, srv AuthenticationS
 	r.POST("/admin/v1/login", _AuthenticationService_Login0_HTTP_Handler(srv))
 	r.POST("/admin/v1/logout", _AuthenticationService_Logout0_HTTP_Handler(srv))
 	r.POST("/admin/v1/refresh-token", _AuthenticationService_RefreshToken0_HTTP_Handler(srv))
+	r.GET("/admin/v1/capabilities", _AuthenticationService_Capabilities0_HTTP_Handler(srv))
+	r.GET("/admin/v1/sso/authorize", _AuthenticationService_SsoAuthorize0_HTTP_Handler(srv))
+	r.GET("/admin/v1/sso/callback", _AuthenticationService_SsoCallback0_HTTP_Handler(srv))
 }
 
 func _AuthenticationService_Login0_HTTP_Handler(srv AuthenticationServiceHTTPServer) func(ctx http.Context) error {
@@ -107,13 +119,76 @@ func _AuthenticationService_RefreshToken0_HTTP_Handler(srv AuthenticationService
 	}
 }
 
+func _AuthenticationService_Capabilities0_HTTP_Handler(srv AuthenticationServiceHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in emptypb.Empty
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationAuthenticationServiceCapabilities)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.Capabilities(ctx, req.(*emptypb.Empty))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*CapabilitiesResponse)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _AuthenticationService_SsoAuthorize0_HTTP_Handler(srv AuthenticationServiceHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in emptypb.Empty
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationAuthenticationServiceSsoAuthorize)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.SsoAuthorize(ctx, req.(*emptypb.Empty))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*SsoAuthorizeResponse)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _AuthenticationService_SsoCallback0_HTTP_Handler(srv AuthenticationServiceHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in SsoCallbackRequest
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationAuthenticationServiceSsoCallback)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.SsoCallback(ctx, req.(*SsoCallbackRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*v1.LoginResponse)
+		return ctx.Result(200, reply)
+	}
+}
+
 type AuthenticationServiceHTTPClient interface {
+	// Capabilities 查询平台已授权的能力清单(公开;开源构建恒为空,企业构建按 license 返回)
+	Capabilities(ctx context.Context, req *emptypb.Empty, opts ...http.CallOption) (rsp *CapabilitiesResponse, err error)
 	// Login 登录
 	Login(ctx context.Context, req *v1.LoginRequest, opts ...http.CallOption) (rsp *v1.LoginResponse, err error)
 	// Logout 登出
 	Logout(ctx context.Context, req *emptypb.Empty, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 	// RefreshToken 刷新认证令牌
 	RefreshToken(ctx context.Context, req *v1.LoginRequest, opts ...http.CallOption) (rsp *v1.LoginResponse, err error)
+	// SsoAuthorize 企业单点登录:生成 IdP 授权地址与 state(公开)
+	SsoAuthorize(ctx context.Context, req *emptypb.Empty, opts ...http.CallOption) (rsp *SsoAuthorizeResponse, err error)
+	// SsoCallback 企业单点登录:授权码换平台令牌(公开)
+	SsoCallback(ctx context.Context, req *SsoCallbackRequest, opts ...http.CallOption) (rsp *v1.LoginResponse, err error)
 }
 
 type AuthenticationServiceHTTPClientImpl struct {
@@ -122,6 +197,20 @@ type AuthenticationServiceHTTPClientImpl struct {
 
 func NewAuthenticationServiceHTTPClient(client *http.Client) AuthenticationServiceHTTPClient {
 	return &AuthenticationServiceHTTPClientImpl{client}
+}
+
+// Capabilities 查询平台已授权的能力清单(公开;开源构建恒为空,企业构建按 license 返回)
+func (c *AuthenticationServiceHTTPClientImpl) Capabilities(ctx context.Context, in *emptypb.Empty, opts ...http.CallOption) (*CapabilitiesResponse, error) {
+	var out CapabilitiesResponse
+	pattern := "/admin/v1/capabilities"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation(OperationAuthenticationServiceCapabilities))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
 }
 
 // Login 登录
@@ -160,6 +249,34 @@ func (c *AuthenticationServiceHTTPClientImpl) RefreshToken(ctx context.Context, 
 	opts = append(opts, http.Operation(OperationAuthenticationServiceRefreshToken))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+// SsoAuthorize 企业单点登录:生成 IdP 授权地址与 state(公开)
+func (c *AuthenticationServiceHTTPClientImpl) SsoAuthorize(ctx context.Context, in *emptypb.Empty, opts ...http.CallOption) (*SsoAuthorizeResponse, error) {
+	var out SsoAuthorizeResponse
+	pattern := "/admin/v1/sso/authorize"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation(OperationAuthenticationServiceSsoAuthorize))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+// SsoCallback 企业单点登录:授权码换平台令牌(公开)
+func (c *AuthenticationServiceHTTPClientImpl) SsoCallback(ctx context.Context, in *SsoCallbackRequest, opts ...http.CallOption) (*v1.LoginResponse, error) {
+	var out v1.LoginResponse
+	pattern := "/admin/v1/sso/callback"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation(OperationAuthenticationServiceSsoCallback))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {
 		return nil, err
 	}

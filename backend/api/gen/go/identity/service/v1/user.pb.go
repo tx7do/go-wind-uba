@@ -530,6 +530,7 @@ type GetUserRequest struct {
 	//
 	//	*GetUserRequest_Id
 	//	*GetUserRequest_Username
+	//	*GetUserRequest_Email
 	QueryBy       isGetUserRequest_QueryBy `protobuf_oneof:"query_by"`
 	ViewMask      *fieldmaskpb.FieldMask   `protobuf:"bytes,100,opt,name=view_mask,json=viewMask,proto3,oneof" json:"view_mask,omitempty"` // 视图字段过滤器，用于控制返回的字段
 	unknownFields protoimpl.UnknownFields
@@ -591,6 +592,15 @@ func (x *GetUserRequest) GetUsername() string {
 	return ""
 }
 
+func (x *GetUserRequest) GetEmail() string {
+	if x != nil {
+		if x, ok := x.QueryBy.(*GetUserRequest_Email); ok {
+			return x.Email
+		}
+	}
+	return ""
+}
+
 func (x *GetUserRequest) GetViewMask() *fieldmaskpb.FieldMask {
 	if x != nil {
 		return x.ViewMask
@@ -610,9 +620,15 @@ type GetUserRequest_Username struct {
 	Username string `protobuf:"bytes,2,opt,name=username,proto3,oneof"` // 用户登录名
 }
 
+type GetUserRequest_Email struct {
+	Email string `protobuf:"bytes,3,opt,name=email,proto3,oneof"` // 用户邮箱
+}
+
 func (*GetUserRequest_Id) isGetUserRequest_QueryBy() {}
 
 func (*GetUserRequest_Username) isGetUserRequest_QueryBy() {}
+
+func (*GetUserRequest_Email) isGetUserRequest_QueryBy() {}
 
 // 创建用户 - 请求
 type CreateUserRequest struct {
@@ -2098,10 +2114,11 @@ const file_identity_service_v1_user_proto_rawDesc = "" +
 	"\v_deleted_at\"Y\n" +
 	"\x10ListUserResponse\x12/\n" +
 	"\x05items\x18\x01 \x03(\v2\x19.identity.service.v1.UserR\x05items\x12\x14\n" +
-	"\x05total\x18\x02 \x01(\x03R\x05total\"\xfe\x01\n" +
+	"\x05total\x18\x02 \x01(\x03R\x05total\"\xcf\x02\n" +
 	"\x0eGetUserRequest\x12\"\n" +
 	"\x02id\x18\x01 \x01(\x03B\x10\xbaG\r\x18\x01\x92\x02\b用户IDH\x00R\x02id\x125\n" +
-	"\busername\x18\x02 \x01(\tB\x17\xbaG\x14\x18\x01\x92\x02\x0f用户登录名H\x00R\busername\x12w\n" +
+	"\busername\x18\x02 \x01(\tB\x17\xbaG\x14\x18\x01\x92\x02\x0f用户登录名H\x00R\busername\x12O\n" +
+	"\x05email\x18\x03 \x01(\tB7\xbaG4\x18\x01\x92\x02/用户邮箱(单点登录按邮箱映射用户)H\x00R\x05email\x12w\n" +
 	"\tview_mask\x18d \x01(\v2\x1a.google.protobuf.FieldMaskB9\xbaG6\x92\x023视图字段过滤器，用于控制返回的字段H\x01R\bviewMask\x88\x01\x01B\n" +
 	"\n" +
 	"\bquery_byB\f\n" +
@@ -2318,6 +2335,7 @@ func file_identity_service_v1_user_proto_init() {
 	file_identity_service_v1_user_proto_msgTypes[2].OneofWrappers = []any{
 		(*GetUserRequest_Id)(nil),
 		(*GetUserRequest_Username)(nil),
+		(*GetUserRequest_Email)(nil),
 	}
 	file_identity_service_v1_user_proto_msgTypes[3].OneofWrappers = []any{}
 	file_identity_service_v1_user_proto_msgTypes[4].OneofWrappers = []any{}

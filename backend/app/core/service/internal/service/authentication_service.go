@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"strings"
 	"time"
 
 	"github.com/go-kratos/kratos/v2/log"
@@ -198,16 +199,60 @@ func (s *AuthenticationService) doGrantTypePassword(ctx context.Context, req *au
 		return nil, err
 	}
 
+	return s.issueTokensForUser(ctx, user, req.GetClientType(), req.ClientId, req.DeviceId)
+}
+
+// SsoLogin 单点登录:identifier 必须是已由外部 IdP 验证过的身份标识,
+// 本方法不做任何凭据校验,仅供受信调用方(如企业版 SSO 回调)使用。
+func (s *AuthenticationService) SsoLogin(ctx context.Context, req *authenticationV1.SsoLoginRequest) (*authenticationV1.LoginResponse, error) {
+	// 与密码登录相同的上下文准备:无 viewer、绕过隐私保护、全量数据域
+	ctx = viewer.WithContext(ctx, viewer.NewNoopContext())
+	ctx = privacy.DecisionContext(ctx, privacy.Allow)
+	ctx, _ = metadata.NewContext(ctx, metadata.NewUserOperator(0, 0, 0, identityV1.DataScope_ALL))
+
+	if req == nil || req.GetIdentifier() == "" {
+		return nil, authenticationV1.ErrorBadRequest("invalid request")
+	}
+
+	var user *identityV1.User
+	var err error
+	switch strings.ToLower(req.GetIdentityType()) {
+	case "email":
+		user, err = s.userRepo.Get(ctx, &identityV1.GetUserRequest{
+			QueryBy: &identityV1.GetUserRequest_Email{Email: req.GetIdentifier()},
+		})
+	case "username":
+		user, err = s.userRepo.Get(ctx, &identityV1.GetUserRequest{
+			QueryBy: &identityV1.GetUserRequest_Username{Username: req.GetIdentifier()},
+		})
+	default:
+		return nil, authenticationV1.ErrorBadRequest("unsupported identity type: %s", req.GetIdentityType())
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	return s.issueTokensForUser(ctx, user, req.GetClientType(), trans.Ptr(req.GetClientId()), trans.Ptr(req.GetDeviceId()))
+}
+
+// issueTokensForUser 为已确认身份的用户完成权限装配并签发平台令牌;
+// 密码登录与单点登录共用,差异只在入口处的身份验证方式。
+func (s *AuthenticationService) issueTokensForUser(
+	ctx context.Context,
+	user *identityV1.User,
+	clientType authenticationV1.ClientType,
+	clientId, deviceId *string,
+) (*authenticationV1.LoginResponse, error) {
 	tokenPayload := &authenticationV1.UserTokenPayload{
 		UserId:   user.GetId(),
 		TenantId: user.TenantId,
 		Username: user.Username,
-		ClientId: req.ClientId,
-		DeviceId: req.DeviceId,
+		ClientId: clientId,
+		DeviceId: deviceId,
 	}
 
 	// 验证权限
-	if err = s.resolveUserAuthority(ctx, user, tokenPayload); err != nil {
+	if err := s.resolveUserAuthority(ctx, user, tokenPayload); err != nil {
 		return nil, err
 	}
 
@@ -220,7 +265,7 @@ func (s *AuthenticationService) doGrantTypePassword(ctx context.Context, req *au
 	}
 
 	// 生成令牌
-	accessToken, refreshToken, err := s.authenticator.CreateUserToken(ctx, req.GetClientType(), tokenPayload)
+	accessToken, refreshToken, err := s.authenticator.CreateUserToken(ctx, clientType, tokenPayload)
 	if err != nil {
 		return nil, err
 	}
@@ -229,8 +274,8 @@ func (s *AuthenticationService) doGrantTypePassword(ctx context.Context, req *au
 		TokenType:        authenticationV1.TokenType_bearer,
 		AccessToken:      accessToken,
 		RefreshToken:     trans.Ptr(refreshToken),
-		ExpiresIn:        int64(s.authenticator.GetAccessTokenExpires(req.GetClientType()).Seconds()),
-		RefreshExpiresIn: trans.Ptr(int64(s.authenticator.GetRefreshTokenExpires(req.GetClientType()).Seconds())),
+		ExpiresIn:        int64(s.authenticator.GetAccessTokenExpires(clientType).Seconds()),
+		RefreshExpiresIn: trans.Ptr(int64(s.authenticator.GetRefreshTokenExpires(clientType).Seconds())),
 	}, nil
 }
 

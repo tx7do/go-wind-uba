@@ -35,6 +35,15 @@ func (s stubProvider) Valid() error {
 	return nil
 }
 func (s stubProvider) Allows(c string) bool { return s.caps[c] }
+func (s stubProvider) Capabilities() []string {
+	caps := make([]string, 0, len(s.caps))
+	for c, on := range s.caps {
+		if on {
+			caps = append(caps, c)
+		}
+	}
+	return caps
+}
 func (s stubProvider) Licensee() string     { return "stub" }
 func (s stubProvider) ExpiresAt() time.Time { return s.expires }
 

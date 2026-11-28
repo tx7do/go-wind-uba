@@ -16,8 +16,10 @@ import (
 	authenticationV1 "go-wind-uba/api/gen/go/authentication/service/v1"
 	identityV1 "go-wind-uba/api/gen/go/identity/service/v1"
 
+	"go-wind-uba/pkg/license"
 	"go-wind-uba/pkg/middleware/auth"
 	applogging "go-wind-uba/pkg/middleware/logging"
+	"go-wind-uba/pkg/sso"
 )
 
 type AuthenticationService struct {
@@ -99,6 +101,75 @@ func (s *AuthenticationService) recordUserLastLogin(ctx context.Context, userID 
 	}); uerr != nil {
 		s.log.Errorf("record last login for user [%d] failed: %s", userID, uerr.Error())
 	}
+}
+
+// Capabilities 查询平台已授权的企业能力(公开接口;开源构建恒为空)。
+func (s *AuthenticationService) Capabilities(ctx context.Context, _ *emptypb.Empty) (*adminV1.CapabilitiesResponse, error) {
+	return &adminV1.CapabilitiesResponse{
+		Capabilities: license.Capabilities(),
+	}, nil
+}
+
+// ssoUnavailable 单点登录不可用的统一报错:
+// 开源构建未配置校验器,或企业构建未启用 sso 能力(校验器仅在能力开启时装配)。
+func ssoUnavailable() error {
+	return authenticationV1.ErrorBadRequest("single sign-on is not available on this deployment")
+}
+
+// ssoReady 单点登录入口的可用性判定(开源侧协议通用,不感知具体能力名)。
+func ssoReady() bool {
+	return license.IsConfigured() && sso.Available()
+}
+
+// SsoAuthorize 生成 IdP 授权地址与防 CSRF 的 state(公开接口)。
+func (s *AuthenticationService) SsoAuthorize(ctx context.Context, _ *emptypb.Empty) (*adminV1.SsoAuthorizeResponse, error) {
+	if !ssoReady() {
+		return nil, ssoUnavailable()
+	}
+
+	authorizeURL, state, err := sso.Current().AuthorizeURL(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return &adminV1.SsoAuthorizeResponse{
+		AuthorizeUrl: authorizeURL,
+		State:        state,
+	}, nil
+}
+
+// SsoCallback 授权码换平台令牌(公开接口):校验 state 与 IdP 令牌后,
+// 以已验证身份经 core 换取与密码登录等价的平台令牌。
+func (s *AuthenticationService) SsoCallback(ctx context.Context, req *adminV1.SsoCallbackRequest) (*authenticationV1.LoginResponse, error) {
+	if !ssoReady() {
+		return nil, ssoUnavailable()
+	}
+	if req == nil || req.GetCode() == "" || req.GetState() == "" {
+		return nil, authenticationV1.ErrorBadRequest("invalid request")
+	}
+
+	provider, identityType, identifier, err := sso.Current().Verify(ctx, req.GetCode(), req.GetState())
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := s.authenticationServiceClient.SsoLogin(ctx, &authenticationV1.SsoLoginRequest{
+		Provider:     provider,
+		IdentityType: identityType,
+		Identifier:   identifier,
+		ClientType:   authenticationV1.ClientType_admin,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	// 记录最后登录(失败不阻断登录);用户可能按邮箱映射,先取回用户 ID。
+	if user, gerr := s.userServiceClient.Get(ctx, &identityV1.GetUserRequest{
+		QueryBy: &identityV1.GetUserRequest_Email{Email: identifier},
+	}); gerr == nil {
+		s.recordUserLastLogin(ctx, user.GetId(), resp)
+	}
+
+	return resp, nil
 }
 
 // Logout 登出

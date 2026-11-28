@@ -4,6 +4,7 @@ package admin.service.v1;
 
 import "gnostic/openapi/v3/annotations.proto";
 import "google/api/annotations.proto";
+import "google/api/field_behavior.proto";
 import "google/protobuf/empty.proto";
 
 import "authentication/service/v1/authentication.proto";
@@ -37,4 +38,81 @@ service AuthenticationService {
       body: "*"
     };
   }
+
+  // 查询平台已授权的能力清单(公开;开源构建恒为空,企业构建按 license 返回)
+  rpc Capabilities (google.protobuf.Empty) returns (CapabilitiesResponse) {
+    option (google.api.http) = {
+      get: "/admin/v1/capabilities"
+    };
+
+    option(gnostic.openapi.v3.operation) = {
+      security: {}
+    };
+  }
+
+  // 企业单点登录:生成 IdP 授权地址与 state(公开)
+  rpc SsoAuthorize (google.protobuf.Empty) returns (SsoAuthorizeResponse) {
+    option (google.api.http) = {
+      get: "/admin/v1/sso/authorize"
+    };
+
+    option(gnostic.openapi.v3.operation) = {
+      security: {}
+    };
+  }
+
+  // 企业单点登录:授权码换平台令牌(公开)
+  rpc SsoCallback (SsoCallbackRequest) returns (authentication.service.v1.LoginResponse) {
+    option (google.api.http) = {
+      get: "/admin/v1/sso/callback"
+    };
+
+    option(gnostic.openapi.v3.operation) = {
+      security: {}
+    };
+  }
+}
+
+// 能力清单 - 回应
+message CapabilitiesResponse {
+  repeated string capabilities = 1 [
+    json_name = "capabilities",
+    (gnostic.openapi.v3.property) = {
+      description: "已授权的企业能力名,如 sso / field_permission / retention_policy"
+    }
+  ]; // 已授权能力清单
+}
+
+// 单点登录授权地址 - 回应
+message SsoAuthorizeResponse {
+  string authorize_url = 1 [
+    json_name = "authorize_url",
+    (gnostic.openapi.v3.property) = {
+      description: "IdP 授权地址,前端直接跳转"
+    }
+  ]; // IdP 授权地址
+
+  string state = 2 [
+    json_name = "state",
+    (gnostic.openapi.v3.property) = {
+      description: "防 CSRF 状态码,回调时原样带回"
+    }
+  ]; // 防 CSRF 状态码
+}
+
+// 单点登录回调 - 请求
+message SsoCallbackRequest {
+  string provider = 1 [
+    json_name = "provider"
+  ]; // 身份提供方标识(预留多 IdP)
+
+  string code = 2 [
+    json_name = "code",
+    (google.api.field_behavior) = REQUIRED
+  ]; // IdP 返回的授权码
+
+  string state = 3 [
+    json_name = "state",
+    (google.api.field_behavior) = REQUIRED
+  ]; // SsoAuthorize 返回的 state
 }

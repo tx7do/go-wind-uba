@@ -22,6 +22,10 @@ service AuthenticationService {
   // 用户登录
   rpc Login (LoginRequest) returns (LoginResponse) {}
 
+  // 单点登录换取平台令牌:identifier 必须是已由外部 IdP(OIDC/SAML 等)验证过的
+  // 身份标识,本方法不做凭据校验,仅供受信调用方(如企业版 SSO 回调)使用。
+  rpc SsoLogin (SsoLoginRequest) returns (LoginResponse) {}
+
   // 用户登出
   rpc Logout (LogoutRequest) returns (google.protobuf.Empty) {}
 
@@ -50,6 +54,43 @@ service AuthenticationService {
 
   // 获取当前用户身份信息
   rpc WhoAmI(google.protobuf.Empty) returns (WhoAmIResponse) {}
+}
+
+// 单点登录换取令牌 - 请求
+message SsoLoginRequest {
+  string provider = 1 [
+    json_name = "provider",
+    (gnostic.openapi.v3.property) = {
+      description: "外部身份提供方标识,如 oidc / ldap"
+    }
+  ]; // 外部身份提供方标识
+
+  string identity_type = 2 [
+    json_name = "identity_type",
+    (gnostic.openapi.v3.property) = {
+      description: "身份标识类型,当前支持 email"
+    }
+  ]; // 身份标识类型
+
+  string identifier = 3 [
+    json_name = "identifier",
+    (google.api.field_behavior) = REQUIRED,
+    (gnostic.openapi.v3.property) = {
+      description: "已验证的身份标识(如邮箱)"
+    }
+  ]; // 已验证的身份标识
+
+  ClientType client_type = 4 [
+    json_name = "client_type"
+  ]; // 客户端类型
+
+  string client_id = 5 [
+    json_name = "client_id"
+  ]; // 客户端标识
+
+  string device_id = 6 [
+    json_name = "device_id"
+  ]; // 设备标识
 }
 
 // 授权类型

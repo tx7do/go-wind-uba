@@ -24,6 +24,9 @@ const (
 	AuthenticationService_Login_FullMethodName        = "/admin.service.v1.AuthenticationService/Login"
 	AuthenticationService_Logout_FullMethodName       = "/admin.service.v1.AuthenticationService/Logout"
 	AuthenticationService_RefreshToken_FullMethodName = "/admin.service.v1.AuthenticationService/RefreshToken"
+	AuthenticationService_Capabilities_FullMethodName = "/admin.service.v1.AuthenticationService/Capabilities"
+	AuthenticationService_SsoAuthorize_FullMethodName = "/admin.service.v1.AuthenticationService/SsoAuthorize"
+	AuthenticationService_SsoCallback_FullMethodName  = "/admin.service.v1.AuthenticationService/SsoCallback"
 )
 
 // AuthenticationServiceClient is the client API for AuthenticationService service.
@@ -38,6 +41,12 @@ type AuthenticationServiceClient interface {
 	Logout(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// 刷新认证令牌
 	RefreshToken(ctx context.Context, in *v1.LoginRequest, opts ...grpc.CallOption) (*v1.LoginResponse, error)
+	// 查询平台已授权的能力清单(公开;开源构建恒为空,企业构建按 license 返回)
+	Capabilities(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*CapabilitiesResponse, error)
+	// 企业单点登录:生成 IdP 授权地址与 state(公开)
+	SsoAuthorize(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*SsoAuthorizeResponse, error)
+	// 企业单点登录:授权码换平台令牌(公开)
+	SsoCallback(ctx context.Context, in *SsoCallbackRequest, opts ...grpc.CallOption) (*v1.LoginResponse, error)
 }
 
 type authenticationServiceClient struct {
@@ -78,6 +87,36 @@ func (c *authenticationServiceClient) RefreshToken(ctx context.Context, in *v1.L
 	return out, nil
 }
 
+func (c *authenticationServiceClient) Capabilities(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*CapabilitiesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CapabilitiesResponse)
+	err := c.cc.Invoke(ctx, AuthenticationService_Capabilities_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authenticationServiceClient) SsoAuthorize(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*SsoAuthorizeResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SsoAuthorizeResponse)
+	err := c.cc.Invoke(ctx, AuthenticationService_SsoAuthorize_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authenticationServiceClient) SsoCallback(ctx context.Context, in *SsoCallbackRequest, opts ...grpc.CallOption) (*v1.LoginResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(v1.LoginResponse)
+	err := c.cc.Invoke(ctx, AuthenticationService_SsoCallback_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthenticationServiceServer is the server API for AuthenticationService service.
 // All implementations must embed UnimplementedAuthenticationServiceServer
 // for forward compatibility.
@@ -90,6 +129,12 @@ type AuthenticationServiceServer interface {
 	Logout(context.Context, *emptypb.Empty) (*emptypb.Empty, error)
 	// 刷新认证令牌
 	RefreshToken(context.Context, *v1.LoginRequest) (*v1.LoginResponse, error)
+	// 查询平台已授权的能力清单(公开;开源构建恒为空,企业构建按 license 返回)
+	Capabilities(context.Context, *emptypb.Empty) (*CapabilitiesResponse, error)
+	// 企业单点登录:生成 IdP 授权地址与 state(公开)
+	SsoAuthorize(context.Context, *emptypb.Empty) (*SsoAuthorizeResponse, error)
+	// 企业单点登录:授权码换平台令牌(公开)
+	SsoCallback(context.Context, *SsoCallbackRequest) (*v1.LoginResponse, error)
 	mustEmbedUnimplementedAuthenticationServiceServer()
 }
 
@@ -108,6 +153,15 @@ func (UnimplementedAuthenticationServiceServer) Logout(context.Context, *emptypb
 }
 func (UnimplementedAuthenticationServiceServer) RefreshToken(context.Context, *v1.LoginRequest) (*v1.LoginResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method RefreshToken not implemented")
+}
+func (UnimplementedAuthenticationServiceServer) Capabilities(context.Context, *emptypb.Empty) (*CapabilitiesResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method Capabilities not implemented")
+}
+func (UnimplementedAuthenticationServiceServer) SsoAuthorize(context.Context, *emptypb.Empty) (*SsoAuthorizeResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method SsoAuthorize not implemented")
+}
+func (UnimplementedAuthenticationServiceServer) SsoCallback(context.Context, *SsoCallbackRequest) (*v1.LoginResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method SsoCallback not implemented")
 }
 func (UnimplementedAuthenticationServiceServer) mustEmbedUnimplementedAuthenticationServiceServer() {}
 func (UnimplementedAuthenticationServiceServer) testEmbeddedByValue()                               {}
@@ -184,6 +238,60 @@ func _AuthenticationService_RefreshToken_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthenticationService_Capabilities_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthenticationServiceServer).Capabilities(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthenticationService_Capabilities_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthenticationServiceServer).Capabilities(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthenticationService_SsoAuthorize_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthenticationServiceServer).SsoAuthorize(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthenticationService_SsoAuthorize_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthenticationServiceServer).SsoAuthorize(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthenticationService_SsoCallback_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SsoCallbackRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthenticationServiceServer).SsoCallback(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthenticationService_SsoCallback_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthenticationServiceServer).SsoCallback(ctx, req.(*SsoCallbackRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AuthenticationService_ServiceDesc is the grpc.ServiceDesc for AuthenticationService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -202,6 +310,18 @@ var AuthenticationService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RefreshToken",
 			Handler:    _AuthenticationService_RefreshToken_Handler,
+		},
+		{
+			MethodName: "Capabilities",
+			Handler:    _AuthenticationService_Capabilities_Handler,
+		},
+		{
+			MethodName: "SsoAuthorize",
+			Handler:    _AuthenticationService_SsoAuthorize_Handler,
+		},
+		{
+			MethodName: "SsoCallback",
+			Handler:    _AuthenticationService_SsoCallback_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

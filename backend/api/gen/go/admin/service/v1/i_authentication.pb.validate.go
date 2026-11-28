@@ -34,3 +34,319 @@ var (
 	_ = anypb.Any{}
 	_ = sort.Sort
 )
+
+// Validate checks the field values on CapabilitiesResponse with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *CapabilitiesResponse) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on CapabilitiesResponse with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// CapabilitiesResponseMultiError, or nil if none found.
+func (m *CapabilitiesResponse) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *CapabilitiesResponse) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if len(errors) > 0 {
+		return CapabilitiesResponseMultiError(errors)
+	}
+
+	return nil
+}
+
+// CapabilitiesResponseMultiError is an error wrapping multiple validation
+// errors returned by CapabilitiesResponse.ValidateAll() if the designated
+// constraints aren't met.
+type CapabilitiesResponseMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m CapabilitiesResponseMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m CapabilitiesResponseMultiError) AllErrors() []error { return m }
+
+// CapabilitiesResponseValidationError is the validation error returned by
+// CapabilitiesResponse.Validate if the designated constraints aren't met.
+type CapabilitiesResponseValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e CapabilitiesResponseValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e CapabilitiesResponseValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e CapabilitiesResponseValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e CapabilitiesResponseValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e CapabilitiesResponseValidationError) ErrorName() string {
+	return "CapabilitiesResponseValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e CapabilitiesResponseValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sCapabilitiesResponse.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = CapabilitiesResponseValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = CapabilitiesResponseValidationError{}
+
+// Validate checks the field values on SsoAuthorizeResponse with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *SsoAuthorizeResponse) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on SsoAuthorizeResponse with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// SsoAuthorizeResponseMultiError, or nil if none found.
+func (m *SsoAuthorizeResponse) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *SsoAuthorizeResponse) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for AuthorizeUrl
+
+	// no validation rules for State
+
+	if len(errors) > 0 {
+		return SsoAuthorizeResponseMultiError(errors)
+	}
+
+	return nil
+}
+
+// SsoAuthorizeResponseMultiError is an error wrapping multiple validation
+// errors returned by SsoAuthorizeResponse.ValidateAll() if the designated
+// constraints aren't met.
+type SsoAuthorizeResponseMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m SsoAuthorizeResponseMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m SsoAuthorizeResponseMultiError) AllErrors() []error { return m }
+
+// SsoAuthorizeResponseValidationError is the validation error returned by
+// SsoAuthorizeResponse.Validate if the designated constraints aren't met.
+type SsoAuthorizeResponseValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e SsoAuthorizeResponseValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e SsoAuthorizeResponseValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e SsoAuthorizeResponseValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e SsoAuthorizeResponseValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e SsoAuthorizeResponseValidationError) ErrorName() string {
+	return "SsoAuthorizeResponseValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e SsoAuthorizeResponseValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sSsoAuthorizeResponse.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = SsoAuthorizeResponseValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = SsoAuthorizeResponseValidationError{}
+
+// Validate checks the field values on SsoCallbackRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *SsoCallbackRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on SsoCallbackRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// SsoCallbackRequestMultiError, or nil if none found.
+func (m *SsoCallbackRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *SsoCallbackRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Provider
+
+	// no validation rules for Code
+
+	// no validation rules for State
+
+	if len(errors) > 0 {
+		return SsoCallbackRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// SsoCallbackRequestMultiError is an error wrapping multiple validation errors
+// returned by SsoCallbackRequest.ValidateAll() if the designated constraints
+// aren't met.
+type SsoCallbackRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m SsoCallbackRequestMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m SsoCallbackRequestMultiError) AllErrors() []error { return m }
+
+// SsoCallbackRequestValidationError is the validation error returned by
+// SsoCallbackRequest.Validate if the designated constraints aren't met.
+type SsoCallbackRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e SsoCallbackRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e SsoCallbackRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e SsoCallbackRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e SsoCallbackRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e SsoCallbackRequestValidationError) ErrorName() string {
+	return "SsoCallbackRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e SsoCallbackRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sSsoCallbackRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = SsoCallbackRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = SsoCallbackRequestValidationError{}

@@ -45,6 +45,10 @@ func NewRestMiddleware(
 	// add white list for authentication.
 	rpc.AddWhiteList(
 		adminV1.OperationAuthenticationServiceLogin,
+		// 企业能力与单点登录入口(公开;可用性由 license/校验器装配决定)
+		adminV1.OperationAuthenticationServiceCapabilities,
+		adminV1.OperationAuthenticationServiceSsoAuthorize,
+		adminV1.OperationAuthenticationServiceSsoCallback,
 	)
 
 	ms = append(ms, applogging.Server(

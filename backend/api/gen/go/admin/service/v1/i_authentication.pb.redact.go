@@ -7,6 +7,7 @@ import (
 	context "context"
 	redact "github.com/menta2k/protoc-gen-redact/v3/redact/v3"
 	authenticationpb "go-wind-uba/api/gen/go/authentication/service/v1"
+	annotations "google.golang.org/genproto/googleapis/api/annotations"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -20,8 +21,9 @@ var (
 	_ redact.Redactor
 	_ codes.Code
 	_ status.Status
+	_ annotations.FieldBehavior
 	_ emptypb.Empty
-	_ authenticationpb.LoginRequest
+	_ authenticationpb.SsoLoginRequest
 )
 
 // RegisterRedactedAuthenticationServiceServer wraps the AuthenticationServiceServer with the redacted server and registers the service in GRPC
@@ -73,4 +75,73 @@ func (s *redactedAuthenticationServiceServer) RefreshToken(ctx context.Context, 
 		redact.Apply(res)
 	}
 	return res, err
+}
+
+// Capabilities is the redacted wrapper for the actual AuthenticationServiceServer.Capabilities method
+// Unary RPC
+func (s *redactedAuthenticationServiceServer) Capabilities(ctx context.Context, in *emptypb.Empty) (*CapabilitiesResponse, error) {
+	res, err := s.srv.Capabilities(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
+// SsoAuthorize is the redacted wrapper for the actual AuthenticationServiceServer.SsoAuthorize method
+// Unary RPC
+func (s *redactedAuthenticationServiceServer) SsoAuthorize(ctx context.Context, in *emptypb.Empty) (*SsoAuthorizeResponse, error) {
+	res, err := s.srv.SsoAuthorize(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
+// SsoCallback is the redacted wrapper for the actual AuthenticationServiceServer.SsoCallback method
+// Unary RPC
+func (s *redactedAuthenticationServiceServer) SsoCallback(ctx context.Context, in *SsoCallbackRequest) (*authenticationpb.LoginResponse, error) {
+	res, err := s.srv.SsoCallback(ctx, in)
+	if !s.bypass.CheckInternal(ctx) {
+		// Apply redaction to the response
+		redact.Apply(res)
+	}
+	return res, err
+}
+
+// Redact method implementation for CapabilitiesResponse
+func (x *CapabilitiesResponse) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Capabilities
+	return x.String()
+}
+
+// Redact method implementation for SsoAuthorizeResponse
+func (x *SsoAuthorizeResponse) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: AuthorizeUrl
+
+	// Safe field: State
+	return x.String()
+}
+
+// Redact method implementation for SsoCallbackRequest
+func (x *SsoCallbackRequest) Redact() string {
+	if x == nil {
+		return ""
+	}
+
+	// Safe field: Provider
+
+	// Safe field: Code
+
+	// Safe field: State
+	return x.String()
 }
