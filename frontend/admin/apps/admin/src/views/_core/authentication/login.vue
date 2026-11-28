@@ -1,16 +1,43 @@
 <script lang="ts" setup>
 import type { VbenFormSchema } from '@vben/common-ui';
 
-import { computed } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 
-import { AuthenticationLogin, z } from '@vben/common-ui';
+import { AuthenticationLogin, VbenButton, z } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 
+import { fetchCapabilities, ssoAuthorize } from '#/api/composables';
 import { useAuthStore } from '#/stores';
 
 defineOptions({ name: 'Login' });
 
 const authStore = useAuthStore();
+
+/** 企业单点登录是否可用(仅企业构建且 license 授权 sso 能力时为真)。 */
+const ssoEnabled = ref(false);
+const ssoJumping = ref(false);
+
+onMounted(async () => {
+  try {
+    const capabilities = await fetchCapabilities();
+    ssoEnabled.value = capabilities.includes('sso');
+  } catch {
+    ssoEnabled.value = false;
+  }
+});
+
+async function onSsoLogin() {
+  if (ssoJumping.value) return;
+  ssoJumping.value = true;
+  try {
+    const resp = await ssoAuthorize();
+    if (resp?.authorize_url) {
+      window.location.href = resp.authorize_url;
+    }
+  } finally {
+    ssoJumping.value = false;
+  }
+}
 
 const formSchema = computed((): VbenFormSchema[] => {
   return [
@@ -54,4 +81,13 @@ const formSchema = computed((): VbenFormSchema[] => {
     :show-third-party-login="false"
     @submit="authStore.authLogin"
   />
+  <VbenButton
+    v-if="ssoEnabled"
+    :loading="ssoJumping"
+    class="mt-3 w-full"
+    variant="outline"
+    @click="onSsoLogin"
+  >
+    {{ $t('authentication.ssoLogin') }}
+  </VbenButton>
 </template>

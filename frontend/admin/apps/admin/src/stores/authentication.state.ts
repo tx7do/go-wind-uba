@@ -16,6 +16,7 @@ import {
   loginMutation,
   logoutMutation,
   refreshTokenMutation,
+  ssoCallback,
 } from '#/api/composables';
 import { $t } from '#/locales';
 import { queryClient } from '#/plugins/vue-query';
@@ -76,11 +77,103 @@ export const useAuthStore = defineStore('auth', () => {
    * @param params 登录表单数据
    * @param onSuccess
    */
+  /**
+   * 应用登录响应:落令牌、拉取用户信息并进入后台。
+   * 密码登录与单点登录(SSO)共用;失败抛错,由入口统一处理。
+   * @param resp 登录响应(两种登录返回同构的令牌结构)
+   * @param onSuccess 登录成功后的自定义跳转
+   */
+  async function applyLoginSession(
+    resp: Recordable<any>,
+    onSuccess?: () => Promise<void> | void,
+  ): Promise<{ userInfo: null | UserInfo }> {
+    let userInfo: null | UserInfo = null;
+
+    const accessToken = resp.access_token;
+    const refresh_token = resp.refresh_token;
+    let expiresAt = resp.expires_in;
+    let refreshExpiresAt = resp.refresh_expires_in;
+
+    const expiresAtSec = Number(expiresAt);
+    expiresAt =
+      !Number.isFinite(expiresAtSec) || expiresAtSec <= 0
+        ? Date.now() + ACCESS_TOKEN_REFRESH_INTERVAL
+        : Date.now() + Math.floor(expiresAtSec * 1000);
+
+    const refreshExpiresAtSec = Number(refreshExpiresAt);
+    refreshExpiresAt =
+      !Number.isFinite(refreshExpiresAtSec) || refreshExpiresAtSec <= 0
+        ? Date.now() + REFRESH_TOKEN_REFRESH_INTERVAL
+        : Date.now() + Math.floor(refreshExpiresAtSec * 1000);
+
+    // 如果成功获取到 accessToken
+    if (accessToken) {
+      accessStore.setAccessToken(accessToken);
+      accessStore.setAccessTokenExpireTime(expiresAt);
+
+      if (refresh_token) {
+        accessStore.setRefreshToken(refresh_token);
+        accessStore.setRefreshTokenExpireTime(refreshExpiresAt);
+        startRefreshTimer();
+      }
+
+      // 获取用户信息并存储到 accessStore 中
+      const [fetchUserInfoResult, fetchAccessCodeResult] = await Promise.all([
+        fetchUserInfo(),
+        fetchAccessCodes(),
+      ]);
+
+      userInfo = fetchUserInfoResult;
+      if (!userInfo) {
+        throw new Error($t('authentication.loginFailedDesc'));
+      }
+
+      userStore.setUserInfo(userInfo);
+      accessStore.setAccessCodes(fetchAccessCodeResult.codes ?? []);
+
+      if (accessStore.loginExpired) {
+        accessStore.setLoginExpired(false);
+      } else {
+        onSuccess
+          ? await onSuccess?.()
+          : await router.push(userInfo.homePath || DEFAULT_HOME_PATH);
+      }
+
+      if (userInfo?.realname) {
+        notification.success({
+          description: `${$t('authentication.loginSuccessDesc')}:${userInfo?.realname}`,
+          duration: 3,
+          message: $t('authentication.loginSuccess'),
+        });
+      }
+    }
+
+    return { userInfo };
+  }
+
+  /**
+   * 统一登录失败处理:登出清理并提示。
+   * request() 方法可能抛出 Error 实例或纯响应数据对象（含 message 字段）。
+   */
+  async function reportLoginFailure(error: unknown): Promise<null> {
+    await _doLogout();
+
+    const errorMsg =
+      error instanceof Error
+        ? error.message
+        : (error as any)?.message || $t('authentication.loginFailedDesc');
+
+    notification.error({
+      message: $t('authentication.loginFailed'),
+      description: errorMsg,
+    });
+    return null;
+  }
+
   async function authLogin(
     params: Recordable<any>,
     onSuccess?: () => Promise<void> | void,
   ): Promise<{ userInfo: null | UserInfo } | null> {
-    // 异步处理用户登录操作并获取 accessToken
     let userInfo: null | UserInfo = null;
     try {
       loginLoading.value = true;
@@ -91,88 +184,37 @@ export const useAuthStore = defineStore('auth', () => {
         grant_type: 'password',
       });
 
-      const accessToken = (resp as any).access_token;
-      const refresh_token = (resp as any).refresh_token;
-      let expiresAt = (resp as any).expires_in;
-      let refreshExpiresAt = (resp as any).refresh_expires_in;
-
-      const expiresAtSec = Number(expiresAt);
-      expiresAt =
-        !Number.isFinite(expiresAtSec) || expiresAtSec <= 0
-          ? Date.now() + ACCESS_TOKEN_REFRESH_INTERVAL
-          : Date.now() + Math.floor(expiresAtSec * 1000);
-
-      const refreshExpiresAtSec = Number(refreshExpiresAt);
-      refreshExpiresAt =
-        !Number.isFinite(refreshExpiresAtSec) || refreshExpiresAtSec <= 0
-          ? Date.now() + REFRESH_TOKEN_REFRESH_INTERVAL
-          : Date.now() + Math.floor(refreshExpiresAtSec * 1000);
-
-      // 如果成功获取到 accessToken
-      if (accessToken) {
-        accessStore.setAccessToken(accessToken);
-        accessStore.setAccessTokenExpireTime(expiresAt);
-
-        if (refresh_token) {
-          accessStore.setRefreshToken(refresh_token);
-          accessStore.setRefreshTokenExpireTime(refreshExpiresAt);
-          startRefreshTimer();
-        }
-
-        // 获取用户信息并存储到 accessStore 中
-        const [fetchUserInfoResult, fetchAccessCodeResult] = await Promise.all([
-          fetchUserInfo(),
-          fetchAccessCodes(),
-        ]);
-
-        // console.log('fetchUserInfoResult', fetchUserInfoResult);
-
-        userInfo = fetchUserInfoResult;
-        if (!userInfo) {
-          throw new Error($t('authentication.loginFailedDesc'));
-        }
-
-        userStore.setUserInfo(userInfo);
-        accessStore.setAccessCodes(fetchAccessCodeResult.codes ?? []);
-
-        if (accessStore.loginExpired) {
-          accessStore.setLoginExpired(false);
-        } else {
-          onSuccess
-            ? await onSuccess?.()
-            : await router.push(userInfo.homePath || DEFAULT_HOME_PATH);
-        }
-
-        if (userInfo?.realname) {
-          notification.success({
-            description: `${$t('authentication.loginSuccessDesc')}:${userInfo?.realname}`,
-            duration: 3,
-            message: $t('authentication.loginSuccess'),
-          });
-        }
-      }
+      userInfo = (await applyLoginSession(resp, onSuccess)).userInfo;
     } catch (error) {
-      await _doLogout();
-
-      // 处理登录错误
-      // request() 方法可能抛出 Error 实例或纯响应数据对象（含 message 字段）
-      const errorMsg =
-        error instanceof Error
-          ? error.message
-          : (error as any)?.message || $t('authentication.loginFailedDesc');
-
-      notification.error({
-        message: $t('authentication.loginFailed'),
-        description: errorMsg,
-      });
-      return null;
+      return await reportLoginFailure(error);
     } finally {
       loginLoading.value = false;
     }
 
-    return {
-      userInfo,
-    };
+    return { userInfo };
+  }
+
+  /**
+   * 单点登录回调:IdP 授权码换平台令牌后进入后台,与密码登录同构。
+   */
+  async function ssoLogin(params: {
+    code: string;
+    state: string;
+  }): Promise<{ userInfo: null | UserInfo } | null> {
+    let userInfo: null | UserInfo = null;
+    try {
+      loginLoading.value = true;
+
+      const resp = await ssoCallback(params.code, params.state);
+
+      userInfo = (await applyLoginSession(resp)).userInfo;
+    } catch (error) {
+      return await reportLoginFailure(error);
+    } finally {
+      loginLoading.value = false;
+    }
+
+    return { userInfo };
   }
 
   /**
@@ -487,6 +529,7 @@ export const useAuthStore = defineStore('auth', () => {
     fetchAccessCodes,
     loginLoading,
     logout,
+    ssoLogin,
     refreshToken,
     reauthenticate,
     startRefreshTimer,

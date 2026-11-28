@@ -48,6 +48,15 @@ const coreRoutes: RouteRecordRaw[] = [
         },
       },
       {
+        name: 'SsoCallback',
+        path: 'sso-callback',
+        component: () =>
+          import('#/views/_core/authentication/sso-callback.vue'),
+        meta: {
+          title: $t('page.auth.ssoCallback'),
+        },
+      },
+      {
         name: 'CodeLogin',
         path: 'code-login',
         component: () => import('#/views/_core/authentication/code-login.vue'),

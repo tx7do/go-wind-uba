@@ -28,6 +28,30 @@ export async function refreshToken(refreshToken: string) {
 }
 
 // ------------------------------
+// 企业单点登录（开源构建恒不可用，按 capabilities 显隐）
+// ------------------------------
+
+/** 查询平台已授权的企业能力清单(公开接口)。 */
+export async function fetchCapabilities(): Promise<string[]> {
+  const resp = await apiClient.authenticationService.Capabilities({});
+  return resp?.capabilities ?? [];
+}
+
+/** 生成 IdP 授权地址与 state;前端拿到 authorize_url 后整页跳转。 */
+export async function ssoAuthorize() {
+  return apiClient.authenticationService.SsoAuthorize({});
+}
+
+/** 授权码换平台令牌;返回与密码登录同构的令牌结构。 */
+export async function ssoCallback(code: string, state: string) {
+  return apiClient.authenticationService.SsoCallback({
+    code,
+    provider: '',
+    state,
+  });
+}
+
+// ------------------------------
 // 登录（Mutation）
 // ------------------------------
 export function useLogin(

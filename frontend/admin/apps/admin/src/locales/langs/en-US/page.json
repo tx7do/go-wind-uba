@@ -4,7 +4,8 @@
     "register": "Register",
     "codeLogin": "Verification Code Login",
     "qrcodeLogin": "QR Code Login",
-    "forgetPassword": "Forgot Password"
+    "forgetPassword": "Forgot Password",
+    "ssoCallback": "Signing in via SSO"
   },
   "dashboard": {
     "title": "Dashboard",
