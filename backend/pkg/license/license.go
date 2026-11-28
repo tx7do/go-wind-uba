@@ -88,10 +88,10 @@ func Require(capability string) error {
 // NoopProvider 开源构建的默认实现:平台始终合法,所有企业能力关闭。
 type NoopProvider struct{}
 
-func (NoopProvider) Valid() error            { return nil }
-func (NoopProvider) Allows(string) bool      { return false }
-func (NoopProvider) Capabilities() []string  { return nil }
-func (NoopProvider) Licensee() string        { return "" }
-func (NoopProvider) ExpiresAt() time.Time    { return time.Time{} }
+func (NoopProvider) Valid() error           { return nil }
+func (NoopProvider) Allows(string) bool     { return false }
+func (NoopProvider) Capabilities() []string { return nil }
+func (NoopProvider) Licensee() string       { return "" }
+func (NoopProvider) ExpiresAt() time.Time   { return time.Time{} }
 
 var _ Provider = NoopProvider{}
