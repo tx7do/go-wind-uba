@@ -34,9 +34,9 @@ func (s stubProvider) Valid() error {
 	}
 	return nil
 }
-func (s stubProvider) Allows(c string) bool  { return s.caps[c] }
-func (s stubProvider) Licensee() string      { return "stub" }
-func (s stubProvider) ExpiresAt() time.Time  { return s.expires }
+func (s stubProvider) Allows(c string) bool { return s.caps[c] }
+func (s stubProvider) Licensee() string     { return "stub" }
+func (s stubProvider) ExpiresAt() time.Time { return s.expires }
 
 func TestSeamInjectionAndRequire(t *testing.T) {
 	t.Cleanup(func() { SetProvider(nil) })
