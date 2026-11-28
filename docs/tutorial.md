@@ -151,6 +151,7 @@ make ingest                                            # 构建入仓运维 CLI
 
 - [数据分析教程](analytics-tutorial.md)（使用侧：25 个分析模型怎么用）
 - [增长闭环教程](growth-tutorial.md)（运营侧：分群/触达/AB/告警）
+- [AI 助手教程](ai-tutorial.md)（智能问数/知识库/对话）
 - [SDK 接入指南](sdk_integration.md)（字典：协议/字段/配置全集）
 - [系统架构](architecture.md)（数据流转与 OLAP 引擎二选一）
 - [项目 README](../README.md)（部署与功能全景）
