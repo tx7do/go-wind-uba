@@ -1,60 +1,15 @@
 package main
 
 import (
-	"context"
-
-	"github.com/go-kratos/kratos/v2"
-	"github.com/go-kratos/kratos/v2/transport"
-	"github.com/go-kratos/kratos/v2/transport/grpc"
-	"github.com/tx7do/kratos-transport/transport/asynq"
-
-	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
-	"github.com/tx7do/kratos-bootstrap/bootstrap"
-
-	_ "github.com/tx7do/kratos-bootstrap/registry/etcd"
-	_ "github.com/tx7do/kratos-bootstrap/tracer"
-
-	authenticationV1 "go-wind-uba/api/gen/go/authentication/service/v1"
-
-	"go-wind-uba/pkg/serviceid"
+	app "go-wind-uba/app/core/service/app"
 )
 
 var version = "1.0.0"
 
 // go build -ldflags "-X main.version=x.y.z"
 
-func newApp(
-	ctx *bootstrap.Context,
-	gs *grpc.Server,
-	as *asynq.Server,
-	backgroundServers ...transport.Server,
-) *kratos.App {
-	servers := []transport.Server{gs, as}
-	servers = append(servers, backgroundServers...)
-
-	return bootstrap.NewApp(
-		ctx,
-		servers...,
-	)
-}
-
-func runApp() error {
-	ctx := bootstrap.NewContext(
-		context.Background(),
-		&conf.AppInfo{
-			Project: serviceid.ProjectName,
-			AppId:   serviceid.CoreService,
-			Version: version,
-		},
-	)
-
-	ctx.RegisterCustomConfig("Authenticator", &authenticationV1.AuthenticatorOptionWrapper{})
-
-	return bootstrap.RunApp(ctx, initApp)
-}
-
 func main() {
-	if err := runApp(); err != nil {
+	if err := app.RunApp(version); err != nil {
 		panic(err)
 	}
 }

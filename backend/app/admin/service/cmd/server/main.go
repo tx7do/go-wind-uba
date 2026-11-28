@@ -1,50 +1,15 @@
 package main
 
 import (
-	"context"
-
-	"github.com/go-kratos/kratos/v2"
-	"github.com/go-kratos/kratos/v2/transport/http"
-
-	"github.com/tx7do/kratos-transport/transport/sse"
-
-	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
-	"github.com/tx7do/kratos-bootstrap/bootstrap"
-	_ "github.com/tx7do/kratos-bootstrap/registry/etcd"
-	_ "github.com/tx7do/kratos-bootstrap/tracer"
-
-	"go-wind-uba/pkg/serviceid"
+	app "go-wind-uba/app/admin/service/app"
 )
 
 var version = "1.0.0"
 
 // go build -ldflags "-X main.version=x.y.z"
 
-func newApp(
-	ctx *bootstrap.Context,
-	hs *http.Server,
-	ss *sse.Server,
-) *kratos.App {
-	return bootstrap.NewApp(ctx,
-		hs,
-		ss,
-	)
-}
-
-func runApp() error {
-	ctx := bootstrap.NewContext(
-		context.Background(),
-		&conf.AppInfo{
-			Project: serviceid.ProjectName,
-			AppId:   serviceid.AdminService,
-			Version: version,
-		},
-	)
-	return bootstrap.RunApp(ctx, initApp)
-}
-
 func main() {
-	if err := runApp(); err != nil {
+	if err := app.RunApp(version); err != nil {
 		panic(err)
 	}
 }
