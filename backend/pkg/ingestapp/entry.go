@@ -1,6 +1,6 @@
 // Package ingestapp 承载 uba-ingest 的全部实现:OLAP 侧(建库表/Routine Load/
 // 日常汇总/健康巡检)的装配、调度与观测命令面。独立成可导入包,使企业版
-// 入口(go-wind-uba-enterprise/cmd/uba-ingest)能在同一命令面上前置 license
+// 入口(go-wind-uba-enterprise/tools/uba-ingest)能在同一命令面上前置 license
 // 门闩,复用全部实现。
 //
 // 本包不搬动事件:入库由 OLAP 引擎自己拉(Doris Routine Load / ClickHouse

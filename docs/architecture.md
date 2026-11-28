@@ -123,7 +123,7 @@ Kafka topic                       Doris 侧（FE 负责调度 / 并发 / 重试 
 ```
 
 任务的声明在 `backend/sql/doris/02_kafka_tables.sql`（`{{.KafkaBrokerList}}` 由 `uba-ingest` 渲染），
-Go 侧的三个动作都在 `backend/cmd/uba-ingest`：
+Go 侧的三个动作都在 `backend/tools/uba-ingest`：
 
 | 子命令 | 职责 |
 |--------|------|

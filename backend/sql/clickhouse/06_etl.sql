@@ -1,6 +1,6 @@
 -- ============================================================
 -- UBA 系统 - ClickHouse 派生表回算（对应 Doris 侧 06_etl.sql §1/§2）
--- 执行方式：由 `uba-ingest ch-etl` 渲染并执行（见 backend/cmd/uba-ingest），
+-- 执行方式：由 `uba-ingest ch-etl` 渲染并执行（见 backend/tools/uba-ingest），
 --          占位符 {{.RunDate}} 为待回算日期（形如 '2026-06-28'）。
 --          本地手工执行前先用 `uba-ingest ch-etl --dry-run` 输出渲染后的 SQL。
 --          日内新鲜度：`ch-etl --loop --every 1h` 每小时重算"今天"（本文件全为

@@ -2,7 +2,7 @@
 -- UBA 系统 - Kafka 接入层
 -- 执行顺序：2
 --
--- 执行方式：由 `uba-ingest ch-apply` 渲染并执行（见 backend/cmd/uba-ingest），
+-- 执行方式：由 `uba-ingest ch-apply` 渲染并执行（见 backend/tools/uba-ingest），
 --          占位符 {{.KafkaBrokerList}} 取自 configs 的 data.kafka.endpoints。
 --          本地手工执行前先用 `uba-ingest ch-apply --dry-run` 输出替换后的 SQL。
 --

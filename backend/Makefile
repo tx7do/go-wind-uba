@@ -108,7 +108,7 @@ ts:
 
 # build the Doris ingestion ops CLI (schema / routine load / etl scheduling) -> bin/uba-ingest
 ingest:
-	@CGO_ENABLED=0 go build -o bin/uba-ingest ./cmd/uba-ingest/
+	@CGO_ENABLED=0 go build -o bin/uba-ingest ./tools/uba-ingest/
 
 # build all service applications
 build: api openapi

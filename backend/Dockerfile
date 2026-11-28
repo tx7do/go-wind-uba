@@ -40,7 +40,7 @@ RUN CGO_ENABLED=0 \
     GOOS=linux \
     GOARCH=amd64 \
     go build -ldflags "-X main.version=$APP_VERSION" \
-    -o /src/bin/uba-ingest ./cmd/uba-ingest/
+    -o /src/bin/uba-ingest ./tools/uba-ingest/
 
 # 复制配置文件到统一目录
 RUN mkdir -p /src/bin/configs && \

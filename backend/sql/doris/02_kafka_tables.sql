@@ -4,7 +4,7 @@
 -- 用途：定义从 Kafka 主题实时加载数据到 Doris 的 Routine Load 任务
 -- 执行顺序：2
 --
--- 执行方式：由 `uba-ingest apply` 渲染并执行（见 backend/cmd/uba-ingest），
+-- 执行方式：由 `uba-ingest apply` 渲染并执行（见 backend/tools/uba-ingest），
 --          占位符 {{.KafkaBrokerList}} 取自 configs 的 data.kafka.endpoints。
 --          本地手工执行时先用 `uba-ingest render` 输出替换后的 SQL。
 --

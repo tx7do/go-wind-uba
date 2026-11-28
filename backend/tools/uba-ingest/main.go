@@ -1,6 +1,6 @@
 // Command uba-ingest provisions and operates the OLAP side of the UBA event pipeline.
 // 实现承载在 go-wind-uba/pkg/ingestapp(可导入包),本文件只是开源构建的入口壳;
-// 企业版入口(go-wind-uba-enterprise/cmd/uba-ingest)复用同一命令面并前置 license 门闩。
+// 企业版入口(go-wind-uba-enterprise/tools/uba-ingest)复用同一命令面并前置 license 门闩。
 //
 // Usage:
 //

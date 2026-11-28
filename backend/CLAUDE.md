@@ -29,7 +29,7 @@
 api/protos/   契约真相源(按业务域)
 api/gen/      生成物(禁改)
 app/<svc>/service/internal/{data,service,server}  DDD 三层
-cmd/uba-ingest/  入仓运维 CLI(schema / Routine Load / ETL 调度 / 健康度)
+tools/uba-ingest/  入仓运维 CLI(schema / Routine Load / ETL 调度 / 健康度)
 sql/{postgresql,doris,clickhouse}/  DDL + 初始数据
 pkg/          跨服务基础库(入仓的纯逻辑在 pkg/dorisinit)
 Makefile      api/ent/register/build/lint/test/ingest
