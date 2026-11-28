@@ -84,7 +84,9 @@
 - **Unity WebGL 必须用 `UnityWebRequestTransport`**：HttpClient 在 WebGL 平台不可用，会抛异常。
 - **客户端卸载兜底**：Web SDK 有 sendBeacon；C# 端需在 `OnApplicationQuit` / `OnDestroy` 调用 `FlushAsync()`；Flutter/微信/Android/iOS 端退到后台自动 flush（App 被杀前的最后一次依赖系统，关键路径建议在退后台时机完成上报）。
 - **离线补发**：客户端 SDK（Web/Flutter/微信/Android/iOS）flush 失败的事件落盘（上限 500 条），下次启动自动补发；4xx（除 429）确定性失败不落盘不重试。服务端 SDK（Go/Java）为常驻进程，失败留在内存队列由定时器补发。
-- **服务端 SDK 无设备/会话语义**：deviceId 取实例 hostname（可配），sessionId 为进程级（可选超时轮换），适合支付回调、风控触发、订单流转等后端事件。
+- **服务端 SDK 无设备/会话语义**：deviceId 取实例 hostname（可配），sessionId 为进程级（可选超时轮换），适合支付回调、风控触发、订单流转等后端事件。Python SDK 同此语义（deviceId=hostname、platform=`server`）。
+- **Unreal 的 deviceId 存 `Saved/Uba/device_id.txt`**（持久化 + 首装判定）；`Flush` 为同步语义（与其他端一致），勿在游戏线程高频调用——建议在退后台/关卡切换/退出时机调用；`IUbaTransport`/`IUbaClock` 可注入替换。
+- **HarmonyOS 的 deviceId 存 preferences**（`__uba_*__` 键名对齐其他端）；`module.json5` 已声明 `ohos.permission.INTERNET`；SDK 源码与 hypium 单测已交付，**需 DevEco Studio 跑 `hvigorw test` 验证**。
 
 ---
 
@@ -632,6 +634,9 @@ go run ./app/collector/service/cmd/server/ -c ./app/collector/service/configs
 | Unity WebGL 上报失败 | 确认使用 `UnityWebRequestTransport` 而非默认 HttpClient |
 | Flutter 首次 init 报 MissingPluginException | shared_preferences 插件未注册：确认宿主跑过 `flutter pub get` 且重新构建（不能热重载恢复） |
 | 微信小程序上报失败（fail 回调） | 检查小程序后台是否把 collector 域名加入 **request 合法域名**（HTTPS 必需，开发工具可临时勾选"不校验域名"） |
+| Python 脚本事件未发出 | 默认 `flush_interval_ms=5000` 定时补发，脚本退出前未 `close()` 会丢内存队列残留；401 检查 appId/appSecret |
+| Unreal 插件编译失败 | 插件壳需宿主工程编译（本仓库不编译）；确认 `UnrealPlugin/` 在 `Plugins/` 下且 `Uba.Build.cs` 能找到 `core/` 源码；Flush 同步语义勿在游戏线程高频调用 |
+| 鸿蒙 SDK 无法外呼 | `module.json5` 需含 `ohos.permission.INTERNET`（已含）；本地单元测试用 `hvigorw test`（DevEco Studio），真机联调走 ohosTest |
 | 数据查不到 | 确认 collector → Kafka → Doris（Routine Load）入仓链路在跑：`uba-ingest status`；`tenantId` 由服务端补全，勿手动上报 |
 | 页面跳转丢失事件 | Web 确认 `enableBeacon: true`；Flutter/微信/Android/iOS 确认已接生命周期自动 flush（退后台时机上报） |
 
