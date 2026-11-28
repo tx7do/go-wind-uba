@@ -26,6 +26,9 @@ var ViewsData []byte
 //go:embed 06_etl.sql
 var EtlData []byte
 
+//go:embed 07_attribution.sql
+var AttributionData []byte
+
 // InitScripts returns the scripts that provision gw_uba, in apply order.
 //
 // Unlike the Doris side, 05_views.sql is mandatory here: its materialized views are the only

@@ -1,0 +1,229 @@
+﻿syntax = "proto3";
+
+package uba.service.v1;
+
+import "gnostic/openapi/v3/annotations.proto";
+import "google/api/field_behavior.proto";
+import "google/protobuf/timestamp.proto";
+
+// 买量归因:接收 MMP(AppsFlyer / Adjust 等)服务端回传的渠道归因与渠道花费。
+// 对接方式:服务端到服务端,鉴权沿用 app_id/app_secret;数据经 Kafka 由
+// OLAP 引擎自拉入库(attribution_records / channel_cost_daily)。
+
+// 归因记录类型
+enum AttributionType {
+  ATTRIBUTION_TYPE_UNSPECIFIED = 0;
+
+  INSTALL = 1;        // 新装归因
+  RE_ATTRIBUTION = 2; // 再归因(流失回流用户)
+  IN_APP_EVENT = 3;   // 应用内关键事件归因(注册 / 付费等)
+
+  reserved 10 to 99;
+  reserved "ATTRIBUTION_TYPE_RESERVED";
+}
+
+// 归因记录:一条 = 一个用户/设备与一次渠道转化动作的归因关系
+message AttributionRecord {
+  string attribution_id = 1 [
+    json_name = "attributionId",
+    (google.api.field_behavior) = REQUIRED,
+    (gnostic.openapi.v3.property) = {description: "归因记录唯一 ID(MMP 侧 ID,幂等去重键)"}
+  ]; // 归因记录唯一 ID
+
+  AttributionType type = 2 [
+    json_name = "type",
+    (gnostic.openapi.v3.property) = {description: "归因类型:INSTALL / RE_ATTRIBUTION / IN_APP_EVENT"}
+  ]; // 归因类型
+
+  optional int64 user_id = 3 [
+    json_name = "userId",
+    (gnostic.openapi.v3.property) = {description: "平台用户 ID;未注册安装可空,后续按 device_id 关联"}
+  ]; // 平台用户 ID
+
+  string device_id = 4 [
+    json_name = "deviceId",
+    (gnostic.openapi.v3.property) = {description: "设备标识:GAID / IDFA / 自建设备指纹"}
+  ]; // 设备标识
+
+  string platform = 5 [
+    json_name = "platform",
+    (gnostic.openapi.v3.property) = {description: "平台:android / ios / web / harmonyos"}
+  ]; // 平台
+
+  string media_source = 6 [
+    json_name = "mediaSource",
+    (google.api.field_behavior) = REQUIRED,
+    (gnostic.openapi.v3.property) = {description: "媒体渠道:organic(自然量)/ facebook / tiktok 等"}
+  ]; // 媒体渠道
+
+  string campaign = 7 [
+    json_name = "campaign",
+    (gnostic.openapi.v3.property) = {description: "广告计划"}
+  ]; // 广告计划
+
+  string ad_group = 8 [
+    json_name = "adGroup",
+    (gnostic.openapi.v3.property) = {description: "广告组"}
+  ]; // 广告组
+
+  string creative = 9 [
+    json_name = "creative",
+    (gnostic.openapi.v3.property) = {description: "素材"}
+  ]; // 素材
+
+  bool is_organic = 10 [
+    json_name = "isOrganic",
+    (gnostic.openapi.v3.property) = {description: "是否自然量(非买量)"}
+  ]; // 是否自然量
+
+  google.protobuf.Timestamp click_time = 11 [
+    json_name = "clickTime",
+    (gnostic.openapi.v3.property) = {description: "广告点击时间"}
+  ]; // 广告点击时间
+
+  google.protobuf.Timestamp attribution_time = 12 [
+    json_name = "attributionTime",
+    (google.api.field_behavior) = REQUIRED,
+    (gnostic.openapi.v3.property) = {description: "归因时间(ISO 8601 UTC;分区键)"}
+  ]; // 归因时间
+
+  map<string, string> extras = 13 [
+    json_name = "extras",
+    (gnostic.openapi.v3.property) = {description: "MMP 原始字段透传(JSON),预留深度分析"}
+  ]; // MMP 原始字段透传
+
+  optional int64 tenant_id = 14 [
+    json_name = "tenantId",
+    (gnostic.openapi.v3.property) = {description: "租户 ID(服务端按 app 鉴权覆盖,调用方无需填写)"}
+  ]; // 租户 ID
+}
+
+// 渠道花费:按 渠道×计划×日 汇总的买量花费(从 MMP / 广告平台报表拉取后回传)
+message ChannelCostRecord {
+  string date = 1 [
+    json_name = "date",
+    (google.api.field_behavior) = REQUIRED,
+    (gnostic.openapi.v3.property) = {description: "统计日期 YYYY-MM-DD"}
+  ]; // 统计日期
+
+  string media_source = 2 [
+    json_name = "mediaSource",
+    (google.api.field_behavior) = REQUIRED,
+    (gnostic.openapi.v3.property) = {description: "媒体渠道"}
+  ]; // 媒体渠道
+
+  string campaign = 3 [
+    json_name = "campaign",
+    (gnostic.openapi.v3.property) = {description: "广告计划;自然量花费填 organic"}
+  ]; // 广告计划
+
+  double cost = 4 [
+    json_name = "cost",
+    (google.api.field_behavior) = REQUIRED,
+    (gnostic.openapi.v3.property) = {description: "当日花费金额"}
+  ]; // 当日花费
+
+  string currency = 5 [
+    json_name = "currency",
+    (google.api.field_behavior) = REQUIRED,
+    (gnostic.openapi.v3.property) = {description: "币种 ISO 4217,如 USD / CNY"}
+  ]; // 币种
+
+  int64 clicks = 6 [
+    json_name = "clicks",
+    (gnostic.openapi.v3.property) = {description: "当日点击数"}
+  ]; // 当日点击数
+
+  int64 impressions = 7 [
+    json_name = "impressions",
+    (gnostic.openapi.v3.property) = {description: "当日曝光数"}
+  ]; // 当日曝光数
+
+  int64 installs = 8 [
+    json_name = "installs",
+    (gnostic.openapi.v3.property) = {description: "当日安装数(MMP 报表口径)"}
+  ]; // 当日安装数
+
+  optional int64 tenant_id = 9 [
+    json_name = "tenantId",
+    (gnostic.openapi.v3.property) = {description: "租户 ID(服务端按 app 鉴权覆盖)"}
+  ]; // 租户 ID
+}
+
+// 归因回传 - 请求
+message PostAttributionRequest {
+  string app_id = 1 [
+    json_name = "appId",
+    (google.api.field_behavior) = REQUIRED,
+    (gnostic.openapi.v3.property) = {description: "UBA应用唯一标识,鉴权/路由关键字段"}
+  ]; // 应用标识
+
+  string app_secret = 2 [
+    json_name = "appSecret",
+    (google.api.field_behavior) = REQUIRED,
+    (gnostic.openapi.v3.property) = {description: "密钥,鉴权使用"}
+  ]; // 应用密钥
+
+  repeated AttributionRecord records = 3 [
+    json_name = "records",
+    (google.api.field_behavior) = REQUIRED,
+    (gnostic.openapi.v3.property) = {description: "归因记录列表"}
+  ]; // 归因记录列表
+}
+
+// 归因回传 - 回应
+message PostAttributionResponse {
+  int32 accepted = 1 [
+    json_name = "accepted",
+    (gnostic.openapi.v3.property) = {description: "受理条数"}
+  ]; // 受理条数
+
+  int32 rejected = 2 [
+    json_name = "rejected",
+    (gnostic.openapi.v3.property) = {description: "拒绝条数(缺必填字段等)"}
+  ]; // 拒绝条数
+
+  string message = 3 [
+    json_name = "message",
+    (gnostic.openapi.v3.property) = {description: "结果说明"}
+  ]; // 结果说明
+}
+
+// 渠道花费回传 - 请求
+message PostChannelCostRequest {
+  string app_id = 1 [
+    json_name = "appId",
+    (google.api.field_behavior) = REQUIRED,
+    (gnostic.openapi.v3.property) = {description: "UBA应用唯一标识"}
+  ]; // 应用标识
+
+  string app_secret = 2 [
+    json_name = "appSecret",
+    (google.api.field_behavior) = REQUIRED,
+    (gnostic.openapi.v3.property) = {description: "密钥,鉴权使用"}
+  ]; // 应用密钥
+
+  repeated ChannelCostRecord records = 3 [
+    json_name = "records",
+    (google.api.field_behavior) = REQUIRED,
+    (gnostic.openapi.v3.property) = {description: "渠道花费记录列表"}
+  ]; // 渠道花费记录
+}
+
+// 渠道花费回传 - 回应
+message PostChannelCostResponse {
+  int32 accepted = 1 [
+    json_name = "accepted",
+    (gnostic.openapi.v3.property) = {description: "受理条数"}
+  ]; // 受理条数
+
+  int32 rejected = 2 [
+    json_name = "rejected",
+    (gnostic.openapi.v3.property) = {description: "拒绝条数"}
+  ]; // 拒绝条数
+
+  string message = 3 [
+    json_name = "message",
+    (gnostic.openapi.v3.property) = {description: "结果说明"}
+  ]; // 结果说明
+}

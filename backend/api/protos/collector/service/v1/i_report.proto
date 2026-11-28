@@ -6,6 +6,7 @@ import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
 
 import "uba/service/v1/report.proto";
+import "uba/service/v1/attribution.proto";
 import "uba/service/v1/feature_flag.proto";
 import "uba/service/v1/visual_event.proto";
 import "uba/service/v1/replay.proto";
@@ -16,6 +17,22 @@ service ReportService {
   rpc PostReport(uba.service.v1.PostReportRequest) returns (uba.service.v1.PostReportResponse) {
     option (google.api.http) = {
       post: "/uba/v1/report"
+      body: "*"
+    };
+  }
+
+  // 买量归因回传(MMP 服务端对接,app 鉴权)
+  rpc PostAttribution(uba.service.v1.PostAttributionRequest) returns (uba.service.v1.PostAttributionResponse) {
+    option (google.api.http) = {
+      post: "/uba/v1/attribution"
+      body: "*"
+    };
+  }
+
+  // 渠道花费回传(MMP/广告平台报表,app 鉴权)
+  rpc PostChannelCost(uba.service.v1.PostChannelCostRequest) returns (uba.service.v1.PostChannelCostResponse) {
+    option (google.api.http) = {
+      post: "/uba/v1/channel-cost"
       body: "*"
     };
   }

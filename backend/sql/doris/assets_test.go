@@ -108,7 +108,12 @@ func TestInitScriptsRenderAndClassify(t *testing.T) {
 	for _, j := range jobs {
 		names = append(names, j.Database+"."+j.Name+"->"+j.Table)
 	}
-	want := []string{"gw_uba.job_events_to_fact->events_fact", "gw_uba.job_risk_events_to_fact->risk_events"}
+	want := []string{
+		"gw_uba.job_events_to_fact->events_fact",
+		"gw_uba.job_risk_events_to_fact->risk_events",
+		"gw_uba.job_attribution_to_records->attribution_records",
+		"gw_uba.job_channel_cost_to_daily->channel_cost_daily",
+	}
 	if !slices.Equal(names, want) {
 		t.Errorf("routine load jobs = %v, want %v", names, want)
 	}

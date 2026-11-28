@@ -26,6 +26,9 @@ var ViewsData []byte
 //go:embed 06_etl.sql
 var EtlData []byte
 
+//go:embed 07_attribution.sql
+var AttributionData []byte
+
 // InitScripts returns the scripts that provision gw_uba, in apply order.
 //
 // 05_views.sql is intentionally left out. Its materialized views refresh on every commit, so
@@ -41,6 +44,7 @@ func InitScripts() []dorisinit.Script {
 		{Name: "02_kafka_tables.sql", Bytes: KafkaTablesData},
 		{Name: "03_aggregate_tables.sql", Bytes: AggregateTablesData},
 		{Name: "04_indexes.sql", Bytes: IndexesData},
+		{Name: "07_attribution.sql", Bytes: AttributionData},
 	}
 }
 
