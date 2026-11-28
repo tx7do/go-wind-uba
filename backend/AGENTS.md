@@ -107,7 +107,7 @@ make test            # 单测
 make vendor          # go mod vendor
 ```
 
-## 6. 数据入仓:`cmd/uba-ingest` + `pkg/dorisinit` / `pkg/clickhouseinit`
+## 6. 数据入仓:`tools/uba-ingest` + `pkg/dorisinit` / `pkg/clickhouseinit`
 
 SDK 事件先由 `collector` 发到 kafka(`pkg/topic`:`uba_events_raw`、`uba_risk_events`),
 **从 kafka 搬进 OLAP 由引擎自己拉取完成** —— 不写 Go 消费者是有意的设计:
