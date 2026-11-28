@@ -1,4 +1,4 @@
-# 数据采集 SDK（非 Web 端）
+# 数据采集 SDK
 
 GoWind UBA 各端埋点采集 SDK 的总目录。**怎么选型 / 接入前置 / 上报协议契约**见
 [SDK 接入指南](../docs/sdk_integration.md)；第一次接触平台请先跟
