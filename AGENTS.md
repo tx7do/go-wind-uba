@@ -13,7 +13,7 @@
 ```
 go-wind-uba/
 ├── backend/        ★ Go 1.25 + Kratos + Ent 多服务后端 → 见 backend/AGENTS.md
-├── frontend/       ★ 前端(管理后台)→ 见 frontend/AGENTS.md
+├── frontend/       ★ 管理后台 → 见 frontend/admin/AGENTS.md
 │   └── admin/        vue-vben-admin v5 monorepo(Vue3 + TS + AntD Vue)
 ├── sdk/              ★ 全部数据采集 SDK(11 端,见 sdk/README.md)
 │   ├── web/uba/      浏览器/Node 埋点 TS SDK
@@ -40,7 +40,7 @@ go-wind-uba/
 | 模块 | 技术栈 | 详细指南 |
 |---|---|---|
 | 后端 | Go 1.25 · Kratos v2 · Ent · PostgreSQL · Doris · ClickHouse · Redis · Asynq · SeaweedFS(S3 兼容，服务名沿用 minio) · Kratos authn(JWT)/ authz(Casbin/OPA) | `backend/AGENTS.md` |
-| 管理后台 | Vue 3 · TypeScript · Vite · Ant Design Vue · vue-vben-admin v5 · pnpm monorepo + turbo + changeset | `frontend/AGENTS.md` |
+| 管理后台 | Vue 3 · TypeScript · Vite · Ant Design Vue · vue-vben-admin v5 · pnpm monorepo + turbo + changeset | `frontend/admin/AGENTS.md` |
 | Web SDK | TypeScript(`sdk/web/uba/`)· `tsc` 构建,上报到 collector | `sdk/web/uba/AGENTS.md` |
 | C# SDK | C#(`sdk/csharp/`) | `sdk/csharp/README.md` |
 | Flutter SDK | Dart(`sdk/flutter/uba/`)· 仅依赖 shared_preferences,flutter_test 验证 | `sdk/flutter/uba/AGENTS.md` |
@@ -130,8 +130,8 @@ paste <(grep -n '^#' README.md) <(grep -n '^#' README_en.md) <(grep -n '^#' READ
 | 改后端 API / 数据模型 / 业务逻辑 | `backend/AGENTS.md` |
 | 改 AI 模块（对话/知识库/智能问数/用量配额/提供商） | `backend/AGENTS.md` 第 8 节（文件布局与域内约定） |
 | 改后端契约,影响前端调用 | `backend/AGENTS.md`(注意 `make api` 生成链)|
-| 改管理后台页面 / 组件 / i18n | `frontend/AGENTS.md` |
-| 改分析模型(前后端) | `backend/AGENTS.md` + `frontend/AGENTS.md`(分析模型是双端核心)|
+| 改管理后台页面 / 组件 / i18n | `frontend/admin/AGENTS.md` |
+| 改分析模型(前后端) | `backend/AGENTS.md` + `frontend/admin/AGENTS.md`(分析模型是双端核心)|
 | 改 Web 埋点 SDK | `sdk/web/uba/AGENTS.md` |
 | 改 C# SDK | `sdk/csharp/README.md` |
 | 改 Flutter SDK | `sdk/flutter/uba/AGENTS.md`(契约铁律:数值标量只进 behavior oneof) |
@@ -152,7 +152,7 @@ paste <(grep -n '^#' README.md) <(grep -n '^#' README_en.md) <(grep -n '^#' READ
 # 后端(在 backend/ 下)
 make help && make api && make build
 
-# 前端(在 frontend/admin/ 下)
+# 管理后台(在 frontend/admin/ 下)
 pnpm install && pnpm dev:antd
 
 # Web SDK(在 sdk/web/uba/ 下)

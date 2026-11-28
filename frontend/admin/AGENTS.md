@@ -1,29 +1,21 @@
-# Frontend Agent Guide — go-wind-uba
+# Agent Guide — frontend/admin
 
-本文件是 AI 编码助手(以及新人)在本目录 `frontend/` 下工作时的权威指南。
-请先通读,再动手。
+本文件是 AI 编码助手(以及新人)在 `frontend/admin/`(管理后台)下工作时的权威指南。
+根指南见 [AGENTS.md](../../AGENTS.md);SDK 在仓库根 [sdk/](../../sdk/README.md)(11 端,含原 frontend 下的 web/wechat,已迁出)。
 
-## 1. 技术栈与项目布局
+## 1. 技术栈与布局
 
-`frontend/` 下有两个独立的前端产物:
+Vue 3 + TypeScript + Vite + Ant Design Vue,基于 [vue-vben-admin v5](https://github.com/vben/vue-vben-admin) monorepo。
+**pnpm 锁死**(有 `preinstall: only-allow pnpm`,禁止 npm/yarn)。
 
-| 子目录 | 技术栈 | 说明 |
-|---|---|---|
-| `admin/` | Vue 3 + TypeScript + Vite + Ant Design Vue,基于 [vue-vben-admin v5](https://github.com/vben/vue-vben-admin) monorepo | 管理后台(主前端) |
-
-两者均使用 **pnpm**(admin 有 `preinstall: only-allow pnpm`,**禁止 npm/yarn**)。
-
-## 2. `admin/` —— vue-vben-admin monorepo
-
-### 包管理
-- 用 **pnpm + workspace + turbo + changeset**。
 - 包名前缀:`@vben/*`(内部包)、`@vben-core/*`(核心无样式原语)。
 - 应用入口:`apps/admin`(`@vben/web-antd`)。
 - 共享包:`packages/{@core,constants,effects,icons,locales,preferences,stores,styles,types,utils}`。
 - 内部工具:`internal/{lint-configs,node-utils,tailwind-config,tsconfig,vite-config}`。
-- 依赖版本统一用 `catalog:`(见根 `package.json` 的 `pnpm-workspace.yaml` catalog)。
+- 依赖版本统一用 `catalog:`(见根 `pnpm-workspace.yaml` catalog);跨包引用用 `workspace:*`。
 
-### 关键脚本(在 `admin/` 下执行)
+### 关键脚本(在本目录下执行)
+
 ```bash
 pnpm install            # 安装(catalog 解析依赖 workspace)
 pnpm dev                # 选 app 跑(turbo-run dev)
@@ -38,10 +30,11 @@ pnpm test:unit          # vitest run --dom
 > 内存上限:build 显式给到 8GB,本机调试慢时注意。
 
 ### 应用内目录(`apps/admin/src/`)
+
 ```
 adapter/        组件适配层
 api/            业务 API 封装(Composable)
-generated/      后端 proto 自动生成的调用代码($/*) —— 禁止手改
+generated/      后端 proto 自动生成的调用代码 —— 禁止手改
   └── api/      由 backend make api 生成
 transport/
   ├─ rest/      REST 请求客户端(request-client / 拦截器 / 分页)
@@ -49,7 +42,7 @@ transport/
 layouts/  router/  stores/  plugins/  locales/  constants/  utils/
 views/
   ├─ app/       业务主区
-  │   └─ data-analysis/   ★ 数据分析核心(20+ 分析模型)
+  │   └─ data-analysis/   ★ 数据分析核心(25 个分析模型)
   ├─ dashboard/ 看板
   ├─ _core/     认证/异常/about 等框架页
   ├─ message/  profile/
@@ -61,21 +54,17 @@ views/
   ├─ risk/(风险事件/规则/Webhook) tag/(标签/ID映射)
 ```
 
-### `data-analysis/` —— 核心业务(24 个分析模型 + 实时大屏 + 会话管理)
+### `data-analysis/` —— 核心业务(25 个分析模型)
+
 分析模型是本产品的核心,目录即模型:`anomaly / attribution / behavior-sequence /
 churn / click / dimension-compare / distribution / economy / event-trend / funnel /
 interval / level-analysis / lifecycle / ltv / matrix / new-vs-old / online-stats /
 path-sankey / realtime-screen / retention / revenue / segmentation / session /
 session-analysis / server-retention / whale-tier`。
 还含共享 `components/`。改动分析页时优先复用这些组件与统一的请求/图表封装。
+各模型的用途与教程见 [docs/analytics-tutorial.md](../../docs/analytics-tutorial.md)。
 
-## 3. `sdk/web/uba/` —— 埋点 SDK
-
-- 纯 TS,`tsc` 构建(`pnpm build` → `dist/`),`typecheck` 跑 `tsc --noEmit`。
-- 职责:浏览器/Node 端采集用户行为,上报到 backend `collector` 服务。
-- 改动需同时兼顾:轻量、不阻塞宿主页面、网络容错(队列/重试)。
-
-## 4. 必须遵守的约定
+## 2. 必须遵守的约定
 
 1. **包管理器锁死 pnpm。** admin 设了 `only-allow pnpm`,别引入 npm/yarn 锁文件。
 2. **生成代码不可手改。** `apps/admin/src/generated/api/` 来自后端 proto(`make api`)。改 API 先改后端 proto 再重新生成。
@@ -89,13 +78,13 @@ session-analysis / server-retention / whale-tier`。
    - 新增依赖已在 catalog/workspace 内正确声明
    - 文案已补全双语
 
-## 5. 前后端协作
+## 3. 前后端协作
 
-- 后端 proto 改动 → `make api`(在 backend)会同时生成前端的 TypeScript HTTP 调用代码到 `frontend/admin/apps/admin/src/generated/api/`。
+- 后端 proto 改动 → `make api`(在 backend)会同时生成前端的 TypeScript HTTP 调用代码到 `apps/admin/src/generated/api/`。
 - 因此**改契约是后端发起、前端被动接收**,前端不要手动编辑 `generated/`。
 - 若生成结构与预期不符,去后端 `api/protos/` 或生成插件配置里排查,而不是改前端生成物。
 
-## 6. 调试提示
+## 4. 调试提示
 
 - `pnpm dev` 启不来 → 先 `pnpm install`,确认 workspace 与 catalog 解析正常;再确认 `internal/*` 的 stub(`postinstall: pnpm -r run stub`)跑过。
 - 类型报错引用不到包 → 多半是 workspace 没正确 link,或新包没加到 `pnpm-workspace.yaml`。

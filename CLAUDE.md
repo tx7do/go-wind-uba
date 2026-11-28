@@ -46,9 +46,9 @@ SDK → collector(采集,只发不写库) → Kafka(uba_events_raw / uba_risk_ev
 | 任务 | 先读 |
 |---|---|
 | 后端 API/模型/逻辑 | `backend/AGENTS.md` |
-| 管理后台页面/i18n | `frontend/AGENTS.md` |
-| 分析模型(双端) | `backend/AGENTS.md` + `frontend/AGENTS.md` |
-| Web SDK | `frontend/AGENTS.md`(sdk/web/uba)|
+| 管理后台页面/i18n | `frontend/admin/AGENTS.md` |
+| 分析模型(双端) | `backend/AGENTS.md` + `frontend/admin/AGENTS.md` |
+| Web SDK | `sdk/web/uba/AGENTS.md` |
 | 整体架构 | `docs/architecture.md` + 根 `AGENTS.md` 第 4 节 |
 
 ## 常用入口
