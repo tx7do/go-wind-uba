@@ -23,8 +23,6 @@ const _ = http.SupportPackageIsVersion1
 
 const OperationReportServiceHealthCheck = "/collector.service.v1.ReportService/HealthCheck"
 const OperationReportServiceListVisualEvents = "/collector.service.v1.ReportService/ListVisualEvents"
-const OperationReportServicePostAttribution = "/collector.service.v1.ReportService/PostAttribution"
-const OperationReportServicePostChannelCost = "/collector.service.v1.ReportService/PostChannelCost"
 const OperationReportServicePostFlags = "/collector.service.v1.ReportService/PostFlags"
 const OperationReportServicePostReport = "/collector.service.v1.ReportService/PostReport"
 const OperationReportServiceUploadReplayChunk = "/collector.service.v1.ReportService/UploadReplayChunk"
@@ -34,10 +32,6 @@ type ReportServiceHTTPServer interface {
 	HealthCheck(context.Context, *emptypb.Empty) (*HealthCheckResponse, error)
 	// ListVisualEvents 获取可视化埋点规则：SDK 拉取启用的"页面+元素XPath→事件"配置
 	ListVisualEvents(context.Context, *v1.ListVisualEventsForAppRequest) (*v1.ListVisualEventsForAppResponse, error)
-	// PostAttribution 买量归因回传(MMP 服务端对接,app 鉴权)
-	PostAttribution(context.Context, *v1.PostAttributionRequest) (*v1.PostAttributionResponse, error)
-	// PostChannelCost 渠道花费回传(MMP/广告平台报表,app 鉴权)
-	PostChannelCost(context.Context, *v1.PostChannelCostRequest) (*v1.PostChannelCostResponse, error)
 	// PostFlags 获取功能开关取值：为一个身份（设备/用户）评估该应用全部启用的开关
 	PostFlags(context.Context, *v1.PostFlagsRequest) (*v1.PostFlagsResponse, error)
 	// PostReport 提交事件（单条/批量）
@@ -49,8 +43,6 @@ type ReportServiceHTTPServer interface {
 func RegisterReportServiceHTTPServer(s *http.Server, srv ReportServiceHTTPServer) {
 	r := s.Route("/")
 	r.POST("/uba/v1/report", _ReportService_PostReport0_HTTP_Handler(srv))
-	r.POST("/uba/v1/attribution", _ReportService_PostAttribution0_HTTP_Handler(srv))
-	r.POST("/uba/v1/channel-cost", _ReportService_PostChannelCost0_HTTP_Handler(srv))
 	r.GET("/uba/v1/health", _ReportService_HealthCheck0_HTTP_Handler(srv))
 	r.POST("/uba/v1/flags", _ReportService_PostFlags0_HTTP_Handler(srv))
 	r.POST("/uba/v1/visual-events", _ReportService_ListVisualEvents0_HTTP_Handler(srv))
@@ -75,50 +67,6 @@ func _ReportService_PostReport0_HTTP_Handler(srv ReportServiceHTTPServer) func(c
 			return err
 		}
 		reply := out.(*v1.PostReportResponse)
-		return ctx.Result(200, reply)
-	}
-}
-
-func _ReportService_PostAttribution0_HTTP_Handler(srv ReportServiceHTTPServer) func(ctx http.Context) error {
-	return func(ctx http.Context) error {
-		var in v1.PostAttributionRequest
-		if err := ctx.Bind(&in); err != nil {
-			return err
-		}
-		if err := ctx.BindQuery(&in); err != nil {
-			return err
-		}
-		http.SetOperation(ctx, OperationReportServicePostAttribution)
-		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
-			return srv.PostAttribution(ctx, req.(*v1.PostAttributionRequest))
-		})
-		out, err := h(ctx, &in)
-		if err != nil {
-			return err
-		}
-		reply := out.(*v1.PostAttributionResponse)
-		return ctx.Result(200, reply)
-	}
-}
-
-func _ReportService_PostChannelCost0_HTTP_Handler(srv ReportServiceHTTPServer) func(ctx http.Context) error {
-	return func(ctx http.Context) error {
-		var in v1.PostChannelCostRequest
-		if err := ctx.Bind(&in); err != nil {
-			return err
-		}
-		if err := ctx.BindQuery(&in); err != nil {
-			return err
-		}
-		http.SetOperation(ctx, OperationReportServicePostChannelCost)
-		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
-			return srv.PostChannelCost(ctx, req.(*v1.PostChannelCostRequest))
-		})
-		out, err := h(ctx, &in)
-		if err != nil {
-			return err
-		}
-		reply := out.(*v1.PostChannelCostResponse)
 		return ctx.Result(200, reply)
 	}
 }
@@ -213,10 +161,6 @@ type ReportServiceHTTPClient interface {
 	HealthCheck(ctx context.Context, req *emptypb.Empty, opts ...http.CallOption) (rsp *HealthCheckResponse, err error)
 	// ListVisualEvents 获取可视化埋点规则：SDK 拉取启用的"页面+元素XPath→事件"配置
 	ListVisualEvents(ctx context.Context, req *v1.ListVisualEventsForAppRequest, opts ...http.CallOption) (rsp *v1.ListVisualEventsForAppResponse, err error)
-	// PostAttribution 买量归因回传(MMP 服务端对接,app 鉴权)
-	PostAttribution(ctx context.Context, req *v1.PostAttributionRequest, opts ...http.CallOption) (rsp *v1.PostAttributionResponse, err error)
-	// PostChannelCost 渠道花费回传(MMP/广告平台报表,app 鉴权)
-	PostChannelCost(ctx context.Context, req *v1.PostChannelCostRequest, opts ...http.CallOption) (rsp *v1.PostChannelCostResponse, err error)
 	// PostFlags 获取功能开关取值：为一个身份（设备/用户）评估该应用全部启用的开关
 	PostFlags(ctx context.Context, req *v1.PostFlagsRequest, opts ...http.CallOption) (rsp *v1.PostFlagsResponse, err error)
 	// PostReport 提交事件（单条/批量）
@@ -253,34 +197,6 @@ func (c *ReportServiceHTTPClientImpl) ListVisualEvents(ctx context.Context, in *
 	pattern := "/uba/v1/visual-events"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationReportServiceListVisualEvents))
-	opts = append(opts, http.PathTemplate(pattern))
-	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return &out, nil
-}
-
-// PostAttribution 买量归因回传(MMP 服务端对接,app 鉴权)
-func (c *ReportServiceHTTPClientImpl) PostAttribution(ctx context.Context, in *v1.PostAttributionRequest, opts ...http.CallOption) (*v1.PostAttributionResponse, error) {
-	var out v1.PostAttributionResponse
-	pattern := "/uba/v1/attribution"
-	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation(OperationReportServicePostAttribution))
-	opts = append(opts, http.PathTemplate(pattern))
-	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return &out, nil
-}
-
-// PostChannelCost 渠道花费回传(MMP/广告平台报表,app 鉴权)
-func (c *ReportServiceHTTPClientImpl) PostChannelCost(ctx context.Context, in *v1.PostChannelCostRequest, opts ...http.CallOption) (*v1.PostChannelCostResponse, error) {
-	var out v1.PostChannelCostResponse
-	pattern := "/uba/v1/channel-cost"
-	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation(OperationReportServicePostChannelCost))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {

@@ -89,9 +89,6 @@ type options struct {
 	// render
 	kafkaBrokers string
 
-	// retention
-	retentionPolicy string
-	retentionEngine string
 }
 
 func (o *options) bind(fs *flag.FlagSet) {
@@ -135,10 +132,6 @@ func (o *options) bind(fs *flag.FlagSet) {
 		fs.StringVar(&o.at, "at", defaultETLAtTime, "with --loop: the local HH:MM to run at")
 		fs.DurationVar(&o.every, "every", 0, "with --loop: recompute the current day at this interval, e.g. 1h, so daytime queries see it (intraday freshness; only the replace sections may run)")
 
-	case "retention":
-		fs.StringVar(&o.retentionPolicy, "policy", "", "the retention policy JSON file (required)")
-		fs.StringVar(&o.retentionEngine, "engine", "doris", "which engine to reconcile: doris | clickhouse")
-		fs.BoolVar(&o.dryRun, "dry-run", false, "print the statements without sending anything")
 	}
 }
 
@@ -244,8 +237,6 @@ func (o *options) run(ctx context.Context) error {
 		return o.runCHApply(ctx)
 	case "ch-etl":
 		return o.runCHEtl(ctx)
-	case "retention":
-		return o.runRetention(ctx)
 	}
 	return &exitError{exitUsage, fmt.Errorf("unknown command %q", o.command)}
 }

@@ -131,11 +131,6 @@ Commands:
              --every 1h                    with --loop: recompute the current day at this interval
                                            instead of once a day at --at — intraday freshness for
                                            daytime queries; only the replace sections may run
-  retention  reconcile the per-table retention (TTL) onto the cluster — an enterprise
-             capability, a valid license is required
-             --policy <file>               the retention policy JSON
-             --engine doris|clickhouse     which engine to reconcile (default "doris")
-             --dry-run                     print the statements, run none
 
 Exit codes:
   0   the work is done and, for status, every declared job is consuming
@@ -178,7 +173,7 @@ func parseFlags(args []string) (*options, error) {
 
 	cmd := rest[0]
 	switch cmd {
-	case "apply", "status", "etl", "render", "ch-apply", "ch-etl", "retention":
+	case "apply", "status", "etl", "render", "ch-apply", "ch-etl":
 	default:
 		if strings.HasPrefix(cmd, "-") {
 			return nil, fmt.Errorf("unknown flag %q: flags come before the command", cmd)

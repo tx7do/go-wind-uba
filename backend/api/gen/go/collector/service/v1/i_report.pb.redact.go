@@ -22,7 +22,6 @@ var (
 	_ status.Status
 	_ emptypb.Empty
 	_ ubapb.PostReportRequest
-	_ ubapb.AttributionRecord
 	_ ubapb.FeatureFlagVariant
 	_ ubapb.VisualEvent
 	_ ubapb.ReplayChunk
@@ -50,28 +49,6 @@ type redactedReportServiceServer struct {
 // Unary RPC
 func (s *redactedReportServiceServer) PostReport(ctx context.Context, in *ubapb.PostReportRequest) (*ubapb.PostReportResponse, error) {
 	res, err := s.srv.PostReport(ctx, in)
-	if !s.bypass.CheckInternal(ctx) {
-		// Apply redaction to the response
-		redact.Apply(res)
-	}
-	return res, err
-}
-
-// PostAttribution is the redacted wrapper for the actual ReportServiceServer.PostAttribution method
-// Unary RPC
-func (s *redactedReportServiceServer) PostAttribution(ctx context.Context, in *ubapb.PostAttributionRequest) (*ubapb.PostAttributionResponse, error) {
-	res, err := s.srv.PostAttribution(ctx, in)
-	if !s.bypass.CheckInternal(ctx) {
-		// Apply redaction to the response
-		redact.Apply(res)
-	}
-	return res, err
-}
-
-// PostChannelCost is the redacted wrapper for the actual ReportServiceServer.PostChannelCost method
-// Unary RPC
-func (s *redactedReportServiceServer) PostChannelCost(ctx context.Context, in *ubapb.PostChannelCostRequest) (*ubapb.PostChannelCostResponse, error) {
-	res, err := s.srv.PostChannelCost(ctx, in)
 	if !s.bypass.CheckInternal(ctx) {
 		// Apply redaction to the response
 		redact.Apply(res)

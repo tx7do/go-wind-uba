@@ -22,8 +22,6 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	ReportService_PostReport_FullMethodName        = "/collector.service.v1.ReportService/PostReport"
-	ReportService_PostAttribution_FullMethodName   = "/collector.service.v1.ReportService/PostAttribution"
-	ReportService_PostChannelCost_FullMethodName   = "/collector.service.v1.ReportService/PostChannelCost"
 	ReportService_HealthCheck_FullMethodName       = "/collector.service.v1.ReportService/HealthCheck"
 	ReportService_PostFlags_FullMethodName         = "/collector.service.v1.ReportService/PostFlags"
 	ReportService_ListVisualEvents_FullMethodName  = "/collector.service.v1.ReportService/ListVisualEvents"
@@ -38,10 +36,6 @@ const (
 type ReportServiceClient interface {
 	// 提交事件（单条/批量）
 	PostReport(ctx context.Context, in *v1.PostReportRequest, opts ...grpc.CallOption) (*v1.PostReportResponse, error)
-	// 买量归因回传(MMP 服务端对接,app 鉴权)
-	PostAttribution(ctx context.Context, in *v1.PostAttributionRequest, opts ...grpc.CallOption) (*v1.PostAttributionResponse, error)
-	// 渠道花费回传(MMP/广告平台报表,app 鉴权)
-	PostChannelCost(ctx context.Context, in *v1.PostChannelCostRequest, opts ...grpc.CallOption) (*v1.PostChannelCostResponse, error)
 	// 健康检查
 	HealthCheck(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*HealthCheckResponse, error)
 	// 获取功能开关取值：为一个身份（设备/用户）评估该应用全部启用的开关
@@ -64,26 +58,6 @@ func (c *reportServiceClient) PostReport(ctx context.Context, in *v1.PostReportR
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(v1.PostReportResponse)
 	err := c.cc.Invoke(ctx, ReportService_PostReport_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *reportServiceClient) PostAttribution(ctx context.Context, in *v1.PostAttributionRequest, opts ...grpc.CallOption) (*v1.PostAttributionResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(v1.PostAttributionResponse)
-	err := c.cc.Invoke(ctx, ReportService_PostAttribution_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *reportServiceClient) PostChannelCost(ctx context.Context, in *v1.PostChannelCostRequest, opts ...grpc.CallOption) (*v1.PostChannelCostResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(v1.PostChannelCostResponse)
-	err := c.cc.Invoke(ctx, ReportService_PostChannelCost_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -138,10 +112,6 @@ func (c *reportServiceClient) UploadReplayChunk(ctx context.Context, in *v1.Uplo
 type ReportServiceServer interface {
 	// 提交事件（单条/批量）
 	PostReport(context.Context, *v1.PostReportRequest) (*v1.PostReportResponse, error)
-	// 买量归因回传(MMP 服务端对接,app 鉴权)
-	PostAttribution(context.Context, *v1.PostAttributionRequest) (*v1.PostAttributionResponse, error)
-	// 渠道花费回传(MMP/广告平台报表,app 鉴权)
-	PostChannelCost(context.Context, *v1.PostChannelCostRequest) (*v1.PostChannelCostResponse, error)
 	// 健康检查
 	HealthCheck(context.Context, *emptypb.Empty) (*HealthCheckResponse, error)
 	// 获取功能开关取值：为一个身份（设备/用户）评估该应用全部启用的开关
@@ -162,12 +132,6 @@ type UnimplementedReportServiceServer struct{}
 
 func (UnimplementedReportServiceServer) PostReport(context.Context, *v1.PostReportRequest) (*v1.PostReportResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method PostReport not implemented")
-}
-func (UnimplementedReportServiceServer) PostAttribution(context.Context, *v1.PostAttributionRequest) (*v1.PostAttributionResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method PostAttribution not implemented")
-}
-func (UnimplementedReportServiceServer) PostChannelCost(context.Context, *v1.PostChannelCostRequest) (*v1.PostChannelCostResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method PostChannelCost not implemented")
 }
 func (UnimplementedReportServiceServer) HealthCheck(context.Context, *emptypb.Empty) (*HealthCheckResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method HealthCheck not implemented")
@@ -216,42 +180,6 @@ func _ReportService_PostReport_Handler(srv interface{}, ctx context.Context, dec
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ReportServiceServer).PostReport(ctx, req.(*v1.PostReportRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ReportService_PostAttribution_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(v1.PostAttributionRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ReportServiceServer).PostAttribution(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: ReportService_PostAttribution_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ReportServiceServer).PostAttribution(ctx, req.(*v1.PostAttributionRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ReportService_PostChannelCost_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(v1.PostChannelCostRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ReportServiceServer).PostChannelCost(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: ReportService_PostChannelCost_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ReportServiceServer).PostChannelCost(ctx, req.(*v1.PostChannelCostRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -338,14 +266,6 @@ var ReportService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "PostReport",
 			Handler:    _ReportService_PostReport_Handler,
-		},
-		{
-			MethodName: "PostAttribution",
-			Handler:    _ReportService_PostAttribution_Handler,
-		},
-		{
-			MethodName: "PostChannelCost",
-			Handler:    _ReportService_PostChannelCost_Handler,
 		},
 		{
 			MethodName: "HealthCheck",

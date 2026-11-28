@@ -4,8 +4,6 @@ const (
 	UbaEventRaw      = "uba_events_raw"      // 原始行为事件上报
 	UbaEventEnriched = "uba_events_enriched" // 丰富后的行为事件上报
 	UbaEventRisk     = "uba_risk_events"     // 风险事件上报
-	UbaAttribution   = "uba_attribution"     // 买量归因回传
-	UbaChannelCost   = "uba_channel_cost"    // 渠道花费回传
 	UbaEventPath     = "uba_path_events"     // 行为路径事件上报
 
 	UbaSyncMysql2Doris           = "uba_sync_mysql2doris" // MySQL 配置 → Doris 同步
