@@ -7,9 +7,12 @@ import (
 
 type stubStrategy struct {
 	masks map[string]Kind // "resource.field" → kind
+	// seenTargets 记录每次判定收到的目标归属者(验证接缝传递)。
+	seenTargets []int64
 }
 
-func (s stubStrategy) FieldMask(_ context.Context, resource, field string) Kind {
+func (s *stubStrategy) FieldMask(_ context.Context, resource, field string, targetOwnerID int64) Kind {
+	s.seenTargets = append(s.seenTargets, targetOwnerID)
 	return s.masks[resource+"."+field]
 }
 
@@ -49,10 +52,11 @@ func TestApplyKinds(t *testing.T) {
 }
 
 func TestMaybeWithStrategy(t *testing.T) {
-	SetStrategy(stubStrategy{masks: map[string]Kind{
+	stub := &stubStrategy{masks: map[string]Kind{
 		"user.email": KindEmail,
 		"user.phone": KindPhone,
-	}})
+	}}
+	SetStrategy(stub)
 	t.Cleanup(func() { SetStrategy(nil) })
 
 	ctx := context.Background()
@@ -78,5 +82,18 @@ func TestMaybeWithStrategy(t *testing.T) {
 	}
 	if got := Maybe(ctx, ResourceUser, "unrelated", &untouched); *got != untouched {
 		t.Fatalf("strategy-free field changed: %q", *got)
+	}
+
+	// Maybe 不带目标归属:判定收到 0
+	if stub.seenTargets[len(stub.seenTargets)-1] != 0 {
+		t.Fatalf("Maybe target = %d, want 0", stub.seenTargets[len(stub.seenTargets)-1])
+	}
+
+	// MaybeFor 透传目标归属(供策略做"看自己不脱敏")
+	if got := MaybeFor(ctx, ResourceUser, "email", &email, 42); *got != "a***@uba.dev" {
+		t.Fatalf("masked email with target = %q", *got)
+	}
+	if stub.seenTargets[len(stub.seenTargets)-1] != 42 {
+		t.Fatalf("MaybeFor target = %d, want 42", stub.seenTargets[len(stub.seenTargets)-1])
 	}
 }

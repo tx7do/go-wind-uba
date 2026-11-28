@@ -18,6 +18,7 @@ import (
 	identityV1 "go-wind-uba/api/gen/go/identity/service/v1"
 	permissionV1 "go-wind-uba/api/gen/go/permission/service/v1"
 
+	"go-wind-uba/pkg/license"
 	"go-wind-uba/pkg/masking"
 	"go-wind-uba/pkg/middleware/auth"
 	"go-wind-uba/pkg/utils"
@@ -92,14 +93,15 @@ func (s *UserService) Get(ctx context.Context, req *identityV1.GetUserRequest) (
 }
 
 // maskUserContact 对用户联系类敏感字段应用脱敏策略。
-// 策略由企业版按 field_permission 能力注入;豁免规则(如管理员豁免)在策略侧判定。
+// 策略由企业版按 field_permission 能力注入;豁免规则(如管理员豁免、
+// 查看自己不脱敏)在策略侧基于操作者与目标归属判定。
 func (s *UserService) maskUserContact(ctx context.Context, u *identityV1.User) {
 	if u == nil {
 		return
 	}
-	u.Email = masking.Maybe(ctx, masking.ResourceUser, "email", u.Email)
-	u.Mobile = masking.Maybe(ctx, masking.ResourceUser, "mobile", u.Mobile)
-	u.Telephone = masking.Maybe(ctx, masking.ResourceUser, "telephone", u.Telephone)
+	u.Email = masking.MaybeFor(ctx, masking.ResourceUser, "email", u.Email, u.GetId())
+	u.Mobile = masking.MaybeFor(ctx, masking.ResourceUser, "mobile", u.Mobile, u.GetId())
+	u.Telephone = masking.MaybeFor(ctx, masking.ResourceUser, "telephone", u.Telephone, u.GetId())
 }
 
 func (s *UserService) Create(ctx context.Context, req *identityV1.CreateUserRequest) (*identityV1.User, error) {
@@ -115,6 +117,19 @@ func (s *UserService) Create(ctx context.Context, req *identityV1.CreateUserRequ
 	req.Data.CreatedBy = trans.Ptr(operator.GetUserId())
 	if operator.GetTenantId() > 0 {
 		req.Data.TenantId = operator.TenantId
+	}
+
+	// 席位配额(企业构建;开源构建零值不限):建用户前核对当前总数
+	if lim := license.Current().Limits(); lim.MaxSeats > 0 {
+		count, cerr := s.userServiceClient.Count(ctx, &paginationV1.PagingRequest{})
+		if cerr != nil {
+			return nil, cerr
+		}
+		if count.GetCount() >= lim.MaxSeats {
+			return nil, adminV1.ErrorBadRequest(
+				"seat limit reached (%d): contact your vendor to expand the license",
+				lim.MaxSeats)
+		}
 	}
 
 	// 获取操作者的用户信息

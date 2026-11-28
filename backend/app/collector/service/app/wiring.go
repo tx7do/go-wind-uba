@@ -60,7 +60,7 @@ func initApp(ctx *bootstrap.Context) (*kratos.App, func(), error) {
 	featureFlagServiceClient := data.NewFeatureFlagServiceClient(ctx, discovery)
 	visualEventServiceClient := data.NewVisualEventServiceClient(ctx, discovery)
 	replayServiceClient := data.NewReplayServiceClient(ctx, discovery)
-	reportService := service.NewReportService(ctx, broker, applicationServiceClient, featureFlagServiceClient, visualEventServiceClient, replayServiceClient, appAuthenticator)
+	reportService := service.NewReportService(ctx, broker, applicationServiceClient, featureFlagServiceClient, visualEventServiceClient, replayServiceClient, appAuthenticator, redisClient)
 
 	// ── register:service ── 新模块服务在此行后注册(make register 工具锚点,勿删)
 

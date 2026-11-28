@@ -811,6 +811,25 @@ client.track('button_click', new Map([['scene', 'home']]))
 
 ---
 
+## Enterprise Edition
+
+Beyond this open-source edition, a commercially licensed **Enterprise Edition**
+(for private deployment) is available, adding:
+
+| Capability | Description |
+|---|---|
+| Single Sign-On (SSO) | OIDC against your enterprise IdP (Keycloak / Entra ID / etc.) |
+| Field-level permissions | Mask sensitive fields (email / phone) by role |
+| Data retention tiers | Per-table event retention days (Doris / ClickHouse) |
+| Seat & event quotas | License-controlled user seats and daily event volume |
+| Commercial support | Installation, upgrade support and SLA |
+
+The open-source edition (this repository, MIT) remains unaffected. The
+Enterprise Edition is subscription-based with offline license signing.
+For details, contact us via WeChat below (mention: go-wind-uba-enterprise).
+
+---
+
 ## Contact
 
 - WeChat: yang_lin_bo (mention: go-wind-uba)

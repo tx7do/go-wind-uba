@@ -26,6 +26,7 @@ func TestNoopProviderDefaults(t *testing.T) {
 type stubProvider struct {
 	caps    map[string]bool
 	expires time.Time
+	limits  Limits
 }
 
 func (s stubProvider) Valid() error {
@@ -44,6 +45,7 @@ func (s stubProvider) Capabilities() []string {
 	}
 	return caps
 }
+func (s stubProvider) Limits() Limits { return s.limits }
 func (s stubProvider) Licensee() string     { return "stub" }
 func (s stubProvider) ExpiresAt() time.Time { return s.expires }
 

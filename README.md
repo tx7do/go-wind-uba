@@ -808,6 +808,23 @@ client.track('button_click', new Map([['scene', 'home']]))
 
 ---
 
+## 企业版
+
+开源版之外提供**企业版**(私有部署商业许可),在开源版基础上增加:
+
+| 能力 | 说明 |
+|---|---|
+| 单点登录(SSO) | OIDC 对接企业 IdP(Keycloak / Entra ID / 钉钉等) |
+| 字段级权限 | 用户邮箱/手机号等敏感字段按角色脱敏 |
+| 数据留存分级 | 按表配置事件数据留存天数(Doris / ClickHouse) |
+| 席位与事件量配额 | license 控制用户席位与日采集事件量 |
+| 商业支持 | 安装交付、升级支持与 SLA |
+
+开源版(本仓库,MIT)功能不受影响;企业版以订阅方式提供,签发离线 license。
+了解详情请联系下方微信(备注:go-wind-uba-enterprise)。
+
+---
+
 ## 联系我们
 
 - 微信个人号：yang_lin_bo（备注：go-wind-uba）

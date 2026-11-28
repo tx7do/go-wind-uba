@@ -24,10 +24,21 @@ type Provider interface {
 	Allows(capability string) bool
 	// Capabilities 返回当前已授权且有效的能力清单(给前端展示用,如 /capabilities)。
 	Capabilities() []string
+	// Limits 返回当前授权的配额(席位/日事件量,0 = 不限)。
+	// 开源构建返回零值(全不限)。
+	Limits() Limits
 	// Licensee 返回被授权方名称;开源构建返回空串。
 	Licensee() string
 	// ExpiresAt 返回授权到期时间;开源构建返回零值。
 	ExpiresAt() time.Time
+}
+
+// Limits license 配额。字段为 0 表示该项不受限制。
+type Limits struct {
+	// MaxSeats 平台用户席位上限;超限后禁止再创建用户。
+	MaxSeats int64
+	// MaxEventsPerDay 单日采集事件量上限;超限后采集端拒绝当日后续上报。
+	MaxEventsPerDay int64
 }
 
 // NotLicensedError 表示企业能力未被授权,供业务守卫区分错误类型。
@@ -91,6 +102,7 @@ type NoopProvider struct{}
 func (NoopProvider) Valid() error           { return nil }
 func (NoopProvider) Allows(string) bool     { return false }
 func (NoopProvider) Capabilities() []string { return nil }
+func (NoopProvider) Limits() Limits         { return Limits{} }
 func (NoopProvider) Licensee() string       { return "" }
 func (NoopProvider) ExpiresAt() time.Time   { return time.Time{} }
 

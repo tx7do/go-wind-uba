@@ -49,7 +49,7 @@ func newTestReportService(t *testing.T, fb broker.Broker, app *ubaV1.Application
 	)
 	auth := NewAppAuthenticator(bctx, &fakeApplicationClient{app: app}, nil)
 
-	return NewReportService(bctx, fb, nil, nil, nil, nil, auth)
+	return NewReportService(bctx, fb, nil, nil, nil, nil, auth, nil)
 }
 
 func testFixedTime() time.Time {

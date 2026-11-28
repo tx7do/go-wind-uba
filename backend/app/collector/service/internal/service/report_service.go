@@ -8,6 +8,7 @@ import (
 
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/google/uuid"
+	"github.com/redis/go-redis/v9"
 	"github.com/tx7do/go-utils/timeutil"
 	"github.com/tx7do/go-utils/trans"
 	"github.com/tx7do/kratos-bootstrap/bootstrap"
@@ -17,6 +18,7 @@ import (
 	collectorV1 "go-wind-uba/api/gen/go/collector/service/v1"
 	ubaV1 "go-wind-uba/api/gen/go/uba/service/v1"
 
+	"go-wind-uba/pkg/license"
 	"go-wind-uba/pkg/topic"
 )
 
@@ -31,6 +33,7 @@ type ReportService struct {
 	visualEventServiceClient ubaV1.VisualEventServiceClient
 	replayServiceClient      ubaV1.ReplayServiceClient
 	appAuth                  *AppAuthenticator
+	redisClient              *redis.Client
 }
 
 func NewReportService(
@@ -41,6 +44,7 @@ func NewReportService(
 	visualEventServiceClient ubaV1.VisualEventServiceClient,
 	replayServiceClient ubaV1.ReplayServiceClient,
 	appAuth *AppAuthenticator,
+	redisClient *redis.Client,
 ) *ReportService {
 	return &ReportService{
 		log:                      ctx.NewLoggerHelper("report/service/collector-service"),
@@ -98,6 +102,18 @@ func (s *ReportService) PostReport(ctx context.Context, req *ubaV1.PostReportReq
 	// 用应用所属的权威 tenant_id 覆盖每个事件，杜绝客户端伪造跨租户上报。
 	for _, event := range validEvents {
 		event.TenantId = app.TenantID
+	}
+
+	// 日事件量配额(企业构建;开源构建零值不限):超限拒绝本批上报(429),
+	// 计数器故障时不阻断采集(采集可用性优先于配额精度)。
+	if lim := license.Current().Limits(); lim.MaxEventsPerDay > 0 {
+		used, qerr := s.incrDailyEvents(ctx, int64(len(validEvents)))
+		if qerr != nil {
+			s.log.Warnf("event quota counter unavailable, allowing batch: %v", qerr)
+		} else if used > lim.MaxEventsPerDay {
+			return nil, ubaV1.ErrorTooManyRequests(
+				"daily event quota exceeded (%d)", lim.MaxEventsPerDay)
+		}
 	}
 
 	// 处理事件：跟踪真实发布结果，失败计入 errorsByType，避免向客户端虚报成功。
@@ -507,4 +523,20 @@ func (s *ReportService) handleRisk(ctx context.Context, evt *ubaV1.ReportEvent, 
 	}
 
 	return nil
+}
+
+// incrDailyEvents 以 Redis 日计数器累计本批事件数,返回含本批的当日累计值。
+// 计数器按天滚动,键带 48h 过期自清理。
+func (s *ReportService) incrDailyEvents(ctx context.Context, n int64) (int64, error) {
+	if s.redisClient == nil {
+		return 0, errors.New("redis client unavailable")
+	}
+	key := "uba:quota:events:" + time.Now().Format("20060102")
+	pipe := s.redisClient.TxPipeline()
+	incr := pipe.IncrBy(ctx, key, n)
+	pipe.Expire(ctx, key, 48*time.Hour)
+	if _, err := pipe.Exec(ctx); err != nil {
+		return 0, err
+	}
+	return incr.Val(), nil
 }
