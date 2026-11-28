@@ -48,7 +48,7 @@ require (
 	github.com/tx7do/kratos-authn/engine/jwt v1.1.10
 	github.com/tx7do/kratos-authz v1.1.8
 	github.com/tx7do/kratos-authz/middleware v1.1.13
-	github.com/tx7do/kratos-bootstrap/api v0.0.45
+	github.com/tx7do/kratos-bootstrap/api v0.0.46-0.20261128133515-3fcb63fc1b88
 	github.com/tx7do/kratos-bootstrap/bootstrap v0.1.16
 	github.com/tx7do/kratos-bootstrap/cache/redis v0.1.1
 	github.com/tx7do/kratos-bootstrap/config v0.2.2

@@ -2,7 +2,7 @@ package data
 
 import (
 	"github.com/go-kratos/kratos/v2/registry"
-	"go-wind-uba/pkg/olapcfg"
+	"strings"
 
 	"github.com/tx7do/go-utils/password"
 
@@ -33,6 +33,23 @@ func NewPasswordCrypto() password.Crypto {
 }
 
 // UseClickHouse 是否使用ClickHouse作为数据存储，否则使用Doris。
-// 由部署配置决定：configs/olap.yaml 的 olap.engine，或环境变量 UBA_OLAP_ENGINE
-// （后者优先）；进程启动时一次性装载，默认 Doris。
-var UseClickHouse = olapcfg.UseClickHouse()
+// 由部署配置 data.olapEngine（clickhouse | doris，缺省 doris）决定，
+// 装配期经 UseEngineFromCtx 设置（NewData/客户端构造时应用）；之后不再变更。
+var UseClickHouse = false
+
+// useEngineApplied 防重复应用（幂等）。
+var useEngineApplied bool
+
+// UseEngineFromCtx 从框架配置读取 OLAP 引擎并设置路由开关（幂等，
+// NewData 与各 OLAP 客户端构造都可安全调用）。配置缺省/非法值回退 Doris。
+func UseEngineFromCtx(ctx *bootstrap.Context) {
+	if ctx == nil || useEngineApplied {
+		return
+	}
+	cfg := ctx.GetConfig()
+	if cfg == nil {
+		return
+	}
+	useEngineApplied = true
+	UseClickHouse = strings.EqualFold(strings.TrimSpace(cfg.GetData().GetOlapEngine()), "clickhouse")
+}

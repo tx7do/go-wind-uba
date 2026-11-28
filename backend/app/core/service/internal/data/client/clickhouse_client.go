@@ -18,6 +18,8 @@ import (
 // 独立原生连接。crud 封装的 Select 只能扫进结构体，而自助查询的列是动态的，
 // 需要 clickhouse-go 的原始行集（Columns + Scan）。
 func NewClickHouseClient(ctx *bootstrap.Context) (*clickhouseCrud.Client, clickhouseV2.Conn, func(), error) {
+	data.UseEngineFromCtx(ctx)
+
 	if !data.UseClickHouse {
 		return nil, nil, func() {}, nil
 	}

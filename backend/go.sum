@@ -409,8 +409,8 @@ github.com/tx7do/kratos-authz v1.1.8 h1:cO010t/6A0/YKj0HK/yTyjyG23SAs+HNJJAgGV5j
 github.com/tx7do/kratos-authz v1.1.8/go.mod h1:kjANoQ+HDzf0PWYJNoKptp4Yu7YfZ6r5TtYjshbksD0=
 github.com/tx7do/kratos-authz/middleware v1.1.13 h1:f0kngtboah2zSnNvhTYxvZhacGLHPpYb+EeRNjPNxH4=
 github.com/tx7do/kratos-authz/middleware v1.1.13/go.mod h1:WYJL/rPpv38JR6XuPmZiPA50bi5WyxtO50o1RdodCS4=
-github.com/tx7do/kratos-bootstrap/api v0.0.45 h1:r+SPRi6E6o9m7RibezGRdO598zlnFvYUK4jtAsTGt20=
-github.com/tx7do/kratos-bootstrap/api v0.0.45/go.mod h1:p95OtykkiLNcN7CHHjIjb1IhMvJshhxxpYI4mNI4dxY=
+github.com/tx7do/kratos-bootstrap/api v0.0.46-0.20261128133515-3fcb63fc1b88 h1:1mA8KmrJODgqY0JGKRtpFTZ27Z0C3BODdcSIiO3aQv8=
+github.com/tx7do/kratos-bootstrap/api v0.0.46-0.20261128133515-3fcb63fc1b88/go.mod h1:p95OtykkiLNcN7CHHjIjb1IhMvJshhxxpYI4mNI4dxY=
 github.com/tx7do/kratos-bootstrap/bootstrap v0.1.16 h1:R4v1cW5XJuJrnS7q4QWsgRSZIU3qO8kZrjeNPY4tnf0=
 github.com/tx7do/kratos-bootstrap/bootstrap v0.1.16/go.mod h1:+EIZJUsDAMOnjLxWMgddoNc6tH/dsT0QxUsfidez0BQ=
 github.com/tx7do/kratos-bootstrap/cache/redis v0.1.1 h1:RXlrxN12oaIoV6KAOKd9bvHgF56Ya0U/SEIll8LCcWY=

@@ -10,6 +10,8 @@ import (
 )
 
 func NewDorisClient(ctx *bootstrap.Context) (*dorisCrud.Client, func(), error) {
+	data.UseEngineFromCtx(ctx)
+
 	if data.UseClickHouse {
 		return nil, func() {}, nil
 	}

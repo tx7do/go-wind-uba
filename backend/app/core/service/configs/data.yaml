@@ -1,4 +1,8 @@
 data:
+  # OLAP 引擎二选一:分析数据(events_fact 等)落在哪个引擎。
+  # 可选值:doris(默认)| clickhouse
+  olapEngine: "doris"
+
   # 风险事件订阅：core 作为消费者接入 collector 的 Kafka。留空则仅停用
   # 风险事件的 Webhook 推送，主链路（分析/查询）不受影响。
   kafka:

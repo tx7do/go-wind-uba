@@ -172,10 +172,11 @@ Admin 前端
 - **部署时任选其一，不叠加使用**：`data.UseClickHouse` 由部署配置路由决定服务连哪个引擎，运行期不会同时使用两个。
 - 代码按引擎成对镜像：`internal/data/{doris,clickhouse}/` 各一份 repo + `schema/` 镜像定义，
   service 层 `if data.UseClickHouse { ckRepo } else { dorisRepo }` 分支路由。
-- **`data.UseClickHouse` 现已改为部署配置驱动**（原为编译期常量）：优先级
-  环境变量 `UBA_OLAP_ENGINE` > 服务配置目录下 `olap.yaml` 的 `olap.engine`
-  （`doris` | `clickhouse`，缺省 Doris）。切换引擎改配置重启即可，无需重新构建；
-  两个引擎分支都会编译进产物，由 `pkg/olapcfg` 在进程启动时路由。
+- **`data.UseClickHouse` 已改为部署配置驱动**（原为编译期常量）：配置键
+  `data.olapEngine`（`doris` | `clickhouse`，缺省 Doris，写在各服务 `configs/data.yaml`
+  的 data 段），经框架 conf(`kratos-bootstrap` 的 `Data.olap_engine` 字段)随常规
+  配置装载，core 装配期由 `data.UseEngineFromCtx` 应用。切换引擎改配置重启即可，
+  无需重新构建；两个引擎分支都会编译进产物。
 - ClickHouse 侧曾核实的数据正确性缺陷（已全部修复）：
   1. **无事件去重（已修）**：`events_fact` 原是普通 `MergeTree`，Kafka at-least-once 重放会重复计入
      所有 PV/UV/GMV。现改为 `ReplacingMergeTree(updated_at)`，排序键追加 `event_id` 对齐 Doris 的
